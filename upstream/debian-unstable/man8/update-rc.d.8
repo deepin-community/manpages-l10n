@@ -1,0 +1,268 @@
+.\" Man page generated from reStructuredText.
+.
+.TH UPDATE-RC.D 8 "" "14 November 2005" "Debian GNU/Linux"
+.SH NAME
+update-rc.d \- install and remove System-V style init script links
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.SH SYNOPSIS
+.sp
+\fBupdate\-rc.d\fP [\fI\-f\fP] \fIname\fP \fBremove\fP
+.sp
+\fBupdate\-rc.d\fP \fIname\fP \fBdefaults\fP
+.sp
+\fBupdate\-rc.d\fP \fIname\fP \fBdefaults\-disabled\fP
+.sp
+\fBupdate\-rc.d\fP \fIname\fP \fBdisable|enable\fP [ \fIS|2|3|4|5\fP ]
+.SH DESCRIPTION
+.sp
+\fBupdate\-rc.d\fP updates the System V style init script links
+\fB/etc/rc\fP\fIrunlevel\fP\fB\&.d/\fP\fINNname\fP
+whose target is the script
+\fB/etc/init.d/\fP\fIname\fP\&.
+These links are run by
+\fBinit\fP
+when it changes runlevels; they are generally used to start and stop
+system services such as daemons.
+\fIrunlevel\fP
+is one of the runlevels supported by
+\fBinit\fP, namely, \fB0123456789S\fP, and
+\fINN\fP
+is the two\-digit sequence number that determines where in the sequence
+\fBinit\fP
+will run the scripts.
+.sp
+This manpage documents only the usage and behaviour of
+\fBupdate\-rc.d\fP\&.
+For a discussion of the System V style init script arrangements please
+see
+\fBinit\fP(8)
+and the
+\fIDebian Policy Manual\fP\&.
+.SH INSTALLING INIT SCRIPT LINKS
+.sp
+update\-rc.d requires dependency and runlevel information to be
+provided in the init.d script LSB comment header of all init.d scripts.
+See the insserv(8) manual page for details about the LSB header format.
+.sp
+When run with the
+\fBdefaults\fP
+option,
+\fBupdate\-rc.d\fP
+makes links named
+\fB/etc/rc\fP\fIrunlevel\fP\fB\&.d/[SK]\fP\fINNname\fP
+that point to the script
+\fB/etc/init.d/\fP\fIname\fP,
+using runlevel and dependency information from the init.d script LSB
+comment header.
+.sp
+When run with the
+\fBdefaults\-disabled\fP
+option,
+\fBupdate\-rc.d\fP
+makes links named
+\fB/etc/rc\fP\fIrunlevel\fP\fB\&.d/K\fP\fINNname\fP
+that point to the script
+\fB/etc/init.d/\fP\fIname\fP,
+using dependency information from the init.d script LSB comment header.
+This means that the init.d script will be disabled (see below).
+.sp
+If any files named
+\fB/etc/rc\fP\fIrunlevel\fP\fB\&.d/[SK]??\fP\fIname\fP
+already exist then
+\fBupdate\-rc.d\fP
+does nothing.
+The program was written this way so that it will never
+change an existing configuration, which may have been
+customized by the system administrator.
+The program will only install links if none are present,
+i.e.,
+if it appears that the service has never been installed before.
+.sp
+Older versions of
+\fBupdate\-rc.d\fP
+also supported
+\fBstart\fP
+and
+\fBstop\fP
+options.  These options are no longer supported, and are now
+equivalent to the
+\fBdefaults\fP
+option.
+.sp
+A common system administration error is to delete the links
+with the thought that this will "disable" the service, i.e.,
+that this will prevent the service from being started.
+However, if all links have been deleted then the next time
+the package is upgraded, the package\(aqs
+\fIpostinst\fP
+script will run
+\fBupdate\-rc.d\fP
+again and this will reinstall links at their factory default locations.
+The correct way to disable services is to configure the
+service as stopped in all runlevels in which it is started by default.
+In the System V init system this means renaming
+the service\(aqs symbolic links
+from \fBS\fP to \fBK\fP\&.
+\&.P
+The script
+\&.BI /etc/init.d/ name
+must exist before
+\fBupdate\-rc.d\fP
+is run to create the links.
+.SH REMOVING SCRIPTS
+.sp
+When invoked with the
+\fIremove\fP
+option, update\-rc.d removes any links in the
+\fB/etc/rc\fP\fIrunlevel\fP\fB\&.d\fP
+directories to the script
+\fB/etc/init.d/\fP\fIname\fP\&.
+The script must have been deleted already.
+If the script is still present then
+\fBupdate\-rc.d\fP
+aborts with an error message.
+\&.P
+\fBupdate\-rc.d\fP
+is usually called from a package\(aqs post\-removal script when that
+script is given the
+\fBpurge\fP
+argument.
+Any files in the
+\fB/etc/rc\fP\fIrunlevel\fP\fB\&.d\fP
+directories that are not symbolic links to the script
+\fB/etc/init.d/\fP\fIname\fP
+will be left untouched.
+.SH DISABLING INIT SCRIPT START LINKS
+.sp
+When run with the
+\fBdisable\fP [ \fIS|2|3|4|5\fP ]
+options,
+\fBupdate\-rc.d\fP
+modifies existing runlevel links for the script
+\fB/etc/init.d/\fP\fIname\fP
+by renaming start links to stop links with a sequence number equal
+to the difference of 100 minus the original sequence number.
+.sp
+When run with the
+\fBenable\fP [ \fIS|2|3|4|5\fP ]
+options,
+\fBupdate\-rc.d\fP
+modifies existing runlevel links for the script
+\fB/etc/init.d/\fP\fIname\fP
+by renaming stop links to start links with a sequence number equal
+to the positive difference of current sequence number minus 100, thus
+returning to the original sequence number that the script had been
+installed with before disabling it.
+\&.P
+Both of these options only operate on start runlevel links of S, 2,
+3, 4 or 5. If no start runlevel is specified after the disable or enable
+keywords, the script will attempt to modify links in all start runlevels.
+.SH OPTIONS
+.INDENT 0.0
+.TP
+.B \-f
+Force removal of symlinks even if
+\fB/etc/init.d/\fP\fIname\fP
+still exists.
+.UNINDENT
+.SH EXAMPLES
+.sp
+Insert links using the defaults:
+.INDENT 0.0
+.INDENT 3.5
+\fBupdate\-rc.d foobar defaults\fP
+.UNINDENT
+.UNINDENT
+.sp
+The equivalent dependency header would have start and stop
+dependencies on $remote_fs and $syslog, and start in
+runlevels 2\-5 and stop in runlevels 0, 1 and 6.
+.sp
+Remove all links for a script (assuming foobar has been deleted
+already):
+.INDENT 0.0
+.INDENT 3.5
+\fBupdate\-rc.d foobar remove\fP
+.UNINDENT
+.UNINDENT
+.sp
+Example of disabling a service:
+.INDENT 0.0
+.INDENT 3.5
+\fBupdate\-rc.d foobar disable\fP
+.UNINDENT
+.UNINDENT
+.sp
+Example of a command for installing a system initialization\-and\-shutdown script:
+.INDENT 0.0
+.INDENT 3.5
+\fBupdate\-rc.d foobar defaults\fP
+.UNINDENT
+.UNINDENT
+.sp
+Example of a command for disabling a system initialization\-and\-shutdown script:
+.INDENT 0.0
+.INDENT 3.5
+\fBupdate\-rc.d foobar disable\fP
+.UNINDENT
+.UNINDENT
+.SH BUGS
+.sp
+See \fI\%http://bugs.debian.org/sysv\-rc\fP and
+\fI\%http://bugs.debian.org/init\-system\-helpers\fP\&.
+.SH FILES
+.INDENT 0.0
+.TP
+.B \fB/etc/init.d/\fP
+The directory containing the actual init scripts.
+.TP
+.B \fB/etc/rc?.d/\fP
+The directories containing the links used by \fBinit\fP
+and managed by \fBupdate\-rc.d .\fP
+.TP
+.B \fB/etc/init.d/skeleton\fP
+Model for use by writers of \fBinit.d\fP scripts.
+.UNINDENT
+.SH SEE ALSO
+.nf
+\fIDebian Policy Manual\fP,
+\fB/etc/init.d/skeleton\fP,
+\fBinsserv\fP(8),
+\fBinit\fP(8)
+.fi
+.sp
+.SH AUTHOR
+Ian Jackson,
+Miquel van Smoorenburg
+
+Licence: GNU Public Licence v2 or Later (GPLv2+)
+.SH COPYRIGHT
+2001 Henrique de Moraes Holschuh
+.\" Generated by docutils manpage writer.
+.

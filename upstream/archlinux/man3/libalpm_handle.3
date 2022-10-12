@@ -1,0 +1,83 @@
+.TH "libalpm_handle" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+libalpm_handle \- Handle
+.PP
+ \- Functions to initialize and release libalpm\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct __alpm_handle_t \fBalpm_handle_t\fP"
+.br
+.RI "The libalpm context handle\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBalpm_handle_t\fP * \fBalpm_initialize\fP (const char *root, const char *dbpath, \fBalpm_errno_t\fP *err)"
+.br
+.RI "Initializes the library\&. "
+.ti -1c
+.RI "int \fBalpm_release\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Release the library\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Functions to initialize and release libalpm\&. 
+
+
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef struct __alpm_handle_t \fBalpm_handle_t\fP"
+
+.PP
+The libalpm context handle\&. This struct represents an instance of libalpm\&. 
+.SH "Function Documentation"
+.PP 
+.SS "\fBalpm_handle_t\fP * alpm_initialize (const char * root, const char * dbpath, \fBalpm_errno_t\fP * err)"
+
+.PP
+Initializes the library\&. Creates handle, connects to database and creates lockfile\&. This must be called before any other functions are called\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIroot\fP the root path for all filesystem operations 
+.br
+\fIdbpath\fP the absolute path to the libalpm database 
+.br
+\fIerr\fP an optional variable to hold any error return codes 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a context handle on success, NULL on error, err will be set if provided 
+.RE
+.PP
+
+.SS "int alpm_release (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Release the library\&. Disconnects from the database, removes handle and lockfile This should be the last alpm call you make\&. After this returns, handle should be considered invalid and cannot be reused in any way\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libalpm from the source code\&.

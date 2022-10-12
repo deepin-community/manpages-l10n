@@ -1,0 +1,222 @@
+.TH "ifcfg" "5" "1.0.0" "Todd Lyons <tlyons@mandrakesoft.com>" "Networking"
+.SH "NAME"
+.LP 
+\fBifcfg\fR \- Configuration file for network interfaces
+.SH "DESCRIPTION"
+.LP 
+The ifup and ifdown scripts use configuration files
+of the format \fBifcfg\-[InterfaceName]\fR, for example
+\fBifcfg\-eth0\fR. These configuration files are searched
+for in the following places:
+.LP 
+/etc/sysconfig/network\-scripts
+.SH "FORMAT"
+.LP 
+The file is a series of variable settings in the form:
+.br 
+.IP 
+\fBNAME="value"\fR
+.LP 
+.br 
+It is allowable to surround value with double quotes or single
+quotes.  It is required if the settings require spaces (no
+settings in the network configuration use spaces).
+.SH "PARAMETERS"
+.LP 
+The following are required settings:
+.TP 
+\fBDEVICE\fR
+The network device name.
+.TP 
+\fBBOOTPROTO\fR
+The protocol or system used to obtain an IP.
+Valid settings are \fIbootp\fR, \fIdhcp\fR, 
+.TP 
+\fBONBOOT\fR
+Determines whether the device is started at 
+system bootup.  Valid settings are \fIyes\fR or \fIno\fR.
+.br 
+.LP 
+The following are required settings for static IP:
+.TP 
+\fBIPADDR\fR
+Manually set the IP address.
+.TP 
+\fBNETMASK\fR
+The mask that is applied to packets to determine
+if it's destined for your network.  It is a series of bits that
+provide a "mask" for a logical AND with the addresses in the 
+packets it receives.
+.LP 
+The following are optional settings:
+.TP 
+\fBNETWORK\fR
+Set the network address.  This setting is optional
+because the network scripts can calculate it as long as the IP
+address and Netmask are known (uses a logical AND with the
+netmask.)  Example: a 24 bit netmask is 255.255.255.0.  If the 
+IP address is 192.168.1.20, the network is 192.168.1.0.
+.TP 
+\fBBROADCAST\fR
+Set the broadcast address.  This setting is
+optional because the network scripts can calculate it as long as
+the IP address and Netmask are known (uses a logic OR using the
+inverse of the netmask with the network address.)  Example: a 
+24 bit netmask is 255.255.255.0, so the inverse is 0.0.0.255.  If
+the IP address is 192.168.1.20, the broadcast is 192.168.1.255.
+.TP 
+\fBMACADDR\fR
+Manually set the MAC Address (hardware address) 
+of the interface.  Note that not all network drivers allow this.
+.TP 
+\fBDHCP_HOSTNAME\fR
+Manually set a hostname that is required for DHCP to obtain the
+IP address successfully.  Frequently used for cablemodems.
+.TP 
+\fBNEEDHOSTNAME\fR
+Controls whether or not the hostname is changed to what is 
+supplied by the DHCP server.  Valid settings are \fIyes\fR
+or \fIno\fR, default is no.
+.TP 
+\fBPEERDNS\fR
+Controls whether or not /etc/resolv.conf is rewritten with
+the information from a DHCP server.  Valid settings are \fIyes\fR
+or \fIno\fR, default is yes.
+.TP 
+\fBPEERYP\fR
+Controls whether or not /etc/yp.conf is rewritten with the
+information from a DHCP server.  Valid settings are \fIyes\fR
+or \fIno\fR, default is no.
+.TP 
+\fBPEERNTPD\fR
+Controls whether or not /etc/ntpd.conf is rewritten with the
+information from a DHCP server.  Valid settings are \fIyes\fR
+or \fIno\fR, default is no.
+.TP 
+\fBDHCP_TIMEOUT\fR
+Sets the number of seconds to wait for an answer from a DHCP server,
+default is 60 seconds.
+.TP 
+\fBMTU\fR
+Sets the Maximum Transmission Unit, default is 1500.
+.TP 
+\fBDYNCONFIG\fR
+.TP 
+\fBNOZEROCONF\fR
+Controls whether or not the zeroconf networking configuration will
+be used. Valid settings are \fIyes\fR or \fIno\fR, default is
+yes.
+.TP 
+\fBISALIAS\fR
+Determines if an IP address configuration is an alias or a real
+interface.  Valid settings are \fIyes\fR or \fIno\fR, default
+is no.
+.TP 
+\fBNETWORKING_IPV6\fR
+Determines if an interface is an IPv6 interface.  Valid settings are
+\fIyes\fR or \fIno\fR, default is no.
+.TP 
+\fBIPX\fR
+Determines if an interface is an IPX interface.  Valid settings are
+\fIyes\fR or \fIno\fR, default is no.
+.LP 
+The following are options specifically for wireless interfaces.  The
+options are not checked.  They passed directly to the iwconfig
+utility.  Refer to the manual page for iwconfig to see exactly what
+they do.
+.TP 
+\fBWIRELESS_MODE\fR
+Sets the mode of the wireless device.
+.TP 
+\fBWIRELESS_ESSID\fR
+Sets the ESSID of the wireless device.
+.TP 
+\fBWIRELESS_NWID\fR
+Sets the NWID of the wireless device.
+.TP 
+\fBWIRELESS_FREQ\fR
+Sets the frequency that the wireless device will use.
+.TP 
+\fBWIRELESS_CHANNEL\fR
+Sets the channel at the wireless device will use.
+.TP 
+\fBWIRELESS_SENS\fR
+Sets the sensitivity of the wireless device.
+.TP 
+\fBWIRELESS_RATE\fR
+Sets the bit rate of the wireless device.
+.TP 
+\fBWIRELESS_ENC_KEY\fR
+Sets the encryption mode to use.
+.TP 
+\fBWIRELESS_RTS\fR
+Sets the rts threshhold.
+.TP 
+\fBWIRELESS_FRAG\fR
+Sets the maximum fragment size.
+.TP 
+\fBWIRELESS_IWCONFIG\fR
+Options that you can specify to be passed to iwconfig directly.
+If it contains one or more spaces, the value must be in quotes.
+.TP 
+\fBWIRELESS_IWSPY\fR
+Options that you can specify to be passed to iwspy directly.
+If it contains one or more spaces, the value must be in quotes.
+.TP 
+\fBWIRELESS_IWPRIV\fR
+Options that you can specify to be passed to iwpriv directly.
+If it contains one or more spaces, the value must be in quotes.
+.SH "EXAMPLES"
+.LP 
+ifcfg\-eth0 configured for DHCP:
+.br 
+.IP 
+DEVICE=eth0
+.br 
+BOOTPROTO=dhcp
+.br 
+NETMASK=255.255.255.0
+.br 
+ONBOOT=yes
+.LP 
+ifcfg\-usb0 configurd for static IP:
+.br 
+.IP 
+DEVICE=usb0
+.br 
+BOOTPROTO=static
+.br 
+BROADCAST=192.168.129.255
+.br 
+IPADDR=192.168.129.1
+.br 
+NETMASK=255.255.255.0
+.br 
+NETWORK=192.168.129.0
+.br 
+ONBOOT=no
+.LP 
+ifcfg\-eth0:2 (the third virtual device) configured for static IP:
+.br 
+.IP 
+DEVICE="eth0:2"
+.br 
+IPADDR=192.168.3.89
+.br 
+NETMASK=255.255.255.0
+.br 
+ONBOOT=yes
+.SH "FILES"
+.LP 
+/etc/sysconfig/network\-scripts/ifcfg\-*
+.br 
+/etc/sysconfig/network
+.br 
+/etc/resolv.conf
+.br 
+/sbin/ifup
+.br 
+/sbin/ifdown
+.SH "SEE ALSO"
+.LP 
+ifup(8) ifdown(8)

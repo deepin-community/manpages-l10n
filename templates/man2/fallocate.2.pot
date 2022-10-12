@@ -1,0 +1,816 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-09-10 15:18+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "FALLOCATE"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "2019-11-19"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "fallocate - manipulate file space"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<#define _GNU_SOURCE>             /* See feature_test_macros(7) */\n"
+"B<#include E<lt>fcntl.hE<gt>>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<int fallocate(int >I<fd>B<, int >I<mode>B<, off_t >I<offset>B<, off_t >I<len>B<);>\n"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This is a nonportable, Linux-specific system call.  For the portable, "
+"POSIX.1-specified method of ensuring that space is allocated for a file, see "
+"B<posix_fallocate>(3)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<fallocate>()  allows the caller to directly manipulate the allocated disk "
+"space for the file referred to by I<fd> for the byte range starting at "
+"I<offset> and continuing for I<len> bytes."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<mode> argument determines the operation to be performed on the given "
+"range.  Details of the supported operations are given in the subsections "
+"below."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Allocating disk space"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The default operation (i.e., I<mode> is zero) of B<fallocate>()  allocates "
+"the disk space within the range specified by I<offset> and I<len>.  The file "
+"size (as reported by B<stat>(2))  will be changed if I<offset>+I<len> is "
+"greater than the file size.  Any subregion within the range specified by "
+"I<offset> and I<len> that did not contain data before the call will be "
+"initialized to zero.  This default behavior closely resembles the behavior "
+"of the B<posix_fallocate>(3)  library function, and is intended as a method "
+"of optimally implementing that function."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"After a successful call, subsequent writes into the range specified by "
+"I<offset> and I<len> are guaranteed not to fail because of lack of disk "
+"space."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"If the B<FALLOC_FL_KEEP_SIZE> flag is specified in I<mode>, the behavior of "
+"the call is similar, but the file size will not be changed even if I<offset>"
+"+I<len> is greater than the file size.  Preallocating zeroed blocks beyond "
+"the end of the file in this manner is useful for optimizing append workloads."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"If the B<FALLOC_FL_UNSHARE_RANGE> flag is specified in I<mode>, shared file "
+"data extents will be made private to the file to guarantee that a subsequent "
+"write will not fail due to lack of space.  Typically, this will be done by "
+"performing a copy-on-write operation on all shared data in the file.  This "
+"flag may not be supported by all filesystems."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Because allocation is done in block size chunks, B<fallocate>()  may "
+"allocate a larger range of disk space than was specified."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Deallocating file space"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Specifying the B<FALLOC_FL_PUNCH_HOLE> flag (available since Linux 2.6.38) "
+"in I<mode> deallocates space (i.e., creates a hole)  in the byte range "
+"starting at I<offset> and continuing for I<len> bytes.  Within the specified "
+"range, partial filesystem blocks are zeroed, and whole filesystem blocks are "
+"removed from the file.  After a successful call, subsequent reads from this "
+"range will return zeros."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The B<FALLOC_FL_PUNCH_HOLE> flag must be ORed with B<FALLOC_FL_KEEP_SIZE> in "
+"I<mode>; in other words, even when punching off the end of the file, the "
+"file size (as reported by B<stat>(2))  does not change."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Not all filesystems support B<FALLOC_FL_PUNCH_HOLE>; if a filesystem doesn't "
+"support the operation, an error is returned.  The operation is supported on "
+"at least the following filesystems:"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "*"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "XFS (since Linux 2.6.38)"
+msgstr ""
+
+#.  commit a4bb6b64e39abc0e41ca077725f2a72c868e7622
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "ext4 (since Linux 3.0)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Btrfs (since Linux 3.7)"
+msgstr ""
+
+#.  commit 83e4fa9c16e4af7122e31be3eca5d57881d236fe
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<tmpfs>(5)  (since Linux 3.5)"
+msgstr ""
+
+#.  commit 4e56a6411fbce6f859566e17298114c2434391a4
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<gfs2>(5)  (since Linux 4.16)"
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Collapsing file space"
+msgstr ""
+
+#.  commit 00f5e61998dd17f5375d9dfc01331f104b83f841
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Specifying the B<FALLOC_FL_COLLAPSE_RANGE> flag (available since Linux 3.15) "
+"in I<mode> removes a byte range from a file, without leaving a hole.  The "
+"byte range to be collapsed starts at I<offset> and continues for I<len> "
+"bytes.  At the completion of the operation, the contents of the file "
+"starting at the location I<offset+len> will be appended at the location "
+"I<offset>, and the file will be I<len> bytes smaller."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"A filesystem may place limitations on the granularity of the operation, in "
+"order to ensure efficient implementation.  Typically, I<offset> and I<len> "
+"must be a multiple of the filesystem logical block size, which varies "
+"according to the filesystem type and configuration.  If a filesystem has "
+"such a requirement, B<fallocate>()  fails with the error B<EINVAL> if this "
+"requirement is violated."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"If the region specified by I<offset> plus I<len> reaches or passes the end "
+"of file, an error is returned; instead, use B<ftruncate>(2)  to truncate a "
+"file."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"No other flags may be specified in I<mode> in conjunction with "
+"B<FALLOC_FL_COLLAPSE_RANGE>."
+msgstr ""
+
+#.  commit 9eb79482a97152930b113b51dff530aba9e28c8e
+#.  commit e1d8fb88a64c1f8094b9f6c3b6d2d9e6719c970d
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"As at Linux 3.15, B<FALLOC_FL_COLLAPSE_RANGE> is supported by ext4 (only for "
+"extent-based files)  and XFS."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Zeroing file space"
+msgstr ""
+
+#.  commit 409332b65d3ed8cfa7a8030f1e9d52f372219642
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Specifying the B<FALLOC_FL_ZERO_RANGE> flag (available since Linux 3.15)  in "
+"I<mode> zeros space in the byte range starting at I<offset> and continuing "
+"for I<len> bytes.  Within the specified range, blocks are preallocated for "
+"the regions that span the holes in the file.  After a successful call, "
+"subsequent reads from this range will return zeros."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Zeroing is done within the filesystem preferably by converting the range "
+"into unwritten extents.  This approach means that the specified range will "
+"not be physically zeroed out on the device (except for partial blocks at the "
+"either end of the range), and I/O is (otherwise) required only to update "
+"metadata."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"If the B<FALLOC_FL_KEEP_SIZE> flag is additionally specified in I<mode>, the "
+"behavior of the call is similar, but the file size will not be changed even "
+"if I<offset>+I<len> is greater than the file size.  This behavior is the "
+"same as when preallocating space with B<FALLOC_FL_KEEP_SIZE> specified."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Not all filesystems support B<FALLOC_FL_ZERO_RANGE>; if a filesystem doesn't "
+"support the operation, an error is returned.  The operation is supported on "
+"at least the following filesystems:"
+msgstr ""
+
+#.  commit 376ba313147b4172f3e8cf620b9fb591f3e8cdfa
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "XFS (since Linux 3.15)"
+msgstr ""
+
+#.  commit b8a8684502a0fc852afa0056c6bb2a9273f6fcc0
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "ext4, for extent-based files (since Linux 3.15)"
+msgstr ""
+
+#.  commit 30175628bf7f521e9ee31ac98fa6d6fe7441a556
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "SMB3 (since Linux 3.17)"
+msgstr ""
+
+#.  commit f27451f229966874a8793995b8e6b74326d125df
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Btrfs (since Linux 4.16)"
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Increasing file space"
+msgstr ""
+
+#.  commit dd46c787788d5bf5b974729d43e4c405814a4c7d
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Specifying the B<FALLOC_FL_INSERT_RANGE> flag (available since Linux 4.1)  "
+"in I<mode> increases the file space by inserting a hole within the file size "
+"without overwriting any existing data.  The hole will start at I<offset> and "
+"continue for I<len> bytes.  When inserting the hole inside file, the "
+"contents of the file starting at I<offset> will be shifted upward (i.e., to "
+"a higher file offset) by I<len> bytes.  Inserting a hole inside a file "
+"increases the file size by I<len> bytes."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This mode has the same limitations as B<FALLOC_FL_COLLAPSE_RANGE> regarding "
+"the granularity of the operation.  If the granularity requirements are not "
+"met, B<fallocate>()  fails with the error B<EINVAL>.  If the I<offset> is "
+"equal to or greater than the end of file, an error is returned.  For such "
+"operations (i.e., inserting a hole at the end of file), B<ftruncate>(2)  "
+"should be used."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"No other flags may be specified in I<mode> in conjunction with "
+"B<FALLOC_FL_INSERT_RANGE>."
+msgstr ""
+
+#.  commit a904b1ca5751faf5ece8600e18cd3b674afcca1b
+#.  commit 331573febb6a224bc50322e3670da326cb7f4cfc
+#.  f2fs also has support since Linux 4.2
+#.      commit f62185d0e283e9d311e3ac1020f159d95f0aab39
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<FALLOC_FL_INSERT_RANGE> requires filesystem support.  Filesystems that "
+"support this operation include XFS (since Linux 4.1)  and ext4 (since Linux "
+"4.2)."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "RETURN VALUE"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"On success, B<fallocate>()  returns zero.  On error, -1 is returned and "
+"I<errno> is set to indicate the error."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ERRORS"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EBADF>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "I<fd> is not a valid file descriptor, or is not opened for writing."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EFBIG>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "I<offset>+I<len> exceeds the maximum file size."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"I<mode> is B<FALLOC_FL_INSERT_RANGE>, and the current file size+I<len> "
+"exceeds the maximum file size."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EINTR>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "A signal was caught during execution; see B<signal>(7)."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EINVAL>"
+msgstr ""
+
+#.  FIXME . (raise a kernel bug) Probably the len==0 case should be
+#.  a no-op, rather than an error. That would be consistent with
+#.  similar APIs for the len==0 case.
+#.  See "Re: [PATCH] fallocate.2: add FALLOC_FL_PUNCH_HOLE flag definition"
+#.  21 Sep 2012
+#.  http://thread.gmane.org/gmane.linux.file-systems/48331/focus=1193526
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "I<offset> was less than 0, or I<len> was less than or equal to 0."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"I<mode> is B<FALLOC_FL_COLLAPSE_RANGE> and the range specified by I<offset> "
+"plus I<len> reaches or passes the end of the file."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"I<mode> is B<FALLOC_FL_INSERT_RANGE> and the range specified by I<offset> "
+"reaches or passes the end of the file."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"I<mode> is B<FALLOC_FL_COLLAPSE_RANGE> or B<FALLOC_FL_INSERT_RANGE>, but "
+"either I<offset> or I<len> is not a multiple of the filesystem block size."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"I<mode> contains one of B<FALLOC_FL_COLLAPSE_RANGE> or "
+"B<FALLOC_FL_INSERT_RANGE> and also other flags; no other flags are permitted "
+"with B<FALLOC_FL_COLLAPSE_RANGE> or B<FALLOC_FL_INSERT_RANGE>."
+msgstr ""
+
+#.  There was an inconsistency in 3.15-rc1, that should be resolved so that all
+#.  filesystems use this error for this case. (Tytso says ex4 will change.)
+#.  http://thread.gmane.org/gmane.comp.file-systems.xfs.general/60485/focus=5521
+#.  From: Michael Kerrisk (man-pages <mtk.manpages@...>
+#.  Subject: Re: [PATCH v5 10/10] manpage: update FALLOC_FL_COLLAPSE_RANGE flag in fallocate
+#.  Newsgroups: gmane.linux.man, gmane.linux.file-systems
+#.  Date: 2014-04-17 13:40:05 GMT
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"I<mode> is B<FALLOC_FL_COLLAPSE_RANGE> or B<FALLOC_FL_ZERO_RANGE> or "
+"B<FALLOC_FL_INSERT_RANGE>, but the file referred to by I<fd> is not a "
+"regular file."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EIO>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "An I/O error occurred while reading from or writing to a filesystem."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ENODEV>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"I<fd> does not refer to a regular file or a directory.  (If I<fd> is a pipe "
+"or FIFO, a different error results.)"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ENOSPC>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"There is not enough space left on the device containing the file referred to "
+"by I<fd>."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ENOSYS>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "This kernel does not implement B<fallocate>()."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EOPNOTSUPP>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The filesystem containing the file referred to by I<fd> does not support "
+"this operation; or the I<mode> is not supported by the filesystem containing "
+"the file referred to by I<fd>."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EPERM>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The file referred to by I<fd> is marked immutable (see B<chattr>(1))."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"I<mode> specifies B<FALLOC_FL_PUNCH_HOLE> or B<FALLOC_FL_COLLAPSE_RANGE> or "
+"B<FALLOC_FL_INSERT_RANGE> and the file referred to by I<fd> is marked append-"
+"only (see B<chattr>(1))."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The operation was prevented by a file seal; see B<fcntl>(2)."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ESPIPE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "I<fd> refers to a pipe or FIFO."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ETXTBSY>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"I<mode> specifies B<FALLOC_FL_COLLAPSE_RANGE> or B<FALLOC_FL_INSERT_RANGE>, "
+"but the file referred to by I<fd> is currently being executed."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "VERSIONS"
+msgstr ""
+
+#.  See http://sourceware.org/bugzilla/show_bug.cgi?id=14964
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<fallocate>()  is available on Linux since kernel 2.6.23.  Support is "
+"provided by glibc since version 2.10.  The B<FALLOC_FL_*> flags are defined "
+"in glibc headers only since version 2.18."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CONFORMING TO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<fallocate>()  is Linux-specific."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<fallocate>(1), B<ftruncate>(2), B<posix_fadvise>(3), B<posix_fallocate>(3)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"If the B<FALLOC_FL_UNSHARE> flag is specified in I<mode>, shared file data "
+"extents will be made private to the file to guarantee that a subsequent "
+"write will not fail due to lack of space.  Typically, this will be done by "
+"performing a copy-on-write operation on all shared data in the file.  This "
+"flag may not be supported by all filesystems."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2018-04-30"
+msgstr ""
+
+#.  commit 83e4fa9c16e4af7122e31be3eca5d57881d236fe
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "B<tmpfs>(5) (since Linux 3.5)"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This mode has the same limitations as B<FALLOC_FL_COLLAPSE_RANGE> regarding "
+"the granularity of the operation.  If the granularity requirements are not "
+"met, B<fallocate>()  fails with the error B<EINVAL.> If the I<offset> is "
+"equal to or greater than the end of file, an error is returned.  For such "
+"operations (i.e., inserting a hole at the end of file), B<ftruncate>(2)  "
+"should be used."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

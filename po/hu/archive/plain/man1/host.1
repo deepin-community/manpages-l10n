@@ -1,0 +1,697 @@
+.\"
+.\"	@(#)host.1              e07@nikhef.nl (Eric Wassenaar) 970203
+.\"
+.TH host 1 "970203"
+.SH NÉV
+host \- lekérdezéseket kezdeményez a névkiszolgáló felé, tartományokról és zónákról
+.SH ÁTTEKINTÉS 
+.na
+.nf
+\fBhost\fP [\fB\-v\fP] [\fB\-a\fP] [\fB\-t\fP \fItípus\fP] [\fIopciók\fP]  \fInév\fP  [\fIszerver\fP] 
+.br
+\fBhost\fP [\fB\-v\fP] [\fB\-a\fP] [\fB\-t\fP \fItípus\fP] [\fIopciók\fP]  \fB\-l\fP \fIzóna\fP  [\fIszerver\fP] 
+.br
+\fBhost\fP [\fB\-v\fP] [\fIopciók\fP] \fB\-H\fP [\fB\-D\fP] [\fB\-E\fP] [\fB\-G\fP] \fIzóna\fP
+.br
+\fBhost\fP [\fB\-v\fP] [\fIopciók\fP] \fB\-C\fP \fIzóna\fP
+.br
+\fBhost\fP [\fB\-v\fP] [\fIopciók\fP] \fB\-A\fP \fIhost\fP
+.sp
+\fBhost\fP [\fIopciók\fP] \fB\-x\fP [\fInév\fP ...]
+.br
+\fBhost\fP [\fIopciók\fP] \fB\-X\fP \fIszerver\fP [\fInév\fP ...]
+.SH LEÍRÁS 
+A
+.I host
+információkkal szolgál az Interneten lévõ hostokról és tartományokról.
+Ezeket az információkat  a program egy a világot átszövõ szerver hálózattól kapja. Ezek az információk úgynevezett "erõforrás bejegyzésekben" (recource records) vannak tárolva, melyek hierarchikusan szervezett "zónákba" tartoznak.
+.PP
+Alapértelmezésben, a program egyszerûen átváltja a host neveket Internet címekre és vissza. A \fB\-t\fP, \fB\-a\fP és \fB\-v\fP opciókkal lekérdezhetünk bármilyen információt a tartománynevekrõl amelyek a tartománynév rendszerbe (domain name system) be vannak jegyezve.
+A kiírt információ a megfelelõ erõforrás bejegyzés különbözõ mezõibõl áll.
+.PP
+A program argumentuma lehet host név (tartománynév) vagy IP szám.
+.PP
+A számokkal leírt Internet cím négy pontokkal határolt decimális számból áll.
+Pl.: \fB192.16.199.1\fP. Ez a négy szám a 32 bites cím négy bájtja. 
+.br
+A program alapértelmezésben a számhoz rendelt host nevet adja vissza.
+.PP
+A host név vagy a tartománynév pontokkal határolt név részekbõl (cimkékbõl) áll, pl.: \fBnikhefh.nikhef.nl\fP
+.br
+A program alapértelmezésben megkeresi a névhez rendelt összes Internet címet.
+.PP
+Ha a megadott név egy komponensbõl áll és nincs a végén pont, a program autómatikusan hozzáfûzi a helyi tartománynevet.
+Tehát ha egy felhasználó a "nikhef.nl" tartományban kiadja a "host nikhapo" parancsot, valójában a "nikhapo.nikhef.nl" géprõl kap információt.
+Minden más esetben, a nevet a program változatlanul használja fel.
+Azok az egy komponensbõl álló nevek, amelyeknek a végén pont van "top-level" tartományneveknek számítanak, pl.: "nl."
+.PP
+Jegyezzük meg, hogy az általános konvenció szerint, bármilyen névhez, ami nem ponttal végzõdik, elõször hozzá kell fûzni a helyi tartománynevet, majd esetleg más keresési tartományokat (search-domain).
+(A BIND 4.9 esetében, azok a nevek amelyek tartalmaznak pontokat, de nem az utolsó helyen, elõször minden változtatás nélkül kerülnek lekérdezésre, és csak ha ez a lekérdezés sikertelen, akkor jönnek szóba a "search-domain"\-ek.) 
+Ez a program nem használja ezt a konvenciót.
+.PP
+A tényleges toldalék, amit a host névhez ad a program általában a helyi tartománynév a  \fB/etc/resolv.conf\fP fájlból, de ez a beállítás felülbírálható.
+Lásd lent a host név lekérdezés testreszabásáról szóló részt.
+.SH ARGUMENTUMOK
+Az elsõ argumentum normális esetben a host név, amirõl információt szeretnénk.
+Ha ez elsõ argumentum egy IP cím, a program a host nevet próbálja meghatározni egy "fordított hozzárendelést" ("reverse mapping") tartalmazó adatbázis alapján. 
+.PP
+Ha megadjuk a \fB\-l\fP opciót, az elsõ argumentum egy tartomány zóna név kell hogy legyen, amihez teljes lista tartozik. A program ekkor egy speciális zóna listázó módba lép, aminek több változata is van (lásd késöbb).
+.PP
+A második argumentum opcionális. Segítségével megjelölhetünk egy bizonyos névkiszolgálót, amelyhez a program a lekérdezéseket intézi. Ha nem adjuk meg ezt az argumentumot, a program a \fB/etc/resolv.conf\fP fájl alapján az alapértelmezett névkiszolgálót használja.
+.SS "KITERJESZTETT SZINTAXIS"
+A \fB\-x\fP opció használata kiterjeszti a program szintaxisát, abban az értelemben, hogy megnöveli a parancssoron adható argumentumok számát.
+Ha egy meghatározott névkiszolgálót akarunk használni, úgy ezt a kiterjesztett szintaxis esetén a \fB\-X\fP opció segítségével tehetjük meg.
+A \fB\-X\fP opció a \fB\-x\fP\-et feltételezi.
+.sp
+A kiterjesztett szintaxis megengedi, hogy ne adjunk meg egy argumentumot sem a parancssorban. Ez esetben a szükséges adatokat a program a szabványos bemenetrõl (standard input) várja. Ez lehet egy csõ (pipe), átirányítás fájlból, vagy interaktív terminálról. Jegyezzük meg, hogy ezek az argumentumok a lekérdezendõ hostnevek, és nem vezérlõ utasítások.
+A '#' és ';' jeleket a program megjegyzés kezdetének veszi, és az ezek után következõ argumentumokat figyelmen kívül hagyja. Egy sorban több argumentum megengedett.
+.SS OPCIÓK
+A fent említett argumentumok elõtt megadhatunk opciókat is. Ezek közül néhányat csak a tartomány adatbázis zónát karbantartó adminisztátor használ. Elõször az általános opciókról.
+.TP 4
+.B \-v
+kapcsoló az eredményt "bõbeszédûen" írja ki. Az erõforrás bejegyzés minden mezõjét kiírja. Ezen kapcsoló nélkül a ttl és class mezõk nem jelennek meg.
+Hasonlóan, az "additional information" (további információk) és az "authoritative nameservers" (hiteles névkiszolgálók) szekciók is megjelennek, amennyiben léteznek. A kapcsoló elhagyása esetén ezek a mezõk nem kerülnek kiírásra.
+Ezen a felül a bõbeszédû opció további információkat ír ki arról, hogy a program éppen mit csinál.
+Jegyezzük meg, hogy a \fB\-vv\fP "nagyon bõbeszédû", hosszú kimeneti eredménnyel jár.
+.TP
+.BI \-t " querytype"
+segítségével megmondhatjuk, hogy milyen típusú információra van szükségünk az erõforrás nyilvántartásból. Az értelmezett típusok listáját lásd lejjebb. A helyettesítést írhatjuk \fBANY\fP\-ként vagy \fB*\fP\-ként. A típusokat megadhatjuk kis\- vagy nagybetûvel.
+Az alapértelmezett típus szabályos keresésnél \fBA\fP,
+zóna listázásnál \fBA\fP, \fBNS\fP és \fBPTR\fP.
+.TP
+.B \-a
+egyenértékû a \fB\-t ANY\fP\-vel.
+Jegyezzük meg, hogy ez "minden elérhetõ" (jelenleg cache-elt) adatot jelent és nem "minden definiált adatot", ha a lekérdezés egy nem hiteles névkiszolgáló felé irányul. 
+.SS SPECIÁLIS MÓDOK
+A következõ opciók egy speciális módba állítják a programot.
+.TP 4
+.BI \-l " zone"
+listát generál egy teljes zónáról. 
+.sp
+Pl. a következõ parancs
+.br
+	\fBhost \-l nikhef.nl\fP
+.br
+csinál egy listát minden hostról a "nikhef.nl" zónában.
+A \fB\-t\fP opcióval szûrhetjük a megjelenõ információkat.
+Alapértelmezésben a cím információ jelenik meg az A bejegyzésbõl, kiegészítve a PTR és NS rekordok adataival.
+.sp
+A 
+.br
+	\fBhost \-Z \-a \-l nikhef.nl\fP
+.br
+parancsal le lehet tölteni a teljes zóna információt a "nikhef.nl" tartományról, az eredeti hivatalos fájl formátumban.
+.TP 4
+.B \-H
+opciót megadhatjuk a \fB\-l\fP opció helyett. A \fB\-H\fP megszámolja a zónában található összes egyedi hostnevet ("A" bejegyzéssel rendelkezõ neveket). Nem számolja az eredménybe a pseudo neveket, mint például a "localhost", vagy a zonához rendelt neveket. Továbbá nem vesz tudomást a "glue record"\-okról amelyek a zóna és a delegált zónák névkiszolgálóinak azonosítása miatt szükségesek.
+.sp
+Ez az opció alapértelmezésben nem írja ki az erõforrás bejegyzések tartalmát (csak a hostok számát).
+.sp
+A \fB\-S\fP opcióval kombinálva, egy átfogó statisztikai jelentést ad a zónáról.
+.sp
+A gépek számát befolyásohatja a "duplicate" hostok száma (lásd lent). A valósághoz közel álló érték kiszámításához vond ki a "duplicate" hostok számát az összes host számából.
+.TP
+.B \-G
+feltételezi a \fB\-H\fP\-t, de az átjáró (gateway) hostokat írja ki.
+Ezeknek a hostoknak több címük van. Az átjáró hostokat a program nem ellenõrzi többszörös címekre.
+.TP
+.B \-E
+feltételezi a \fB\-H\fP\-t, de a zónán kívüli hostokat listázza ki. 
+Egy zónán kívüli host a "foo.bar" zónában a "host.xxx.foo.bar" ahol "xxx.foo.bar" nem egy delegált zóna NS bejegyzéssel.
+Ez lehet szándékos, de lehet hiba is.
+.TP
+.B \-D
+feltételezi a \fB\-H\fP\-t, de a "duplicate" hostok neveit írja ki.
+Ezeknek a hostoknak egy címük van, de ezt a címet már egy másik host is használja, más néven, esetleg egy másik zónában.
+Ez lehet szándékos, de lehet hiba is.
+.TP
+.B \-C
+opciót megadhatjuk a \fB\-l\fP opció helyett. Hatására a program a megadott zóna SOA bejegyzését összehasonlítja a zóna mindegyik hiteles névkiszolgálójával (az NS bejegyzés alapján). A névkiszolgáló a rekurzív névfeloldást kikapcsolja, és ellenõrzi, hogy a válasz tényleg hiteles\-e. Ha egy szerver nem tud hiteles SOA bejegyzéssel szolgálni, a program a zóna "lame" delegálását jelzi.
+A program jelzi továbbá a bejegyzések közötti eltéréseket és egyéb ellenõrzéseket is végez ("sanity checks").
+.TP
+.B \-A
+hatására a program egy speciális cím ellenõrzõ módba lép.
+.sp
+Ha az elsõ argumentum egy host név, a program a megfelelõ címeket kikeresi, majd minden címnél ellenõrzi, hogy az összerendelés visszafelé is létezik\-e (a címek mindegyike az elsõ argumentumban megadott hostnévre mutat\-e).  
+.sp
+Ha az elsõ argumentum pontokkal elválasztott négy szám (dotted quad) formátumú IP cím, a program megkeresi a címhez tartozó nevet, majd visszaellenõrzi, hogy az elsõ paraméterben megadott cím tényleg a kérdéses host egyik címe\-e. 
+.sp
+Ha a \fB\-A\fP kapcsolót megadjuk bármelyik zóna listázó opcióval,  
+a program minden megtalált A bejegyzésre csinál egy "reverse" keresést, és ellenõrzi, hogy a cím regisztrált\-e és, hogy tényleg az A bejegyzésben szereplõ névre mutat-e vissza.  
+.SS SPECIÁLIS OPCIÓK
+A következõ opciók csak a speciális zóna listázó módokra vonatkoznak.
+.TP 4
+.BI \-L " szint"
+rekurzívan listázza a zónákat a megdott mélységig.
+Az 1-es szint átnézi a szülõ zónát, és minden delegált zónáját. Minden következõ szint egy réteggel lejjebbre néz a delegált zónákban.
+.TP
+.B \-S
+statisztikát ír ki a zóna lista készítése folyamán talált különbözõ erõforrás bejegyzés típusokról, a különbözõ host osztályozások számáról, a delegált zónák számáról és néhány összesítõ adatot rekurzív litázás után.
+.TP
+.B \-p
+hatására csak a zóna elsõdleges névkiszolgálóját kéri fel a program zóna transzferre a zóna listázás alatt. Normálisan a program bármelyik hiteles névkiszolgálótól kérheti a zóna transzfert, amelyik válaszol.
+Az elsõdleges névkiszolgálót a program a zóna SOA bejegyzése alapján határozza meg. Ha egy meghatározott kiszolgálót megadunk a parancssorban, a program az adott szervertõl kérdezi le a zóna névkiszolgálóit. Ezt a funkciót lehet tesztelésre használni, amikor a zóna nincs még beregisztrálva.
+.TP
+.BI \-P " kedvencszerver"
+prioritást ad a zóna tranfernél azoknak szervereknek, amelyek a megadott tartományban találhatók. A tartományok vesszõvel elválasztott listáját a \fIkedvencszerver\fP paraméterben kell megadni.
+Minnél több tartomány komponens megegyezik, annál nagyobb a prioritás. Ha ez az opció nincs megadva, a saját tartományunk, vagy a szülõ tartományok szervereinek van magasabb prioritásuk. 
+"The order in which NS records are issued may be unfavorable if they
+are subject to BIND 4.9 round-robin reshuffling."
+.TP
+.BI \-N " zónátkihagy"
+letiltja a zóna transzfert a megadott zónákra. A zónák vesszõvel elválasztott listáját a \fIzónátkihagy\fP paraméterben kell megadni. Ezt a funkciót használhatjuk, amikor rekurzív zóna listázást csinálunk, és bizonyos zónák számunkra lényegtelen információt tartalmaznak, amit nem akarunk a késõbbi feldolgozásba bevonni.
+.SS ÁLTALÁNOS OPCIÓK
+A következõ opciókat használhatjuk normál vagy tartomány listázó módban is.
+.TP 4
+.B \-d
+bekapcsolja a hibakeresést (debugging). A névkiszolgáló tranzakciók részletesen láthatók. Jegyezzük meg, hogy a \fB\-dd\fP opció még több hibakeresõ információval szolgál.
+.TP
+.BI \-f " fájlnév"
+az erõforrás bejegyzések kimenetét naplófájlba is kírja, a szabványos kimenet (standard output) mellett.
+.TP
+.BI \-F " fájlnév"
+ugyanaz, mint a \fB\-f\fP, de megcseréli az stdout és a naplófájl szerepét. Minden stdout-ra kerülõ kimenet a naplófájlba megy (beleértve a bõbeszédû és a hibakeresõ kimenetet is) és az stdout-ra megy a erõforrás bejegyzések kimenete (így lehet csövek bemenetén használni).
+.TP
+.BI \-I " karakt"
+megszünteti a tartománynevekben használt illegális karakterek miatt megjelenõ figyelmeztetéseket. A karaktereket a \fIkarakt\fP karakterláncban kell megadni. Az aláhúzás jel (_) jó eséllyel indul.
+.TP
+.B \-i
+összeállít egy lekérdezést a "reverse mapping" \fBin-addr.arpa\fP tartományra, amikor IP számot adunk meg ("dotted quad" formátumban). Fõleg zóna listázó módban hasznos, mert az IP számot használó szabályos lekérdezésnél a program automatikusan megcsinálja a szóban forgó lekérdezést is (de a \-i opcióval lehet látni a tényleges PTR bejegyzést) 
+.TP
+.B \-n
+összeállít egy lekérdezést a "reverse mapping" \fBin-addr.arpa\fP tartományra, amikor nsap címet adunk meg. Ezt lehet az nsap címhez rendelt név keresésére használni vagy a "reverse" nsap zónák listázásához.
+Az nsap cím páros számú hexadecimális számjegybõl áll (max. 40). A számjegyeket pontokkal választhatják el.
+Az opcionális "0x" elõtagot a program figyelmen kívül hagyja. 
+Ha ezt az opciót használjuk, minden fordított ("reverse") nsap.int név alapértelmezés szerint egyenes jelölésben jelenik meg, az olvashatóság javítása végett.
+A \fB\-Z\fP opció hatására a kimenet hivatalos zónafájl formátumban jelenik meg.
+.TP
+.B \-q
+csendben marad, és nem jelzi ki a különbözõ figyelmeztetéseket (azokat amelyek " !!! "\-el kezdõdnek).
+A súlyos hibaüzeneteket (amelyek " *** "\-al kezdõdnek) a program továbbra is kijelzi, ezeket nem is lehet eltüntetni.
+.TP
+.B \-T
+kiírja a "time-to-live" értékeket nem-bõbeszédû kimenet esetén. Alapértelmezés szerint a ttl értékeket csak bõbeszédû módban láthatjuk.
+.TP
+.B \-Z
+kiírja a kiválasztott erõforrás bejegyzések kimenetét teljes zónafájl formátumban, beleértve a tartománynevek végén a pontot, a ttl értéket és az osztály nevet.
+.SS EGYÉBB OPCIÓK
+A következõ opciókat csak különleges körülmények között használjuk.
+.TP 4
+.BI \-c " osztály"
+segítségével megadhatunk egy kivállasztott erõforrás bejegyzés osztályt.
+A program a következõ osztályokat támogatja:
+\fBIN\fP, \fBINTERNET\fP, \fBCS\fP, \fBCSNET\fP, \fBCH\fP, \fBCHAOS\fP,
+\fBHS\fP, \fBHESIOD\fP és a két helyettesítõ \fBANY\fP és \fB*\fP.
+Az alapértelmezett osztály az \fBIN\fP.
+.TP
+.B \-e
+elhagyja az információkat az olyan nevekrõl, amelyek nincsenek az adott zónán belül a zóna listázás alatt, ilyenek egyes "glue record"-ok. 
+A szabályos lekérdezések esetén elhagyja az "additional information" és az "authoritative namesrver" szekciókat.
+.TP
+.B \-m
+megegyezik a \fB\-t MAILB\fP\-vel, ami a követkzõ típusok bármelyikére szûr:
+\fBMB\fP, \fBMR\fP, \fBMG\fP, és \fBMINFO\fP.
+Továbbá a \fBMR\fP és \fBMG\fP bejegyzéseket a program rekurzívan \fBMB\fP bejegyzésekre bõvíti.
+.TP
+.B \-o
+elhagyja az erõforrás bejegyzések kimenetét a szabványos kimenetrõl.
+Használható a \fB\-f\fP opcióval az erõforrás bejegyzések kimenete, a bõbeszédû valamint a hibakeresõ kimenetek és a hibaüzenetek elválasztására.
+.TP
+.B \-r
+kikapcsolja a névkiszolgáló rekurziót a lekérdezésnél. Ez azt jelenti, hogy a kérdezett névkiszolgáló csak olyan adatot ad vissza, ami a saját adatbázisában van. A névkiszolgáló ilyen esetben nem kezdeményez további lekérdezéseket más szerverek felé.
+Jegyezzük meg, hogy a névkiszolgáló rekurzió mindig ki van kapcsolva a 
+\fB\-C\fP opció használata esetén, amikor a program a SOA bejegyzést ellenõrzi. 
+Hiteles szervereknél minden a lekérdezésre vonatkozó információ meg kell legyen.
+.TP
+.B \-R
+Normális esetben a lekérdezésben szereplõ neveket a program FQDN-nek (teljes tartománynévnek) veszi, hacsak a név nem egy részbõl áll, amikor is az alapértelmezett tartományba tartozónak tekinthetõ.
+Ez az opció a BIND alapértelmezett viselkedését szimulálja. Bármilyen megadott nevet a program megpróbál érvényesíteni, méghozzá úgy, hogy a különbözõ "search-domain"-eket fûzi a névhez. Ez alól kivételt képez, ha a név létezik, de nincs meg a megfelelõ bejegyzés típusa, amire kérdeztünk; ekkor a program kilép.
+Az alapértelmezett "search-domain"-ek az alapértelmezett tartományból keletkeznek. A tartományból mindig lehámozzuk az elsõ komponenst, amíg csak egy végsõ tartomány marad, egy ponttal.
+.TP
+.BI \-s " seconds"
+megad egy új névkiszolgáló idõtúllépési (timeout) értéket. A program ennyi másodpercet fog várni a névkiszolgáló válaszára, két alkalommal.
+Normálisan kétszer próbálkozik 5 másodpercig névkiszolgáló címenként.
+Valójában az idõtúllépési algoritmus kicsit bonyolultabb ennél. Dinamikusan változtatja az idõtúllépési értéket a kísérletek és a névkiszolgáló címek számától függõen.
+.TP
+.B \-u
+elrendeli virtuális körök (TCP) használatát datagrammok (UDP) helyett a lekérdezések során.
+Ez lassabb, de esetenként megbízhatóbb.
+Jegyezzük meg, hogy a program automatikusan a virtuális kört választja, ha a lekérdezés meghaladja a maximális datagramm csomag méretet. Hasonlóan, ha egy datagramm válaszról kiderül, hogy csonkolt, a program megismétli a lekérdezlst TCP-n keresztül. A zóna transzfer mindig TCP-n történik. 
+.TP
+.B \-w
+hatására a program végtelen ciklusban újra próbálja a szabályos lekérdezést ha az túllépi a megengedett idõt. Normális esetben ez 10 másodperc minden megpróbált névszerver címnél.
+.TP
+.B \-V
+kiírja a \fBhost\fP program verzióját, majd kilép.
+.SS ALAPÉRTELMEZETT OPCIÓK
+Az alapértelmezett opciókat be lehet állítani a \fBHOST_DEFAULTS\fP környezeti változó segítségével. Ugyanazt a szintaxist kell használni, mint a parancssorban. Ezek a paraméterek a parancssorban szereplõk elõtt kerülnek kiértékelésre.
+.SH LEKÉRDEZÉS TÍPUSOK
+A program a következõ lekérdezés típusokat (erõforrás bejegyzés típusokat) támogatja. Zárójelben a különbözõ adat mezõk találhatók.  
+.TP 10
+.B A
+Host cím (dotted quad)
+.TP
+.B NS
+Hivatalos névszerverek (tartománynév)
+.TP
+.B MD
+Levelezés céltartománya (tartománynév)
+.TP
+.B MF
+Levelezés továbbító (tartománynév)
+.TP
+.B CNAME
+Canonical name for an alias (tartománynév)
+.TP
+.B SOA
+Egy hiteles zóna ("zone of authority") kezdetét jelöli
+(elsõdleges szerver tartományneve, névkiszolgáló adminisztátor (hostmaster) tartományneve, sorozat, frissítés, újra próbálás (retry), lejárat (expiration) , alapértelmezett ttl)
+.TP
+.B MB
+Postafiók tartományneve (tartománynév)
+.TP
+.B MG
+Levelezési csoporttag (tartománynév)
+.TP
+.B MR
+Mail rename domain name (tartomány név)
+.TP
+.B NULL
+Null erõforrás bejegyzés (nincs formátuma, nem tartalmaz adatot)
+.TP
+.B WKS
+Jól ismert szolgáltatások leírása ("dotted quad", protokol név, szolgáltatások listája)
+.TP
+.B PTR
+Tartománynév mutató (tartomány név)
+.TP
+.B HINFO
+Host információ (processzor típusát leíró karakterlánc, operációs rendszer típusát leíró karakterlánc)
+.TP
+.B MINFO
+Postafiók vagy levelezési lista információ (request domain name, error domain name)
+.TP
+.B MX
+Mail exchanger (preferencia érték, tartománynév)
+.TP
+.B TXT
+Leíró szöveg (egy vagy több karakterlánc)
+.TP
+.B UINFO
+Információ a felhasználóról (karakterlánc)
+.TP
+.B UID
+Felhasználó azanosító (szám)
+.TP
+.B GID
+Csoport azonosító (szám)
+.TP
+.B UNSPEC
+Nem specifikált bináris adat (adat)
+.TP
+.B ANY
+Bármilyen típusú információval megegyezik (match-el).
+.TP
+.B MAILB
+A következõ típusok közül bármelyik: \fBMB\fP, \fBMR\fP, \fBMG\fP vagy \fBMINFO\fP.
+.TP
+.B MAILA
+A következõ típusok közül bármelyik: \fBMD\fP, or \fBMF\fP.
+.PP
+A következõ típusokat definiálták az RFC 1183-ban, de egyelõre használatuk nem terjedt el. Ez a program felismeri ezeket.
+.TP 10
+.B RP
+Felelõs személy (domain name for MB, domain name for TXT)
+.TP
+.B AFSDB
+AFS adatbázis helye (típus, tartománynév)
+.TP
+.B X25
+X25 cím (cím karakterlánc)
+.TP
+.B ISDN
+ISDN cím (cím karakterlánc, opcionális alcím karakterlánc)
+.TP
+.B RT
+Válaszd ezt az utat (preferencia érték, tartománynév)
+.PP
+A következõ típusokat az RFC 1348\-ban definiálták, de használatuk egyenlõre nem terjedt el. Ez a program felismeri ezeket.  
+RFC 1348 elavultnak tekinthetõ ("obsolete"), helyette az RFC 1637 és az RFC 1706 az irányadó. A két utóbbi RFC definiálja az NSAP típusú bejegyzések új, kísérleti használatát.
+Ez a program horgonyokat (hooks) tartalmaz a módosításukhoz.
+.TP 10
+.B NSAP
+NSAP cím (kódolt cím)
+.TP
+.B NSAP-PTR
+NSAP mutató (tartománynév)
+.PP
+A következõ típusok újak (az RFC 1664 és az RFC 1712 alapján)
+Jegyezzük meg, hogy a GPOS típust visszavonták, most a LOC típus helyettesíti.
+.TP 10
+.B PX
+X400 <-> RFC822 megfeleltetés (preferencia érték, rfc822 tartomány, x400 tartomány)
+.TP
+.B GPOS
+Földrajzi elhelyeszkedés (hosszúság karakterlánc, szélesség karakterlánc, magasság karakterlánc)
+.PP
+A következõ típusokat az RFC 1700\-ban lefoglalták és az RFC 2065\-ben definiálják õket.
+.TP 10
+.B SIG
+Biztonsági aláírás
+.TP
+.B KEY
+Biztonsági kulcs
+.PP
+Az IP v6 címzés architektúráját és a DNS (domain name system- tartománynév rendszer) bõvítéseket az RFC 1884\-ben és az RFC 1886\-ban definiálták.
+.TP 10
+.B AAAA
+IP v6 cím (kettõs pontokkal megadott cím)
+.PP
+A következõ típust az RFC 1876 dokumentálja.
+.TP 10
+.B LOC
+Földrajzi elhelyeszkedés (szélesség, hosszúság, magasság, pontosság)
+.PP
+A következõ típusokat javasolták, de még csak tervezetben vannak.
+.TP 10
+.B NXT
+Következõ érvényes bejegyzés
+.TP
+.B EID
+Végpont azonosító
+.TP
+.B NIMLOC
+Nimrod lokátor
+.TP
+.B SRV
+Információ az Internet szolgáltatásról
+.TP
+.B ATMA
+ATM cím
+.TP
+.B NAPTR
+Névadó hatóság URN\-je
+.SH PÉLDÁK
+Nagyon jó összefoglalást és érvényesítést kaphatunk egy teljes zónáról a következõ parancsal:
+.sp
+	\fBhost \-G \-S \-C \-A \-L 1\fP \fIzóna\fP
+.sp
+.SH DIAGNOSZTIKA
+.SS SIKERTELEN LEKÉRDEZÉSEK ÜZENETEI
+A következõ hibaüzenetek arra jók, hogy megmondják miért volt sikertelen egy adott lekérdezés.
+Az üzenetben megjelenhet a szerver neve, ha ezt megadtuk (lásd kapcsolók).
+Ha egy meghatározott osztályt kértünk, úgy az is megjelenik.
+.TP 4
+"Nameserver [\fIszerver\fP] not running"
+(A névkiszolgáló [\fIszerver\fP] nem fut)
+A szerveren, amivel fel akartuk venni a kapcsolatot, nem fut névkiszolgáló.
+.TP
+"Nameserver [\fIszerver\fP] not responding"
+(A névkiszolgáló [\fIszerver\fP] nem válaszol)
+A kérdezett névkiszolgáló nem válaszolt a megadott idõintervallumon belül.
+.TP
+"Nameserver [\fIszerver\fP] not reachable"
+(A névkiszolgáló [\fIszerver\fP] nem elérhetõ)
+A hálózati útvonal a kiválsztott szerver felé nem járható.
+.TP
+"\fInév\fP does not exist [at \fIszerver\fP] (Authoritative answer)"
+(A \fInév\fP nem létezik [a \fIszerveren\fP] (Hiteles válasz))
+A lekérdezett név egyáltalán nem létezik.
+.TP
+"\fInév\fP does not exist [at \fIszerver\fP], try again"
+(A \fInév\fP nem létezik [a \fIszerveren\fP], próbáld újra)
+A lekérdezett név nem létezik, de a válasz nem hiteles, ezert a válasz nem biztos.
+.TP
+"\fInév\fP has no \fItípus\fP record [at \fIszerver\fP] (Authoritative answer)"
+(A \fInévnek\fP nincs \fItípus\fP bejegyzése [a \fIszerveren\fP] (Hiteles válasz))
+A lekérdezésben szereplõ név létezik, de nem létezik a keresett típus.
+Ez az állapot csak hiteles szerver esetében lép fel.
+.TP
+"\fInév\fP \fItípus\fP record currently not present [at \fIszerver\fP]"
+(A \fInév\fP \fItípus\fP bejegyzés jelenleg nem elérhetõ [a \fIszerveren\fP])
+A megadott típus nem létezik, de nem tudjuk, hogy a lekéredezett név érvényes-e. A válasz nem volt hiteles. Lehet hogy a rekurzió ki volt kapcsolva és az adat nem volt meg lokálisan.
+.TP
+"\fInév\fP \fItípus\fP record not found [at \fIszerver\fP], try again"
+(A \fInév\fP \fItípus\fP nem található meg [a \fIszerveren\fP], próbáld újra)
+Valamilyen hiba közbejött, pl. idõtúllépés a kapcsolat felvételekor.
+.TP
+"\fInév\fP \fItípus\fP record not found [at \fIszerver\fP], server failure"
+(A \fInév\fP \fItípus\fP bejegyzés nem található [a \fIszerveren\fP], szerver hiba)
+A kérés kimondottan a névkiszolgáló hibájából nem teljesül, ez lehet belsõ hiba, vagy továbbítási hiba. Ezt kaphatjuk vissza, ha egy másodlagos névkiszolgáló zóna adatai lejártak, vagy ha a szerver nem hiteles valamilyen osztályra nézve.
+.TP
+"\fInév\fP \fItípus\fP record not found [at \fIszerver\fP], no recovery"
+(A \fInév\fP \fItípus\fP bejegyzés nem található [a \fIszerveren\fP], nem javítható)
+Valamilyen javíthatalan formátum hiba, vagy visszautasítás a szerver részérõl.
+.TP
+"\fInév\fP \fItípus\fP record query refused [by \fIszerver\fP]"
+(A \fInév\fP \fItípus\fP bejegyzés lekérdezése  visszautasítva [a \fIszerver\fP által])
+A névkiszolgáló, amelyikkel a kapcsolatot felvettük visszautasította a válaszadást. Egyes névkiszolgálókat úgy állítanak be, hogy visszautasítsák a zóna transzfer kéréseket bizonyos klienseknek.
+.TP
+"\fInév\fP \fItípus\fP record not found [at \fIszerver\fP]"
+(A \fInév\fP \fItípus\fP bejegyzés nem található [a \fIszerveren\fP])
+A hiba pontos okát nem lehetett megállapítani.
+(Ez nem szabad, hogy elõforduljon)
+.TP
+"\fIzóna\fP has lame delegation to \fIszerver\fP"
+Ha egy feltételezetten hiteles névkiszolgálótól lekérjük a SOA bejegyzést, az információnak elvileg elérhetõnek és hitelesnek kell lennie. Ha mégsem az, akkor "lame delegation" esete lép fel. Ugyanez történik, ha a szerver ki van kapcsolva, nem létezik, vagy zóna transzfer esetén nem tud eleget tenni a kérésnek.
+.TP
+"No nameservers for \fIzone\fP found"
+(A \fIzónának\fP nem található egy névkiszolgálója sem)
+A zóna transzferhez nem lehetett lekérni az adott zónára egy névkiszolgáló nevét sem.
+.TP
+"No addresses of nameservers for \fIzóna\fP found"
+(A \fIzóna\fP egyik névkiszolgálójának sincs címe)
+Le tudjuk kérni a névkiszolgálók nevét, de a címeiket nem.
+.TP
+"No nameservers for \fIzóna\fP responded"
+(A \fIzóna\fP egyik névkiszolgálója sem válaszolt)
+A zóna összes névkiszolgálójától megpróbáltunk zóna transzfert kérni, de egyik sem tudott vagy akart eleget tenni a kérésnek.
+.SS FIGYELMEZTETÕ- ÉS HIBAÜZENETEK
+Különbözõ figyelmeztetõ üzenetekkel találkozhatunk. Ezeket "!!!" elõzi meg, és nem végzetes hibákra utalnak, általában a kapott adat értelmezése során. Ezeket az üzeneteket megszüntethetjük a \-q kapcsoló segítségével.
+.sp
+A hiba üzeneteket " *** " elõzi meg. Ezek súlyos problémákra utalnak, mint pl. formátum hibákra a válaszban, de jelezhetik a specifikációk durva megsértését is. Ezeket a hiba üzeneteket nem lehet eltünteni.
+.TP 4
+"\fIzóna\fP has only one nameserver \fIszerver\fP"
+(A \fIzónának\fP csak egy névkiszolgálója van: \fIszerver\fP)
+Egy zóna névkiszolgáló bejegyzéseinek letöltése során kiderült, hogy a zónának csak egy névkiszolgálója van. Ez ellenkezik az ajánlásokkal.
+.TP
+"\fIzóna\fP nameserver \fIszerver\fP is not canonical (\fIvalódiszerver\fP)"
+(A \fIzóna\fP névkiszolgálója \fIszerver\fP nem "canonical" (\fIvalódiszerver\fP))
+A zóna névkiszolgálóinak lekérésekor kiderült, hogy a szóban forgó szerver neve nem "canonical". Ez súlyos mûködési hibákat okozhat. A "canonical" név zárójelben olvasható.
+.TP
+"empty zone transfer for \fIzóna\fP from \fIszerver\fP"
+(Üres zóna transzfer a \fIzónára\fP a \fIszervertõl\fP)
+A megjelölt szervertõl visszakapott zóna transzferben nem volt adat, esetleg csak a SOA bejegyzés. Ez megtörténhet, ha a kérdezett szerver "lame" delegálás áldozata és cache\-ben tárolta a SOA bejegyzést.
+.TP
+"extraneous NS record for \fInév\fP within \fIzóna\fP from \fIszerver\fP"
+(idegen NS bejegyzés a \fInévnél\fP a \fIzónában\fP a \fIszervertõl\fP)
+Zóna transzfer alatt, feltûnik egy NS bejegyzés egy olyan névnél, ami nem az aktuális zóna delegált alzónája.
+.TP
+"extraneous SOA record for \fInév\fP within \fIzóna\fP from \fIszerver\fP"
+(idegen SOA bejegyzés a \fInévnél\fP a \fIzónában\fP a \fIszervertõl\fP)
+Zóna transzfer alatt, feltûnik egy SOA bejegyzés egy olyan névnél, ami nem az aktuális zóna neve.
+.TP
+"extraneous glue record for \fInév\fP within \fIzóne\fP from \fIszerver\fP"
+(idegen "glue record" a \fInévnél\fP a \fIzónában\fP a \fIszervertõl\fP)
+Zóna transzfer folyamán, feltûnik egy "glue record" egy olyan névnél, ami nem része a zónának, vagy a delegált alzónái egyikének. Ez gyakorlat volt a BIND néhany régebbi változatában, azonban ma már nem kívánatos, mert nem hivatalos vagy akár pontatlan információ is elterjedhet e hibából kifolyóan.
+.TP
+"incomplete \fItípus\fP record for \fInév\fP"
+(Hiányos \fItípus\fP bejegyzés a \fInévnél\fP)
+Amikor a program az erõforrás bejegyzés atatait dekódolta a válaszból, nem találta meg az összes szükséges adat mezõt. Ez gyakran elõfordul a HINFO bejegyzéseknél, amelyeknél a két adatmezõbõl csak az egyik kerül kódolásra.
+.TP
+"\fInév\fP has both NS and A records within \fIzóna\fP from \fIszerver\fP"
+(A \fInévnek\fP van NS és A bejegyzése is a \fIzónában\fP a \fIszervertõl\fP)
+A \fInévvel\fP jelölt delegált zónának van egy "A" bejegyzése. Ezt a program csak a szülõ \fIzóna\fP zónatranszfere esetén jelzi. A bejegyzés jelenléte nem hiba, de a teljes host szám esetleg nem pontos. A szóban forgó "A" bejegyzést a program nem számolja bele a delegált zónába.
+.TP
+"\fInév\fP \fItípus\fP records have different ttl within \fIzóna\fP from \fIszerver\fP"
+(\fInév\fP \fItípus\fP bejegyzéseknek különbözõ ttl\-jük van a \fIzónán\fP belül a \fIszervertõl\fP)
+Az azonos nevû/típusú/osztályú erõforrás bejegyzéseknek azonos kellene legyen a ttl értéke a zónában. Ha esetleg mégis eltér (ekkor kapjuk az üzenetet), annak oka lehet, hogy "glue record"\-okat vagy más információt a szülõ zónában, a delegált zónáktól függetlenül definiáltak, és a két zónarész adatait nem szinkronizálták.
+.TP
+"\fInév\fP \fItípus\fP record has illegal name"
+(A \fInév\fP \fItípus\fP bejegyzésnek illegális a neve)
+Egy "A" vagy MX bejegyzés neve érvénytelen karaktereket tartalmaz.
+Csak az alfanumerikus karakterek és a kötõjel '-' érvényesek a névkomponensekben (címkékben) a pontok között.
+.TP
+"\fInév\fP \fItípus\fP host \fIszerver\fP has illegal name"
+(A \fInév\fP \fItípus\fP hostnak \fIszerver\fP illegális a neve)
+Egy MX vagy NS bejegyzésben szereplõ host neve érvénytelen karaktereket tartalmaz. 
+Csak az alfanumerikus karakterek és a kötõjel '-' érvényesek a névkomponensekben (címkékben) a pontok között.
+.TP
+"\fInév\fP \fItípus\fP host \fIszerver\fP does not exist"
+(A \fInév\fP \fItípus\fP host \fIszerver\fP nem létezik)
+Az NS vagy MX bejegyzésben megjelölt host \fIszerver\fP egyáltalan nem létezik.
+NS bejegyzés esetén a program a \fInév\fP "lame" delegálását jelezi.
+.TP
+"\fInév\fP \fItípus\fP host \fIszerver\fP has no A record"
+"\fInév\fP \fItípus\fP hostnak \fIszerver\fP nincs A bejegyzése"
+Egy NS vagy MX bejegyzésben szereplõ hostnak \fIserver\fP nincsen címe.
+NS bejegyzés esetén a program a \fInév\fP "lame" delegálását jelezi.
+.TP
+"\fInév\fP \fItípus\fP host \fIszerver\fP is not canonical"
+(\fInév\fP \fItípus\fP host \fIszerver\fP nem "canonical")
+Egy NS vagy MX bejegyzésben szereplõ host \fIszerver\fP neve nem "canonical".
+Ez súlyos mûködési hibákat okozhat a tartományra vonatkozó adatok letöltése alatt vagy az elektronikus levelezésben. 
+.TP
+"\fInév\fP address \fIA.B.C.D\fP is not registered"
+(Az \fIA.B.C.D\fP címû \fInév\fP nincs regisztrálva) 
+Egy "A" bejegyzésben szereplõ cím "reverse" keresése nem sikerült (hiteles válasz). A cím nem volt megtalálható a megfelelõ in-addr.arpa zónában.
+.TP
+"\fInév\fP address \fIA.B.C.D\fP maps to \fIvalódinév\fP"
+(\fInév\fP címe \fIA.B.C.D\fP \fIvalódinévre\fP mutat vissza)
+Egy "A" bejegyzés címének a "reverse" keresése sikeres volt, de nem az "A" bejegyzés eredeti nevére mutatott vissza.
+Minden további nélkül rendelhetünk több nevet egy címhez, de általában a "reverse" in-addr.arpa zónában csak egy PTR van, ami a host ``hivatalos'' nevére mutat.
+.TP
+"\fInév\fP address \fIA.B.C.D\fP maps to alias \fIaliasnév\fP"
+(\fInév\fP címe \fIA.B.C.D\fP \fIaliasnév\fP aliasra mutat)
+Több PTR bejegyzés esetén, az elsõ a ``hivatalos'' host név. Minden további PTR bejegyzést a gethostbyaddr() függvény aliasként ("álnévként") ad vissza, a BIND 4.9 óta. Jegyezzük meg, hogy a PTR bejegyzésekre nem vonatkozik a "round robin reshuffling".
+.TP
+"\fIzóna\fP SOA record at \fIszerver\fP is not authoritative"
+(\fIzóna\fP SOA bejegyzése a \fIszerveren\fP nem hiteles)
+Amikor a SOA bejegyzést ellenõrizzük egy feltételezetten hiteles névkiszolgálón kiderül, hogy a SOA információ nem hiteles. Ezt eldönthetjük névkiszolgáló rekurzió nélküli lekérdezéssel.
+.TP
+"\fIzóna\fP SOA primary \fIszerver\fP is not advertised via NS"
+(A \fIzóna\fP SOA elsõdleges \fIszervere\fP nincs NS-en keresztül hirdetve)
+Az elsõdleges névszerver nem található meg a zóna NS bejegyzései között.
+Ez önmagában nem hiba, hiszen csak a nyilvánosan elérhetõ névkiszolgálókat hirdethetjük, a többiek lehetnek tûzfal mögött.
+.TP
+"\fIzóna\fP SOA primary \fIszerver\fP has illegal name"
+(A \fIzóna\fP SOA elsõdleges \fIszerverének\fP illegális a neve)
+Az elsõdleges névkiszolgáló neve nem megengedett karaktereket tartalmaz.
+.TP
+"\fIzóna\fP SOA hostmaster \fIpostafiók\fP has illegal mailbox"
+(A \fIzóna\fP SOA hostmasterének (\fIpostafiók\fP) illegális a postafiókja)
+A hostmaster postafiókjának a nevében nem megengedett karakter van. Gyakori hiba, hogy RFC822 formátumú e-mail címet írunk be, amikor a ``@'' jelet ponttal kell helyettesíteni.
+.TP
+"\fIzóna\fP SOA serial has high bit set"
+(A \fIzone\fP SOA sorozatszámában a felsõ bit be van állítva)
+Annak ellenére, hogy a sorozatszám elõjel nélküli 32 bites érték, véletlenül jelentkezhet túlcsordulás, ha nem megfelelõen használjuk a pontozott decimális formátumot a zóna fájlban. Ettõl szinkronizációs hibák léphetnek fel, az elsõdleges és a másodlagos névkiszolgálók között.
+.TP
+"\fIzóna\fP SOA retry exceeds refresh"
+(A \fIzone\fP SOA újrapróbálás meghaladja a frissítést)
+Egy sikertelen frissítés után az újrapróbálás csak a következõ frissítés után történne meg.
+.TP
+"\fIzóna\fP SOA refresh+retry exceeds expire"
+(A \fIzóna\fP SOA frissítés+újrapróbálás több mint a lejárás)
+Egy sikertelen frissítés után az újrapróbálás csak az adatok érvényességének lejárta után történne meg.
+.TP
+"\fIszerver1\fP and \fIszerver2\fP have different primary for \fIzóna\fP"
+(\fIszerver1\fP és \fIszerver2nek\fP más az elsõdlegese a \fIzónára\fP)
+Ha a SOA bejegyzés különbözik, a zóna tartalma valószínûleg szintén nem fog megegyezni. Az eredmény attól függ, hogy melyik szervert kérdezzük.
+.TP
+"\fIszerver1\fP and \fIszerver2\fP have different hostmaster for \fIzóna\fP"
+"\fIszerver1\fP és \fIszerver2nek\fP különbözô hostmaster van megadva a \fIzónára\fP"
+Ha a SOA bejegyzés különbözik, az zóna tartalma valószínûleg szintén nem fog megegyezni. Az eredmény attól függ, hogy melyik szervert kérdezzük.
+.TP
+"\fIszerver1\fP and \fIszerver2\fP have different serial for \fIzóna\fP"
+(\fIszerver1nek\fP és \fIszerver2nek\fP nem azonos a sorozatszáma a \fIzónára\fP)
+Ez általában nem hiba, hanem akkor történik, amikor az elsõdleges kiszolgáló már frissítette az adatait, de a másodlagos még nem.
+Ha a sorozatszám használatánál hibát követünk el, az üzenet hibára is utalhat.
+.TP
+"\fIszerver1\fP and \fIszerver2\fP have different refresh for \fIzóna\fP"
+(\fIszerver1nek\fP és \fIszerver2nek\fP más a frissítése a \fIzónára\fP)
+Ha a SOA bejegyzés különbözik, a zóna tartalma valószínûleg szintén nem fog megegyezni. Az eredmény attól függ, hogy melyik szervert kérdezzük.
+.TP
+"\fIszerver1\fP and \fIszerver2\fP have different retry for \fIzóna\fP"
+(\fIszerver1nek\fP és \fIszerver2nek\fP más az újrapróbálási értéke a \fIzónára\fP)
+Ha a SOA bejegyzés különbözik, a zóna tartalma valószínûleg szintén nem fog megegyezni. Az eredmény attól függ, hogy melyik szervert kérdezzük.
+.TP
+"\fIszerver1\fP and \fIszerver2\fP have different expire for \fIzóna\fP"
+(\fIszerver1nek\fP és \fIszerver2nek\fP más a lejárati értéke a \fIzónára\fP)
+Ha a SOA bejegyzés különbözik, a zóna tartalma valószínûleg szintén nem fog megegyezni. Az eredmény attól függ, hogy melyik szervert kérdezzük.
+.TP
+"\fIszerver1\fP and \fIszerver2\fP have different defttl for \fIzóna\fP"
+(\fIszerver1nek\fP és \fIszerver2nek\fP más a defttl értéke a \fIzónára\fP)
+Ha a SOA bejegyzés különbözik, a zóna tartalma valószínûleg szintén nem fog megegyezni. Az eredmény attól függ, hogy melyik szervert kérdezzük.
+.SH KILÉPÉSI ÁLLAPOT
+A program 0-val tér vissza, ha a kért információt sikeresen letöltötte, zóna listázás esetén vagy, ha a SOA bejegyzés ellenõrzése súlyosabb hiba nélkül sikerült. A többi esetben nem nulla értékkel tér vissza.
+.SH KÖRNYEZET
+.SS HOST NÉV KERESÉS TESTRE SZABÁSA
+Általában a felhasználók olyan neveket adnak meg, amelyekben nincs pont, ekkor a program az alapértelmezett tartományt hozzáfûzi a névhez. Ezt a tartományt a program általában a \fB/etc/resolv.conf\fP fájlból veszi. 
+Ha nem, akkor a program képzi a nevet, úgy, hogy leveszi a helyi hostnevet, és megtart mindent az elsõ pontja után.
+.PP
+.fw LOCALDOMAIN
+A felhasználó felülbírálhatja ezt az eljárást, és megadhat egy alapértelmezett tartománynevet a \fILOCALDOMAIN\fP környezeti vátozóban.
+.PP
+.fw HOSTALIASES
+Ezen felül, a felhasználó megadhat saját rövidítéseket a hostnevekre. Ezeket egy fájlban kell elhelyezni, egy rövidítést soronként. A sor formátuma a következõ: rövidítés, szóköz, majd a teljes tartománynév (FQDN).
+A fájl nevét a \fIHOSTALIASES\fP környezeti változóban kell megadni.
+.SH SPECIÁLIS MEGFONTOLÁSOK
+Az egy adott tartománynévhez tartozó erõforrásbejegyzés információt csak a zóna hiteles névkiszolgálójától kaphatjuk meg. Ezért, ha egy másik (az adott zónára nem hiteles) szervert kérdezünk a "-a" opcióval, elképzelhetõ, hogy az adatoknak csak egy részét kapjuk meg, mert ez az opció az éppen elérhetõ adatokat adja vissza és nem a létezõ összes adatot. Jegyezzük meg, hogy a "-v" kapcsolóval megnézhetjük, hogy a válasz hiteles-e vagy nem.
+.PP
+Amikor zónát listázunk a "-l" kapcsolóval, a program az adatokat a zóna hiteles névkiszolgálójától kérdezi le. Ezt a szerzõk úgy valósították meg, hogy a program egy teljes zóna transzfert hajt végre, majd kiszûri a kért adatokat.
+Jegyezzük meg, hogy ehhez a hiteles névkiszolgáló direkt elérése szükséges.
+Ezt az opciót óvatosan használjuk. A névkiszolgálókat esetenként úgy konfigurálják, hogy utasítsák el a zóna transzfert, ha elárasztják õket kérésekkel.
+.SH TOVÁBBI DOKUMENTÁCIÓ
+rfc883, Domain names - implementation and specification
+.br
+rfc920, Domain requirements
+.br
+rfc952, DOD Internet host table specification
+.br
+rfc974, Mail routing and the domain system
+.br
+rfc1032, Domain administrators guide
+.br
+rfc1033, Domain administrators operations guide
+.br
+rfc1034, Domain names - concepts and facilities
+.br
+rfc1035, Domain names - implementation and specification
+.br
+rfc1101, DNS encoding of network names and other types
+.br
+rfc1123, Requirements for Internet hosts - application
+.br
+rfc1183, New DNS RR definitions
+.br
+rfc1348, DNS NSAP RRs
+.br
+rfc1535, A security problem and proposed correction
+.br
+rfc1536, Common DNS implementation errors
+.br
+rfc1537, Common DNS data file configuration errors
+.br
+rfc1591, Domain Name System structure and delegation
+.br
+rfc1637, DNS NSAP resource records
+.br
+rfc1664, Using DNS to distribute X.400 address mappings
+.br
+rfc1700, Assigned numbers
+.br
+rfc1706, DNS NSAP resource records
+.br
+rfc1712, DNS encoding of geographical location (GPOS)
+.br
+rfc1713, Tools for DNS debugging
+.br
+rfc1794, DNS support for load balancing
+.br
+rfc1876, Expressing location information in the DNS (LOC)
+.br
+rfc1884, IP v6 addressing architecture
+.br
+rfc1886, DNS extensions to support IP v6 (AAAA)
+.br
+rfc1912, Common DNS operational and configuration errors
+.br
+rfc1982, Serial number arithmetic
+.br
+rfc1995, Incremental zone transfer in DNS (IXFR)
+.br
+rfc1996, Prompt notification of zone changes
+.br
+rfc2010, Operational criteria for root nameservers
+.br
+rfc2052, Specification of location of services (SRV)
+.br
+rfc2065, DNS security extensions (KEY/SIG/NXT)
+.SH SZERZÕ
+Ez a program eredetileg a Rutgers Egyetemrõl származik.
+.br
+Újraírta: Eric Wassenaar, NIKHEF, <e07@nikhef.nl>
+.SH LÁSD MÉG
+named(8), resolv.conf(5), resolver(3)
+.SH MAGYAR FORDÍTÁS
+Kovács Emese <emese@eik.bme.hu>

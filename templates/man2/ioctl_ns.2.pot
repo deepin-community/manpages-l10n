@@ -1,0 +1,804 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-09-03 21:04+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "IOCTL_NS"
+msgstr ""
+
+#. type: TH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "2021-03-22"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "ioctl_ns - ioctl() operations for Linux namespaces"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#.  ============================================================
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Discovering namespace relationships"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The following B<ioctl>(2)  operations are provided to allow discovery of "
+"namespace relationships (see B<user_namespaces>(7)  and "
+"B<pid_namespaces>(7)).  The form of the calls is:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "new_fd = ioctl(fd, request);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"In each case, I<fd> refers to a I</proc/[pid]/ns/*> file.  Both operations "
+"return a new file descriptor on success."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<NS_GET_USERNS> (since Linux 4.9)"
+msgstr ""
+
+#.  commit bcac25a58bfc6bd79191ac5d7afb49bea96da8c9
+#.  commit 6786741dbf99e44fb0c0ed85a37582b8a26f1c3b
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Returns a file descriptor that refers to the owning user namespace for the "
+"namespace referred to by I<fd>."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<NS_GET_PARENT> (since Linux 4.9)"
+msgstr ""
+
+#.  commit a7306ed8d94af729ecef8b6e37506a1c6fc14788
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Returns a file descriptor that refers to the parent namespace of the "
+"namespace referred to by I<fd>.  This operation is valid only for "
+"hierarchical namespaces (i.e., PID and user namespaces).  For user "
+"namespaces, B<NS_GET_PARENT> is synonymous with B<NS_GET_USERNS>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The new file descriptor returned by these operations is opened with the "
+"B<O_RDONLY> and B<O_CLOEXEC> (close-on-exec; see B<fcntl>(2))  flags."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"By applying B<fstat>(2)  to the returned file descriptor, one obtains a "
+"I<stat> structure whose I<st_dev> (resident device) and I<st_ino> (inode "
+"number) fields together identify the owning/parent namespace.  This inode "
+"number can be matched with the inode number of another I</proc/[pid]/ns/{pid,"
+"user}> file to determine whether that is the owning/parent namespace."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Either of these B<ioctl>(2)  operations can fail with the following errors:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EPERM>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The requested namespace is outside of the caller's namespace scope.  This "
+"error can occur if, for example, the owning user namespace is an ancestor of "
+"the caller's current user namespace.  It can also occur on attempts to "
+"obtain the parent of the initial user or PID namespace."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ENOTTY>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The operation is not supported by this kernel version."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Additionally, the B<NS_GET_PARENT> operation can fail with the following "
+"error:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EINVAL>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "I<fd> refers to a nonhierarchical namespace."
+msgstr ""
+
+#.  ============================================================
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "See the EXAMPLES section for an example of the use of these operations."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Discovering the namespace type"
+msgstr ""
+
+#.  commit e5ff5ce6e20ee22511398bb31fb912466cf82a36
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The B<NS_GET_NSTYPE> operation (available since Linux 4.11) can be used to "
+"discover the type of namespace referred to by the file descriptor I<fd>:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "nstype = ioctl(fd, NS_GET_NSTYPE);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "I<fd> refers to a I</proc/[pid]/ns/*> file."
+msgstr ""
+
+#.  ============================================================
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The return value is one of the B<CLONE_NEW*> values that can be specified to "
+"B<clone>(2)  or B<unshare>(2)  in order to create a namespace."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Discovering the owner of a user namespace"
+msgstr ""
+
+#.  commit 015bb305b8ebe8d601a238ab70ebdc394c7a19ba
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The B<NS_GET_OWNER_UID> operation (available since Linux 4.11) can be used "
+"to discover the owner user ID of a user namespace (i.e., the effective user "
+"ID of the process that created the user namespace).  The form of the call is:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"uid_t uid;\n"
+"ioctl(fd, NS_GET_OWNER_UID, &uid);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "I<fd> refers to a I</proc/[pid]/ns/user> file."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The owner user ID is returned in the I<uid_t> pointed to by the third "
+"argument."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "This operation can fail with the following error:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "I<fd> does not refer to a user namespace."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ERRORS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Any of the above B<ioctl>()  operations can return the following errors:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "I<fd> does not refer to a I</proc/[pid]/ns/*> file."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CONFORMING TO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Namespaces and the operations described on this page are a Linux-specific."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "EXAMPLES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The example shown below uses the B<ioctl>(2)  operations described above to "
+"perform simple discovery of namespace relationships.  The following shell "
+"sessions show various examples of the use of this program."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Trying to get the parent of the initial user namespace fails, since it has "
+"no parent:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<./ns_show /proc/self/ns/user p>\n"
+"The parent namespace is outside your namespace scope\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Create a process running B<sleep>(1)  that resides in new user and UTS "
+"namespaces, and show that the new UTS namespace is associated with the new "
+"user namespace:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<unshare -Uu sleep 1000 &>\n"
+"[1] 23235\n"
+"$ B<./ns_show /proc/23235/ns/uts u>\n"
+"Device/Inode of owning user namespace is: [0,3] / 4026532448\n"
+"$ B<readlink /proc/23235/ns/user>\n"
+"user:[4026532448]\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Then show that the parent of the new user namespace in the preceding example "
+"is the initial user namespace:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<readlink /proc/self/ns/user>\n"
+"user:[4026531837]\n"
+"$ B<./ns_show /proc/23235/ns/user p>\n"
+"Device/Inode of parent namespace is: [0,3] / 4026531837\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Start a shell in a new user namespace, and show that from within this shell, "
+"the parent user namespace can't be discovered.  Similarly, the UTS namespace "
+"(which is associated with the initial user namespace)  can't be discovered."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<PS1=\"sh2$ \" unshare -U bash>\n"
+"sh2$ B<./ns_show /proc/self/ns/user p>\n"
+"The parent namespace is outside your namespace scope\n"
+"sh2$ B<./ns_show /proc/self/ns/uts u>\n"
+"The owning user namespace is outside your namespace scope\n"
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Program source"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "/* ns_show.c\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"   Licensed under the GNU General Public License v2 or later.\n"
+"*/\n"
+"#include E<lt>stdint.hE<gt>\n"
+"#include E<lt>stdlib.hE<gt>\n"
+"#include E<lt>unistd.hE<gt>\n"
+"#include E<lt>stdio.hE<gt>\n"
+"#include E<lt>fcntl.hE<gt>\n"
+"#include E<lt>string.hE<gt>\n"
+"#include E<lt>sys/stat.hE<gt>\n"
+"#include E<lt>sys/ioctl.hE<gt>\n"
+"#include E<lt>errno.hE<gt>\n"
+"#include E<lt>sys/sysmacros.hE<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"#ifndef NS_GET_USERNS\n"
+"#define NSIO    0xb7\n"
+"#define NS_GET_USERNS   _IO(NSIO, 0x1)\n"
+"#define NS_GET_PARENT   _IO(NSIO, 0x2)\n"
+"#endif\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"int\n"
+"main(int argc, char *argv[])\n"
+"{\n"
+"    int fd, userns_fd, parent_fd;\n"
+"    struct stat sb;\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    if (argc E<lt> 2) {\n"
+"        fprintf(stderr, \"Usage: %s /proc/[pid]/ns/[file] [p|u]\\en\",\n"
+"                argv[0]);\n"
+"        fprintf(stderr, \"\\enDisplay the result of one or both \"\n"
+"                \"of NS_GET_USERNS (u) or NS_GET_PARENT (p)\\en\"\n"
+"                \"for the specified /proc/[pid]/ns/[file]. If neither \"\n"
+"                \"\\(aqp\\(aq nor \\(aqu\\(aq is specified,\\en\"\n"
+"                \"NS_GET_USERNS is the default.\\en\");\n"
+"        exit(EXIT_FAILURE);\n"
+"    }\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    /* Obtain a file descriptor for the \\(aqns\\(aq file specified\n"
+"       in argv[1]. */\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    fd = open(argv[1], O_RDONLY);\n"
+"    if (fd == -1) {\n"
+"        perror(\"open\");\n"
+"        exit(EXIT_FAILURE);\n"
+"    }\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    /* Obtain a file descriptor for the owning user namespace and\n"
+"       then obtain and display the inode number of that namespace. */\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    if (argc E<lt> 3 || strchr(argv[2], \\(aqu\\(aq)) {\n"
+"        userns_fd = ioctl(fd, NS_GET_USERNS);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (userns_fd == -1) {\n"
+"            if (errno == EPERM)\n"
+"                printf(\"The owning user namespace is outside \"\n"
+"                        \"your namespace scope\\en\");\n"
+"            else\n"
+"               perror(\"ioctl-NS_GET_USERNS\");\n"
+"            exit(EXIT_FAILURE);\n"
+"         }\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (fstat(userns_fd, &sb) == -1) {\n"
+"            perror(\"fstat-userns\");\n"
+"            exit(EXIT_FAILURE);\n"
+"        }\n"
+"        printf(\"Device/Inode of owning user namespace is: \"\n"
+"                \"[%jx,%jx] / %ju\\en\",\n"
+"                (uintmax_t) major(sb.st_dev),\n"
+"                (uintmax_t) minor(sb.st_dev),\n"
+"                (uintmax_t) sb.st_ino);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        close(userns_fd);\n"
+"    }\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    /* Obtain a file descriptor for the parent namespace and\n"
+"       then obtain and display the inode number of that namespace. */\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    if (argc E<gt> 2 && strchr(argv[2], \\(aqp\\(aq)) {\n"
+"        parent_fd = ioctl(fd, NS_GET_PARENT);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (parent_fd == -1) {\n"
+"            if (errno == EINVAL)\n"
+"                printf(\"Can\\(aq get parent namespace of a \"\n"
+"                        \"nonhierarchical namespace\\en\");\n"
+"            else if (errno == EPERM)\n"
+"                printf(\"The parent namespace is outside \"\n"
+"                        \"your namespace scope\\en\");\n"
+"            else\n"
+"                perror(\"ioctl-NS_GET_PARENT\");\n"
+"            exit(EXIT_FAILURE);\n"
+"        }\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (fstat(parent_fd, &sb) == -1) {\n"
+"            perror(\"fstat-parentns\");\n"
+"            exit(EXIT_FAILURE);\n"
+"        }\n"
+"        printf(\"Device/Inode of parent namespace is: [%jx,%jx] / %ju\\en\",\n"
+"                (uintmax_t) major(sb.st_dev),\n"
+"                (uintmax_t) minor(sb.st_dev),\n"
+"                (uintmax_t) sb.st_ino);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        close(parent_fd);\n"
+"    }\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    exit(EXIT_SUCCESS);\n"
+"}\n"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<fstat>(2), B<ioctl>(2), B<proc>(5), B<namespaces>(7)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "2020-11-01"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"    /* Obtain a file descriptor for the \\(aqns\\(aq file specified\n"
+"       in argv[1] */\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"    /* Obtain a file descriptor for the owning user namespace and\n"
+"       then obtain and display the inode number of that namespace */\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"    /* Obtain a file descriptor for the parent namespace and\n"
+"       then obtain and display the inode number of that namespace */\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2017-09-15"
+msgstr ""
+
+#.  ============================================================
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "See the EXAMPLE section for an example of the use of these operations."
+msgstr ""
+
+#. type: SH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "EXAMPLE"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"$ B<unshare -Uu sleep 1000 &>\n"
+"[1] 23235\n"
+"$ B<./ns_show /proc/23235/ns/uts u>\n"
+"Device/Inode of owning user namespace is: [0,3] / 4026532448\n"
+"$ B<readlink /proc/23235/ns/user >\n"
+"user:[4026532448]\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"   Licensed under the GNU General Public License v2 or later.\n"
+"*/\n"
+"#include E<lt>stdlib.hE<gt>\n"
+"#include E<lt>unistd.hE<gt>\n"
+"#include E<lt>stdio.hE<gt>\n"
+"#include E<lt>fcntl.hE<gt>\n"
+"#include E<lt>string.hE<gt>\n"
+"#include E<lt>sys/stat.hE<gt>\n"
+"#include E<lt>sys/ioctl.hE<gt>\n"
+"#include E<lt>errno.hE<gt>\n"
+"#include E<lt>sys/sysmacros.hE<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"        if (fstat(userns_fd, &sb) == -1) {\n"
+"            perror(\"fstat-userns\");\n"
+"            exit(EXIT_FAILURE);\n"
+"        }\n"
+"        printf(\"Device/Inode of owning user namespace is: \"\n"
+"                \"[%lx,%lx] / %ld\\en\",\n"
+"                (long) major(sb.st_dev), (long) minor(sb.st_dev),\n"
+"                (long) sb.st_ino);\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"        if (fstat(parent_fd, &sb) == -1) {\n"
+"            perror(\"fstat-parentns\");\n"
+"            exit(EXIT_FAILURE);\n"
+"        }\n"
+"        printf(\"Device/Inode of parent namespace is: [%lx,%lx] / %ld\\en\",\n"
+"                (long) major(sb.st_dev), (long) minor(sb.st_dev),\n"
+"                (long) sb.st_ino);\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

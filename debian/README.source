@@ -1,0 +1,58 @@
+The following steps are taken to release a new version
+======================================================
+# Get the latest upstream version
+#gbp import-orig --uscan --sign-tags
+# --sign-tags does not work
+gbp import-orig --uscan
+# Do we need to do git tag this manually?
+
+dch -i # New upstream version
+
+# Check the following and after each dash commit (last line in block)
+# - Debian-BTS → Fix and dch -a
+# - https://tracker.debian.org/pkg/manpages-l10n → Fix and dch -a
+# - Check with Mario the set of supported languages, if changed → update "update-control-files.py" (epoch needed?) and dch -a
+# - Check standards version: If changed → apply changes and update "update-control-files.py" and dch -a # Update Standards-Version to 4.x.y, no changes needed
+# - Update copyright (1): if new committer or year changed: Update first two entries in "copyright"
+#   Update copyright (2): update-copyright.py and dch -a # Update d/copyright
+#   Update control files: update-control-files.py and dch -r
+git commit -a
+
+# Build (source?) package → better done plain with debuild and friends
+gbp buildpackage
+
+gbp buildpackage --git-tag-only
+git push --tags
+
+# Test and upload
+
+
+
+The following steps are taken to backport a new version
+=======================================================
+# Check that base version reached testing
+
+# Switch to backport branch
+git checkout -b buster-backports origin/buster-backports
+git fetch
+# git checkout buster-backports
+
+# Merge Master into it and resolve conflicts
+git merge master
+# Turn all Breaks + Replaces (when l10n manpages moved to upstream and appeared there in Debian) to Conflicts
+
+vim debian/changelog
+git commit -a
+
+# Prepare the changelog
+dch --bpo
+git commit -a
+
+# Build (source?) package
+gbp buildpackage --git-debian-branch=buster-backports
+
+# Test and upload
+Download the .tar.gz from testing used as base (apt-get source should suffice)
+
+Update the Checksums-Sha1, Checksums-Sha256 and the md5sum (in files) as well as the size to in the .dsc file to match the version from testing (before signing!)
+

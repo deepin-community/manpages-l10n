@@ -1,0 +1,1378 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.\" manual page [] for pppd 2.3
+.\" $Id: pppd.8,v 1.12 2002/08/23 14:40:45 robert Exp $
+.\" SH section heading
+.\" SS subsection heading
+.\" LP paragraph
+.\" IP indented paragraph
+.\" TP hanging label
+.TH PPPD 8
+.SH NAZWA
+pppd \- Demon protokołu PPP
+.SH SKŁADNIA
+.B pppd
+[
+.I nazwa_tty
+] [
+.I szybkość
+] [
+.I opcje
+]
+.SH OPIS
+.LP
+Protokół Point-to-Point (PPP) daje metody transmisji datagramów poprzez
+szeregowe połączenia punkt-do-punktu. PPP składa się z trzech części:
+sposobu enkapsułowania datagramów w połączeniach szeregowych, rozwiniętego
+protokołu kontroli połączenia (LCP--Link Control Protocol) oraz rodziny
+protokołów kontroli sieciowej (NCP--Network Control Protocols) służących do
+zestawiania i konfigurowania różnych protokołów warstwy sieciowej.
+.LP
+Schemat enkapsułowania jest dawany przez kod sterownika w jądrze. Pppd daje
+podstawowe LCP, wsparcie uwierzytelniania i NCP do zestawiania i
+konfigurowania IP (nazywa się on IPCP-IP Control Protocol).
+.SH CZĘSTO UŻYWANE OPCJE
+.TP
+.I <nazwa_tty>
+Komunikuj się poprzez wskazane urządzenie. Jeśli potrzeba, doklejany jest tu
+łańcuch "/dev/". Jeśli nie zostanie podana nazwa urządzenia, lub jeśli
+podana jest nazwa terminala podłączonego do standardowego wejścia, pppd
+użyje tego terminala i nie fork(2)nie by wstawić się w tło. Wartość tej
+opcji ustawiona w uprzywilejowanym źródle nie może być przeciążona przez
+nieuprzywilejowanego użytkownika.
+.TP
+.I <szybkość>
+Ustaw szybkość przesyłu na <szybkość> (liczba dziesiętna). Na systemach
+takich, jak 4.4BSD czy NETBSD można podać dowolną szybkość. Inne systemy
+(np. SunOS) dopuszczają tylko ograniczony zbiór szybkości.
+.TP
+.B asyncmap \fI<mapa>
+Ustaw mapę znaków async na <mapa>. Mapa ta opisuje, które znaki sterujace nie
+mogą być pomyślnie przesyłane poprzez linię szeregową. Pppd będzie prosił
+peera o przesyłanie tych znaków jako dwubajtowe sekwencje specjalne.
+Argument jest 32 bitową liczbą szesnastkową, gdzie każdy bit określa znak,
+który należy cytować. Bit 0 (00000001) określa znak 0x00; bit 31 (80000000)
+określa znak 0x1f lub ^_. Jeśli podanych jest wiele opcji \fIasyncmap\fR, to
+wartości są sklejane logicznym OR. Jeśli nie podane są żadne opcje
+\fIasyncmap\fR, znaki te w ogóle nie będą negocjowane w kierunku odbiorczym.
+Peer powinien wtedy cytować \fIwszystkie\fR znaki sterujące. Aby cytować
+przesyłane znaki, użyj opcji \fIescape\fR.
+.TP
+.B auth
+Żądaj od peera uwierzytelnienia przed zezwoleniem na przesyłanie pakietów
+sieciowych. Opcja ta jest domyślna, jeśli system ma trasę domyślną. jeśli
+nie podano ani tej opcji, ani \fInoauth\fR, pppd pozwoli jedynie używać
+peerowi adresów do których system nie ma jeszcze trasy.
+.TP
+.B call \fInazwa
+Odczytaj opcje z pliku /etc/ppp/peers/\fInazwa\fR. Plik ten może zawierać
+uprzywilejowane opcje, takie jak \fInoauth\fR, nawet jeśli pppd nie jest
+uruchamiane przez roota. Łańcuch \fInazwa\fR nie może rozpoczynać się od /,
+ani zawierać znaków .. jako część ścieżki. Format pliku z opcjami jest
+opisany niżej.
+.TP
+.B connect \fIskrypt
+Użyj programu wykonywalnego, podanego przez \fIskrypt\fR do skonfigurowania
+linii szeregowej. Skrypt ten zwykle wykorzystuje program chat(8) do
+wykręcenia numeru telefonu i rozpoczęcia zdalnej sesji ppp. Wartość tej
+opcji ze źródła uprzywilejowanego nie może być przesłonięta przez
+nieuprzywilejowanego użytkownika.
+.TP
+.B crtscts
+Używaj sprzętowego sterowania przepływem (tj. RTS/CTS) do sterowania
+przepływem danych na porcie szeregowym. Jeśli nie zostanie podana ani opcja
+\fIcrtscts\fR, ani \fInocrtscts\fR czy \fIcdtrcts\fR lub \fInocdtrcts\fR,
+ustawienie sprzętowego sterowania przepływem portu pozostaje niezmienione.
+Niektóre porty szeregowe (np. Maca) nie posiadają prawdziwego wyjścia RTS.
+Porty takie używają tego trybu do implementacji jednokierunkowego sterowania
+przepływem. Port szeregowy zawiesi transmisję jeśli zażąda tego modem (przez
+CTS), lecz nie będzie w stanie zażądać od modemu zaprzestania nadawania
+danych do komputera. Tryb ten zachowuje możliwość używania DTR jako linii
+kontroli modemu.
+.TP
+.B defaultroute
+Dodaj domyślną trasę do systemowych tablic trasowania, używając peera jako
+bramkę po pomyślnym zakończeniu negocjacji IPCP.
+Wpis ten [w tablicach routingu] jest usuwany po zerwaniu połączenia. Opcja
+ta jest uprzywilejowana w przypadku podania opcji \fInodefaultroute\fR.
+.TP
+.B disconnect \fIskrypt
+Wykonaj program \fIskrypt\fR po zakończeniu połączenia ppp. Skrypt ten może
+na przykład wysłać komendy, powodujące odwieszenie modemu gdy niedostępne są
+sprzętowe sygnały sterowania modemem. Skrypt rozłączenia nie jest
+uruchamiany jeśli modem już jest odwieszony. Wartość tej opcji pochodząca z
+uprzywilejowanego źródła nie może być przesłonięta przez
+nieuprzywilejowanego użytkownika.
+.TP
+.B escape \fIxx,yy,...
+Określa, że niektóre znaki powinny być podczas transmisji cytowane
+(niezależnie czy peer chciał by tak było w swojej mapie async). Cytowane
+znaki są podawane jako lista liczb szesnastkowych, rozdzielonych
+przecinkami. Zauważ, że prawie każdy znak można podać w tej opcji. Jest to
+odwrotnie niż w opcji \fIasyncmap\fR, gdzie można było podać jedynie znaki
+sterujące. Znaki, których nie można cytować to znaki o wartościach
+szesnastkowych 0x20 - 0x3f lub 0x5e.
+.TP
+.B file \fInazwa
+Odczytaj opcje z pliku \fInazwa\fR (format jest opisany niżej). Plik ten
+musi być dostępny dla odczytu dla użytkownka, który uruchomił pppd.
+.TP
+.B init \fIskrypt
+Uruchom program wykonywalny \fIskrypt\fR do zainicjalizowania linii
+szeregowej. Skrypt ten zazwyczaj używa programu chat(8) do skonfigurowania
+modemu celem włączenia autoodpowiadania. Wartość tej opcji, pochodząca z
+uprzywilejowanego źródła nie może być przesłonięta przez
+nieuprzywilejowanego użytkownika.
+.TP
+.B lock
+Podaje, że pppd powinien stworzy plik blokujący w stylu UUCP, aby zapewnić
+ekskluzywność dostępu do urządzenia szeregowego.
+.TP
+.B mru \fIn
+Ustaw MRU [Maximum Receive Unit] na \fIn\fR. Pppd poprosi peera o
+przesyłanie pakietów nie większych niż \fIn\fR bajtów. Minimalną wartością
+MRU jest 128. Domyślną jest 1500. Zalecana dla wolnych linii jest wartość
+296 (40 bajtów na nagłówek TCP/IP + 256 bajtów danych). (Zauważ, że w IPv6
+MRU musi być min. 1280).
+.TP
+.B mtu \fIn
+Ustaw MTU [Maximum Transmit Unit] na \fIn\fR. O ile peer nie zażąda
+mniejszej wartości poprzez MRU, pppd zażąda by kod sieciowy jądra wysyłał
+pakiety nie większe niż \fIn\fR bajtów. (Zauważ, że w IPv6 MTU musi być min.
+1280).
+.TP
+.B passive
+Włącza opcję pasywności LCP. Przy podaniu tej opcji, pppd spróbuje
+zapoczątkować połączenie; jeśli nie uzyska odpowiedzi od peera, to będzie
+czekać pasywnie na prawidłowy pakiet LCP, zamiast kończyć działanie, jak to
+ma miejsce w normalnej sytuacji.
+.SH OPCJE
+.TP
+.I <lokalny_adres_IP>\fB:\fI<zdalny_adres_IP>
+Ustaw lokalny i/lub zdalny adres IP interfejsu. Dowolny z nich można
+pominąć. Adres IP może być podawany jako nazwa hosta, lub w dziesiętnej
+notacji kropkowej (np. 150.234.56.78). Domyślnym adresem lokalnym jest
+(pierwszy) adres IP systemu (o ile nie podano opcji \fInoipdefault\fR).
+Zdalny adres (w wypadku niepodania) jest pobierany od peera. W ten sposób, w
+prostych przypadkach opcja ta nie jest wymagana. Jeśli lokalny i/lub zdalny
+adres IP został jednak w tej opcji podany, pppd nie przyjmie innej wartości
+od peera w negocjacji IPCP, chyba że podano opcje \fIipcp-accept-local\fR
+i/lub \fIipcp-accept-remote\fR.
+.TP
+.B ipv6 \fI<identyfikator_lokalnego_interfejsu>\fR,\fI<identyfikator_zdalnego_interfejsu>
+Ustaw 64-bitowy identyfikator lokalnego i lub zdalnego interfejsu. Dowolny z
+nich można pominąć. Identyfikator musi być podany w standardowej noracji
+ascii adresów IPv6 (np: ::dead:beef). Jeśli podana jest opcja
+\fIipv6cp-use-ipaddr\fR, lokalnym identyfikatorem jest lokalny adres IPv4
+(patrz wyżej). Na systemach, obsługujących unikalne stałe ID, można w
+zamianie do opisywanej opcji użyć opcji \fIipv6cp-use-persistent\fR. W
+przeciwnym wypadku, identyfikator jest losowany.
+.TP
+.B active-filter \fIwyrażenie-filtru
+Określa filtr pakietowy, stosowany do pakietów z danymi w celu określenia,
+które pakietu uznać za aktywność linii, a zatem kiedy kasować licznik
+bezczynności lub prowadzić połączenie w stan wymagający telefonowania.
+Opcja ta jest przydatna w połączeniu z opcją \fBidle\fR jeśli przez
+połączenie przesyłane są regularnie jakieś pakiety (np. pakiety informacji o
+trasach), które normalnie uniemożliwiają wejście w stan bezczynności.
+Składnia \fIwyrażenia-filtru\fR jest taka, jak dla \fItcpdump\fR(1), lecz
+kwalifikatory nie mające sensu w połączeniu PPP, takie jak \fBether\fR czy
+\fBarp\fR nie są dozwolone. Ogólnie, wyrażenie filtru powinno być ujęte w
+pojedyncze cytaty, aby uchronić je przed interpretacją spacji przez powłokę.
+Opcja ta jest obecnie dostępna tylko pod NetBSD i to tylko wtedy, gdy jądro
+i pppd były skompilowane ze zdefiniowanym PPP_FILTER.
+.TP
+.B allow-ip \fIadres(y)
+Zezwol peerom na używanie podanych adresów IP lub podsieci bez
+uwierzytelniania. Parametr jest przetwarzany jak każdy element listy
+dozwolonych adresów IP z plików sekretów (zobacz sekcję UWIERZYTELNIANIE
+poniżej).
+.TP
+.B bsdcomp \fInr,nt
+Zażądaj by peer kompresował wysyłane pakiety przy użyciu mechanizmu
+BSD-Compress z maksymalnym rozmiarem kodu \fInr\fR bitów i zgódź się na
+kompresowania pakietów wysyłanych do peera z maksymalnym rozmiarem kodu
+\fInt\fR bitów. Jeśli \fInt\fR nie jest podane, to domyślnie odpowiada
+wartości \fInr\fR. Wartości w zakresie 9 do 15 są typowymi wartościami tych
+parametrów; większe dają lepszą kompresję, lecz wymagają więcej pamięci
+jądra da słowniki kompresji. Alternatywnie, podanie wartości 0 jako \fInr\fR
+lub \fInt\fR wyłącza kompresję w danym kierunku. Aby wyłączyć kompresję
+całkowicie, użyj \fInobsdcomp\fR lub \fIbsdcomp 0\fR.
+.TP
+.B cdtrcts
+Użyj niestandardowego sprzętowego sterowania przepływem (np. DTR/CTS) do
+sterowania przepływem danych przez port szeregowy. Jeśli nie podany jest ani
+\fIcrtscts\fR, ani \fInocrtscts\fR, ani \fIcdtrcts\fR lub \fInocdtrcts\fR,
+ustawienie sprzętowego sterowania przepływem na danej linii pozostaje
+niezmienione.
+Niektóre porty (np. Maca) nie posiadają prawdziwego wyjścia RTS. Porty
+takieużywają tego trybu do implementowania prawdziwego, dwukierunkowego
+sterowania przepływem. Poświęceniem jest to, że tryb sterowania przepływem
+nie zezwala na używanie DTR jako lnii kontroli modemu.
+.TP
+.B chap-interval \fIn
+Jeśli podana jest ta opcja, pppd będzie wyzywał peera co \fIn\fR sekund.
+.TP
+.B chap-max-challenge \fIn
+Ustaw maksymalną liczbę transmisji wyzwań CHAP na \fIn\fR (domyślnie 10).
+.TP
+.B chap-restart \fIn
+Ustaw czas opóźnienia wyzwań na \fIn\fR sekund (domyślnie 3).
+.TP
+.B connect-delay \fIn
+Czekaj do \fIn\fR milisekund po zakończeniu skryptu connect na prawidłowe
+pakiety ppp od peera. Pod koniec tego czasu lub gdy od peera nadejdzie
+prawidłowy pakiet PPP, pppd rozpocznie negocjację przez przesyłanie
+pierwszego pakietu LCP. Domyślną wartością jest 1000 (1 sekunda). Ten czas
+oczekiwania ma znaczenie tylko jeśli używana jest opcja \fBconnect\fR lub
+\fBpty\fR.
+.TP
+.B debug
+Włącza zabudowę debuggowania połączenia.
+Po podaniu tej opcji, pppd raportuje zawartość wszystkich pakietów
+kontrolnych w czytelnej postaci. Pakiety są raportowane poprzez sysloga w
+zabudowie \fIdaemon\fR i poziomie \fIdebug\fR. Informacja ta może być
+przekierowana do pliku przez poprawne skonfigurowanie /etc/syslog.conf
+(zobacz syslog.conf(5)).
+.TP
+.B default-asyncmap
+Wyłącz negocjację asyncmap i wymuś cytowanie wszystkich znaków sterujących
+w obu kierunkach.
+.TP
+.B default-mru
+Wyłącz negocjację MRU. Po włączeniu tej opcji, pppd użyje domyślnej wartości
+1500 bajtów.
+.TP
+.B deflate \fInr,nt
+Żąda by peer kompresował wysyłane pakiety w mechanizmie deflate z
+maksymalnym rozmiarem okna \fI2**nr\fR bajtów i zgodził się na kompresowanie
+pakietów wysyłanych do peera z maksymalnym rozmiarem okna \fI2**nt\fR
+bajtów. Jeśli nie podano \fInt\fR to przyjmowana jest wartość równa
+\fInr\fR. Jako parametry używane są wartości w zakresie 8 do 15; większe
+dają lepszą kompesję, lecz zabierają więcej pamięci na słowniki kompresji.
+Wartość 0 wyłącza kompresję w danym kierunku. Kompresję można wyłączyć,
+stosując \fInodeflate\fR lub \fIdeflate 0\fR. (Uwaga: pppd preferuje
+kompresję deflate nad BSD-compress jeśli peer może i tamto.)
+.TP
+.B demand
+Inicjalizuj połączenie tylko na żądanie, tj. gdy istnieje natłok danych.
+Przy tej opcji, zdalny adres IP musi być podawany przez użytkownika w linii
+poleceń lub w pliku z opcjami. Pppd początkowo konfiguruje interfejs i
+otwiera je na dane IP bez łączenia się z peerem. Gdy pojawią się dane, pppd
+łączy się z peerem, dokonuje negocjacji, uwierzytelniania, etc.
+Gdy jest to zakończone, pppd rozpoczyna przekazywanie pakietów danych (tj.
+pakietów IP) poprzez łącze.
+
+Opcja \dIdemand\fR implikuje opcję \fIpersist\fR. Jeśli zachowanie to nie
+jest pożądane, użyj opcji \fInopersist\fR po opcji \fIdemand\fR. W
+połączeniu z opcją \fIdemand\fR przydatne są też \fIidle\fR i \fIholdoff\fR.
+.TP
+.B domain \fId
+W celach uwierzytelniania, doklej nazwę domeny \fId\fR do nazwy hosta
+lokalnego. Na przykład, jeśli gethostname() zwraca nazwę porsch, lecz w
+pełni kwalifikowaną nazwą domeny jest porsche.quotron.com, to powinieneś
+podać \fIdomain quotron.com\fR. Pppd użyje wtedy nazwy
+\fIporsche.quotron.com\fR do podglądania sekretów w pliku z sekretami i jako
+domyślnej nazwy do wysyłania do peera podczas uwierzytelniania. Opcja ta
+jest uprzywilejowana.
+.TP
+.B hide-password
+Podczas raportowania zawartości pakietów PAP, opcja ta powoduje, że pppd nie
+załącza do raportu łańcucha z hasłem. Jest to zachowanie domyślne.
+.TP
+.B holdoff \fIn
+Podaje ile sekund czekać przed ponownym rozpoczęciem połączenia po jego
+zakończeniu. Opcja ta ma efekt tylko w połączeniu z opcjami \fIpersist\fR
+lub \fIdemand\fR. Okres holdoff nie jest używany gdy połączenie zostało
+zerwane z powodu bezczynności.
+.TP
+.B idle \fIn
+Określa, że pppd powinien rozłączyć się jeśli łącze było bezczynne przez
+\fIn\fR sekund. Łącze jest bezczynne jeśli nie przesyłane są przez nie żadne
+pakiety. Uwaga: nie zaleca się używania tej opcji z opcjią \fIpersist\fR bez
+opcji \fIdemand\fR.
+Jeśli podana jest opcja \fBactive-filter\fR, odrzucane przez filtr
+aktywności pakiety liczą się również jako bezczynne łącze.
+.TP
+.B ipcp-accept-local
+Przy podaniu tej opcji, pppd przyjmuje wyobrażenie peera o naszym lokalnym
+adresie IP, nawet jeśli adres lokalny podano jako opcję.
+.TP
+.B ipcp-accept-remote
+Przy podaniu tej opcji, pppd przyjmuje wyobrażenie peera o jego (zdalnym)
+adresie IP, nawet jeśli adres ten podany został jako opcja.
+.TP
+.B ipcp-max-configure \fIn
+Ustaw maksymalną liczbę transmisji żądania konfiguracji IPCP na \fIn\fR
+(domyślnie 10).
+.TP
+.B ipcp-max-failure \fIn
+Ustaw maksymalną liczbę NAK-ów konfiguracji IPCP zwróconych przed
+rozpoczęciem wysyłania Odrzuceń konfiguracji na \fIn\fR (domyślnie 10).
+.TP
+.B ipcp-max-terminate \fIn
+Ustaw maksymalną liczbę transmisji żądań zakończenia IPCP na \fIn\fR
+(domyślnie 3).
+.TP
+.B ipcp-restart \fIn
+Ustaw interwał restartu IPCP (czas opóźnienia retransmisji) na \fIn\fR
+sekund (domyślnie 3).
+.TP
+.B ipparam \fIłańcuch
+Daje dodatkowy parametr dla skryptów ip-up i ip-down. Jeśli podana jest ta
+opcja, to \fIłańcuch\fR jest przekazywany jako 6 parametr tych skryptów.
+.TP
+.B ipv6cp-max-configure \fIn
+Ustaw maksymalną liczbę transmisji żądań konfiguracji IPv6CP na \fIn\fR
+(domyślnie 10).
+.TP
+.B ipv6cp-max-failure \fIn
+Ustaw maksymalną liczbę NAK-ów konfiguracji IPv6CP, zwracanych przed
+rozpoczęciem wysyłania Odrzuceń konfiguracji na \fIn\fR (domyślnie 10).
+.TP
+.B ipv6cp-max-terminate \fIn
+Ustaw maksymalną liczbę transmisji żądań zakończenia IPv6CP na \fIn\fR
+(domyślnie 3).
+.TP
+.B ipv6cp-restart \fIn
+Ustaw interwał restartu IPv6CP (czas opóźnienia retransmisji) na \fIn\fR
+sekund (domyślnie 3).
+.TP
+.B ipx
+Włącz protokoły IPXCP i IPX. Opcja ta jest obecnie obsługiwana jedynie pod
+Linuksem i tylko jeśli jądro ma wsparcie IPX.
+.TP
+.B ipx-network \fIn
+Ustaw numer sieci IPX w ramce żądania konfiguracji IPXCP na \fIn\fR, liczbę
+szesnastkową (bez 0x na początku). Nie ma sensownej wartości domyślnej.
+Jeśli opcja ta nie jest podana, numer sieci jest pobierany od peera. Jeśli
+peer nie ma numeru sieci, protokół IPX nie zostanie uruchomiony.
+.TP
+.B ipx-node \fIn\fB:\fIm
+Ustaw numery węzła IPX. Dwa numery węzła są rozdzielane od pozostałych
+znakiem dwukropka. Pierwszy numer \fIn\fR jest numerem węzła lokalnego.
+Drugi jest numerem węzła peera. Każdy numer węzła musi być liczbą
+szesnastkową o długości najwyżej 10 cyfr. Numery węzłów sieci ipx muszą być
+unikalne. Nie ma sensownej wartości domyślnej. Jeśli opcja ta nie jest
+podana, numery węzłów są pobierane od peera.
+.TP
+.B ipx-router-name \fI<łańcuch>
+Ustaw nazwę routera. Łańcuch ten jest przesyłany do peera jako dane
+informacyjne.
+.TP
+.B ipx-routing \fIn
+Ustaw tą opcją odbierany protokół trasowania. Można podać więcej niż jedną
+instancję tej opcji. Opcja \fInone\fR (0) może być podana jako jedyna
+instncja tej opcji. Wartościami mogą być \fI0\fR (\fINONE\fR), \fI2\fR
+(\fIRIP/SAP\fR), \fI4\fR (\fINLSP\fR).
+.TP
+.B ipxcp-accept-local
+Przyjmij NAK peera dla numeru węzła podanego w opcji ipx-node. Jeśli podano
+niezerowy numer węzła, to domyślnie naciska się na używanie tej wartości.
+Jeśli załączasz tę opcję, to zezwalasz peerowi na przeciążanie wpisu numeru
+węzła.
+.TP
+.B ipxcp-accept-network
+Przyjmij NAK peera dla numeru sieci podanego w opcji ipx-network. Jeśli
+podano niezerowy numer sieci, to domyślnie naciska się na używanie tej
+wartości. Jeśli załączasz tę opcję, to zezwalasz peerowi na przeciążenie
+wpisu numeru węzła.
+.TP
+.B ipxcp-accept-remote
+Użyj peerowego numeru sieci, podanego w ramce żądania konfiguracji. Jeśli
+dla peera podano numer węzła, a tej opcji nie podano, peer będzie zmuszony
+do używania wartości, którą podałeś.
+.TP
+.B ipxcp-max-configure \fIn
+Ustaw maksymalną liczbę ramek żądań konfiguracji IPXCP wysyłanych przez
+system na \fIn\fR. Domyślnie 10.
+.TP
+.B ipxcp-max-failure \fIn
+Ustaw maksymalną liczbę ramek NAK IPXCP, którą system wyśle przed
+odrzucaniem opcji. Domyślnie 3.
+.TP
+.B ipxcp-max-terminate \fIn
+Ustaw maksymalną liczbę ramek żądań zakończenia zanim system lokalny uzna,
+że peer go nie słucha. Domyślnie 3.
+.TP
+.B kdebug \fIn
+Włącz kod debuggowania na poziomie jądra sterownika PPP. Argument \fIn\fR
+jest liczbą, która jest sumą następujących wartości: 1 włącza ogólne
+informacje debuggowe, 2 żąda by drukowana była zawartość odbieranych
+pakietów, 4 żąda by drukowana była zawartość przesyłanych pakietów. Na
+większości systemów, komunikaty drukowane przez jądro są raportowane przez
+syslog(1) do pliku wskazanego w pliku konfiguracyjnym /etc/syslog.conf.
+.TP
+.B ktune
+Powoduje, że pppd poprawia odpowiednio ustawienia jądra. Pod linuksem pppd
+w przypadku używania opcji \fIproxyarp\fR włącza forwardowanie IP 
+(tj. ustawia /proc/sys/net/ipv4/ip_forward na 1) oraz w trybie demand włącza
+(o ile adres lokalny się zmienia)
+opcję dynamicznego adresu IP (tj. ustawia na 1
+/proc/sys/net/ipv4/ip_dynaddr).
+.TP
+.B lcp-echo-failure \fIn
+Jeśli podana jest ta opcja, pppd przyjmuje, że peer nie żyje w momencie gdy
+n żądań echa  LCP zostanie wysłanych bez odpowiedzi LCP. Jeśli zajdzie ta
+sytuacja, pppd przerwie połączenie. Używanie tej opcji wymaga niezerowej
+wartości parametru \fIlcp-echo-interval\fR. Opcja ta może być używana do
+umożliwiania pppd kończenia działania po zerwaniu fizycznego połączenia (np.
+po odwieszeniu słuchawki) w sytuacjach, gdzie nie są dostępne sprzętowe
+linię sterowania modemem.
+.TP
+.B lcp-echo-interval \fIn
+Jeśli podana jest ta opcja, pppd do peera będzie wysyłać ramkę żądania echa
+LCP co \fIn\fR sekund. Normalnie peer powinien odpowiedzieć wysyłając
+odpowiedź na echo. Opcja ta może być używana w połączeniu z
+\fIlcp-echo-failure\fR do wykrywania czy peer jest wciąż podłączony.
+.TP
+.B lcp-max-configure \fIn
+Ustaw maksymalną liczbę transmisji żądań konfiguracji LCP na \fIn\fR.
+Domyślnie 10.
+.TP
+.B lcp-max-failure \fIn
+Ustaw maksymalną liczbę NAK-ów konfiguracji LCP, zwracanych przed
+rozpoczęciem wysyłania Odrzuceń konfiguracji. Domyślnie 10.
+.TP
+.B lcp-max-terminate \fIn
+Ustaw maksymalną liczbę transmisji żądań zakończenia LCP na \fIn\fR
+(domyślnie 3).
+.TP
+.B lcp-restart \fIn
+Ustaw interwał restartu LCP (czas opóźnienia retransmisji) na \fIn\fR sekund
+(domyślnie 3).
+.TP
+.B linkname \fInazwa\fR
+Ustawia logiczną nazwę łacza na \fInazwa\fR. Pppd utworzy plik o nazwie
+\fBppp-\fInazwa\fB.pid\fR w /var/run (lub na niektórych systemach w
+/etc/ppp), zawierający jego PID. Jest to przydatne do określania, która
+instancja pppd jest odpowiedzialna za łącze z danym peerem. Jest to opcja
+uprzywilejowana.
+.TP
+.B local
+Nie używaj linii sterowania modemem. Przy użyciu tej opcji, pppd będzie
+ignorować stan CD (Carrier Detect) i nie będzie zmieniać stanu DTR (Data
+Terminal Ready).
+.TP
+.B logfd \fIn
+Wysyłaj informacje raportowe do deskryptora pliku \fIn\fR. Pppd będzie
+wysyłać te informacje do najwyżej jednego pliku lub deskryptora (oraz
+wysyłaj komunikaty do sysloga), więc opcja ta i \fBlogfile\fR są
+rozłączne. Domyślną wartością dla pppd jest wysyłanie wiadomości raportowych
+na stdout (deskryptor 1), chyba że port szeregowy jest już na ten deskryptor
+otwarty.
+.TP
+.B logfile \fInazwapliku
+Doklejaj komunikaty raportowe do pliku \fInazwapliku\fR (oraz wysyłaj
+komunikaty do sysloga). Plik otwierany jest z prawami użytkownika, który
+uruchomił pppd. Otwierany jest w trybie dopisywania.
+.TP
+.B login
+Użyj systemowej bazy haseł do uwierzytelnienia peera z pomocą PAP i nagraj
+użytkownika do systemowego pliku wtmp. Zauważ, że peer musi mieć swój wpis w
+/etc/ppp/pap-secrets oraz w systemowej bazie haseł.
+.TP
+.B maxconnect \fIn
+Zakończ połączenie po jego dostępności dla sieci przez \fIn\fR sekund (tj.
+\fIn\fR sekund po pierwszym przejściu protokołu kontroli sieci).
+.TP
+.B maxfail \fIn
+Zakończ po \fIn\fR kolejno nieudanych próbach połączenia. Wartość 0 oznacza
+brak limitów. Domyślną wartością jest 10.
+.TP
+.B modem
+Używaj linii sterowania modemem. Opcja ta jest domyślna. Z jej użyciem, pppd
+będzie czekać na sygnał CD (Carrier Detect) od modemu jako zapewnienie
+otwarcia urządzenia szeregowego (chyba że podany jest skrypt connect) i
+opuści DTR (Data Terminal Ready) gdy połączenie będzie zakończone i przed
+wywołaniem skryptu connect. Na ultriksie, opcja ta implikuje sprzętowe
+sterowanie przepływem, jak w opcji \fIcrtscts\fR.
+.TP
+.B ms-dns \fI<adr>
+Jeśli pppd działa jako serwer klientów MS Windows, opcja ta umożliwia
+przekazywanie klientom jednego lub dwóch adresów DNS. Pierwsze pojawienie
+się tej opcji określa adres podstawowego DNS; druga podaje adres
+drugorzędny. (Opcja ta była obecna  w starszych wersjach pppd pod nazwą
+\fBdns-addr\fR.)
+.TP
+.B ms-wins \fI<adr>
+Jeśli pppd działa jako serwer dla MS Windows lub dla klientów "Samby", to
+opcja ta umożliwia pppd przekazywanie jednego lub dwóch adresów serwerów WINS
+(Windows Internet Name Services) dla klientów. Pierwsze pojawienie tej opcji
+określa podstawowy adres WINS; drugie--drugorzędny.
+.TP
+.B name \fInazwa
+Ustaw nazwę systemu lokalnego na \fInazwa\fR. Jest to wykorzystywane w
+celach uwierzytelniania. Jest to opcja uprzywilejowana. Po jej włączeniu,
+pppd uzywa w plikach sekretów linii, które mają \fInazwę\fR jako drugie pole
+linii. Tylko tych linii używa do uwierzytelniania peera. Dodatkowo, jeśli
+nie zostanie to przesłonięte opcją \fIuser\fR, \fInazwa\fR będzie używana
+jako nazwa wysyłana do peera podczas uwierzytelniania lokalnego systemu u
+peera. (Zauważ, że pppd nie dokleja do \fInazwy\fR nazwy domeny.)
+.TP
+.B netmask \fIn
+Ustaw maskę sieciową interfejsu na \fIn\fR, tj. 32 bitową maskę w kropkowej
+notacji dziesiętnej (np. 255.255.255.0). Jeśli podana jest ta opcja, to
+wartość jej zostanie połączona logicznym OR z domyślną maską sieciową.
+Domyślna maska sieciowa jest wybierana według wynegocjowanego zdalnego
+adresu IP; jest maską odpowiednią dla klasy zdalnego adresu IP, połączoną
+logicznym OR z maskami sieciowymi wszelkich interfejsów sieciowych
+point-to-point  systemu, znajdujących się w tej samej sieci. (Uwaga: na
+niektórych platformach pppd zawsze jako maski sieciowej używa
+255.255.255.255 jeśli jest to jedyna wartość odpowiednia dla intefejsu
+point-to-point.)
+.TP
+.B noaccomp
+Wyłącz kompresję Address/Control w obydwu kierunkach (nadawania i odbioru).
+.TP
+.B noauth
+Nie wymagaj od peera uwierzytelniania. Opcja ta jest uprzywilejowana.
+.TP
+.B nobsdcomp
+Wyłącza kompresję BSD-Compress; \fBpppd\fR nie będzie żądać lub zgadzać się
+na kompresowanie pakietów wg. tego schematu.
+.TP
+.B noccp
+Wyłącz negocjację CCP (Compression Control Protocol). Opcja ta powinna być
+używana jedynie jeśli peer jest zapchlony i nie potrafi obsłużyć żądań pppd
+o negocjację CCP.
+.TP
+.B nocrtscts
+Wyłącz sprzętowe sterowanie przepływem (RTS/CTS) portu szeregowego. Jeśli
+nie jest podane \fIcrtscts\fR, \fInocrtscts\fR, \fIcdtrcts\fR, ani
+\fInodtrcts\fR, sprzętowe sterowanie przepływem nie jest zmieniane.
+.TP
+.B nodtrcts
+Opcja ta jest synonimem \fInocrtscts\fR. Dowolna z tych opcji wyłącza
+obydwie postaci sterowania przepływem.
+.TP
+.B nodefaultroute
+Wyłącz opcję \fIdefaultroute\fR. Jeśli administrator chce zabronić
+użytkownikom tworzenia przez pppd domyślnych tras, to może umieścić tę opcję
+w pliku /etc/ppp/options.
+.TP
+.B nodeflate
+Wyłącza kompresję Deflate; pppd nie zażąda i nie zgodzi się na kompresję
+pakietów wg tego schematu.
+.TP
+.B nodetach
+Nie odłączaj się od terminala sterującego. Bez tej opcji, w przypadku
+podania urządzenia szeregowego innego niż terminal standardowego wejścia,
+pppd fork(2)nie by przejść w tło.
+.TP
+.B noip
+Wyłącz negocjację IPCP i komunikację IP. Opcja ta powinna być używana tylko
+jeśli peer ma błędy i nie potrafi obsłużyć żądań negocjacji IPCP.
+.TP
+.B noipv6
+Wyłącz negocjację IPv6CP i komunikację IPv6. Opcja ta powinna być używana
+tylko jeśli peer ma błędy i nie potrafi obsłużyć żądań negocjacji IPv6CP.
+.TP
+.B noipdefault
+Wyłącza domyślne zachowania gdy nie jest podany lokalny adres IP, którym
+jest określenie (jeśli się da) lokalnego adresu IP z nazwy hosta. Po użyciu
+tej opcji, peer będzie musiał przekazać lokalny adres IP podczas negocjacji
+IPCP (chyba że podano go jawnie w linii poleceń lub w pliku z opcjami).
+.TP
+.B noipx
+Wyłącz protokoły IPXCP i IPX. Opcja ta powinna być używana tylko jeśli peer
+ma błędy i nie potrafi obsłużyć żądań negocjacji IPXCP.
+.TP
+.B noktune
+Przeciwieństwo opcji \fIktune\fR; nie zezwala pppd na zmianę ustawień
+systemowych.
+.TP
+.B nolog
+Nie wysyłaj komunikatów raportowych do pliku lub deskryptora. Opcja ta
+unieważnia opcje \fBlogfd\fR i \fBlogfile\fR.
+.B nomagic
+Wyłącz negocjację magicznych numerków. Po włączeniu tej opcji, pppd nie
+potrafi wykryć linii zapętlonej (looped-back). Opcja ta powinna być używana
+tylko jeśli peer ma błędy.
+.TP
+.B nopcomp
+Wyłącz negocjację kompresji pól protokołu w obydwu kierunkach transmisji.
+.TP
+.B nopersist
+Zakończ po dokonaniu i przerwaniu połączenia. Jest to wartość domyślna,
+chyba że użyto opcji \fIpersist\fR lub \fIdemand\fR.
+.TP
+.B nopredictor1
+Nie przyjmuj kompresji Predictor-1.
+.TP
+.B noproxyarp
+Wyłącz opcję \fIproxyarp\fR. Administrator może w ten sposób zabronić
+użytkownikom tworzenia wpisów proxy ARP. Wystarczy umieścić tę opcję w pliku
+/etc/ppp/options.
+.TP
+.B notty
+Normalnie pppd wymaga urządzenia terminalowego. Po użyciu tej opcji, pppd
+alokuje sobie parę master-slave pseudo-tty i używa niewolnika jako
+urządzenie terminalowe. Pppd utworzy proces potomny, zachowujący się jako
+`przetaczacz znaków', przesyłający znaki między masterem pseudo-tty i jego
+standardowym wejściem i wyjściem. W efekcie, pppd będzie przesyłać znaki na
+swoje standardowe wyjście i odbierać je ze swojego standardowego wejścia
+nawet, jeśli nie są one urządzeniami terminalowymi. Opcja ta zwiększa
+oczywiście zajętość CPU. Przy użyciu tej opcji nie można podawać jawnej
+nazwy urządzenia.
+.TP
+.B novj
+Wyłącz kompresję nagłówków TCP/IP w stylu Van Jacobsona. Tyczy się obu
+kierunków transmisji.
+.TP
+.B novjccomp
+Wyłącz opcję kompresji ID-połączenia w kompresji nagłówka TCP/IP w stylu Van
+Jacobsona. Opcja ta powoduje, że pppd ani peer nie będą omijać bajtu
+ID-połączenia w skompresowanych Van Jacobsonowo nagłówkach TCP/IP.
+.TP
+.B papcrypt
+Wskazuje, że wszystkie sekrety z pliku /etc/ppp/pap-secrets, używane do
+sprawdzania tożsamości peera są zakodowane i w związku z tym pppd nie
+powinien przyjmować haseł, które przed zakodowaniem są równoważne sekretom z
+pliku /etc/ppp/pap-secrets.
+.TP
+.B pap-max-authreq \fIn
+Ustaw maksymalną luczbę transmisji żądań uwierzytelnienia PAP na \fIn\fR.
+Domyślnie 10.
+.TP
+.B pap-restart \fIn
+Ustaw interwał restartu PAP (czas opóźnienia retransmisji) na \fIn\fR
+sekund. Domyślnie 3.
+.TP
+.B pap-timeout \fIn
+Ustaw maksymalny czas, przez który pppd ma oczekiwać na uwierzytelnienie od
+peera z pomocą PAP. Czas w sekundach, 0 oznacza brak limitu.
+.TP
+.B pass-filter \fIwyrażenie-filtru
+Określa filtr pakietowy, załączany do przesyłanych pakietów danych w celu
+określenia, które pakiety mogą przepłynąć. Pakiety odrzucane przez filtr są
+po cichu niszczone. Opcja ta może być używana w celu uchronienia pewnych
+demonów sieciowych (jak routed) od używania pasma uplinka lub do zestawienia
+podstawowych elementów zapory ogniowej.
+Składnia \fIwyrażenia-filtru\fR jest taka jak dla tcpdump(1), lecz
+kwalifikatory nieodpowiednie dla połączenia PPP, takie jak \fBether\fR czy
+\fBarp\fR nie są dozwolone. Ogólnie, wyrażenie filtru powinno być ujęte w
+pojedyncze cudzysłowy celem zapobieżenia interpretacji przez powłokę.
+Zauważ, że możliwe jest załączenie różnych przymusów na wchodzące i
+wychodzące pakiety z użyciem kwalifikatorów \fBinbound\fR i \fBoutbound\fR.
+Opcja ta jest obecnie dostępna jedynie pod NetBSD, a i to tylko w wypadku,
+gdy jądro i pppd zostały skompilowane ze zdefiniowanym PPP_FILTER.
+.TP
+.B persist
+Nie kończ działania po zakończeniu połączenia. Zamiast tego spróbuj wznowić
+połączenie.
+.TP
+.B plugin \fInazwapliku
+Załaduj plik obiektowy \fInazwapliku\fR biblioteki dzielonej jako plugin.
+Jest to opcja uprzywilejowana.
+.TP
+.B predictor1
+Zażądaj by peer używał kompresjii Predictor-1 i zgódź się na wysyłanie
+ramek podobnie skompresowanych o ile takie będzie życzenie. Opcja ta nie
+daje żadnego efektu jeśli jądro nie obsługuje kompresji Predictor-1.
+.TP
+.B privgroup \fInazwagrupy
+Zezwol członkom grupy \fInazwagrupy\fR na używanie uprzywilejowanych opcji.
+Jest to opcja uprzywilejowana. Używanie jej wymaga uwagi, gdyż nie można
+zapewnić, że członkowie danej grupy nie spróbują użyć pppd w celu uzyskania
+praw roota. Uznaj to za równoważne wstawieniu członków danej grupy do grupy
+kmem lub disk.
+.TP
+.B proxyarp
+Dodaj wpis do tablicy ARP [Address Resolution Protocol] tego systemu. Ma on
+zawierać adres IP peera i adres ethernetowy tego systemu. Będzie to miało
+efekt taki, że peer dla innych systemów będzie wyglądał jak na lokalnym
+ethernecie.
+.TP
+.B pty \fIskrypt
+Określa polecenie \fIskrypt\fR, jako ośrodek komunikacji zamiast konkretnego
+urządzenia terminalowego. Pppd zaalokuje sobie parę master-slave pseudo-tty
+i użyje niewolnika jako swojego urządzenia terinalowego. \fIskrypt\fR
+zostanie uruchomiony w procesie potomnym z masterem pseudo-tty jako swoim
+standardowym wejściem i wyjściem. Przy używaniu tej opcji nie można podawać
+jawnej nazwy urządzenia. (Uwaga: jeśli w połączeniu z tą, użyta jest opcja
+\fIrecord\fR, proces potomny będzie miał łącza na swoim stadardowym wejściu i
+wyjściu.)
+.TP
+.B receive-all
+Po użyciu tej opcji, pppd będzie przyjmował wszystkie znaki sterujących od
+peera, łącznie z tymi zaznaczonymi w asyncmapie odbiorczej. Bez tej opcji,
+pppd będzie niszczył te znaki, zgodnie z RFC1662. Opcja ta powinna być
+używana tylko jeśli peer jest zapchlony.
+.TP
+.B record \fInazwapliku
+Podaje, że pppd powinien nagrywać wszystkie wysyłane i odbierane znaki do
+pliku o nazwie \fInazwapliku\fR. Plik ten jest otwierany w trybie
+dopisywania, z użyciem ID użytkownika i jego uprawnieniami. Opcja ta jest
+zaimplementowana z użyciem pseudo-tty i procesu do przesyłania znaków między
+pseud-tty a prawdziwym urządzeniem szeregowym. Powoduje ona więc wzrost
+obciążenia CPU. Znaki są wybierane w formacie oznaczonym pieczątkami
+czasowymi, które mogą być wyświetlane w czytelnej postaci z użyciem programu
+pppdump(8).
+.TP
+.B remotename \fInazwa
+Ustaw zakładaną nazwę zdalnego systemu w celu uwierzytelniania na
+\fInazwę\fR.
+.TP
+.B refuse-chap
+Po podaniu tej opcji, pppd nie zgodzi się na uwierzytelnianie się u peera
+z pomocą CHAP.
+.TP
+.B refuse-pap
+Po podaniu tej opcji, pppd nie zgodzi się na uwierzytelnianie się u peera z
+pomocą PAP.
+.TP
+.B require-chap
+Wymagaj od peera uwierzytelnienia się z pomocą CHAP [Challenge Handshake
+Authentication Protocol].
+.TP
+.B require-pap
+Wymagaj od peera uwierzytelnienia się z pomocą PAP [Password Authentication
+Protocol].
+.TP
+.B show-password
+Podczas logowania zawartości pakietów PAP opcja ta powoduje, że pppd
+pokazuje w łańcuchach raportowych hasła.
+.TP
+.B silent
+Po podaniu tej opcji, pppd nie będzie przesyłać pakietów LCP do rozpoczęcia
+połączenia przed odebraniem od peera prawidłowego pakietu LCP (jak dla opcji
+`passive' w starożytnych opcjach pppd).
+.TP
+.B sync
+Użyj synchronicznego kodowania szeregowego HDLC zamiast asynchronicznego.
+Urządzenie używane przez pppd musi mieć obsługę synchroniczną. Obecnie
+pod linuksem i FreeBSD 2.2.8 i późniejszych wspierane są adaptery Microgate 
+SyncLink.
+.TP
+.B updetach
+Po podaniu tej opcji, pppd odłączy się od terminala sterującego po
+zestawieniu połączenia ppp (do momentu kiedy pojawi się pierwszy kontrolny
+protokół sieciowy, zwykle protokół IP).
+.TP
+.B usehostname
+Wymuś użycie nazwy hosta (z dodana ewentualnie nazwą domeny) jako nazwy
+systemu lokalnego w celach uwierzytelniania (przesłania opcję \fIname\fR).
+Opcja ta nie jest zwykle potrzebna, gdyż opcja \fIname\fR jest
+uprzywilejowana.
+.TP
+.B usepeerdns
+Zapytaj peera o dwa serwery DNS. Adresy przekazane przez peera są
+przekazywane od peera do pliku /etc/ppp/ip-up przez zmienne środowiskowe
+DNS1 i DNS2. Dodatkowo, pppd utworzy plik /etc/ppp/resolv.conf, zawierający
+jedną lub dwie linie z adresami, przekazanymi przez peera.
+.TP
+.B user \fInazwa
+Ustaw nazwę używaną do uwierzytelniania systemu lokalnego u peera na
+\fInazwę\fR.
+.TP
+.B vj-max-slots \fIn
+Ustawia liczbę slotów połączeń, używanych w kodzie kompresji nagłówka TCP/IP
+Van Jacobsona. Liczba musi zawierać się między 2 a 16 (włącznie).
+.TP
+.B welcome \fIskrypt
+Uruchom program \fIskrypt\fR przed rozpoczęciem negocjacji PPP, ale po
+skrypcie connect. Wartość tej opcji nadana z uprzywilejowanego źródła nie
+może byc przeciążona przez nieuprzywilejowanego użytkownika.
+.TP
+.B xonxoff
+Włącz programowe sterowanie przepływem (XON/XOFF).
+.SH PLIKI Z OPCJAMI
+Opcje mogą być pobierane z linii poleceń lub z plików. Pppd odczytuje je z
+plików /etc/ppp/options, ~/.ppprc i z /etc/ppp/options.\fInazwatty\fR (w tej
+kolejności) przed przetworzeniem opcji z linii poleceń. (W rzeczywistości,
+opcje linii poleceń są skanowane w celu znalezienia nazwy terminala przed
+odczytem options.\fInazwatty\fR.) Przy formowaniu nazwy pliku
+options.\fInazwatty\fR, usuwany jest przedrostek /dev/,a wszelkie dodatkowe
+znaki / są zamieniane na kropki.
+.PP
+Plik z opcjami jest analizowany jako seria słów, rozdzielonych białymi
+spacjami. Białe spacje mogą być załączane do słowa przez ujęcie całości w
+podwójne cudzysłowy ("). Lewy ukośnik może cytować następujący po nim znak.
+Znak krzyżyka (#) rozpoczyna komentarz, trwający aż do końca linii. Nie ma
+ograniczeń w używaniu opcji \fIfile\fR lub \fIcall\fR w pliku z opcjami.
+.SH BEZPIECZEŃSTWO
+.I pppd
+udostępnia administratorom wydajną kontrolę dostępu dla określonych
+użytkowników, bez strachu o poświęcanie bezpieczeństwa serwera lub sieci, w
+ktrej się znajduje. Kontrola ta polega na ograniczaniu adresów IP,
+jakie może mieć peer, zależnie od identyfikacji i ograniczeń co do opcji,
+których może używać nieuprzywilejowany użytkownik. Różne opcje pppd są
+uprzywilejowane--są to głównie opcje, które mogą wprowadzać zagrożenia w
+konfiguracji; opcje te mogą być przyjmowane jedynie z plików znajdujacych
+się pod kontrolą administratora systemu lub gdy pppd jest uruchamiane z
+poziomu roota.
+.PP
+Domyślnym zachowaniem pppd jest zezwalanie nieuwierzytelnionemu peerowi na
+używanie danego adresu IP tylko jeśli system nie ma jeszcze trasy do tego
+adresu. Na przykład, system o stałym połączeniu do szerszego internetu
+normalnie ma trasę domyślną, więc wszystkie peery muszą się uwierzytelnić
+aby zestawić połączenie. Na takim systemi opcja \fIauth\fR jest domyślna. Z
+drugiej strony, system gdzie łącze ppp jest jedynym połączeniem do internetu
+normalnie nie ma trasy domyślnej, więc peer będzie w stanie używać prawie
+dowolnego adresu IP bez uwierzytelniania.
+.PP
+Jak wykazano wyżej, niektóre opcje bezpieczeństwa są uprzywilejowane, co
+znaczy, że nie mogą być używane przez zwykłego użytkownika uruchamiającego
+suid-root pppd--czy to z linii poleceń czy z pliku ~/.ppprc czy z opcji
+\fIfile\fR.
+Opcje uprzywilejowane mogą być używane w pliku /etc/ppp/options lub w
+dowolnym pliku z opcjami, odczytywanym opcją call. Jeśli pppd jest używane
+przez roota, opcje uprzywilejowane mogą być używane bez ograniczeń.
+.PP
+Przy otwieraniu urządzenia pppd używa ID wołąjącego użytkownika lub UID
+roota (tj. 0), zależnie czy nazwa urządzenia została podana przez
+użytkownika czy administratora. Jeśli nazwa pochodzi ze źródła
+uprzywilejowanego, tj. z /etc/ppp/options lub z pliku z opcjami, odczytanego
+przy użyciu opcji \fIcall\fR, pppd używa pełnych praw roota do dostępu do
+urządzenia. Tak więc tworzenie odpowiedniego pliku w /etc/ppp/peers
+umożliwia administratorowi zezwolenie użytkownikom na zestawianie połączeń
+ppp poprzez urządzenie, do którego normalnie nie mieliby prawa dostępu. W
+przeciwnym wypadku, pppd używa przy otwieraniu urządzenia rzeczywistego UID
+użytkownika.
+.SH UWIERZYTELNIANIE
+Uwierzytelnianie jest procesem przekonywania przez peera drugiej strony o
+swojej tożsamości. Wymaga to wysłania najpierw przez peera swojej nazwy wraz
+z informacją sekretną, która może pochodzić tylko od autoryzowanego
+użytkownika o tej nazwie. W takiej wymianie pierwszego peera nazywa się
+"klientem", a drugiego "serwerem". Klient ma nazwę która określa go dla
+serwera, a serwer ma również nazwę, która określa go dla klienta.
+Ogólnie, klient dzieli pewien sekret (lub hasło) z serwerem i uwierzytelnia
+się poprzez udowodnienie, że zna sekret. Często nazwy używane w
+uwierzytelnianiu odpowiadają internetowym nazwom hostów peerów, lecz nie
+jest to konieczne.
+.LP
+Obecnie pppd obsługuje dwa protokoły uwierzytelniania: PAP i CHAP. PAP
+powoduje, że klient wysyła swoją nazwę oraz hasło do serwera. CHAP natomiast
+powoduje, że serwer wysyła klientowi wezwanie (pakiet wezwania zawiera nazwę
+serwera). Klient musi odpowiedzieć słowami, zawierającymi nazwę plus wartość
+hash, wyciągniętą z dzielonego sekretu i wezwania, udowadniając w ten sposób,
+że zna sekret.
+.LP
+Protokół PPP, będąc symetrycznym, umożliwia obydwu peerom wymaganie
+uwierzytelnienia siebie nawzajem. W tym wypadku następują dwie oddzielne i
+niezależne wymiany pakietów uwierzytelniających. Obydwie wymiany mogą używać
+różnych protokołów uwierzytelniania i, w ogólności, można w nich używać
+różnych nazw.
+.LP
+Domyślnym zachowaniem pppd jest zgoda na uwierzytelnienie po zażądaniu i nie
+wymaganie uwierzytelnienia od  peera. Jednak pppd nie zgodzi się na
+uwierzytelnienie się w konkretnym protokole jeśli nie ma sekretów, których
+mógłby w tym celu użyć.
+.LP
+Pppd przechowuje swoje sekrety w plikach sekretów (/etc/ppp/pap-secrets dla
+PAP i /etc/ppp/chap-secrets dla CHAP). Obydwa pliki sekretów mają ten sam
+format. Pliki te mogą zawierać sekrety dla pppd, używane przy
+uwierzytelnianiu się dla innych systemów oraz sekrety dla pppd, używane przy
+uwierzytelnianiu innych systemów dla nas.
+.LP
+Każda linia pliku sekretów zawiera jeden sekret. Dany sekret jest
+specyficzny dla danej konfiguracji klienta/serwera - może być używana tylko
+przez tego klienta do uwierzytelnienia się przed tym serwerem. Z tego powodu
+każda linia ma trzy pola: nazwę klienta, serwera oraz sekret. Za polami tymi
+może nastąpić lista adresów IP, których dany klient może użyć po połączeniu
+z danym serwerem.
+.LP
+Plik z sekretami jest analizowany jako słowa, jak plik z opcjami, więc nazwa
+klienta, serwera i sekretów muszą być pojedynczymi słowami, gdzie osadzone
+spacje lub znaki specjalne można cytować lub ujmować w cudzysłowy.
+Zauważ, że rozmiar liter jest w przypadku nazw klienta i serwera oraz
+sekretu istotny.
+.LP
+Jeśli sekret rozpoczyna się od `@', to reszta jest rozumiana jako nazwa
+pliku, z którego odczytać sekret. "*" jako klient lub serwer odpowiada
+dowolnej nazwie. Podczas wybierania sekretu pppd wybiera najlepsze
+dopasowanie, tj. dopasowanie wykorzystujące najmniej jokerów.
+.LP
+Wszelkie następujące słowa tej samej linii są uważane za listę adresów IP
+dopuszczalnych dla klienta. Jeśli dane są tylko 3 słowa, lub jeśli pierwszym
+słowem jest "-", to zabronione są wszystkie adresy IP. Aby udostępnić
+dowolny adres, użyj "*". Słowo rozpoczynające się od "!" wskazuje, że podany
+adres \fInie\fR jest dopuszczalny. Adres może mieć na końcu "/" i liczbę
+\fIn\fR, określającą całą podsieć, tj. wszystkie adresy, mające taką samą
+wartość w najbardziej znaczących \fIn\fR bitach. W tej postaci adres może
+mieć na końcu znak plus ("+"), określający, że jeden z adresów podsieci jest
+autoryzowany w oparciu o numer używanej jednostki sieciowego interfejsu ppp.
+W tym przypadku część hosta adresu będzie ustawiana na numer jednostki plus
+jeden.(???)
+.LP
+W ten sposób plik z sekretami zawiera sekrety  używane do uwierzytelniania
+siebie u innych i innych u siebie. Gdy pppd uwierzytelnia peera (sprawdzając
+jego tożsamość), wybiera sekrety, zawierające nazwę peera w pierwszym polu i
+nazwę systemu lokalnego w drugim. Nazwa systemu lokalnego odpowiada nazwie
+hosta z doklejoną nazwy domeny przy użyciu opcji \fIdomain\fR. To domyślne
+zachowanie można przeciążyć opcją \fIname\fR, poza przypadkiem użycia opcji
+\fIusehostname\fR.
+.LP
+Gdy pppd wybiera sekret używany do uwierzytelnienia się u peera, najpierw
+określa, jakiej nazwy użyć do przedstawienia się peerowi. Nazwa ta może być
+podana przez użytkownika opcją \fIuser\fR. Jeśli opcja ta nie jest użyta,
+nazwa odpowiada nazwie systemu lokalnego, określanej jak opisano w
+poprzednim paragrafie. Następnie pppd szuka sekretów o tej nazwie w
+pierwszym polu i o nazwie peera w drugim. Pppd pozna nazwę peera w
+mechanizmie CHAP gdyż ten wyśle ją w pakiecie wyzwania. Jednak jeśli używany
+jest PAP, pppd będzie musiał określić nazwę peera z opcji podanych przez
+użytkowika. Użytkownik może określić nazwę peera bezpośrednio opcją
+\fIremotename\fR. W przeciwnym wypadku, jeśli adres IP zdalnego hosta podano
+nazwą (a nie numerycznie), to zostanie użyta ta nazwa peera. Gdy to się nie
+powiedzie, pppd użyje łańcucha zerowego jako nazwy peera.
+.LP
+Podczas uwierzytelniania peera przez PAP, przekazane hasło jest najpierw
+porównywane z sekretem z pliku sekretów. Jeśli hasło nie pasuje do sekretu,
+to jest ono kodowane z użyciem crypt() i porównywane raz jeszcze. W ten
+sposób, sekrety uwierzytelniające mogą być przechowywane w postaci
+zaszyfrowanej. Jeśli podana jest opcja \fIpapcrypt\fR, pierwsze sprawdzenie
+(bez szyfrowania) jest pomijane.
+.LP
+Co więcej, jeśli podana była opcja \fIlogin\fR, nazwa użytkowika i hasło są
+sprawdzane również według systemowej bazy haseł. W rezultacie, administrator
+systemu może skonfigurować plik sekretów pap na zezwolenie dostępu do PPP
+jedynie dla określonych użytkowników i ograniczyć zestaw adresów IP, które
+każdy z użytkowników może wykorzystać. Zazwyczaj przy użyciu opcji
+\fIlogin\fR, sekret w /etc/ppp/pap-secrets wynosi "", co pasuje do dowolnego
+hasła, przekazanego przez peera. Zapobiega to potrzebie posiadania tego
+samego sekretu w dwóch miejscach.
+.LP
+Uwierzytelnianie musi być zakończone przed IPCP (lub dowolnym innym NCP).
+Jeśli peer musi się uwierzytelnić, a nie uda się mu to, pppd zakończy
+połączenie (zamykając LCP). Jeśli IPCP wynegocjuje niedopuszczalny adres IP
+dla hosta zdalnego, IPCP zostanie zamknięte. Pakiety IP mogą być przesyłane
+tylko jeśli IPCP jest otwarte.
+.LP
+W niektórych przypadkach oczekiwane jest umożliwienie niektórym hostom,
+które nie mogą się uwierzytelnić połączenie i używanie ograniczonego zbioru
+adresów IP, nawet jeśli lokalny host ogólnie wymaga uwierzytelnienia. Jeśli
+peer odmówi uwierzytelnienia po takim żądaniu, pppd bierze to za
+równoważność uwierzytelnienia przy użyciu pustego łańcucha nazwy użytkownika
+i hasła. W ten sposób, dodając linię sekretów z pustym klientem i hasłem,
+można umożliwić ograniczony dostęp dla hostów, które nie chcą się
+uwierzytelnić.
+.SH ROUTING
+.LP
+Po pomyślnym zakończeniu negocjacji IPCP pppd poinformuje jądro o lokalnym i
+zdalny adresie IP interfejsu ppp. Jest to wystarczający zabieg do utworzenia
+trasy do zdalnego końca połączenia, co umożliwia peerom wymianę pakietów IP.
+Komunikacja z innymi maszynami wymaga w ogólności dalszych modyfikacji
+tablic routingu i/lub tablic ARP. W większości wypadków wystarczające są
+opcje \fIdefaultroute\fR i/lub \fIproxyarp\fR, lecz w niektórych wypadkach
+wymagana jest dalsza interwencja. Można do tego wykorzystać skrypt
+/etc/ppp/ip-up.
+.LP
+Czasami wymagane jest dodanie domyślnej trasy poprzez zdalny host, jak w
+wypadku maszyny, której jedynym połączeniem z internetem jest interfejs ppp.
+Opcja \fIdefaultroute\fR powoduje, że pppd tworzy taką domyślną trasę po
+pojawieniu IPCP i kasuje ją po zakończeniu połączenia.
+.LP
+W niektórych przypadkach wymagane jest użycie proxy ARP, np. na maszynie
+serwerowej podłączonej do LAN, aby reszta hostów mogła komunikować się ze
+zdalnym hostem. Opcja \fIproxyarp\fR powoduje, że pppd szuka interfejsu
+sieciowego o tej samej podsieci co zdalny host (interfejs obsługujący
+broadcast i ARP, który jest włączony i nie jest interfejsem ppp lub
+loopback). Po znalezieniu, pppd tworzy perrmanentny publikowany wpis ARP z
+adresem IP zdalnego hosta i adresem sprzętowym znalezionego interfejsu
+sieciowego.
+.LP
+Gdy używana jest opcja \fIdemand\fR, adresy IP są już ustawione przy
+pojawieniu IPCP. Jeśli pppd nie było w stanie wynegocjować tego samego
+adresu, którego używało do konfiguracji interfejsu (np. gdy peer jest ISP,
+używającym dynamicznych IP), pppd musi zmienić adresy interfejsu IP na
+wynegocjowane. Może to zniszczyć istniejące połączenia i używanie tego typu
+wydzwaniania z dynamicznymi peerami nie jest zalecane.
+.SH PRZYKŁADY
+.LP
+Następujące przykłady zakładają, że plik /etc/ppp/options zawiera opcję
+\fIauth\fR (jak w domyślnym pliku /etc/ppp/options w dystrybucji ppp).
+.LP
+Prawdopodbnie najpopularniejszym zastosowaniem pppd jest wykręcanie numeru
+ISP. Może to być dokonywane poleceniem takim, jak
+.IP
+pppd call isp
+.LP
+gdzie plik /etc/ppp/peers/isp jest skonfigurowany przez administratora
+systemu na zawieranie czegoś w rodzaju:
+.IP
+ttyS0 19200 crtscts
+.br
+connect '/usr/sbin/chat \-v \-f /etc/ppp/chat\-isp'
+.br
+noauth
+.LP
+W tym przykładzie używamy chat(8) do wykręcenia numeru ISP i przechodzimy
+przez wymaganą sekwencję logowania. Plik /etc/ppp/chat-isp zawiera skrypt
+używany przez chat; może na przykład zawierać coś w rodzaju
+.IP
+ABORT "NO CARRIER"
+.br
+ABORT "NO DIALTONE"
+.br
+ABORT "ERROR"
+.br
+ABORT "NO ANSWER"
+.br
+ABORT "BUSY"
+.br
+ABORT "Username/Password Incorrect"
+.br
+"" "at"
+.br
+OK "at&d0&c1"
+.br
+OK "atdt2468135"
+.br
+"name:" "^Umyuserid"
+.br
+"word:" "\\qmypassword"
+.br
+"ispts" "\\q^Uppp"
+.br
+"~-^Uppp-~"
+.LP
+Dla dalszych szczegółów obejrzyj stronę podręcznika do chat(8).
+.LP
+Pppd może również być używane do udostępniania usługi dial-in dla
+użytkowników. Jeśli użytkownicy mają już konta, to najprostszym sposobem
+skonfigurowania usługi ppp jest zezwalanie użytkownikom na logowanie się na
+ich konta i uruchamianie pppd z pomocą komendy takiej, jak
+.IP
+pppd proxyarp
+.LP
+Aby umożliwić użytkownikowi używanie zabudowy PPP, musisz zaalokować adres
+IP dla maszyny użytkowika i utworzyć wpis w /etc/ppp/pap-secrets lub
+/etc/ppp/chap-secrets (zależnie od metody uwierzytelniania, preferowanej
+przez użytkownika), aby użytkownik mógł się uwierzytelnić. Na przykład,
+jeśli Joe ma maszynę o nazwie "joespc", która może wdzwaniać się na maszynę
+o nazwie "server" i używać adresu IP joespc.my.net, to w pliku z sekretami
+należy umieścić następujący wpis:
+.IP
+joespc	server	"joe's secret"	joespc.my.net
+.LP
+Alternatywnie możesz utworzyć użytkownika o nazwie (np.) "ppp", którego
+powłoką zgłoszeniową jest pppd i którego katalogiem domowym jest /etc/ppp.
+Opcje używane przez pppd w takim trybie mogą być wstawione do
+/etc/ppp/.ppprc.
+.LP
+Jeśli twoje połączenie szeregowe jest trochę bardziej złożone niż kawałek
+kabla, to możesz być zmuszonym zaaranżować jakieś znaki sterujące do
+cytowania. Na przykład często przydatne jest cytowanie XON (^Q) i XOFF (^S)
+przy użyciu \fIasyncmap a0000\fR. Jeśli ścieżka zawiera telneta, to
+prawdopodobnie powinieneś również cytować ^] (\fIasyncmap 200a0000\fR).
+Jeśli ścieżka zawiera rlogin, to na końcówce rloginowej powinieneś używać
+opcji \fIescape ff\fR, gdyż wiele implementacji rlogin nie jest
+przezroczystych; usuwają one sekwencje [0xff, 0xff, 0x73, 0x73, plus
+dowolnych osiem bajtów] ze strumienia.
+.SH DIAGNOSTYKA
+.LP
+Komunikaty są przesyłane do demona sysloga przy użyciu zabudowy LOG_DAEMON.
+(Może to być przesłonięte przez rekompilowanie pppd z makrem LOG_PPP
+przedefiniowanym na pożądaną zabudowę.) Aby zobaczyć komunikaty o błędach i
+debuggowe, musisz wyedytować plik /etc/syslog.conf tak, aby przekierowywał
+komunikaty na określone urządzenie wyjściowe lub plik.
+.LP
+Opcja \fIdebug\fR powoduje, że zawartość wszystkich przesyłanych pakietów
+kontrolnych jest raportowana. Tzn. wszystkie pakiety LCP, PAP, CHAP lub
+IPCP. Może to być przydatne jeśli negocjacja ppp się nie powodzi lub jeśli
+zawodzi uwierzytelnianie.
+Jeśli debuggowanie jest włączone podczas kompilacji, opcja \fIdebug\fR
+powoduje również raportowanie innych komunikatów debuggowych.
+.LP
+Debuggowanie może być też włączone lub wyłączone przez wysłanie do procesu
+pppd sygnału SIGUSR1. Sygnał ten działa jak przełącznik.
+.SH KOD WYJŚCIA
+Kod wyjścia pppd jest ustawiany do wskazania czy zaszedł błąd lub pokazania
+powodu zakończenia połączenia. Dopuszczalne wartości to:
+.TP
+.B 0
+Pppd odłączyło się od terminala, lub też połączenie zostało pomyślnie
+zestawione i zakończone na żądanie peera.
+.TP
+.B 1
+Zaistniajł jakiś błąd krytyczny, taki jak niepowodzenie podstawowego wywołania
+systmowego czy brak pamięci.
+.TP
+.B 2
+W przetwarzaniu podanych opcji wykryto błąd, np. użyto dwóch wykluczających
+się opcji.
+.TP
+.B 3
+Pppd nie jest suid-root, a wołający użytkownik nie jest rootem.
+.TP
+.B 4
+Jądro nie daje wsparcia ppp, tj. sterownik ppp jądra nie jest załączony lub
+nie może zostać załadowany.
+.TP
+.B 5
+Pppd zakończyło działanie przez SIGINT, SIGTERM lub SIGHUP.
+.TP
+.B 6
+Port szeregowy nie mógł zostać zablokowany.
+.TP
+.B 7
+Port szeregowy nie mógł zostać otwarty.
+.TP
+.B 8
+Skrypt connect się nie powiódł (zwrócił niezerowy kod wyjścia).
+.TP
+.B 9
+Polecenie podane jako argument opcji \fIpty\fR nie mogło zostać uruchomione.
+.TP
+.B 10
+Negocjacja PPP się nie powiodła, tj. nie osiągnęła punktu w którym działałby
+choć jeden protokół sieciowy (np. IP).
+.TP
+.B 11
+System peera nie przeszedł procedury uwierzytelniania.
+.TP
+.B 12
+Połączenie zostało pomyślnie zestawione i zakończone z powodu bezczynności.
+.TP
+.B 13
+Połączenie zostąło pomyślnie zestawione i zakończone z powodu limitu czasu
+połączenia.
+.TP
+.B 14
+Wynegocjowano callback i wkrótce pojawi się nadchodzący telefon.
+.TP
+.B 15
+Połączenie zostało zakończone gdyż peer nie odpowiadał na żądania echa.
+.TP
+.B 16
+Połączenie zostało zakończone przez modem, który odwiesił słuchawkę.
+.TP
+.B 17
+Negocjacja PPP nie powiodła się przez wykrycie szeregowego zapętlenia
+(loopback).
+.TP
+.B 18
+Skrypt init się nie powiódł (zwrócił niezerowy kod wyjścia).
+.TP
+.B 19
+Nie uwierzytelniliśmy się u peera.
+.SH SKRYPTY
+Pppd na różnych etapach działania wywołuje różne skrypty, używane do
+dokonywania specyficznego dla stacji przetwarzania. Skrypty te są zwykle
+skryptami powłoki, lecz mogą równie dobrze być programami binarnymi. Pppd
+nie czeka aż skrypty skończą działanie. Skrypty są wywoływane z
+uprawnieniami roota (z rzeczywistym i efektywnym UID 0), więc mogą robić
+takie rzeczy jak odświeżanie tablic routingu czy uruchamianie
+uprzywilejowanych demonów. Uważaj, by skrypty te nie osłabiły bezpieczeństwa
+systemu. Pppd uruchamia skrypty ze standardowym wejściem, wyjściem i
+wyjściem błędu przekierowanym na /dev/null i ze środowiskiem, które jest
+puste, poza pewnymi zmiennymi środowiskowymi, które dają informacje o łączu.
+Zmienne te są następujące:
+.TP
+.B DEVICE
+Nazwa używanego urządzenia szeregowego tty.
+.TP
+.B IFNAME
+Nazwa używanego interfejsu sieciowego.
+.TP
+.B IPLOCAL
+Adres IP lokalnego końca połączenia. Jest to ustawione tylko po przejściu
+IPCP.
+.TP
+.B IPREMOTE
+Adres IP zdalnego końca połączenia. Jest to ustawione tylko po przejściu
+IPCP.
+.TP
+.B PEERNAME
+Uwierzytelniona nazwa peera. Jest to ustawiane tylko jeśli peer się
+uwierzytelnił.
+.TP
+.B SPEED
+Szybkość urządzenia tty.
+.TP
+.B ORIG_UID
+ID użytkownika, który wywołał pppd.
+.TP
+.B PPPLOGNAME
+Nazwa użytkownika, który wywołał pppd. Jest to zawsze ustawione.
+.P
+Dla skryptów ip-down i auth-down, pppd ustawia ponadto następujące zmienne,
+dające statystyki połączenia:
+.TP
+.B CONNECT_TIME
+Liczba sekund od kiedy rozpoczęła się negocjacja PPP, aż do zakończenia
+połączenia.
+.TP
+.B BYTES_SENT
+Liczba wysłanych bajtów (na poziomie portu szeregowego) podczas
+połączenia.
+.TP
+.B BYTES_RCVD
+Liczba odebranych podczas połączenia bajtów (na poziomie portu szeregowego).
+.TP
+.B LINKNAME
+Logiczna nazwa łącza, ustawiana opcją \fIlinkname\fR.
+.P
+Pppd wywołuje następujące skrypty, o ile one istnieją. Nie jest błędem,
+jeśli ich nie ma:
+.TP
+.B /etc/ppp/auth-up
+Program lub skrypt wykonywany po uwierzytelnieniu przez zdalny system. Jest
+wywoływany z parametrami
+.IP
+\fInazwa-interfejsu nazwa-peera nazwa-użytkownika urządzenie-tty szybkość\fR
+.IP
+Zauważ, że skrypt ten nie jest wykonywany jeśli peer się nie uwierzytelni,
+np. po użyciu opcji \fInoauth\fR.
+.TP
+.B /etc/ppp/auth-down
+Program lub skrypt, który jest uruchamiany przy wyłączaniu połączenia, jeśli
+uruchamiano wcześniej /etc/ppp/auth-up. Jest wykoywany w ten sam sposób co
+do parametrów, jak auth-up.
+.TP
+.B /etc/ppp/ip-up
+Program lub skrypt, który jest wykonywany gdy łącze jest w stanie przesyłać
+lub odbierać pakiety IP (tj. po przejściu IPCP). Jest wykonywany z
+parametrami
+.IP
+\fInazwa-interfejsu urządzenie-tty szybkość adres-lokalnego-IP
+adres-zdalnego-IP ipparam\fR
+.TP
+.B /etc/ppp/ip-down
+Program lub skrypt, który jest wykonywany gdy łącze nie jest już w stanie
+przesyłać pakiety IP. Skrypt ten może być wykonywany do odtwarzania zmiany
+wywołanych przez /etc/ppp/ip-up. Jest wywoływany z tymi samymi parametrami
+co skrypt up-up.
+.TP
+.B /etc/ppp/ipv6-up
+Podobne do /etc/ppp/ip-up, lecz jest wykonywane gdy łącze jest w stanie
+przesyłać pakiety IPv6. Jest wykonywane z parametrami
+.IP
+\fInazwa-interfejsu urządzenie-tty szybkość adres-lokalnego-łącza
+adres-zdalnego-łącza ipparam\fR
+.TP
+.B /etc/ppp/ipv6-down
+Podobne do /etc/ppp/ip-down, lecz jest wykonywane gdy łącze nie jest w
+stanie już transmitować pakietów IPv6. Jest wykonywane z tymi samymi
+parametrami co skrypt ipv6-up.
+.TP
+.B /etc/ppp/ipx-up
+Program lub skrypt, który jest wykonywany gdy łącze jest w stanie przesyłać
+lub odbierać pakiety IPX (tj. po przejściu IPXCP). Jest wykonywany z
+parametrami
+.IP
+\fInazwa-interfejsu urządzenie-tty szybkość numer-sieci lokalny-adres-węzła-IPX
+zdalny-adres-węzła-IPX lokalny-protokół-trasujący-IPX zdalny-protokół-trasujący-IPX
+lokalna-nazwa-routera-IPX zdalna-nazwa-routera-IPX ipparam pid-pppd\fR 
+.IP
+Pola lokalnego/zdalnego-protokołu-trasującego-IPX mogą być jednymi z
+następujących:
+.IP
+NONE      określa brak protokołu trasującego
+.br
+RIP       określa chęć używania RIP/SAP
+.br
+NLSP      określa chęć używania Novell NLSP
+.br
+RIP NLSP  określa chęć używania RIP/SAP i NLSP
+.TP
+.B /etc/ppp/ipx-down
+Program lub skrypt, który jest wykonywany gdy łącze nie może już przesyłać
+pakietów IPX. Skrypt ten może być używany do anulowania efektów działania
+skryptu ipx-up. Jest wywoływany z tymi samymi parametrami co ipx-up.
+.SH PLIKI
+.TP
+.B /var/run/ppp\fIn\fB.pid \fR(BSD lub Linux), \fB/etc/ppp/ppp\fIn\fB.pid \fR(inne)
+PID procesu pppd na jednostce interfejsu ppp numer \fIn\fR.
+.TP
+.B /var/run/ppp-\fInazwa\fB.pid \fR(BSD lub Linux), \fB/etc/ppp/ppp-\fInazwa\fB.pid \fR(inne)
+PID procesu pppd na logicznym łączu \fInazwa\fR (zobacz opcję
+\fIlinkname\fR).
+.TP
+.B /etc/ppp/pap-secrets
+Użytkownicy, hasła i adresy IP do uwierzytelniania PAP. Plik ten powinien
+należeć do roota i nie nadawać się do odczytu/zapisu dla innych
+użytkowników. W innym wypadku pppd zgłosi ostrzeżenie.
+.TP
+.B /etc/ppp/chap-secrets
+Nazwy, sekrety i adresy IP dla uwierzytelniania CHAP. Podobnie jak dla
+powyższego, plik ten również powinien być własnością roota i niczyją inną. W
+przeciwnym wypadku pppd zgłosi ostrzeżenie.
+.TP
+.B /etc/ppp/options
+Domyślne opcje pppd systemu, odczytywane przed opcjami użytkownika lub linii
+poleceń.
+.TP
+.B ~/.ppprc
+Opcje użytkownika, odczytywane przed /etc/ppp/options.\fInazwatty\fR.
+.TP
+.B /etc/ppp/options.\fInazwatty
+Domyślne opcje systemowe dla używanego portu szeregowego, odczytywane po
+~/.ppprc. W części \fInazwatty\fR tej nazwy pliku usunięte jest
+poprzedzeające /dev/, a wszelkie ukośniki są zamienione na kropki.
+.TP
+.B /etc/ppp/peers
+Katalog, zawierający pliki z opcjami, które mogą zawierać uprzywilejowane
+opcje nawet jeśli pppd został wywołany przez użytkownika innego niż root.
+Administrator systemu może tworzyć w tym katalogu pliki z opcjami,
+zezwalającymi nieuprzywilejowanym użytkownikom wydzwanianie bez wymagania
+uwierzytelnienia od peera, lecz tylko do zaufanych peerów.
+.SH ZOBACZ TAKŻE
+.TP
+.B RFC1144
+Jacobson, V.
+\fIKompresowanie nagłówków TCP/IP dla wolnych łączy szeregowych.\fR
+Luty 1990.
+.TP
+.B RFC1321
+Rivest, R.
+.I Algorytm Message-Digest MD5.
+Kwiecień 1992.
+.TP
+.B RFC1332
+McGregor, G.
+.I PPP Internet Protocol Control Protocol (IPCP).
+Maj 1992.
+.TP
+.B RFC1334
+Lloyd, B.; Simpson, W.A.
+.I Protokoły uwierzytelniania PPP.
+Październik 1992.
+.TP
+.B RFC1661
+Simpson, W.A.
+.I Protokół Point\-to\-Point (PPP).
+Lipiec 1994.
+.TP
+.B RFC1662
+Simpson, W.A.
+.I PPP w ramkach typu HDLC.
+Lipiec 1994.
+.TP
+.B RFC2472
+Haskin, D.
+.I IP wersja 6 w PPP
+Grudzień 1998.
+.SH UWAGI
+Następujące sygnały mają podane działanie po wysłaniu do pppd:
+.TP
+.B SIGINT, SIGTERM
+Sygnały te powodują, że pppd kończy połączenie (zamykając LCP), odtwarza
+ustawienia urządzenia szeregowego i kończy działanie.
+.TP
+.B SIGHUP
+Sygnał ten powoduje, że pppd kończy połączenie, odtwarza ustawienia portu
+szeregowego i zamyka urządzenie szeregowe. Jeśli podana jest opcja
+\fIpersist\fR lub \fIdemand\fR, pppd spróbuje otworzyć urządzenie szeregowe
+i rozpocząć nowe połączenie (po okresie przetrzymania--holdoff).
+W przeciwnym wypadku, pppd zakończy działanie. Jeśli sygnał ten jest
+odebrany podczas okresu przetrzymania, powoduje on, że pppd kończy ten okres
+natychmiast.
+.TP
+.B SIGUSR1
+Sygnał ten przełącza stan opcji \fIdebug\fR.
+.TP
+.B SIGUSR2
+Sygnał ten powoduje, że pppd renegocjuje kompresję. Może to być przydatne do
+ponownego włączania kompresji po jej wyłączeniu w wyniku krytycznego błędu
+dekompresji. (Błędy takie w ogólności wskazują na błąd w którejś
+implementacji.)
+
+.SH AUTORZY
+Paul Mackerras (Paul.Mackerras@cs.anu.edu.au), w oparciu o wcześniejsze
+prace Drewa Perkinsa,
+Brada Clementsa,
+Karla Foxa,
+Grega Christy'ego,
+i
+Brada Parkera.

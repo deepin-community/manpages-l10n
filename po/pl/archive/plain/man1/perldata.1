@@ -1,0 +1,905 @@
+.\" {PTM/WK/0.1/IX-1999}
+.rn '' }`
+.\" $RCSfile: perldata.1,v $$Revision: 1.4 $$Date: 2002/05/21 09:29:19 $
+.\"
+.\" $Log: perldata.1,v $
+.\" Revision 1.4  2002/05/21 09:29:19  robert
+.\" za wyjątkiem --> z wyjątkiem
+.\" i inne poprawki
+.\"
+.\" Revision 1.3  2000/10/22 16:15:28  wojtek2
+.\" wiodące (spacje, zera etc.)->początkowe
+.\" kontrolne (znaki, sekwencje)->sterujące
+.\" także "klawisze kontrolne" (Ctrl+klaw.)->klawisze sterujące
+.\"
+.\" Revision 1.2  1999/09/11 15:19:00  pborys
+.\" hypertekstualizacja
+.\"
+.\" Revision 1.1  1999/09/07 15:01:02  wojtek2
+.\" perldata.1: typy danych w perlu
+.\"
+.\"
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+.\"
+.\"
+.\"     Set up \*(-- to give an unbreakable dash;
+.\"     string Tr holds user defined translation string.
+.\"     Bell System Logo is used as a dummy character.
+.\"
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+.\"   \*(M", \*(S", \*(N" and \*(T" are the equivalent of
+.\"   \*(L" and \*(R", except that they are used on ".xx" lines,
+.\"   such as .IP and .SH, which do another additional levels of
+.\"   double-quote interpretation
+.ds M" """
+.ds S" """
+.ds N" """""
+.ds T" """""
+.ds L' '
+.ds R' '
+.ds M' '
+.ds S' '
+.ds N' '
+.ds T' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds M" ``
+.ds S" ''
+.ds N" ``
+.ds T" ''
+.ds L' `
+.ds R' '
+.ds M' `
+.ds S' '
+.ds N' `
+.ds T' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH PERLDATA 1 "perl 5.005, patch 02" "24 lipca 1998" "Podręcznik programisty Perla"
+.UC
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH NAZWA
+perldata \- typy danych Perla
+.SH "OPIS"
+.Sh "Nazwy zmiennych"
+Perl posiada trzy typy struktur danych: skalary, tablice skalarów oraz
+asocjacyjne tablice skalarów, zwane też "haszami" (\*(L"hashes\*(R").
+Zwykłe tablice indeksowane są liczbami, począwszy od 0 (indeksy ujemne są
+liczone od końca tablicy). Tablice asocjacyjne indeksowane są łańcuchami.
+.PP
+Wartości są zwykle przypisane do nazwy (lub nazwanego odwołania).
+.\" Values are usually referred to by name (or through a named reference).
+Pierwszy znak nazwy mówi o tym, do jakiego rodzaju struktury danych się ona
+odnosi. Reszta nazwy określa konkretną wartość, do której odnosi się nazwa.
+Najczęściej składa się ona z pojedynczego \fIidentyfikatora\fR, to znaczy,
+łańcucha rozpoczynającego się literą lub znakiem podkreślenia i zawierającego
+litery, podkreślenia i cyfry. W niektórych przypadkach może być ciągiem
+identyfikatorów, rozdzielonych przez \f(CW::\fR (lub przez \f(CW'\fR, ale
+nie jest to polecane). Wszystkie oprócz ostatniego interpretowane są jako nazwy
+pakietów, wskazując przestrzenie nazw, w których będzie wyszukiwany ostatni
+identyfikator (szczegóły znajdziesz w sekcji \f(CWPackages\fR podręcznika
+\fIperlmod\fR(1)).
+Możliwe jest zastąpienie prostego identyfikatora wyrażeniem, które w czasie
+wykonania tworzy odwołanie do wartości; jest to opisane szczegółowo poniżej
+oraz na stronie \fIperlref\fR(1) podręcznika.
+.PP
+Istnieją również zmienne specjalne, których nazwy nie przestrzegają powyższych
+reguł, po to by nie kolidowały przypadkowo z którąś z twych zwykłych zmiennych.
+Łańcuchy, które pasują do objętych nawiasami okrągłymi części wyrażenia
+regularnego zachowywane są pod nazwami zawierającymi tylko cyfry po znaku
+\f(CW$\fR (patrz strony \fIperlop\fR(1) i \fIperlre\fR(1) dokumentacji).
+Dodatkowo, kilka zmiennych specjalnych, umożliwiających dostęp do wewnętrznych
+rozwiązań Perla, posiada nazwy zawierające znaki przestankowe
+(zobacz strony \fIperlvar\fR(1) dokumentacji).
+.PP
+Wartości skalarne zawsze noszą nazwy rozpoczynające się znakiem \*(L'$\*(R',
+nawet, gdy odnoszą się do skalara będącego częścią tablicy. Działa to podobnie jak
+angielski przedimek \*(L"the\*(R".
+A zatem mamy:
+.PP
+.Vb 4
+\&    $dni             # zwykła wartość skalarna "dni"
+\&    $dni[28]         # 29-ty element tablicy
+\&    $dni{'luty'}     # wartość dla klucza 'luty' z hasza %dni
+\&    $#dni            # ostatni indeks tablicy @dni
+.Ve
+ale całe tablice lub wycinki tablic oznaczane są przez \*(L'@\*(R',
+co działa jak angielskie słowo \*(L"these\*(R" lub \*(L"those":
+.PP
+.Vb 3
+\&    @dni             # ($dni[0], $dni[1],... $dni[n])
+\&    @dni[3,4,5]      # to samo, co @dni[3..5]
+\&    @dni{'a','c'}    # to samo, co ($dni{'a'},$dni{'c'})
+.Ve
+zaś całe tablice asocjacyjne (hasze) oznaczane są przez \*(L'%':
+.PP
+.Vb 1
+\&    %dni             # (klucz1, wartość1, klucz2, wartość2 ...)
+.Ve
+Dodatkowo, procedury nazywane są z użyciem początkowego \*(L'&\*(R', choć jest
+to opcjonalne, jeśli nie jest dwuznaczne
+(tak jak w języku angielskim często zbyteczne jest użycie słowa\*(L"do\*(R").
+Elementy tablicy symboli mogą być nazywane z użyciem początkowego \*(L'*\*(R',
+ale na razie nie musisz się tym zajmować.
+.PP
+Każdy typ zmiennych ma swoją własną przestrzeń nazw. Możesz, bez obawy
+o konflikt, używać tej samej nazwy dla zmiennej skalarnej, tablicy czy
+tablicy asocjacyjnej (lub uchwytu pliku, nazwy procedury czy etykiety).
+Oznacza to, że \f(CW$foo\fR i \f(CW@foo\fR są dwoma różnymi
+zmiennymi. Znaczy to też, że \f(CW$foo[1]\fR jest częścią tablicy \f(CW@foo\fR,
+nie zaś częścią skalara \f(CW$foo\fR. Może się to wydawać trochę dziwne, ale
+tak ma być, gdyż to jest dziwne.
+.\" seem a bit weird, but that's okay, because it is weird.
+.PP
+Ponieważ odniesienia do zmiennych i tablic zawsze rozpoczynają się od
+\&'$', '@' lub '%', to słowa \*(L"zarezerwowane\*(R"
+nie są naprawdę zarezerwowane w odniesieniu do nazw zmiennych.
+(Jednak \s-1SĄ\s0 one zarezerwowane w odniesieniu do etykiet i uchwytów plików,
+które nie posiadają specjalnego początkowego znaku. Nie możesz, na przykład,
+użyć uchwytu pliku o nazwie \*(L"log\*(R". Wskazówka: możesz napisać
+\f(CWopen(LOG,'logfile')\fR zamiast \f(CWopen(log,'logfile')\fR.  
+Użycie nazw uchwytów plików złożonych z dużych liter poprawia również
+czytelność i chroni przed konfliktami z przyszłymi słowami zastrzeżonymi.
+Wielkość liter JEST znacząca\*(--"\s-1FOO\s0\*(R", \*(L"Foo\*(R"
+oraz \*(L"foo\*(R" są zupełnie innymi nazwami. Nazwy rozpoczynające się
+literą lub znakiem podkreślenia mogą zawierać również cyfry i podkreślenia.
+.PP
+Możliwe jest zastąpienie takiej alfanumerycznej nazwy wyrażeniem, które
+zwraca odwołanie do obiektu danego typu. Opis tego znajdziesz na stronie
+\fIperlref\fR(1) podręcznika.
+.PP
+Nazwy rozpoczynające się cyfrą mogą zawierać tylko cyfry. Nazwy, które nie
+zaczynają się od litery, podkreślenia ani cyfry ograniczone są do pojedynczego
+znaku, np. \f(CW$%\fR czy \f(CW$$\fR. (Większość z tych jednoznakowych nazw
+ma predefiniowane znaczenie dla Perla. Na przykład, \f(CW$$\fR jest
+identyfikatorem bieżącego procesu.)
+.Sh "Kontekst"
+Interpretacja operacji i wartości w Perlu zależy czasami od wymagań kontekstu,
+w jakim użyta jest operacja czy wartość. Istnieją dwa główne konteksty:
+skalarny i listowy. Niektóre z operacji zwracają wartości listowe w kontekście
+oczekującym listy, zaś wartości skalarne w przeciwnym przypadku.
+(Jeśli tak jest dla danej operacji, to zostanie to wspomniane w jej opisie.)
+Innymi słowy, Perl przeciąża pewne operacje w oparciu o to, czy spodziewana
+jest pojedyncza wartość czy mnoga. (W podobny sposób funkcjonują w języku
+angielskim niektóre słowa, jak \*(L"fish\*(R" czy \*(L"sheep\*(R".)
+.PP
+Na zasadzie wzajemności,
+.\" In a reciprocal fashion,
+operacja dostarcza albo kontekstu skalarnego albo
+listowego każdemu ze swych argumentów. Na przykład, jeśli napiszesz
+.PP
+.Vb 1
+\&    int( <STDIN> )
+.Ve
+to operacja całkowita (integer) dostarcza kontekst skalarny dla operatora
+<\s-1STDIN\s0>, który odpowiada czytając jeden wiersz z \s-1STDIN\s0
+i przesyłając go z powrotem do operacji integer. Ta z kolei znajduje
+wartość typu integer tego wiersza i zwraca ją. Jeżeli, z drugiej strony,
+napiszesz
+.PP
+.Vb 1
+\&    sort( <STDIN> )
+.Ve
+To operacja sortowania dostarcza kontekstu listowego dla <\s-1STDIN\s0>,
+który będzie przetwarzać wszystkie dostępne wiersze aż do końca pliku.
+Następnie prześle listę tych wierszy z powrotem do procedury sortowania,
+która z kolei posortuje dostarczone wiersze i zwróci je w postaci listy
+do kontekstu w jakim wywołano sort.
+.PP
+Przypisanie jest trochę specyficzne, w tym, iż posługuje się swym lewym
+argumentem do ustalenia kontekstu dla prawego argumentu. Przypisanie do
+skalara oblicza prawą stronę w kontekście skalarnym, podczas gdy przypisanie
+do tablicy lub wycinka tablicy rozwija prawą stronę w kontekście listowym.
+Przypisanie do listy również oblicza prawą stronę w kontekście listowym.
+.PP
+Procedury definiowane przez użytkownika mogą sprawdzać, czy są wywołane
+w kontekście skalarnym czy listowym, ale większość z nich nie dba o to, gdyż
+skalary są automatycznie interpolowane w listy. Zobacz opis funkcji
+\f(CWwantarray\fR na stronie \fIperlfunc\fR(1).
+.Sh "Wartości skalarne"
+Wszystkie dane w Perlu są skalarami lub tablicami skalarów albo haszami
+skalarów. Zmienne skalarne mogą zawierać różne rodzaje pojedynczych danych,
+jak liczby, łańcuchy znakowe czy odwołania. Ogólnie, konwersja z jednej postaci
+na drugą jest transparentna. (Skalar nie może zawierać wielu wartości, ale może
+zawierać odwołanie do tablicy czy hasza zawierających wiele wartości.)
+Z powodu automatycznej konwersji skalarów, operatory i funkcje zwracające
+skalary nie muszą dbać o to (i faktycznie nie dbają), czy kontekst oczekuje
+łańcucha czy też liczby.
+.PP
+Skalary nie są koniecznie tą czy inną rzeczą. Nie ma możliwości zadeklarowania
+zmiennej skalarnej o typie \*(L"string\*(R", \*(L"number\*(R", typu
+\*(L"filehandle\*(R", czy jakiegoś innego. Perl jest językiem kontekstowo
+polimorficznym, w którym skalary mogą być łańcuchami, liczbami czy odwołaniami
+(co obejmuje obiekty). Łańcuchy i liczby uważane są za mniejwięcej to samo
+w niemal każdym zastosowaniu. Odwołania są jednak nierzutowalnymi wskaźnikami
+o ściśle określonym typie, z wbudowanym licznikiem odwołań i wywołaniami
+destruktora.
+.PP
+Wartość skalarna interpretowana jest jako prawda, \s-1TRUE\s0, w sensie
+logiki boolowskiej, jeśli nie jest łańcuchem pustym ani liczbą zero (lub jej
+łańcuchowym równoważnikiem, \*(L"0"). Kontekst boolowski (logiczny) jest
+po prostu specyficznym rodzajem kontekstu skalarnego.
+.PP
+Faktycznie istnieją dwie odmiany skalarów pustych: zdefiniowane
+i niezdefiniowane. Niezdefiniowane skalary puste zwracane są gdy brak jest
+rzeczywistej wartości czegoś, jak w przypadku wystąpienia błędu lub na końcu
+pliku, albo gdy odwołujesz się do niezdefiniowanej zmiennej czy elementu
+tablicy. Niezdefiniowany pusty skalar może stać się zdefiniowany po tym, jak
+po raz pierwszy użyjesz go tak, jakby był zdefiniowany. Ale przed tym możesz
+posłużyć się operatorem \fIdefined()\fR, by stwierdzić, czy wartość jest
+zdefiniowana czy też nie.
+.PP
+By stwierdzić, czy dany łańcuch jest poprawną liczbą niezerową wystarczy
+zwykle porównać go zarówno z numerycznym 0 jak i leksykalnym  \*(L"0\*(R"
+(choć spowoduje to ostrzeżenia opcji \fB\-w\fR). Sposób ten wynika stąd, że
+łańcuchy nie będące liczbami uważane są za 0, tak jak w \fBawk\fR:
+.PP
+.Vb 3
+\&    if ($str == 0 && $str ne "0")  {
+\&        warn "To nie wygląda na liczbę";
+\&    }
+.Ve
+Zwykle jest to metoda preferowana, gdyż w przeciwnym razie nie traktowałbyś
+poprawnie notacji \s-1IEEE\s0, takich jak \f(CWNaN\fR czy \f(CWInfinity\fR.
+Czasami będziesz wolał
+.\" At other times you might prefer to
+posłużyć się funkcją \s-1POSIX::\s0strtod czy wyrażeniem regularnym
+do sprawdzenia, czy dana jest numeryczna. Dokładny opis wyrażeń regularnych
+znajdziesz w podręczniku \fIperlre\fR.
+.PP
+.Vb 8
+\&    warn "has nondigits"        if     /\eD/;
+\&    warn "not a natural number" unless /^\ed+$/;              # odrzuca \-3
+\&    warn "not an integer"       unless /^-?\ed+$/;            # odrzuca +3
+\&    warn "not an integer"       unless /^[+-]?\ed+$/;
+\&    warn "not a decimal number" unless /^-?\ed+\e.?\ed*$/;    # odrzuca .2
+\&    warn "not a decimal number" unless /^-?(?:\ed+(?:\e.\ed*)?|\e.\ed+)$/;
+\&    warn "not a C float"
+\&        unless /^([+-]?)(?=\ed|\e.\ed)\ed*(\e.\ed*)?([Ee]([+-]?\ed+))?$/;
+.Ve
+Długość tablicy jest wartością skalarną. Możesz uzyskać długość tablicy
+\f(CW@dni\fR obliczając \f(CW$#dni\fR, tak jak w \fBcsh\fR. 
+(Faktycznie, nie jest to długość tablicy, a indeks ostatniego elementu, gdyż
+(zwykle) istnieje element o indeksie zerowym.) Przypisanie do \f(CW$#dni\fR
+zmienia długość tablicy. Skracanie tą metodą tablicy niszczy wartości
+pozostałe za nowym końcem tablicy. Wydłużenie uprzednio skróconej tablicy
+JUŻ NIE odtwarza wartości, które były w utraconych
+elementach. (Było tak w Perlu 4, ale musieliśmy z tym skończyć, by zapewnić
+wywoływanie destruktorów tam, gdzie jest to oczekiwane.)
+Możesz też osiągnąć nieco lepszą efektywność wstępnie poszerzając tablicę,
+która ma się powiększyć. (Można także poszerzać tablicę wykonując przypisanie
+do elementu, który jest poza jej obecnym końcem.) Tablicę można obciąć
+do zera przez przypisanie do niej pustej listy (). Poniższe są równoważne:
+.PP
+.Vb 2
+\&    @cokolwiek = ();
+\&    $#cokolwiek = \-1;
+.Ve
+Jeżeli przetwarzasz nazwaną tablicę w kontekście skalarnym, to zwraca on
+długość tablicy. (Zauważ, że nie jest to prawdą dla list, które zwracają
+ostatnią wartość, tak jak operator przecinka w C. Nie jest to też prawdą
+dla funkcji wbudowanych, zwracających to, na co mają ochotę.)
+Poniższe jest zawsze prawdziwe:
+.PP
+.Vb 1
+\&    scalar(@cokolwiek) == $#cokolwiek - $[ + 1;
+.Ve
+[Zmienna specjalna $[ określa indeks pierwszego elementu w tablicy
+i pierwszego znaku w łańcuchu, domyślnie jest to zero.]
+W wersji 5 Perla zmieniono semantykę \f(CW$[\fR: pliki nie ustawiające wartości
+\f(CW$[\fR nie muszą już zważać na to, czy inny plik zmienił jej wartość.
+Inaczej mówiąc, nie zaleca się używania \f(CW$[\fR.
+Zatem ogólnie możesz zakładać, że
+.PP
+.Vb 1
+\&    scalar(@cokolwiek) == $#cokolwiek + 1;
+.Ve
+Niektórzy programiści wybierają użycie jawnej konwersji, by nie było
+żadnych wątpliwości:
+.PP
+.Vb 1
+\&    $liczba_elementow = scalar(@cokolwiek);
+.Ve
+Jeżeli posługujesz się haszem (tablicą asocjacyjną) w kontekście skalarnym,
+to zwraca on wartość, która jest prawdą wtedy i tylko wtedy, gdy hasz zawiera
+jakąkolwiek parę klucz/wartość. (Jeżeli są takie pary, to wartość zwracana
+jest łańcuchem składającym się z liczby użytych jednostek komórek (buckets)
+oraz liczby zaalokowanych jednostek komórek, rozdzielonych ukośnikiem.
+Najbardziej przydaje się to do sprawdzania, czy wkompilowany w Perl
+algorytm haszowania działa kiepsko na twoim zestawie danych. Na przykład,
+wrzucasz 10,000 elementów do hasza, ale przetworzenie \f(CW%HASH\fR
+w kontekście skalarnym zwraca \*(L"1/16\*(R", co oznacza, że tylko jedna
+z szesnastu komórek została użyta, i przypuszczalnie zawiera wszystkie twoje
+10,000 pozycji. To się nie powinno zdarzyć.)
+.PP
+Możesz wstępnie przydzielić miejsce na hasz przy pomocy przypisania do funkcji
+\fIkeys()\fR. Zaokrągli to zaalokowane jednostki komórek do najbliższej
+potęgi dwójki.
+.PP
+.Vb 1
+\&    keys(%users) = 1000;                # zaalokuj 1024 buckets
+.Ve
+.Sh "Konstruktory wartości skalarnych"
+Literały numeryczne podawane są w zwyczajowych formatach zmiennoprzecinkowych
+lub całkowitych:
+.PP
+.Vb 6
+\&    12345
+\&    12345.67
+\&    .23E-10
+\&    0xffff           # hex
+\&    0377             # ósemkowa
+\&    4_294_967_296    # podkreślenie dla lepszej czytelności
+.Ve
+Literały łańcuchowe ograniczone są zwykle przez pojedyncze lub podwójne
+cudzysłowy. Działają one bardzo podobnie do znaków cytowania powłoki:
+w literałach łańcuchowych w cudzysłowach zachodzi zastępowanie zmiennych
+i interpretacja odwrotnego ukośnika. W łańcuchach w apostrofach nie występuje
+zastępowanie i interpretacja (z wyjątkiem \*(L"\f(CW\e'\fR\*(R" oraz
+\*(L"\f(CW\e\e\fR"). To tworzenia znaków takich jak nowa linia, tabulator itd.,
+stosowane są zarówno zwykłe reguły użycia odwrotnego ukośnika w Unixie, jak
+i bardziej egzotyczne formy. Listę sposobów cytowania znajdziesz w sekcji
+\fIQuote and Quotelike Operators\fR podręcznika \fIperlop\fR(1).
+.PP
+Zapisy ósemkowe czy szesnastkowe w literałach łańcuchowych (np. \*(L'0xffff')
+nie są automatycznie zamieniane na ich całkowitą reprezentację. Konwersje te
+wykonują funkcje \fIhex()\fR i \fIoct()\fR. Więcej szczegółów znajdziesz
+w opisach tych funkcji w podręczniku \fIperlfunc\fR(1).
+.PP
+Możesz też umieszczać znaki nowej linii bezpośrednio w łańcuchach, tj., mogą
+one kończyć się w innym wierszu niż się rozpoczęły. Jest to przyjemne, ale
+jeżeli zapomnisz zamykającego cudzysłowu, to błąd nie będzie zgłaszany dopóty,
+dopóki Perl nie znajdzie innego wiersza, zawierającego znak cudzysłowu, który
+może znajdować się o wiele dalej w skrypcie. Zastępowanie zmiennych
+w łańcuchach ograniczone jest do zmiennych skalarnych, tablic oraz wycinków
+tablic. (Inaczej mówiąc, nazw rozpoczynających się od $ lub @, po których
+może opcjonalnie wystąpić, ujęte w nawiasy kwadratowe, wyrażenie traktowane
+jako indeks elementu tablicy.)
+Poniższy fragment kodu drukuje \*(L"Cena wynosi $\&100.\*(R"
+.PP
+.Vb 2
+\&    $cena = '$100';    # nie interpretowane
+\&    print "Cena wynosi $cena.\en";     # interpretowane
+.Ve
+Tak jak w niektórych powłokach, możesz umieścić nazwę w nawiasach klamrowych,
+by oddzielić ją od następujących dalej znaków alfanumerycznych.
+Identyfikator w takich nawiasach traktowany jest zawsze jako łańcuch, tak samo
+jak pojedynczy identyfikator będący indeksem hasza. Nasz wcześniejszy przykład,
+.PP
+.Vb 1
+\&    $dni{'luty'}
+.Ve
+może być zapisany jako
+.PP
+.Vb 1
+\&    $dni{luty}
+.Ve
+a cudzysłowy będą domniemane automatycznie. Ale cokolwiek bardziej
+skomplikowanego w indeksie zostanie zinterpretowane jako wyrażenie.
+.PP
+Zauważ, że łańcuch w pojedynczych cudzysłowach musi być oddzielony od
+poprzedzającego go słowa odstępem, gdyż pojedynczy cudzysłów jest poprawnym
+(choć nie zalecanym) znakiem w nazwie zmiennej (zobacz \f(CWPackages\fR
+w podręczniku \fIperlmod\fR(1)).
+.PP
+Trzema specjalnymi literałami są _\|_FILE_\|_, _\|_LINE_\|_
+oraz _\|_PACKAGE_\|_, które reprezentują nazwę bieżącego pliku, numer wiersza
+oraz nazwę pakietu w danym punkcie twego programu. Mogą być używane wyłącznie
+jako odrębne tokeny. Nie będą one interpolowane wewnątrz łańcuchów.
+Jeżeli nie ma bieżącego pakietu (z powodu pustej dyrektywy \f(CWpackage;\fR),
+to _\|_PACKAGE_\|_ jest wartością niezdefiniowaną.
+.PP
+Tokenami _\|_END_\|_ i _\|_DATA_\|_ można posługiwać się do wskazania
+logicznego końca skryptu przed faktycznym końcem pliku. Dowolny następujący
+po nich tekst jest ignorowany, ale może być odczytany przy pomocy uchwytu
+\s-1DATA\s0. Wykorzystaj main::\s-1DATA\s0 dla użytego tokenu _\|_END_\|_,
+lub też \s-1NAZWAPAKIETU::DATA\s0 (gdzie \s-1NAZWAPAKIETU\s0 jest bieżącym
+pakietem) dla _\|_DATA_\|_.
+Dwa znaki sterujące: ^D i ^Z są synonimami dla _\|_END_\|_ (lub _\|_DATA_\|_
+w module). Szerszy opis _\|_DATA_\|_ i przykład użycia znajdziesz w podręczniku
+\fISelfLoader\fR.
+Zauważ, że nie można czytać z uchwytu pliku \s-1DATA\s0 w bloku \s-1BEGIN\s0.
+Blok ten jest wykonywany natychmiast po napotkaniu (w czasie kompilacji).
+W tym momencie nie został jeszcze znaleziony odpowiedni token _\|_DATA_\|_
+(lub _\|_END_\|_).
+.PP
+Słowo nie posiadające żadnej innej interpretacji w gramatyce Perla
+będzie traktowane tak, jakby znajdowało się w cudzysłowie. Są one znane pod
+nazwą "gołych słów" (\*(L"barewords\*(R").
+Tak samo, jak w przypadku etykiet i uchwytów plików, gołe słowa składające się
+wyłącznie z małych liter narażają na konlikt z przyszłymi słowami zastrzeżonymi.
+Jeżeli użyjesz przełącznika \fB\-w\fR, to Perl będzie ostrzegał o wystąpieniu
+takich słów.
+Niektórzy chcieliby całkowicie wyjąć spod prawa gołe słowa.
+Jeśli napiszesz
+.PP
+.Vb 1
+\&    use strict 'subs';
+.Ve
+to każde gołe słowo, które nie zostanie zinterpretowane jako wywołanie
+procedury spowoduje błąd kompilacji. Ograniczenie to rozciąga się do końca
+zawierającego je bloku. Blok wewnętrzny może je jednak zanegować przy pomocy
+\f(CWno strict 'subs'\fR.
+.PP
+Zmienne tablicowe w łańcuchach objętych cudzysłowami interpolowane są
+przez złączenie wszystkich elementów tablicy. Elementy są wówczas rozdzielone
+ogranicznikiem podanym w zmiennej \f(CW$"\fR (\f(CW$LIST_SEPARATOR\fR w module
+English), domyślnie spacją. Poniższe fragmenty są równoważne:
+.PP
+.Vb 2
+\&    $temp = join($",@ARGV);
+\&    system "echo $temp";
+.Ve
+.Vb 1
+\&    system "echo @ARGV";
+.Ve
+Wewnątrz wzorców wyszukiwania (które również podlegają zastępowaniu w podwójnym
+cytowaniu) pojawia się brzydka niejednoznaczność: czy \f(CW/$foo[bar]/\fR
+ma być interpretowane jako \f(CW/${foo}[bar]/\fR (gdzie \f(CW[bar]\fR jest
+klasą znaków wyrażenia regularnego) czy też jako \f(CW/${foo[bar]}/\fR (gdzie
+\f(CW[bar]\fR jest indeksem tablicy \f(CW@foo\fR)? Jeżeli nie istnieje
+\f(CW@foo\fR, to jest to oczywiście klasa znaków. Jeżeli \f(CW@foo\fR istnieje,
+to Perl odgaduje czym ma być \f(CW[bar]\fR, i prawie zawsze ma rację.
+Jeśli odgaduje źle, albo po prostu jesteś paranoikiem, możesz wymusić poprawną
+interpretację używając nawiasów klamrowych jak powyżej.
+.PP
+Wierszowa forma cytowania oparta jest na składni "dokumentów-tutaj" używanej
+(\*(L"here-doc\*(R") w powłokach. Po sekwencji \f(CW<<\fR podajesz napis
+ograniczający cytowany materiał, a wszystkie wiersze poniżej bieżącego aż do
+napisu kończącego są wartością elementu. Napisem kończącym może być
+identyfikator (słowo) albo jakiś cytowany tekst. Jeżeli jest to tekst
+cytowany, to rodzaj zastosowanych znaków cytowania określa traktowanie tekstu,
+tak jak przy zwykłym cytowaniu. Niecytowany identyfikator działa tak, jakby
+był w podwójnym cudzysłowie. Pomiędzy \f(CW<<\fR a identyfikatorem nie może
+wystąpić spacja. (Jeżeli wstawisz spację, to będzie ona traktowany jak pusty
+identyfikator, co jest poprawne i dopasowuje pierwszy pusty wiersz.) Napis
+kończący musi pojawić się w wierszu kończącym samotnie (niecytowany i bez
+otaczających białych znaków).
+.PP
+.Vb 3
+\&        print <<EOF;
+\&    Cena wynosi $cena.
+\&    EOF
+.Ve
+.Vb 3
+\&        print <<"EOF";  # to samo, co powyżej
+\&    Cena wynosi $cena.
+\&    EOF
+.Ve
+.Vb 4
+\&        print <<`EOC`;  # wykonaj polecenia
+\&    echo hi there
+\&    echo lo there
+\&    EOC
+.Ve
+.Vb 5
+\&        print <<"foo", <<"bar"; # możesz składować, jeden za drugim
+\&    I said foo.
+\&    foo
+\&    I said bar.
+\&    bar
+.Ve
+.Vb 6
+\&        myfunc(<<"TO", 23, <<'TAMTO');
+\&    Masz tu linijkę
+\&    czy dwie.
+\&    TO
+\&    a tu jeszcze jedną.
+\&    TAMTO
+.Ve
+Nie zapomnij tylko, że musisz postawić średnik na końcu instrukcji.
+Perl nie wie przecież, czy nie zamierzasz spróbować zrobić tego:
+.PP
+.Vb 4
+\&        print <<ABC
+\&    179231
+\&    ABC
+\&        + 20;
+.Ve
+.Sh "Konstruktory wartości listowych"
+Wartości listowe oznaczane są przez oddzielenie pojedynczych wartości
+przecinkami (i otoczenie listy nawiasami jeśli wymaga tego kolejność):
+.PP
+.Vb 1
+\&    (LIST)
+.Ve
+W kontekście nie wymagającym wartości listowej wartość literału listowego jest
+wartością ostatniego elementu, tak jak w przypadku występującego w C operatora
+przecinkowego.
+Na przykład,
+.PP
+.Vb 1
+\&    @foo = ('cc', '\-E', $bar);
+.Ve
+przypisuje wartość całej listy do tablicy foo, ale
+.PP
+.Vb 1
+\&    $foo = ('cc', '\-E', $bar);
+.Ve
+przypisuje zmiennej foo wartość zmiennej bar. Zauważ, że rzeczywista tablica
+w kontekście skalarnym zwraca długość tablicy. Poniższy kod przypisuje
+\f(CW$foo\fR wartość 3:
+.PP
+.Vb 2
+\&    @foo = ('cc', '\-E', $bar);
+\&    $foo = @foo;                # $foo dostaje 3
+.Ve
+Przed nawiasem zamykającym listę literałów możesz użyć opcjonalnego przecinka,
+zatem możesz pisać:
+.PP
+.Vb 5
+\&    @foo = (
+\&        1,
+\&        2,
+\&        3,
+\&    );
+.Ve
+LISTY dokonują automatycznej interpolacji podlist. To znaczy, kiedy
+przetwarzana jest \s-1LISTA\s0, to każdy jej element jest przetwarzany
+w kontekście listowym. Wynikowa wartość listy interpolowana jest do listy
+\s-1LISTA\s0 tak, jakby każdy pojedynczy element był członkiem \s-1LISTY\s0
+Zatem w \s-1LIŚCIE\s0 tracą swoją tożsamość tablice i hasze--lista
+.PP
+.Vb 1
+\&    (@foo,@bar,&SomeSub,%glarch)
+.Ve
+zawiera wszystkie elementy \f(CW@foo\fR, po których następują wszystkie
+elementy \f(CW@bar\fR, wszystkie elementy zwrócone przez procedurę o nazwie
+SomeSub wywołaną w kontekście listowym, i na końcu pary klucz/wartość
+z \f(CW%glarch\fR. Jeżeli chcesz odwołać się do listy, NIE
+wykonując interpolacji zajrzyj do podręcznika \fIperlref\fR(1).
+.PP
+Lista pusta reprezentowana jest przez (). Jej interpolowanie w liście nie daje
+żadnego efektu. Zatem ((),(),()) jest równoważne (). Podobnie, interpolowanie
+tablicy bez elementów jest tym samym, co nie interpolowanie w tym miejscu
+żadnej tablicy.
+.PP
+Wartość listowa może być też indeksowana tak, jak zwykła tablica. Musisz tylko
+umieścić listę w nawiasach, by uniknąć niejasności. Na przykład:
+.PP
+.Vb 2
+\&    # Stat zwraca wartość listową
+\&    $time = (stat($file))[8];
+.Ve
+.Vb 2
+\&    # TUTAJ BŁĄD SKŁADNI
+\&    $time = stat($file)[8];  # Oj, zapomniałem nawiasów
+.Ve
+.Vb 2
+\&    # znajdź cyfrę szesnastkową
+\&    $hexdigit = ('a','b','c','d','e','f')[$digit-10];
+.Ve
+.Vb 2
+\&    # "reverse comma operator"
+\&    return (pop(@foo),pop(@foo))[0];
+.Ve
+W liście możesz wykonać przypisanie do \f(CWundef\fR. Przydaje się to do
+pozbywania się niektórych wartości zwracanych przez funkcję:
+.PP
+.Vb 1
+\&    ($dev, $ino, undef, undef, $uid, $gid) = stat($file);
+.Ve
+Do list można wykonać przypisanie wtedy i tylko wtedy, gdy dozwolone jest
+przypisanie do każdego z elementów listy:
+.PP
+.Vb 1
+\&    ($a, $b, $c) = (1, 2, 3);
+.Ve
+.Vb 1
+\&    ($map{'czerwony'}, $map{'niebieski'}, $map{'zielony'}) 
+\&                                              = (0x00f, 0x0f0, 0xf00);
+.Ve
+Przypisanie tablicy w kontekście skalarnym zwraca liczbę elementów utworzonych
+przez wyrażenie po prawej stronie przypisania:
+.PP
+.Vb 2
+\&    $x = (($foo,$bar) = (3,2,1));  # ustaw $x na 3, nie 2
+\&    $x = (($foo,$bar) = f()); # ustaw $x na ilość zwróconych przez f()
+.Ve
+Jest to bardzo wygodne, gdy chcesz wykonać przypisanie listy w kontekście
+logicznym (boolowskim), gdyż większość funkcji listowych zwraca po zakończeniu
+przetwarzania listę pustą, co przy przypisaniu daje 0, interpretowane jako
+fałsz.
+.PP
+Ostatni element może być tablicą lub haszem:
+.PP
+.Vb 2
+\&    ($a, $b, @rest) = split;
+\&    my($a, $b, %rest) = @_;
+.Ve
+Faktycznie możesz umieścić tablicę lub hasza w dowolnym miejscu listy, ale
+pierwsze z nich na liście wessie wszystkie wartości i pozostałe dostaną
+wartość nul. Może to być pomocne w \fIlocal()\fR lub \fImy()\fR.
+.PP
+Literał hasza (tablicy asocjacyjnej) zawiera pary wartości, które będą
+interpretowane jako klucz i wartość:
+.PP
+.Vb 2
+\&    # takie samo przypisanie jak powyżej
+\&    %map = ('czerwony',0x00f,'niebieski',0x0f0,'zielony',0xf00);
+.Ve
+Choć listy literałów i nazwane tablice są zwykle wzajemnie wymienne, to nie
+zachodzi to w przypadku haszy. To, że możesz indeksować wartości listy
+tak jak zwykłej tablicy nie oznacza, że możesz indeksować listę tak jak hasz.
+Podobnie, hasze włączone jako części innych list (łącznie z listami parametrów
+i list zwracanych przez funkcje) zawsze ulegają spłaszczeniu do par
+klucz/wartość. Dlatego czasem dobrze jest użyć wskazania.
+.PP
+Często bardziej czytelne jest użycie pomiędzy parami klucz/wartość operatora
+\f(CW=>\fR. Operator ten jest po prostu bardziej wyróżniającym się wzrokowo
+synonimem przecinka. Ponadto powoduje, że jego lewostronny operand jest
+interpretowany jako łańcuch, jeśli jest on gołym słowem, które mogłoby być
+poprawnym identyfikatorem.
+Uprzyjemnia to inicjowanie haszy:
+.PP
+.Vb 5
+\&    %map = (
+\&                 czerwony  => 0x00f,
+\&                 niebieski => 0x0f0,
+\&                 zielony   => 0xf00,
+\&   );
+.Ve
+lub inicjowanie odwołań do haszy, które będą używane jako rekordy:
+.PP
+.Vb 5
+\&    $rec = {
+\&                witch => 'Mable the Merciless',
+\&                cat   => 'Fluffy the Ferocious',
+\&                date  => '10/31/1776',
+\&    };
+.Ve
+albo użycie wywoływanych przez nazwę parametrów skomplikowanej funkcji:
+.PP
+.Vb 7
+\&   $field = $query->radio_group(
+\&               name      => 'group_name',
+\&               values    => ['eenie','meenie','minie'],
+\&               default   => 'meenie',
+\&               linebreak => 'true',
+\&               labels    => \e%labels
+\&   );
+.Ve
+Zwróć uwagę na to, iż fakt, że tablica asocjacyjna jest zainicjowana w takim
+porządku, nie oznacza, że zostanie zwrócona w tym samym porządku. Przykłady,
+jak ułożyć kolejność zwracanych wyników znajdziesz przy opisie \f(CWsort\fR
+w podręczniku \fIperlfunc\fR(1).
+.Sh "Typeglob i uchwyty plików"
+Perl posługuje się wewnętrznym typem zwanym \fItypeglob\fR. Przechowuje w nim
+wszystkie zapisy tablicy symboli. Przedrostkiem typu typeglob jest \f(CW*\fR,
+gdyż reprezentuje on wszystkie typy. Był on zalecanym sposobem przekazywania
+tablic i tablic asocjacyjnych przez odwołanie do funkcji, ale obecnie istnieją
+prawdziwe odwołania, więc jest to rzadko potrzebne.
+.PP
+Podstawowym zastosowaniem typeglob we współczesnym Perlu jest tworzenie
+synonimów tablicy symboli. To przypisanie:
+.PP
+.Vb 1
+\&    *cos = *inne;
+.Ve
+robi \f(CW$cos\fR synonimem (aliasem) dla \f(CW$inne\fR, \f(CW@cos\fR
+jest aliasem dla \f(CW@inne\fR, \f(CW%cos\fR aliasem dla \f(CW%inne\fR,
+&cos aliasem dla &inne, itd. Dużo bezpieczniej jest użyć odwołania (wskazania).
+To:
+.PP
+.Vb 1
+\&    local *Tutaj::niebieski = \e$Tam::zielony;
+.Ve
+tymczasowo czyni \f(CW$Tutaj::niebieski\fR aliasem dla \f(CW$Tam::zielony\fR,
+ale nie robi \f(CW@Tutaj::niebieski\fR aliasem dla \f(CW@Tam::zielony\fR, czy
+\f(CW%Tutaj::niebieski\fR aliasem dla \f(CW%Tam::zielony\fR, itd.
+W sekcji \fISymbol Tables\fR podręcznika \fIperlmod\fR(1) znajdziesz więcej
+takich przykładów. Mimo, że może to wyglądać dziwnie, jest to podstawą całego
+systemu importu/exportu modułów.
+.PP
+Innym zastosowaniem typeglob jest przesyłanie uchwytów plików do funkcji lub
+tworzenie nowych uchwytów. Jeżeli potrzebujesz posłużyć się typeglob, by
+zachować uchwyt pliku, zrób to tak:
+.PP
+.Vb 1
+\&    $fh = *STDOUT;
+.Ve
+albo może jako prawdziwe odwołanie, jak to:
+.PP
+.Vb 1
+\&    $fh = \e*STDOUT;
+.Ve
+W podręczniku \fIperlsub\fR(1) znajdziesz przykłady zastosowania typeglob jako
+pośrednich uchwytów plików w funkcjach.
+.\" indirect filehandles
+.PP
+Typeglob są również sposobem na tworzenie lokalnych uchwytów plików przy użyciu
+operatora \fIlocal()\fR. Istnieją wówczas aż do wyjścia z ich bloku, ale
+mogą być przesłane powtórnie.
+Na przykład:
+.PP
+.Vb 7
+\&    sub newopen {
+\&        my $path = shift;
+\&        local *FH;  # nie my!
+\&        open   (FH, $path)          or  return undef;
+\&        return *FH;
+\&    }
+\&    $fh = newopen('/etc/passwd');
+.Ve
+Obecnie, gdy dysponujemy notacją *foo{\s-1COŚ\s0}, typeglob nie są tak często
+używane do manipulowania uchwytami plików, chociaż wciąż są konieczne do
+przesłania całkiem nowego uchwytu pliku czy katalogu do funkcji czy z funkcji.
+Wynika to stąd, że *\s-1UCHWYT\s0{\s-1IO\s0} działa tylko jeśli \s-1UCHWYT\s0
+był już użyty jako uchwyt. Inaczej mówiąc, do tworzenia nowych wpisów w tablicy
+symboli może posłużyć *\s-1FH\s0, ale nie *foo{\s-1COŚ\s0}.
+.PP
+Inną metodą tworzenia anonimowych uchwytów plików jest wykorzystanie modułu
+\s-1IO::\s0Handle. 
+.\" module and its ilk.
+Zaletą tych modułów jest nieukrywanie różnych typów tej samej nazwy podczas
+\fIlocal()\fR. Na końcu opisu \f(CWopen()\fR w podręczniku \fIperlfunc\fR(1)
+zamieszczono odpowiedni przykład.
+.PP
+Dalsze rozważania na temat typeglob i składni *foo{\s-1THING\s0} znajdziesz
+w podręcznikach \fIperlref\fR(1) i \fIperlsub\fR(1), a także w sekcji
+\fISymbol Tables\fR podręcznika \fIperlmod\fR(1).
+
+.rn }` ''
+.IX Title "PERLDATA 1"
+.IX Name "perldata - typy danych Perla"
+
+.IX Header "NAZWA"
+
+.IX Header "OPIS"
+
+.IX Subsection "Nazwy zmiennych"
+
+.IX Subsection "Kontekst"
+
+.IX Subsection "Wartości skalarne"
+
+.IX Subsection "Scalar value constructors"
+
+.IX Subsection "List value constructors"
+
+.IX Subsection "Typeglobs and Filehandles"

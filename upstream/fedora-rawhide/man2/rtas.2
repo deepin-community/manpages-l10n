@@ -1,0 +1,61 @@
+.\" Copyright (C) 2004 IBM Corporation
+.\" This file is distributed according to the GNU General Public License.
+.\" See the file COPYING in the top level source directory for details.
+.\"
+.\" This page documents the differences between the low-level kernel system call interface .\" and that made available to applications by glibc.  Portable applications should always .\" use the official library interface.
+.\"
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "RTAS" 2 
+.SH NAME
+rtas \- Allows userspace to call RTAS (Run Time Abstraction Services)
+.SH "SYNOPSIS"
+.ad l
+.hy 0
+.HP 17
+int\ \fBppc_rtas\fR\ (struct rtas_args\ \fI*uargs\fR);
+.ad
+.hy
+
+.SH "DESCRIPTION"
+\fBppc_rtas\fR enables userspace manipulation of the RunTime Abstraction Services (RTAS). RTAS provides for a portable method of access and setting system information. For example, you could gather information on various system sensors and set poweron values. RTAS is accessed via the /proc entry called "rtas". Manipulations on RTAS are implemented via command line arguments on /proc/rtas. 
+The values for \fIuargs\fR vary greatly. 
+For more information, see the \fIview/arch/ppcKconfig\fR file.
+
+.SH "RETURN VALUE"
+
+.PP
+\fBrtas\fR returns 0 on success; otherwise it returns one of the errors listed in the "Errors" section.
+
+.SH "ERRORS"
+
+.TP
+-EPERM
+User does not have CAP_SYS_ADMIN capabilities.
+
+.TP
+-EFAULT
+Problem copying \fIuargs\fR values to/from user space.
+
+.TP
+-EINVAL
+Either number of \fIuargs\fR passed in too large or size of \fIuargs\fR array too large.
+
+.SH AUTHOR
+Niki Rahimi. 

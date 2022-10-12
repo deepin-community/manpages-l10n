@@ -1,0 +1,1810 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-05-31 22:49+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SIGNAL-SAFETY"
+msgstr ""
+
+#. type: TH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "2021-03-22"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "signal-safety - async-signal-safe functions"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"An I<async-signal-safe> function is one that can be safely called from "
+"within a signal handler.  Many functions are I<not> async-signal-safe.  In "
+"particular, nonreentrant functions are generally unsafe to call from a "
+"signal handler."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The kinds of issues that render a function unsafe can be quickly understood "
+"when one considers the implementation of the I<stdio> library, all of whose "
+"functions are not async-signal-safe."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"When performing buffered I/O on a file, the I<stdio> functions must maintain "
+"a statically allocated data buffer along with associated counters and "
+"indexes (or pointers)  that record the amount of data and the current "
+"position in the buffer.  Suppose that the main program is in the middle of a "
+"call to a I<stdio> function such as B<printf>(3)  where the buffer and "
+"associated variables have been partially updated.  If, at that moment, the "
+"program is interrupted by a signal handler that also calls B<printf>(3), "
+"then the second call to B<printf>(3)  will operate on inconsistent data, "
+"with unpredictable results."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"To avoid problems with unsafe functions, there are two possible choices:"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "1."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Ensure that (a) the signal handler calls only async-signal-safe functions, "
+"and (b) the signal handler itself is reentrant with respect to global "
+"variables in the main program."
+msgstr ""
+
+#. type: IP
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "2."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Block signal delivery in the main program when calling functions that are "
+"unsafe or operating on global data that is also accessed by the signal "
+"handler."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Generally, the second choice is difficult in programs of any complexity, so "
+"the first choice is taken."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"POSIX.1 specifies a set of functions that an implementation must make async-"
+"signal-safe.  (An implementation may provide safe implementations of "
+"additional functions, but this is not required by the standard and other "
+"implementations may not provide the same guarantees.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"In general, a function is async-signal-safe either because it is reentrant "
+"or because it is atomic with respect to signals (i.e., its execution can't "
+"be interrupted by a signal handler)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The set of functions required to be async-signal-safe by POSIX.1 is shown in "
+"the following table.  The functions not otherwise noted were required to be "
+"async-signal-safe in POSIX.1-2001; the table details changes in the "
+"subsequent standards."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Function"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Notes"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<abort>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Added in POSIX.1-2001 TC1"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<accept>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<access>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<aio_error>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<aio_return>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<aio_suspend>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "See notes below"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<alarm>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<bind>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<cfgetispeed>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<cfgetospeed>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<cfsetispeed>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<cfsetospeed>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<chdir>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<chmod>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<chown>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<clock_gettime>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<close>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<connect>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<creat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<dup>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<dup2>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<execl>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Added in POSIX.1-2008; see notes below"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<execle>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<execv>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Added in POSIX.1-2008"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<execve>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<_exit>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<_Exit>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<faccessat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fchdir>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Added in POSIX.1-2008 TC1"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fchmod>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fchmodat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fchown>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fchownat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fcntl>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fdatasync>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fexecve>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ffs>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Added in POSIX.1-2008 TC2"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fork>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fstat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fstatat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fsync>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ftruncate>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<futimens>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getegid>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<geteuid>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getgid>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getgroups>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getpeername>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getpgrp>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getpid>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getppid>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getsockname>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getsockopt>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getuid>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<htonl>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<htons>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<kill>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<link>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<linkat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<listen>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<longjmp>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Added in POSIX.1-2008 TC2; see notes below"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<lseek>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<lstat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<memccpy>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<memchr>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<memcmp>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<memcpy>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<memmove>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<memset>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<mkdir>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<mkdirat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<mkfifo>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<mkfifoat>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<mknod>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<mknodat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ntohl>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ntohs>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<open>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<openat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<pause>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<pipe>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<poll>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<posix_trace_event>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<pselect>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<pthread_kill>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<pthread_self>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<pthread_sigmask>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<raise>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<read>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<readlink>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<readlinkat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<recv>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<recvfrom>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<recvmsg>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<rename>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<renameat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<rmdir>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<select>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sem_post>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<send>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sendmsg>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sendto>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<setgid>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<setpgid>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<setsid>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<setsockopt>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<setuid>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<shutdown>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigaction>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigaddset>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigdelset>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigemptyset>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigfillset>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigismember>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<siglongjmp>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<signal>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigpause>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigpending>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigprocmask>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigqueue>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigset>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigsuspend>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sleep>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sockatmark>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Added in POSIX.1-2001 TC2"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<socket>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<socketpair>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<stat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<stpcpy>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<stpncpy>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strcat>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strchr>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strcmp>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strcpy>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strcspn>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strlen>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strncat>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strncmp>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strncpy>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strnlen>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strpbrk>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strrchr>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strspn>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strstr>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strtok_r>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<symlink>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<symlinkat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcdrain>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcflow>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcflush>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcgetattr>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcgetpgrp>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcsendbreak>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcsetattr>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcsetpgrp>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<time>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<timer_getoverrun>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<timer_gettime>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<timer_settime>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<times>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<umask>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<uname>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<unlink>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<unlinkat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<utime>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<utimensat>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<utimes>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wait>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<waitpid>(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcpcpy>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcpncpy>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcscat>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcschr>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcscmp>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcscpy>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcscspn>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcslen>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsncat>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsncmp>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsncpy>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsnlen>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcspbrk>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsrchr>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsspn>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsstr>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcstok>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wmemchr>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wmemcmp>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wmemcpy>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wmemmove>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wmemset>(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<write>(2)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Notes:"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "*"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"POSIX.1-2001 and POSIX.1-2001 TC2 required the functions B<fpathconf>(3), "
+"B<pathconf>(3), and B<sysconf>(3)  to be async-signal-safe, but this "
+"requirement was removed in POSIX.1-2008."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"If a signal handler interrupts the execution of an unsafe function, and the "
+"handler terminates via a call to B<longjmp>(3)  or B<siglongjmp>(3)  and the "
+"program subsequently calls an unsafe function, then the behavior of the "
+"program is undefined."
+msgstr ""
+
+#.  http://www.opengroup.org/austin/aardvark/latest/xshbug3.txt
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"POSIX.1-2001 TC1 clarified that if an application calls B<fork>(2)  from a "
+"signal handler and any of the fork handlers registered by "
+"B<pthread_atfork>(3)  calls a function that is not async-signal-safe, the "
+"behavior is undefined.  A future revision of the standard is likely to "
+"remove B<fork>(2)  from the list of async-signal-safe functions."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Asynchronous signal handlers that call functions which are cancellation "
+"points and nest over regions of deferred cancellation may trigger "
+"cancellation whose behavior is as if asynchronous cancellation had occurred "
+"and may cause application state to become inconsistent."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-unstable fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "errno"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Fetching and setting the value of I<errno> is async-signal-safe provided "
+"that the signal handler saves I<errno> on entry and restores its value "
+"before returning."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Deviations in the GNU C library"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The following known deviations from the standard occur in the GNU C library:"
+msgstr ""
+
+#.  https://sourceware.org/bugzilla/show_bug.cgi?id=19534
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Before glibc 2.24, B<execl>(3)  and B<execle>(3)  employed B<realloc>(3)  "
+"internally and were consequently not async-signal-safe.  This was fixed in "
+"glibc 2.24."
+msgstr ""
+
+#.  FIXME . https://sourceware.org/bugzilla/show_bug.cgi?id=13172
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The glibc implementation of B<aio_suspend>(3)  is not async-signal-safe "
+"because it uses B<pthread_mutex_lock>(3)  internally."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<sigaction>(2), B<signal>(7), B<standards>(7)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-buster debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.11 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: debian-buster
+#, no-wrap
+msgid "2019-10-10"
+msgstr ""
+
+#. type: tbl table
+#: debian-buster opensuse-leap-15-3
+#, no-wrap
+msgid "Added in POSIX.1-2003"
+msgstr ""
+
+#. type: tbl table
+#: debian-buster opensuse-leap-15-3
+#, no-wrap
+msgid "Added in POSIX.1-2013"
+msgstr ""
+
+#. type: tbl table
+#: debian-buster opensuse-leap-15-3
+#, no-wrap
+msgid "Added in POSIX.1-2016"
+msgstr ""
+
+#. type: tbl table
+#: debian-buster opensuse-leap-15-3
+#, no-wrap
+msgid "Added in POSIX.1-2016; see notes below"
+msgstr ""
+
+#. type: tbl table
+#: debian-buster opensuse-leap-15-3
+#, no-wrap
+msgid "Added in POSIX.1-2004"
+msgstr ""
+
+#. type: Plain text
+#: debian-buster opensuse-leap-15-3
+msgid ""
+"POSIX.1-2001 and POSIX.1-2004 required the functions B<fpathconf>(3), "
+"B<pathconf>(3), and B<sysconf>(3)  to be async-signal-safe, but this "
+"requirement was removed in POSIX.1-2008."
+msgstr ""
+
+#.  http://www.opengroup.org/austin/aardvark/latest/xshbug3.txt
+#. type: Plain text
+#: debian-buster opensuse-leap-15-3
+msgid ""
+"POSIX.1-2003 clarified that if an application calls B<fork>(2)  from a "
+"signal handler and any of the fork handlers registered by "
+"B<pthread_atfork>(3)  calls a function that is not async-signal-safe, the "
+"behavior is undefined.  A future revision of the standard is likely to "
+"remove B<fork>(2)  from the list of async-signal-safe functions."
+msgstr ""
+
+#. type: Plain text
+#: debian-buster
+msgid ""
+"This page is part of release 5.04 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: debian-unstable
+#, no-wrap
+msgid "2020-12-21"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2017-03-13"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"POSIX.1 specifies a set of functions that an implementation must make async-"
+"signal-safe.  (An implementation may provide safe implementations of "
+"additional functions, but this is not required by the standard and other "
+"implementations may not provide the same guarantees.)  In general, a "
+"function is async-signal-safe either because it is reentrant or because it "
+"is atomic with respect to signals (i.e., its execution can't be interrupted "
+"by a signal handler)."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

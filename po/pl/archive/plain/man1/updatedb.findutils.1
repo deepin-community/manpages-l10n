@@ -1,0 +1,91 @@
+.\" {PTM/WK/1999-XII}
+.TH UPDATEDB 1 \" -*- nroff -*-
+.SH NAZWA
+updatedb \- aktualizuj bazę danych z nazwami plików
+.SH SKŁADNIA
+.B updatedb
+.RI [ opcje ]
+.SH OPIS
+Ta strona podręcznika opisuje polecenie \fBupdatedb\fP w wersji GNU, służące
+do aktualizacji baz danych z nazwami plików używanych przez GNU
+.BR locate .
+.P
+Bazy danych nazw plików zawierają listy plików istniejących w szczególnych
+drzewach katalogów w momencie ostatniej aktualizacji baz. Nazwa pliku bazy
+domyślnej określana jest w trakcie konfiguracji i instalacji \fBlocate\fP
+i \fBupdatedb\fP. Częstość, z jaką aktualizowane są bazy, oraz katalogi,
+dla których zawierają zapisy, zależą od tego, jak często i z jakimi argumentami
+uruchamiane jest \fBupdatedb\fP.
+.P
+W środowiskach sieciowych często sensowne jest tworzenie bazy na korzeniu
+każdego z systemów plików, zawierającej wpisy dla tego systemu. Następnie
+dla każdego systemu plików
+.B updatedb
+uruchamiane jest na tym serwerze, dla którego jest on położony dysku
+lokalnym. Zapobiega to zaśmiecaniu sieci.
+Użytkownicy mogą wybrać bazy, które przeszukuje \fBlocate\fP, posługując się
+zmienną środowiskową lub opcją wiersza poleceń; zobacz \fBlocate\fP(1L).
+Bazy danych nie mogą być łączone (sklejane).
+.P
+Format bazy danych z nazwami plików zmienił się począwszy od wersji 4.0 GNU
+.B find
+i
+.BR locate ,
+tak by umożliwić maszynom o różnym porządku bajtów współdzielenie baz.
+Nowa wersja
+.B locate
+potrafi odczytywać zarówno stare jak i nowe formaty baz danych.
+Jednak stare wersje
+.B locate
+i
+.B find
+dają niepoprawne wyniki przy użyciu bazy danych o nowym formacie.
+.SH OPCJE
+.TP
+.B \-\-localpaths='\fIścieżka1 ścieżka2...\fP'
+Niesieciowe katalogi, jakie mają być umieszczone w bazie danych.
+Domyślnie /.
+.TP
+.B \-\-netpaths='\fIścieżka1 ścieżka2...\fP'
+Katalogi sieciowe (NFS, AFS, RFS, etc.), jakie mają być umieszczone
+w bazie danych.
+Domyślnie żadne.
+.TP
+.B \-\-prunepaths='\fIścieżka1 ścieżka2...\fP'
+Katalogi, jakie nie powinny zostać umieszczone w bazie, a skądinąd byłyby.
+Domyślnie  /tmp /usr/tmp /var/tmp /afs.
+.TP
+.B \-\-output=\fIplikbazy\fP
+Nazwa tworzonego pliku bazy.
+Domyślnie /var/lib/locatedb.
+.TP
+.B \-\-localuser=\fIużytkownik\fP
+Użytkownik, w imieniu którego będą przeszukiwane katalogi niesieciowe,
+przy wykorzystaniu \fBsu\fP(1). Domyślne jest przeszukiwanie katalogów
+niesieciowych jako bieżący użytkownik.
+Możesz także ustawić tego użytkownika wykorzystując zmienną środowiskową
+\fBLOCALUSER\fP.
+.TP
+.B \-\-netuser=\fIużytkownik\fP
+Użytkownik, w imieniu którego będą przeszukiwane katalogi sieciowe,
+przy wykorzystaniu \fBsu\fP(1). Domyślnie \fBnobody\fP.
+Możesz także ustawić tego użytkownika wykorzystując zmienną środowiskową
+\fBNETUSER\fP.
+.TP
+.B \-\-old\-format
+Tworzy bazę danych w starym formacie zamiast w nowym.
+.TP
+.B \-\-help
+Wyświetla informację o stosowaniu programu i dostępnych opcjach, kończy
+pracę.
+.TP
+.B \-\-version
+Wyświetla numer wersji programu i kończy pracę.
+.SH ZOBACZ TAKŻE
+.BR find (1L),
+.BR locate(1L),
+.BR locatedb(5L),
+.BR xargs (1L).
+.br
+.B Znajdowanie plików
+(dokumentacji Info on-line lub drukowanej)

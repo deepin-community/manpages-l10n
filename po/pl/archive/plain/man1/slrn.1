@@ -1,0 +1,1256 @@
+.\" 1999 PTM Przemek Borys
+.\" Personal
+.TH SLRN 1
+.UC L
+.SH NAZWA
+slrn - Łatwy w użyciu czytnik news oparty o NNTP
+.SH NOTKA DOKUMENTACYJNA
+Ta dokumentacja jest trochę przedawniona. Zachęcamy do obejrzenia
+slrn/changes.txt i slrn/doc/slrn.rc z dystrybucji slrn. Są tam bardziej
+aktualne dane. Zobacz też
+http://space.mit.edu/%7Edavis/slrn.html .
+.SH SKŁADNIA
+.B slrn
+[
+.B \-n 
+] [
+.B \-h 
+nazwa-serwera-nntp ] [
+.B \-f
+plik-newsrc ] [
+.B \-create
+] [
+.B \-C
+] [
+.B \-help
+]
+.SH OPIS
+.I slrn
+jest łatwym w użyciu, lecz potężnym czytnikiem news, opartym o NNTP. Opiera
+się on w dużym zakresie na bibliotece programowania
+.I S-Lang
+\fR, dając w wyniku dostęp do wielu jej właściwości.
+.PP
+Jeśli w linii komend nie podano żadnego serwera poprzez opcję
+.B \-h
+\fR, użyty zostanie serwer, określony przez zmienną środowiskową NNTPSERVER.
+Opcja
+.B \-f
+okresla, którego pliku newsrc należy użyć. Jeśli żaden nie zostanie podany,
+domyślnie zostanie użyty
+.BR \.jnewsrc .
+Wartość ta może być na serwerze ustawiona poprzez plik konfiguracyjny
+.BR \.slrnrc .
+.PP
+Opcja
+.B \-create
+powinna być używana podczas pierwszego połączenia
+.I slrn
+z konkretnym serwerem. Powoduje to, że
+.I slrn
+odczytuje całą listę dostępnych na serwerze grup i umieszcza je w pliku
+newsrc. Jeśli połączenie NNTP nie jest najszybsze, proces ten może zająć
+kilka minut. Na szczęście dzieje się to tylko podczasu używania flagi
+.BR \-create .
+.PP
+Jeśli w linii komend podane jest
+.BR \-C ,
+robione jest założenie, że terminal obsługuje kolory. Kolory mogą być
+podawane przy użyciu pliku inicjalizacyjnego
+.IR .slrnrc .
+Jeśli obecna jest opcja
+.BR \-n ,
+nie będzie dokonywane sprawdzanie nowych grup dyskusyjnych. Może to
+zaowocować szybszym uruchamianiem.
+
+.SH PODSTAWOWA OBSŁUGA
+Używanie
+.I slrn
+jest dość proste. Zazwyczaj proste wpisanie
+.I slrn
+spowoduje połączenie z serwerem news. Po uruchomieniu,
+.I slrn
+sprawdza czy nie pojawiły się nowe grupy i automatycznie się do nich
+podłącza. Po tym etapie, 
+.I slrn
+przechodzi do trybu ``pełnoekranowego'', gdzie użytkownik może się wypisać z
+jednej, lub większej ilości grup.
+.I slrn
+Wyświetla listę grup w następujący sposób:
+
+.nf
+->  3      sci.research.postdoc                 689-705
+    1      comp.databases.olap                  1-1
+    4      rec.antiques.radio+phono             1-4
+    1      comp.emulators.ms-windows.win        339-349
+  113      comp.unix.questions                  74401-74513
+   11      gnu.ghostscript.bug                  4874-4884
+  100      alt.music.pink-floyd                 7941-8040
+   11      rec.sport.baseball.analysis          239-249
+    3      rec.sport.baseball.data              267-269
+   13      sci.physics.electromag               1159-1171
+   65      comp.sys.ibm.pc.hardware.systems     4754-4818
+    5      sci.physics.particle                 1069-1073
+    2      comp.sources.x                       2362-2363
+    2      comp.unix.user-friendly              2603-2604
+.fi
+
+Środkowa kolumna pokazuje nazwę grupy dyskusyjnej, a lewa ilość
+nieprzeczytanych artykułów. Po prawej mamy zakresy artykułów, obecnych na
+serwerze. Zwróć uwagę na obecność
+.B \-\>
+w pierwszej kolumnie, w linii `sci.research.postdoc'. Symbol ten jest
+używany przez
+.I slrn
+jako wskaźnik, pokazujący obecnie wybraną linię. Może być poruszany w górę i
+w dół przy użyciu strzałek. Naciśnięcie RETURN, lub spacji spowoduje
+w tym momencie wybranie grupy `sci.research.postdoc'. Pojawi się wtedy nowy
+ekran, który wygląda następująco:
+
+.nf
+->-   703   (P) Lecturer in Comp.        dumontet@nuri.inria.fr (dumo
+  -   704   Research & Developnment      dumontet@nuri.inria.fr (dumo
+  -   705   Re: Example of proposal      shinbrot@bart.chem-eng.nwu.e
+.fi
+
+Każda linia składa się tu z czterech pół i ewentualnie z kursora
+.BR \-\> .
+Pierwsze pole okresla czy artykuł był przeczytany, czy nie. Kreska (
+.B \-
+) w pierwszym polu oznacza, że artykuł nie został przeczytany.
+Ponieważ kreska pojawia się w pierwszym polu dla wszystkich trzech
+wypisanych wyżej linii, wnioskiem jest, że żaden z tych artykułów nie został
+jeszcze zaznaczony jako przeczytany. Jeśli w polu tym wystąpiłaby litera
+.BR d ,
+oznaczałoby to, że artykuł został przeczytany. Obecnie wybrany artykuł może
+zmieniać stan
+.I read
+na
+.I unread
+i odwrotnie. Zaznaczenia jako nieprzeczytany dokonuje się, przyciskając klawisz
+.BR u .
+Klawisz
+.B d
+z kolei służy do zaznaczania artykułu znakiem przeczytanego.
+Klawisz 
+.B c
+używany jest do zaznaczania jako przeczytane wszystkich artykułów (Jest to
+najlepszy sposób używania czytnika: przejrzyj artykuły, szukając czegoś
+interesującego, a tuż przed przejściem do następnej grupy naciśnij `c').
+.PP
+Kolejne pole zawiera numer artykułu na serwerze. Trzecie i czwarte pole
+zawierają temat artykułu i jego autora.
+.PP
+Naciśnięcie spacji, lub RETURN utworzy następne okno i wyświetli zawartość
+wybranego artykułu. Okno składać się będzie teraz z dwóch okien - jednego
+dużego i jednego małego. Duże okno, określane jako okno
+.I artykułu
+będzie zawierać obecnie wybrany artykuł. Małe okno, określane jako okno
+.I podsumowania
+będzie zawierać listę artykułów, podobną do tej poprzedniej. Do przewijania
+artykułu w dół można używać spacji, a do przewijania w górę można używać
+klawiszy DELETE lub `B'. Strzałki góra/dół poruszają kursorem
+.B \-\>
+w oknie
+.IR podsumowania .
+Aby usunąć 
+.I okno artykułu,
+naciśnij klawisz
+.BR h .
+Spowoduje to powiększenie okna
+.I podsumowania
+na pełny ekran.
+.PP
+Do wysłania odpowiedzi na wiadomość (followup), używa się klawisza
+.BR f .
+Aby wrócić do listy grup, naciśnij klawisz
+.BR Q .
+.SH DOMYŚLNE WIĄZANIA KLAWISZY
+Wiązana te są zawsze dostępne:
+.TP
+.B ?
+Pomoc
+.TP
+.B PageUp Ctrl-U
+Ekran w górę
+.TP
+.B PageDn Ctrl-D
+Ekran w dół
+.TP
+.B Ctrl-Z
+Zawieś program
+.PP
+Na poziomie grup dyskusyjnych można używać tych klawiszy:
+.TP 8
+.B SPACJA
+Wybierz artykuły z bieżącej grupy.
+.TP
+.B Strzałka w górę P
+Przejdź do poprzedniej grupy
+.TP
+.B Strzałka w dół
+Przejdź do następnej grupy
+.TP
+.B q
+Zakończ program
+.TP
+.B p
+Wyślij artykuł
+.TP
+.B l
+Włącz/wyłącz wyświetlanie grup, które nie zawierają artykułów
+nieprzeczytanych.
+.TP
+.B L
+Włącz wyświetlanie grup, do których nie jesteś zapisany (można się tak
+zapisać)
+.TP
+.B u
+Wypisz się z bieżącej grupy
+.TP
+.B s
+Zapisz się na bieżącą grupę
+.TP
+.B c
+Zaznacz wszystkie artykuły bieżącej grupy jako przeczytane.
+.TP
+.B a
+Zapisz się do podanej grupy
+.TP
+.B /
+Szukaj grupy, do której jesteś zapisany
+.TP
+.B G
+Odśwież grupy z serwera news
+.TP
+.B X
+Zachowaj .newsrc
+.TP
+.B ESC >
+Przejdź do ostatniej grupy
+.TP
+.B ESC <
+Przejdź do pierwszej grupy
+.PP   
+Następujące wiązania są dostępne po wybraniu grupy:
+.TP 8
+.B SPACJA
+Wybierz lub przewijaj do przodu obecnie wybrany artykuł
+.TP
+.B DELETE, b
+Przewijaj obecnie wybrany artykuł do tyłu
+.TP
+.B d
+Zaznacz obecnie wybrany artykuł jako przeczytany i przejdź do następnego
+artykułu nieprzeczytanego.
+.TP
+.B u
+Zaznacz obecnie wybrany artykuł jako nieprzeczytany
+.TP
+.B #
+Zaznacz numerycznie artykuł dla wielokrotnego zachowania (zobacz komendę
+Numerically tag the article for multiple save (see
+.B o
+\fR)
+.TP
+.B g
+Przejdź do następnego digest
+.TP
+.B h
+Ukryj okno artykułu przez powiększenie okna podsumowania do pełnego ekranu
+.TP
+.B Ctrl-^
+Zmniejsz rozmiar okna nagłówkowego o jedną linię.
+.TP
+.B ^
+Zwiększ rozmiar okna nagłówkowego o jedną linię.
+.TP
+.B f
+Wyślij odpowiedź (follow-up) do obecnie wybranego artykułu.
+.TP
+.B F
+Forwarduj obecnie wybrany artykuł do kogoś
+.TP
+.B r
+Odpowiedz bezpośrednio do autora wybranego artykułu
+.TP
+.B o
+Zapisz wybrany artykuł lub wątek do pliku w formacie unixowej skrzynki
+pocztowej przez doklejenie go do podanego pliku, a następnie opcjonalne
+zdekodowanie przez uudecode lub unshar. Jeśli obecne są zaznaczone numerycznie
+artykuły (zobacz
+.B #
+),  to opcjonalnie zachowaj i zdekoduj zaznaczone artykuły. Wbudowany
+uudekoder może dekodować pliki, zawierające wiele wieloczęściowych
+zakodowanych artykułów. Muszą one jednak być zaznaczone w odpowiedniej 
+kolejności. Do odznaczenia artykułów można użyć klawisza
+.B ESC #
+\fR.
+.TP
+.B q
+Wyjdź z tego okna i przejdź do listy grup
+.TP
+.B T
+Włącz wyświetlanie cytatów
+.TP
+.B K
+Włącz scoring
+.TP
+.B TAB
+Pomiń cytaty w artykule
+.TP
+.B t
+Przełączaj nagłówki artykułu między stanem "schowanym" i "widocznym".
+Domyślnie nieważne nagłówki są ukrywane.
+.TP
+.B Strzałka w górę
+Przejdź do poprzedniego artykułu
+.TP
+.B Strzałka w dół
+Przejdź do następnego artykułu
+.TP
+.B ESC Strzałka w dół, RETURN
+Przewiń artykuł w dół o jedną linię
+.TP
+.B <
+Przeskocz na początek artykułu
+.TP
+.B ESC Strzałka w górę
+Przewiń artykuł w górę o jedną linię
+.TP
+.B ESC >
+Przejdź do ostatniego artykułu
+.TP
+.B ESC <
+Przejdź do pierwszego artykułu
+.TP
+.B Strzałka w prawo
+Przewiń artykuł w prawo
+.TP
+.B Strzałka w lewo
+Przewiń artykuł w lewo
+.TP
+.B n
+Przejdź do następnego nieprzeczytanego artykułu
+.TP
+.B o
+Dopisz artykuł do pliku; opcjonalnie zdekoduj przy pomocy uudecode lub shar
+.TP
+.B p
+Przejdź do poprzednio nieprzeczytanego artykułu
+.TP
+.B PageUp, PageDn
+Przewiń ekran w górę lub w dół listę nagłówków.
+.TP
+.B /
+Szukaj w artykule w kierunku postępowym.
+.TP
+.B ?
+Szukaj w artykule w kierunku wstecznym.
+.TP
+.B a
+Szukaj autora w kierunku postępowym.
+.TP
+.B A
+Szukaj autora w kierunku wstecznym.
+.TP
+.B s
+Szukaj tematu w kierunku postępowym.
+.TP
+.B S
+Szukaj tematu w kierunku wstecznym.
+.TP
+.B H
+Ukryj artykuł (spowoduj, by jego okno znikło)
+.TP
+.B N
+Przeskocz do następnej grupy dyskusyjnej
+.TP
+.B j
+Przejdź do artykułu
+.TP
+.B P
+Wyślij artykuł (zobacz też
+.B f
+\fR, służący do wysyłania odpowiedzi (follow-up))
+.TP
+.B ŚREDNIK
+Ustaw na obecnym artykule znacznik.
+.TP
+.B PRZECINEK
+Powróć do poprzednio ustawionego znacznika, ustawiając wpierw znacznik.
+.TP
+.B *
+Zaznacz artykuł jako 'ważny' (chroni przed zaznaczeniem artykułu jako
+skasowany)
+.TP
+.B |
+Prześlij artykuł do zewnętrznej komendy (poprzez łącze)
+.TP
+.B ESC Ctrl-C
+Anuluj bieżący artykuł.
+.TP
+.B ESC Ctrl-S
+Zastąp bieżący artykuł przez edycję oryginalengo tekstu.
+.TP
+.B c
+Zaznacz wszystkie artykuły jako przeczytane
+.TP
+.B ESC C
+Zaznacz artykuły znajdujące się do tego miejsca jako przeczytane.
+.TP
+.B ESC U
+Zaznacz artykuły, znajdujące się do tego miejsca jako nieprzeczytane.
+.TP
+.B Ctrl-R, Ctrl-L
+Odśwież zawartość ekranu.
+.TP
+.B ESC R
+Włącz/wyłącz dekodowanie ROT13.
+.TP
+.B ESC S
+Włącz/wyłącz wątkowanie nagłówków.
+.TP
+.B ESC T
+Włącz zwijanie wątkowania nagłówków
+.TP
+.B ESC A
+Przełączaj między metodami wyświetlania nagłówków
+.TP
+.B ESC p
+Znajdź nagłówek rodzicielski
+.TP
+.B ESC Ctrl-P
+Znajdź nagłówek potomka
+.TP
+.B ?
+Pokaż pomoc
+.TP
+.B Ctrl-Z
+Zawieś czytnik.
+.TP
+.B E
+Edytuj parametry score (punktowania), używając tego artykułu jako wzorca.
+.SH ZMIENNE ŚRODOWISKOWE
+.I slrn
+używa następującej listy zmiennych środowiskowych:
+.TP 12  
+.B NNTPSERVER
+serwer NNTP, z którym ma się połączać, jeśli nie podano żadnego podczas
+uruchamiania
+.IR slrn .
+.TP
+.B EDITOR
+.TP
+.B SLANG_EDITOR
+Edytor, którego używać podczas tworzenia wiadomości. '%s' i '%d' mogą służyć
+do przekazywania nazwy pliku i liczby linii. Na przykład, jeśli twoim
+edytorem jest `jed', to możesz użyć w swoim pliku startowym powłoki czegoś w 
+rodzaju:
+.BR                       "setenv SLANG_EDITOR \'jed %s \-g %d\'" .
+Jeśli używasz basha, możesz zamiast tego użyć komendy:
+.BR                       "export SLANG_EDITOR=\'jed %s \-g %d\'" .
+.B SLANG_EDITOR
+jest preferowaną zmienną środowiskową, gdyż wszystkie aplikacje
+.IR S-Lang ,
+które korzystają z edytora, poszukują tej zmiennej i rozumieją jej składnię.
+.TP
+.B REPLYTO
+Adres, wstawiany do pola `Reply-To'.
+.TP
+.B ORGANIZATION
+Łańcuch, używany w polu `Organization'.
+.SH PLIK INICJALIZACYJNY slrn
+Jesli w katalogu domowym użytkownika istnieje plik o nazwie
+.BR .slrnrc ,
+to
+.I slrn 
+użyje go jako pliku inicjalizacyjnego. Plik ten może zawierać listę
+prywatnych wiązań klawiszy, lub listę mapowań serwer--newsrc.
+.PP
+.PP
+WIĄZANIE KLAWISZY
+.PP
+Aby przywiązać do jakiejś funkcji klawisz, użyj składni:
+.PP
+.B              setkey  mapaklawisza  funkcja  sekwencja-klawiszowa
+.PP
+Funkcja
+.I setkey
+wymaga trzech argumentów. Pierwszy określa
+.I mapęklawisza
+(keymap), używaną do wiązania. Prawidłowe mapy to
+.I group
+i
+.I article.
+Argument
+.I funkcja
+określa funkcję, którą należy wywołać po naciśnieńciu klawiszy z ostatniego
+argumentu. Na przykład,
+.PP
+                       setkey  group  quit "x"
+.PP
+oznacza, że jeśli w poziomie
+.I group
+naciśnięty zostanie klawisz
+.IR x ,
+to wywołana zostanie funkcja
+.IR quit (zakończenia).
+Zauważ, że choć normalnie nie jest to konieczne, ostatni argument powinien
+być ujmowany w cudzysłowy, gdyż może zawierać spacje.
+.PP
+Sekwencja klawiszowa może składać się z wielu znaków. Na przykład, na wielu
+terminalach strzałka w prawo przesyła trzy znaki ESC, `[' i `C'. Aby
+przywiązać strzałkę w prawo do funkcji `select_group' (wybierz grupę), użyj:
+.PP
+                        setkey group select_group "\\e[C"
+.PP
+Czasami przed przywiązaniem klawisza trzeba anulować istniejące wiązanie.
+Np. nie można zrobić:
+.PP
+                        setkey group quit "\\e"
+.PP
+w celu przywiązania klawisza ESC do funkcji quit, bez uprzedniej anulacji.
+Jest tak dlatego, że znaku ESC używają wiązania domyślne. Aby wykorzystać
+ten klawisz, użyj funkcji
+.IR unsetkey :
+
+                         unsetkey group "\\e"
+                         setkey group quit "\\e"
+
+W tym wypadku funkcja
+.I unsetkey
+usunęłą wszystkie wiązania znaku ESC. Nastepnie nastąpiło wiązanie go z
+funkcją `quit'. Zauważ proszę, że anulowanie klawisza ESC anuluje również
+wszystkie sekwencje, które z nim występowały. Czyli większość klawiszy
+funkcyjnych.
+.PP
+Zobacz niżej przykładowy plik inicjalizacyjny. Jest tam lista funkcji i ich
+znaczeń.
+.PP
+UŻYWANIE WIELU SERWERÓW
+.PP
+Najprostszym sposobem używania wielu serwerów jest skorzystanie z komendy
+.I server
+w pliku
+.BR \.slrnrc .
+Komenda ta wiąże nazwę serwera z plikiem 
+.BR newsrc :
+.PP
+.B                 server nntp-server  newsrc-file
+
+Na przykład, załóżmy, że używasz trzech serwerów o nazwach hostów
+`red.news.edu', `blue.news.edu' i `green.news.edu'. Wtedy linie: 
+.PP
+.B server red.news.edu \.jnewsrc-red
+
+.B server blue.news.edu  \.jnewsrc-blue
+
+.B server green.news.edu \.jnewsrc-green
+.PP
+określają, że plik
+.B .jnewsrc-red
+jest używany z serwerem
+.B red.news.edu
+itd.
+.PP
+DEFINIOWANIE KOLORÓW
+.PP
+Obsługa kolorów jest włączana przełącznikiem `\-C' w linii komend. Kolory
+mogą być definiowane przy użyciu słowa kluczowego `color' w pliku
+konfiguracyjnym `.slrnrc'. Składnia jest następująca:
+
+    color NAZWA-OBIEKTU KOLOR_PIERWSZEGO-PLANU KOLOR-TŁA
+    
+NAZWA-OBIEKTU może być jednym z następujących elementów:
+
+.nf
+    menu           --  Linia na górze wyświetlacza (pasek menu)
+    menu_press     --  Aktywny element menu
+    status         --  Linia statusu, dołączona do okien
+    cursor         --  Wskaźnik pozycji -->
+    error          --  Komunikaty o błędach
+    group          --  Nazwy grup dyskusyjnych (tryb group)
+    description    --  Opisy grup dyskucyjnych (tryb group)
+    article        --  Ciało artykułu (nie nagłówki)
+    headers        --  Linie, które tworzą nagłówek artykułu
+    author         --  Nazwisko autora
+    subject        --  Temat
+    signature      --  Sygnaturka autora
+    quotes         --  Materiał cytowany
+    high_score     --  Artykuły o dużej punktacji (score)
+    tree           --  Drzewo artykułów
+    tilde          --  Tyldy (tryb tilde)
+    thread_number  --  Numery wątków
+    normal         --  wszystko pozostałe
+.fi
+
+Nazwy kolorów pierwszego planu/tła mogą być następujące:
+  
+.nf
+    black                gray
+    red                  brightred
+    green                brightgreen
+    brown                yellow
+    blue                 brightblue
+    magenta              brightmagenta
+    cyan                 brightcyan
+    lightgray            white
+    default
+.fi
+
+Większość terminali nie obsługuje kolorów drugiej grupy dla tła.
+
+.PP
+.B UKRYWANIE CYTOWANYCH ARTYKUŁÓW
+.PP
+Często artykuły zawierają cytaty poprzednich artykułów.
+.I slrn
+jest w stanie nie wyświetlać linii artykułu, które odpowiadają określonemu
+wyrażeniu regularnemu. Wrażenie regularne może być podane przez wstawienie
+do pliku
+.B \.slrnrc
+linii o postaci
+
+     ignore_quotes  WYRAŻENIE-REGULARNE
+     
+\fR. Domyślnym wyrażeniem regularnym jest
+
+     "^ ?[:>=]"
+     
+co odpowiada dowolnej linii, rozpoczynającej się od potencjalnej spacji, za
+którą następuje dwukropek, znak większości, lub znak równości.
+
+Aby włączyć lub wyłączyć wyświetlanie takich linii, w trybie `article'
+naciśnij `T'.
+.PP
+.SH PUNKTOWANIE ARTYKUŁÓW
+.PP
+(Dla szczegółowego opisu elastyczności slrn'owego pliku punktacyjnego
+zajrzyj do plików
+.B KILL_FAQ
+i
+.BR score.txt ,
+obecnych w dystrybucji slrn)
+.PP
+W niektórych czytnikach, jedna z właściwości punktacyjnych slrn mogłaby być
+określana jako tzw. "
+.B killfile
+".  Jednak w przeciwieństwie do pewnych innych czytników, slrn daje dobre
+narzędzia nie tylko wycinania artykułów, lecz również specjalnego ich
+zaznaczania.
+.PP
+Dostępne są cztery poziomy punktowania:
+.TP
+.B -9999
+Punktowany artykuł jest kasowany (jak w killfile) i nie będzie się pojawiał
+w oknie nagłówków
+.TP
+.B -1 do -9998
+Punktowany artykuł pojawia się ze znacznikiem "
+.B D
+" jak we fladze "Deleted"
+.TP
+.B 0 
+normalny artykuł
+.TP
+.B 1 do 9999
+Punktowany artykuł pojawi się z flagą "
+.B !
+", oznaczającą ważność
+.PP
+.B KONFIGUROWANIE PLIKU PUNKTACJI
+.PP
+System punktowania jest wyłączony do czasu, gdy ustawisz
+.B scorefile
+na ścieżkę pliku, którego slrn powienien używac do przechowywania parametrów
+punktowania.
+.PP
+Po ustawieniu,
+plik punktacyjny
+może być osiągany przez komendę
+.B E
+w oknie nagłówków. Może też być edytowany ręcznie. W wypadku dostępu przez
+komendę
+.B E
+, dopisuje zawierający trochę parametrów wzorzec, oparty o bieżący artykuł.
+Następnie jesteś umieszczany w swoim edytorze. Aby włączyć punktowanie,
+skasuj symbol
+.B %
+z pierwszej kolumny linii nagłówkowej, którą chcesz punktować.
+.PP
+Innym sposobem konfigurowania pliku punktacyjnego jest jego ręczna edycja.
+Oto przykładowy plik punktacyjny:
+
+.nf
+  [news.software.readers]
+     Score: 9999
+     % Wszystkie artykuły są dobre
+     Subject: slrn
+
+     Score: 9999
+     % To jest ktoś, kogo chcę słyszeć
+     From: davis@space\.mit\.edu
+
+     Score = \-9999
+     Subject: \<f?agent\>
+
+  [comp.os.linux.*]
+     Score: \-10
+     Expires: 1/1/1996
+     Subject: swap
+
+     Score: 20
+     Subject: SunOS
+
+     Score: 50
+     From: Linus
+
+
+     % Usuń wszystkie artykuły crosspostowane na grupę adcocacy
+     Score: \-9999
+     Xref: advocacy
+     ~From: Linus
+
+     % Od osoby tej nie chcę nic słyszeć, chyba że napisze coś o
+     % `gizmos', lecz tylko w comp.os.linux.development.*
+
+     Score: \-9999
+     From: someone@who\.knows\.where
+     ~Subject: gizmo
+     ~Newsgroup: development
+ 
+     % Lubię ich śledzić
+
+     [alt.fan.warlord]
+     Score:: 20
+     Subject: larry
+     Subject: curly
+.fi
+
+.PP
+Plik ten składa się z dwóch sekcji. Pierwsza sekcja definiuje zestaw testów,
+stosowanych do grup news.software.readers.  Następna sekcja tyczy się grup
+comp.os.linux.
+.PP
+Pierwsza sekcja zwiera trzy testy. Pierwszy test daje punktację 9999
+wszelkim tematom, zawierającym łańcuch `slrn'. Następny test dotyczy się
+`From'. Mówi, że każdy artykuł od `davis@space.mit.edu' ma uzyskać punktację
+9999. Trzeci daje punktację \-9999 każdemu artykułowi, którego temat zawiera
+słowo `agent'. Ponieważ testy są aplikowane w kolejności, to jeśli artykuł
+zawiera zarówno `slrn', jak i `agent', to dostanie punktację 9999. 9999 jest
+specjalną wartością punktacyjną.
+.PP
+Druga sekcja jest bardziej złożona. Tyczy się grup dyskusyjnych
+comp.os.linux i składa się z 5 testów. Pierwsze trzy są proste: \-10 punktów
+dla tematu, zawierającego `swap', 20 jeśli zawiera SunOs i 50, jeśli jest to
+artykuł od kogoś, o nazwisku `Linus'. Znaczy to, że jeśli
+Bill@Somewhere napisze artykuł o tytule `Swap, Swap, Swap', to artykuł
+dostanie \-10 punktów. Jednak jeśli Linus napisze artykuł o tym samym tytule,
+to uzyska \-10 + 50 = 40 punktów. Zauważ, że pierwszy test ulegnie
+przedawnieniu na początku 1996.
+.PP
+Czwarty test usuwa wszystkie artykuły, które były crosspostowane na grupę
+advocacy, chyba że były wysłane przez Linusa. Zauważ, że jeśli słowo
+kluczowe rozpoczyna się od znaku `~', to działanie wyrażenia regularnego
+jest odwracane.
+.PP
+Czwarty test filtruje wiadomości od someone@who.knows.where,
+chyba że pisze o `gizmos' na grupach comp.os.development.
+Znów zwróć uwagę na znak `~'.
+.PP
+Ostatni test zaznacza jako ważne wiadomości od Moe lub Curly w grupie
+alt.fan.warlord.  Demonstruje to użycie warunku "OR" w pliku punktacji.
+
+.PP
+.SH KOPIA GRZECZNOŚCIOWA
+.PP
+Jeśli chcesz wysłać kopię grzecznościową swojego artykułu odpowiedzi do
+oryginalnego nadawcy, to możesz tak zrobić, dodając do artykułu nagłówek
+"Cc:". Oto przykład, jak wysłać kopię grzecznościową odpowiedzi do 
+Johna Davisa (autora slrn) na ogłoszenie nowej wersji slrn:
+.PP
+ Newsgroups: news.software.readers
+ Subject: Re: slrn 0.8.0 Released!
+ References: <46c6b8$e2@news.mit.edu>
+ Organization: a clean well lit place
+ Reply-To: hg@n2wx.ampr.org
+ Followup-To:
+ Cc: davis@space.mit.edu
+
+
+ On 22 Oct 1995 01:26:45 GMT, John Davis <davis@space.mit.edu> wrote:
+ ...
+.PP
+John odbierze kopię odpowiedzi pocztą, gdzie wiadomosć zostanie poprzedzona
+linią tekstu, mówiącą, że [This message has also been posted.] (ta wiadomość
+została  również wysłana na grupę dyskusyjną)
+(Tekst wewnątrz nawiasów może być konfigurowany w pliku .slrnrc, z pomocą
+parametru
+.B cc_followup_string
+\fR.)
+
+.PP
+.B RÓŻNE USTAWIENIA
+.PP
+Plik inicjalizacyjny .slrnrc obsługuje też następujące komendy:
+
+.nf
+   signature             <nazwa pliku z sygnaturką>
+   organization          <nazwa organizacji>
+   replyto               <adres email, używany jako reply-to>
+   quote_string          <łańcuch używany do cytowania artykułu>
+   editor_command        <łańcuch używany do wywołania edytora>   
+   scorefile             <nazwa pliku punktacyjnego>
+
+   
+Na przykład, 
+
+   signature         .news-signature
+   organization      "Society of Famous Outlaws"
+   signature         "Billy the Kid"
+   quote_string      ">"
+   editor_command    "jed %s \-g %d \-tmp"
+   scorefile         "News/Score"
+.fi
+
+.PP   
+   
+.SH PLIKI
+.B $HOME/.slrnrc
+- plik inicjalizacyjny
+.I slrn
+.PP
+.B $HOME/.jnewsrc
+- domyślny plik newsrc
+.I slrn.
+.SH PRZYKŁAD PLIKU INICJALIZACYJNEGO
+
+.nf
+ % Oto przykładowy plik startowy czytnika slrn. Znak procenta oznacza
+ % komentarz
+ 
+ % mapowanie SERVER na NEWSRC
+ %server hsdndev.harvard.edu .jnewrc-hsdndev
+ %server news.uni-stuttgart.de .jnewsrc-stuttgart
+ 
+ % następna linia jest dla serwerów, wymagających hasła
+ %nnrpaccess HOSTNAME USERNAME PASSWORD
+ 
+ 
+ %hostname "YOUR.HOSTNAME"
+ %set username "jdoe"
+ %set realname "John Doe"
+ %set replyto  "jd@somthing.com"
+ 
+ % Nazwa używanego pliku sygnaturki
+ %set signature ".signature"
+ 
+ % Znak cytowania, używany podczas odpowiadania
+ quote_string ">"
+ 
+ % jeśli niezerowe, sygnatur anie będzie włączana do cytowanego tekstu
+ % odpowiedzi
+ set followup_strip_signature 0
+
+ % to wyrażenie regularne definiuje linie, uważane za linie cytowania.
+ % Mówi, że wszystkie linie, zaczynające się od 0-2 spacji i znaku
+ % >, <, :, |, lub = są liniami cytowanymi.
+ ignore_quotes "^ ? ?[><:=|]"
+ 
+ % To ustawia łańcuch followup. Rozpoznawane są tu następujące specyfikatory
+ % formatu: %d:data, %r:nazwa rzeczywista, %f:email, %s:temat,
+ %             %m:msgid, %n:grupy dyskusyjne, %%: procent 
+ followup "On %d, %r <%f> wrote:"
+ 
+ %Własne nagłówki do dodania podczas odpowiedzi
+ %set custom_headers "X-Whatever: bla\nX-Misc: bla bla"
+ 
+ % Używana przeglądarka WWW. Klawisz 'U' w trybie artykułowym przeszukuje
+ % artykuł w poszukiwaniu URL i wywołuje Xbrowser (jeśli pracuje w X),
+ % lub w przeciwnym wypadku non_Xbrowser
+ set Xbrowser "netscape %s &"
+ set non_Xbrowser "lynx %s"
+
+ % Jeśli obecny jest autobaud, wielkość wyjścia będzie synchronizowana
+ % z wielkością baud
+ %autobaud
+ 
+ % jeśli niezerowe, przy wejściu w tryb artykułowy wyświetl najpierw
+ % (pierwszy?) artykuł
+ % if non-zero, display first article when entering article-mode.
+ set show_article 0
+ 
+ % jeśli niezerowe, pokaż opis grupy dyskusyjnej
+ set show_descriptions 1
+
+ % kolumna, przy której rozpoczynają się opisy
+ set group_dsc_start_column 40
+
+ % Jeśli niezerowe, nie są robione kopie zapasowe newsrc
+ set no_backups 0
+ 
+ % Jeśli zero, nie rób beepów. Jeśli 1, wysyłaj beep. Jeśli 2, wysyłaj tylko
+ % wizualny dzwonek. Jeśli 3, wysyłaj obydwa.
+ set beep 1
+ 
+ % Jesli niezerowe, slrn automatycznie będzie się zapisywał do nowych grup.
+ % domyślnie 0.
+ set unsubscribe_new_groups 0
+ 
+ % Jeśli niezerowe, wszystkie tytuły tematów zostaną wyświetlone, nawet gdy
+ % wiele może być zduplikowanych.. Wartość 0 powoduje, że ekran wygląda
+ % spokojniej. 
+ set show_thread_subject 0
+ 
+ % Włącz obsługę myszy w xterm: 1 włącza, 0 wyłacza
+ set mouse 0
+ 
+ % Ustawienie któregoś z nich na 0 umożliwi ci przechodzenie bezpośrednio do
+ % następnego artykułu/grupy, bez potwierdzanai
+ set query_next_group 1
+ set query_next_article 1
+ 
+ % jeśli zero, nie zobaczysz znaku zachęty "next group:". Nie jest to to
+ % samo co zmienna 'query_next_group'.
+ set prompt_next_group 1
+ 
+ % Ustaw to na 0 dla wyłączenia potwierdzeń przy odpowiadaniu,
+ % wychodzeniu, ...
+ set confirm_actions 1
+ 
+ % Jeśli 0, nie wyświetlaj nazwiska autora. Jeśli 1, wyświetlaj temat, a
+ % potem nazwisko. Jeśli 2, wyświetlaj nazwisko, potem temat.
+ set author_display 2
+ 
+ % 0: zachowuj wszystkie grupy podczas pisania do newsrc
+ % 1: nie zachowuj żadnych grup, do których nie jesteś zapisany
+ % 2: nie zachowuj żadnych nieprzeczytanych-niezapisanych grup
+ set write_newsrc_flags 1
+ 
+ % Jeśli większe niż 0, do nadawcy będzie generowanya automatycznie nagłówek
+ % Cc: (podczas followupów). Jeśli \-1, najpierw będzie pytanie.
+ set cc_followup 0
+ cc_followup_string "[This message has also been posted.]"
+ 
+ % Komenda sendmail umożliwia podstawienie innego mailera. Upewnij się, że
+ % obsługuje taki sam interfejs jak sendmail!
+ %set sendmail_command "/usr/lib/sendmail \-oi \-t \-oem \-odb"
+ 
+ 
+ % nazwa pliku punktacyjnego (względem katalogu domowego)
+ scorefile "News/Score"
+ 
+ % Nazwa katalogu gdzie umieszczane są zdekodowane pliki (względem katalogu
+ % domowego)
+ set decode_directory "News"
+ % katalog gdzie zachowywane są inne pliki
+ set save_directory "News"
+   
+ % komenda, używana do wywoływania edytora. W poniższym przykładzie %s
+ % określa nazwę pliku, a %d określa początkowy numer linii
+ %editor_command "jed %s \-g %d \-tmp"
+ 
+ % Jesli niezerowe, pliki używane do nadawania, odpowiadania będą
+ % składowane jako pliki tymczasowe w katalogu określonym przez zmienną
+ % środowiskową TMPDIR, lub w /tmp
+ set use_tmpdir 0
+ 
+ % 0: nie sortuj. 1: wątkuj. 2: sortuj według tematu
+ % 3: włątkuj wynik sortowania tematów
+ % 4: sortuj punktacyjnie. 5: wątkuj wynik 4.
+ set sorting_method 3
+ set display_score 0
+ 
+ % Jeśli niezerowe, wątki będą nierozwinięte po wejściu do grupy
+ set uncollapse_threads 0
+ 
+ % Jeśli niezerowe, slrn spróbuje odczytać podczas startu plik active. Może
+ % to prowadzić do szybszego startu JEŚLI twoje połączenie sieciowe jest
+ % dość szybkie. W przeciwnym wypadku NIE UŻYWAJ TEGO. Jeśli możesz, polecam
+ % ustawienie 1
+ set read_active 0
+ 
+ % Jeśli niezerowe, a read_active jest zerem, slrn spróbuje użyć komendy
+ % XGTITLE podczas listowania niezapisanych grup
+ set use_xgtitle 0
+ 
+ % Co zawijać podczas zawijania artykułu:
+ %  0 lub 4 ==> zawiń ciało
+ %  1 lub 5 ==> zawiń nagłówki, ciało
+ %  2 lub 6 ==> zawiń cytowany tekst, ciało
+ %  3 lub 7 ==> zawiń nagłówki, cytowany tekst, ciało
+ % Wyższe liczby wskazują że każdy artykuł będzie zawijany automatycznie
+ set wrap_flags 4
+ 
+ % Maksymalna liczba artykułów, odczytywana do zapytania slrn. Domyślnie 100.
+ % Aby wyłączyć pytanie, wstaw 0
+ set query_read_group_cutoff 100
+ 
+ % Liczba linii, odczytywanych od serwera między procentowymi odświeżeniami
+ % licznika. Liczba ta będzie zależeć od szybkości połączenia z twoim
+ % serwerem
+ set lines_per_update 100
+ 
+ %---------------------------------------------------------------------------
+ % obsługa mime
+ %---------------------------------------------------------------------------
+ set use_mime 1
+ set mime_charset "iso-8859-1"
+ % jesli niezerowe, wołaj metamail dla formatów mime, których slrn nie
+ % potrafi obsłużyć.
+ set use_metamail 1
+ 
+ % Jeśli niezerowe, w lewym marginesie okna nagłówka będą wyświetlane liczby
+ % nagłówków. Liczby te mogą być używane jako ``wybieracze wątków''.
+ set use_header_numbers 1
+ 
+ % Jeśli niezerowe, pytaj o ponowne połączenie, jeśli padnie NNTP. Jeśli
+ % zero, próba jest dokonywana bez pytania.
+ set query_reconnect 1
+ 
+ % Znak używany do ukrywania spojlerów:
+ set spoiler_char '*'
+ 
+ 
+ %---------------------------------------------------------------------------
+ %  Lokalna konfiguracja składowania
+ %---------------------------------------------------------------------------
+ % set spool_inn_root "/export/opt/inn"
+ % set spool_root "/export/news"
+ % set spool_nov_root "/export/news"
+ %
+ %% -- następujące nazwy plików są względne do spool_root
+ %
+ % set spool_nov_file ".overview"
+ % set spool_active_file "data/active"
+ % set spool_activetimes_file "data/active.times"
+ % set spool_newsgroups_file "data/newsgroups"
+ 
+ 
+ %---------------------------------------------------------------------------
+ %  Obsługa GroupLens
+ %---------------------------------------------------------------------------
+ %set use_grouplens 1
+ %color grouplens_display blue white
+ %set grouplens_host		"grouplens.cs.umn.edu"
+ %set grouplens_port		9000
+ %set grouplens_pseudoname	"YOUR_PSEUDONAME"
+ %grouplens_add "rec.cooking.recipes"
+ %grouplens_add "comp.os.linux.misc"
+
+ %------------
+ % Kolory
+ %------------
+ color header_number green white
+ color normal black white
+ color error red white
+ color status yellow blue
+ color normal black white
+ color error red white
+ color status yellow blue
+ color group blue white
+ color article blue white
+ color cursor brightgreen white
+ color author magenta white
+ color subject black white
+ color headers brightcyan white
+ color menu yellow blue
+ color menu_press yellow blue
+ color tree red white
+ color quotes red white
+ color thread_number blue white
+ color high_score red white
+ color signature red white
+ color description blue white
+ color tilde green white
+ 
+ %-----------------------------------------------------
+ % Czarnobiałe atrybuty dla terminali monochromatycznych
+ %-----------------------------------------------------
+ mono normal		none
+ mono header_number	none
+ mono error		blink bold
+ mono status		reverse
+ mono group		bold
+ mono article		none
+ mono cursor		bold reverse
+ mono author		none
+ mono subject		none
+ mono headers		bold
+ mono menu		reverse
+ mono menu_press		none
+ mono tree		bold
+ mono quotes		underline
+ mono thread_number	bold
+ mono high_score		bold
+ mono signature		none
+ mono description	none
+
+ %------------------------  Mapaklawiszowa group------------------------
+ 
+ setkey group	add_group	"A"    %  dodaj nową grupę
+ setkey group	bob		"\e<"  %  początek bufora
+ setkey group	bob		"^K\eOA"
+ setkey group	bob		"^K\e[A"
+ setkey group	catch_up	"C"    %  zaznacz grupę jako przeczytaną
+ setkey group	down		"\eOB" %  następna grupa
+ setkey group	down		"\e[B"
+ setkey group	down		"^N"
+ setkey group	eob		"\e>"  %  koniec bufora
+ setkey group	eob		"^K\eOB"
+ setkey group	eob		"^K\e[B"
+ setkey group	group_search_forward	"/"
+ setkey group	help		"?"
+ setkey group	pagedown	"^D"   %  następna strona grup
+ setkey group	pagedown	"\e[6~"
+ setkey group	pagedown	"^V"
+ setkey group	pageup		"\eV"  %  poprzednia strona grup
+ setkey group	pageup		"^U"
+ setkey group	pageup		"\e[5~"
+ setkey group	post		"P"
+ setkey group	quit		"Q"
+ setkey group	redraw		"^L"
+ setkey group	redraw		"^R"
+ setkey group	refresh_groups	"G"
+ setkey group	save_newsrc	"X"
+ setkey group	select_group	"\r"   %  odczytaj artykuły z grupy
+ setkey group	select_group	" "
+ setkey group	subscribe	"S"    %  zapisz się do grupy
+ setkey group	suspend		"^Z"
+ setkey group	toggle_group_display	"\033A"
+ setkey group	toggle_score	"K"
+ setkey group	toggle_hidden	"l"
+ setkey group	toggle_list_all	"L"
+ setkey group	unsubscribe	"U"    %  wypisz się z grupy
+ setkey group	up		"\eOA" %  poprzednia linia
+ setkey group	up		"\e[A"
+ setkey group	up		"^P"
+ 
+ %---------------- Mapaklawiszowa article -------------------------------
+ 
+ setkey article	goto_article	"j"
+ setkey article	pipe_article	"|"
+ setkey article	skip_quotes	"\t"
+ 
+ setkey article	pageup		"^U"
+ setkey article	pageup		"\e[5~"
+ setkey article	pageup		"\eV"
+ 
+ setkey article	pagedn		"\e[6~"
+ setkey article	pagedn		"^D"
+ setkey article	pagedn		"^V"
+ 
+ setkey article post "P"
+ setkey article toggle_show_author "\ea"
+ setkey article get_parent_header "\ep"
+ setkey article	catchup_all	"c"
+ setkey article	catchup_all	"\ec"
+ setkey article	uncatchup_all	"\eu"
+ setkey article	catchup		"\eC"
+ setkey article	uncatchup	"\eU"
+ setkey article	scroll_dn	" "	% przewiń do następnej strony artykułu lub wybierz artykuł
+ setkey article	scroll_up	"^?"	% przewiń do następnej stronyartykułu
+ setkey article	scroll_up	"b"	% (scroll_up lub article_pageup)
+ setkey article article_lineup	"\e\e[A"	% Przewiń artykuł linię w górę
+ setkey article article_lineup	"\e\eOA"
+ setkey article article_linedn	"\e\e[B"	% Przewiń artykuł linię w dół
+ setkey article article_linedn	"\e\eOB"
+ setkey article	article_linedn	"\r"
+ setkey article  article_search	"/"	% Szukaj wprzód w artykule
+ setkey article  author_search_forward	"a"	% Szukaj wprzód autora
+ setkey article  author_search_backward	"A"	% Szukaj wstecz autora
+ setkey article  cancel		"\e^C"	% Anuluj artykuł
+ setkey article  delete		"d"	% Zaznacz artykuł za przeczytany i przejdź do następnego nieczytanego
+ setkey article  down		"^N"	% Przejdź do następnego artykułu
+ setkey article  down		"\e[B"
+ setkey article  down		"\eOB"
+ setkey article  mark_spot	";"	% Zaznacz artykuł
+ setkey article  exchange_mark	","	% Zaznacz artykuł i przejdź do poprzedniego zazanaczenia
+ setkey article  followup	"f"	% Followup
+ setkey article  forward		"F"	% Forward
+ setkey article  help		"?"	% Pokaż pomoc
+ setkey article  hide_article	"H"	% Uktyj okno artykułu.
+ setkey article  art_eob	">"	% idź na koniec artykułu
+ setkey article  left		"\eOD"
+ setkey article  left		"\e[D"
+ setkey article  next		"n"	% następny nieczytany artykuł
+ setkey article  skip_to_next_group	"N"	% następna grupa
+ setkey article  prev		"p"	% poprzedni nieczytany artykuł
+ setkey article  quit		"q"	% Wyjdź do trybu wyboru grupy.
+ setkey article  redraw		"^L"	% Odśwież wyświetlacz
+ setkey article  redraw		"^R"
+ setkey article  reply		"r"	% odpowiedz do autora artykułu
+ setkey article  art_bob	"<"	% Idź na początek artykułu
+ setkey article  right		"\e[C"
+ setkey article  right		"\eOC"
+ setkey article  save		"O"	% Dołącz do pliku w formacie unix mail
+ setkey article  subject_search_forward	"s"	% Szukaj wprzód/wstecz artykułu o podanym temacie
+ setkey article  subject_search_backward	"S"
+ setkey article  suspend		"^Z"	% Zawieś czytnik
+ setkey article	toggle_rot13	"\eR"
+ setkey article	toggle_sort	"\eS"
+ setkey article  toggle_headers	"t"	% Włącz/wyłacz wyświetlanie nagłówków
+ setkey article  toggle_quotes	"T"
+ setkey article  undelete    	"u"	% Zaznacz artykuł jako nieprzeczytany
+ setkey article  up		"^P"	% Przejdź do poprzedniego artykułu
+ setkey article  up		"\eOA"
+ setkey article  up		"\e[A"
+ setkey article	header_bob	"\e<"	% Przejdź do pierwszego artykułu listy
+ setkey article	header_eob	"\e>"	% Przejdź do ostatniego artykułu listy
+ setkey article	shrink_window	"^^"	% Ctrl-6 or Ctrl-^	% Skurcz okno nagłówków
+ setkey article	enlarge_window	"^"	% Shift-6 or just ^	% Powiększ okno nagłówków
+ 
+ %setkey article  skip_to_prev_group ""     % Bez domyślnych wiązań
+ %setkey article  fast_quit          ""     % bez domyślnych wiązań
+ 
+ % Oto specjalna przeróbka dla terminali HP by uzyskać strzałki.
+ % Są jeszcze jakieś terminale gdzie nie  ma strzałek w ANSI?
+ #if$TERM hpterm
+   setkey group up "\eA"       % "^(ku)"
+   setkey group down "\eB"     % "^(kd)"
+   setkey article down "\eB"
+   setkey article up "\eA"
+   setkey article left "\eD"
+   setkey article right "\eC"
+ #endif
+.fi
+
+.SH ZOBACZ TAKŻE
+environ(5)
+
+Pytania o
+.I slrn
+można zadawać na grupie dyskusyjnej
+.I news.software.readers
+gdzie można uzyskać odpowiedzi od autora programu. Dodatkowo, puszczane są
+tam ogłoszenia nowych wersji
+.IR slrn .
+
+Ostatnia wersja
+.I slrn
+jest dostępna przez anonimowy ftp z
+.B space.mit.edu
+z pub/davis/slrn.
+
+.SH AUTOR
+John E. Davis <davis@space.mit.edu>
+
+.SH PODZIĘKOWANIA
+
+(Lista jest niekompletna)
+
+Howard Goldstein <hg@n2wx.ampr.org> - odświeżanie tego podręcznika.
+
+Andrew Greer <Andrew.Greer@vuw.ac.nz> - port VMS.
+
+Jay Maynard <jmaynard@admin5.hsc.uth.tmc.edu> - port OS/2.
+
+Michael Elkins <elkins@aero.org> - kod MIME.
+
+Lloyd Zusman <ljz@ingress.com> - udoskonalenia kosmetyczne.
+
+J.B. Nicholson-Owens <jbn@mystery-train.cu-online.com> - intensywne
+testowanie.
+
+Mark Olesen <olesen@weber.me.queensu.ca> - wskazówki i pomoc w wersji AIX.

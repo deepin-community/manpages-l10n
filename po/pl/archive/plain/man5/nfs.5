@@ -1,0 +1,215 @@
+.\" Translation (c) 1999 Bartłomiej Sowa <bartowl@dione.ids.pl>
+.\" nfs.5 "Rick Sladkey" <jrs@world.std.com>
+.\" Wed Feb  8 12:52:42 1995, faith@cs.unc.edu: updates for Ross Biro's
+.\" patches. "
+.TH NFS 5 "20 listopada 1993" "Linux 0.99" "Podręcznik programisty Linuksa"
+.SH NAZWA
+nfs \- format nfs fstab i opcje
+.SH SKŁADNIA
+.B /etc/fstab
+.SH OPIS
+Plik
+.I fstab
+zawiera informacje o tym, który system plików
+gdzie podmontować i z jakimi opcjami.
+W przypadku NFS, zawiera on nazwę serwera i
+montowany katalog eksportowany,
+lokalny katalog montowania (mount point)
+i specyficzne opcje NFS dotyczące
+sposobu podmontowania systemu plików.
+.P
+Przykład wpisu NFS z pliku \fI/etc/fstab\fP.
+.sp
+.nf
+.ta 2.5i +0.75i +0.75i +1.0i
+server:/usr/local/pub	/pub	nfs	rsize=8192,wsize=8192,timeo=14,intr
+.fi
+.DT
+.SS Opcje
+.TP 1.5i
+.I rsize=n
+Ilość bajtów używanych przez NFS podczas odczytywania plików z serwera NFS.
+Domyślna wartość zależy od wersji jądra, aktualnie 1024 bajty.
+(Jednakże przepustowość znacznie się polepsza po zażądaniu
+.IR rsize=8192 .)
+.TP 1.5i
+.I wsize=n
+Ilość bajtów używanych przez NFS podczas zapisywania plików na serwer NFS.
+Domyślna wartość zależy od wersji jądra, aktualnie 1024 bajty.
+(Jednakże przepustowość znacznie się polepsza po zażądaniu
+.IR wsize=8192 .)
+.TP 1.5i
+.I timeo=n
+Wartość w dziesiętnych sekundy określająca czas poprzedzający  
+wysłanie retransmisji po czasie oczekiwania RPC.
+Domyślnie 7 dziesiętnych sekundy. 
+Po pierwszym czasie oczekiwania, czas oczekiwania jest podwajany po każdym
+kolejnym oczekiwaniu aż osiągnie 60 sekund, lub nastąpi dość
+retransmisji do spowodowania głównego czasu oczekiwania.
+Wtedy, jeżeli system plików jest podmontowany na stałe, 
+każda nowa kaskada czasów oczekiwania restartuje przy podwojonej
+początkowej wartości poprzedniej kaskady, ponownie dublując przy
+każdej retransmisji. Maksymalny czas oczekiwania zawsze wynosi
+60 sekund. Poprzez zwiększenie tego parametru można osiągnąć
+większą ogólną wydajność podczas poruszania się w obciążonej sieci,
+do wolnego serwera, czy przez wiele routerów i bramek.
+.TP 1.5i
+.I retrans=n
+Ilość podrzędnych czasów oczekiwania i retransmisji, które muszą wystąpić
+przed wystąpieniem głównego czasu oczekiwania. Domyślna wartość to
+3 czasy oczekiwania. Jeśli wystąpi główny czas oczekiwania, to albo przerywana
+jest operacja na plikach albo na konsoli jest wyświetlana wiadomość
+"server not responding".
+.TP 1.5i
+.I acregmin=n
+Minimalny czas w sekundach, przez który powinny być przechowywane atrybuty
+zwykłych plików przed zażądaniem świeżych informacji z serwera. 
+Domyślnie 3 sekundy.
+.TP 1.5i
+.I acregmax=n
+Maksymalny czas w sekundach, przez który mogą być przechowywane atrybuty
+zwykłych plików przed zażądaniem świeżych informacji z serwera.
+Domyślnie 60 sekund.
+.TP 1.5i
+.I acdirmin=n
+Minimalny czas w sekundach, przez który powinny być przechowywane atrybuty
+katalogu przed zażądaniem świeżych informacji z serwera.
+Domyślnie 30 sekund.
+.TP 1.5i
+.I acdirmax=n
+Maksymalny czas w sekundach, przez który mogą być przechowywane atrybuty
+katalogu przed zażądaniem świeżych informacji z serwera.
+Domyślnie 60 sekund.
+.TP 1.5i
+.I actimeo=n
+Użycie actimeo ustawia
+.I acregmin,
+.I acregmax,
+.I acdirmin,
+i
+.I acdirmax
+na tą samą wartość.
+Nie ma wartości domyślnej.
+.TP 1.5i
+.I retry=n
+Czas w minutach do ponowienia operacji montowania NFS na pierwszym planie
+lub w tle przed zrezygnowaniem.
+Domyślna wartość to 10000 minut, która wynosi ok. tygodnia.
+.TP 1.5i
+.I namlen=n
+Jeśli serwer NFS nie obsługuje drugiej wersji protokołu montowania RPC,
+ta opcja może zostać użyta do określenia maksymalnej długości nazwy pliku,
+obsługiwanej przez system zdalny. Opcja ta jest używana do obsługi
+POSIXowych funkcji pathconf. Domyślnie 255 znaków.
+.TP 1.5i
+.I port=n
+Numer portu, do którego mamy się podłączyć na serwerze NFS.
+Jeśli wartość ta jest równa 0 (domyślnie), wtedy o numer portu, jaki ma być
+zastosowany będzie odpytany portmapper zdalnego hosta.
+Jeśli demon NFS zdalnego hosta nie jest zarejestrowany z portmapperem,
+zostanie użyty standardowy port NFS (2049).
+.TP 1.5i
+.I mountport=n
+Numer portu
+.B mountd .
+
+.TP 1.5i
+.I mounthost=name
+Nazwa hosta, na którym chodzi
+.B mountd .
+.TP 1.5i
+.I mountprog=n
+Używa alternatywnego numeru programu podczas kontaktowania się z demonem
+montowania na zdalnym hoście. Opcja ta przydaje się dla hostów,
+na których pracuje wiele serwerów NFS. Domyślnie 100005, będące
+standardowym numerem demona montowania RPC.
+.TP 1.5i
+.I mountvers=n
+Używa alternatywnego numeru wersji RPC podczas kontaktowania się z
+demonem montowania na zdalnym hoście. Opcja przydaje się dla
+hostów, na których pracuje wiele serwerów NFS. Domyślnie - wersja 1.
+.TP 1.5i
+.I nfsprog=n
+Używa alternatywnego numeru programu RPC podczas kontaktowania się z
+demonem NFS na zdalnym hoście. Opcja ta przydaje się dla hostów, na
+których pracuje wiele serwerów NFS. Domyślnie 100003, będące
+standardowym numerem demona NFS.
+.TP 1.5i
+.I nfsvers=n
+Używa alternatywnego numeru wersji RPC podczas kontaktowania się z
+demonem NFS na zdalnym hoście. Opcja ta przydaje się dla hostów, na
+których pracuje wiele serwerów NFS. Domyślnie - wersja 2.
+.TP 1.5i
+.I bg
+Jeśli minie czas oczekiwania pierwszej próby montowania NFS, to ponawia
+montowanie w tle. Po umieszczeniu operacji montowania w tle, wszystkie
+dalsze montowania na tym samym serwerze NFS są umieszczane w tle
+natychmiast, bez pierwszej próby montowania. Brakujący punkt
+podmontowania (mount point) jest traktowany jako czas oczekiwania, aby
+pozwolić na zagnieżdżone montowania NFS.
+.TP 1.5i
+.I fg
+Jeśli czas oczekiwania pierwszej próby podmontowania zostanie przekroczony,
+to ponawia próbę na pierwszym planie.
+Jest to uzupełnienie opcji
+.I bg
+oraz domyślne działanie.
+.TP 1.5i
+.I soft
+Jeśli główny czas oczekiwania (major timeout) operacji plikowej NFS zostanie
+przekroczony, zakomunikuje błąd we/wy programowi wywołującemu.
+Domyślnie system ponawia operację plikową NFS w nieskończoność.
+.TP 1.5i
+.I hard
+Jeśli główny czas oczekiwania (major timeout) operacji plikowej NFS zostanie
+przekroczony, wyświetla "server not responding" na konsole i ponawia
+operację w nieskończoność. To jest opcja domyślna.
+.TP 1.5i
+.I intr
+Jeśli główny czas oczekiwania (major timeout) operacji plikowej NFS zostanie
+przekroczony, a system plików jest podmontowany (hard mounted), to zezwala
+sygnałom na przerwanie operacji plikowej i powoduje zwrócenie EINTR do
+programu wołającego. Domyślnie nie zezwala się na przerywanie operacji
+plikowych.
+.TP 1.5i
+.I posix
+Zamontowuje system plików NFS posługując się semantyką POSIX. Pozwala to
+systemowi NFS poprawnie obsługiwać POSIXowe polecenie pathconf przez
+odpytywanie serwera montowania o maksymalną długość nazw plików.
+Do takiego montowania zdalny host musi obsługiwać wersję 2 protokołu
+montowania RPC. Wiele serwerów NSF obsługuje tylko wersję 1.
+.TP 1.5i
+.I nocto
+Nie pobiera nowych atrybutów podczas tworzenia pliku.
+.\" Suppress the retrieval of new attributes when creating a file.
+.TP 1.5i
+.I noac
+Wyłącza całkowicie wszystkie rodzaje buforowania atrybutów.
+Odbywa się to kosztem wydajności serwera, ale
+.\" This extracts a server performance penalty but it allows
+pozwala dwóm różnym klientom NFS na osiągnięcie przyzwoitych wyników
+podczas wykonywania równoczesnego zapisu na wspólnym systemie plików serwera. 
+.TP 1.5i
+.I tcp
+Zamontowuje system plików NFS przy użyciu protokołu TCP zamiast domyślnego UDP.
+Wiele serwerów obsługuje wyłącznie UDP.
+.TP 1.5i
+.I udp
+Zamontowuje system plików NFS przy użyciu protokołu UDP. Zachowanie domyślne.
+.P
+Wszystkie opcje bez wartości posiadają odpowiadającą im postać negującą.
+Na przykład, nointr oznacza zakaz przerywania operacji plikowych.
+.SH PLIKI
+.I /etc/fstab
+.SH "ZOBACZ TAKŻE"
+.BR fstab "(5), " mount "(8), " umount "(8), " exports (5)
+.SH AUTOR
+"Rick Sladkey" <jrs@world.std.com>
+.SH BŁĘDY
+Opcje posix i nocto są przetwarzane przez mount, ale obecnie są cichcem
+ignorowane.
+.P
+Opcje tcp i namlen są zaimplementowane, lecz nie są obecnie obsługiwane
+przez jądro Linuksa.
+.P
+Polecenie umount powinno powiadomić serwer o odmontowaniu systemu plików NFS.

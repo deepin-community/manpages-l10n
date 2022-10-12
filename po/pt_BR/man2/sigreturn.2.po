@@ -1,0 +1,301 @@
+# Brazilian Portuguese translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# André Luiz Fassone <lonely_wolf@ig.com.br>, 2000.
+# Ricardo C.O.Freitas <english.quest@best-service.com>, 2000.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n\n"
+"POT-Creation-Date: 2021-09-03 20:07+0200\n"
+"PO-Revision-Date: 2000-06-02 19:20-0300\n"
+"Last-Translator: Ricardo C.O.Freitas <english.quest@best-service.com>\n"
+"Language-Team: Brazilian Portuguese <debian-l10n-portuguese@lists.debian."
+"org>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Virtaal 1.0.0-beta1\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SIGRETURN"
+msgstr "SIGRETURN"
+
+#. type: TH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "2021-03-22"
+msgstr "22 março 2021"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr "Linux"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr "Manual do Programador do Linux"
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr "NOME"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"sigreturn, rt_sigreturn - return from signal handler and cleanup stack frame"
+msgstr ""
+"sigreturn, rt_sigreturn - retorno de um manipulador de sinal e limpeza do "
+"quadro da pilha"
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "SINOPSE"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<int sigreturn(...);>"
+msgid "B<int sigreturn(...);>\n"
+msgstr "B<int sigreturn(...);>"
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "DESCRIÇÃO"
+
+#.  See arch/x86/kernel/signal.c::__setup_frame() [in 3.17 source code]
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"If the Linux kernel determines that an unblocked signal is pending for a "
+"process, then, at the next transition back to user mode in that process (e."
+"g., upon return from a system call or when the process is rescheduled onto "
+"the CPU), it creates a new frame on the user-space stack where it saves "
+"various pieces of process context (processor status word, registers, signal "
+"mask, and signal stack settings)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The kernel also arranges that, during the transition back to user mode, the "
+"signal handler is called, and that, upon return from the handler, control "
+"passes to a piece of user-space code commonly called the \"signal trampoline"
+"\".  The signal trampoline code in turn calls B<sigreturn>()."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This B<sigreturn>()  call undoes everything that was done\\(emchanging the "
+"process's signal mask, switching signal stacks (see "
+"B<sigaltstack>(2))\\(emin order to invoke the signal handler.  Using the "
+"information that was earlier saved on the user-space stack B<sigreturn>()  "
+"restores the process's signal mask, switches stacks, and restores the "
+"process's context (processor flags and registers, including the stack "
+"pointer and instruction pointer), so that the process resumes execution at "
+"the point where it was interrupted by the signal."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "RETURN VALUE"
+msgstr "VALOR DE RETORNO"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<sigreturn>()  never returns."
+msgstr "B<sigreturn>() nunca devolver valor."
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CONFORMING TO"
+msgstr "DE ACORDO COM"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Many UNIX-type systems have a B<sigreturn>()  system call or near "
+"equivalent.  However, this call is not specified in POSIX, and details of "
+"its behavior vary across systems."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr "NOTAS"
+
+#.  See sysdeps/unix/sysv/linux/sigreturn.c and
+#.  signal/sigreturn.c in the glibc source
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<sigreturn>()  exists only to allow the implementation of signal handlers.  "
+"It should B<never> be called directly.  (Indeed, a simple B<sigreturn>()  "
+"wrapper in the GNU C library simply returns -1, with I<errno> set to "
+"B<ENOSYS>.)  Details of the arguments (if any) passed to B<sigreturn>()  "
+"vary depending on the architecture.  (On some architectures, such as x86-64, "
+"B<sigreturn>()  takes no arguments, since all of the information that it "
+"requires is available in the stack frame that was previously created by the "
+"kernel on the user-space stack.)"
+msgstr ""
+
+#.  See, for example, sysdeps/unix/sysv/linux/i386/sigaction.c and
+#.  sysdeps/unix/sysv/linux/x86_64/sigaction.c in the glibc (2.20) source.
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Once upon a time, UNIX systems placed the signal trampoline code onto the "
+"user stack.  Nowadays, pages of the user stack are protected so as to "
+"disallow code execution.  Thus, on contemporary Linux systems, depending on "
+"the architecture, the signal trampoline code lives either in the B<vdso>(7)  "
+"or in the C library.  In the latter case, the C library's B<sigaction>(2)  "
+"wrapper function informs the kernel of the location of the trampoline code "
+"by placing its address in the I<sa_restorer> field of the I<sigaction> "
+"structure, and sets the B<SA_RESTORER> flag in the I<sa_flags> field."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The saved process context information is placed in a I<ucontext_t> structure "
+"(see I<E<lt>sys/ucontext.hE<gt>>).  That structure is visible within the "
+"signal handler as the third argument of a handler established via "
+"B<sigaction>(2)  with the B<SA_SIGINFO> flag."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"On some other UNIX systems, the operation of the signal trampoline differs a "
+"little.  In particular, on some systems, upon transitioning back to user "
+"mode, the kernel passes control to the trampoline (rather than the signal "
+"handler), and the trampoline code calls the signal handler (and then calls "
+"B<sigreturn>()  once the handler returns)."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "C library/kernel differences"
+msgstr "Diferenças entre kernel/biblioteca C"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The original Linux system call was named B<sigreturn>().  However, with the "
+"addition of real-time signals in Linux 2.2, a new system call, "
+"B<rt_sigreturn>()  was added to support an enlarged I<sigset_t> type.  The "
+"GNU C library hides these details from us, transparently employing "
+"B<rt_sigreturn>()  when the kernel provides it."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "VEJA TAMBÉM"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<kill>(2), B<restart_syscall>(2), B<sigaltstack>(2), B<signal>(2), "
+"B<getcontext>(3), B<signal>(7), B<vdso>(7)"
+msgstr ""
+"B<kill>(2), B<restart_syscall>(2), B<sigaltstack>(2), B<signal>(2), "
+"B<getcontext>(3), B<signal>(7), B<vdso>(7)"
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr "COLOFÃO"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+"Esta página faz parte da versão 5.13 do projeto Linux I<man-pages>. Uma "
+"descrição do projeto, informações sobre relatórios de bugs e a versão mais "
+"recente desta página podem ser encontradas em \\%https://www.kernel.org/doc/"
+"man-pages/."
+
+#. type: TH
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "2017-09-15"
+msgstr "15 setembro 2017"
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid "B<int sigreturn(...);>"
+msgstr "B<int sigreturn(...);>"
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+"Esta página faz parte da versão 5.10 do projeto Linux I<man-pages>. Uma "
+"descrição do projeto, informações sobre relatórios de bugs e a versão mais "
+"recente desta página podem ser encontradas em \\%https://www.kernel.org/doc/"
+"man-pages/."
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+"Esta página faz parte da versão 4.16 do projeto Linux I<man-pages>. Uma "
+"descrição do projeto, informações sobre relatórios de bugs e a versão mais "
+"recente desta página podem ser encontradas em \\%https://www.kernel.org/doc/"
+"man-pages/."

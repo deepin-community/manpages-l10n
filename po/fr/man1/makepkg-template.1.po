@@ -1,0 +1,464 @@
+# French translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Jean-Jacques Brioist <jean.brioist@numericable.fr>, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n\n"
+"POT-Creation-Date: 2021-09-10 14:31+0200\n"
+"PO-Revision-Date: 2020-10-25 10:17+0100\n"
+"Last-Translator: Jean-Jacques Brioist <jean.brioist@numericable.fr>\n"
+"Language-Team: French <debian-l10n-french@lists.debian.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux
+#, no-wrap
+msgid "MAKEPKG-TEMPLATE"
+msgstr "MAKEPKG-TEMPLATE"
+
+#. type: TH
+#: archlinux
+#, no-wrap
+msgid "2021-09-06"
+msgstr "6 septembre 2021"
+
+#. type: TH
+#: archlinux
+#, no-wrap
+msgid "Pacman 6\\&.0\\&.1"
+msgstr "Pacman 6\\&.0\\&.1"
+
+#. type: TH
+#: archlinux
+#, no-wrap
+msgid "Pacman Manual"
+msgstr "Manuel de Pacman"
+
+#.  -----------------------------------------------------------------
+#.  * MAIN CONTENT STARTS HERE *
+#.  -----------------------------------------------------------------
+#. type: SH
+#: archlinux
+#, no-wrap
+msgid "NAME"
+msgstr "NOM"
+
+#. type: Plain text
+#: archlinux
+msgid "makepkg-template - package build templating utility"
+msgstr "makepkg-template - utilitaire de construction de paquet"
+
+#. type: SH
+#: archlinux
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "SYNOPSIS"
+
+#. type: Plain text
+#: archlinux
+msgid "I<makepkg-template> [options]"
+msgstr "I<makepkg-template> [options]"
+
+#. type: SH
+#: archlinux
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "DESCRIPTION"
+
+#. type: Plain text
+#: archlinux
+msgid ""
+"I<makepkg-template> is a script to ease the work of maintaining multiple "
+"similar PKGBUILDs\\&. It allows you to move most of the code from the "
+"PKGBUILD into a template file and uses markers to allow in-place updating of "
+"existing PKGBUILDs if the template has been changed\\&."
+msgstr ""
+"I<makepkg-template> est un script facilitant la maintenance de plusieurs "
+"PKGBUILDs semblables\\&. Il vous permet de transférer l'essentiel du code du "
+"PKGBUILD dans un fichier ébauche et utilise des balises pour permettre la "
+"mise à jour des PKGBUILDs locaux si l'ébauche a été modifiée\\&."
+
+#. type: Plain text
+#: archlinux
+msgid ""
+"Template files can contain any code allowed in a PKGBUILD\\&. You can think "
+"of them like external files included with \"\\&.\" or \"source\", but they "
+"will be inlined into the PKGBUILD by I<makepkg-template> so you do not "
+"depend on the template file when building the package\\&."
+msgstr ""
+"Les ébauches de fichier peuvent contenir n'importe quelles lignes de code "
+"licites dans un PKGBUILD\\&. Elles sont traitées comme des fichiers externes "
+"appelés par \"\"\\&.\" ou \"source\", mais seront insérées dans le PKGBUILD "
+"par I<makepkg-template> donc vous n'avez pas à vous soucier de l'ébauche de "
+"fichier pour construire le paquet\\&."
+
+#. type: Plain text
+#: archlinux
+msgid "Markers are bash comments in the form of:"
+msgstr "Les balises sont des commentaires bash de la forme:"
+
+#. type: Plain text
+#: archlinux
+#, no-wrap
+msgid "# template start; key=value; key2=value2; \\&.\\&.\\&.\n"
+msgstr "# template start; key=value; key2=value2; \\&.\\&.\\&.\n"
+
+#. type: Plain text
+#: archlinux
+msgid "and"
+msgstr "et"
+
+#. type: Plain text
+#: archlinux
+#, no-wrap
+msgid "# template end;\n"
+msgstr "# template end;\n"
+
+#. type: Plain text
+#: archlinux
+msgid ""
+"Currently used keys are: name (mandatory) and version\\&. Template names are "
+"limited to alphanumerics, \"@\", \"+\", \"\\&.\", \"-\", and \"_\"\\&. "
+"Versions are limited to numbers and \"\\&.\"\\&."
+msgstr ""
+"Les clefs usuelles sont : le nom (obligatoire) et la version\\&. Les noms "
+"d'ébauche sont alphanumériques mais peuvent contenir \"@\", \"+\", \"\\&.\", "
+"\"-\", ou \"_\"\\&.Les noms de versions peuvent comporter des chiffres ou "
+"\"\\&.\"\\&."
+
+#. type: Plain text
+#: archlinux
+msgid ""
+"For initial creation there is a one line short cut which does not need an "
+"end marker:"
+msgstr ""
+"À la création, il y a une macro tenant en une ligne qui ne nécessite aucun "
+"séparateur:"
+
+#. type: Plain text
+#: archlinux
+#, no-wrap
+msgid "# template input; key=value;\n"
+msgstr "# template input; key=value;\n"
+
+#. type: Plain text
+#: archlinux
+msgid ""
+"Using this short-cut will result in I<makepkg-template> replacing it with "
+"start and end markers and the template code on the first run\\&."
+msgstr ""
+"Au premier passage, I<makepkg-template> remplacera cette macro "
+"automatiquement par les délimiteurs de début et de fin et le code de "
+"l'ébauche."
+
+#. type: Plain text
+#: archlinux
+msgid ""
+"Template files should be stored in one directory and filenames should be "
+"\"$template_name-$version\\&.template\" with a symlink \"$template_name\\&."
+"template\" pointing to the most recent template\\&. If the version is not "
+"set in the marker, I<makepkg-template> will automatically use the target of "
+"\"$template_name\\&.template\", otherwise the specified version will be used"
+"\\&. This allows for easier verification of untrusted PKGBUILDs if the "
+"template is trusted\\&. You verify the non-template code and then use a "
+"command similar to this:"
+msgstr ""
+"Il faut stocker les fichiers d'ébauche dans un seul répertoire et les noms "
+"de fichier devraient prendre le format \"$nom_ebauche-$version\\&.template"
+"\", avec un lien \"$nom_ebauche\\&.template\" qui pointe sur l'ébauche la "
+"plus récente\\&.  Si la version n'est pas indiquée dans le délimiteur,  "
+"I<makepkg-template> se servira automatiquement de la cible de \"$nom_ebauche-"
+"$version\\&.template\" ; autrement le logiciel se servira de la version "
+"indiquée\\&. Cela facilite la vérification des PKGBUILD non-authentifiés "
+"dont l'ébauche est, elle, authentifiée\\&. Vous vérifiez le code ajouté à "
+"l'ébauche, puis vous lancer une commande du style :"
+
+#. type: Plain text
+#: archlinux
+#, no-wrap
+msgid "diff -u E<lt>(makepkg-template -o -) PKGBUILD\n"
+msgstr "diff -u E<lt>(makepkg-template -o -) PKGBUILD\n"
+
+#. type: Plain text
+#: archlinux
+msgid ""
+"Template files may also contain markers leading to nested templates in the "
+"resulting PKGBUILD\\&. If you use markers in a template, please set the "
+"version you used/tested with in the start/input marker so other people can "
+"properly recreate from templates\\&."
+msgstr ""
+"Les fichiers d'ébauche peuvent aussi comporter des balises engendrant une "
+"cascade de sous-ébauches à l'intérieur du PKGBUILD\\&. Si vous utilisez des "
+"balises dans un fichier d'ébauche, veillez à indiquer la version que vous "
+"utilisez ou testez à l'aide d'une balise start/input, de façon à ce que "
+"d'autres puissent réutiliser vos ébauches\\&."
+
+#. type: SH
+#: archlinux
+#, no-wrap
+msgid "OPTIONS"
+msgstr "OPTIONS"
+
+#. type: Plain text
+#: archlinux
+msgid "B<-p, --input> E<lt>build scriptE<gt>"
+msgstr "B<-p, --input> E<lt>build scriptE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid "Read the package script build script instead of the default\\&."
+msgstr ""
+"Lit le script de construction du paquet au lieu du script par défaut\\&."
+
+#. type: Plain text
+#: archlinux
+msgid "B<-o, --output> E<lt>build scriptE<gt>"
+msgstr "B<-o, --output> E<lt>build scriptE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid ""
+"Write the updated file to build script instead of overwriting the input file"
+"\\&."
+msgstr ""
+"Enregistre le fichier actualisé sous un nouveau nom au lieu d'écraser le "
+"fichier d'entrée\\&."
+
+#. type: Plain text
+#: archlinux
+msgid "B<-n, --newest>"
+msgstr "B<-n, --newest>"
+
+#. type: Plain text
+#: archlinux
+msgid "Always use the newest available template file\\&."
+msgstr "Utilise automatiquement le fichier d'ébauche le plus récent."
+
+#. type: Plain text
+#: archlinux
+msgid "B<--template-dir> E<lt>dirE<gt>"
+msgstr "B<--template-dir> E<lt>dirE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid ""
+"Change the dir where we are looking for template files\\&. This option may "
+"be given multiple times in which case files found in directory given last "
+"will take precedence\\&."
+msgstr ""
+"Modifie le répertoire de recherche des fichiers d'ébauche\\&. On peut "
+"appeler cette option plusieurs fois de suite : les fichiers appelés en "
+"dernier, s'ils sont présents dans ce répertoire, auront priorité\\&."
+
+#. type: SH
+#: archlinux
+#, no-wrap
+msgid "EXAMPLE PKGBUILD"
+msgstr "EXEMPLE de FICHIER PKGBUILD"
+
+#. type: Plain text
+#: archlinux
+#, no-wrap
+msgid ""
+"pkgname=perl-config-simple\n"
+"pkgver=4\\&.58\n"
+"pkgrel=1\n"
+"pkgdesc=\"simple configuration file class\"\n"
+"arch=(\\*(Aqany\\*(Aq)\n"
+"license=(\\*(AqPerlArtistic\\*(Aq \\*(AqGPL\\*(Aq)\n"
+"depends=(\\*(Aqperl\\*(Aq)\n"
+"source=(\"http://search\\&.cpan\\&.org/CPAN/authors/id/S/SH/SHERZODR/Config-Simple-${pkgver}\\&.tar\\&.gz\")\n"
+"md5sums=(\\*(Aqf014aec54f0a1e2e880d317180fce502\\*(Aq)\n"
+"_distname=\"Config-Simple\"\n"
+msgstr ""
+"pkgname=perl-config-simple\n"
+"pkgver=4\\&.58\n"
+"pkgrel=1\n"
+"pkgdesc=\"classe de fichier de configuration simple\"\n"
+"arch=(\\*(Aqany\\*(Aq)\n"
+"license=(\\*(AqPerlArtistic\\*(Aq \\*(AqGPL\\*(Aq)\n"
+"depends=(\\*(Aqperl\\*(Aq)\n"
+"source=(\"http://search\\&.cpan\\&.org/CPAN/authors/id/S/SH/SHERZODR/Config-Simple-${pkgver}\\&.tar\\&.gz\")\n"
+"md5sums=(\\*(Aqf014aec54f0a1e2e880d317180fce502\\*(Aq)\n"
+"_distname=\"Config-Simple\"\n"
+
+#. type: Plain text
+#: archlinux
+#, no-wrap
+msgid ""
+"# template start; name=perl-module; version=1\\&.0;\n"
+"_distdir=\"${_distname}-${pkgver}\"\n"
+"url=\"https://metacpan\\&.org/release/${_distname}\"\n"
+"options+=(\\*(Aq!emptydirs\\*(Aq)\n"
+msgstr ""
+"# template start; name=perl-module; version=1\\&.0;\n"
+"_distdir=\"${_distname}-${pkgver}\"\n"
+"url=\"https://metacpan\\&.org/release/${_distname}\"\n"
+"options+=(\\*(Aq!emptydirs\\*(Aq)\n"
+
+#. type: Plain text
+#: archlinux
+#, no-wrap
+msgid ""
+"build() {\n"
+"        cd \"$srcdir/$_distdir\"\n"
+"        perl Makefile\\&.PL INSTALLDIRS=vendor\n"
+"        make\n"
+"}\n"
+msgstr ""
+"build() {\n"
+"        cd \"$srcdir/$_distdir\"\n"
+"        perl Makefile\\&.PL INSTALLDIRS=vendor\n"
+"        make\n"
+"}\n"
+
+#. type: Plain text
+#: archlinux
+#, no-wrap
+msgid ""
+"check() {\n"
+"        cd \"$srcdir/$_distdir\"\n"
+"        make test\n"
+"}\n"
+msgstr ""
+"check() {\n"
+"        cd \"$srcdir/$_distdir\"\n"
+"        make test\n"
+"}\n"
+
+#. type: Plain text
+#: archlinux
+#, no-wrap
+msgid ""
+"package() {\n"
+"        cd \"$srcdir/$_distdir\"\n"
+"        make DESTDIR=\"$pkgdir\" install\n"
+"}\n"
+"# template end;\n"
+msgstr ""
+"package() {\n"
+"        cd \"$srcdir/$_distdir\"\n"
+"        make DESTDIR=\"$pkgdir\" install\n"
+"}\n"
+"# template end;\n"
+
+#. type: SH
+#: archlinux
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "VOIR AUSSI"
+
+#. type: Plain text
+#: archlinux
+msgid "B<makepkg>(8), B<PKGBUILD>(5)"
+msgstr "B<makepkg>(8), B<PKGBUILD>(5)"
+
+#. type: Plain text
+#: archlinux
+msgid ""
+"See the pacman website at https://archlinux\\&.org/pacman/ for current "
+"information on pacman and its related tools\\&."
+msgstr ""
+"Consulter le site internet de pacman à l'adresse https://.archlinux\\&.org/"
+"pacman/ pour de nouvelles informations sur pacman et ses outils associés\\&."
+
+#. type: SH
+#: archlinux
+#, no-wrap
+msgid "BUGS"
+msgstr "BOGUES"
+
+#. type: Plain text
+#: archlinux
+msgid ""
+"Bugs? You must be kidding; there are no bugs in this software\\&. But if we "
+"happen to be wrong, submit a bug report with as much detail as possible at "
+"the Arch Linux Bug Tracker in the Pacman section\\&."
+msgstr ""
+"Bogues ? C'est une blague ; il n'y a pas de bogues dans ce logiciel\\&. Mais "
+"s'il y en a, envoyez un rapport de bogue contenant autant de détails que "
+"possible dans la section Pacman du système de suivi de bogues de Arch Linux."
+
+#. type: SH
+#: archlinux
+#, no-wrap
+msgid "AUTHORS"
+msgstr "AUTEURS"
+
+#. type: Plain text
+#: archlinux
+msgid "Current maintainers:"
+msgstr "Développeurs actuels :"
+
+#. type: Plain text
+#: archlinux
+msgid "Allan McRae E<lt>allan@archlinux\\&.orgE<gt>"
+msgstr "Allan McRae E<lt>allan@archlinux\\&.orgE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid "Andrew Gregory E<lt>andrew\\&.gregory\\&.8@gmail\\&.comE<gt>"
+msgstr "Andrew Gregory E<lt>andrew\\&.gregory\\&.8@gmail\\&.comE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid "Eli Schwartz E<lt>eschwartz@archlinux\\&.orgE<gt>"
+msgstr "Eli Schwartz E<lt>eschwartz@archlinux\\&.orgE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid "Morgan Adamiec E<lt>morganamilo@archlinux\\&.orgE<gt>"
+msgstr "Morgan Adamiec E<lt>morganamilo@archlinux\\&.orgE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid "Past major contributors:"
+msgstr "Contributeurs antérieurs majeurs :"
+
+#. type: Plain text
+#: archlinux
+msgid "Judd Vinet E<lt>jvinet@zeroflux\\&.orgE<gt>"
+msgstr "Judd Vinet E<lt>jvinet@zeroflux\\&.orgE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid "Aurelien Foret E<lt>aurelien@archlinux\\&.orgE<gt>"
+msgstr "Aurelien Foret E<lt>aurelien@archlinux\\&.orgE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid "Aaron Griffin E<lt>aaron@archlinux\\&.orgE<gt>"
+msgstr "Aaron Griffin E<lt>aaron@archlinux\\&.orgE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid "Dan McGee E<lt>dan@archlinux\\&.orgE<gt>"
+msgstr "Dan McGee E<lt>dan@archlinux\\&.orgE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid "Xavier Chantry E<lt>shiningxc@gmail\\&.comE<gt>"
+msgstr "Xavier Chantry E<lt>shiningxc@gmail\\&.comE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid "Nagy Gabor E<lt>ngaba@bibl\\&.u-szeged\\&.huE<gt>"
+msgstr "Nagy Gabor E<lt>ngaba@bibl\\&.u-szeged\\&.huE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid "Dave Reisner E<lt>dreisner@archlinux\\&.orgE<gt>"
+msgstr "Dave Reisner E<lt>dreisner@archlinux\\&.orgE<gt>"
+
+#. type: Plain text
+#: archlinux
+msgid ""
+"For additional contributors, use git shortlog -s on the pacman\\&.git "
+"repository\\&."
+msgstr ""
+"Pour des contributeurs supplémentaires, utiliser git shortlog -s sur le "
+"dépôt pacman\\&.git\\&."

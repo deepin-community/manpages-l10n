@@ -1,0 +1,399 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-09-10 15:00+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "TKILL"
+msgstr ""
+
+#. type: TH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "2021-03-22"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "tkill, tgkill - send a signal to a thread"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<#include E<lt>signal.hE<gt>>           /* Definition of B<SIG*> constants */\n"
+"B<#include E<lt>sys/syscall.hE<gt>>      /* Definition of B<SYS_*> constants */\n"
+"B<#include E<lt>unistd.hE<gt>>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<int syscall(SYS_tkill, pid_t >I<tid>B<, int >I<sig>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<#include E<lt>signal.hE<gt>>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<int tgkill(pid_t >I<tgid>B<, pid_t >I<tid>B<, int >I<sig>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"I<Note>: glibc provides no wrapper for B<tkill>(), necessitating the use of "
+"B<syscall>(2)."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<tgkill>()  sends the signal I<sig> to the thread with the thread ID I<tid> "
+"in the thread group I<tgid>.  (By contrast, B<kill>(2)  can be used to send "
+"a signal only to a process (i.e., thread group)  as a whole, and the signal "
+"will be delivered to an arbitrary thread within that process.)"
+msgstr ""
+
+#
+#
+#
+#
+#
+#.  FIXME Maybe say something about the following:
+#.  http://sourceware.org/bugzilla/show_bug.cgi?id=12889
+#.  Quoting Rich Felker <bugdal@aerifal.cx>:
+#.  There is a race condition in pthread_kill: it is possible that,
+#.  between the time pthread_kill reads the pid/tid from the target
+#.  thread descriptor and the time it makes the tgkill syscall,
+#.  the target thread terminates and the same tid gets assigned
+#.  to a new thread in the same process.
+#.  (The tgkill syscall was designed to eliminate a similar race
+#.  condition in tkill, but it only succeeded in eliminating races
+#.  where the tid gets reused in a different process, and does not
+#.  help if the same tid gets assigned to a new thread in the
+#.  same process.)
+#.  The only solution I can see is to introduce a mutex that ensures
+#.  that a thread cannot exit while pthread_kill is being called on it.
+#.  Note that in most real-world situations, like almost all race
+#.  conditions, this one will be extremely rare. To make it
+#.  measurable, one could exhaust all but 1-2 available pid values,
+#.  possibly by lowering the max pid parameter in /proc, forcing
+#.  the same tid to be reused rapidly.
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<tkill>()  is an obsolete predecessor to B<tgkill>().  It allows only the "
+"target thread ID to be specified, which may result in the wrong thread being "
+"signaled if a thread terminates and its thread ID is recycled.  Avoid using "
+"this system call."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"These are the raw system call interfaces, meant for internal thread library "
+"use."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "RETURN VALUE"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"On success, zero is returned.  On error, -1 is returned, and I<errno> is set "
+"to indicate the error."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ERRORS"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EAGAIN>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The B<RLIMIT_SIGPENDING> resource limit was reached and I<sig> is a real-"
+"time signal."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Insufficient kernel memory was available and I<sig> is a real-time signal."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EINVAL>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "An invalid thread ID, thread group ID, or signal was specified."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EPERM>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Permission denied.  For the required permissions, see B<kill>(2)."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ESRCH>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "No process with the specified thread ID (and thread group ID) exists."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "VERSIONS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<tkill>()  is supported since Linux 2.4.19 / 2.5.4.  B<tgkill>()  was added "
+"in Linux 2.5.75."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Library support for B<tgkill>()  was added to glibc in version 2.30."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CONFORMING TO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<tkill>()  and B<tgkill>()  are Linux-specific and should not be used in "
+"programs that are intended to be portable."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"See the description of B<CLONE_THREAD> in B<clone>(2)  for an explanation of "
+"thread groups."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Before glibc 2.30, there was also no wrapper function for B<tgkill>()."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<clone>(2), B<gettid>(2), B<kill>(2), B<rt_sigqueueinfo>(2)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "2019-08-02"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "B<int tkill(int >I<tid>B<, int >I<sig>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "B<int tgkill(int >I<tgid>B<, int >I<tid>B<, int >I<sig>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "I<Note>: There is no glibc wrapper for B<tkill>(); see NOTES."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"On success, zero is returned.  On error, -1 is returned, and I<errno> is set "
+"appropriately."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Glibc does not provide a wrapper for B<tkill>(); call it using "
+"B<syscall>(2).  Before glibc 2.30, there was also no wrapper function for "
+"B<tgkill>()."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2017-09-15"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "I<Note>: There are no glibc wrappers for these system calls; see NOTES."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"Glibc does not provide wrappers for these system calls; call them using "
+"B<syscall>(2)."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

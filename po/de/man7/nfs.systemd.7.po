@@ -1,0 +1,409 @@
+# German translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2019.
+# Helge Kreutzmann <debian@helgefjell.de>, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n 4.0.0\n"
+"POT-Creation-Date: 2020-06-30 18:54+02:00\n"
+"PO-Revision-Date: 2020-04-10 10:06+0200\n"
+"Last-Translator: Helge Kreutzmann <debian@helgefjell.de>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. type: TH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "NFS.SYSTEMD"
+msgstr "NFS.SYSTEMD"
+
+#. type: SH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr "BEZEICHNUNG"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "nfs.systemd - managing NFS services through systemd."
+msgstr "nfs.systemd - NFS-Dienste mittels Systemd verwalten."
+
+#. type: SH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "ÜBERSICHT"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "nfs-utils.service"
+msgstr "nfs-utils.service"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "nfs-server.service"
+msgstr "nfs-server.service"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "nfs-client.target"
+msgstr "nfs-client.target"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "I<etc>"
+msgstr "I<etc>"
+
+#. type: SH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "BESCHREIBUNG"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"The I<nfs-utils> package provides a suite of I<systemd> unit files which "
+"allow the various services to be started and managed.  These unit files "
+"ensure that the services are started in the correct order, and the "
+"prerequisites are active before dependant services start.  As there are "
+"quite few unit files, it is not immediately obvious how best to achieve "
+"certain results.  The following subsections attempt to cover the issues that "
+"are most likely to come up."
+msgstr ""
+"Das Paket I<nfs-utils> stellt eine Reihe von Unit-Dateien für I<systemd> "
+"bereit, über die die verschiedenen Dienste gestartet und verwaltet werden "
+"können. Diese Unit-Dateien stellen sicher, dass die Dienste in der richtigen "
+"Reihenfolge gestartet werden und die Voraussetzungen erfüllt sind, bevor  "
+"abhängige Dienste gestartet werden. Da es recht viele Unit-Dateien gibt, ist "
+"es nicht sofort ersichtlich, wie bestimmte Ergebnisse am besten erzielt "
+"werden können. In den folgenden Unterabschnitten wird versucht, die Fälle "
+"abzudecken, die höchstwahrscheinlich am häufigsten vorkommen."
+
+#. type: SS
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"The standard systemd unit files do not provide any easy way to pass any "
+"command line arguments to daemons so as to configure their behavior.  In "
+"many case such configuration can be performed by making changes to I</etc/"
+"nfs.conf> or other configuration files.  When that is not convenient, a "
+"distribution might provide systemd \"drop-in\" files which replace the "
+"B<ExecStart=> setting to start the program with different arguments.  For "
+"example a drop-in file B<systemd/system/nfs-mountd.service.d/local.conf> "
+"containing"
+msgstr ""
+"Die Standard-Systemd-Unit-Dateien bieten keine leichte Möglichkeit, "
+"beliebige Befehlszeilenargumente an Daemons zur Konfiguration deren "
+"Verhaltens zu übergeben. In vielen Fällen können solche Konfigurationen "
+"durch die Vornahme von Änderungen an I</etc/nfs.conf> oder anderen "
+"Konfigurationsdateien durchgeführt werden\\&. Wenn das nicht zweckmäßig ist, "
+"könnte eine Distribution Systemd-»Ergänzungsdateien« bereitstellen, die die "
+"B<ExecStart=>-Einstellung zum Starten des Programmes mit anderen Argumenten "
+"ersetzen. Beispielsweise würde eine Ergänzungsdatei B<systemd/system/nfs-"
+"mountd.service.d/local.conf>, die"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"[Service]\n"
+"EnvironmentFile=/etc/sysconfig/nfs\n"
+"ExecStart=\n"
+"ExecStart= /usr/sbin/rpc.mountd $RPCMOUNTDOPTS\n"
+msgstr ""
+"[Service]\n"
+"EnvironmentFile=/etc/sysconfig/nfs\n"
+"ExecStart=\n"
+"ExecStart= /usr/sbin/rpc.mountd $RPCMOUNTDOPTS\n"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"would cause the B<nfs-mountd.service> unit to run the I<rpc.mountd> program "
+"using, for arguments, the value given for B<RPCMOUNTDOPTS> in I</etc/"
+"sysconfig/nfs>.  This allows for seamless integration with existing "
+"configuration tools."
+msgstr ""
+"enthält, dazu führen, dass die Unit B<nfs-mountd.service> das Programm I<rpc."
+"mountd> unter Verwendung der Argumente ausführt, deren Wert für "
+"B<RPCMOUNTDOPTS> in I</etc/sysconfig/nfs> bereitgestellt wird. Dies erlaubt "
+"die nahtlose Integration mit existierenden Konfigurationswerkzeugen."
+
+#. type: SS
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Enabling unit files"
+msgstr "Aktivierung von Unit-Dateien"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"There are three unit files which are designed to be manually enabled.  All "
+"others are automatically run as required.  The three are:"
+msgstr ""
+"Es gibt drei Unit-Dateien, die dafür gedacht sind, manuell gestartet zu "
+"werden. Alle anderen werden automatisch nach Bedarf gestartet. Diese drei "
+"sind: "
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<nfs-client.target>"
+msgstr "B<nfs-client.target>"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"This should be enabled on any host which ever serves as an NFS client.  "
+"There is little cost in transparently enabling it whenever NFS client "
+"software is installed."
+msgstr ""
+"Diese Datei sollte auf jedem Rechner aktiviert werden, der jemals als NFS-"
+"Client dient. Es entsteht kaum Aufwand beim transparenten Aktivieren, jedes "
+"Mal wenn NFS-Client-Software installiert wird."
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<nfs-server.service>"
+msgstr "B<nfs-server.service>"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"This must be enabled to provide NFS service to clients.  It starts and "
+"configures the required daemons in the required order."
+msgstr ""
+"Diese muss aktiviert sein, um NFS-Dienste für Clients bereitstellen zu "
+"können. Sie wird gestartet und konfiguriert die erforderlichen Daemons in "
+"der nötigen Reihenfolge."
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<nfs-blkmap.service>"
+msgstr "B<nfs-blkmap.service>"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"The B<blkmapd> daemon is only required on NFS clients which are using pNFS "
+"(parallel NFS), and particularly using the B<blocklayout> layout protocol.  "
+"If you might use this particular extension to NFS, the B<nfs-blkmap.service> "
+"unit should be enabled."
+msgstr ""
+"Der Daemon B<blkmapd> ist nur auf NFS-Clients erforderlich, die pNFS "
+"(paralleles NFS) und insbesondere das Layout-Protokoll B<blocklayout> "
+"verwenden. Wenn Sie diese spezielle Erweiterung für NFS verwenden könnten, "
+"sollte die Unit B<nfs-blkmap.service> aktiviert sein."
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Several other units which might be considered to be optional, such as I<rpc-"
+"gssd.service> are careful to only start if the required configuration file "
+"exists.  I<rpc-gssd.service> will not start if the I<krb5.keytab> file does "
+"not exist (typically in I</etc>)."
+msgstr ""
+"Mehrere andere Units, wie I<rpc-gssd.service>, die als optional betrachtet "
+"werden könnten, achten darauf, nur zu starten, falls die benötigte "
+"Konfigurationsdatei existiert. I<rpc-gssd.service> startet nicht, falls die "
+"(normalerweise in I</etc> liegende) Datei I<krb5.keytab> nicht existiert."
+
+#. type: SS
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Restarting NFS services"
+msgstr "Neustarten von NFS-Diensten"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Most NFS daemons can be restarted at any time.  They will reload any state "
+"that they need, and continue servicing requests.  This is rarely necessary "
+"though."
+msgstr ""
+"Die meisten NFS-Daemons können jederzeit neu gestartet werden. Sie werden "
+"sämtlichen benötigten Zustand neu laden und weiterhin Anfragen bedienen. "
+"Allerdings wird dies selten benötigt."
+
+# FIXME changesare make → changes are made
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"When configuration changesare make, it can be hard to know exactly which "
+"services need to be restarted to ensure that the configuration takes "
+"effect.  The simplest approach, which is often the best, is to restart "
+"everything.  To help with this, the B<nfs-utils.service> unit is provided.  "
+"It declares appropriate dependencies with other unit files so that"
+msgstr ""
+"Wenn Konfigurationsänderungen erfolgen, ist schwer feststellbar, welche "
+"Dienste neu gestartet werden müssen, damit die Konfiguration wirksam wird. "
+"Der einfachste und oft beste Ansatz ist, alles neu zu starten. Dabei hilft "
+"die bereitgestellte Unit B<nfs-utils.service>. Sie erklärt geeignete "
+"Abhängigkeiten zu anderen Units, so dass"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "B<systemctl restart nfs-utils>"
+msgstr "B<systemctl restart nfs-utils>"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"will restart all NFS daemons that are running.  This will cause all "
+"configuration changes to take effect I<except> for changes to mount options "
+"lists in I</etc/fstab> or I</etc/nfsmount.conf>.  Mount options can only be "
+"changed by unmounting and remounting filesystem.  This can be a disruptive "
+"operation so it should only be done when the value justifies the cost.  The "
+"command"
+msgstr ""
+"alle laufenden NFS-Daemons neu startet. Dadurch werden alle "
+"Konfigurationsänderungen wirksam, außer an den in I</etc/fstab> oder I</etc/"
+"nfsmount.conf> aufgeführten Einhängeoptionen. Einhängeoptionen können nur "
+"durch Aushängen und erneutes Einhängen des Dateisystems geändert werden. "
+"Dies kann störend sein und sollte nur durchgeführt werden, wenn der Nutzen "
+"den Aufwand rechtfertigt. Der Befehl"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "B<umount -a -t nfs; mount -a -t nfs>"
+msgstr "B<umount -a -t nfs; mount -a -t nfs>"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "should unmount and remount all NFS filesystems."
+msgstr "sollte alle NFS-Dateisysteme aus- und neu wieder einhängen."
+
+#. type: SS
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Masking unwanted services"
+msgstr "Unerwünschte Dienste maskieren"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Rarely there may be a desire to prohibit some services from running even "
+"though there are normally part of a working NFS system.  This may be needed "
+"to reduce system load to an absolute minimum, or to reduce attack surface by "
+"not running daemons that are not absolutely required."
+msgstr ""
+"Es kommt selten vor, dass einige Dienste von der Ausführung abgehalten "
+"werden sollen, obwohl sie normalerweise Teil eines funktionierenden NFS-"
+"Systems sind. Dies kann zur Reduzierung der Systemlast auf das absolut "
+"minimal notwendige oder zur Reduzierung der Angriffsfläche, durch Vermeidung "
+"von Daemons, die nicht absolut notwendig sind, erforderlich sein."
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Three particular services which this can apply to are I<rpcbind>, I<idmapd>, "
+"and I<rpc-gssd>.  I<rpcbind> is not part of the I<nfs-utils> package, but it "
+"used by several NFS services.  However it is B<not> needed when only NFSv4 "
+"is in use.  If a site will never use NFSv3 (or NFSv2) and does not want "
+"I<rpcbind> to be running, the correct approach is to run"
+msgstr ""
+"Auf drei bestimmte Dienste kann dies zutreffen: I<rpcbind>, I<idmapd> und "
+"I<rpc-gssd>. I<rpcbind> ist nicht Teil des Pakets I<nfs-utils>, wird aber "
+"von mehreren NFS-Diensten verwandt. Allerdings wird es B<nicht> benötigt, "
+"wenn nur NFSv4 im Einsatz ist. Falls ein Standort niemals NFSv3 (oder NFSv2) "
+"verwendet und nicht möchte, dass I<rpcbind> ausgeführt wird, dann sollte "
+"Folgendes ausgeführt werden:"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "B<systemctl mask rpcbind>"
+msgstr "B<systemctl mask rpcbind>"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"This will disable I<rpcbind>, and the various NFS services which depend on "
+"it (and are only needed for NFSv3) will refuse to start, without interfering "
+"with the operation of NFSv4 services.  In particular, I<rpc.statd> will not "
+"run when I<rpcbind> is masked."
+msgstr ""
+"Dadurch wird I<rpcbind> deaktiviert und die verschiedenen NFS-Dienste, die "
+"davon abhängen (und nur für NFSv3 erforderlich sind), werden den Start "
+"verweigern, ohne die Aktionen der NFSv4-Dienste zu beeinflussen. "
+"Insbesondere I<rpc.statd> wird nicht laufen, wenn I<rpcbind> maskiert ist."
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"I<idmapd> is only needed for NFSv4, and even then is not needed when the "
+"client and server agree to use user-ids rather than user-names to identify "
+"the owners of files.  If I<idmapd> is not needed and not wanted, it can be "
+"masked with"
+msgstr ""
+"I<idmapd> ist nur für NFSv4 erforderlich, und selbst in diesem Fall nicht, "
+"wenn der Client und der Server sich darüber geeinigt haben, "
+"Benutzerkennungen statt Benutzernamen zum Identifizieren der Dateieigentümer "
+"zu verwenden. Falls I<idmapd> nicht gebraucht wird und nicht gewünscht ist, "
+"kann er mit folgendem Befehl maskiert werden:"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "B<systemctl mask idmapd>"
+msgstr "B<systemctl mask idmapd>"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"I<rpc-gssd> is assumed to be needed if the I<krb5.keytab> file is present.  "
+"If a site needs this file present but does not want I<rpc-gssd> running, it "
+"can be masked with"
+msgstr ""
+"Falls die Datei I<krb5.keytab> vorhanden ist, wird davon ausgegangen, dass "
+"I<rpc-gssd> benötigt wird. Falls an einem Standort die Datei vorhanden sein "
+"muss, aber I<rpc-gssd> nicht ausgeführt werden soll, dann kann es wie folgt "
+"maskiert werden:"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "B<systemctl mask rpc-gssd>"
+msgstr "B<systemctl mask rpc-gssd>"
+
+#. type: SH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "FILES"
+msgstr "DATEIEN"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "/etc/nfs.conf"
+msgstr "/etc/nfs.conf"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "/etc/nfsmount.conf"
+msgstr "/etc/nfsmount.conf"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "/etc/idmapd.conf"
+msgstr "/etc/idmapd.conf"
+
+#. type: SH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "SIEHE AUCH"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "B<systemd.unit>(5), B<nfs.conf>(5), B<nfsmount.conf>(5)."
+msgstr "B<systemd.unit>(5), B<nfs.conf>(5), B<nfsmount.conf>(5)."

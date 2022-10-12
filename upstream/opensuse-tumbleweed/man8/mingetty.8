@@ -1,0 +1,207 @@
+.\"
+.TH MINGETTY 8 "29 May 2007" "SuSE" "Linux Programmer's Manual"
+.SH NAME
+mingetty \- minimal getty for consoles
+.SH SYNOPSIS
+.B /sbin/mingetty
+.RB [ \-\-noclear ]
+.RB [ \-\-nonewline ]
+.RB [ \-\-noissue ]
+.RB [ \-\-nohangup ]
+.RB [ \-\-noreset ]
+.RB [ \-\-no\-hostname ]
+.RB [ \-\-long-hostname ]
+.RB [ \-\-login\ \fIlogin_binary\fP ]
+.RB [ \-\-logopts\ \fI"login_options"\fP ]
+.RB [ \-\-nice\ \fInumber\fP ]
+.RB [ \-\-delay\ \fInumber\fP ]
+.RB [ \-\-chdir\ \fI/home\fP ]
+.RB [ \-\-chroot\ \fI/chroot\fP ]
+.RB [ \-\-autologin\ \fIuser\fP ]
+.RB [ \-\-loginpause ]
+.RB [ \-\-old ]
+.I tty
+.RI [ term ]
+.PP
+.SH DESCRIPTION
+.B mingetty 
+is a minimal getty for use on virtual consoles.
+Unlike 
+.BR agetty (8),
+.B mingetty
+is not suitable for serial lines.
+For this purpose the usage of
+.BR mgetty (8)
+is recommend.
+.PP
+.SH OPTIONS
+.TP
+.B \-\-noclear
+Do not clear the screen before prompting for the login name (the screen
+is normally cleared).
+.TP
+.B \-\-noreset
+By default the terminal settings will be initialized to some
+sane default values.  With this option the terminal settings
+will not be changed.
+.TP
+.B \-\-nonewline
+Do not print a newline before writing out /etc/issue.
+.TP
+.B \-\-noissue
+Do not output /etc/issue.
+.TP
+.B \-\-nohangup
+Do not call vhangup() to disable writing to this tty by
+other applications.
+.TP
+.B \-\-no\-hostname
+By default the hostname will be printed.
+With this option enabled, no hostname at all will be shown.
+.TP
+.B \-\-long\-hostname
+By default the hostname is only printed until the first dot.
+With this option enabled, the full text from gethostname() is shown.
+.TP
+.B \-\-login \fIlogin_binary\fP
+Use the \fIlogin_binary\fP to log in instead of the default
+.IR /bin/login .
+.TP
+.B \-\-logopts \fI"login_options"\fP
+Options that are passed to the login program. 
+\\\\u 
+is replaced by the login
+name. Defaults to "\-\- \\\\u", which is suitable for
+.IR /bin/login .
+Please read the SECURITY NOTICE below if you want to use this.
+.TP
+.B \-\-nice 10
+Change the priority by calling nice().
+.TP
+.B \-\-delay 5
+Sleep this many seconds after startup of mingetty.
+.TP
+.B \-\-chdir /home
+Change into this directory before calling the login prog.
+.TP
+.B \-\-chroot /chroot
+Call chroot() with this directory name.
+.TP
+.B \-\-autologin username
+Log the specified user automatically in without asking for
+a login name and password. Check the \-f option from
+.B /bin/login
+for this.
+.TP
+.B \-\-loginpause
+Wait for any key before dropping to the login prompt.
+Can be combined with \fB\-\-autologin\fR to save memory by lazily spawning
+shells.
+.TP
+.B \-\-old
+Do not reset the terminal line to standard settings and
+do not hangup the
+.I /dev/vcs
+and
+.I /dev/vcsa
+virtual console memory devices which may remain from a former session.
+This hangup requires access to the
+.I /proc
+file system because the linux kernel does not have a
+.B revoke()
+system call.
+Please read the SECURITY NOTICE below if you want to use this.
+.PP
+.SH SECURITY NOTICE
+If you use the 
+.B \-\-login 
+and 
+.B \-\-logopts 
+options, be aware that a malicious user
+may try to enter lognames with embedded options, which then get passed to
+the used login program. 
+.B mingetty 
+does check for a leading 
+\- 
+and makes sure the logname gets passed as one
+parameter (so embedded spaces will not create yet another parameter), but
+depending on how the login binary parses the command line that might not be
+sufficient. Check that the used login program can not be abused this way.
+.PP 
+Some programs use 
+\-\- 
+to indicate that the rest of the commandline should not be interpreted as
+options. Use this feature if available by passing 
+\-\- 
+before the username gets passed by 
+\\\\u.
+.PP
+If you use the
+.B \-\-old
+be aware that remaining opened or memory mapped
+.IB /dev/vcs <#>
+or
+.IB /dev/vcsa <#>
+virtual console memory devices provide all infomation of the
+corresponding terminal line
+.I /dev/tty<#>
+to a possible attacker.
+.SH "ISSUE ESCAPES"
+.B mingetty 
+recognizes the following escapes sequences which might be embedded in the 
+.I /etc/issue
+file:
+.IP \fB\ed\fP
+insert current day (localtime),
+.IP \fB\el\fP
+insert line on which 
+.B mingetty 
+is running,
+.IP \fB\em\fP
+inserts machine architecture (uname \-m),
+.IP \fB\en\fP
+inserts machine's network node hostname (uname \-n),
+.IP \fB\eo\fP
+inserts domain name,
+.IP \fB\er\fP
+inserts operating system release (uname \-r),
+.IP \fB\et\fP
+insert current time (localtime),
+.IP \fB\es\fP
+inserts operating system name,
+.IP \fB\eu\fP 
+resp. \fB\eU\fP
+the current number of users which are currently logged in.
+\\U inserts "\fIn\fP users", where as \\u only inserts "\fIn\fP".
+.IP \fB\ev\fP
+inserts operating system version (uname -v).
+.PP
+.SH EXAMPLE
+"\fBLinux\ eos\ i386\ #1\ Tue\ Mar\ 19\ 21:54:09\ MET\ 1996\fP" was produced
+by putting "\fB\\s\ \\n\ \\m\ \\v\fP" into
+.IR /etc/issue .
+.PP
+.SH FILES
+.IR /etc/issue ,
+.br
+.IR /var/run/utmp ,
+.br
+.IR /etc/inittab .
+.br
+.PP
+.SH "SEE ALSO"
+.BR mgetty (8),
+.br
+.BR agetty (8),
+.br
+.BR inittab (5),
+.br
+.BR vcs (8).
+.PP
+.SH AUTHOR
+Copyright \(co 1996 Florian La Roche <florian@suse.de>
+or <florian@jurix.jura.uni\-sb.de>.
+.br
+Copyright \(co 1999-2002 Werner Fink <feedback@suse.de>.
+Man-page written by David Frey <David.Frey@eos.lugs.ch>,
+Florian La Roche, and updated by Werner Fink.

@@ -1,0 +1,314 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-08-27 17:48+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: Dd
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "August 5, 2019"
+msgstr ""
+
+#. type: Dt
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "INIT\\-D\\-SCRIPT 5 \"Debian sysvinit\""
+msgstr ""
+
+#. type: Os
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "Debian"
+msgstr ""
+
+#. type: Sh
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "E<.Nm init\\-d\\-script>"
+msgstr ""
+
+#. type: Nd
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "interpreter for short and simple init.d scripts"
+msgstr ""
+
+#. type: Sh
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Generic init.d script framework to reduce the redundant code in E<.Pa /etc/"
+"init.d/>.  The goal is to create an init.d script that is Debian and LSB "
+"compliant.  When the Debian policy conflicts with the LSB, the Debian policy "
+"takes precedence."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This is a simple example on how init\\-d\\-script can be used to start and "
+"stop a daemon with PID file support:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"#!/usr/bin/env /lib/init/init\\-d\\-script\n"
+"### BEGIN INIT INFO\n"
+"# Provides:          atd\n"
+"# Required\\-Start:    $syslog $time $remote_fs\n"
+"# Required\\-Stop:     $syslog $time $remote_fs\n"
+"# Default\\-Start:     2 3 4 5\n"
+"# Default\\-Stop:      0 1 6\n"
+"# Short\\-Description: run at jobs\n"
+"# Description:       Debian init script to start the daemon\n"
+"#                    running at jobs.\n"
+"### END INIT INFO\n"
+"DAEMON=/usr/sbin/atd\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "The following variables affect behaviour of an init script:"
+msgstr ""
+
+#. type: It
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "Ev DAEMON"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Path to daemon being started.  If the init script is not supposed to start "
+"any kind of daemon, the functions E<.Fn do_start_override>, E<.Fn "
+"do_stop_override> and E<.Fn do_status_override> should be defined instead."
+msgstr ""
+
+#. type: It
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "Ev DAEMON_ARGS"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "Additional arguments, passed to daemon during start."
+msgstr ""
+
+#. type: It
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "Ev NAME"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Additional environment variables are sources from E<.Pa /etc/default/${NAME}"
+">.  If unset, this variable defaults to the basename of the E<.Dq Ev DAEMON> "
+"value."
+msgstr ""
+
+#. type: It
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "Ev COMMAND_NAME"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"If this variable is set, it is used as argument to the E<.Fl \\-name> option "
+"of E<.Xr start\\-stop\\-daemon 8>.  It may be useful if the value of the E<."
+"Ev NAME> variable is too long."
+msgstr ""
+
+#. type: It
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "Ev PIDFILE"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Path to file where the process identifier of the started daemon will be "
+"stored during start.  If the value is verbatim E<.Dq Li none>, the process "
+"identifier will not be stored in any file.  If this variable is not set, it "
+"gets a sensible default value, so it is rarely necessary to set this "
+"variable explicitly."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Additionally, it is possible to change the behaviour of the resulting shell "
+"script by overriding some of the internal functions.  To do so, define "
+"function with an E<.Ic _override> suffix.  So, for example, to override the "
+"E<.Fn do_status> function, one should define a E<.Fn do_status_override> "
+"function.  The E<.Em exception> to this rule is the E<.Fn do_reload> "
+"function, whose override should be defined as-is, E<.Em without> the above-"
+"mentioned suffix."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Here is a control flow chart that explains what functions are called and "
+"when:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"/etc/init.d/script start\n"
+"  do_start\n"
+"    do_start_prepare # no-op\n"
+"    do_start_cmd     # start\\-stop\\-daemon is called here\n"
+"    do_start_cleanup # no-op\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"/etc/init.d/script stop\n"
+"  do_stop\n"
+"    do_stop_prepare # no-op\n"
+"    do_stop_cmd     # start\\-stop\\-daemon is called here\n"
+"    do_stop_cleanup # no-op\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"/etc/init.d/script status\n"
+"  do_status\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"/etc/init.d/script reload\n"
+"  do_reload\n"
+"    do_usage\n"
+"    exit 3\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"/etc/init.d/script force\\-reload\n"
+"  do_force_reload\n"
+"    do_reload   # if overridden\n"
+"    do_restart\n"
+"      do_restart_prepare\n"
+"      do_stop_cmd\n"
+"      do_start_cmd\n"
+"      do_restart_cleanup\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"/etc/init.d/script restart\n"
+"  do_force_restart\n"
+"/etc/init.d/script try\\-restart\n"
+"  if do_status; then\n"
+"    do_restart\n"
+"      do_restart_prepare\n"
+"      do_stop_cmd  # start\\-stop\\-daemon is called here\n"
+"      do_start_cmd # start\\-stop\\-daemon is called here\n"
+"      do_restart_cleanup\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"/etc/init.d/script \\*(Ltarg\\*(Gt\n"
+"  do_unknown \\*(Ltarg\\*(Gt\n"
+"    exit 3\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"/etc/init.d/script\n"
+"  do_usage\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"As can be seen, by default, the script does not support the E<.Ic reload> "
+"action; it should be implemented by the script writer by defining a E<.Fn "
+"do_reload> function."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"If the daemon performs reload action upon receiving a E<.Dv SIGUSR1> signal, "
+"a generic implementation can be used with the following code:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "alias do_reload=do_reload_sigusr1\n"
+msgstr ""
+
+#. type: Sh
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "E<.Xr inittab 8>, E<.Xr service 8>, E<.Xr update\\-rc.d 8>."
+msgstr ""
+
+#. type: Sh
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "AUTHORS"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "E<.An -nosplit> E<.An Petter Reinholdtsen Aq pere@debian.org>"
+msgstr ""

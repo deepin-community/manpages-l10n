@@ -1,0 +1,699 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-09-03 20:42+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "INIT_MODULE"
+msgstr ""
+
+#. type: TH
+#: archlinux fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "2021-03-22"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "init_module, finit_module - load a kernel module"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<#include E<lt>linux/module.hE<gt>>    /* Definition of B<MODULE_*> constants */\n"
+"B<#include E<lt>sys/syscall.hE<gt>>     /* Definition of B<SYS_*> constants */\n"
+"B<#include E<lt>unistd.hE<gt>>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<int syscall(SYS_init_module, void *>I<module_image>B<, unsigned long >I<len>B<,>\n"
+"B<            const char *>I<param_values>B<);>\n"
+"B<int syscall(SYS_finit_module, int >I<fd>B<, const char *>I<param_values>B<,>\n"
+"B<            int >I<flags>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide opensuse-tumbleweed
+msgid ""
+"I<Note>: glibc provides no wrappers for these system calls, necessitating "
+"the use of B<syscall>(2)."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"B<init_module>()  loads an ELF image into kernel space, performs any "
+"necessary symbol relocations, initializes module parameters to values "
+"provided by the caller, and then runs the module's I<init> function.  This "
+"system call requires privilege."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"The I<module_image> argument points to a buffer containing the binary image "
+"to be loaded; I<len> specifies the size of that buffer.  The module image "
+"should be a valid ELF image, built for the running kernel."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"The I<param_values> argument is a string containing space-delimited "
+"specifications of the values for module parameters (defined inside the "
+"module using B<module_param>()  and B<module_param_array>()).  The kernel "
+"parses this string and initializes the specified parameters.  Each of the "
+"parameter specifications has the form:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "I<name>[B<=>I<value>[B<,>I<value>...]]"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"The parameter I<name> is one of those defined within the module using "
+"I<module_param>()  (see the Linux kernel source file I<include/linux/"
+"moduleparam.h>).  The parameter I<value> is optional in the case of I<bool> "
+"and I<invbool> parameters.  Values for array parameters are specified as a "
+"comma-separated list."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "finit_module()"
+msgstr ""
+
+#.  commit 34e1169d996ab148490c01b65b4ee371cf8ffba2
+#.  https://lwn.net/Articles/519010/
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"The B<finit_module>()  system call is like B<init_module>(), but reads the "
+"module to be loaded from the file descriptor I<fd>.  It is useful when the "
+"authenticity of a kernel module can be determined from its location in the "
+"filesystem; in cases where that is possible, the overhead of using "
+"cryptographically signed modules to determine the authenticity of a module "
+"can be avoided.  The I<param_values> argument is as for B<init_module>()."
+msgstr ""
+
+#.  commit 2f3238aebedb243804f58d62d57244edec4149b2
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"The I<flags> argument modifies the operation of B<finit_module>().  It is a "
+"bit mask value created by ORing together zero or more of the following flags:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<MODULE_INIT_IGNORE_MODVERSIONS>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "Ignore symbol version hashes."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<MODULE_INIT_IGNORE_VERMAGIC>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "Ignore kernel version magic."
+msgstr ""
+
+#.  http://www.tldp.org/HOWTO/Module-HOWTO/basekerncompat.html
+#.  is dated, but informative
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"There are some safety checks built into a module to ensure that it matches "
+"the kernel against which it is loaded.  These checks are recorded when the "
+"module is built and verified when the module is loaded.  First, the module "
+"records a \"vermagic\" string containing the kernel version number and "
+"prominent features (such as the CPU type).  Second, if the module was built "
+"with the B<CONFIG_MODVERSIONS> configuration option enabled, a version hash "
+"is recorded for each symbol the module uses.  This hash is based on the "
+"types of the arguments and return value for the function named by the "
+"symbol.  In this case, the kernel version number within the \"vermagic\" "
+"string is ignored, as the symbol version hashes are assumed to be "
+"sufficiently reliable."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"Using the B<MODULE_INIT_IGNORE_VERMAGIC> flag indicates that the \"vermagic"
+"\" string is to be ignored, and the B<MODULE_INIT_IGNORE_MODVERSIONS> flag "
+"indicates that the symbol version hashes are to be ignored.  If the kernel "
+"is built to permit forced loading (i.e., configured with "
+"B<CONFIG_MODULE_FORCE_LOAD>), then loading continues, otherwise it fails "
+"with the error B<ENOEXEC> as expected for malformed modules."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "RETURN VALUE"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide opensuse-tumbleweed
+msgid ""
+"On success, these system calls return 0.  On error, -1 is returned and "
+"I<errno> is set to indicate the error."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "ERRORS"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<EBADMSG> (since Linux 3.7)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "Module signature is misformatted."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<EBUSY>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "Timeout while trying to resolve a symbol reference by this module."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<EFAULT>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"An address argument referred to a location that is outside the process's "
+"accessible address space."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<ENOKEY> (since Linux 3.7)"
+msgstr ""
+
+#.  commit 48ba2462ace6072741fd8d0058207d630ce93bf1
+#.  commit 1d0059f3a468825b5fc5405c636a2f6e02707ffa
+#.  commit 106a4ee258d14818467829bf0e12aeae14c16cd7
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"Module signature is invalid or the kernel does not have a key for this "
+"module.  This error is returned only if the kernel was configured with "
+"B<CONFIG_MODULE_SIG_FORCE>; if the kernel was not configured with this "
+"option, then an invalid or unsigned module simply taints the kernel."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<ENOMEM>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "Out of memory."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<EPERM>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"The caller was not privileged (did not have the B<CAP_SYS_MODULE> "
+"capability), or module loading is disabled (see I</proc/sys/kernel/"
+"modules_disabled> in B<proc>(5))."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "The following errors may additionally occur for B<init_module>():"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<EEXIST>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "A module with this name is already loaded."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<EINVAL>"
+msgstr ""
+
+#.  .TP
+#.  .BR EINVAL " (Linux 2.4 and earlier)"
+#.  Some
+#.  .I image
+#.  slot is filled in incorrectly,
+#.  .I image\->name
+#.  does not correspond to the original module name, some
+#.  .I image\->deps
+#.  entry does not correspond to a loaded module,
+#.  or some other similar inconsistency.
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"I<param_values> is invalid, or some part of the ELF image in I<module_image> "
+"contains inconsistencies."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<ENOEXEC>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"The binary image supplied in I<module_image> is not an ELF image, or is an "
+"ELF image that is invalid or for a different architecture."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "The following errors may additionally occur for B<finit_module>():"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<EBADF>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "The file referred to by I<fd> is not opened for reading."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<EFBIG>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "The file referred to by I<fd> is too large."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "I<flags> is invalid."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "I<fd> does not refer to an open file."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"In addition to the above errors, if the module's I<init> function is "
+"executed and returns an error, then B<init_module>()  or B<finit_module>()  "
+"fails and I<errno> is set to the value returned by the I<init> function."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "VERSIONS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "B<finit_module>()  is available since Linux 3.8."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "CONFORMING TO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "B<init_module>()  and B<finit_module>()  are Linux-specific."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"The B<init_module>()  system call is not supported by glibc.  No declaration "
+"is provided in glibc headers, but, through a quirk of history, glibc "
+"versions before 2.23 did export an ABI for this system call.  Therefore, in "
+"order to employ this system call, it is (before glibc 2.23) sufficient to "
+"manually declare the interface in your code; alternatively, you can invoke "
+"the system call using B<syscall>(2)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"Information about currently loaded modules can be found in I</proc/modules> "
+"and in the file trees under the per-module subdirectories under I</sys/"
+"module>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"See the Linux kernel source file I<include/linux/module.h> for some useful "
+"background information."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "Linux 2.4 and earlier"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"In Linux 2.4 and earlier, the B<init_module>()  system call was rather "
+"different:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid "B<#include E<lt>linux/module.hE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"B< int init_module(const char *>I<name>B<, struct module *>I<image>B<);>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"(User-space applications can detect which version of B<init_module>()  is "
+"available by calling B<query_module>(); the latter call fails with the error "
+"B<ENOSYS> on Linux 2.6 and later.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"The older version of the system call loads the relocated module image "
+"pointed to by I<image> into kernel space and runs the module's I<init> "
+"function.  The caller is responsible for providing the relocated image "
+"(since Linux 2.6, the B<init_module>()  system call does the relocation)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"The module image begins with a module structure and is followed by code and "
+"data as appropriate.  Since Linux 2.2, the module structure is defined as "
+"follows:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"struct module {\n"
+"    unsigned long         size_of_struct;\n"
+"    struct module        *next;\n"
+"    const char           *name;\n"
+"    unsigned long         size;\n"
+"    long                  usecount;\n"
+"    unsigned long         flags;\n"
+"    unsigned int          nsyms;\n"
+"    unsigned int          ndeps;\n"
+"    struct module_symbol *syms;\n"
+"    struct module_ref    *deps;\n"
+"    struct module_ref    *refs;\n"
+"    int                 (*init)(void);\n"
+"    void                (*cleanup)(void);\n"
+"    const struct exception_table_entry *ex_table_start;\n"
+"    const struct exception_table_entry *ex_table_end;\n"
+"#ifdef __alpha__\n"
+"    unsigned long gp;\n"
+"#endif\n"
+"};\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"All of the pointer fields, with the exception of I<next> and I<refs>, are "
+"expected to point within the module body and be initialized as appropriate "
+"for kernel space, that is, relocated with the rest of the module."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"B<create_module>(2), B<delete_module>(2), B<query_module>(2), B<lsmod>(8), "
+"B<modprobe>(8)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "2017-09-15"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"B<int init_module(void *>I<module_image>B<, unsigned long >I<len>B<,>\n"
+"B<                const char *>I<param_values>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"B<int finit_module(int >I<fd>B<, const char *>I<param_values>B<,>\n"
+"B<                 int >I<flags>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"I<Note>: glibc provides no header file declaration of B<init_module>()  and "
+"no wrapper function for B<finit_module>(); see NOTES."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"On success, these system calls return 0.  On error, -1 is returned and "
+"I<errno> is set appropriately."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Glibc does not provide a wrapper for B<finit_module>(); call it using "
+"B<syscall>(2)."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

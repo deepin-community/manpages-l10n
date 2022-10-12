@@ -1,0 +1,965 @@
+.TH "libalpm_cb" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+libalpm_cb \- Callbacks
+.PP
+ \- Functions and structures for libalpm's callbacks\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBalpm_event_any_t\fP"
+.br
+.RI "An event that may represent any event\&. "
+.ti -1c
+.RI "struct \fBalpm_event_package_operation_t\fP"
+.br
+.RI "A package operation event occurred\&. "
+.ti -1c
+.RI "struct \fBalpm_event_optdep_removal_t\fP"
+.br
+.RI "An optional dependency was removed\&. "
+.ti -1c
+.RI "struct \fBalpm_event_scriptlet_info_t\fP"
+.br
+.RI "A scriptlet was ran\&. "
+.ti -1c
+.RI "struct \fBalpm_event_database_missing_t\fP"
+.br
+.RI "A database is missing\&. "
+.ti -1c
+.RI "struct \fBalpm_event_pkgdownload_t\fP"
+.br
+.RI "A package was downloaded\&. "
+.ti -1c
+.RI "struct \fBalpm_event_pacnew_created_t\fP"
+.br
+.RI "A pacnew file was created\&. "
+.ti -1c
+.RI "struct \fBalpm_event_pacsave_created_t\fP"
+.br
+.RI "A pacsave file was created\&. "
+.ti -1c
+.RI "struct \fBalpm_event_hook_t\fP"
+.br
+.RI "pre/post transaction hooks are to be ran\&. "
+.ti -1c
+.RI "struct \fBalpm_event_hook_run_t\fP"
+.br
+.RI "A pre/post transaction hook was ran\&. "
+.ti -1c
+.RI "struct \fBalpm_event_pkg_retrieve_t\fP"
+.br
+.RI "Packages downloading about to start\&. "
+.ti -1c
+.RI "union \fBalpm_event_t\fP"
+.br
+.RI "Events\&. "
+.ti -1c
+.RI "struct \fBalpm_question_any_t\fP"
+.br
+.RI "A question that can represent any other question\&. "
+.ti -1c
+.RI "struct \fBalpm_question_install_ignorepkg_t\fP"
+.br
+.RI "Should target in ignorepkg be installed anyway? "
+.ti -1c
+.RI "struct \fBalpm_question_replace_t\fP"
+.br
+.RI "Should a package be replaced? "
+.ti -1c
+.RI "struct \fBalpm_question_conflict_t\fP"
+.br
+.RI "Should a conflicting package be removed? "
+.ti -1c
+.RI "struct \fBalpm_question_corrupted_t\fP"
+.br
+.RI "Should a corrupted package be deleted? "
+.ti -1c
+.RI "struct \fBalpm_question_remove_pkgs_t\fP"
+.br
+.RI "Should unresolvable targets be removed from the transaction? "
+.ti -1c
+.RI "struct \fBalpm_question_select_provider_t\fP"
+.br
+.RI "Provider selection\&. "
+.ti -1c
+.RI "struct \fBalpm_question_import_key_t\fP"
+.br
+.RI "Should a key be imported? "
+.ti -1c
+.RI "union \fBalpm_question_t\fP"
+.br
+.RI "Questions\&. "
+.ti -1c
+.RI "struct \fBalpm_download_event_init_t\fP"
+.br
+.RI "Context struct for when a download starts\&. "
+.ti -1c
+.RI "struct \fBalpm_download_event_progress_t\fP"
+.br
+.RI "Context struct for when a download progresses\&. "
+.ti -1c
+.RI "struct \fBalpm_download_event_retry_t\fP"
+.br
+.RI "Context struct for when a download retries\&. "
+.ti -1c
+.RI "struct \fBalpm_download_event_completed_t\fP"
+.br
+.RI "Context struct for when a download completes\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef void(* \fBalpm_cb_event\fP) (void *ctx, \fBalpm_event_t\fP *)"
+.br
+.RI "Event callback\&. "
+.ti -1c
+.RI "typedef void(* \fBalpm_cb_question\fP) (void *ctx, \fBalpm_question_t\fP *)"
+.br
+.RI "Question callback\&. "
+.ti -1c
+.RI "typedef void(* \fBalpm_cb_progress\fP) (void *ctx, \fBalpm_progress_t\fP progress, const char *pkg, int percent, size_t howmany, size_t current)"
+.br
+.RI "Progress callback\&. "
+.ti -1c
+.RI "typedef void(* \fBalpm_cb_download\fP) (void *ctx, const char *filename, \fBalpm_download_event_type_t\fP event, void *data)"
+.br
+.RI "Type of download progress callbacks\&. "
+.ti -1c
+.RI "typedef int(* \fBalpm_cb_fetch\fP) (void *ctx, const char *url, const char *localpath, int force)"
+.br
+.RI "A callback for downloading files\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBalpm_event_type_t\fP { \fBALPM_EVENT_CHECKDEPS_START\fP = 1, \fBALPM_EVENT_CHECKDEPS_DONE\fP, \fBALPM_EVENT_FILECONFLICTS_START\fP, \fBALPM_EVENT_FILECONFLICTS_DONE\fP, \fBALPM_EVENT_RESOLVEDEPS_START\fP, \fBALPM_EVENT_RESOLVEDEPS_DONE\fP, \fBALPM_EVENT_INTERCONFLICTS_START\fP, \fBALPM_EVENT_INTERCONFLICTS_DONE\fP, \fBALPM_EVENT_TRANSACTION_START\fP, \fBALPM_EVENT_TRANSACTION_DONE\fP, \fBALPM_EVENT_PACKAGE_OPERATION_START\fP, \fBALPM_EVENT_PACKAGE_OPERATION_DONE\fP, \fBALPM_EVENT_INTEGRITY_START\fP, \fBALPM_EVENT_INTEGRITY_DONE\fP, \fBALPM_EVENT_LOAD_START\fP, \fBALPM_EVENT_LOAD_DONE\fP, \fBALPM_EVENT_SCRIPTLET_INFO\fP, \fBALPM_EVENT_DB_RETRIEVE_START\fP, \fBALPM_EVENT_DB_RETRIEVE_DONE\fP, \fBALPM_EVENT_DB_RETRIEVE_FAILED\fP, \fBALPM_EVENT_PKG_RETRIEVE_START\fP, \fBALPM_EVENT_PKG_RETRIEVE_DONE\fP, \fBALPM_EVENT_PKG_RETRIEVE_FAILED\fP, \fBALPM_EVENT_DISKSPACE_START\fP, \fBALPM_EVENT_DISKSPACE_DONE\fP, \fBALPM_EVENT_OPTDEP_REMOVAL\fP, \fBALPM_EVENT_DATABASE_MISSING\fP, \fBALPM_EVENT_KEYRING_START\fP, \fBALPM_EVENT_KEYRING_DONE\fP, \fBALPM_EVENT_KEY_DOWNLOAD_START\fP, \fBALPM_EVENT_KEY_DOWNLOAD_DONE\fP, \fBALPM_EVENT_PACNEW_CREATED\fP, \fBALPM_EVENT_PACSAVE_CREATED\fP, \fBALPM_EVENT_HOOK_START\fP, \fBALPM_EVENT_HOOK_DONE\fP, \fBALPM_EVENT_HOOK_RUN_START\fP, \fBALPM_EVENT_HOOK_RUN_DONE\fP }"
+.br
+.RI "Type of events\&. "
+.ti -1c
+.RI "enum \fBalpm_package_operation_t\fP { \fBALPM_PACKAGE_INSTALL\fP = 1, \fBALPM_PACKAGE_UPGRADE\fP, \fBALPM_PACKAGE_REINSTALL\fP, \fBALPM_PACKAGE_DOWNGRADE\fP, \fBALPM_PACKAGE_REMOVE\fP }"
+.br
+.RI "An enum over the kind of package operations\&. "
+.ti -1c
+.RI "enum \fBalpm_hook_when_t\fP { \fBALPM_HOOK_PRE_TRANSACTION\fP = 1, \fBALPM_HOOK_POST_TRANSACTION\fP }"
+.br
+.RI "Kind of hook\&. "
+.ti -1c
+.RI "enum \fBalpm_question_type_t\fP { \fBALPM_QUESTION_INSTALL_IGNOREPKG\fP = (1 << 0), \fBALPM_QUESTION_REPLACE_PKG\fP = (1 << 1), \fBALPM_QUESTION_CONFLICT_PKG\fP = (1 << 2), \fBALPM_QUESTION_CORRUPTED_PKG\fP = (1 << 3), \fBALPM_QUESTION_REMOVE_PKGS\fP = (1 << 4), \fBALPM_QUESTION_SELECT_PROVIDER\fP = (1 << 5), \fBALPM_QUESTION_IMPORT_KEY\fP = (1 << 6) }"
+.br
+.RI "Type of question\&. "
+.ti -1c
+.RI "enum \fBalpm_progress_t\fP { \fBALPM_PROGRESS_ADD_START\fP, \fBALPM_PROGRESS_UPGRADE_START\fP, \fBALPM_PROGRESS_DOWNGRADE_START\fP, \fBALPM_PROGRESS_REINSTALL_START\fP, \fBALPM_PROGRESS_REMOVE_START\fP, \fBALPM_PROGRESS_CONFLICTS_START\fP, \fBALPM_PROGRESS_DISKSPACE_START\fP, \fBALPM_PROGRESS_INTEGRITY_START\fP, \fBALPM_PROGRESS_LOAD_START\fP, \fBALPM_PROGRESS_KEYRING_START\fP }"
+.br
+.RI "An enum over different kinds of progress alerts\&. "
+.ti -1c
+.RI "enum \fBalpm_download_event_type_t\fP { \fBALPM_DOWNLOAD_INIT\fP, \fBALPM_DOWNLOAD_PROGRESS\fP, \fBALPM_DOWNLOAD_RETRY\fP, \fBALPM_DOWNLOAD_COMPLETED\fP }"
+.br
+.RI "File download events\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Functions and structures for libalpm's callbacks\&. 
+
+
+.SH "Data Structure Documentation"
+.PP 
+.SH "struct alpm_event_any_t"
+.PP 
+An event that may represent any event\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+\fBalpm_event_type_t\fP \fItype\fP Type of event\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_event_package_operation_t"
+.PP 
+A package operation event occurred\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+\fBalpm_pkg_t\fP * \fInewpkg\fP New package\&. 
+.br
+.PP
+\fBalpm_pkg_t\fP * \fIoldpkg\fP Old package\&. 
+.br
+.PP
+\fBalpm_package_operation_t\fP \fIoperation\fP Type of operation\&. 
+.br
+.PP
+\fBalpm_event_type_t\fP \fItype\fP Type of event\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_event_optdep_removal_t"
+.PP 
+An optional dependency was removed\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+\fBalpm_depend_t\fP * \fIoptdep\fP Optdep being removed\&. 
+.br
+.PP
+\fBalpm_pkg_t\fP * \fIpkg\fP Package with the optdep\&. 
+.br
+.PP
+\fBalpm_event_type_t\fP \fItype\fP Type of event\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_event_scriptlet_info_t"
+.PP 
+A scriptlet was ran\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+const char * \fIline\fP Line of scriptlet output\&. 
+.br
+.PP
+\fBalpm_event_type_t\fP \fItype\fP Type of event\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_event_database_missing_t"
+.PP 
+A database is missing\&. 
+
+The database is registered but has not been downloaded 
+.PP
+\fBData Fields:\fP
+.RS 4
+const char * \fIdbname\fP Name of the database\&. 
+.br
+.PP
+\fBalpm_event_type_t\fP \fItype\fP Type of event\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_event_pkgdownload_t"
+.PP 
+A package was downloaded\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+const char * \fIfile\fP Name of the file\&. 
+.br
+.PP
+\fBalpm_event_type_t\fP \fItype\fP Type of event\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_event_pacnew_created_t"
+.PP 
+A pacnew file was created\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+const char * \fIfile\fP Filename of the file without the \&.pacnew suffix\&. 
+.br
+.PP
+int \fIfrom_noupgrade\fP Whether the creation was result of a NoUpgrade or not\&. 
+.br
+.PP
+\fBalpm_pkg_t\fP * \fInewpkg\fP New Package\&. 
+.br
+.PP
+\fBalpm_pkg_t\fP * \fIoldpkg\fP Old package\&. 
+.br
+.PP
+\fBalpm_event_type_t\fP \fItype\fP Type of event\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_event_pacsave_created_t"
+.PP 
+A pacsave file was created\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+const char * \fIfile\fP Filename of the file without the \&.pacsave suffix\&. 
+.br
+.PP
+\fBalpm_pkg_t\fP * \fIoldpkg\fP Old package\&. 
+.br
+.PP
+\fBalpm_event_type_t\fP \fItype\fP Type of event\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_event_hook_t"
+.PP 
+pre/post transaction hooks are to be ran\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+\fBalpm_event_type_t\fP \fItype\fP Type of event\&. 
+.br
+.PP
+\fBalpm_hook_when_t\fP \fIwhen\fP Type of hook\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_event_hook_run_t"
+.PP 
+A pre/post transaction hook was ran\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+const char * \fIdesc\fP Description of hook to be outputted\&. 
+.br
+.PP
+const char * \fIname\fP Name of hook\&. 
+.br
+.PP
+size_t \fIposition\fP position of hook being run 
+.br
+.PP
+size_t \fItotal\fP total hooks being run 
+.br
+.PP
+\fBalpm_event_type_t\fP \fItype\fP Type of event\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_event_pkg_retrieve_t"
+.PP 
+Packages downloading about to start\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+size_t \fInum\fP Number of packages to download\&. 
+.br
+.PP
+off_t \fItotal_size\fP Total size of packages to download\&. 
+.br
+.PP
+\fBalpm_event_type_t\fP \fItype\fP Type of event\&. 
+.br
+.PP
+.RE
+.PP
+.SH "union alpm_event_t"
+.PP 
+Events\&. 
+
+This is a union passed to the callback that allows the frontend to know which type of event was triggered (via type)\&. It is then possible to typecast the pointer to the right structure, or use the union field, in order to access event-specific data\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+\fBalpm_event_any_t\fP \fIany\fP The any event type\&. 
+.br
+It's always safe to access this\&. 
+.br
+.PP
+\fBalpm_event_database_missing_t\fP \fIdatabase_missing\fP A database is missing\&. 
+.br
+.PP
+\fBalpm_event_hook_t\fP \fIhook\fP Pre/post transaction hooks are being ran\&. 
+.br
+.PP
+\fBalpm_event_hook_run_t\fP \fIhook_run\fP A hook was ran\&. 
+.br
+.PP
+\fBalpm_event_optdep_removal_t\fP \fIoptdep_removal\fP An optdept was remove\&. 
+.br
+.PP
+\fBalpm_event_package_operation_t\fP \fIpackage_operation\fP Package operation\&. 
+.br
+.PP
+\fBalpm_event_pacnew_created_t\fP \fIpacnew_created\fP A pacnew file was created\&. 
+.br
+.PP
+\fBalpm_event_pacsave_created_t\fP \fIpacsave_created\fP A pacsave file was created\&. 
+.br
+.PP
+\fBalpm_event_pkg_retrieve_t\fP \fIpkg_retrieve\fP Download packages\&. 
+.br
+.PP
+\fBalpm_event_pkgdownload_t\fP \fIpkgdownload\fP A package was downloaded\&. 
+.br
+.PP
+\fBalpm_event_scriptlet_info_t\fP \fIscriptlet_info\fP A scriptlet was ran\&. 
+.br
+.PP
+\fBalpm_event_type_t\fP \fItype\fP Type of event it's always safe to access this\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_question_any_t"
+.PP 
+A question that can represent any other question\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+int \fIanswer\fP Answer\&. 
+.br
+.PP
+\fBalpm_question_type_t\fP \fItype\fP Type of question\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_question_install_ignorepkg_t"
+.PP 
+Should target in ignorepkg be installed anyway? 
+.PP
+\fBData Fields:\fP
+.RS 4
+int \fIinstall\fP Answer: whether or not to install pkg anyway\&. 
+.br
+.PP
+\fBalpm_pkg_t\fP * \fIpkg\fP The ignored package that we are deciding whether to install\&. 
+.br
+.PP
+\fBalpm_question_type_t\fP \fItype\fP Type of question\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_question_replace_t"
+.PP 
+Should a package be replaced? 
+.PP
+\fBData Fields:\fP
+.RS 4
+\fBalpm_db_t\fP * \fInewdb\fP DB of newpkg\&. 
+.br
+.PP
+\fBalpm_pkg_t\fP * \fInewpkg\fP Package to replace with\&. 
+.br
+.PP
+\fBalpm_pkg_t\fP * \fIoldpkg\fP Package to be replaced\&. 
+.br
+.PP
+int \fIreplace\fP Answer: whether or not to replace oldpkg with newpkg\&. 
+.br
+.PP
+\fBalpm_question_type_t\fP \fItype\fP Type of question\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_question_conflict_t"
+.PP 
+Should a conflicting package be removed? 
+.PP
+\fBData Fields:\fP
+.RS 4
+\fBalpm_conflict_t\fP * \fIconflict\fP Conflict info\&. 
+.br
+.PP
+int \fIremove\fP Answer: whether or not to remove conflict->package2\&. 
+.br
+.PP
+\fBalpm_question_type_t\fP \fItype\fP Type of question\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_question_corrupted_t"
+.PP 
+Should a corrupted package be deleted? 
+.PP
+\fBData Fields:\fP
+.RS 4
+const char * \fIfilepath\fP File to remove\&. 
+.br
+.PP
+\fBalpm_errno_t\fP \fIreason\fP Error code indicating the reason for package invalidity\&. 
+.br
+.PP
+int \fIremove\fP Answer: whether or not to remove filepath\&. 
+.br
+.PP
+\fBalpm_question_type_t\fP \fItype\fP Type of question\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_question_remove_pkgs_t"
+.PP 
+Should unresolvable targets be removed from the transaction? 
+.PP
+\fBData Fields:\fP
+.RS 4
+\fBalpm_list_t\fP * \fIpackages\fP List of alpm_pkg_t* with unresolved dependencies\&. 
+.br
+.PP
+int \fIskip\fP Answer: whether or not to skip packages\&. 
+.br
+.PP
+\fBalpm_question_type_t\fP \fItype\fP Type of question\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_question_select_provider_t"
+.PP 
+Provider selection\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+\fBalpm_depend_t\fP * \fIdepend\fP What providers provide for\&. 
+.br
+.PP
+\fBalpm_list_t\fP * \fIproviders\fP List of alpm_pkg_t* as possible providers\&. 
+.br
+.PP
+\fBalpm_question_type_t\fP \fItype\fP Type of question\&. 
+.br
+.PP
+int \fIuse_index\fP Answer: which provider to use (index from providers) 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_question_import_key_t"
+.PP 
+Should a key be imported? 
+.PP
+\fBData Fields:\fP
+.RS 4
+int \fIimport\fP Answer: whether or not to import key\&. 
+.br
+.PP
+\fBalpm_pgpkey_t\fP * \fIkey\fP The key to import\&. 
+.br
+.PP
+\fBalpm_question_type_t\fP \fItype\fP Type of question\&. 
+.br
+.PP
+.RE
+.PP
+.SH "union alpm_question_t"
+.PP 
+Questions\&. 
+
+This is an union passed to the callback that allows the frontend to know which type of question was triggered (via type)\&. It is then possible to typecast the pointer to the right structure, or use the union field, in order to access question-specific data\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+\fBalpm_question_any_t\fP \fIany\fP A question that can represent any question\&. 
+.br
+It's always safe to access this\&. 
+.br
+.PP
+\fBalpm_question_conflict_t\fP \fIconflict\fP Should a conflicting package be removed? 
+.br
+.PP
+\fBalpm_question_corrupted_t\fP \fIcorrupted\fP Should a corrupted package be deleted? 
+.br
+.PP
+\fBalpm_question_import_key_t\fP \fIimport_key\fP Should a key be imported? 
+.br
+.PP
+\fBalpm_question_install_ignorepkg_t\fP \fIinstall_ignorepkg\fP Should target in ignorepkg be installed anyway? 
+.br
+.PP
+\fBalpm_question_remove_pkgs_t\fP \fIremove_pkgs\fP Should unresolvable targets be removed from the transaction? 
+.br
+.PP
+\fBalpm_question_replace_t\fP \fIreplace\fP Should a package be replaced? 
+.br
+.PP
+\fBalpm_question_select_provider_t\fP \fIselect_provider\fP Provider selection\&. 
+.br
+.PP
+\fBalpm_question_type_t\fP \fItype\fP The type of question\&. 
+.br
+It's always safe to access this\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_download_event_init_t"
+.PP 
+Context struct for when a download starts\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+int \fIoptional\fP whether this file is optional and thus the errors could be ignored 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_download_event_progress_t"
+.PP 
+Context struct for when a download progresses\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+off_t \fIdownloaded\fP Amount of data downloaded\&. 
+.br
+.PP
+off_t \fItotal\fP Total amount need to be downloaded\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_download_event_retry_t"
+.PP 
+Context struct for when a download retries\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+int \fIresume\fP If the download will resume or start over\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_download_event_completed_t"
+.PP 
+Context struct for when a download completes\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+int \fIresult\fP download result code: 0 - download completed successfully 1 - the file is up-to-date -1 - error 
+.br
+.PP
+off_t \fItotal\fP Total bytes in file\&. 
+.br
+.PP
+.RE
+.PP
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef void(* alpm_cb_download) (void *ctx, const char *filename, \fBalpm_download_event_type_t\fP event, void *data)"
+
+.PP
+Type of download progress callbacks\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP user-provided context 
+.br
+\fIfilename\fP the name of the file being downloaded 
+.br
+\fIevent\fP the event type 
+.br
+\fIdata\fP the event data of type alpm_download_event_*_t 
+.RE
+.PP
+
+.SS "typedef void(* alpm_cb_event) (void *ctx, \fBalpm_event_t\fP *)"
+
+.PP
+Event callback\&. Called when an event occurs 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP user-provided context 
+.br
+\fIevent\fP the event that occurred 
+.RE
+.PP
+
+.SS "typedef int(* alpm_cb_fetch) (void *ctx, const char *url, const char *localpath, int force)"
+
+.PP
+A callback for downloading files\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP user-provided context 
+.br
+\fIurl\fP the URL of the file to be downloaded 
+.br
+\fIlocalpath\fP the directory to which the file should be downloaded 
+.br
+\fIforce\fP whether to force an update, even if the file is the same 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, 1 if the file exists and is identical, -1 on error\&. 
+.RE
+.PP
+
+.SS "typedef void(* alpm_cb_progress) (void *ctx, \fBalpm_progress_t\fP progress, const char *pkg, int percent, size_t howmany, size_t current)"
+
+.PP
+Progress callback\&. Alert the front end about the progress of certain events\&. Allows the implementation of loading bars for events that make take a while to complete\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP user-provided context 
+.br
+\fIprogress\fP the kind of event that is progressing 
+.br
+\fIpkg\fP for package operations, the name of the package being operated on 
+.br
+\fIpercent\fP the percent completion of the action 
+.br
+\fIhowmany\fP the total amount of items in the action 
+.br
+\fIcurrent\fP the current amount of items completed Progress callback 
+.RE
+.PP
+
+.SS "typedef void(* alpm_cb_question) (void *ctx, \fBalpm_question_t\fP *)"
+
+.PP
+Question callback\&. This callback allows user to give input and decide what to do during certain events 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP user-provided context 
+.br
+\fIquestion\fP the question being asked\&. 
+.RE
+.PP
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBalpm_download_event_type_t\fP"
+
+.PP
+File download events\&. These events are reported by ALPM via download callback\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIALPM_DOWNLOAD_INIT \fP\fP
+A download was started\&. 
+.TP
+\fB\fIALPM_DOWNLOAD_PROGRESS \fP\fP
+A download made progress\&. 
+.TP
+\fB\fIALPM_DOWNLOAD_RETRY \fP\fP
+Download will be retried\&. 
+.TP
+\fB\fIALPM_DOWNLOAD_COMPLETED \fP\fP
+A download completed\&. 
+.SS "enum \fBalpm_event_type_t\fP"
+
+.PP
+Type of events\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIALPM_EVENT_CHECKDEPS_START \fP\fP
+Dependencies will be computed for a package\&. 
+.TP
+\fB\fIALPM_EVENT_CHECKDEPS_DONE \fP\fP
+Dependencies were computed for a package\&. 
+.TP
+\fB\fIALPM_EVENT_FILECONFLICTS_START \fP\fP
+File conflicts will be computed for a package\&. 
+.TP
+\fB\fIALPM_EVENT_FILECONFLICTS_DONE \fP\fP
+File conflicts were computed for a package\&. 
+.TP
+\fB\fIALPM_EVENT_RESOLVEDEPS_START \fP\fP
+Dependencies will be resolved for target package\&. 
+.TP
+\fB\fIALPM_EVENT_RESOLVEDEPS_DONE \fP\fP
+Dependencies were resolved for target package\&. 
+.TP
+\fB\fIALPM_EVENT_INTERCONFLICTS_START \fP\fP
+Inter-conflicts will be checked for target package\&. 
+.TP
+\fB\fIALPM_EVENT_INTERCONFLICTS_DONE \fP\fP
+Inter-conflicts were checked for target package\&. 
+.TP
+\fB\fIALPM_EVENT_TRANSACTION_START \fP\fP
+Processing the package transaction is starting\&. 
+.TP
+\fB\fIALPM_EVENT_TRANSACTION_DONE \fP\fP
+Processing the package transaction is finished\&. 
+.TP
+\fB\fIALPM_EVENT_PACKAGE_OPERATION_START \fP\fP
+Package will be installed/upgraded/downgraded/re-installed/removed; See \fBalpm_event_package_operation_t\fP for arguments\&. 
+.TP
+\fB\fIALPM_EVENT_PACKAGE_OPERATION_DONE \fP\fP
+Package was installed/upgraded/downgraded/re-installed/removed; See \fBalpm_event_package_operation_t\fP for arguments\&. 
+.TP
+\fB\fIALPM_EVENT_INTEGRITY_START \fP\fP
+Target package's integrity will be checked\&. 
+.TP
+\fB\fIALPM_EVENT_INTEGRITY_DONE \fP\fP
+Target package's integrity was checked\&. 
+.TP
+\fB\fIALPM_EVENT_LOAD_START \fP\fP
+Target package will be loaded\&. 
+.TP
+\fB\fIALPM_EVENT_LOAD_DONE \fP\fP
+Target package is finished loading\&. 
+.TP
+\fB\fIALPM_EVENT_SCRIPTLET_INFO \fP\fP
+Scriptlet has printed information; See \fBalpm_event_scriptlet_info_t\fP for arguments\&. 
+.TP
+\fB\fIALPM_EVENT_DB_RETRIEVE_START \fP\fP
+Database files will be downloaded from a repository\&. 
+.TP
+\fB\fIALPM_EVENT_DB_RETRIEVE_DONE \fP\fP
+Database files were downloaded from a repository\&. 
+.TP
+\fB\fIALPM_EVENT_DB_RETRIEVE_FAILED \fP\fP
+Not all database files were successfully downloaded from a repository\&. 
+.TP
+\fB\fIALPM_EVENT_PKG_RETRIEVE_START \fP\fP
+Package files will be downloaded from a repository\&. 
+.TP
+\fB\fIALPM_EVENT_PKG_RETRIEVE_DONE \fP\fP
+Package files were downloaded from a repository\&. 
+.TP
+\fB\fIALPM_EVENT_PKG_RETRIEVE_FAILED \fP\fP
+Not all package files were successfully downloaded from a repository\&. 
+.TP
+\fB\fIALPM_EVENT_DISKSPACE_START \fP\fP
+Disk space usage will be computed for a package\&. 
+.TP
+\fB\fIALPM_EVENT_DISKSPACE_DONE \fP\fP
+Disk space usage was computed for a package\&. 
+.TP
+\fB\fIALPM_EVENT_OPTDEP_REMOVAL \fP\fP
+An optdepend for another package is being removed; See \fBalpm_event_optdep_removal_t\fP for arguments\&. 
+.TP
+\fB\fIALPM_EVENT_DATABASE_MISSING \fP\fP
+A configured repository database is missing; See \fBalpm_event_database_missing_t\fP for arguments\&. 
+.TP
+\fB\fIALPM_EVENT_KEYRING_START \fP\fP
+Checking keys used to create signatures are in keyring\&. 
+.TP
+\fB\fIALPM_EVENT_KEYRING_DONE \fP\fP
+Keyring checking is finished\&. 
+.TP
+\fB\fIALPM_EVENT_KEY_DOWNLOAD_START \fP\fP
+Downloading missing keys into keyring\&. 
+.TP
+\fB\fIALPM_EVENT_KEY_DOWNLOAD_DONE \fP\fP
+Key downloading is finished\&. 
+.TP
+\fB\fIALPM_EVENT_PACNEW_CREATED \fP\fP
+A \&.pacnew file was created; See \fBalpm_event_pacnew_created_t\fP for arguments\&. 
+.TP
+\fB\fIALPM_EVENT_PACSAVE_CREATED \fP\fP
+A \&.pacsave file was created; See \fBalpm_event_pacsave_created_t\fP for arguments\&. 
+.TP
+\fB\fIALPM_EVENT_HOOK_START \fP\fP
+Processing hooks will be started\&. 
+.TP
+\fB\fIALPM_EVENT_HOOK_DONE \fP\fP
+Processing hooks is finished\&. 
+.TP
+\fB\fIALPM_EVENT_HOOK_RUN_START \fP\fP
+A hook is starting\&. 
+.TP
+\fB\fIALPM_EVENT_HOOK_RUN_DONE \fP\fP
+A hook has finished running\&. 
+.SS "enum \fBalpm_hook_when_t\fP"
+
+.PP
+Kind of hook\&. 
+.SS "enum \fBalpm_package_operation_t\fP"
+
+.PP
+An enum over the kind of package operations\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIALPM_PACKAGE_INSTALL \fP\fP
+Package (to be) installed\&. (No oldpkg) 
+.TP
+\fB\fIALPM_PACKAGE_UPGRADE \fP\fP
+Package (to be) upgraded\&. 
+.TP
+\fB\fIALPM_PACKAGE_REINSTALL \fP\fP
+Package (to be) re-installed\&. 
+.TP
+\fB\fIALPM_PACKAGE_DOWNGRADE \fP\fP
+Package (to be) downgraded\&. 
+.TP
+\fB\fIALPM_PACKAGE_REMOVE \fP\fP
+Package (to be) removed (No newpkg) 
+.SS "enum \fBalpm_progress_t\fP"
+
+.PP
+An enum over different kinds of progress alerts\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIALPM_PROGRESS_ADD_START \fP\fP
+Package install\&. 
+.TP
+\fB\fIALPM_PROGRESS_UPGRADE_START \fP\fP
+Package upgrade\&. 
+.TP
+\fB\fIALPM_PROGRESS_DOWNGRADE_START \fP\fP
+Package downgrade\&. 
+.TP
+\fB\fIALPM_PROGRESS_REINSTALL_START \fP\fP
+Package reinstall\&. 
+.TP
+\fB\fIALPM_PROGRESS_REMOVE_START \fP\fP
+Package removal\&. 
+.TP
+\fB\fIALPM_PROGRESS_CONFLICTS_START \fP\fP
+Conflict checking\&. 
+.TP
+\fB\fIALPM_PROGRESS_DISKSPACE_START \fP\fP
+Diskspace checking\&. 
+.TP
+\fB\fIALPM_PROGRESS_INTEGRITY_START \fP\fP
+Package Integrity checking\&. 
+.TP
+\fB\fIALPM_PROGRESS_LOAD_START \fP\fP
+Loading packages from disk\&. 
+.TP
+\fB\fIALPM_PROGRESS_KEYRING_START \fP\fP
+Checking signatures of packages\&. 
+.SS "enum \fBalpm_question_type_t\fP"
+
+.PP
+Type of question\&. Unlike the events or progress enumerations, this enum has bitmask values so a frontend can use a bitmask map to supply preselected answers to the different types of questions\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIALPM_QUESTION_INSTALL_IGNOREPKG \fP\fP
+Should target in ignorepkg be installed anyway? 
+.TP
+\fB\fIALPM_QUESTION_REPLACE_PKG \fP\fP
+Should a package be replaced? 
+.TP
+\fB\fIALPM_QUESTION_CONFLICT_PKG \fP\fP
+Should a conflicting package be removed? 
+.TP
+\fB\fIALPM_QUESTION_CORRUPTED_PKG \fP\fP
+Should a corrupted package be deleted? 
+.TP
+\fB\fIALPM_QUESTION_REMOVE_PKGS \fP\fP
+Should unresolvable targets be removed from the transaction? 
+.TP
+\fB\fIALPM_QUESTION_SELECT_PROVIDER \fP\fP
+Provider selection\&. 
+.TP
+\fB\fIALPM_QUESTION_IMPORT_KEY \fP\fP
+Should a key be imported? 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libalpm from the source code\&.

@@ -1,0 +1,250 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-09-03 20:56+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "PERSISTENT-KEYRING"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "2020-08-13"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "persistent-keyring - per-user persistent keyring"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The persistent keyring is a keyring used to anchor keys on behalf of a "
+"user.  Each UID the kernel deals with has its own persistent keyring that is "
+"shared between all threads owned by that UID.  The persistent keyring has a "
+"name (description) of the form I<_persistent.E<lt>UIDE<gt>> where "
+"I<E<lt>UIDE<gt>> is the user ID of the corresponding user."
+msgstr ""
+
+#.  FIXME The meaning of the preceding sentence isn't clear. What is meant?
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The persistent keyring may not be accessed directly, even by processes with "
+"the appropriate UID.  Instead, it must first be linked to one of a process's "
+"keyrings, before that keyring can access the persistent keyring by virtue of "
+"its possessor permits.  This linking is done with the "
+"B<keyctl_get_persistent>(3)  function."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"If a persistent keyring does not exist when it is accessed by the "
+"B<keyctl_get_persistent>(3)  operation, it will be automatically created."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Each time the B<keyctl_get_persistent>(3)  operation is performed, the "
+"persistent key's expiration timer is reset to the value in:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "    /proc/sys/kernel/keys/persistent_keyring_expiry\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Should the timeout be reached, the persistent keyring will be removed and "
+"everything it pins can then be garbage collected.  The key will then be re-"
+"created on a subsequent call to B<keyctl_get_persistent>(3)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The persistent keyring is not directly searched by B<request_key>(2); it is "
+"searched only if it is linked into one of the keyrings that is searched by "
+"B<request_key>(2)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The persistent keyring is independent of B<clone>(2), B<fork>(2), "
+"B<vfork>(2), B<execve>(2), and B<_exit>(2).  It persists until its "
+"expiration timer triggers, at which point it is garbage collected.  This "
+"allows the persistent keyring to carry keys beyond the life of the kernel's "
+"record of the corresponding UID (the destruction of which results in the "
+"destruction of the B<user-keyring>(7)  and the B<user-session-keyring>(7)).  "
+"The persistent keyring can thus be used to hold authentication tokens for "
+"processes that run without user interaction, such as programs started by "
+"B<cron>(8)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The persistent keyring is used to store UID-specific objects that themselves "
+"have limited lifetimes (e.g., kerberos tokens).  If those tokens cease to be "
+"used (i.e., the persistent keyring is not accessed), then the timeout of the "
+"persistent keyring ensures that the corresponding objects are automatically "
+"discarded."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Special operations"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<keyutils> library provides the B<keyctl_get_persistent>(3)  function "
+"for manipulating persistent keyrings.  (This function is an interface to the "
+"B<keyctl>(2)  B<KEYCTL_GET_PERSISTENT> operation.)  This operation allows "
+"the calling thread to get the persistent keyring corresponding to its own "
+"UID or, if the thread has the B<CAP_SETUID> capability, the persistent "
+"keyring corresponding to some other UID in the same user namespace."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Each user namespace owns a keyring called I<.persistent_register> that "
+"contains links to all of the persistent keys in that namespace.  (The I<."
+"persistent_register> keyring can be seen when reading the contents of the I</"
+"proc/keys> file for the UID 0 in the namespace.)  The "
+"B<keyctl_get_persistent>(3)  operation looks for a key with a name of the "
+"form I<_persistent.E<lt>UIDE<gt>> in that keyring, creates the key if it "
+"does not exist, and links it into the keyring."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<keyctl>(1), B<keyctl>(3), B<keyctl_get_persistent>(3), B<keyrings>(7), "
+"B<process-keyring>(7), B<session-keyring>(7), B<thread-keyring>(7), B<user-"
+"keyring>(7), B<user-session-keyring>(7)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2017-03-13"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

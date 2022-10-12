@@ -1,0 +1,609 @@
+.\"/* Copyright 1999 Bjorn Ekwall <bj0rn@blox.se>
+.\" This program is distributed according to the Gnu General Public License.
+.\" See the file COPYING in the base distribution directory
+.\"
+.TH MODULES.CONF 5 "1999. december 7"
+.UC 4
+.SH NÉV
+modules.conf \- konfigurációs fájl a kernelmodulok betöltéséhez
+.SH LEÍRÁS
+A
+.B modprobe(8)
+(és a
+.B depmod(8)
+)
+viselkedése módosítható az (opcionális)
+.B /etc/modules.conf.
+konfigurációs fájllal.
+.PP
+A konfigurációs fájl sorokból áll.
+.br
+Minden üres sort, és a sorban levõ '#' utáni szöveget figyelmen
+kívül hagyja.
+.br
+A sorok folytatódhatnak, ha egy sort a '\\' karakterekkel zárunk.
+.br
+A maradék sorok meg kell hogy feleljenek a következõ formátumoknak:
+.nf
+
+  [add] above modul modul_lista
+  alias alias_név eredmény
+  [add] below modul modul_lista
+  define VÁLTOZÓ SZÓ
+  depfile=EGY_ELÉRÉSI_ÚT
+  else
+  elseif KIFEJEZÉS
+  endif
+  if KIFEJEZÉS
+  include KONFIGURÁCIÓS_FÁJL_ELÉRÉSI_ÚT
+  insmod_opt=ALAP_OPCIÓK_AZ_INSMODNAK
+  install modul parancs ...
+  keep
+  [add] options modul MODUL_SPECIFIKUS_OPCIÓK
+  path=EGY_ELÉRÉSI_ÚT
+  path[JELZÉS]=EGY_ELÉRÉSI_ÚT
+  [add] probe name modul_lista
+  [add] probeall name modul_lista
+  post-install modul parancs ...
+  post-remove modul parancs ...
+  pre-install modul parancs ...
+  pre-remove modul parancs ...
+  remove modul parancs ...
+.fi
+.PP
+Minden direktíva argumentumai feldolgozásra kerülnek, hogy
+a shell meta-karaktereket kezelhesse, ami azt jelenti, hogy
+a "shell trükkök", mint pl. a jokerkarakterek és `` közé
+zárt parancsok használhatók:
+.nf
+
+  path[misc]=/lib/moduls/1.1.5?/local
+  path[net]=/lib/moduls/`uname \-r`/net
+
+.fi
+A direktívák többször is megismételhetõek. Figyeljük meg, hogy
+néhány direktíva elõtt szerepelhet az
+.I add
+opcionális prefix. Amikor ez a prefix szerepel, az új
+modul_lista
+.B hozzáadódik
+az elõzõ modul_listához, ahelyett, hogy felülírná.
+.SH SZEMANTIKA
+.B EGY_ELÉRÉSI_ÚT
+teljesen megadott elérési út.
+Lehetséges, hogy shell meta-karaktereket használjunk az
+.B EGY_ELÉRÉSI_ÚT
+-ban, beleértve egy parancs kimenetét is, mint pl. a
+.I \`uname \-r\`
+és
+.I \`kernelversion\`.
+.br
+Ezt a két parancsot ezek a programok belsõleg is értik, az
+aktuális kernel verziószámát, illetve a jelenlegi kernelverziót
+jelentve (pl. 2.2.3 és 2.2).
+.PP
+A
+.B SZÓ
+nem white-space (szóköz, tabulátor, stb.) karakterek sorozata.
+Ha ' " vagy ` van a stringben, akkor a következõ illeszkedõ
+' " vagy ` -ig minden karakter szintén a string része, még az
+elõbb megadott kivételek is. Minden
+.B SZÓ
+ki lesz fejtve a meta-karakterek szabályai szerint. Ha a kifejtés
+több szót is eredményez, akkor az elsõ szót használja.
+.PP
+A KIFEJEZÉS lehet:
+.TP
+.I "SZÓ összehasonlító_operátor SZÓ"
+ahol az összehasonlító_operátor az ==, !=, <, <=, >= vagy > egyike.
+A két SZÓ string értéke lesz összehasonlítva.
+.TP
+.I "\-n SZÓ összehasonlító_operátor SZÓ"
+ahol összehasonlító_operátor az ==, !=, <, <=, >= vagy > egyike.
+A két SZÓ numerikus értéke lesz összehasonlítva.
+.TP
+.I SZÓ
+Ha a SZÓ kifejtése sikertelen, vagy a kifejtés eredménye "0" (zéró)
+vagy "" (üres), akkor a kifejezés értéke FALSE. Különben a kifejezés
+értéke TRUE.
+.TP
+.I "\-f FÁJLNÉV"
+Teszteli, hogy FÁJLNÉV létezik-e.
+.TP
+.I \-k
+Teszteli, hogy az "automatikus eltávolítás" engedélyezve van-e.
+(Pl. a kernelbõl lett meghíva.)
+.TP
+.I "! KIFEJEZÉS"
+Egy kifejezés negáltja szintén kifejezés.
+.SH SZINTAXIS
+Ez a legális direktívák leírása.
+.TP
+.I "define VÁLTOZÓ SZÓ"
+Egy
+.I putenv("VÁLTOZÓ=SZÓ")
+utasítást hajt végre. Változók hozhatók létre és módosíthatók
+ezzel a direktívával. A változók hozzáférhetõvé válnak a shell
+környezetben, ami az aktuális menetben végrehajtott parancsok számára
+használhatóvá teszi ezeket.
+.TP
+.I "depfile=EGY_ELÉRÉSI_ÚT"
+Ez a függõségi fájl elérési útja, amit a
+.B depmod
+hoz létre és a
+.B modprobe
+használja, hogy megtalálja a modulokat és a tõle függõ egyéb modulokat.
+Normálisan az alapértelmezett érték használandó, lásd lejjebb.
+.TP
+.I "if KIFEJEZÉS"
+Ha a kifejezés értéke
+.B TRUE
+akkor az illeszkedõ
+.I "else, elseif"
+vagy
+.I endif
+-ig minden direktíva feldolgozásra kerül. Különben figyelmen kívül
+lesznek hagyva.
+A
+.I if
+direktívák maximum 20 mélységig egymásba ágyazhatók.
+.br
+Megjegyzés: kerüljük a
+.B path
+direktívák feltételes végrehajtását. Mivel a
+.B modprobe
+elegendõen "okos", egy feltételesen végrehajtott
+.B path
+direktívával nem nyersz semmit, csak összezavar. Tényleg.
+.TP
+.I "else"
+Ha a korábbi illeszkedõ
+.I if
+vagy
+.I elseif
+direktíva kiértékelése után annak kifejezése
+.B FALSE
+értéket kapott, akkor az (opcionális)
+.I else
+és az illeszkedõ
+.I endif
+direktíva közé zárt direktívák lesznek kiértékelve.
+.TP
+.I "elseif KIFEJEZÉS"
+Ha a korábbi illeszkedõ
+.I if
+vagy
+.I elseif
+direktíva kiértékelése után annak kifejezése
+.B FALSE
+és ennek a direktíva kifejezésének értéke
+.B TRUE
+akkor a következõ illeszkedõ
+.I "elseif, else"
+vagy
+.I endif
+-ig minden direktíva feldolgozásra kerül. Különben figyelmen kívül
+lesznek hagyva.
+.TP
+.I "endif"
+Ez a direktíva fejezi be az illeszkedõ
+.I "if, elseif"
+vagy
+.I else
+direktíva láncot amely a konfigurációs fájl feltételes
+feldolgozását kontrollálja.
+.nf
+
+  if KIFEJEZÉS
+      konfiguráció sorok
+  elseif KIFEJEZÉS
+      konfiguráció sorok
+  else
+      konfiguráció sorok
+  endif
+
+.fi
+Az
+.I else
+és
+.I elseif
+direktívák opcionálisak.
+.TP
+.I "include KONFIGURACIOS_FAJL_ELÉRÉSI_UT"
+Különbözõ platformok és konfigurációk kezelése egy
+fájllal meglehetõsen komplex lehet. Az
+.I include
+direktíva használatával, feltételesen feldolgozva az
+.I if
+direktívák segítségével, ez könnyebben kezelhetõ.
+.TP
+.I "insmod_opt=ALAP_OPCIOK_AZ_INSMODNAK"
+Ha az insmod néhány speciális opciót igényel, amelyet nem adhatunk
+meg máshol, ez a direktíva lehetõvé teszi hogy az insmod minden
+meghívásakor megkapja ezt az opciót. Az insmod standard alapértelmezett
+opcióit nem szükséges mósdosítani, kivéve ha speciális eseteket
+kell kezelni.
+.TP
+.I "keep"
+Ha ez a szó megjelenik egy sorban bármilyen sor
+.B elõtt,
+amelyik
+.B path
+leírást tartalmaz, akkor az alapértelmezett elérési utak megörzõdnek,
+és a további leírások ehhez hozzáadódnak. Különben a normális viselkedés
+szerint az alapértelmezett elérési utakat
+.B felülírják
+a konfigurációs fájlban megadottak.
+.TP
+.I "path=EGY_ELÉRÉSI_ÚT"
+.TP
+.I "path[JELZÉS]=EGY_ELÉRÉSI_ÚT"
+Az
+.B EGY_ELÉRÉSI_ÚT
+megad egy újabb könyvtárat, ahol modulok találhatók.
+A
+.B path
+direktíva egy opcionális jelzést hordozhat.
+Így ez egy kicsit többet mond az adott könyvtárban található modulok
+céljáról és a
+.B modprobe
+számára lehetõvé tesz automatikus mûveleteket.
+A jelzés a "path" kulcsszó után szögletes zárójelben található.
+Ha a jelzés hiányzik, akkor az a "misc" (egyéb) jelzést feltételezi.
+.br
+Egy nagyon hasznos jelzés a
+.B boot,
+amivel megadható az összes olyan könyvtár, ami bootoláskor
+betöltendõ modulokat tartalmaz.
+.TP
+.I "alias alias_név eredmény"
+Az "alias" direktíva arra használható, hogy modulok számára
+"álneveket" adjunk. Egy /etc/modules.conf sor ami így néz ki:
+.nf
+
+  alias iso9660 isofs
+
+.fi
+lehetõvé teszi, hogy leírjuk a
+.B "modprobe iso9660"
+parancsot, habár nincs iso9660 nevû modul számára objektumfájl.
+.br
+Jegyezzük meg, hogy a
+.nf
+
+  alias valamilyen_modul off
+
+.fi
+sor azt eredményezi, hogy a modprobe figyelmen kívül hagyja
+annak a modulnak a betöltésére irányuló kéréseket.
+Egy másik speciális álnév a
+.nf
+
+  alias valamilyen_modul null
+
+.fi
+ami azt eredményezi, hogy a valamilyen_modul betöltésére szolgáló
+kérés mindig sikeres lesz, de ténylegesen nem lesz betöltve.
+Ezt egy kiindulási alapnak lehet használni modulcsoportok
+létrehozására az
+.I above
+és
+.I below
+direktívákkal.
+.br
+.nf
+
+.fi
+.ne 7
+Lehetséges nagy mennyiségû
+.I alias
+direktívák használata, mivel minden álnév rekurzívan lesz kifejtve,
+hogy a ténylegesen hivatkozott modult megtalálja. Egy 1000-es felsõ
+korlát van az álnevek rekurziós mélységére, hogy az ehhez hasonló
+köröket felderítse:
+.nf
+
+  alias a b
+  alias b a
+
+.fi
+.br
+Ha az
+.I alias
+végsõ eredménye nem ad tényleges modul nevet, akkor a modprobe
+"probe" és "probeall" hozzárendeléseket alkalmaz az eredményre.
+Ha azok nem sikeresek, akkor a modult nem találta meg. Ez eredményezi,
+hogy az ilyen (devfs-bõl származó) konstrukciók értelmes eredményre
+vezetnek:
+.br
+.nf
+
+  alias           /dev/sg*        /dev/sg
+  probeall        /dev/sg         scsi-hosts sg
+
+.fi
+.ne 7
+Legális megoldás, hogy egy alias az A modul nevet a B modul névre
+képezze le és az A modul ugyanakkor létezzen is, de ez a konstrukció
+nem egyértelmû és
+.B nem
+ajánlott. Történeti okokból, a kernel hangrendszere tartalmaz egy
+sound.o nevû modult de a fejlesztõk egy álnevet is akartak a "sound"-ról
+a felhasználó hangkártya driverének moduljára, pl. "alias\ sound\ sb".
+Ennek a követelménynek támogatására, de a definiált viselkedés
+fenntartására, ahol álnevek is kaphatnak opciókat, a modprobe nem
+végez álnév feloldást, ha a nevet a modules.dep fájlból kapta,
+különben igen. Ez nem garantálja minden esetben az elvárt
+viselkedést az álnevek és valódi modulok minden kombinációjával,
+és kerülni kell az olyan álneveket, ami egy igazi modul neve is.
+.TP
+.I "[add] probe name modul_lista"
+.TP
+.I "[add] probeall name modul_lista"
+Ezek a direktívák csak akkor használhatók, ha a
+.I name
+egy modul neve, ami a
+.B modprobe
+paramétereként adott.
+Ennek az a hatása, hogy amikor egy kérés érkezik a
+.I name
+-re, akkor a modul_listában levõ modulok lesznek végigpróbálva
+a megadott sorrendben. A különbség a direktívák között az, hogy a
+.I probe
+az elsõ sikeres betöltésig próbálkozik, míg a
+.I probeall
+a lista végéig.
+A kilépési státusz azt mutatja, hogy volt-e sikeresen betöltött
+modul, vagy sem.
+Az opcionális
+.I add
+prefix hozzáadja az új listát a régihez ahelyett, hogy felülírná.
+.TP
+.I "[add] options modul MODUL_SPECIFIKUS_OPCIÓK"
+Minden modul név, beleértve az álneveket is, kaphat saját
+.I options
+direktívát.
+Az álnevek számára megadott opcióknak nagyobb prioritása van, mint
+az "alacsonyabb szintû" neveknek. Ez a szabály segít az ellentmondó
+.I options
+direktívák feloldásában.
+A parancssorban megadott opcióknak van a legnagyobb prioritása.
+Az opcionális
+.I add
+prefix az új listát hozzáadja a régihez ahelyett, hogy felülírná.
+Ha egy
+.I alias
+eredménye nem egy igazi modul, akkor az
+.I options
+direktíva ami az
+.I alias
+láncból volt konstruálva figyelmen kívül lesz hagyva a probe[all]
+meghívása elõtt.
+.TP
+.I "[add] above modul modul_lista"
+Ez a direktíva lehetõvé teszi, hogy egy modul "behúzzon"
+egy másik modult (vagy modulcsoportot) maga fölé, ahogy az
+.B lsmod(8)
+parancs kimenetébõl látszik.
+Az
+.I above
+direktíva hasznos olyan körülmények esetén, amikor a függõségek
+komplexebbek, mint amit a
+.B modules.dep
+függõségi fájl leírhatna.
+Ez egy optimalizált esete a
+.I post-install
+és
+.I pre-remove
+direktíváknak.
+Jegyezzük meg, hogy a modul betöltése nem befolyásolja a
+.B modprobe.
+kilépési státuszát.
+Az opcionális
+.I add
+prefix az új listát hozzáadja a régihez ahelyett, hogy felülírná.
+.TP
+.I "[add] below modul modul_list"
+Ez a direktíva lehetõvé teszi, hogy egy modul "betoljon"
+egy másik modult (vagy modulcsoportot) maga alá, ahogy az
+.B lsmod(8)
+parancs kimenetébõl látszik.
+A
+.I below
+direktíva hasznos olyan körülmények esetén, amikor a függõségek
+komplexebbek, mint amit a
+.B modules.dep
+függõségi fájl leírhatna.
+Ez egy optimalizált esete a
+.I pre-install
+és
+.I post-remove
+direktíváknak.
+Jegyezzük meg, hogy a modul betöltése nem befolyásolja a
+.B modprobe.
+kilépési státuszát.
+Az opcionális
+.I add
+prefix az új listát hozzáadja a régihez ahelyett, hogy felülírná.
+.PP
+A következõ direktívák hasznosak hogy (opcionálisan) végrehajtsunk
+parancsokat, amikor modult betöltünk vagy eltávolítunk. Jegyezzük meg,
+hogy álnevek is megadhatók ezekben a direktívákban, amelyek helyes
+sorrendben hajtódnak végre az olyan direktívákkal, ahol nem álnevet
+adtunk meg.
+.TP
+.I "pre-install modul parancs"
+Végrehajtja a
+.I parancs
+-ot mielõtt betöltené a megadott modult.
+Lásd még a
+.I below
+direktívát.
+.TP
+.I "install modul parancs"
+A
+.I parancs
+-ot hajtja végre az  alapértelmezett
+.B insmod
+helyett, amikor betölti a megadott modult.
+.TP
+.I "post-install modul parancs"
+Végrehajtja a
+.I parancs
+-ot miután betöltötte a megadott modult.
+Lásd még az
+.I above
+direktívát.
+.TP
+.I "pre-remove modul parancs"
+Végrehajtja a
+.I parancs
+-ot, mielõtt eltávolítaná a megadott modult.
+Lásd még az
+.I above
+direktívát.
+.TP
+.I "remove modul parancs"
+A
+.I parancs
+-ot hajtja végre az alapértelmezett (beépített)
+.B rmmod
+helyett, amikor eltávolítja a megadott modult.
+.TP
+.I "post-remove modul parancs"
+Végrehajtja a
+.I parancs
+-ot miután eltávolította a megadott modult.
+Lásd még az
+.I below
+direktívát.
+.PP
+.SH ALAPÉRTELMEZETT KONFIGURÁCIÓ
+Ha az '/etc/modules.conf' konfigurációs fájl hiányzik, vagy
+nincs felülbírált direktíva, akkor a következõ alapértelmezések
+érvényesek:
+.PP
+  depfile=/lib/modules/`uname \-r`/modules.dep
+
+  path[boot]=/lib/modules/boot
+  path[fs]=/lib/modules/`uname \-r`/fs
+  path[net]=/lib/modules/`uname \-r`/net
+  path[scsi]=/lib/modules/`uname \-r`/scsi
+  path[block]=/lib/modules/`uname \-r`/block
+  path[cdrom]=/lib/modules/`uname \-r`/cdrom
+  path[ipv4]=/lib/modules/`uname \-r`/ipv4
+  path[ipv6]=/lib/modules/`uname \-r`/ipv6
+  path[sound]=/lib/modules/`uname \-r`/sound
+  path[fc4]=/lib/modules/`uname \-r`/fc4
+  path[video]=/lib/modules/`uname \-r`/video
+  path[misc]=/lib/modules/`uname \-r`/misc
+  path[pcmcia]=/lib/modules/`uname \-r`/pcmcia
+  path[atm]=/lib/modules/`uname \-r`/atm
+  path[usb]=/lib/modules/`uname \-r`/usb
+  path[ide]=/lib/modules/`uname \-r`/ide
+  path[ieee1394]=/lib/modules/`uname \-r`/ieee1394
+
+  path[fs]=/lib/modules/`kernelversion`/fs
+  path[net]=/lib/modules/`kernelversion`/net
+  path[scsi]=/lib/modules/`kernelversion`/scsi
+  path[block]=/lib/modules/`kernelversion`/block
+  path[cdrom]=/lib/modules/`kernelversion`/cdrom
+  path[ipv4]=/lib/modules/`kernelversion`/ipv4
+  path[ipv6]=/lib/modules/`kernelversion`/ipv6
+  path[sound]=/lib/modules/`kernelversion`/sound
+  path[fc4]=/lib/modules/`kernelversion`/fc4
+  path[video]=/lib/modules/`kernelversion`/video
+  path[misc]=/lib/modules/`kernelversion`/misc
+  path[pcmcia]=/lib/modules/`kernelversion`/pcmcia
+  path[atm]=/lib/modules/`kernelversion`/atm
+  path[usb]=/lib/modules/`kernelversion`/usb
+  path[ide]=/lib/modules/`kernelversion`/ide
+  path[ieee1394]=/lib/modules/`kernelversion`/ieee1394
+
+  path[fs]=/lib/modules/default/fs
+  path[net]=/lib/modules/default/net
+  path[scsi]=/lib/modules/default/scsi
+  path[block]=/lib/modules/default/block
+  path[cdrom]=/lib/modules/default/cdrom
+  path[ipv4]=/lib/modules/default/ipv4
+  path[ipv6]=/lib/modules/default/ipv6
+  path[sound]=/lib/modules/default/sound
+  path[fc4]=/lib/modules/default/fc4
+  path[video]=/lib/modules/default/video
+  path[misc]=/lib/modules/default/misc
+  path[pcmcia]=/lib/modules/default/pcmcia
+  path[atm]=/lib/modules/default/atm
+  path[usb]=/lib/modules/default/usb
+  path[ide]=/lib/modules/default/ide
+  path[ieee1394]=/lib/modules/default/ieee1394
+
+  path[fs]=/lib/modules/fs
+  path[net]=/lib/modules/net
+  path[scsi]=/lib/modules/scsi
+  path[block]=/lib/modules/block
+  path[cdrom]=/lib/modules/cdrom
+  path[ipv4]=/lib/modules/ipv4
+  path[ipv6]=/lib/modules/ipv6
+  path[sound]=/lib/modules/sound
+  path[fc4]=/lib/modules/fc4
+  path[video]=/lib/modules/video
+  path[misc]=/lib/modules/misc
+  path[pcmcia]=/lib/modules/pcmcia
+  path[atm]=/lib/modules/atm
+  path[usb]=/lib/modules/usb
+  path[ide]=/lib/modules/ide
+  path[ieee1394]=/lib/modules/ieee1394
+.PP
+Van egy halom alapértelmezett
+.I alias
+és
+.I options
+direktíva is.
+Mivel ezek köre folyamatosan bõvül, ezt nem adjuk meg ezen a helyen.
+A (jelenlegi) alapértelmezések a
+.B "modprobe \-c"
+paranccsal nézhetõk meg egy üres
+.B /etc/modules.conf
+fájl használatával.
+.PP
+Minden
+.I options
+direktíva megadja a modul számára szükséges opciókat, pl:
+.nf
+
+  modprobe de620 bnc=1
+
+.fi
+Ezek az opciók felülbírálhatók az
+.B /etc/modules.conf
+fájlban és a
+.B modprobe
+parancssorában.
+.PP
+Emlékezz, hogy lehetséges
+.I options
+direktívát megadni álnevek és valódi modulok számára is.
+Ez hasznos pl. a dummy modul esetében:
+.nf
+
+  alias dummy0 dummy
+  options dummy0 \-o dummy0
+
+.fi
+.PP
+.SH ALTERNATÍV KONFIGURÁCIÓS FÁJL
+Történeti okokból, ha az /etc/modules.conf nem létezik, akkor
+a modutils a /etc/conf.modules -t használja helyette.
+Ennek a névnek a használata nem javasolt, a /etc/modules.conf -al
+kell helyettesíteni.
+Ez a modutils verzió egy figyelmeztetõ üzenetet ír ki, ha /etc/conf.modules
+létezik, késõbbi verziók hibaüzenetet fognak kiírni, és visszautasítják
+a modulok betöltését.
+.SH LÁSD MÉG
+depmod(8), modprobe(8), insmod(8)
+.SH SZERZÕ
+.nf
+Bjorn Ekwall <bj0rn@blox.se>
+Keith Owens <kaos@ocs.com.au>
+.SH MAGYAR FORDÍTÁS
+Böszörményi Zoltán <zboszor@mail.externet.hu>

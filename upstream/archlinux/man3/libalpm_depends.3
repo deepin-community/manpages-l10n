@@ -1,0 +1,382 @@
+.TH "libalpm_depends" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+libalpm_depends \- Dependency
+.PP
+ \- Functions dealing with libalpm's dependency and conflict information\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBalpm_depend_t\fP"
+.br
+.RI "The basic dependency type\&. "
+.ti -1c
+.RI "struct \fBalpm_depmissing_t\fP"
+.br
+.RI "Missing dependency\&. "
+.ti -1c
+.RI "struct \fBalpm_conflict_t\fP"
+.br
+.RI "A conflict that has occurred between two packages\&. "
+.ti -1c
+.RI "struct \fBalpm_fileconflict_t\fP"
+.br
+.RI "File conflict\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBalpm_depmod_t\fP { \fBALPM_DEP_MOD_ANY\fP = 1, \fBALPM_DEP_MOD_EQ\fP, \fBALPM_DEP_MOD_GE\fP, \fBALPM_DEP_MOD_LE\fP, \fBALPM_DEP_MOD_GT\fP, \fBALPM_DEP_MOD_LT\fP }"
+.br
+.RI "Types of version constraints in dependency specs\&. "
+.ti -1c
+.RI "enum \fBalpm_fileconflicttype_t\fP { \fBALPM_FILECONFLICT_TARGET\fP = 1, \fBALPM_FILECONFLICT_FILESYSTEM\fP }"
+.br
+.RI "File conflict type\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_checkdeps\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP *pkglist, \fBalpm_list_t\fP *remove, \fBalpm_list_t\fP *upgrade, int reversedeps)"
+.br
+.RI "Checks dependencies and returns missing ones in a list\&. "
+.ti -1c
+.RI "\fBalpm_pkg_t\fP * \fBalpm_find_satisfier\fP (\fBalpm_list_t\fP *pkgs, const char *depstring)"
+.br
+.RI "Find a package satisfying a specified dependency\&. "
+.ti -1c
+.RI "\fBalpm_pkg_t\fP * \fBalpm_find_dbs_satisfier\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP *dbs, const char *depstring)"
+.br
+.RI "Find a package satisfying a specified dependency\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_checkconflicts\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP *pkglist)"
+.br
+.RI "Check the package conflicts in a database\&. "
+.ti -1c
+.RI "char * \fBalpm_dep_compute_string\fP (const \fBalpm_depend_t\fP *dep)"
+.br
+.RI "Returns a newly allocated string representing the dependency information\&. "
+.ti -1c
+.RI "\fBalpm_depend_t\fP * \fBalpm_dep_from_string\fP (const char *depstring)"
+.br
+.RI "Return a newly allocated dependency information parsed from a string \fBshould be used to free the dependency \fP\&. "
+.ti -1c
+.RI "void \fBalpm_dep_free\fP (\fBalpm_depend_t\fP *dep)"
+.br
+.RI "Free a dependency info structure\&. "
+.ti -1c
+.RI "void \fBalpm_fileconflict_free\fP (\fBalpm_fileconflict_t\fP *conflict)"
+.br
+.RI "Free a fileconflict and its members\&. "
+.ti -1c
+.RI "void \fBalpm_depmissing_free\fP (\fBalpm_depmissing_t\fP *miss)"
+.br
+.RI "Free a depmissing and its members\&. "
+.ti -1c
+.RI "void \fBalpm_conflict_free\fP (\fBalpm_conflict_t\fP *conflict)"
+.br
+.RI "Free a conflict and its members\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Functions dealing with libalpm's dependency and conflict information\&. 
+
+
+.SH "Data Structure Documentation"
+.PP 
+.SH "struct alpm_depend_t"
+.PP 
+The basic dependency type\&. 
+
+This type is used throughout libalpm, not just for dependencies but also conflicts and providers\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+char * \fIdesc\fP A description of why this dependency is needed (optional) 
+.br
+.PP
+\fBalpm_depmod_t\fP \fImod\fP How the version should match against the provider\&. 
+.br
+.PP
+char * \fIname\fP Name of the provider to satisfy this dependency\&. 
+.br
+.PP
+unsigned long \fIname_hash\fP A hash of name (used internally to speed up conflict checks) 
+.br
+.PP
+char * \fIversion\fP Version of the provider to match against (optional) 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_depmissing_t"
+.PP 
+Missing dependency\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+char * \fIcausingpkg\fP If the depmissing was caused by a conflict, the name of the package that would be installed, causing the satisfying package to be removed\&. 
+.br
+.PP
+\fBalpm_depend_t\fP * \fIdepend\fP The dependency that was wanted\&. 
+.br
+.PP
+char * \fItarget\fP Name of the package that has the dependency\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_conflict_t"
+.PP 
+A conflict that has occurred between two packages\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+char * \fIpackage1\fP Name of the first package\&. 
+.br
+.PP
+unsigned long \fIpackage1_hash\fP Hash of the first package name (used internally to speed up conflict checks) 
+.br
+.PP
+char * \fIpackage2\fP Name of the second package\&. 
+.br
+.PP
+unsigned long \fIpackage2_hash\fP Hash of the second package name (used internally to speed up conflict checks) 
+.br
+.PP
+\fBalpm_depend_t\fP * \fIreason\fP The conflict\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_fileconflict_t"
+.PP 
+File conflict\&. 
+
+A conflict that has happened due to a two packages containing the same file, or a package contains a file that is already on the filesystem and not owned by that package\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+char * \fIctarget\fP The name of the package that also owns the file if there is one\&. 
+.br
+.PP
+char * \fIfile\fP The name of the file that the package conflicts with\&. 
+.br
+.PP
+char * \fItarget\fP The name of the package that caused the conflict\&. 
+.br
+.PP
+\fBalpm_fileconflicttype_t\fP \fItype\fP The type of conflict\&. 
+.br
+.PP
+.RE
+.PP
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBalpm_depmod_t\fP"
+
+.PP
+Types of version constraints in dependency specs\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIALPM_DEP_MOD_ANY \fP\fP
+No version constraint\&. 
+.TP
+\fB\fIALPM_DEP_MOD_EQ \fP\fP
+Test version equality (package=x\&.y\&.z) 
+.TP
+\fB\fIALPM_DEP_MOD_GE \fP\fP
+Test for at least a version (package>=x\&.y\&.z) 
+.TP
+\fB\fIALPM_DEP_MOD_LE \fP\fP
+Test for at most a version (package<=x\&.y\&.z) 
+.TP
+\fB\fIALPM_DEP_MOD_GT \fP\fP
+Test for greater than some version (package>x\&.y\&.z) 
+.TP
+\fB\fIALPM_DEP_MOD_LT \fP\fP
+Test for less than some version (package<x\&.y\&.z) 
+.SS "enum \fBalpm_fileconflicttype_t\fP"
+
+.PP
+File conflict type\&. Whether the conflict results from a file existing on the filesystem, or with another target in the transaction\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIALPM_FILECONFLICT_TARGET \fP\fP
+The conflict results with a another target in the transaction\&. 
+.TP
+\fB\fIALPM_FILECONFLICT_FILESYSTEM \fP\fP
+The conflict results from a file existing on the filesystem\&. 
+.SH "Function Documentation"
+.PP 
+.SS "\fBalpm_list_t\fP * alpm_checkconflicts (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP * pkglist)"
+
+.PP
+Check the package conflicts in a database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIpkglist\fP the list of packages to check
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+an \fBalpm_list_t\fP of \fBalpm_conflict_t\fP 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_checkdeps (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP * pkglist, \fBalpm_list_t\fP * remove, \fBalpm_list_t\fP * upgrade, int reversedeps)"
+
+.PP
+Checks dependencies and returns missing ones in a list\&. Dependencies can include versions with depmod operators\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIpkglist\fP the list of local packages 
+.br
+\fIremove\fP an alpm_list_t* of packages to be removed 
+.br
+\fIupgrade\fP an alpm_list_t* of packages to be upgraded (remove-then-upgrade) 
+.br
+\fIreversedeps\fP handles the backward dependencies 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+an alpm_list_t* of \fBalpm_depmissing_t\fP pointers\&. 
+.RE
+.PP
+
+.SS "void alpm_conflict_free (\fBalpm_conflict_t\fP * conflict)"
+
+.PP
+Free a conflict and its members\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIconflict\fP the conflict to free 
+.RE
+.PP
+
+.SS "char * alpm_dep_compute_string (const \fBalpm_depend_t\fP * dep)"
+
+.PP
+Returns a newly allocated string representing the dependency information\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdep\fP a dependency info structure 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a formatted string, e\&.g\&. 'glibc>=2\&.12' 
+.RE
+.PP
+
+.SS "void alpm_dep_free (\fBalpm_depend_t\fP * dep)"
+
+.PP
+Free a dependency info structure\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdep\fP struct to free 
+.RE
+.PP
+
+.SS "\fBalpm_depend_t\fP * alpm_dep_from_string (const char * depstring)"
+
+.PP
+Return a newly allocated dependency information parsed from a string \fBshould be used to free the dependency \fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdepstring\fP a formatted string, e\&.g\&. 'glibc=2\&.12' 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a dependency info structure 
+.RE
+.PP
+
+.SS "void alpm_depmissing_free (\fBalpm_depmissing_t\fP * miss)"
+
+.PP
+Free a depmissing and its members\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImiss\fP the depmissing to free 
+.RE
+.PP
+
+.SS "void alpm_fileconflict_free (\fBalpm_fileconflict_t\fP * conflict)"
+
+.PP
+Free a fileconflict and its members\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIconflict\fP the fileconflict to free 
+.RE
+.PP
+
+.SS "\fBalpm_pkg_t\fP * alpm_find_dbs_satisfier (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP * dbs, const char * depstring)"
+
+.PP
+Find a package satisfying a specified dependency\&. First look for a literal, going through each db one by one\&. Then look for providers\&. The first satisfyer that belongs to an installed package is returned\&. If no providers belong to an installed package then an \fBalpm_question_select_provider_t\fP is created to select the provider\&. The dependency can include versions with depmod operators\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIdbs\fP an alpm_list_t* of alpm_db_t where the satisfyer will be searched 
+.br
+\fIdepstring\fP package or provision name, versioned or not 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a alpm_pkg_t* satisfying depstring 
+.RE
+.PP
+
+.SS "\fBalpm_pkg_t\fP * alpm_find_satisfier (\fBalpm_list_t\fP * pkgs, const char * depstring)"
+
+.PP
+Find a package satisfying a specified dependency\&. The dependency can include versions with depmod operators\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpkgs\fP an alpm_list_t* of alpm_pkg_t where the satisfyer will be searched 
+.br
+\fIdepstring\fP package or provision name, versioned or not 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a alpm_pkg_t* satisfying depstring 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libalpm from the source code\&.

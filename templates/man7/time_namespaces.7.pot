@@ -1,0 +1,545 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-09-03 20:57+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "TIME_NAMESPACES"
+msgstr ""
+
+#. type: TH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "2021-03-22"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "time_namespaces - overview of Linux time namespaces"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Time namespaces virtualize the values of two system clocks:"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "\\(bu"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"B<CLOCK_MONOTONIC> (and likewise B<CLOCK_MONOTONIC_COARSE> and "
+"B<CLOCK_MONOTONIC_RAW>), a nonsettable clock that represents monotonic time "
+"since\\(emas described by POSIX\\(em\"some unspecified point in the past\"."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"B<CLOCK_BOOTTIME> (and likewise B<CLOCK_BOOTTIME_ALARM>), a nonsettable "
+"clock that is identical to B<CLOCK_MONOTONIC>, except that it also includes "
+"any time that the system is suspended."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Thus, the processes in a time namespace share per-namespace values for these "
+"clocks.  This affects various APIs that measure against these clocks, "
+"including: B<clock_gettime>(2), B<clock_nanosleep>(2), B<nanosleep>(2), "
+"B<timer_settime>(2), B<timerfd_settime>(2), and I</proc/uptime>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Currently, the only way to create a time namespace is by calling "
+"B<unshare>(2)  with the B<CLONE_NEWTIME> flag.  This call creates a new time "
+"namespace but does I<not> place the calling process in the new namespace.  "
+"Instead, the calling process's subsequently created children are placed in "
+"the new namespace.  This allows clock offsets (see below) for the new "
+"namespace to be set before the first process is placed in the namespace.  "
+"The I</proc/[pid]/ns/time_for_children> symbolic link shows the time "
+"namespace in which the children of a process will be created.  (A process "
+"can use a file descriptor opened on this symbolic link in a call to "
+"B<setns>(2)  in order to move into the namespace.)"
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "/proc/PID/timens_offsets"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Associated with each time namespace are offsets, expressed with respect to "
+"the initial time namespace, that define the values of the monotonic and boot-"
+"time clocks in that namespace.  These offsets are exposed via the file I</"
+"proc/PID/timens_offsets>.  Within this file, the offsets are expressed as "
+"lines consisting of three space-delimited fields:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "E<lt>clock-idE<gt> E<lt>offset-secsE<gt> E<lt>offset-nanosecsE<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The I<clock-id> is a string that identifies the clock whose offsets are "
+"being shown.  This field is either I<monotonic>, for B<CLOCK_MONOTONIC>, or "
+"I<boottime>, for B<CLOCK_BOOTTIME>.  The remaining fields express the offset "
+"(seconds plus nanoseconds) for the clock in this time namespace.  These "
+"offsets are expressed relative to the clock values in the initial time "
+"namespace.  The I<offset-secs> value can be negative, subject to "
+"restrictions noted below; I<offset-nanosecs> is an unsigned value."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"In the initial time namespace, the contents of the I<timens_offsets> file "
+"are as follows:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<cat /proc/self/timens_offsets>\n"
+"monotonic           0         0\n"
+"boottime            0         0\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"In a new time namespace that has had no member processes, the clock offsets "
+"can be modified by writing newline-terminated records of the same form to "
+"the I<timens_offsets> file.  The file can be written to multiple times, but "
+"after the first process has been created in or has entered the namespace, "
+"B<write>(2)s on this file fail with the error B<EACCES>.  In order to write "
+"to the I<timens_offsets> file, a process must have the B<CAP_SYS_TIME> "
+"capability in the user namespace that owns the time namespace."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Writes to the I<timens_offsets> file can fail with the following errors:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<EINVAL>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "An I<offset-nanosecs> value is greater than 999,999,999."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "A I<clock-id> value is not valid."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<EPERM>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "The caller does not have the B<CAP_SYS_TIME> capability."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<ERANGE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "An I<offset-secs> value is out of range.  In particular;"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"I<offset-secs> can't be set to a value which would make the current time on "
+"the corresponding clock inside the namespace a negative value; and"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"I<offset-secs> can't be set to a value such that the time on the "
+"corresponding clock inside the namespace would exceed half of the value of "
+"the kernel constant B<KTIME_SEC_MAX> (this limits the clock value to a "
+"maximum of approximately 146 years)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"In a new time namespace created by B<unshare>(2), the contents of the "
+"I<timens_offsets> file are inherited from the time namespace of the creating "
+"process."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Use of time namespaces requires a kernel that is configured with the "
+"B<CONFIG_TIME_NS> option."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Note that time namespaces do not virtualize the B<CLOCK_REALTIME> clock.  "
+"Virtualization of this clock was avoided for reasons of complexity and "
+"overhead within the kernel."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"For compatibility with the initial implementation, when writing a I<clock-"
+"id> to the I</proc/[pid]/timens_offsets> file, the numerical values of the "
+"IDs can be written instead of the symbolic names show above; i.e., 1 instead "
+"of I<monotonic>, and 7 instead of I<boottime>.  For readability, the use of "
+"the symbolic names over the numbers is preferred."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The motivation for adding time namespaces was to allow the monotonic and "
+"boot-time clocks to maintain consistent values during container migration "
+"and checkpoint/restore."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "EXAMPLES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The following shell session demonstrates the operation of time namespaces.  "
+"We begin by displaying the inode number of the time namespace of a shell in "
+"the initial time namespace:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<readlink /proc/$$/ns/time>\n"
+"time:[4026531834]\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Continuing in the initial time namespace, we display the system uptime using "
+"B<uptime>(1)  and use the I<clock_times> example program shown in "
+"B<clock_getres>(2)  to display the values of various clocks:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<uptime --pretty>\n"
+"up 21 hours, 17 minutes\n"
+"$ B<./clock_times>\n"
+"CLOCK_REALTIME : 1585989401.971 (18356 days +  8h 36m 41s)\n"
+"CLOCK_TAI      : 1585989438.972 (18356 days +  8h 37m 18s)\n"
+"CLOCK_MONOTONIC:      56338.247 (15h 38m 58s)\n"
+"CLOCK_BOOTTIME :      76633.544 (21h 17m 13s)\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"We then use B<unshare>(1)  to create a time namespace and execute a "
+"B<bash>(1)  shell.  From the new shell, we use the built-in B<echo> command "
+"to write records to the I<timens_offsets> file adjusting the offset for the "
+"B<CLOCK_MONOTONIC> clock forward 2 days and the offset for the "
+"B<CLOCK_BOOTTIME> clock forward 7 days:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<PS1=\"ns2# \" sudo unshare -T -- bash --norc>\n"
+"ns2# B<echo \"monotonic $((2*24*60*60)) 0\" E<gt> /proc/$$/timens_offsets>\n"
+"ns2# B<echo \"boottime  $((7*24*60*60)) 0\" E<gt> /proc/$$/timens_offsets>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Above, we started the B<bash>(1)  shell with the B<--norc> options so that "
+"no start-up scripts were executed.  This ensures that no child processes are "
+"created from the shell before we have a chance to update the "
+"I<timens_offsets> file."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"We then use B<cat>(1)  to display the contents of the I<timens_offsets> "
+"file.  The execution of B<cat>(1)  creates the first process in the new time "
+"namespace, after which further attempts to update the I<timens_offsets> file "
+"produce an error."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"ns2# B<cat /proc/$$/timens_offsets>\n"
+"monotonic      172800         0\n"
+"boottime       604800         0\n"
+"ns2# B<echo \"boottime $((9*24*60*60)) 0\" E<gt> /proc/$$/timens_offsets>\n"
+"bash: echo: write error: Permission denied\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Continuing in the new namespace, we execute B<uptime>(1)  and the "
+"I<clock_times> example program:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"ns2# B<uptime --pretty>\n"
+"up 1 week, 21 hours, 18 minutes\n"
+"ns2# B<./clock_times>\n"
+"CLOCK_REALTIME : 1585989457.056 (18356 days +  8h 37m 37s)\n"
+"CLOCK_TAI      : 1585989494.057 (18356 days +  8h 38m 14s)\n"
+"CLOCK_MONOTONIC:     229193.332 (2 days + 15h 39m 53s)\n"
+"CLOCK_BOOTTIME :     681488.629 (7 days + 21h 18m  8s)\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"From the above output, we can see that the monotonic and boot-time clocks "
+"have different values in the new time namespace."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Examining the I</proc/[pid]/ns/time> and I</proc/[pid]/ns/time_for_children> "
+"symbolic links, we see that the shell is a member of the initial time "
+"namespace, but its children are created in the new namespace."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"ns2# B<readlink /proc/$$/ns/time>\n"
+"time:[4026531834]\n"
+"ns2# B<readlink /proc/$$/ns/time_for_children>\n"
+"time:[4026532900]\n"
+"ns2# B<readlink /proc/self/ns/time>   # Creates a child process\n"
+"time:[4026532900]\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Returning to the shell in the initial time namespace, we see that the "
+"monotonic and boot-time clocks are unaffected by the I<timens_offsets> "
+"changes that were made in the other time namespace:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<uptime --pretty>\n"
+"up 21 hours, 19 minutes\n"
+"$ B<./clock_times>\n"
+"CLOCK_REALTIME : 1585989401.971 (18356 days +  8h 38m 51s)\n"
+"CLOCK_TAI      : 1585989438.972 (18356 days +  8h 39m 28s)\n"
+"CLOCK_MONOTONIC:      56338.247 (15h 41m  8s)\n"
+"CLOCK_BOOTTIME :      76633.544 (21h 19m 23s)\n"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#.  clone3() support for time namespaces is a work in progress
+#.  .BR clone3 (2),
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"B<nsenter>(1), B<unshare>(1), B<clock_settime>(2), B<setns>(2), "
+"B<unshare>(2), B<namespaces>(7), B<time>(7)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "2020-06-09"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"For compatibility with the initial implementation, when writing a I<clock-"
+"id> to the I</proc/[pid]/timens_offsets> file, the numerical values of the "
+"IDs can be written instead of the symbolic names show above; i.e., 1 instead "
+"of I<monotonic>, and 7 instead of I<boottime>.  For redability, the use of "
+"the symbolic names over the numbers is preferred."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

@@ -1,0 +1,953 @@
+.\" {PTM/WK/1999-10-10}
+.rn '' }`
+.\" $RCSfile: perlref.1,v $$Revision: 1.7 $$Date: 2003/05/29 11:06:06 $
+.\"
+.\" $Log: perlref.1,v $
+.\" Revision 1.7  2003/05/29 11:06:06  robert
+.\" poprawki (głównie warningi groffa)
+.\"
+.\" Revision 1.6  2002/05/21 09:29:19  robert
+.\" za wyjątkiem --> z wyjątkiem
+.\" i inne poprawki
+.\"
+.\" Revision 1.5  2001/06/14 08:43:14  wojtek2
+.\" s/,chyba, że/,chyba że/
+.\" plus trochę literówek, formatowania etc.
+.\"
+.\" Revision 1.4  2000/10/22 16:15:29  wojtek2
+.\" wiodące (spacje, zera etc.)->początkowe
+.\" kontrolne (znaki, sekwencje)->sterujące
+.\" także "klawisze kontrolne" (Ctrl+klaw.)->klawisze sterujące
+.\"
+.\" Revision 1.3  1999/10/10 17:31:19  wojtek2
+.\" doniesienie->odniesienie. Bez polityki.
+.\"
+.\" Revision 1.2  1999/10/10 13:23:09  pborys
+.\" gramatyka
+.\"
+.\" Revision 1.1  1999/10/08 23:24:35  wojtek2
+.\" uff, pewnie nie bardziej czytelny niż oryginał
+.\"
+.\"
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+.\"
+.\"
+.\"     Set up \*(-- to give an unbreakable dash;
+.\"     string Tr holds user defined translation string.
+.\"     Bell System Logo is used as a dummy character.
+.\"
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+.\"   \*(M", \*(S", \*(N" and \*(T" are the equivalent of
+.\"   \*(L" and \*(R", except that they are used on ".xx" lines,
+.\"   such as .IP and .SH, which do another additional levels of
+.\"   double-quote interpretation
+.ds M" """
+.ds S" """
+.ds N" """""
+.ds T" """""
+.ds L' '
+.ds R' '
+.ds M' '
+.ds S' '
+.ds N' '
+.ds T' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds M" ``
+.ds S" ''
+.ds N" ``
+.ds T" ''
+.ds L' `
+.ds R' '
+.ds M' `
+.ds S' '
+.ds N' `
+.ds T' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH PERLREF 1 "perl 5.005, patch 03" "27 marca 1999" "Podręcznik programisty Perla"
+.UC
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH NAZWA
+perlref \- odwołania i zagnieżdżone struktury danych w Perlu
+.SH UWAGA
+To jest pełna dokumentacja dotycząca wszelkich aspektów odwołań.
+Krótszy, wprowadzający wstęp to najistotniejszych cech znajdziesz
+w podręczniku \fIperlreftut\fR(1).
+.SH OPIS
+Przed wersją 5 Perla przedstawianie złożonych struktur danych było trudne,
+gdyż wszystkie odwołania musiały być symboliczne \*(-- a nawet wtedy ciężko
+było odnosić się do zmiennej zamiast do pozycji w tablicy symboli.
+Obecnie Perl nie tylko ułatwia posługiwanie się symbolicznymi odwołaniami
+do zmiennych, ale także pozwala na użycie \*(L"stałych\*(R" odwołań
+(hard references) do dowolnego kawałka danych lub kodu. Stałe dowiązanie może
+być przechowywane w dowolnym skalarze. Ponieważ tablice i tablice asocjacyjne
+(hasze) zawierają skalary, to możesz teraz łatwo budować tablice tablic,
+tablice haszy, hasze tablic, tablice haszy funkcji i tak dalej.
+.PP
+Odwołania stałe są sprytne \*(-- utrzymują za ciebie liczniki odwołań,
+automatycznie zwalniając rzecz, do której odnosi się odwołanie, jeśli jej
+licznik odwołań zejdzie do zera. (Uwaga: liczniki odwołań dla wartości
+w strukturach danych odnoszących się do samych na siebie (self-referential)
+lub strukturach cyklicznych mogą nie schodzić do zera bez pewnej drobnej pomocy;
+patrz sekcja \fITwo-Phased Garbage Collection\fR w podręczniku
+\fIperlobj\fR(1),
+zawierająca bardziej szczegółowy opis.)
+Jeśli taka rzecz jest obiektem, to obiekt jest niszczony. Więcej o obiektach
+znajdziesz w podręczniku \fIperlobj\fR(1). (W pewnym sensie, wszystko w Perlu jest
+obiektem, ale zwykle rezerwujemy to słowo dla odwołań do obiektów, które
+zostały oficjalnie "pobłogosławione" (\*(L"blessed\*(R") [tj.zakwalifikowane
+jako obiekty] w pakiecie klasy.)
+.PP
+Odwołania symboliczne są nazwami zmiennych lub innych obiektów; zupełnie tak jak
+dowiązania symboliczne (symbolic links) w uniksowym systemie plików zawierają
+wyłącznie nazwę pliku. Notacja \f(CW*glob\fR jest rodzajem odwołania
+symbolicznego.
+(Odwołania symboliczne nazywane są czasami \*(L"soft references\*(R"
+[odwołaniami miękkimi, w przeciwieństwie do "hard r."-"twardych"], ale proszę
+nie nazywaj ich tak; odwołania są wystarczająco zbijające z pantałyku bez
+zbędnych synonimów.)
+.PP
+W przeciwieństwie do nich, odwołania stałe przypominają dowiązania stałe
+(hard links) uniksowego systemu plików: służą do udostępniania obiektu bez
+zwracania uwagi na to, jaka jest jego (inna) nazwa. Tam, gdzie użyto słowa
+\*(L"odwołanie\*(R" bez przymiotnika, jak w poniższym akapicie, mówi się
+zwykle o odwołaniu stałym.
+.PP
+W Perlu odwołania są łatwe w użyciu. Jest tylko jedna nadrzędna zasada:
+Perl nie wykonuje niejawnego odwoływania bądź dereferowania odwołań.
+[Dereferencing: odniesienie się z powrotem do obiektu, rzeczy na którą wskazuje
+odwołanie].
+Gdy skalar przechowuje odwołanie, to zawsze zachowuje się jak zwykły skalar.
+Nie zaczyna magicznie być tablicą, haszem czy procedurą; musisz wprost nakazać
+takie zachowanie, wykonując dereferencję.
+.Sh "Tworzenie odwołań"
+Odwołania mogą być tworzone na kilka sposobów.
+.Ip "1." 4
+Przez zastosowanie operatora odwróconego ukośnika do zmiennej, procedury
+lub wartości. (Działa to bardzo podobnie do operatora & (zwracającego adres)
+w języku C.) Zauważ, że konstrukcja ta tworzy \fI\s-1KOLEJNE\s0\fR odwołanie
+do zmiennej, gdyż w tablicy symboli istnieje już odwołanie do tej zmiennej.
+Jednak odwołanie z tablicy symboli może zniknąć, a nadal będziesz mieć
+odwołanie, które zwrócił odwrócony ukośnik. Oto kilka przykładów:
+.Sp
+.Vb 5
+\&    $scalarref = \e$foo;
+\&    $arrayref  = \e@ARGV;
+\&    $hashref   = \e%ENV;
+\&    $coderef   = \e&handler;
+\&    $globref   = \e*foo;
+.Ve
+Przy użyciu operatora odwróconego ukośnika nie jest możliwe utworzenie
+prawdziwego odwołania do uchwytu \s-1IO\s0 (uchwytu pliku lub katalogu).
+Możesz co najwyżej uzyskać odwołanie do typeglob będącego faktycznie pełnym
+wpisem w tablicy symboli. (Przeczytaj jednak poniżej objaśnienie składni
+\f(CW*foo{COŚ}\fR.) Mimo to, możesz nadal używać typeglob i odwołań do nich
+jakby były one uchwytami \s-1IO\s0.
+.Ip "2." 4
+Odwołanie do anonimowej tablicy można stworzyć posługując się nawiasami
+kwadratowymi:
+.Sp
+.Vb 1
+\&    $arrayref = [1, 2, ['a', 'b', 'c']];
+.Ve
+Utworzyliśmy odwołanie do anonimowej tablicy trzech elementów, której ostatni
+element jest z kolei odwołaniem do innej anonimowej tablicy trzech elementów.
+(Dostęp do niej umożliwi opisana dalej składnia tablic wielowymiarowych.
+Na przykład, dla powyższego przykładu \f(CW$arrayref->[2][1]\fR zwraca wartość
+\*(L"b\*(R".)
+.Sp
+Zauważ, że stworzenie odwołania do listy wyliczanej nie jest tym samym,
+co użycie nawiasów kwadratowych. Jest to natomiast tym samym, co stworzenie
+listy odwołań!
+.Sp
+.Vb 2
+\&    @list = (\e$a, \e@b, \e%c);
+\&    @list = \e($a, @b, %c);      # to samo!
+.Ve
+W przypadku szczególnym, \f(CW\e(@foo)\fR zwraca listę odwołań do zawartości
+\f(CW@foo\fR, nie zaś odwołanie do samej \f(CW@foo\fR. Podobnie jest dla
+\f(CW%foo\fR, z wyjątkiem tego, że odwołania-klucze odnoszą się do kopii
+(gdyż klucze są łańcuchami znakowymi, a nie dowolnymi skalarami).
+.Ip "3." 4
+Odwołanie do anonimowej tablicy asocjacyjnej (hasza) można utworzyć używając
+nawiasów klamrowych:
+.Sp
+.Vb 4
+\&    $hashref = {
+\&        'Adam'  => 'Ewa',
+\&        'Clyde' => 'Bonnie',
+\&    };
+.Ve
+Powyższe konstruktory anonimowych haszy i tablic można swobodnie łączyć. 
+Umożliwia to otrzymywanie dowolnie skomplikowanych struktur.
+Opisana składnia wielowymiarowych tablic/haszy działa także dla nich.
+Wartości w powyższym przykładzie były literałami, ale równie dobrze mogłyby być
+zmiennymi czy wyrażeniami, gdyż perlowe operatory przypisania (nawet wewnątrz
+\fIlocal()\fR czy \fImy()\fR) są wykonywalnymi instrukcjami, a nie jedynie
+deklaracjami dla fazy kompilacji.
+.Sp
+Ponieważ nawiasy klamrowe służą do kilku innych rzeczy, a także do tworzenia
+BLOKów, możesz być czasem zmuszony do uniknięcia dwuznaczności tych nawiasów
+na początku instrukcji. Wystarczy wówczas umieszczenie przed nimi \f(CW+\fR
+lub \f(CWreturn\fR, by Perl zorientował się, że otwierający nawias klamrowy
+nie rozpoczyna \s-1BLOK\s0u. Oszczędność i zalety mnemoniczne użycia nawiasów
+klamrowych warte są takiego sporadycznego zamieszania.
+.Sp
+Na przykład, jeśli chciałbyś, by funkcja tworzyła nowy hasz i zwracała
+odwołanie do niego, to masz takie możliwości:
+.Sp
+.Vb 3
+\&    sub hashem {        { @_ } }   # źle, ale bez komunikatu o błędzie
+\&    sub hashem {       +{ @_ } }   # ok
+\&    sub hashem { return { @_ } }   # ok
+.Ve
+Z drugiej strony, jeśli chcesz drugiego znaczenia nawiasów (blok), zrób tak:
+.Sp
+.Vb 3
+\&    sub showem {        { @_ } }   # dwuznaczne (obecnie ok, ale może się zmienić)
+\&    sub showem {       {; @_ } }   # ok
+\&    sub showem { { return @_ } }   # ok
+.Ve
+Zwróć uwagę, że początkowe \f(CW+{\fR i \f(CW{;\fR zawsze służą do wykluczenia
+dwuznaczności wyrażenia, aby znaczyło albo odwołanie do \s-1HASZ\s0a albo
+\s-1BLOK\s0.
+.Ip "4." 4
+Można utworzyć odwołanie do anonimowej procedury używając \f(CWsub\fR bez nazwy
+procedury:
+.Sp
+.Vb 1
+\&    $coderef = sub { print "Bums!\en" };
+.Ve
+Zwróć uwagę na obecność średnika.  Poza faktem, że wewnętrzny kod nie jest
+wykonywany natychmiast, \f(CWsub {}\fR jest bardziej operatorem niż deklaracją,
+podobnie zresztą jak \f(CWdo{}\fR czy \f(CWeval{}\fR.  (Jednak, niezależnie 
+od tego, ile razy wykonasz powyższą linię (chyba że jesteś wewnątrz
+\f(CWeval("...")\fR), \f(CW$coderef\fR wciąż będzie zawierać odwołanie do
+\fI\s-1TEJ SAMEJ\s0\fR anonimowej procedury.)
+.Sp
+Procedury anonimowe działają jak zamknięcia (closures) w odniesieniu do
+zmiennych \fImy()\fR, to znaczy, zmiennych widocznych leksykalnie
+w bieżącym zakresie. Zamknięcie jest pojęciem ze świata Lispa, mówiącym, że
+jeśli zdefiniujesz anonimową funkcję w konkretnym kontekście leksykalnym, to
+będzie ona działać w tym kontekście nawet jeśli została wywołana poza nim.
+.Sp
+Mówiąc po ludzku, jest to zabawny sposób przesyłania argumentów do procedury
+zarówno gdy ją definiujesz jak i wtedy gdy ją wywołujesz. Przydaje się to do
+tworzenia małych fragmentów kodu do późniejszego uruchamiania, jak np. wywołania
+wsteczne (callbacks). Przy ich pomocy możesz robić nawet rzeczy zorientowane
+obiektowo, choć Perl zapewnia już odmienny mechanizm operowania obiektami
+\*(--patrz podręcznik \fIperlobj\fR(1).
+.Sp
+Możesz również myśleć o zamknięciach jak o sposobie pisania szablonów bez
+używania eval. (Faktycznie, w wersji 5.000, eval było \fIjedyną\fR metodą
+uzyskania zamknięć. Jeśli posługujesz się zamknięciami, możesz potrzebować
+\*(L"require 5.001\*(R".)
+.Sp
+A to mały przykład tego, jak działają zamknięcia:
+.Sp
+.Vb 6
+\&    sub newprint {
+\&        my $x = shift;
+\&        return sub { my $y = shift; print "$x, $y!\en"; };
+\&    }
+\&    $h = newprint("Howdy");
+\&    $g = newprint("Greetings");
+.Ve
+.Vb 1
+\&    # czas mija...
+.Ve
+.Vb 2
+\&    &$h("world");
+\&    &$g("earthlings");
+.Ve
+Drukuje to
+.Sp
+.Vb 2
+\&    Howdy, world!
+\&    Greetings, earthlings!
+.Ve
+Zwróć uwagę szczególnie na to, że \f(CW$x\fR nadal odnosi się do wartości
+przesłanej do \fInewprint()\fR, \fImimo że\fR zmienna \*(L"my \f(CW$x\fR\*(R"
+pozornie wyszła poza swój zakres, w momencie gdy wywołano anonimową
+procedurę. O to właśnie chodzi w zamknięciu.
+.Sp
+Przy okazji: odnosi się do tylko do zmiennych leksykalnych. Zmienne dynamiczne
+działają nadal tak jak zawsze. Zamknięcie nie jest czymś, o co musiałaby się
+martwić większość programistów Perla.
+.Ip "5." 4
+Odwołania często zwracane są przez specjalne procedury zwane konstruktorami.
+Obiekty w Perlu są po prostu odwołaniami do specjalnego rodzaju obiektu, który
+wie z którym pakietem jest związany. Konstruktory są specjalnymi
+procedurami, które wiedzą jak utworzyć to powiązanie.
+Robią to zaczynając od zwykłego odwołania, i pozostaje ono zwykłym odwołaniem
+nawet wtedy gdy jest równocześnie obiektem. Konstuktory często nazywane są 
+\fInew()\fR i wywoływane nie wprost:
+.Sp
+.Vb 1
+\&    $objref = new Psisko (Ogon => 'krótki', Uszy => 'długie');
+.Ve
+Ale nie muszą być:
+.Sp
+.Vb 1
+\&    $objref   = Psisko->new(Ogon => 'krótki', Uszy => 'długie');
+.Ve
+.Vb 2
+\&    use Term::Cap;
+\&    $terminal = Term::Cap->Tgetent( { OSPEED => 9600 });
+.Ve
+.Vb 4
+\&    use Tk;
+\&    $main    = MainWindow->new();
+\&    $menubar = $main\->Frame(\-relief              => "raised",
+\&                            \-borderwidth         => 2)
+.Ve
+.Ip "6." 4
+Odwołania odpowiedniego typu mogą być powoływane do istnienia jeśli
+dereferencjonujesz je w kontekście zakładającym, że istnieją. Ponieważ jeszcze
+nie mówiliśmy o dereferencji, nie możemy na razie pokazać przykładów.
+.Ip "7." 4
+Odwołanie może być utworzone przy pomocy specjalnej składni, uroczo zwanej
+składnią *foo{\s-1COŚ\s0}.  *foo{\s-1COŚ\s0} zwraca odwołanie do przegródki
+\s-1COŚ\s0 w *foo (które jest pozycją w tablicy symboli przechowującą wszystko
+znane jako foo.)
+.Sp
+.Vb 6
+\&    $scalarref = *foo{SCALAR};
+\&    $arrayref  = *ARGV{ARRAY};
+\&    $hashref   = *ENV{HASH};
+\&    $coderef   = *handler{CODE};
+\&    $ioref     = *STDIN{IO};
+\&    $globref   = *foo{GLOB};
+.Ve
+Wszystkie powyższe wyrażenia są oczywiste, z wyjątkiem *foo{\s-1IO\s0}.
+Zwraca ono uchwyt \s-1IO\s0, używany jako uchwyt pliku (patrz opis \f(CWopen\fR
+w podręczniku \fIperlfunc\fR(1)), gniazdo (opis \f(CWsocket\fR oraz
+\f(CWsocketpair\fR w \fIperlfunc\fR(1)) lub uchwyt katalogu (\f(CWopendir\fR
+w \fIperlfunc\fR(1)). Dla zgodności z poprzednimi wersjami Perla,
+*foo{\s-1UCHWYTPLIKU\s0} jest synonimem *foo{\s-1IO\s0}.
+.Sp
+*foo{\s-1COŚ\s0} zwraca undef jeśli dane \s-1COŚ\s0 jeszcze nie było używane,
+z wyjątkiem dla skalarów. Jeśli nie używano jeszcze \f(CW$foo\fR, 
+*foo{\s-1SKALAR\s0} zwraca odwołanie do anonimowego skalara.
+W przyszłych wersjach może się to zmienić.
+.Sp
+*foo{\s-1IO\s0} jest alternatywą dla mechanizmu \e*\s-1UCHWYTU\s0 opisanego
+w sekcji \fITypeglobs and Filehandles\fR podręcznika \fIperldata\fR(1),
+a służącego do przesyłania uchwytów plików do i z procedur lub przechowywania
+w większych strukturach danych. Jego wadą jest to, że nie utworzy za Ciebie
+nowego uchwytu pliku. Zaletą zaś, że nie ryzykujesz więcej niż zamierzałeś
+przy przypisaniem typeglob, choć jeśli wykonasz przypisanie do skalara zamiast
+do typeglob, to też dobrze.
+.Sp
+.Vb 2
+\&    splutter(*STDOUT);
+\&    splutter(*STDOUT{IO});
+.Ve
+.Vb 4
+\&    sub splutter {
+\&        my $fh = shift;
+\&        print $fh "her um well a hmmm\en";
+\&    }
+.Ve
+.Vb 2
+\&    $rec = get_rec(*STDIN);
+\&    $rec = get_rec(*STDIN{IO});
+.Ve
+.Vb 4
+\&    sub get_rec {
+\&        my $fh = shift;
+\&        return scalar <$fh>;
+\&    }
+.Ve
+.Sh "Posługiwanie się odwołaniami"
+To tyle o tworzeniu odwołań. Teraz pewnie nie możesz się doczekać wiedzy
+jak posługiwać się odwołaniami, by móc wrócić do swych leżących odłogiem
+danych.  Oto kilka podstawowych sposobów.
+.Ip "1." 4
+Wszędzie, gdzie postawiłbyś identyfikator (lub łańcuch identyfikatorów)
+jako część nazwy zmiennej czy procedury, możesz zastąpić identyfikator
+prostą zmienną skalarną zawierającą odwołanie poprawnego typu:
+.Sp
+.Vb 6
+\&    $bar = $$scalarref;
+\&    push(@$arrayref, $nazwapliku);
+\&    $$arrayref[0] = "styczeń";
+\&    $$hashref{"KLUCZ"} = "WARTOŚĆ";
+\&    &$coderef(1,2,3);
+\&    print $globref "wynik\en";
+.Ve
+Ważne jest, by zrozumieć, że nie \fI\s-1NIE\s0\fR wykonujemy tu specjalnie
+dereferencji \f(CW$arrayref[0]\fR czy \f(CW$hashref{"KLUCZ"}\fR.
+Dereferencja zmiennej skalarnej odbywa się \fI\s-1PRZED\s0\fR przeszukaniem
+klucza (indeksu tablicy). Wszystko bardziej skomplikowane niż dereferencja
+prostej zmiennej skalarnej wymaga użycia niżej opisanych metod 2 lub 3.
+Jednak określenie \*(L"prosty skalar\*(R" obejmuje też identyfikator, który
+sam używa rekurencyjnie metody 1. Zatem poniższe drukuje \*(L"witaj\*(R".
+.Sp
+.Vb 2
+\&    $refrefref = \e\e\e"witaj";
+\&    print $$$$refrefref;
+.Ve
+.Ip "2." 4
+Wszędzie, gdzie postawiłbyś identyfikator (lub łańcuch identyfikatorów)
+jako część nazwy zmiennej czy procedury, możesz zastąpić identyfikator
+\s-1BLOK\s0iem zwracającym odwołanie poprawnego typu. Inaczej mówiąc,
+poprzednie przykłady mogą zostać zapisane tak:
+.Sp
+.Vb 6
+\&    $bar = ${$scalarref};
+\&    push(@{$arrayref}, $nazwapliku);
+\&    ${$arrayref}[0] = "styczeń";
+\&    ${$hashref}{"KLUCZ"} = "WARTOŚĆ";
+\&    &{$coderef}(1,2,3);
+\&    $globref->print("wynik\en");  # jeśli załadowano IO::Handle
+.Ve
+Niewątpliwie, użycie nawiasów klamrowych w tym przypadku nie jest zbyt mądre,
+ale \s-1BLOK\s0 może zawierać dowolne wyrażenie, w szczególności wyrażenia
+indeksowane:
+.Sp
+.Vb 1
+\&    &{ $dispatch{$index} }(1,2,3);      # wywołaj właściwą obsługę
+.Ve
+Z powodu możliwości pomijania nawiasów klamrowych dla prostych przypadków
+\f(CW$$x\fR, ludzie często popełniają błąd postrzegania symboli dereferencji
+jako prawdziwych operatorów i zastanawiają się nad ich priorytetem.
+Gdyby nimi były, mógłbyś używać zwykłych nawiasów zamiast klamrowych.
+Tak jednak nie jest. Rozważ poniższą różnicę: przypadek 0 jest skróconą wersją
+przypadku 1, \fI\s-1NIE\s0\fR przypadku 2:
+.Sp
+.Vb 4
+\&    $$hashref{"KLUCZ"}   = "WARTOŚĆ";       # przypadek 0
+\&    ${$hashref}{"KLUCZ"} = "WARTOŚĆ";       # przypadek 1
+\&    ${$hashref{"KLUCZ"}} = "WARTOŚĆ";       # przypadek 2
+\&    ${$hashref->{"KLUCZ"}} = "WARTOŚĆ";     # przypadek 3
+.Ve
+Przypadek 2 jest również mylący, gdyż odnosi się do zmiennej o nazwie
+\f(CW%hashref\fR, nie zaś dereferencjonuje poprzez \f(CW$hashref\fR
+hasza, na który wydawałoby się wskazuje skalar. To robi przypadek 3.
+.Ip "3." 4
+Wywołania procedur i poszukiwanie poszczególnych elementów tablic pojawiają
+się wystarczająco często, by zastosowanie do nich metody 2 stało się
+niewygodne.  Jako formę "osłodzenia składni", przykłady z metody 2 można
+zapisać:
+.Sp
+.Vb 3
+\&    $arrayref->[0] = "styczeń";        # element tablicy
+\&    $hashref->{"KLUCZ"} = "WARTOŚĆ";   # element hasza
+\&    $coderef->(1,2,3);                 # wywołanie procedury
+.Ve
+Lewa strona strzałki może być dowolnym wyrażeniem zwracającym odwołanie,
+łącznie z uprzednią dereferencją. [Ułatwia to operowanie odwołaniami
+do zmiennych zawierających kolejne odwołania, jak poniżej].
+Zauważ, że \f(CW$array[$x]\fR \fI\s-1NIE\s0\fR jest tu tym samym co
+\f(CW$array->[$x]\fR:
+.Sp
+.Vb 1
+\&    $array[$x]->{"foo"}->[0] = "styczeń";
+.Ve
+Jest to jeden z przypadków wspomnianych wcześniej, gdzie odwołania zaistnieją,
+gdy zostaną użyte w kontekście l-wartości. Przed tą instrukcją,
+element \f(CW$array[$x]\fR mógł być niezdefiniowany. W takim przypadku, jest on
+definiowany automatycznie z nadaniem mu wartości -- odwołania do hasza, tak że
+możemy poszukiwać w haszu elementu o kluczu \f(CW"foo"\fR.
+Podobnie klucz \f(CW$array[$x]->{"foo"}\fR zostanie automatycznie zdefiniowany
+z równoczesnym nadaniem wartości -- odwołania do tablicy, zatem będzie można
+w niej odnaleźć \f(CW[0]\fR. Proces ten zwany jest \fIautovivification\fR
+(automatyczne ożywianie).
+.Sp
+Jeszcze jedno. \fI\s-1POMIĘDZY\s0\fR indeksami umieszczonymi w nawiasach
+klamrowych strzałka jest opcjonalna, zatem możemy skrócić powyższy zapis do:
+.Sp
+.Vb 1
+\&    $array[$x]{"foo"}[0] = "styczeń";
+.Ve
+Co, w szczególnym przypadku działania tylko na zwykłych tablicach, daje
+tablice wielowymiarowe z zapisem jak w C:
+.Sp
+.Vb 1
+\&    $score[$x][$y][$z] += 42;
+.Ve
+No dobrze, tak naprawdę, nie całkiem jak tablice w C. C nie wie, jak poszerzać
+tablice na żądanie. Perl to potrafi.
+.Ip "4." 4
+Jeżeli odwołanie jest odwołaniem do obiektu, to prawdopodobnie istnieją metody
+dostępu do wskazywanych przez nie rzeczy, i powinieneś zapewne z nich
+skorzystać, chyba że jesteś w pakiecie klasy definiującej metody tego obiektu
+i pracujesz nad nimi.
+Inaczej mówiąc, bądź tak dobry i nie naruszaj hermetyzacji bez istotnego
+powodu. Perl nie wymusza hermetyzacji. Nie jesteśmy tu totalitarystami.
+Oczekujemy jednak zachowania podstawowych zasad uprzejmości.
+.PP
+Można posłużyć się operatorem \fIref()\fR do stwierdzenia, na jaki typ rzeczy
+wskazuje odwołanie. Zobacz podręcznik \fIperlfunc\fR(1).
+.PP
+Operator \fIbless()\fR może być używany do powiązania obiektu, na który
+wskazuje odwołanie, z pakietem funkcjonującym jako klasa obiektowa.
+Zobacz podręcznik \fIperlobj\fR(1).
+.PP
+Typeglob może być dereferencjowane w ten sam sposób jak odwołanie, gdyż
+składnia dereferencji zawsze wskazuje na pożądany rodzaj odwołania.
+Zatem \f(CW${*foo}\fR i \f(CW${\e$foo}\fR wskazują na tę samą zmienną skalarną.
+.PP
+A oto sztuczka do interpolacji wywołania procedury w łańcuchu:
+.PP
+.Vb 1
+\&    print "Procedura mysub tym razem zwróciła @{[mysub(1,2,3)]} .\en";
+.Ve
+Działa to w tak, że gdy \f(CW@{...}\fR znalezione zostanie wewnątrz łańcucha
+w cudzysłowach to zostanie potraktowane jako blok. Blok ten tworzy odwołanie
+do jednoelementowej anonimowej tablicy zawierającej wynik wywołania
+\f(CWmysub(1,2,3)\fR [odwołanie to utworzone będzie dzięki nawiasom
+kwadratowym].
+Zatem cały blok zwraca odwołanie do tablicy, która następnie podlega
+dereferencji powodowanej przez \f(CW@{...}\fR. Jej wartość, jako umieszczona
+w łańcuchu w cudzysłowach podlega interpolacji w napis.
+Takie szykany przydają się także w dowolnych wyrażeniach:
+.PP
+.Vb 1
+\&    print "That yields @{[$n + 5]} widgets\en";
+.Ve
+.Sh "Odwołania symboliczne"
+Powiedzieliśmy, że niezdefiniowane cele odwołania w razie potrzeby zaistnieją
+[podczas dereferencji].
+Nie mówiliśmy jednak, co się dzieje, gdy wartość użyta jako odwołanie jest
+już zdefiniowana, ale \fI\s-1NIE \s0JEST\fR odwołaniem stałym. Jeżeli użyjesz
+odwołania w takim przypadku, to będzie ono potraktowane jak odwołanie
+symboliczne. To znaczy, wartością skalara zostanie \fI\s-1NAZWA\s0\fR zmiennej
+a nie bezpośrednie dowiązanie do (być może anonimowej) wartości.
+.PP
+Niektórzy często spodziewają się, że działa to jakoś tak. I rzeczywiście.
+.PP
+.Vb 9
+\&    $name = "foo";
+\&    $$name = 1;                 # ustawia $foo
+\&    ${$name} = 2;               # ustawia $foo
+\&    ${$name x 2} = 3;           # ustawia $foofoo
+\&    $name->[0] = 4;             # ustawia $foo[0]
+\&    @$name = ();                # czyści @foo
+\&    &$name();                   # wywołuje &foo() (jak w Perl 4)
+\&    $pack = "THAT";
+\&    ${"${pack}::$name"} = 5;    # ustawia $THAT::foo bez rozwinięcia(eval)
+.Ve
+Jest to bardzo silne narzędzie, ale nieco niebezpieczne, gdyż możliwe jest,
+ze szczerym zamiarem użycia odwołania stałego, przypadkowe użycie
+symbolicznego. Możesz się przed tym uchronić pisząc:
+.PP
+.Vb 1
+\&    use strict 'refs';
+.Ve
+a dla reszty otaczającego bloku będą dozwolone tylko odwołania stałe.
+Wewnętrzny blok może się temu sprzeciwić przy pomocy
+.PP
+.Vb 1
+\&    no strict 'refs';
+.Ve
+Dla odwołań symbolicznych widoczne są tylko zmienne pakietu (globalne, nawet
+jeśli lokalnie). Zmienne leksykalne (deklarowane przy pomocy \fImy()\fR) nie
+zawierają się w tablicy symboli, zatem są niewidoczne dla tego mechanizmu.
+Na przykład:
+.PP
+.Vb 6
+\&    local $wartosc = 10;
+\&    $ref = "wartosc";
+\&    {
+\&        my $wartosc = 20;
+\&        print $$ref;
+\&    }
+.Ve
+Nadal będzie drukować 10, a nie 20. Pamiętaj, że \fIlocal()\fR działa
+na zmienne pakietu, które dla samego pakietu wszystkie są \*(L"globalne\*(R".
+.Sh "Odwołania niezbyt symboliczne"
+.\" "Not-so-symbolic references"
+Nową cechą poprawiającą czytelność, wprowadzoną w perlu wersji 5.001, jest
+to, że nawiasy wokół odwołania symbolicznego zachowują się jak znaki
+cudzysłowu, czyli tak, jakby zawsze zawierały wewnątrz łańcuch. To znaczy, że
+.PP
+.Vb 2
+\&    $push = "pop on ";
+\&    print "${push}over";
+.Ve
+miało zawsze znaczenie wydrukowania \*(L"pop on over\*(R", bez względu
+na fakt, że "push" jest słowem zarezerwowanym. Zostało to uogólnione tak, by
+działać również poza cudzysłowami, zatem
+.PP
+.Vb 1
+\&    print ${push} . "over";
+.Ve
+a nawet
+.PP
+.Vb 1
+\&    print ${ push } . "over";
+.Ve
+mają ten sam rezultat. (Spowodowałoby to błąd składni w Perlu 5.000, choć
+Perl 4 dopuszcza coś takiego w postaci bez odstępów.) Zauważ, że konstrukcja ta
+\fInie\fR nie jest uważana za odwołanie symboliczne gdy używasz strict refs:
+.PP
+.Vb 3
+\&    use strict 'refs';
+\&    ${ bareword };      # dobrze, znaczy $bareword.
+\&    ${ "bareword" };    # błąd, odwołanie symboliczne.
+.Ve
+Podobnie, z powodu wszelkiego indeksowania przy pomocy pojedynczych słów,
+zastosowaliśmy tę samą regułę do każdego z gołych słów użytego do indeksowania
+hasza. Zatem teraz, zamiast
+.PP
+.Vb 1
+\&    $array{ "aaa" }{ "bbb" }{ "ccc" }
+.Ve
+możesz napisać po prostu
+.PP
+.Vb 1
+\&    $array{ aaa }{ bbb }{ ccc }
+.Ve
+i nie martwić się o to, czy indeksy są słowami zarezerwowanymi. W tych rzadkich
+przypadkach, gdy chcesz zrobić coś w rodzaju
+.PP
+.Vb 1
+\&    $array{ shift }
+.Ve
+możesz wymusić interpretację słowa jako zarezerwowanego dodając cokolwiek, co
+zrobi zeń więcej niż gołe słowo:
+.PP
+.Vb 3
+\&    $array{ shift() }
+\&    $array{ +shift }
+\&    $array{ shift @_ }
+.Ve
+Przełącznik \fB\-w\fR będzie Cię ostrzegał, jeśli zinterpretuje słowo
+zarezerwowane jako łańcuch. Nie będzie jednak ostrzegał o użyciu słów
+pisanych małymi literami, gdyż łańcuch jest faktycznie cytowany.
+.Sh "Pseudo-hasze: Używanie tablicy jak hasza"
+\s-1OSTRZEŻENIE\s0:  Niniejsza sekcja opisuje cechę eksperymentalną.
+W przyszłych wersjach szczegóły mogą ulec zmianie bez powiadomienia.
+.PP
+Począwszy od Perla 5.005 możesz w pewnych kontekstach posługiwać się
+odwołaniem do tablicy, mimo że normalnie wymagają one odwołania do hasza.
+Pozwala to na dostęp do elementów tablicy przy użyciu nazw symbolicznych,
+tak jakby były one polami struktury.
+.PP
+Żeby to zadziałało tablica musi zawierać dodatkową informację. Pierwszym
+elementem tablicy powinno być odwołanie do hasza odwzorowującego nazwy pól
+na indeksy tablicy. Oto przykład:
+.PP
+.Vb 1
+\&   $struct = [{foo => 1, bar => 2}, "FOO", "BAR"];
+.Ve
+.Vb 2
+\&   $struct->{foo};  # to samo, co $struct->[1], tj. "FOO"
+\&   $struct->{bar};  # to samo, co $struct->[2], tj. "BAR"
+.Ve
+.Vb 2
+\&   keys %$struct;   # zwróci ("foo", "bar") w jakiejś kolejności
+\&   values %$struct; # zwróci ("FOO", "BAR") w jakiejś kolejności
+.Ve
+.Vb 3
+\&   while (my($k,$v) = each %$struct) {
+\&       print "$k => $v\en";
+\&   }
+.Ve
+Jeśli spróbujesz usunąć klucze z takiego pseudo-hasza
+lub będziesz próbował sięgnąć do nieistniejących pól, perl zgłosi wyjątek.
+W celu poprawy wydajności, Perl może też wykonać na etapie kompilacji
+tłumaczenie nazw pól na odpowiadające im indeksy tablicy dla opisanych odwołań.
+Patrz  podręcznik \fIfields\fR(3).
+.Sh "Szablony funkcji"
+Jak wyjaśniono powyżej, zamknięcie jest anonimową funkcją z dostępem
+do zmiennych  leksykalnych widocznych podczas jej kompilacji. Zachowuje ona
+dostęp do tych zmiennych nawet wtedy, gdy jest wykonywana później, tak jak
+funkcja obsługi sygnału (signal handler) czy wywołanie wsteczne Tk.
+.PP
+Posługiwanie się zamknięciem jako szablonem funkcji umożliwia tworzenie wielu
+podobnie działających funkcji. Załóżmy, że potrzebujesz funkcji o nazwach
+pochodzących od różnych kolorów zmieniających czcionkę \s-1HTML\s0.
+.PP
+.Vb 1
+\&    print "Hej, ", red("uważaj"), "na to ", green("światło");
+.Ve
+Funkcje \fIred()\fR i \fIgreen()\fR będą bardzo podobne. By je stworzyć,
+przypiszemy zamknięcie do typeglob nazwy funkcji, którą próbujemy skonstruować.
+.PP
+.Vb 5
+\&    @kolory = qw(red blue green yellow orange purple violet);
+\&    for my $nazwa (@kolory) {
+\&        no strict 'refs';       # pozwól na operowanie tablicą symboli
+\&        *$nazwa = *{uc $nazwa} = sub { "<FONT COLOR='$nazwa'>@_</FONT>" };
+\&    } 
+.Ve
+Teraz wszystkie te funkcje będą istnieć niezależnie od siebie. Możesz wywoływać
+\fIred()\fR, \fI\s-1RED\s0()\fR, \fIblue()\fR, \fI\s-1BLUE\s0()\fR,
+\fIgreen()\fR, etc. Technika ta zarówno skraca czas kompilacji jak i zmniejsza
+zużycie pamięci, jest też mniej narażona na błędy, gdyż kontrola składni odbywa
+się podczas kompilacji. Istotne jest, by wszelkie zmienne w anonimowej
+procedurze były zmiennymi leksykalnymi by stworzyć poprawne zamknięcie. Z tego
+powodu użyto \f(CWmy\fR dla zmiennej sterującej pętli.
+.PP
+Jest to jedno z jedynych miejsc, gdzie dostarczenie prototypu do zamknięcia
+ma sens. Jeśli chciałbyś narzucić kontekst skalarny dla argumentów powyższych,
+przykładowych funkcji (pewnie nie najlepszy pomysł w tym przypadku), możesz
+zapisać to inaczej:
+.PP
+.Vb 1
+\&    *$nazwa = sub ($) { "<FONT COLOR='$nazwa'>$_[0]</FONT>" };
+.Ve
+Jednakże, ponieważ sprawdzanie protypów odbywa się podczas kompilacji, powyższe
+przypisanie zostanie wykonane za późno, by było przydatne. Mógłbyś to obejść
+przez włożenie całej pętli przypisań do wnętrza bloku \s-1BEGIN\s0u, wymuszając
+wykonanie go w czasie kompilacji.
+.PP
+Dostęp do zmiennych leksykalnych zmieniających typ \*(-- jak te w pętli 
+\f(CWfor\fR powyższego przykładu\*(-- działa wyłącznie z zamknięciami, a nie
+z procedurami w ogóle. Zatem w przypadku ogólnym, procedury nazwane nie
+zagnieżdżają się prawidłowo, choć robią to procedury anonimowe.
+Jeśli nawykłeś do używania zagnieżdżonych procedur z własnymi prywatnymi
+zmiennymi w innych językach programowania, to w Perlu będziesz musiał nad
+trochę popracować. Intuicyjna metoda kodowania tego typu rzeczy spowoduje
+tajemnicze ostrzeżenia ``will not stay shared'\*(R' (nie pozostanie wspólne).
+To, na przykład, nie zadziała:
+.PP
+.Vb 5
+\&    sub zewn {
+\&        my $x = $_[0] + 35;
+\&        sub wewn { return $x * 19 }   # ŹLE
+\&        return $x + wewn();
+\&    } 
+.Ve
+Obejście jest następujące:
+.PP
+.Vb 5
+\&    sub zewn {
+\&        my $x = $_[0] + 35;
+\&        local *wewn = sub { return $x * 19 };
+\&        return $x + wewn();
+\&    } 
+.Ve
+Teraz \fIwewn()\fR może być wywołana tylko z wnętrza \fIzewn()\fR, z powodu
+tymczasowego przypisania zamknięcia (procedury anonimowej). Ale kiedy jest
+wywoływana, to ma zwykły dostęp do zmiennej leksykalnej \f(CW$x\fR z zakresu
+procedury \fIzewn()\fR.
+.PP
+Ma to interesujący skutek tworzenia funkcji lokalnych względem innych funkcji,
+co normalnie nie jest obsługiwane w Perlu.
+.SH OSTRZEŻENIE
+Nie możesz (w użyteczny sposób) posłużyć się odwołaniem jako kluczem hasza.
+Zostanie ono zamienione na łańcuch:
+.PP
+.Vb 1
+\&    $x{ \e$a } = $a;
+.Ve
+Jeśli spróbujesz zdereferencjonować klucz, nie otrzymasz odwołania stałego
+a łańcuch i nie uzyskasz tego, co próbowałeś. W zamian można napisać coś
+podobnego do:
+.PP
+.Vb 2
+\&    $r = \e@a;
+\&    $x{ $r } = $r;
+.Ve
+a następnie użyć \fIvalues()\fR, co zwróci rzeczywiste odwołania,
+zamiast użycia \fIkeys()\fR, gdyż klucze odwołaniami nie będą.
+.PP
+Standardowy moduł Tie::RefHash umożliwia wygodny sposób obejścia tego problemu.
+.SH ZOBACZ TAKŻE
+Poza oczywistą dokumentacją, pouczająca może być analiza kodu źródłowego.
+Kilka raczej patologicznych przykładów użycia odwołań znajdziesz 
+w teście regresji \fIt/op/ref.t\fR w katalogu źródeł Perla.
+.PP
+Zobacz również podręczniki \fIperldsc\fR(1) i \fIperllol\fR(1), opisujące
+posługiwanie się odwołaniami do tworzenia złożonych struktur danych, oraz
+\fIperltoot\fR(1), \fIperlobj\fR(1) i \fIperlbot\fR(1) opisujące ich użycie
+do tworzenia obiektów.
+
+.rn }` ''
+.IX Title "PERLREF 1"
+.IX Name "perlref - odwołania i zagnieżdżone struktury danych w Perlu"
+
+.IX Header "NAZWA"
+
+.IX Header "UWAGA"
+
+.IX Header "OPIS"
+
+.IX Subsection "Tworzenie odwołań"
+
+.IX Item "1."
+
+.IX Item "2."
+
+.IX Item "3."
+
+.IX Item "4."
+
+.IX Item "5."
+
+.IX Item "6."
+
+.IX Item "7."
+
+.IX Subsection "Użycie odwołań"
+
+.IX Item "1."
+
+.IX Item "2."
+
+.IX Item "3."
+
+.IX Item "4."
+
+.IX Subsection "Odwołania symboliczne"
+
+.IX Subsection "Odwołania niezbyt symboliczne"
+
+.IX Subsection "Pseudo-hasze: używanie tablicy jak hasza"
+
+.IX Subsection "Szablony funkcji"
+
+.IX Header "OSTRZEŻENIE"
+
+.IX Header "ZOBACZ TAKŻE"
+

@@ -1,0 +1,1110 @@
+.\" 1999 PTM Przemek Borys
+.\" aktualizacja PTM/WK/2001-I, wg patch.man P.Eggerta do wersji 2.5.4 (1998)
+.\" -*- nroff -*-
+.de Id
+.ds Dt \\$4
+..
+.Id $Id: patch.1,v 1.7 2001/04/29 08:30:02 wojtek2 Exp $
+.ds = \-\^\-
+.de Sp
+.if t .sp .3
+.if n .sp
+..
+.ds L" ""
+.ds R" ""
+.ds L' '
+.ds R' '
+.TH PATCH 1 "21 marca 1998" GNU
+.SH NAZWA
+patch - dołącz plik różnicowy do oryginału
+.SH SKŁADNIA
+.B patch
+.RI [ opcje ]
+.RI [ plikoryginalny
+.RI [ plikzłatą ]]
+.sp
+lecz zazwyczaj po prostu
+.sp
+.BI "patch \-p" "num"
+.BI < plikzłatą
+.SH OPIS
+.B Patch
+pobiera plik z łatą, który może zawierać jedną z czterech postaci różnic,
+dawanych przez program
+.BR diff (1).
+Jeśli
+.I plikzłatą
+jest pominięty lub jest myślnikiem, to łata będzie czytana ze standardowego
+wejścia.
+Następnie dołącza te różnice do pliku oryginalnego, dając w efekcie wersję
+załataną. Domyślnie, wersja załatana jest podstawiana na miejsce oryginału.
+Może też tworzyć kopie zapasowe zmienianego oryginału, zob. opcja
+.B \-b
+lub
+.BR \*=backup .
+Kopia oryginału jest zapisywana obok, z rozszerzeniem \*(L".orig\*(R" 
+(w systemach nie obsługujących długich nazw plików \*(L"~\*(R").
+Postać nazwy kopii zapasowej można kontrolować przez opcje
+\fB\-b\fP (\fB\-\-suffix\fP),
+\fB\-B\fP (\fB\-\-prefix\fP),
+lub
+\fB\-V\fP (\fB\-\-version\-control\fP).
+.ig
+.PP
+Jeśli plik kopii zapasowej już istnieje,
+.B patch
+tworzy nowy plik zapasowy, zmieniając pierwszą małą literę ostatniego
+komponentu nazwy pliku na dużą. Jeśli nie ma już więcej małych liter, usuwa
+pierwszy znak z nazwy. Proces ten jest powtarzany, aż nie znajdzie się
+nieistniejąca nazwa pliku. [WK:??]
+..
+.PP
+Nazwy plików do załatania są zwykle brane z pliku łaty, ale jeśli łatany
+będzie tylko jeden plik, to można podać go w wierszu poleceń jako
+.IR plikoryginalny .
+.PP
+Podczas uruchamiania, patch próbuje sam określić rodzaj listingu
+różnicowego. Można to zrobić też ręcznie, opcjami
+\fB\-c\fP (\fB\*=context\fP),
+\fB\-e\fP (\fB\*=ed\fP),
+\fB\-n\fP (\fB\*=normal\fP)
+lub
+\fB\-u\fP (\fB\*=unified\fP).
+Różnice typu context (starego rodzaju, nowego rodzaju i unifikowane
+(unified)) są nanoszone na oryginał wprost przez program
+.BR patch ,
+podczas gdy różnice
+.B ed
+są po prostu przesyłane poprzez potok do edytora
+.BR ed (1).
+.PP
+.B Patch
+próbuje automatycznie pominąć wszelkie śmieci znajdujące się przed
+fragmentem różnicowym, dokonać załatania i znowu pominąć śmieci, znajdujące
+się za różnicą. Tak więc przekazanie 
+.BR patchowi ,
+różnicy znajdującej się np. w wiadomości pocztowej, powinno działać.
+Jeśli całość różnic jest wcięta o ten sam rozmiar,
+lub różnice kontekstowe zawierają linie zakończone parami \s-1CRLF\s0,
+lub są raz bądź wielokrotnie zakapsułkowane przez poprzedzenie ciągiem
+"\fB\- \fP" linii zaczynających się od "\fB\-\fP", jak podano w RFC 934,
+to jest to poprawnie uwzględniane w łataniu.
+.PP
+W przypadku różnic typu context i w mniejszym stopniu różnic typu normal,
+.B patch
+potrafi wykryć, kiedy numery linii wymienione w łacie są nieprawidłowe i
+spróbuje znaleźć właściwe miejsce. Jako pierwszy strzał, używany jest numer
+linii użyty w badanym kawałku plus lub minus offset użyty do zaaplikowania
+poprzedniego kawałka. Jeśli nie jest to właściwe miejsce, nastąpi skanowanie
+w przód i wstecz w poszukiwaniu zestawu linii odpowiadającego podanemu
+kontekstowi.
+Na początek, szukane jest miejsce, do którego pasują wszystkie linie fragmentu.
+Jeśli nie uda się go znaleźć i mamy do czynienia z różnicami kontekstowymi
+a współczynnik `maximum fuzz factor' jest ustawiony na 1 lub więcej, to
+skanowanie jest powtarzane, lecz teraz ignoruje pierwszą i ostatnią linię
+kontekstu.
+Jeśli i to zawiedzie, a wyżej wymieniony współczynnik jest ustawiony na 2
+lub więcej, to ignorowane będą dwie pierwsze i dwie ostatnie linie.
+(Domyślnym współczynnikiem jest 2.)
+Jeśli
+.B patch
+nie może znaleźć właściwego miejsca do zaaplikowania fragmentu różnicy, to
+wstawi go do pliku odrzuceń, który normalnie ma nazwę pliku wyjściowego, z
+dopisaną końcówką
+.B \&.rej
+(lub
+.B #
+jeśli
+.B \&.rej
+utworzyłoby zbyt długą nazwę pliku. Jeśli dodanie nawet pojedynczego znaku
+.B #
+powoduje, że nazwa pliku staje się za długa, to
+.B #
+zastępuje ostatni znak nazwy).
+(Zauważ, że odrzucony fragment zostanie wyprodukowany jako różnica typu
+context, niezależnie od postaci łaty wejściowej. Jeśli była ona typu
+normal, wiele kontekstów będzie po prostu pustych.)
+Numery linii w pliku odrzuceń mogą być inne niż w łacie: odzwierciedlają one
+przypuszczalną pozycję w nowym pliku, do której prawdopodobnie należą 
+odrzucone fragmenty.
+.PP
+Gdy obróbka fragmentu jest zakończona, zostaniesz poinformowany, czy
+zakończyła się sukcesem, czy też się nie powiodła i w której linii
+(nowego pliku) wg \fBpatch\fRa ten fragment powinien się znaleźć.
+Jeśli jest ona inna od numeru linii, podanego w pliku różnicowym, zostaniesz
+poinformowany o offsecie.
+Pojedynczy duży offset
+.I może
+być wskazówką, że fragment zainstalowano w złym
+miejscu. Jeśli do porównania użyto współczynnika `fuzz factor', to też
+będziesz o tym poinformowany, gdyż może to być podejrzane.
+Jeśli użyłeś opcji
+.BR \*=verbose ,
+zostaniesz też powiadomiony o fragmentach dopasowanych dokładnie.
+.PP
+Jeśli w linii komend nie podano żadnego pliku oryginalnego,
+.B patch
+spróbuje go odgadnąć ze śmieci, zawartych w pliku z różnicą, stosując
+poniższe zasady.
+.LP
+Najpierw buduje uporządkowaną listę kandydatur według takich reguł:
+.TP 3
+.B " \(bu"
+Jeśli nagłówek jest nagłówkiem różnicy typu context, nazwa starego i nowego
+pliku odczytywana jest z niego. Nazwa pliku jest ignorowana jeśli ma za mało
+ukośników dla opcji
+.BI \-p num
+lub
+.BI \*=strip= num\fR.
+Nazwa
+.B /dev/null
+jest również ignorowana.
+.TP
+.B " \(bu"
+Jeśli w początkowych śmieciach jest linia
+.B Index:\&
+i albo brakuje obu nazw, starego i nowego pliku, albo 
+.B patch
+działa zgodnie z \s-1POSIX\s0, to pobierana jest nazwa z tej linii.
+.TP
+.B " \(bu"
+W poniższych regułach zakłada się, że rozważane nazwy plików są uporządkowane
+(stary, nowy, indeks), niezależnie od kolejności, w jakiej występują
+w nagłówku.
+.LP
+Następnie
+.B patch
+wybiera nazwę pliki z listy potencjalnych nazw:
+.TP 3
+.B " \(bu"
+Jeśli któryś z wymienionych plików istnieje, to wybierana jest pierwsza
+nazwa zgodna z \s-1POSIX\s0, w przeciwnym razie najlepsza.
+.TP
+.B " \(bu"
+Jeżeli
+.B patch
+nie ignoruje \s-1RCS\s0, ClearCase i \s-1SCCS\s0 (zob. opcję
+.BI "\-g\ " num
+lub
+.BI \*=get= num \fR),
+a tak wskazany plik istnieje, ale znaleziono główną (master) pozycję
+\s-1RCS\s0, ClearCase lub \s-1SCCS\s0, wybrany zostanie pierwszy
+plik wymieniony w tej pozycji.
+.TP
+.B " \(bu"
+Jeśli nie istnieje plik o danej nazwie, nie znaleziono głównej pozycji
+\s-1RCS\s0, ClearCase lub \s-1SCCS\s0, podano jakieś nazwy,
+.B patch
+nie stosuje się do \s-1POSIX\s0, zaś łata wymaga utworzenia pliku, to
+wybierana jest najlepsza nazwa wymagająca stworzenia najmniejszej liczby
+katalogów.
+.TP
+.B " \(bu"
+Jeśli powyższy algorytm heurystyczny nie da żadnej nazwy pliku, to
+zostaniesz o nią zapytany.
+.\" WK: ze starego:
+Poza tym, jeśli w prowadzących śmieciach znajduje linia \*(L"Prereq: \*(R",
+.B patch
+spróbuje pobrać pierwsze słowo z tej linii (zwykle numer wersji) i sprawdzić
+czy istnieje ono w pliku wejściowym.
+Jeśli nie,
+.B patch
+zapyta o potwierdzenie przed kontynuacją.
+.PP
+Efektem tego wszystkiego jest to, że powinieneś być w stanie podać w
+interfejsie newsów następujące:
+.Sp
+	| patch \-d /usr/src/local/blurfl
+.Sp
+i tym samym załatać katalog blurfl bezpośrednio z artykułu, który zawiera
+łatę.
+.PP
+Jeśli plik z łatą składa się z więcej niż jednej łaty, program
+.B patch
+spróbuje zaaplikować je tak, jakby przyszły w osobnych plikach z łatami.
+Znaczy to między innymi tyle, że nazwa łatanego pliku jest określana dla
+każdego listingu różnic z osobna i że śmieci, znajdujące się przed każdym
+z listingów będą analizowane jak opisano wyżej.
+Do kolejnych łat można przekazywać opcje (i inną oryginalną nazwę pliku),
+oddzielając odpowiadające listy argumentów znakiem \*(L'+\*(R'.
+(Lista argumentów kolejnej łaty nie musi jednak podawać
+nowej nazwy pliku z łatą.)
+.SH OPCJE
+.TP 3
+.BR \-b ", " \*=backup
+Tworzy pliki kopii zapasowych.
+To znaczy, przy łataniu pliku, zamiast usuwania oryginału tworzy jego
+kopię lub zmienia nazwę. Jako kopia zapasowa pliku, który nie istniał
+tworzony jest pusty plik, zastępczo reprezentujący nieistniejący oryginał.
+Sposób ustalania nazw plików kopii zapasowych opisano przy opcjach
+.B \-V
+lub
+.BR \*=version\-control .
+.TP
+.B \*=backup\-if\-mismatch
+Tworzy kopię zapasową jeśli łata nie pasuje dokładnie do pliku a nie zażądano
+w inny sposób tworzenia kopii. Jest to zachowanie domyślne, chyba że
+.B patch
+działa zgodnie z \s-1POSIX\s0.
+.TP
+.B \*=no\-backup\-if\-mismatch
+Nie tworzy kopii zapasowej jeśli łata nie pasuje dokładnie do pliku
+i jeśli nie zażądano w inny sposób tworzenia kopii.
+Jest to zachowanie domyślne gdy
+.B patch
+działa zgodnie z \s-1POSIX\s0.
+.TP
+\fB\-B\fP \fIpref\fP, \fB\*=prefix=\fP\fIpref\fP
+Poprzedza przedrostkiem
+.B pref
+nazwę pliku podczas tworzenia nazwy zwykłej kopii.
+Na przykład, przy
+.B "\-B\ /junk/"
+nazwą zwykłej kopii dla
+.B src/patch/util.c
+jest
+.BR /junk/src/patch/util.c .
+.TP
+\fB\*=binary\fP
+Za wyjątkiem standardowego wyjścia i
+.BR /dev/tty ,
+wszystkie pliki czyta i zapisuje w trybie binarnym.
+Opcja ta nie ma żadnych skutków na systemach zgodnych z \s-1POSIX\s0.
+Na systemach podobnych do \s-1DOS\s0, gdzie ma znaczenie, łata powinna być
+tworzona przy użyciu
+.BR "diff\ \-a\ \*=binary" .
+.TP
+\fB\-c\fP,  \fB\*=context\fP
+Wymusza interpretację pliku z łatą jako różnicy typu context.
+.TP
+\fB\-d\fP \fIkat\fP,  \fB\*=directory=\fP\fIkatalog\fP
+Powoduje interpretację
+.B katalogu
+jako katalogu, który ma być bieżącym i przechodzi do niego przed zrobieniem
+czegokolwiek innego.
+.TP
+\fB\-D\fP \fIsymb\fP,  \fB\*=ifdef=\fP\fIsymb\fP
+Powoduje używanie konstrukcji
+"#ifdef...#endif" do oznaczania zmian.
+.I symb
+będzie symbolem różnicującym.
+.TP
+.B "\*=dry\-run"
+Wypisuje wynik łatania bez faktycznego zmieniania plików.
+.TP
+\fB\-e\fP,  \fB\*=ed\fP
+Wymusza interpretację pliku z łatą jako skryptu
+.BR ed .
+.TP
+\fB\-E\fP,  \fB\*=remove\-empty\-files\fP
+Powoduje, że usuwane są pliki wyjściowe, które po zaaplikowaniu łat są puste.
+Zwykle użycie tej opcji nie jest konieczne, gdyż program potrafi zbadać
+znaczniki czasu w nagłówku i stwierdzić, czy po naniesieniu łat plik powinien
+istnieć.
+Jeśli jednak wejście nie jest plikiem różnic kontekstowych lub gdy
+.B patch
+działa zgodnie z \s-1POSIX\s0, puste załatane pliki nie będą usuwane,
+dopóki nie zostanie podana ta opcja.
+Podczas usuwania pliku
+.B patch
+usiłuje usunąć również jego puste katalogi nadrzędne.
+.TP
+\fB\-f\fP,  \fB\*=force\fP
+Wymusza założenie, że użytkownik dokładnie wie co robi i powoduje
+niezadawanie pytań. Pomija łaty, z których nagłówków nie wynika, jaki plik
+powinien być załatany; pliki są łatane nawet jeśli mają złą wersję dla linii
+.BR Prereq:\& ;
+zakłada, że łaty nie są odwrócone, nawet jeśli tak wyglądają.
+Opcja ta nie eliminuje komentarzy; do tego użyj
+.BR \-s .
+.TP
+\fB\-F\fP \fInum\fP,  \fB\*=fuzz=\fP\fInum\fP
+Ustawia współczynnik `maximum fuzz factor'.
+Opcja ta tyczy się tylko różnic typu context i powoduje, że
+.B patch
+ignoruje maksymalnie tyle linii, zaglądając w miejsca, gdzie ma zainstalować
+fragment łaty. Zauważ, że duży współczynnik zwiększa prawdopodobieństwo
+nieprawidłowego naniesienia łaty. Domyślną wartością jest 2 i nie może być
+ustawiona na więcej niż liczba linii kontekstu w różnicy, czyli zwykle 3.
+.TP
+\fB\-g\fP \fInum\fP,  \fB\*=get=\fP\fInum\fP
+Steruje akcjami programu
+.BR patch
+gdy oryginalny plik jest pod kontrolą \s-1RCS\s0 lub \s-1SCCS\s0,
+a nie istnieje lub jest przeznaczony tylko dla odczytu.
+Także wtedy, gdy jest pod kontrolą ClearCase, a nie istnieje.
+Jeżeli
+.I num
+jest dodatnie, to pobiera (get) lub aktualizuje (check out) plik
+z danego systemu kontroli wersji (revision control system).
+Jeśli wynosi zero,
+.B patch
+ignoruje system kontroli wersji i nie pobiera pliku; jeśli
+.I num
+jest ujemne, to pyta użytkownika czy pobrać plik.
+Domyślna wartość tej opcji określana jest wartością zmiennej środowiska
+.B PATCH_GET
+jeśli takowa istnieje; jeśli nie, to wartość domyślna jest zerem, gdy 
+.B patch
+działa zgodnie z \s-1POSIX\s0, w przeciwnym razie jest ujemna.
+.TP
+\fB\-i\fP \fIplikłaty\fP,  \fB\*=input=\fP\fIplikłaty\fP
+Odczytuje łatę z
+.IR plikułaty .
+Jeśli
+.I plikiemłaty
+jest
+.BR \- ,
+to ze standardowego wejścia, domyślnie.
+.TP
+\fB\-l\fP,  \fB\*=ignore\-whitespace\fP
+Wykonuje swobodniejsze porównywanie wzorców, w przypadku, gdy w pliku
+pozamieniano tabulacje i spacje. Dowolna sekwencja białych spacji (znaków
+tabulacji lub spacji) w linii pliku łaty będzie odpowiadać dowolnej sekwencji
+białych spacji oryginalnego pliku.
+Ciągi białych spacji występujące na końcach linii są ignorowane.
+Normalne znaki muszą wciąż dokładnie pasować. Każda linia kontekstu nadal
+musi pasować do linii oryginalnego pliku.
+.TP
+\fB\-n\fP,  \fB\*=normal\fP
+Powoduje, że plik z łatą jest interpretowany jak różnica typu `normal'.
+.TP
+\fB\-N\fP,  \fB\*=forward\fP
+powoduje ignorowanie łat, które wydają się być odwrócone lub już
+zaaplikowane.  Zobacz też
+.BR \-R .
+.TP
+\fB\-o\fP \fIplik-wyj\fP,  \fB\*=output=\fP\fIplik-wyj\fP
+Zamiast łatania bezpośrednio oryginalnych plików, wynik jest kierowany do
+.BR plik-wyj .
+.TP
+\fB\-p\fP\fInum\fP,  \fB\*=strip\fP\fB=\fP\fInum\fP
+Z każdej nazwy pliku znalezionej w pliku łaty ujmuje najmniejszy przedrostek
+zawierający
+.I num
+początkowych ukośników.
+Ciąg kilku sąsiadujących ukośników liczy się za jeden ukośnik.
+Opcję przewidziano na wypadek gdybyś przechowywał pliki w innym katalogu
+niż osoba, która przesłała łatę.
+Na przykład, załóżmy, że nazwa pliku w łacie miała wartość
+.sp
+	/u/howard/src/blurfl/blurfl.c
+.sp
+ustawienie
+.B \-p
+lub
+.B \-p0
+nie zmienia jej,
+.B \-p1
+daje
+.sp
+	u/howard/src/blurfl/blurfl.c
+.sp
+bez początkowego ukośnika, a
+.B \-p4
+daje
+.sp
+	blurfl/blurfl.c
+.sp
+natomiast niepodanie 
+.B \-p
+w ogóle, daje po prostu \fBblurfl.c\fP.
+Wynik tej operacji jest poszukiwany albo w katalogu bieżącym, albo w katalogu
+podanym przez opcję
+.BR \-d .
+.TP
+.B \*=posix
+Postępuje bardziej zgodnie ze standardem \s-1POSIX\s0:
+.RS
+.TP 3
+.B " \(bu"
+Dociekając nazw plików z nagłówków różnic
+z listy (stary, nowy, indeks) bierze pierwszy istniejący plik.
+.TP
+.B " \(bu"
+Nie usuwa plików, które po załataniu stają się puste.
+.TP
+.B " \(bu"
+Nie pyta o pobieranie plików z \s-1RCS\s0, ClearCase czy \s-1SCCS\s0.
+.TP
+.B " \(bu"
+Wymaga, by w wierszu poleceń wszystkie opcje występowały przed nazwami plików.
+.TP
+.B " \(bu"
+Nie tworzy kopii zapasowych przy wystąpieniu niezgodności.
+.RE
+.TP
+.BI \*=quoting\-style= wyraz
+Używa stylu
+.I wyraz
+do cytowania nazw wyjściowych.
+.I Wyraz
+powinien być jednym z poniższych:
+.RS
+.TP
+.B literal
+Wypisuje nazwy bez zmian.
+.TP
+.B shell
+Cytuje nazwy dla powłoki jeśli zawierają metaznaki powłoki lub spowodowałyby
+dwuznaczność wyniku.
+.TP
+.B shell-always
+Cytuje nazwy dla powłoki, nawet wtedy, gdy normalnie nie wymagałyby cytowania.
+.TP
+.B c
+Cytuje nazwy jak dla łańcuchów w języku C.
+.TP
+.B escape
+Cytuje jak z
+.BR c ,
+z wyjątkiem tego, iż pomija otaczające znaki cudzysłowu.
+.LP
+Wartość domyślną opcji
+.B \*=quoting\-style
+można określić za pomocą zmiennej środowiska
+.BR QUOTING_STYLE .
+Jeśli nie jest ona ustawiona, to wartością domyślną jest
+.BR shell .
+.RE
+.TP
+\fB\-r\fP \fIplik-odrz\fP,  \fB\*=reject\-file=\fP\fIplik-odrz\fP
+Odrzucone poprawki są umieszczane w zadanym
+.BR pliku-odrz ,
+a nie w domyślnym pliku odrzuceń
+.BR \&.rej .
+.TP
+\fB\-R\fP,  \fB\*=reverse\fP
+Mówi, że łata ta została utworzona przy zamienionych miejscami starych
+i nowych plikach [tłum. zamiast `\fBdiff \-c stary nowy\fP' użyto pomyłkowo
+`\fBdiff \-c nowy stary\fP'].
+(Tak, obawiam się że czasem się to zdarza, natura ludzka jest jaka jest.)
+.B Patch
+Spróbuje zamienić każdy fragment przed jego zaaplikowaniem. Odrzucenia wyjdą
+w formacie zamienionym (swapped).
+Opcja
+.B \-R
+nie działa ze skryptami różnicowymi 
+.BR ed a
+gdyż jest tam zbyt mało danych do zrekonstruowania operacji odwrotnej.
+.Sp
+Jeśli pierwszy fragment łaty zawiedzie,
+.B patch
+odwraca ten fragment, sprawdzając czy nie może być tak zaaplikowany.
+Jeśli może, zostaniesz zapytany czy chcesz ustawić opcję
+.BR \-R .
+Jeśli nie, łata będzie aplikowana dalej w sposób tradycyjny.
+(Uwaga: metoda ta nie może wykryć łaty odwróconej jeśli jest to różnica typu
+normal i jeśli pierwszą komendą jest doklejanie (append) (tj. powinno to
+być kasowanie \-\- delete). Jest tak dlatego, że doklejanie zawsze działa, gdyż
+pusty kontekst pasuje wszędzie.
+Szczęśliwym trafem, wiele łat raczej dodaje lub zmienia linie niż je
+kasuje, więc większość odwróconych różnic typu normal zaczyna się od
+kasowania, co zawiedzie i wywoła heurystykę.)
+.ig
+[A po ludzku: opcja \-R umożliwia anulowanie zaaplikowanej łaty \-\- przyp.
+tłum.]
+[Przemku: daje możność naniesienia *poprawnej* łaty, gdy przy jej tworzeniu
+przez pomyłkę podano odwrotnie parametry stary/nowy]
+..
+.TP
+\fB\-s\fP,  \fB\*=silent\fP,  \fB\*=quiet\fP
+Powoduje, że
+.B patch
+działa cicho, chyba że pojawi się błąd.
+.TP
+\fB\-t\fP,  \fB\*=batch\fP
+Podobne do
+.BR \-f ,
+gdyż eliminuje pytania, lecz działa według innych założeń:
+pomija łaty, których nagłówki nie zawierają nazw plików (tak samo jak
+\fB\-f\fP), pomija łaty dla plików ze złymi wersjami
+.B Prereq:\&
+i przyjmuje, że łaty są odwrócone, jeśli na takie wyglądają.
+.TP
+\fB\-T\fP,  \fB\*=set\-time\fP
+Ustawia czasy modyfikacji i ostatniego dostępu załatanych plików według
+znaczników czasu podanych w nagłówkach różnic typu context, zakładając, że
+nagłówki te stosują czas lokalny.  Opcja ta jest niezalecana, gdyż użycie
+łat korzystających z czasu lokalnego przez osoby z innych stref czasowych
+nie jest łatwe.
+Ponadto znaczniki czasu lokalnego nie są jednoznaczne w przypadku, gdy zegar
+lokalny jest cofany w związku z dostosowywaniem do czasu letniego.
+Zamiast tej opcji, powinno się tworzyć łaty z czasem uniwersalnym
+(\s-1UTC\s0) i stosować opcję
+.B \-Z
+lub
+.BR \*=set\-utc .
+.TP
+\fB\-u\fP,  \fB\*=unified\fP
+Wymusza interpretację łaty jako różnicy typu unified context (zunifikowana
+różnica kontekstowa).
+.TP
+\fB\-V\fP \fImetoda\fP,  \fB\*=version\-control=\fP\fImetoda\fP
+.B "\-V metoda, \-\-version\-\-control=metoda"
+Powoduje, że
+.B metoda
+staje się metodą tworzenia nazw plików zapasowych. Rodzaje robionych kopii
+zapasowych można również podać w zmiennej środowiskowej
+.B PATCH_VERSION_CONTROL
+(lub, jeśli nie jest ustawiona, zmienną
+.BR VERSION_CONTROL ),
+która jest przesłaniana przez tę opcję.
+Wybrana metoda nie ma wpływu na to, czy kopie zapasowe będą wykonywane,
+i w jakich przypadkach.  Określa tylko sposób tworzenia nazw plików
+zapasowych.
+Wartość
+.I metody
+jest podobna jak zmiennej `version-control' \s-1GNU\s0 Emacsa.
+.B Patch
+rozpoznaje też ich bardziej opisowe synonimy.
+Poprawne wartości to
+(przyjmowane są rozróżnialne skróty):
+.RS
+.TP 3
+\fBnumbered\fP  lub  \fBt\fP
+Tworzy zawsze numerowane kopie zapasowe.  Nazwą numerowanej kopii zapasowej
+pliku
+.I F
+jest
+.IB F .~ N ~
+gdzie
+.I N
+to numer wersji.
+.TP
+\fBexisting\fP  lub  \fBnil\fP
+Tworzy numerowane kopie zapasowe plików, które już je mają, a zwykłe kopie
+dla pozostałych. Tak jest domyślnie.
+.TP
+`never' lub `simple'
+Zawsze robi zwykłe kopie zapasowe.
+Opcje
+.B \-B
+lub
+.BR \*=prefix ,
+.B \-Y
+lub
+.BR \*=basename\-prefix
+i
+.B \-z
+lub
+.BR \*=suffix
+określają nazwę pliku zwykłej kopii zapasowej.
+Jeżeli nie podano żadnej z nich, to stosowany jest przyrostek zwykłej
+kopii zapasowej.  Jest to wartość zmiennej środowiska
+.BR SIMPLE_BACKUP_SUFFIX ,
+jeśli jest ona ustawiona, lub
+.B \&.orig
+w przeciwnym razie.
+.PP
+Przy kopiach numerowanych lub zwykłych, jeśli nazwa pliku kopii zapasowej
+jest zbyt długa, to zamiast niej używa się przyrostka kopii
+.BR ~ .
+Jeżeli nawet dodanie
+.B ~
+spowodowałoby, że nazwa będzie za długa, to
+.B ~
+zastępuje ostatni znak nazwy pliku.
+.RE
+.TP
+\fB\*=verbose\fP
+Wypisuje dodatkowe informacje o wykonywanej pracy.
+.TP
+\fB\-x\fP \fInum\fP,  \fB\*=debug=\fP\fInum\fP
+ustawia wewnętrzne flagi debuggowe. Ma to znaczenie tylko dla łataczy
+programu
+.BR patch .
+.TP
+\fB\-Y\fP \fIpref\fP,  \fB\*=basename\-prefix=\fP\fIpref\fP
+Przy tworzeniu nazwy zwykłej kopii poprzedza przedrostkiem
+.I pref
+podstawową część nazwy pliku.
+Na przykład, przy
+.B "\-Y\ .del/"
+nazwą pliku zwykłej kopii zapasowej dla
+.B src/patch/util.c
+jest
+.BR src/patch/.del/util.c .
+.TP
+\fB\-z\fP \fIsuffix\fP,  \fB\*=suffix=\fP\fIsuffix\fP
+Powoduje, że
+.B suff
+jest interpretowane jako przyrostek nazw zwykłych kopii zapasowych.
+Na przykład, przy
+.B "\-z\ -"
+nazwą pliku zwykłej kopii kopii dla
+.B src/patch/util.c
+jest
+.BR src/patch/util.c- .
+Przyrostek kopii można też określić za pomocą zmiennej środowiska
+.BR SIMPLE_BACKUP_SUFFIX ,
+która jest przesłaniana przez tę opcję.
+.TP
+\fB\-Z\fP,  \fB\*=set\-utc\fP
+Ustawia czasy modyfikacji i ostatniego dostępu załatanych plików według
+znaczników czasu podanych w nagłówkach różnic typu context, zakładając, że
+nagłówki te stosują czas uniwersalny - Coordinated Universal Time
+(\s-1UTC\s0, znany też jako czas średni Greenwich \s-1GMT\s0).
+Zobacz też opcja
+.B \-T
+lub
+.BR \*=set\-time .
+.Sp
+Opcje
+.B \-Z
+lub
+.B \*=set\-utc
+i
+.B \-T
+lub
+.B \*=set\-time
+normalnie powstrzymują się od ustawiania czasu pliku jeśli jego
+oryginalny czas nie pasuje do czasu podanego w nagłówku łaty lub jej
+zawartość nie pasuje dokładnie do łaty.  Jednak, jeśli podano opcję
+.B \-f
+lub
+.BR \*=force,
+to czas pliku jest ustawiany bez względu na niezgodności.
+.Sp
+Z powodu ograniczeń formatu wyjściowego stosowanego przez
+.BR diff ,
+opcje te nie potrafią aktualizować czasów plików, których zawartość się nie
+zmieniła.  Wykorzystując te opcje powinno się pamiętać o usunięciu
+(np. za pomocą
+.BR "make\ clean" )
+wszystkich plików, które zależą od załatanych, by późniejsze wywołania
+.B make
+nie zostały zmylone czasem załatanych plików.
+.TP
+.B "\*=help"
+Wypisuje listę opcji i kończy działanie.
+.TP
+\fB\-v\fP,  \fB\*=version\fP
+Wypisuje wersję programu i kończy działanie.
+.SH ŚRODOWISKO
+.TP 3
+.B PATCH_GET
+Określa, czy
+.B patch
+powinien domyślnie pobierać brakujące lub przeznaczone tylko do odczytu
+pliki z \s-1RCS\s0, ClearCase lub \s-1SCCS\s0. Zobacz opis opcji
+.B \-g
+lub
+.BR \*=get .
+.TP
+.B POSIXLY_CORRECT
+Jeśli jest ustawiona,
+.B patch
+ściślej stosuje się do standardu \s-1POSIX\s0 w zachowaniu domyślnym.
+Zobacz opis opcji
+.BR \*=posix .
+.TP
+.B QUOTING_STYLE
+Domyślna wartość opcji
+.BR \*=quoting\-style .
+.TP
+.B SIMPLE_BACKUP_SUFFIX
+Przyrostek stosowany do tworzenia nazw plików zwykłych kopii zapasowych
+.BR \&.orig .
+.TP
+\fBTMPDIR\fP, \fBTMP\fP, \fBTEMP\fP
+Katalog do przechowywania plików tymczasowych.
+.B patch
+wykorzystuje pierwszą zmienną środowiska z tej listy, jaka jest ustawiona.
+Jeśli żadna nie jest, wartość domyślna zależy od systemu: normalnie
+na maszynach uniksowych jest to
+.BR /tmp .
+.TP
+\fBVERSION_CONTROL\fP lub \fBPATCH_VERSION_CONTROL\fP
+Wybiera metodę kontroli wersji kopii pliku; zobacz opcja
+.B \-v
+lub
+.BR \*=version\-control .
+.SH PLIKI
+.TP 3
+.IB $TMPDIR "/p\(**"
+pliki tymczasowe
+.TP
+.B /dev/tty
+terminal sterujący; używany do uzyskania odpowiedzi na pytania
+zadawane użytkownikowi.
+.SH ZOBACZ TAKŻE
+.BR diff (1)
+.BR ed (1).
+.Sp
+Marshall T. Rose and Einar A. Stefferud,
+Proposed Standard for Message Encapsulation,
+Internet RFC 934 <URL:ftp://ftp.isi.edu/in-notes/rfc934.txt> (1985-01).
+.SH UWAGI DLA WYSYŁAJĄCYCH ŁATY
+Istnieje kilka rzeczy, o których należy pamiętać przy wysyłaniu łat.
+.PP
+Twórz łatę według sprawdzonego schematu.
+Dobrą metodą jest polecenie
+.BI "diff\ \-Naur\ " "stary\ nowy"
+gdzie
+.I stary
+i
+.I nowy
+identyfikują stary i nowy katalog.
+Nazwy
+.I stary
+i
+.I nowy
+nie powinny zawierać żadnych ukośników.
+Nagłówki z poleceń
+.B diff
+powinny zawierać daty i czasy czasu uniwersalnego (UTC) z zastosowaniem
+tradycyjnego formatu uniksowego, by odbiorcy łaty mogli skorzystać z opcji
+.B \-Z
+lub
+.BR \*=set\-utc .
+Oto przykładowe polecenie, z użyciem składni powłoki Bourne'a:
+.Sp
+	\fBLC_ALL=C TZ=UTC0 diff \-Naur gcc\-2.7 gcc\-2.8\fP
+.PP
+Powiadom odbiorców, jak zaaplikować łatę, wskazując, do którego katalogu
+przejść
+.BR cd
+i jakich opcji 
+.B patch
+użyć.  Zalecany jest łańcuch opcji
+.BR "\-Np1" .
+Wypróbuj procedurę stawiając się na miejscu odbiorcy i stosując łatę
+na kopię oryginalnych plików.
+.PP
+Możesz oszczędzić ludziom wielu problemów, zachowując plik
+.B patchlevel.h
+Jest on łatany aby zwiększyć poziom łaty (patch
+level).
+Umieść go jako pierwszą różnicę w pliku z łatą, który wysyłasz.
+Jeśli do łaty wstawisz linię
+.BR Prereq:\& ,
+to nie pozwoli ona na stosowanie łat poza kolejnością bez ostrzeżenia.
+.PP
+Możesz utworzyć plik u odbiorcy wysyłając mu różnicę z porównania
+.B /dev/null
+lub pusty plik o dacie równej Epoce (1970-01-01 00:00:00 \s-1UTC\s0)
+z plikiem, który chcesz stworzyć.
+Zadziała to tylko jeśli plik taki jeszcze nie istnieje w katalogu docelowym.
+I odwrotnie, możesz usunąć plik wysyłając różnicę kontekstową porównującą
+plik do usunięcia z pustym plikiem datowanym na Epokę.
+Plik nie zostanie usunięty jeśli
+.B patch
+działa zgodnie z \s-1POSIX\s0 a nie podano opcji
+.B \-E
+lub
+.BR \*=remove\-empty\-files .
+Prostą metodą generowania łat, które tworzą i usuwają pliki jest użycie
+opcji
+.B \-N
+lub
+.B \*=new\-file
+programu
+\s-1GNU\s0
+.BR diff .
+Jeśli spodziewasz się, że odbiorca użyje opcji
+.BI \-p N \fR,
+nie wysyłaj wyjścia wyglądającego tak:
+.Sp
+.ft B
+.ne 3
+	diff \-Naur v2.0.29/prog/README prog/README
+.br
+	\-\^\-\^\- v2.0.29/prog/README   Mon Mar 10 15:13:12 1997
+.br
+	+\^+\^+ prog/README   Mon Mar 17 14:58:22 1997
+.ft
+.Sp
+bo obie nazwy plików mają różną liczbę ukośników, a rozmaite wersje
+.B patch
+różnie interpretują nazwy plików.
+Unikniesz mylnej interpretacji, wysyłając zamiast tego takie wyjście:
+.Sp
+.ft B
+.ne 3
+	diff \-Naur v2.0.29/prog/README v2.0.30/prog/README
+.br
+	\-\^\-\^\- v2.0.29/prog/README   Mon Mar 10 15:13:12 1997
+.br
+	+\^+\^+ v2.0.30/prog/README   Mon Mar 17 14:58:22 1997
+.ft
+.Sp
+.PP
+Unikaj wysyłania łat porównujących pliki o takich nazwach, jakie mają kopie
+zapasowe, jak np.
+.BR README.orig ,
+gdyż może to zmylić
+.BR patch ,
+tak że będzie nakładał łatę na plik kopii zamiast na rzeczywisty plik.
+Zamiast tego powinieneś wysyłać łaty porównujące pliki o takich samych
+nazwach podstawowych, położone w różnych katalogach, np.\&
+.B old/README
+i
+.BR new/README .
+.PP
+Uważaj by nie wysyłać łat odwrotnych, gdyż powoduje to, że ludzie
+zastanawiają się czy już załączyli łatę.
+.PP
+Nie próbuj budować łat, które zmieniały by pliki pochodne (np. plik
+.BR configure ,
+w którym jest linia
+.B "configure: configure.in"
+w swoim makefile), ponieważ odbiorca i tak powinien być w stanie
+je odtworzyć.  Jeśli musisz wysłać różnice plików pochodnych, utwórz je
+używając czasu uniwersalnego \s-1UTC\s0;  odbiorcy powinni zaaplikować łątę
+stosując opcję
+.B \-Z
+lub
+.BR \*=set\-utc ,
+a następnie usunąć wszystkie niełatane pliki, które zależą od właśnie
+załatanych (np. za pomocą
+.BR "make\ clean" ).
+.PP
+Mimo iż można umieścić 582 listingów różnic w jednym pliku, to
+lepiej wstawić grupy powiązanych łat do osobnych plików.
+.PP
+Poza tym, upewnij się, że podałeś poprawnie nazwy plików, zarówno w nagłówku
+różnicy kontekstowej, jak i w linii
+.BR Index:\& .
+Jeśli łatasz coś w podkatalogu,
+upewnij się, że powiadomiłeś użytkownika, by podał opcję
+.BR \-p .
+.SH DIAGNOSTYKA
+Zbyt wiele by tu wymieniać, lecz ogólnie wskazują, że
+.B patch
+nie mógł przetworzyć pliku z łatą.
+.PP
+Jeśli podano opcję
+.BR \*=verbose ,
+komunikat
+.B Hmm.\|.\|.\&
+wskazuje, że w pliku z łatą jest nieprzetworzony tekst i że
+.B patch
+próbuje domyślić się, czy znajduje się w nim łata, a jeśli tak, to jakiego
+jest rodzaju.
+.PP
+.B Patch
+kończy pracę z kodem
+0 jeśli wszystkie kawałki zaaplikowano poprawnie,
+1 jeśli jakieś nie mogły być zaaplikowane,
+a 2 w przypadku poważniejszych kłopotów.
+Podczas aplikowania zbioru łat w pętli, umożliwia ci sprawdzenie tego kodu,
+tak by nie dołączać już reszty łat do częściowo połatanego pliku.
+.SH ZASTRZEŻENIA
+Różnice kontekstowe nie mogą wiarygodnie odwzorowywać tworzenia lub usuwania
+pustych plików, pustych katalogów czy plików specjalnych, jak dowiązania
+symboliczne.  Nie potrafią też reprezentować zmian w metadanych pliku, takich
+jak właściciel, grupa, prawa czy to, że jeden plik jest twardym dowiązaniem
+do drugiego.
+Jeśli takie zmiany są również wymagane, łacie powinny towarzyszyć osobne
+instrukcje (np. w postaci skryptu powłoki).
+.PP
+.B Patch
+nie potrafi stwierdzić, czy w skrypcie
+.B ed
+nie istnieją numery linii,
+a w normalnych różnicach może wykryć niewłaściwe numery tylko gdy odnajdzie
+zmianę lub usunięcie.
+Różnica kontekstowa, używająca współczynnika `fuzz factor' 3 może mieć
+podobne problemy. Dopóki nie zostanie dodany właściwy interaktywny interfejs
+użytkownika, powinieneś raczej w tych wypadkach robić różnice typu context.
+Zobaczysz czy zmiany mają sens. Oczywiście kompilowanie bez błędów jest
+całkiem dobrym wskazaniem, że łata zadziałała, lecz nie jest to zawsze
+prawda.
+.PP
+.B Patch
+zwykle daje prawidłowe wyniki, nawet gdy musi dużo zgadywać. Jednak
+rezultaty mają gwarancję prawidłowości tylko wtedy, gdy łaty aplikowane są do
+dokładnie tej samej wersji pliku, z której zostały wygenerowane.
+.SH "KWESTIE ZGODNOŚCI"
+Standard \s-1POSIX\s0 podaje zachowanie, które różni się od tradycyjnego
+zachowania się
+.BR patch a.
+Powinieneś pamiętać o tych różnicach jeśli musisz współpracować z
+.B patch
+w wersji 2.1 lub wcześniejszymi, które nie są zgodne z \s-1POSIX\s0.
+.TP 3
+.B " \(bu"
+W tradycyjnym
+.BR patch u
+argument opcji
+.B \-p
+był opcjonalny, a gołe
+.B \-p
+było równoważne
+.BR \-p0 .
+Obecnie opcja
+.B \-p
+wymaga argumentu, a
+.B "\-p\ 0"
+jest teraz równoważnikiem
+.BR \-p0 .
+Dla zachowania maksymalnej zgodności, stosuj opcje typu
+.B \-p0
+i
+.BR \-p1 .
+.Sp
+Ponadto, tradycyjny
+.B patch
+po prostu zlicza ukośniki przy obcinaniu przedrostków ścieżkowych;
+.B patch
+liczy obecnie składowe nazwy pliku.
+To znaczy, ciąg sąsiadujących ukośników liczy się obecnie za jeden ukośnik.
+Dla zachowania maksymalnej zgodności, unikaj wysyłania łat zawierających
+.B //
+w nazwach plików.
+.TP
+.B " \(bu"
+W tradycyjnym
+.BR patch u,
+tworzenie kopii zapasowych było włączone domyślnie.
+Zachowanie to jest teraz włączane opcją
+.B \-b
+lub
+.BR \*=backup .
+.Sp
+I odwrotnie, w \s-1POSIX\s0-owym
+.BR patch ,
+kopie nigdy nie są tworzone, nawet jeśli wystąpi niedopasowanie łaty.
+W \s-1GNU\s0
+.BR patch ,
+zachowanie to jest włączane opcją
+.B \*=no\-backup\-if\-mismatch
+lub przez włączenie zgodności z \s-1POSIX\s0 opcją
+.B \*=posix
+albo ustawieniem zmiennej środowiska
+.BR POSIXLY_CORRECT .
+.Sp
+Opcja
+.BI \-b "\ suffix"
+tradycyjnego
+.BR patch
+jest równoważna opcjom
+.BI "\-b\ \-z" "\ suffix"
+dla \s-1GNU\s0
+.BR patch .
+.TP
+.B " \(bu"
+Tradycyjny
+.B patch
+stosuje skomplikowaną (i nie w pełni udokumentowaną) metodę domyślania się
+z nagłówka łaty nazwy pliku do załatania.
+Metoda ta nie jest zgodna z \s-1POSIX\s0 i ma kilka niepoprawnie zakodowanych
+fragmentów [gotchas].
+Obecny
+.B patch
+korzysta z innej, równie skomplikowanej (ale lepiej udokumentowanej) metody,
+która jest opcjonalnie zgodna z \s-1POSIX\s0; mamy nadzieję, że ma mniej
+błędów. Obie te metody są ze sobą zgodne jeśli nazwy plików w nagłówku
+różnicy kontekstowej i w linii
+.B Index:\&
+po obcięciu przedrostka są identyczne.
+Normalnie łata jest zgodna jeśli wszystkie nazwy plików w nagłówku zawierają
+tę samę liczbę ukośników.
+.TP
+.B " \(bu"
+Gdy tradycyjny
+.B patch
+zadawał użytkownikowi pytanie, kierował je na standardowe wyjście błędów
+i oczekiwał odpowiedzi z pierwszego pliku poniższej listy będącego
+terminalem:
+standardowe wyjście błędów, standardowe wyjście,
+.BR /dev/tty ,
+i standardowe wejście.
+Teraz
+.B patch
+wysyła pytania na standardowe wyjście i pobiera odpowiedzi z
+.BR /dev/tty .
+Zmieniono domyślne odpowiedzi na niektóre z pytań.  Dzięki temu
+.B patch
+nigdy nie wchodzi w nieskończoną pętlę przy stosowaniu domyślnych
+odpowiedzi.
+.TP
+.B " \(bu"
+Tradycyjny
+.B patch
+kończył działanie z kodem równym liczbie błędnych fragmentów, albo z kodem 1
+jeśli napotkano poważny problem.
+Obecnie
+.B patch
+kończy działanie z kodem 1 jeśli nie udało się zaaplikować jakichś
+fragmentów, albo 2 jeśli napotkano poważny problem.
+.TP
+.B " \(bu"
+Wysyłając instrukcje określające sposób skorzystania z łaty
+przez kogoś pracującego z
+\s-1GNU\s0
+.BR patch ,
+tradycyjnym
+.BR patch em,
+lub
+.B patch em
+zgodnym z \s-1POSIX\s0 ogranicz się do podanych niżej opcji.
+W tym zestawieniu spacje są znaczące, a argumenty wymagane.
+.Sp
+.nf
+.in +3
+.ne 11
+.B \-c
+.BI \-d " kat"
+.BI \-D " symb"
+.B \-e
+.B \-l
+.B \-n
+.B \-N
+.BI \-o " plik-wyj"
+.BI \-p num
+.B \-R
+.BI \-r " plik-odrz"
+.in
+.fi
+.SH BŁĘDY
+Zgłoszenia błędów proszę wysyłać do
+.BR <bug-gnu-utils@gnu.org> .
+.PP
+Mógłby być sprytniejszy co do częściowych trafień, nadmiernie odbiegających
+od normy offsetów i zamienionego kodu, lecz wymagałoby to dodatkowego
+przebiegu.
+.PP
+Jeśli kod został powielony (np. #ifdef STARYKOD ... #else ... #endif),
+.I patch
+nie może załatać obu wersji, i jeśli w ogóle zadziała, prawdopodobnie załata
+niewłaściwą i powie, że udało mu się z obydwiema.
+.PP
+Jeśli aplikujesz łatę, którą już zaaplikowałeś,
+.I patch
+pomyśli że jest to odwrotna łata i zaoferuje zdjęcie łaty.
+Można to uważać za zaprojektowaną funkcję programu.
+.rn }` ''
+.SH KOPIOWANIE
+Copyright
+.if t \(co
+1984, 1985, 1986, 1988 Larry Wall.
+.br
+Copyright
+.if t \(co
+1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998
+Free Software Foundation, Inc.
+.PP
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+.PP
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+.PP
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be included in
+translations approved by the copyright holders instead of in
+the original English.
+.SH AUTORZY
+Larry Wall napisał pierwotną wersję
+.BR patch a.
+Paul Eggert usunął istniejące w programie arbitralne ograniczenia.
+Dodał obsługę plików binarnych, ustawianie czasów pliku i usuwanie plików,
+i uczynił go bardziej zgodnym z \s-1POSIX\s0-em.
+Swój wkład wnieśli też Wayne Davison, który dodał obsługę formatu unidiff,
+i David MacKenzie, który dołożył obsługę ustawień i kopii zapasowych.

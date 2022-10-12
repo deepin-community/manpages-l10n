@@ -1,0 +1,1026 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-09-10 15:19+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "MEMBARRIER"
+msgstr ""
+
+#. type: TH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "2021-08-27"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "membarrier - issue memory barriers on a set of threads"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<#include E<lt>linux/membarrier.hE<gt>> /* Definition of B<MEMBARRIER_*> constants */\n"
+"B<#include E<lt>sys/syscall.hE<gt>>      /* Definition of B<SYS_*> constants */\n"
+"B<#include E<lt>unistd.hE<gt>>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<int syscall(SYS_membarrier, int >I<cmd>B<, unsigned int >I<flags>B<, int >I<cpu_id>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"I<Note>: glibc provides no wrapper for B<membarrier>(), necessitating the "
+"use of B<syscall>(2)."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The B<membarrier>()  system call helps reducing the overhead of the memory "
+"barrier instructions required to order memory accesses on multi-core "
+"systems.  However, this system call is heavier than a memory barrier, so "
+"using it effectively is I<not> as simple as replacing memory barriers with "
+"this system call, but requires understanding of the details below."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Use of memory barriers needs to be done taking into account that a memory "
+"barrier always needs to be either matched with its memory barrier "
+"counterparts, or that the architecture's memory model doesn't require the "
+"matching barriers."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"There are cases where one side of the matching barriers (which we will refer "
+"to as \"fast side\") is executed much more often than the other (which we "
+"will refer to as \"slow side\").  This is a prime target for the use of "
+"B<membarrier>().  The key idea is to replace, for these matching barriers, "
+"the fast-side memory barriers by simple compiler barriers, for example:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "asm volatile (\"\" : : : \"memory\")\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "and replace the slow-side memory barriers by calls to B<membarrier>()."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This will add overhead to the slow side, and remove overhead from the fast "
+"side, thus resulting in an overall performance increase as long as the slow "
+"side is infrequent enough that the overhead of the B<membarrier>()  calls "
+"does not outweigh the performance gain on the fast side."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The I<cmd> argument is one of the following:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<MEMBARRIER_CMD_QUERY> (since Linux 4.3)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Query the set of supported commands.  The return value of the call is a bit "
+"mask of supported commands.  B<MEMBARRIER_CMD_QUERY>, which has the value 0, "
+"is not itself included in this bit mask.  This command is always supported "
+"(on kernels where B<membarrier>()  is provided)."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<MEMBARRIER_CMD_GLOBAL> (since Linux 4.16)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Ensure that all threads from all processes on the system pass through a "
+"state where all memory accesses to user-space addresses match program order "
+"between entry to and return from the B<membarrier>()  system call.  All "
+"threads on the system are targeted by this command."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<MEMBARRIER_CMD_GLOBAL_EXPEDITED> (since Linux 4.16)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Execute a memory barrier on all running threads of all processes that "
+"previously registered with B<MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Upon return from the system call, the calling thread has a guarantee that "
+"all running threads have passed through a state where all memory accesses to "
+"user-space addresses match program order between entry to and return from "
+"the system call (non-running threads are de facto in such a state).  This "
+"guarantee is provided only for the threads of processes that previously "
+"registered with B<MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Given that registration is about the intent to receive the barriers, it is "
+"valid to invoke B<MEMBARRIER_CMD_GLOBAL_EXPEDITED> from a process that has "
+"not employed B<MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The \"expedited\" commands complete faster than the non-expedited ones; they "
+"never block, but have the downside of causing extra overhead."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED> (since Linux 4.16)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Register the process's intent to receive B<MEMBARRIER_CMD_GLOBAL_EXPEDITED> "
+"memory barriers."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<MEMBARRIER_CMD_PRIVATE_EXPEDITED> (since Linux 4.14)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Execute a memory barrier on each running thread belonging to the same "
+"process as the calling thread."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Upon return from the system call, the calling thread has a guarantee that "
+"all its running thread siblings have passed through a state where all memory "
+"accesses to user-space addresses match program order between entry to and "
+"return from the system call (non-running threads are de facto in such a "
+"state).  This guarantee is provided only for threads in the same process as "
+"the calling thread."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"A process must register its intent to use the private expedited command "
+"prior to using it."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED> (since Linux 4.14)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Register the process's intent to use B<MEMBARRIER_CMD_PRIVATE_EXPEDITED>."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE> (since Linux 4.16)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"In addition to providing the memory ordering guarantees described in "
+"B<MEMBARRIER_CMD_PRIVATE_EXPEDITED>, upon return from system call the "
+"calling thread has a guarantee that all its running thread siblings have "
+"executed a core serializing instruction.  This guarantee is provided only "
+"for threads in the same process as the calling thread."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The \"expedited\" commands complete faster than the non-expedited ones, they "
+"never block, but have the downside of causing extra overhead."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"A process must register its intent to use the private expedited sync core "
+"command prior to using it."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE> (since Linux 4.16)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Register the process's intent to use "
+"B<MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE>."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ> (since Linux 5.10)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Ensure the caller thread, upon return from system call, that all its running "
+"thread siblings have any currently running rseq critical sections restarted "
+"if I<flags> parameter is 0; if I<flags> parameter is "
+"B<MEMBARRIER_CMD_FLAG_CPU>, then this operation is performed only on CPU "
+"indicated by I<cpu_id>.  This guarantee is provided only for threads in the "
+"same process as the calling thread."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "RSEQ membarrier is only available in the \"private expedited\" form."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"A process must register its intent to use the private expedited rseq command "
+"prior to using it."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ> (since Linux 5.10)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Register the process's intent to use "
+"B<MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ>."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<MEMBARRIER_CMD_SHARED> (since Linux 4.3)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This is an alias for B<MEMBARRIER_CMD_GLOBAL> that exists for header "
+"backward compatibility."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The I<flags> argument must be specified as 0 unless the command is "
+"B<MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ>, in which case I<flags> can be "
+"either 0 or B<MEMBARRIER_CMD_FLAG_CPU>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The I<cpu_id> argument is ignored unless I<flags> is "
+"B<MEMBARRIER_CMD_FLAG_CPU>, in which case it must specify the CPU targeted "
+"by this membarrier command."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"All memory accesses performed in program order from each targeted thread are "
+"guaranteed to be ordered with respect to B<membarrier>()."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"If we use the semantic I<barrier()> to represent a compiler barrier forcing "
+"memory accesses to be performed in program order across the barrier, and "
+"I<smp_mb()> to represent explicit memory barriers forcing full memory "
+"ordering across the barrier, we have the following ordering table for each "
+"pairing of I<barrier()>, B<membarrier>(), and I<smp_mb()>.  The pair "
+"ordering is detailed as (O: ordered, X: not ordered):"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"                       barrier()  smp_mb()  membarrier()\n"
+"       barrier()          X          X          O\n"
+"       smp_mb()           X          O          O\n"
+"       membarrier()       O          O          O\n"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "RETURN VALUE"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"On success, the B<MEMBARRIER_CMD_QUERY> operation returns a bit mask of "
+"supported commands, and the B<MEMBARRIER_CMD_GLOBAL>, "
+"B<MEMBARRIER_CMD_GLOBAL_EXPEDITED>, "
+"B<MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED>, "
+"B<MEMBARRIER_CMD_PRIVATE_EXPEDITED>, "
+"B<MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED>, "
+"B<MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE>, and "
+"B<MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE> operations return "
+"zero.  On error, -1 is returned, and I<errno> is set to indicate the error."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"For a given command, with I<flags> set to 0, this system call is guaranteed "
+"to always return the same value until reboot.  Further calls with the same "
+"arguments will lead to the same result.  Therefore, with I<flags> set to 0, "
+"error handling is required only for the first call to B<membarrier>()."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ERRORS"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EINVAL>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"I<cmd> is invalid, or I<flags> is nonzero, or the B<MEMBARRIER_CMD_GLOBAL> "
+"command is disabled because the I<nohz_full> CPU parameter has been set, or "
+"the B<MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE> and "
+"B<MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE> commands are not "
+"implemented by the architecture."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ENOSYS>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The B<membarrier>()  system call is not implemented by this kernel."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EPERM>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The current process was not registered prior to using private expedited "
+"commands."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "VERSIONS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The B<membarrier>()  system call was added in Linux 4.3."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Before Linux 5.10, the prototype for B<membarrier>()  was:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<int membarrier(int >I<cmd>B<, int >I<flags>B<);>\n"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CONFORMING TO"
+msgstr ""
+
+#.  .SH SEE ALSO
+#.  FIXME See if the following syscalls make it into Linux 4.15 or later
+#.  .BR cpu_opv (2),
+#.  .BR rseq (2)
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<membarrier>()  is Linux-specific."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"A memory barrier instruction is part of the instruction set of architectures "
+"with weakly ordered memory models.  It orders memory accesses prior to the "
+"barrier and after the barrier with respect to matching barriers on other "
+"cores.  For instance, a load fence can order loads prior to and following "
+"that fence with respect to stores ordered by store fences."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Program order is the order in which instructions are ordered in the program "
+"assembly code."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Examples where B<membarrier>()  can be useful include implementations of "
+"Read-Copy-Update libraries and garbage collectors."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "EXAMPLES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Assuming a multithreaded application where \"fast_path()\" is executed very "
+"frequently, and where \"slow_path()\" is executed infrequently, the "
+"following code (x86) can be transformed using B<membarrier>():"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "#include E<lt>stdlib.hE<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "static volatile int a, b;\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"static void\n"
+"fast_path(int *read_b)\n"
+"{\n"
+"    a = 1;\n"
+"    asm volatile (\"mfence\" : : : \"memory\");\n"
+"    *read_b = b;\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"static void\n"
+"slow_path(int *read_a)\n"
+"{\n"
+"    b = 1;\n"
+"    asm volatile (\"mfence\" : : : \"memory\");\n"
+"    *read_a = a;\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"int\n"
+"main(int argc, char *argv[])\n"
+"{\n"
+"    int read_a, read_b;\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    /*\n"
+"     * Real applications would call fast_path() and slow_path()\n"
+"     * from different threads. Call those from main() to keep\n"
+"     * this example short.\n"
+"     */\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    slow_path(&read_a);\n"
+"    fast_path(&read_b);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    /*\n"
+"     * read_b == 0 implies read_a == 1 and\n"
+"     * read_a == 0 implies read_b == 1.\n"
+"     */\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    if (read_b == 0 && read_a == 0)\n"
+"        abort();\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    exit(EXIT_SUCCESS);\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The code above transformed to use B<membarrier>()  becomes:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"#define _GNU_SOURCE\n"
+"#include E<lt>stdlib.hE<gt>\n"
+"#include E<lt>stdio.hE<gt>\n"
+"#include E<lt>unistd.hE<gt>\n"
+"#include E<lt>sys/syscall.hE<gt>\n"
+"#include E<lt>linux/membarrier.hE<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"static int\n"
+"membarrier(int cmd, unsigned int flags, int cpu_id)\n"
+"{\n"
+"    return syscall(__NR_membarrier, cmd, flags, cpu_id);\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"static int\n"
+"init_membarrier(void)\n"
+"{\n"
+"    int ret;\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "    /* Check that membarrier() is supported. */\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    ret = membarrier(MEMBARRIER_CMD_QUERY, 0, 0);\n"
+"    if (ret E<lt> 0) {\n"
+"        perror(\"membarrier\");\n"
+"        return -1;\n"
+"    }\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    if (!(ret & MEMBARRIER_CMD_GLOBAL)) {\n"
+"        fprintf(stderr,\n"
+"            \"membarrier does not support MEMBARRIER_CMD_GLOBAL\\en\");\n"
+"        return -1;\n"
+"    }\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    return 0;\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"static void\n"
+"fast_path(int *read_b)\n"
+"{\n"
+"    a = 1;\n"
+"    asm volatile (\"\" : : : \"memory\");\n"
+"    *read_b = b;\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"static void\n"
+"slow_path(int *read_a)\n"
+"{\n"
+"    b = 1;\n"
+"    membarrier(MEMBARRIER_CMD_GLOBAL, 0, 0);\n"
+"    *read_a = a;\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    if (init_membarrier())\n"
+"        exit(EXIT_FAILURE);\n"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "2020-11-01"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "B<#include E<lt>linux/membarrier.hE<gt>>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "B<int membarrier(int >I<cmd>B<, unsigned int >I<flags>B<, int >I<cpu_id>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "I<Note>: There is no glibc wrapper for this system call; see NOTES."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"On success, the B<MEMBARRIER_CMD_QUERY> operation returns a bit mask of "
+"supported commands, and the B<MEMBARRIER_CMD_GLOBAL>, "
+"B<MEMBARRIER_CMD_GLOBAL_EXPEDITED>, "
+"B<MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED>, "
+"B<MEMBARRIER_CMD_PRIVATE_EXPEDITED>, "
+"B<MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED>, "
+"B<MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE>, and "
+"B<MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE> operations return "
+"zero.  On error, -1 is returned, and I<errno> is set appropriately."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Glibc does not provide a wrapper for this system call; call it using "
+"B<syscall>(2)."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"int\n"
+"main(int argc, char **argv)\n"
+"{\n"
+"    int read_a, read_b;\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2018-04-30"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "B<#include E<lt>linux/membarrier.hE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "B<int membarrier(int >I<cmd>B<, int >I<flags>B<);>"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "The I<flags> argument is currently unused and must be specified as 0."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"If we use the semantic I<barrier()> to represent a compiler barrier forcing "
+"memory accesses to be performed in program order across the barrier, and "
+"I<smp_mb()> to represent explicit memory barriers forcing full memory "
+"ordering across the barrier, we have the following ordering table for each "
+"pairing of I<barrier()>, B<membarrier>()  and I<smp_mb()>.  The pair "
+"ordering is detailed as (O: ordered, X: not ordered):"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"A memory barrier instruction is part of the instruction set of architectures "
+"with weakly-ordered memory models.  It orders memory accesses prior to the "
+"barrier and after the barrier with respect to matching barriers on other "
+"cores.  For instance, a load fence can order loads prior to and following "
+"that fence with respect to stores ordered by store fences."
+msgstr ""
+
+#. type: SH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "EXAMPLE"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"static int\n"
+"membarrier(int cmd, int flags)\n"
+"{\n"
+"    return syscall(__NR_membarrier, cmd, flags);\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"    ret = membarrier(MEMBARRIER_CMD_QUERY, 0);\n"
+"    if (ret E<lt> 0) {\n"
+"        perror(\"membarrier\");\n"
+"        return -1;\n"
+"    }\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"static void\n"
+"slow_path(int *read_a)\n"
+"{\n"
+"    b = 1;\n"
+"    membarrier(MEMBARRIER_CMD_GLOBAL, 0);\n"
+"    *read_a = a;\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

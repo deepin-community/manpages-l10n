@@ -1,0 +1,105 @@
+.TH "libalpm_log" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+libalpm_log \- Logging Functions
+.PP
+ \- Functions to log using libalpm\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef void(* \fBalpm_cb_log\fP) (void *ctx, \fBalpm_loglevel_t\fP level, const char *fmt, va_list args)"
+.br
+.RI "The callback type for logging\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBalpm_loglevel_t\fP { \fBALPM_LOG_ERROR\fP = 1, \fBALPM_LOG_WARNING\fP = (1 << 1), \fBALPM_LOG_DEBUG\fP = (1 << 2), \fBALPM_LOG_FUNCTION\fP = (1 << 3) }"
+.br
+.RI "Logging Levels\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBalpm_logaction\fP (\fBalpm_handle_t\fP *handle, const char *prefix, const char *fmt,\&.\&.\&.) __attribute__((format(printf"
+.br
+.RI "A printf-like function for logging\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Functions to log using libalpm\&. 
+
+
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef void(* alpm_cb_log) (void *ctx, \fBalpm_loglevel_t\fP level, const char *fmt, va_list args)"
+
+.PP
+The callback type for logging\&. libalpm will call this function whenever something is to be logged\&. many libalpm will produce log output\&. Additionally any calls to \fBalpm_logaction\fP will also call this callback\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP user-provided context 
+.br
+\fIlevel\fP the currently set loglevel 
+.br
+\fIfmt\fP the printf like format string 
+.br
+\fIargs\fP printf like arguments 
+.RE
+.PP
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBalpm_loglevel_t\fP"
+
+.PP
+Logging Levels\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIALPM_LOG_ERROR \fP\fP
+Error\&. 
+.TP
+\fB\fIALPM_LOG_WARNING \fP\fP
+Warning\&. 
+.TP
+\fB\fIALPM_LOG_DEBUG \fP\fP
+Debug\&. 
+.TP
+\fB\fIALPM_LOG_FUNCTION \fP\fP
+Function\&. 
+.SH "Function Documentation"
+.PP 
+.SS "int alpm_logaction (\fBalpm_handle_t\fP * handle, const char * prefix, const char * fmt,  \&.\&.\&.)"
+
+.PP
+A printf-like function for logging\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIprefix\fP caller-specific prefix for the log 
+.br
+\fIfmt\fP output format 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libalpm from the source code\&.

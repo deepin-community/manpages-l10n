@@ -1,0 +1,250 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-08-15 11:14+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-unstable
+#, no-wrap
+msgid "NSS-MYMACHINES"
+msgstr ""
+
+#. type: TH
+#: archlinux
+#, no-wrap
+msgid "systemd 249"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-unstable
+#, no-wrap
+msgid "nss-mymachines"
+msgstr ""
+
+#.  -----------------------------------------------------------------
+#.  * MAIN CONTENT STARTS HERE *
+#.  -----------------------------------------------------------------
+#. type: SH
+#: archlinux debian-unstable
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+msgid ""
+"nss-mymachines, libnss_mymachines.so.2 - Hostname resolution for local "
+"container instances"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+msgid "libnss_mymachines\\&.so\\&.2"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+msgid ""
+"B<nss-mymachines> is a plug-in module for the GNU Name Service Switch (NSS) "
+"functionality of the GNU C Library (B<glibc>), providing hostname resolution "
+"for the names of containers running locally that are registered with "
+"B<systemd-machined.service>(8)\\&. The container names are resolved to the "
+"IP addresses of the specific container, ordered by their scope\\&. This "
+"functionality only applies to containers using network namespacing (see the "
+"description of B<--private-network> in B<systemd-nspawn>(1))\\&. Note that "
+"the name that is resolved is the one registered with B<systemd-machined>, "
+"which may be different than the hostname configured inside of the container"
+"\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux
+msgid ""
+"Note that this NSS module only makes available names of the containers "
+"running immediately below the current system context\\&. It does not provide "
+"host name resolution for containers running side-by-side with the invoking "
+"system context, or containers further up or down the container hierarchy\\&. "
+"Or in other words, on the host system it provides host name resolution for "
+"the containers running immediately below the host environment\\&. When used "
+"inside a container environment however, it will not be able to provide name "
+"resolution for containers running on the host (as those are siblings and not "
+"children of the current container environment), but instead only for nested "
+"containers running immediately below its own container environment\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+msgid ""
+"To activate the NSS module, add \"mymachines\" to the line starting with "
+"\"hosts:\" in /etc/nsswitch\\&.conf\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+msgid ""
+"It is recommended to place \"mymachines\" before the \"resolve\" or \"dns\" "
+"entry of the \"hosts:\" line of /etc/nsswitch\\&.conf in order to make sure "
+"that its mappings are preferred over other resolvers such as DNS\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable
+#, no-wrap
+msgid "CONFIGURATION IN /ETC/NSSWITCH\\&.CONF"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+msgid ""
+"Here is an example /etc/nsswitch\\&.conf file that enables B<nss-mymachines> "
+"correctly:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux
+#, no-wrap
+msgid ""
+"passwd:         compat systemd\n"
+"group:          compat [SUCCESS=merge] systemd\n"
+"shadow:         compat systemd\n"
+"gshadow:        files systemd\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+#, no-wrap
+msgid ""
+"hosts:          B<mymachines> resolve [!UNAVAIL=return] files myhostname dns\n"
+"networks:       files\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+#, no-wrap
+msgid ""
+"protocols:      db files\n"
+"services:       db files\n"
+"ethers:         db files\n"
+"rpc:            db files\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+#, no-wrap
+msgid "netgroup:       nis\n"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable
+#, no-wrap
+msgid "EXAMPLE: MAPPINGS PROVIDED BY NSS-MYMACHINES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+msgid "The container \"rawhide\" is spawned using B<systemd-nspawn>(1):"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+#, no-wrap
+msgid ""
+"# systemd-nspawn -M rawhide --boot --network-veth --private-users=pick\n"
+"Spawning container rawhide on /var/lib/machines/rawhide\\&.\n"
+"Selected user namespace base 20119552 and range 65536\\&.\n"
+"\\&.\\&.\\&.\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+#, no-wrap
+msgid ""
+"$ machinectl --max-addresses=3\n"
+"MACHINE CLASS     SERVICE        OS     VERSION ADDRESSES\n"
+"rawhide container systemd-nspawn fedora 30      169\\&.254\\&.40\\&.164 fe80::94aa:3aff:fe7b:d4b9\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+#, no-wrap
+msgid ""
+"$ ping -c1 rawhide\n"
+"PING rawhide(fe80::94aa:3aff:fe7b:d4b9%ve-rawhide (fe80::94aa:3aff:fe7b:d4b9%ve-rawhide)) 56 data bytes\n"
+"64 bytes from fe80::94aa:3aff:fe7b:d4b9%ve-rawhide (fe80::94aa:3aff:fe7b:d4b9%ve-rawhide): icmp_seq=1 ttl=64 time=0\\&.045 ms\n"
+"\\&.\\&.\\&.\n"
+"$ ping -c1 -4 rawhide\n"
+"PING rawhide (169\\&.254\\&.40\\&.164) 56(84) bytes of data\\&.\n"
+"64 bytes from 169\\&.254\\&.40\\&.164 (169\\&.254\\&.40\\&.164): icmp_seq=1 ttl=64 time=0\\&.064 ms\n"
+"\\&.\\&.\\&.\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+#, no-wrap
+msgid ""
+"# machinectl shell rawhide /sbin/ip a\n"
+"Connected to machine rawhide\\&. Press ^] three times within 1s to exit session\\&.\n"
+"1: lo: E<lt>LOOPBACK,UP,LOWER_UPE<gt> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000\n"
+"    \\&.\\&.\\&.\n"
+"2: host0@if21: E<lt>BROADCAST,MULTICAST,UP,LOWER_UPE<gt> mtu 1500 qdisc noqueue state UP group default qlen 1000\n"
+"    link/ether 96:aa:3a:7b:d4:b9 brd ff:ff:ff:ff:ff:ff link-netnsid 0\n"
+"    inet 169\\&.254\\&.40\\&.164/16 brd 169\\&.254\\&.255\\&.255 scope link host0\n"
+"       valid_lft forever preferred_lft forever\n"
+"    inet6 fe80::94aa:3aff:fe7b:d4b9/64 scope link\n"
+"       valid_lft forever preferred_lft forever\n"
+"Connection to machine rawhide terminated\\&.\n"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable
+msgid ""
+"B<systemd>(1), B<systemd-machined.service>(8), B<machinectl>(1), B<nss-"
+"systemd>(8), B<nss-resolve>(8), B<nss-myhostname>(8), B<nsswitch.conf>(5), "
+"B<getent>(1)"
+msgstr ""
+
+#. type: TH
+#: debian-unstable
+#, no-wrap
+msgid "systemd 247"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+#, no-wrap
+msgid ""
+"passwd:         compat systemd\n"
+"group:          compat [SUCCESS=merge] systemd\n"
+"shadow:         compat\n"
+msgstr ""

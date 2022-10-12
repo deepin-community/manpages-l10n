@@ -1,0 +1,2188 @@
+# Spanish translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Gerardo Aburruzaga García <gerardo.aburruzaga@uca.es>, 1998.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n\n"
+"POT-Creation-Date: 2021-09-03 20:44+0200\n"
+"PO-Revision-Date: 2021-02-01 18:58+0100\n"
+"Last-Translator: Gerardo Aburruzaga García <gerardo.aburruzaga@uca.es>\n"
+"Language-Team: Spanish <debian-l10n-spanish@lists.debian.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 20.04.1\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SELECT_TUT"
+msgstr "SELECT_TUT"
+
+#. type: TH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "2021-03-22"
+msgstr "22 Marzo 2021"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr "Linux"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr "Manual del Programador de Linux"
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr "NOMBRE"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "select, pselect - synchronous I/O multiplexing"
+msgstr "select, pselect - multiplexación de E/S síncrona"
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "SINOPSIS"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "See B<select>(2)"
+msgstr "Vea B<select>(2)"
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "DESCRIPCIÓN"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The B<select>()  and B<pselect>()  system calls are used to efficiently "
+"monitor multiple file descriptors, to see if any of them is, or becomes, "
+"\"ready\"; that is, to see whether I/O becomes possible, or an \"exceptional "
+"condition\" has occurred on any of the file descriptors."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This page provides background and tutorial information on the use of these "
+"system calls.  For details of the arguments and semantics of B<select>()  "
+"and B<pselect>(), see B<select>(2)."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Combining signal and data events"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"B<pselect>()  is useful if you are waiting for a signal as well as for file "
+"descriptor(s) to become ready for I/O.  Programs that receive signals "
+"normally use the signal handler only to raise a global flag.  The global "
+"flag will indicate that the event must be processed in the main loop of the "
+"program.  A signal will cause the B<select>()  (or B<pselect>())  call to "
+"return with I<errno> set to B<EINTR>.  This behavior is essential so that "
+"signals can be processed in the main loop of the program, otherwise "
+"B<select>()  would block indefinitely."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "B<pselect> must be used if you are waiting for a signal as well as data "
+#| "from a file descriptor. Programs that receive signals as events normally "
+#| "use the signal handler only to raise a global flag. The global flag will "
+#| "indicate that the event must be processed in the main loop of the "
+#| "program. A signal will cause the B<select> (or B<pselect>)  call to "
+#| "return with B<errno> set to B<EINTR>. This behavior is essential so that "
+#| "signals can be processed in the main loop of the program, otherwise "
+#| "B<select> would block indefinitely. Now, somewhere in the main loop will "
+#| "be a conditional to check the global flag. So we must ask: what if a "
+#| "signal arrives after the conditional, but before the B<select> call? The "
+#| "answer is that B<select> would block indefinitely, even though an event "
+#| "is actually pending. This race condition is solved by the B<pselect> "
+#| "call. This call can be used to mask out signals that are not to be "
+#| "received except within the B<pselect> call. For instance, let us say that "
+#| "the event in question was the exit of a child process. Before the start "
+#| "of the main loop, we would block B<SIGCHLD> using B<sigprocmask>. Our "
+#| "B<pselect> call would enable B<SIGCHLD> by using the virgin signal mask. "
+#| "Our program would look like:"
+msgid ""
+"Now, somewhere in the main loop will be a conditional to check the global "
+"flag.  So we must ask: what if a signal arrives after the conditional, but "
+"before the B<select>()  call? The answer is that B<select>()  would block "
+"indefinitely, even though an event is actually pending.  This race condition "
+"is solved by the B<pselect>()  call.  This call can be used to set the "
+"signal mask to a set of signals that are to be received only within the "
+"B<pselect>()  call.  For instance, let us say that the event in question was "
+"the exit of a child process.  Before the start of the main loop, we would "
+"block B<SIGCHLD> using B<sigprocmask>(2).  Our B<pselect>()  call would "
+"enable B<SIGCHLD> by using an empty signal mask.  Our program would look "
+"like:"
+msgstr ""
+"B<pselect> debe ser usada si está esperando una señal así como datos de un "
+"descriptor de fichero. Los programas que reciben señales como eventos "
+"normalmente utilizan el manejador de señales para activar una bandera "
+"global.  La bandera global indicará que el evento debe ser procesado en el "
+"bucle principal del programa. Una señal provocará que la llamada a B<select> "
+"(o B<pselect>)  regrese tomando la variable B<errno> el valor B<EINTR>. Este "
+"comportamiento es esencial para que las señales puedan ser procesadas en el "
+"bucle principal del programa, de otra manera B<select> se bloquearía "
+"indefinidamente.  Ahora, en algún lugar del bucle principal habrá una "
+"condición para comprobar la bandera global. Así que debemos preguntarnos: "
+"¿qué ocurre si una señal llega después de la condición, pero antes de la "
+"llamada a B<select>? La respuesta es que B<select> se bloquearía "
+"indefinidamente, incluso aún si hay un evento pendiente. Esta condición de "
+"carrera se soluciona con la llamada B<pselect>. Esta llamada puede "
+"utilizarse para enmascarar señales que no van a ser recibidas salvo dentro "
+"de la llamada B<pselect>. Por ejemplo, digamos que el evento en cuestión fue "
+"la salida de un proceso hijo. Antes del comienzo del bucle principal, "
+"bloquearíamos B<SIGCHLD> usando B<sigprocmask>. Nuestra llamada B<pselect> "
+"podría habilitar B<SIGCHLD> usando la máscara de señal virgen. Nuestro "
+"programa se podría parecer a ésto:"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "static volatile sig_atomic_t got_SIGCHLD = 0;\n"
+msgstr "static volatile sig_atomic_t got_SIGCHLD = 0;\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"static void\n"
+"child_sig_handler(int sig)\n"
+"{\n"
+"    got_SIGCHLD = 1;\n"
+"}\n"
+msgstr ""
+"static void\n"
+"child_sig_handler(int sig)\n"
+"{\n"
+"    got_SIGCHLD = 1;\n"
+"}\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"int\n"
+"main(int argc, char *argv[])\n"
+"{\n"
+"    sigset_t sigmask, empty_mask;\n"
+"    struct sigaction sa;\n"
+"    fd_set readfds, writefds, exceptfds;\n"
+"    int r;\n"
+msgstr ""
+"int\n"
+"main(int argc, char *argv[])\n"
+"{\n"
+"    sigset_t sigmask, empty_mask;\n"
+"    struct sigaction sa;\n"
+"    fd_set readfds, writefds, exceptfds;\n"
+"    int r;\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    sigemptyset(&sigmask);\n"
+"    sigaddset(&sigmask, SIGCHLD);\n"
+"    if (sigprocmask(SIG_BLOCK, &sigmask, NULL) == -1) {\n"
+"        perror(\"sigprocmask\");\n"
+"        exit(EXIT_FAILURE);\n"
+"    }\n"
+msgstr ""
+"    sigemptyset(&sigmask);\n"
+"    sigaddset(&sigmask, SIGCHLD);\n"
+"    if (sigprocmask(SIG_BLOCK, &sigmask, NULL) == -1) {\n"
+"        perror(\"sigprocmask\");\n"
+"        exit(EXIT_FAILURE);\n"
+"    }\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    sa.sa_flags = 0;\n"
+"    sa.sa_handler = child_sig_handler;\n"
+"    sigemptyset(&sa.sa_mask);\n"
+"    if (sigaction(SIGCHLD, &sa, NULL) == -1) {\n"
+"        perror(\"sigaction\");\n"
+"        exit(EXIT_FAILURE);\n"
+"    }\n"
+msgstr ""
+"    sa.sa_flags = 0;\n"
+"    sa.sa_handler = child_sig_handler;\n"
+"    sigemptyset(&sa.sa_mask);\n"
+"    if (sigaction(SIGCHLD, &sa, NULL) == -1) {\n"
+"        perror(\"sigaction\");\n"
+"        exit(EXIT_FAILURE);\n"
+"    }\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "    sigemptyset(&empty_mask);\n"
+msgstr "    sigemptyset(&empty_mask);\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    for (;;) {          /* main loop */\n"
+"        /* Initialize readfds, writefds, and exceptfds\n"
+"           before the pselect() call. (Code omitted.) */\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        r = pselect(nfds, &readfds, &writefds, &exceptfds,\n"
+"                    NULL, &empty_mask);\n"
+"        if (r == -1 && errno != EINTR) {\n"
+"            /* Handle error */\n"
+"        }\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (got_SIGCHLD) {\n"
+"            got_SIGCHLD = 0;\n"
+msgstr ""
+"        if (got_SIGCHLD) {\n"
+"            got_SIGCHLD = 0;\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"            /* Handle signalled event here; e.g., wait() for all\n"
+"               terminated children. (Code omitted.) */\n"
+"        }\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        /* main body of program */\n"
+"    }\n"
+"}\n"
+msgstr ""
+"        /* cuerpo principal del programa */\n"
+"    }\n"
+"}\n"
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Practical"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "So what is the point of B<select>? Can't I just read and write to my "
+#| "descriptors whenever I want? The point of select is that it watches "
+#| "multiple descriptors at the same time and properly puts the process to "
+#| "sleep if there is no activity. It does this while enabling you to handle "
+#| "multiple simultaneous pipes and sockets. Unix programmers often find "
+#| "themselves in a position where they have to handle IO from more than one "
+#| "file descriptor where the data flow may be intermittent. If you were to "
+#| "merely create a sequence of B<read> and B<write> calls, you would find "
+#| "that one of your calls may block waiting for data from/to a file "
+#| "descriptor, while another file descriptor is unused though available for "
+#| "data. B<select> efficiently copes with this situation."
+msgid ""
+"So what is the point of B<select>()? Can't I just read and write to my file "
+"descriptors whenever I want? The point of B<select>()  is that it watches "
+"multiple descriptors at the same time and properly puts the process to sleep "
+"if there is no activity.  UNIX programmers often find themselves in a "
+"position where they have to handle I/O from more than one file descriptor "
+"where the data flow may be intermittent.  If you were to merely create a "
+"sequence of B<read>(2)  and B<write>(2)  calls, you would find that one of "
+"your calls may block waiting for data from/to a file descriptor, while "
+"another file descriptor is unused though ready for I/O.  B<select>()  "
+"efficiently copes with this situation."
+msgstr ""
+"Por lo tanto, ¿cuál es el propósito de B<select>? ¿No puedo simplemente leer "
+"y escribir en mis descriptores siempre que quiera? El significado de select "
+"es observar varios descriptores al mismo tiempo y poner a dormir "
+"adecuadamente a los procesos si no hay ninguna actividad. Esto lo hace "
+"mientras le permite manejar varias tuberías y conectores de manera "
+"simultánea. Los programadores de Unix a menudo se encuentran en la situación "
+"de manejar la E/S de más de un descriptor de fichero donde el flujo de datos "
+"puede ser intermitente.  Si tan sólo creara una secuencia de llamadas "
+"B<read> y B<write>, podría encontrarse con que una de sus llamadas puede "
+"bloquearse esperando datos de/a un descriptor de fichero, mientras que otro "
+"descriptor de fichero está siendo inutilizado aunque haya datos "
+"disponibles.  B<select> maneja eficientemente esta situación."
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Select law"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "Many people who try to use B<select> come across behavior that is "
+#| "difficult to understand and produces non-portable or borderline results. "
+#| "For instance, the above program is carefully written not to block at any "
+#| "point, even though it does not set its file descriptors to non-blocking "
+#| "mode at all (see B<ioctl>(2)). It is easy to introduce subtle errors that "
+#| "will remove the advantage of using B<select>, hence I will present a list "
+#| "of essentials to watch for when using the B<select> call."
+msgid ""
+"Many people who try to use B<select>()  come across behavior that is "
+"difficult to understand and produces nonportable or borderline results.  For "
+"instance, the above program is carefully written not to block at any point, "
+"even though it does not set its file descriptors to nonblocking mode.  It is "
+"easy to introduce subtle errors that will remove the advantage of using "
+"B<select>(), so here is a list of essentials to watch for when using "
+"B<select>()."
+msgstr ""
+"Muchas personas que intentan usar B<select> se encuentran con un "
+"comportamiento que es difícil de comprender y que produce resultados no "
+"transportables o dudosos. Por ejemplo, el programa anterior se ha escrito "
+"cuidadosamente para que no se bloquee en ningún punto, aunque para nada ha "
+"establecido el modo no bloqueante en sus descriptores de fichero (vea "
+"B<ioctl>(2)). Es fácil introducir errores sutiles que hagan desaparecer la "
+"ventaja de usar B<select>, por lo que voy a presentar una lista de los "
+"aspectos esenciales a tener en cuenta cuando se use la llamada B<select>."
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "1."
+msgstr "1."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"You should always try to use B<select>()  without a timeout.  Your program "
+"should have nothing to do if there is no data available.  Code that depends "
+"on timeouts is not usually portable and is difficult to debug."
+msgstr ""
+"Siempre debe de intentar usar B<select>() sin un plazo de tiempo. Su "
+"programa no debe tener que hacer nada si no hay datos disponibles. El código "
+"que depende de los plazos de tiempo no es normalmente portable y es difícil "
+"de depurar."
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "2."
+msgstr "2."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The value I<nfds> must be properly calculated for efficiency as explained "
+"above."
+msgstr ""
+"Para un resultado eficiente, el valor de I<nfds> se debe calcular "
+"correctamente de la forma que se explica más abajo."
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "3."
+msgstr "3."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"No file descriptor must be added to any set if you do not intend to check "
+"its result after the B<select>()  call, and respond appropriately.  See next "
+"rule."
+msgstr ""
+"No debe añadir a ningún conjunto un descriptor de fichero para el que no "
+"tenga intención de comprobar su resultado (y responder adecuadamente) tras "
+"una llamada a B<select>(). Vea la siguiente regla."
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "4."
+msgstr "4."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"After B<select>()  returns, all file descriptors in all sets should be "
+"checked to see if they are ready."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "5."
+msgstr "5."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The functions B<read>(2), B<recv>(2), B<write>(2), and B<send>(2)  do I<not> "
+"necessarily read/write the full amount of data that you have requested.  If "
+"they do read/write the full amount, it's because you have a low traffic load "
+"and a fast stream.  This is not always going to be the case.  You should "
+"cope with the case of your functions managing to send or receive only a "
+"single byte."
+msgstr ""
+"Las funciones B<read>(), B<recv>(), B<write>() y B<send>() I<no> leen/"
+"escriben necesariamente todos los datos que haya solicitado. Si leen/"
+"escriben todos los datos es porque tiene poco tráfico y un flujo muy rápido. "
+"Ese no va a ser siempre el caso. Debe hacer frente al caso en el que sus "
+"funciones sólo logren enviar o recibir un único byte."
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "6."
+msgstr "6."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "Never read/write only in single bytes at a time unless your are really "
+#| "sure that you have a small amount of data to process. It is extremely "
+#| "inefficient not to read/write as much data as you can buffer each time.  "
+#| "The buffers in the example above are 1024 bytes although they could "
+#| "easily be made as large as the maximum possible packet size on your local "
+#| "network."
+msgid ""
+"Never read/write only in single bytes at a time unless you are really sure "
+"that you have a small amount of data to process.  It is extremely "
+"inefficient not to read/write as much data as you can buffer each time.  The "
+"buffers in the example below are 1024 bytes although they could easily be "
+"made larger."
+msgstr ""
+"Nunca lea/escriba byte a byte a menos que esté realmente seguro de que tiene "
+"que procesar una pequeña cantidad de datos. Es extremadamente ineficiente no "
+"leer/escribir cada vez tantos datos como pueda almacenar. Los buffers del "
+"ejemplo anterior son de 1024 bytes aunque podrían fácilmente hacerse tan "
+"grandes como el máximo tamaño de paquete posible en su red local."
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "7."
+msgstr "7."
+
+#.  Nonetheless, you should still cope with these errors for completeness.
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "The functions B<read()>, B<recv()>, B<write()>, and B<send()> as well as "
+#| "the B<select()> call can return -1 with an errno of B<EINTR> or B<EAGAIN> "
+#| "(B<EWOULDBLOCK>) which are not errors. These results must be properly "
+#| "managed (not done properly above). If your program is not going to "
+#| "receive any signals then it is unlikely you will get B<EINTR>. If your "
+#| "program does not set non-blocking IO, you will not get B<EAGAIN>. "
+#| "Nonetheless you should still cope with these errors for completeness."
+msgid ""
+"Calls to B<read>(2), B<recv>(2), B<write>(2), B<send>(2), and B<select>()  "
+"can fail with the error B<EINTR>, and calls to B<read>(2), B<recv>(2)  "
+"B<write>(2), and B<send>(2)  can fail with I<errno> set to B<EAGAIN> "
+"(B<EWOULDBLOCK>).  These results must be properly managed (not done properly "
+"above).  If your program is not going to receive any signals, then it is "
+"unlikely you will get B<EINTR>.  If your program does not set nonblocking I/"
+"O, you will not get B<EAGAIN>."
+msgstr ""
+"Además de la llamada B<select()>, las funciones B<read()>, B<recv()>, "
+"B<write()> y B<send()> pueden devolver -1 con un errno B<EINTR> o B<EAGAIN> "
+"(B<EWOULDBLOCK>) que no son errores. Estos resultados deben tratarse "
+"adecuadamente (lo que no se ha hecho en el ejemplo anterior). Si su programa "
+"no va a recibir ninguna señal, entonces es muy poco probable que obtenga "
+"B<EINTR>.  Si su programa no activa E/S no bloqueante, no obtendrá "
+"B<EAGAIN>.  Sin embargo, todavía debe hacer frente a estos errores por "
+"completitud."
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "8."
+msgstr "8."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Never call B<read>(2), B<recv>(2), B<write>(2), or B<send>(2)  with a buffer "
+"length of zero."
+msgstr ""
+"Nunca llame a B<read>(), B<recv>(), B<write>() o B<send>() con una longitud "
+"de buffer de cero."
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "9."
+msgstr "9."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "Except as indicated in B<7.>, the functions B<read()>, B<recv()>, "
+#| "B<write()>, and B<send()> never have a return value less than 1 except if "
+#| "an error has occurred. For instance, a B<read()> on a pipe where the "
+#| "other end has died returns zero (so does an end-of-file error), I<but> "
+#| "only returns zero once (a followup read or write will return -1). Should "
+#| "any of these functions return 0 or -1, you should I<not> pass that "
+#| "descriptor to select ever again. In the above example, I close the "
+#| "descriptor immediately, and then set it to -1 to prevent it being "
+#| "included in a set."
+msgid ""
+"If the functions B<read>(2), B<recv>(2), B<write>(2), and B<send>(2)  fail "
+"with errors other than those listed in B<7.>, or one of the input functions "
+"returns 0, indicating end of file, then you should I<not> pass that file "
+"descriptor to B<select>()  again.  In the example below, I close the file "
+"descriptor immediately, and then set it to -1 to prevent it being included "
+"in a set."
+msgstr ""
+"Excepto como se indica en B<7.>, las funciones B<read()>, B<recv()>, "
+"B<write()> y B<send()> nunca devuelven un valor menor que 1 salvo cuando se "
+"produce un error. Por ejemplo, un B<read()> sobre una tubería donde el otro "
+"extremo ha muerto devuelve cero (al igual que un error de fin de fichero), "
+"I<pero> devuelve cero sólo una vez (un lectura o escritura posterior "
+"devolverá -1). Cuando cualquiera de estas funciones devuelva 0 o -1, I<no "
+"debe> pasar el descriptor correspondiente a select nunca más. En el ejemplo "
+"anterior, cierro el descriptor inmediatamente y le asigno -1 para evitar que "
+"se vuelva a incluir en un conjunto."
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "10."
+msgstr "10."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The timeout value must be initialized with each new call to B<select>(), "
+"since some operating systems modify the structure.  B<pselect>()  however "
+"does not modify its timeout structure."
+msgstr ""
+"El valor del plazo de tiempo debe inicializarse con cada nueva llamada a "
+"B<select>(), ya que algunos sistemas operativos modifican la estructura. "
+"B<pselect>(), sin embargo, no modifica su estructura de plazo de tiempo."
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "11."
+msgstr "11."
+
+#.  "I have heard" does not fill me with confidence, and doesn't
+#.  belong in a man page, so I've commented this point out.
+#.  .TP
+#.  11.
+#.  I have heard that the Windows socket layer does not cope with OOB data
+#.  properly.
+#.  It also does not cope with
+#.  .BR select ()
+#.  calls when no file descriptors are set at all.
+#.  Having no file descriptors set is a useful
+#.  way to sleep the process with subsecond precision by using the timeout.
+#.  (See further on.)
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Since B<select>()  modifies its file descriptor sets, if the call is being "
+"used in a loop, then the sets must be reinitialized before each call."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "RETURN VALUE"
+msgstr "VALOR DEVUELTO"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "See B<select>(2)."
+msgstr "Vea B<select>(2)."
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr "NOTAS"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "Generally speaking, all operating systems that support sockets, also "
+#| "support B<select>. Some people consider B<select> to be an esoteric and "
+#| "rarely used function. Indeed, many types of programs become extremely "
+#| "complicated without it. B<select> can be used to solve many problems in a "
+#| "portable and efficient way that naive programmers try to solve with "
+#| "threads, forking, IPCs, signals, memory sharing and other dirty methods. "
+#| "B<pselect> is a newer function that is less commonly used."
+msgid ""
+"Generally speaking, all operating systems that support sockets also support "
+"B<select>().  B<select>()  can be used to solve many problems in a portable "
+"and efficient way that naive programmers try to solve in a more complicated "
+"manner using threads, forking, IPCs, signals, memory sharing, and so on."
+msgstr ""
+"Generalmente hablando, todos los sistemas operativos que soportan "
+"conectores, también soportan B<select>. Algunas personas consideran que "
+"B<select> es una función esotérica y raramente usada. De hecho, muchos tipos "
+"de programas se vuelven extremadamente complicados sin ella. B<select> puede "
+"utilizarse para solucionar muchos problemas de manera eficiente y portable. "
+"Problemas que los programadores ingenuos tratan de resolver usando hilos, "
+"procesos hijos, IPCs, señales, memoria compartida y otros oscuros métodos. "
+"B<pselect> es una función más reciente que es menos comúnmente usada."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "The B<poll>(2)  system call has the same functionality as B<select>, but "
+#| "with less subtle behavior. It is less portable than B<select>."
+msgid ""
+"The B<poll>(2)  system call has the same functionality as B<select>(), and "
+"is somewhat more efficient when monitoring sparse file descriptor sets.  It "
+"is nowadays widely available, but historically was less portable than "
+"B<select>()."
+msgstr ""
+"La llamada al sistema B<poll>(2)  tiene la misma funcionalidad que "
+"B<select>, pero con un comportamiento menos sutil. Es menos portable que "
+"B<select>."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The Linux-specific B<epoll>(7)  API provides an interface that is more "
+"efficient than B<select>(2)  and B<poll>(2)  when monitoring large numbers "
+"of file descriptors."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "EXAMPLES"
+msgstr "EJEMPLOS"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Here is an example that better demonstrates the true utility of "
+"B<select>().  The listing below is a TCP forwarding program that forwards "
+"from one TCP port to another."
+msgstr ""
+"Aquí viene un ejemplo que ilustra mejor la verdadera utilidad de "
+"B<select>(). El listado de abajo es un programa de reenvío TCP que redirige "
+"de un puerto TCP a otro."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"#include E<lt>stdlib.hE<gt>\n"
+"#include E<lt>stdio.hE<gt>\n"
+"#include E<lt>unistd.hE<gt>\n"
+"#include E<lt>sys/select.hE<gt>\n"
+"#include E<lt>string.hE<gt>\n"
+"#include E<lt>signal.hE<gt>\n"
+"#include E<lt>sys/socket.hE<gt>\n"
+"#include E<lt>netinet/in.hE<gt>\n"
+"#include E<lt>arpa/inet.hE<gt>\n"
+"#include E<lt>errno.hE<gt>\n"
+msgstr ""
+"#include E<lt>stdlib.hE<gt>\n"
+"#include E<lt>stdio.hE<gt>\n"
+"#include E<lt>unistd.hE<gt>\n"
+"#include E<lt>sys/select.hE<gt>\n"
+"#include E<lt>string.hE<gt>\n"
+"#include E<lt>signal.hE<gt>\n"
+"#include E<lt>sys/socket.hE<gt>\n"
+"#include E<lt>netinet/in.hE<gt>\n"
+"#include E<lt>arpa/inet.hE<gt>\n"
+"#include E<lt>errno.hE<gt>\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "static int forward_port;\n"
+msgstr "static int forward_port;\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"#undef max\n"
+"#define max(x,y) ((x) E<gt> (y) ? (x) : (y))\n"
+msgstr ""
+"#undef max\n"
+"#define max(x,y) ((x) E<gt> (y) ? (x) : (y))\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"static int\n"
+"listen_socket(int listen_port)\n"
+"{\n"
+"    struct sockaddr_in addr;\n"
+"    int lfd;\n"
+"    int yes;\n"
+msgstr ""
+"static int\n"
+"listen_socket(int listen_port)\n"
+"{\n"
+"    struct sockaddr_in addr;\n"
+"    int lfd;\n"
+"    int yes;\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    lfd = socket(AF_INET, SOCK_STREAM, 0);\n"
+"    if (lfd == -1) {\n"
+"        perror(\"socket\");\n"
+"        return -1;\n"
+"    }\n"
+msgstr ""
+"    lfd = socket(AF_INET, SOCK_STREAM, 0);\n"
+"    if (lfd == -1) {\n"
+"        perror(\"socket\");\n"
+"        return -1;\n"
+"    }\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    yes = 1;\n"
+"    if (setsockopt(lfd, SOL_SOCKET, SO_REUSEADDR,\n"
+"            &yes, sizeof(yes)) == -1) {\n"
+"        perror(\"setsockopt\");\n"
+"        close(lfd);\n"
+"        return -1;\n"
+"    }\n"
+msgstr ""
+"    yes = 1;\n"
+"    if (setsockopt(lfd, SOL_SOCKET, SO_REUSEADDR,\n"
+"            &yes, sizeof(yes)) == -1) {\n"
+"        perror(\"setsockopt\");\n"
+"        close(lfd);\n"
+"        return -1;\n"
+"    }\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    memset(&addr, 0, sizeof(addr));\n"
+"    addr.sin_port = htons(listen_port);\n"
+"    addr.sin_family = AF_INET;\n"
+"    if (bind(lfd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {\n"
+"        perror(\"bind\");\n"
+"        close(lfd);\n"
+"        return -1;\n"
+"    }\n"
+msgstr ""
+"    memset(&addr, 0, sizeof(addr));\n"
+"    addr.sin_port = htons(listen_port);\n"
+"    addr.sin_family = AF_INET;\n"
+"    if (bind(lfd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {\n"
+"        perror(\"bind\");\n"
+"        close(lfd);\n"
+"        return -1;\n"
+"    }\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    printf(\"accepting connections on port %d\\en\", listen_port);\n"
+"    listen(lfd, 10);\n"
+"    return lfd;\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"static int\n"
+"connect_socket(int connect_port, char *address)\n"
+"{\n"
+"    struct sockaddr_in addr;\n"
+"    int cfd;\n"
+msgstr ""
+"static int\n"
+"connect_socket(int connect_port, char *address)\n"
+"{\n"
+"    struct sockaddr_in addr;\n"
+"    int cfd;\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    cfd = socket(AF_INET, SOCK_STREAM, 0);\n"
+"    if (cfd == -1) {\n"
+"        perror(\"socket\");\n"
+"        return -1;\n"
+"    }\n"
+msgstr ""
+"    cfd = socket(AF_INET, SOCK_STREAM, 0);\n"
+"    if (cfd == -1) {\n"
+"        perror(\"socket\");\n"
+"        return -1;\n"
+"    }\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    memset(&addr, 0, sizeof(addr));\n"
+"    addr.sin_port = htons(connect_port);\n"
+"    addr.sin_family = AF_INET;\n"
+msgstr ""
+"    memset(&addr, 0, sizeof(addr));\n"
+"    addr.sin_port = htons(connect_port);\n"
+"    addr.sin_family = AF_INET;\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    if (!inet_aton(address, (struct in_addr *) &addr.sin_addr.s_addr)) {\n"
+"        fprintf(stderr, \"inet_aton(): bad IP address format\\en\");\n"
+"        close(cfd);\n"
+"        return -1;\n"
+"    }\n"
+msgstr ""
+"    if (!inet_aton(address, (struct in_addr *) &addr.sin_addr.s_addr)) {\n"
+"        fprintf(stderr, \"inet_aton(): formato de dirección IP incorrecto\\en\");\n"
+"        close(cfd);\n"
+"        return -1;\n"
+"    }\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    if (connect(cfd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {\n"
+"        perror(\"connect()\");\n"
+"        shutdown(cfd, SHUT_RDWR);\n"
+"        close(cfd);\n"
+"        return -1;\n"
+"    }\n"
+"    return cfd;\n"
+"}\n"
+msgstr ""
+"    if (connect(cfd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {\n"
+"        perror(\"connect()\");\n"
+"        shutdown(cfd, SHUT_RDWR);\n"
+"        close(cfd);\n"
+"        return -1;\n"
+"    }\n"
+"    return cfd;\n"
+"}\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"#define SHUT_FD1 do {                                \\e\n"
+"                     if (fd1 E<gt>= 0) {                 \\e\n"
+"                         shutdown(fd1, SHUT_RDWR);   \\e\n"
+"                         close(fd1);                 \\e\n"
+"                         fd1 = -1;                   \\e\n"
+"                     }                               \\e\n"
+"                 } while (0)\n"
+msgstr ""
+"#define SHUT_FD1 do {                                \\e\n"
+"                     if (fd1 E<gt>= 0) {                 \\e\n"
+"                         shutdown(fd1, SHUT_RDWR);   \\e\n"
+"                         close(fd1);                 \\e\n"
+"                         fd1 = -1;                   \\e\n"
+"                     }                               \\e\n"
+"                 } while (0)\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"#define SHUT_FD2 do {                                \\e\n"
+"                     if (fd2 E<gt>= 0) {                 \\e\n"
+"                         shutdown(fd2, SHUT_RDWR);   \\e\n"
+"                         close(fd2);                 \\e\n"
+"                         fd2 = -1;                   \\e\n"
+"                     }                               \\e\n"
+"                 } while (0)\n"
+msgstr ""
+"#define SHUT_FD2 do {                                \\e\n"
+"                     if (fd2 E<gt>= 0) {                 \\e\n"
+"                         shutdown(fd2, SHUT_RDWR);   \\e\n"
+"                         close(fd2);                 \\e\n"
+"                         fd2 = -1;                   \\e\n"
+"                     }                               \\e\n"
+"                 } while (0)\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "#define BUF_SIZE 1024\n"
+msgstr "#define BUF_SIZE 1024\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"int\n"
+"main(int argc, char *argv[])\n"
+"{\n"
+"    int h;\n"
+"    int fd1 = -1, fd2 = -1;\n"
+"    char buf1[BUF_SIZE], buf2[BUF_SIZE];\n"
+"    int buf1_avail = 0, buf1_written = 0;\n"
+"    int buf2_avail = 0, buf2_written = 0;\n"
+msgstr ""
+"int\n"
+"main(int argc, char *argv[])\n"
+"{\n"
+"    int h;\n"
+"    int fd1 = -1, fd2 = -1;\n"
+"    char buf1[BUF_SIZE], buf2[BUF_SIZE];\n"
+"    int buf1_avail = 0, buf1_written = 0;\n"
+"    int buf2_avail = 0, buf2_written = 0;\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    if (argc != 4) {\n"
+"        fprintf(stderr, \"Usage\\en\\etfwd E<lt>listen-portE<gt> \"\n"
+"                 \"E<lt>forward-to-portE<gt> E<lt>forward-to-ip-addressE<gt>\\en\");\n"
+"        exit(EXIT_FAILURE);\n"
+"    }\n"
+msgstr ""
+"    if (argc != 4) {\n"
+"        fprintf(stderr, \"Usage\\en\\etfwd E<lt>puerto-escuchaE<gt> \"\n"
+"                 \"E<lt>redirigir-a-puertoE<gt> E<lt>redirigir-a-dirección-ipE<gt>\\en\");\n"
+"        exit(EXIT_FAILURE);\n"
+"    }\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "    signal(SIGPIPE, SIG_IGN);\n"
+msgstr "    signal(SIGPIPE, SIG_IGN);\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "    forward_port = atoi(argv[2]);\n"
+msgstr "    forward_port = atoi(argv[2]);\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    h = listen_socket(atoi(argv[1]));\n"
+"    if (h == -1)\n"
+"        exit(EXIT_FAILURE);\n"
+msgstr ""
+"    h = listen_socket(atoi(argv[1]));\n"
+"    if (h == -1)\n"
+"        exit(EXIT_FAILURE);\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    for (;;) {\n"
+"        int ready, nfds = 0;\n"
+"        ssize_t nbytes;\n"
+"        fd_set readfds, writefds, exceptfds;\n"
+msgstr ""
+"    for (;;) {\n"
+"        int ready, nfds = 0;\n"
+"        ssize_t nbytes;\n"
+"        fd_set readfds, writefds, exceptfds;\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        FD_ZERO(&readfds);\n"
+"        FD_ZERO(&writefds);\n"
+"        FD_ZERO(&exceptfds);\n"
+"        FD_SET(h, &readfds);\n"
+"        nfds = max(nfds, h);\n"
+msgstr ""
+"        FD_ZERO(&readfds);\n"
+"        FD_ZERO(&writefds);\n"
+"        FD_ZERO(&exceptfds);\n"
+"        FD_SET(h, &readfds);\n"
+"        nfds = max(nfds, h);\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (fd1 E<gt> 0 && buf1_avail E<lt> BUF_SIZE)\n"
+"            FD_SET(fd1, &readfds);\n"
+"            /* Note: nfds is updated below, when fd1 is added to\n"
+"               exceptfds. */\n"
+"        if (fd2 E<gt> 0 && buf2_avail E<lt> BUF_SIZE)\n"
+"            FD_SET(fd2, &readfds);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (fd1 E<gt> 0 && buf2_avail - buf2_written E<gt> 0)\n"
+"            FD_SET(fd1, &writefds);\n"
+"        if (fd2 E<gt> 0 && buf1_avail - buf1_written E<gt> 0)\n"
+"            FD_SET(fd2, &writefds);\n"
+msgstr ""
+"        if (fd1 E<gt> 0 && buf2_avail - buf2_written E<gt> 0)\n"
+"            FD_SET(fd1, &writefds);\n"
+"        if (fd2 E<gt> 0 && buf1_avail - buf1_written E<gt> 0)\n"
+"            FD_SET(fd2, &writefds);\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (fd1 E<gt> 0) {\n"
+"            FD_SET(fd1, &exceptfds);\n"
+"            nfds = max(nfds, fd1);\n"
+"        }\n"
+"        if (fd2 E<gt> 0) {\n"
+"            FD_SET(fd2, &exceptfds);\n"
+"            nfds = max(nfds, fd2);\n"
+"        }\n"
+msgstr ""
+"        if (fd1 E<gt> 0) {\n"
+"            FD_SET(fd1, &exceptfds);\n"
+"            nfds = max(nfds, fd1);\n"
+"        }\n"
+"        if (fd2 E<gt> 0) {\n"
+"            FD_SET(fd2, &exceptfds);\n"
+"            nfds = max(nfds, fd2);\n"
+"        }\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "        ready = select(nfds + 1, &readfds, &writefds, &exceptfds, NULL);\n"
+msgstr "        ready = select(nfds + 1, &readfds, &writefds, &exceptfds, NULL);\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (ready == -1 && errno == EINTR)\n"
+"            continue;\n"
+msgstr ""
+"        if (ready == -1 && errno == EINTR)\n"
+"            continue;\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (ready == -1) {\n"
+"            perror(\"select()\");\n"
+"            exit(EXIT_FAILURE);\n"
+"        }\n"
+msgstr ""
+"        if (ready == -1) {\n"
+"            perror(\"select()\");\n"
+"            exit(EXIT_FAILURE);\n"
+"        }\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (FD_ISSET(h, &readfds)) {\n"
+"            socklen_t addrlen;\n"
+"            struct sockaddr_in client_addr;\n"
+"            int fd;\n"
+msgstr ""
+"        if (FD_ISSET(h, &readfds)) {\n"
+"            socklen_t addrlen;\n"
+"            struct sockaddr_in client_addr;\n"
+"            int fd;\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"            addrlen = sizeof(client_addr);\n"
+"            memset(&client_addr, 0, addrlen);\n"
+"            fd = accept(h, (struct sockaddr *) &client_addr, &addrlen);\n"
+"            if (fd == -1) {\n"
+"                perror(\"accept()\");\n"
+"            } else {\n"
+"                SHUT_FD1;\n"
+"                SHUT_FD2;\n"
+"                buf1_avail = buf1_written = 0;\n"
+"                buf2_avail = buf2_written = 0;\n"
+"                fd1 = fd;\n"
+"                fd2 = connect_socket(forward_port, argv[3]);\n"
+"                if (fd2 == -1)\n"
+"                    SHUT_FD1;\n"
+"                else\n"
+"                    printf(\"connect from %s\\en\",\n"
+"                            inet_ntoa(client_addr.sin_addr));\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"                /* Skip any events on the old, closed file\n"
+"                   descriptors. */\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"                continue;\n"
+"            }\n"
+"        }\n"
+msgstr ""
+"                continue;\n"
+"            }\n"
+"        }\n"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "        /* NB: read OOB data before normal reads. */\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (fd1 E<gt> 0 && FD_ISSET(fd1, &exceptfds)) {\n"
+"            char c;\n"
+msgstr ""
+"        if (fd1 E<gt> 0 && FD_ISSET(fd1, &exceptfds)) {\n"
+"            char c;\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"            nbytes = recv(fd1, &c, 1, MSG_OOB);\n"
+"            if (nbytes E<lt> 1)\n"
+"                SHUT_FD1;\n"
+"            else\n"
+"                send(fd2, &c, 1, MSG_OOB);\n"
+"        }\n"
+"        if (fd2 E<gt> 0 && FD_ISSET(fd2, &exceptfds)) {\n"
+"            char c;\n"
+msgstr ""
+"            nbytes = recv(fd1, &c, 1, MSG_OOB);\n"
+"            if (nbytes E<lt> 1)\n"
+"                SHUT_FD1;\n"
+"            else\n"
+"                send(fd2, &c, 1, MSG_OOB);\n"
+"        }\n"
+"        if (fd2 E<gt> 0 && FD_ISSET(fd2, &exceptfds)) {\n"
+"            char c;\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"            nbytes = recv(fd2, &c, 1, MSG_OOB);\n"
+"            if (nbytes E<lt> 1)\n"
+"                SHUT_FD2;\n"
+"            else\n"
+"                send(fd1, &c, 1, MSG_OOB);\n"
+"        }\n"
+"        if (fd1 E<gt> 0 && FD_ISSET(fd1, &readfds)) {\n"
+"            nbytes = read(fd1, buf1 + buf1_avail,\n"
+"                      BUF_SIZE - buf1_avail);\n"
+"            if (nbytes E<lt> 1)\n"
+"                SHUT_FD1;\n"
+"            else\n"
+"                buf1_avail += nbytes;\n"
+"        }\n"
+"        if (fd2 E<gt> 0 && FD_ISSET(fd2, &readfds)) {\n"
+"            nbytes = read(fd2, buf2 + buf2_avail,\n"
+"                      BUF_SIZE - buf2_avail);\n"
+"            if (nbytes E<lt> 1)\n"
+"                SHUT_FD2;\n"
+"            else\n"
+"                buf2_avail += nbytes;\n"
+"        }\n"
+"        if (fd1 E<gt> 0 && FD_ISSET(fd1, &writefds) && buf2_avail E<gt> 0) {\n"
+"            nbytes = write(fd1, buf2 + buf2_written,\n"
+"                       buf2_avail - buf2_written);\n"
+"            if (nbytes E<lt> 1)\n"
+"                SHUT_FD1;\n"
+"            else\n"
+"                buf2_written += nbytes;\n"
+"        }\n"
+"        if (fd2 E<gt> 0 && FD_ISSET(fd2, &writefds) && buf1_avail E<gt> 0) {\n"
+"            nbytes = write(fd2, buf1 + buf1_written,\n"
+"                       buf1_avail - buf1_written);\n"
+"            if (nbytes E<lt> 1)\n"
+"                SHUT_FD2;\n"
+"            else\n"
+"                buf1_written += nbytes;\n"
+"        }\n"
+msgstr ""
+"            nbytes = recv(fd2, &c, 1, MSG_OOB);\n"
+"            if (nbytes E<lt> 1)\n"
+"                SHUT_FD2;\n"
+"            else\n"
+"                send(fd1, &c, 1, MSG_OOB);\n"
+"        }\n"
+"        if (fd1 E<gt> 0 && FD_ISSET(fd1, &readfds)) {\n"
+"            nbytes = read(fd1, buf1 + buf1_avail,\n"
+"                      BUF_SIZE - buf1_avail);\n"
+"            if (nbytes E<lt> 1)\n"
+"                SHUT_FD1;\n"
+"            else\n"
+"                buf1_avail += nbytes;\n"
+"        }\n"
+"        if (fd2 E<gt> 0 && FD_ISSET(fd2, &readfds)) {\n"
+"            nbytes = read(fd2, buf2 + buf2_avail,\n"
+"                      BUF_SIZE - buf2_avail);\n"
+"            if (nbytes E<lt> 1)\n"
+"                SHUT_FD2;\n"
+"            else\n"
+"                buf2_avail += nbytes;\n"
+"        }\n"
+"        if (fd1 E<gt> 0 && FD_ISSET(fd1, &writefds) && buf2_avail E<gt> 0) {\n"
+"            nbytes = write(fd1, buf2 + buf2_written,\n"
+"                       buf2_avail - buf2_written);\n"
+"            if (nbytes E<lt> 1)\n"
+"                SHUT_FD1;\n"
+"            else\n"
+"                buf2_written += nbytes;\n"
+"        }\n"
+"        if (fd2 E<gt> 0 && FD_ISSET(fd2, &writefds) && buf1_avail E<gt> 0) {\n"
+"            nbytes = write(fd2, buf1 + buf1_written,\n"
+"                       buf1_avail - buf1_written);\n"
+"            if (nbytes E<lt> 1)\n"
+"                SHUT_FD2;\n"
+"            else\n"
+"                buf1_written += nbytes;\n"
+"        }\n"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "        /* Check if write data has caught read data. */\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (buf1_written == buf1_avail)\n"
+"            buf1_written = buf1_avail = 0;\n"
+"        if (buf2_written == buf2_avail)\n"
+"            buf2_written = buf2_avail = 0;\n"
+msgstr ""
+"        if (buf1_written == buf1_avail)\n"
+"            buf1_written = buf1_avail = 0;\n"
+"        if (buf2_written == buf2_avail)\n"
+"            buf2_written = buf2_avail = 0;\n"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        /* One side has closed the connection, keep\n"
+"           writing to the other side until empty. */\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"        if (fd1 E<lt> 0 && buf1_avail - buf1_written == 0)\n"
+"            SHUT_FD2;\n"
+"        if (fd2 E<lt> 0 && buf2_avail - buf2_written == 0)\n"
+"            SHUT_FD1;\n"
+"    }\n"
+"    exit(EXIT_SUCCESS);\n"
+"}\n"
+msgstr ""
+"        if (fd1 E<lt> 0 && buf1_avail - buf1_written == 0)\n"
+"            SHUT_FD2;\n"
+"        if (fd2 E<lt> 0 && buf2_avail - buf2_written == 0)\n"
+"            SHUT_FD1;\n"
+"    }\n"
+"    exit(EXIT_SUCCESS);\n"
+"}\n"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "The above program properly forwards most kinds of TCP connections "
+#| "including OOB signal data transmitted by B<telnet> servers. It handles "
+#| "the tricky problem of having data flow in both directions simultaneously. "
+#| "You might think it more efficient to use a B<fork()> call and devote a "
+#| "thread to each stream. This becomes more tricky than you might suspect. "
+#| "Another idea is to set non-blocking IO using an B<ioctl()> call. This "
+#| "also has its problems because you end up having to have inefficient "
+#| "timeouts."
+msgid ""
+"The above program properly forwards most kinds of TCP connections including "
+"OOB signal data transmitted by B<telnet> servers.  It handles the tricky "
+"problem of having data flow in both directions simultaneously.  You might "
+"think it more efficient to use a B<fork>(2)  call and devote a thread to "
+"each stream.  This becomes more tricky than you might suspect.  Another idea "
+"is to set nonblocking I/O using B<fcntl>(2).  This also has its problems "
+"because you end up using inefficient timeouts."
+msgstr ""
+"El programa anterior reenvía correctamente la mayoría de los tipos de "
+"conexiones TCP, incluyendo los datos OOB de señal transmitidos por los "
+"servidores B<telnet>. También es capaz de manejar el difícil problema de "
+"tener flujos de datos en ambas direcciones a la vez.  Podría pensar que es "
+"más eficiente hacer una llamada B<fork()> y dedicar un hilo a cada flujo. "
+"Esto es más complicado de lo que podría pensar. Otra idea es activar E/S no "
+"bloqueante haciendo una llamada B<ioctl()>. Esto también tiene sus problemas "
+"ya que acaba teniendo que utilizar plazos de tiempo (I<timeouts>) "
+"ineficientes."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The program does not handle more than one simultaneous connection at a time, "
+"although it could easily be extended to do this with a linked list of buffers"
+"\\(emone for each connection.  At the moment, new connections cause the "
+"current connection to be dropped."
+msgstr ""
+"El programa no maneja más de una conexión simultánea a la vez, aunque podría "
+"extenderse fácilmente para hacer esto con una lista ligada de buffers "
+"\\(emuno para cada conexión. Por ahora, una nueva conexión hace que la "
+"conexión actual se caiga."
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "VÉASE TAMBIÉN"
+
+#. #-#-#-#-#  archlinux: select_tut.2.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  .SH AUTHORS
+#.  This man page was written by Paul Sheer.
+#. type: Plain text
+#. #-#-#-#-#  debian-bullseye: select_tut.2.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  .SH AUTHORS
+#.  This man page was written by Paul Sheer.
+#. type: Plain text
+#. #-#-#-#-#  debian-unstable: select_tut.2.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  .SH AUTHORS
+#.  This man page was written by Paul Sheer.
+#. type: Plain text
+#. #-#-#-#-#  fedora-rawhide: select_tut.2.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  .SH AUTHORS
+#.  This man page was written by Paul Sheer.
+#. type: Plain text
+#. #-#-#-#-#  mageia-cauldron: select_tut.2.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  .SH AUTHORS
+#.  This man page was written by Paul Sheer.
+#. type: Plain text
+#. #-#-#-#-#  opensuse-tumbleweed: select_tut.2.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"B<accept>(2), B<connect>(2), B<poll>(2), B<read>(2), B<recv>(2), "
+"B<select>(2), B<send>(2), B<sigprocmask>(2), B<write>(2), B<epoll>(7)"
+msgstr ""
+"B<accept>(2), B<connect>(2), B<poll>(2), B<read>(2), B<recv>(2), "
+"B<select>(2), B<send>(2), B<sigprocmask>(2), B<write>(2), B<epoll>(7)"
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr "COLOFÓN"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+"Esta página es parte de la versión 5.13 del proyecto Linux I<man-pages>. "
+"Puede encontrar una descripción del proyecto, información sobre cómo "
+"informar errores y la última versión de esta página en \\%https://www.kernel."
+"org/doc/man-pages/."
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "2020-04-11"
+msgstr "11 Abril 2020"
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "        /* NB: read OOB data before normal reads */\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "        /* Check if write data has caught read data */\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"        /* One side has closed the connection, keep\n"
+"           writing to the other side until empty */\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+"Esta página es parte de la versión 5.10 del proyecto Linux I<man-pages>. "
+"Puede encontrar una descripción del proyecto, información sobre cómo "
+"informar errores y la última versión de esta página en \\%https://www.kernel."
+"org/doc/man-pages/."
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2017-09-15"
+msgstr "15 Septiembre 2017"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"select, pselect, FD_CLR, FD_ISSET, FD_SET, FD_ZERO - synchronous I/O "
+"multiplexing"
+msgstr ""
+"select, pselect, FD_CLR, FD_ISSET, FD_SET, FD_ZERO - multiplexación de E/S "
+"síncrona"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"/* According to POSIX.1-2001, POSIX.1-2008 */\n"
+"B<#include E<lt>sys/select.hE<gt>>\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"/* According to earlier standards */\n"
+"B<#include E<lt>sys/time.hE<gt>>\n"
+"B<#include E<lt>sys/types.hE<gt>>\n"
+"B<#include E<lt>unistd.hE<gt>>\n"
+msgstr ""
+"/* According to earlier standards */\n"
+"B<#include E<lt>sys/time.hE<gt>>\n"
+"B<#include E<lt>sys/types.hE<gt>>\n"
+"B<#include E<lt>unistd.hE<gt>>\n"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"B<int select(int >I<nfds>B<, fd_set *>I<readfds>B<, fd_set *>I<writefds>B<,>\n"
+"B<           fd_set *>I<exceptfds>B<, struct timeval *>I<utimeout>B<);>\n"
+msgstr ""
+"B<int select(int >I<nfds>B<, fd_set *>I<readfds>B<, fd_set *>I<writefds>B<,>\n"
+"B<           fd_set *>I<exceptfds>B<, struct timeval *>I<utimeout>B<);>\n"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"B<void FD_CLR(int >I<fd>B<, fd_set *>I<set>B<);>\n"
+"B<int  FD_ISSET(int >I<fd>B<, fd_set *>I<set>B<);>\n"
+"B<void FD_SET(int >I<fd>B<, fd_set *>I<set>B<);>\n"
+"B<void FD_ZERO(fd_set *>I<set>B<);>\n"
+msgstr ""
+"B<void FD_CLR(int >I<fd>B<, fd_set *>I<set>B<);>\n"
+"B<int  FD_ISSET(int >I<fd>B<, fd_set *>I<set>B<);>\n"
+"B<void FD_SET(int >I<fd>B<, fd_set *>I<set>B<);>\n"
+"B<void FD_ZERO(fd_set *>I<set>B<);>\n"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "B<#include E<lt>sys/select.hE<gt>>\n"
+msgstr "B<#include E<lt>sys/select.hE<gt>>\n"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"B<int pselect(int >I<nfds>B<, fd_set *>I<readfds>B<, fd_set *>I<writefds>B<,>\n"
+"B<            fd_set *>I<exceptfds>B<, const struct timespec *>I<ntimeout>B<,>\n"
+"B<            const sigset_t *>I<sigmask>B<);>\n"
+msgstr ""
+"B<int pselect(int >I<nfds>B<, fd_set *>I<readfds>B<, fd_set *>I<writefds>B<,>\n"
+"B<            fd_set *>I<exceptfds>B<, const struct timespec *>I<ntimeout>B<,>\n"
+"B<            const sigset_t *>I<sigmask>B<);>\n"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"Feature Test Macro Requirements for glibc (see B<feature_test_macros>(7)):"
+msgstr ""
+"Requisitos de Macros de Prueba de Características para glibc (véase "
+"B<feature_test_macros>(7)):"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "B<pselect>(): _POSIX_C_SOURCE\\ E<gt>=\\ 200112L"
+msgstr "B<pselect>(): _POSIX_C_SOURCE\\ E<gt>=\\ 200112L"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"B<select>()  (or B<pselect>())  is used to efficiently monitor multiple file "
+"descriptors, to see if any of them is, or becomes, \"ready\"; that is, to "
+"see whether I/O becomes possible, or an \"exceptional condition\" has "
+"occurred on any of the file descriptors."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, fuzzy
+#| msgid ""
+#| "The arrays of file descriptors are called I<file descriptor sets>.  Each "
+#| "set is declared as type B<fd_set>, and its contents can be altered with "
+#| "the macros B<FD_CLR>, B<FD_ISSET>, B<FD_SET>, and B<FD_ZERO>. B<FD_ZERO> "
+#| "is usually the first function to be used on a newly declared set. "
+#| "Thereafter, the individual file descriptors that you are interested in "
+#| "can be added one by one with B<FD_SET>.  B<select> modifies the contents "
+#| "of the sets according to the rules described below; after calling "
+#| "B<select> you can test if your file descriptor is still present in the "
+#| "set with the B<FD_ISSET> macro.  B<FD_ISSET> returns non-zero if the "
+#| "descriptor is present and zero if it is not. B<FD_CLR> removes a file "
+#| "descriptor from the set although I can't see the use for it in a clean "
+#| "program."
+msgid ""
+"Its principal arguments are three \"sets\" of file descriptors: I<readfds>, "
+"I<writefds>, and I<exceptfds>.  Each set is declared as type I<fd_set>, and "
+"its contents can be manipulated with the macros B<FD_CLR>(), B<FD_ISSET>(), "
+"B<FD_SET>(), and B<FD_ZERO>().  A newly declared set should first be cleared "
+"using B<FD_ZERO>().  B<select>()  modifies the contents of the sets "
+"according to the rules described below; after calling B<select>()  you can "
+"test if a file descriptor is still present in a set with the B<FD_ISSET>()  "
+"macro.  B<FD_ISSET>()  returns nonzero if a specified file descriptor is "
+"present in a set and zero if it is not.  B<FD_CLR>()  removes a file "
+"descriptor from a set."
+msgstr ""
+"Los arrays de descriptores de fichero son llamados I<conjuntos de "
+"descriptores de fichero>.  Cada conjunto es declarado con el tipo B<fd_set>, "
+"y su contenido puede ser alterado con las macros B<FD_CLR>, B<FD_ISSET>, "
+"B<FD_SET> y B<FD_ZERO>. B<FD_ZERO> es normalmente la primera función que se "
+"utiliza sobre un conjunto recién declarado. A partir de aquí, aquellos "
+"descriptores de fichero individuales en los que esté interesado pueden ser "
+"añadidos uno por uno con B<FD_SET>.  B<select> modifica el contenido de los "
+"conjuntos de acuerdo a las reglas descritas abajo; después de invocar a "
+"B<select> puede comprobar si su descriptor de fichero está aún presente en "
+"el conjunto con la macro B<FD_ISSET>.  B<FD_ISSET> devuelve un valor "
+"distinto de cero si el descriptor está presente y cero si no lo está. "
+"B<FD_CLR> elimina un descriptor de fichero del conjunto, aunque yo no veo el "
+"uso que puede tener en un programa correcto."
+
+#. type: SS
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "Arguments"
+msgstr "Argumentos"
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<readfds>"
+msgstr "I<readfds>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, fuzzy
+#| msgid ""
+#| "This set is watched to see if data is available for reading from any of "
+#| "its file descriptors. After B<select> has returned, I<readfds> will be "
+#| "cleared of all file descriptors except for those file descriptors that "
+#| "are immediately available for reading with a B<recv()> (for sockets) or "
+#| "B<read()> (for pipes, files, and sockets) call."
+msgid ""
+"This set is watched to see if data is available for reading from any of its "
+"file descriptors.  After B<select>()  has returned, I<readfds> will be "
+"cleared of all file descriptors except for those that are immediately "
+"available for reading."
+msgstr ""
+"Este conjunto es observado para ver si hay datos disponibles para leer en "
+"cualquiera de sus descriptores de fichero. Después de que B<select> regrese, "
+"borrará de I<readfds> todos los descriptores de fichero salvo aquellos sobre "
+"los que pueda ejecutarse inmediatamente una operación de lectura con una "
+"llamada a B<recv()> (para conectores) o B<read()> (para tuberías, ficheros y "
+"conectores)."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<writefds>"
+msgstr "I<writefds>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, fuzzy
+#| msgid ""
+#| "This set is watched to see if there is space to write data to any of its "
+#| "file descriptor. After B<select> has returned, I<writefds> will be "
+#| "cleared of all file descriptors except for those file descriptors that "
+#| "are immediately available for writing with a B<send()> (for sockets) or "
+#| "B<write()> (for pipes, files, and sockets) call."
+msgid ""
+"This set is watched to see if there is space to write data to any of its "
+"file descriptors.  After B<select>()  has returned, I<writefds> will be "
+"cleared of all file descriptors except for those that are immediately "
+"available for writing."
+msgstr ""
+"Este conjunto es observado para ver si hay espacio para escribir datos en "
+"cualquiera de sus descriptores de fichero. Después de que B<select> regrese, "
+"borrará de I<writefds> todos los descriptores de fichero salvo aquellos "
+"sobre los que se pueda ejecutar inmediatamente una operación de escritura "
+"con una llamada a B<send()> (para conectores) o B<write()> (para tuberías, "
+"ficheros y conectores)."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<exceptfds>"
+msgstr "I<exceptfds>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This set is watched for \"exceptional conditions\".  In practice, only one "
+"such exceptional condition is common: the availability of I<out-of-band> "
+"(OOB) data for reading from a TCP socket.  See B<recv>(2), B<send>(2), and "
+"B<tcp>(7)  for more details about OOB data.  (One other less common case "
+"where B<select>(2)  indicates an exceptional condition occurs with "
+"pseudoterminals in packet mode; see B<ioctl_tty>(2).)  After B<select>()  "
+"has returned, I<exceptfds> will be cleared of all file descriptors except "
+"for those for which an exceptional condition has occurred."
+msgstr ""
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<nfds>"
+msgstr "I<nfds>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, fuzzy
+#| msgid ""
+#| "This is an integer one more than the maximum of any file descriptor in "
+#| "any of the sets. In other words, while you are busy adding file "
+#| "descriptors to your sets, you must calculate the maximum integer value of "
+#| "all of them, then increment this value by one, and then pass this as "
+#| "I<nfds> to B<select>."
+msgid ""
+"This is an integer one more than the maximum of any file descriptor in any "
+"of the sets.  In other words, while adding file descriptors to each of the "
+"sets, you must calculate the maximum integer value of all of them, then "
+"increment this value by one, and then pass this as I<nfds>."
+msgstr ""
+"Es un entero que indica uno más del máximo de cualquier descriptor de "
+"fichero en cualquiera de los conjuntos. En otras palabras, mientras está "
+"atareado añadiendo descriptores de fichero a sus conjuntos, debe calcular el "
+"máximo valor entero de todos ellos, incrementar este valor en uno, y pasarlo "
+"como I<nfds> a B<select>."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<utimeout>"
+msgstr "I<utimeout>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, fuzzy
+#| msgid ""
+#| "This is the longest time B<select> must wait before returning, even if "
+#| "nothing interesting happened. If this value is passed as B<NULL>, then "
+#| "B<select> blocks indefinitely waiting for an event.  I<utimeout> can be "
+#| "set to zero seconds, which causes B<select> to return immediately. The "
+#| "structure B<struct timeval> is defined as,"
+msgid ""
+"This is the longest time B<select>()  may wait before returning, even if "
+"nothing interesting happened.  If this value is passed as NULL, then "
+"B<select>()  blocks indefinitely waiting for a file descriptor to become "
+"ready.  I<utimeout> can be set to zero seconds, which causes B<select>()  to "
+"return immediately, with information about the readiness of file descriptors "
+"at the time of the call.  The structure I<struct timeval> is defined as:"
+msgstr ""
+"Es el máximo valor de tiempo que B<select> debe esperar antes de regresar, "
+"incluso si nada interesante ocurrió. Si este valor se pasa como B<NULL>, "
+"B<select> se bloqueará indefinidamente esperando un evento.  I<utimeout> "
+"puede ser puesto a cero segundos, lo que provoca que B<select> regrese "
+"inmediatamente. La estructura B<struct timeval> está definida como,"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"struct timeval {\n"
+"    time_t tv_sec;    /* seconds */\n"
+"    long tv_usec;     /* microseconds */\n"
+"};\n"
+msgstr ""
+"struct timeval {\n"
+"    time_t tv_sec;    /* segundos */\n"
+"    long tv_usec;     /* microsegundos */\n"
+"};\n"
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<ntimeout>"
+msgstr "I<ntimeout>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, fuzzy
+#| msgid ""
+#| "This argument has the same meaning as I<utimeout> but B<struct timespec> "
+#| "has nanosecond precision as follows,"
+msgid ""
+"This argument for B<pselect>()  has the same meaning as I<utimeout>, but "
+"I<struct timespec> has nanosecond precision as follows:"
+msgstr ""
+"Este argumento tiene el mismo significado que I<utimeout> pero B<struct "
+"timespec> tiene precisión de nanosegundos como sigue,"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"struct timespec {\n"
+"    long tv_sec;    /* seconds */\n"
+"    long tv_nsec;   /* nanoseconds */\n"
+"};\n"
+msgstr ""
+"struct timespec {\n"
+"    long tv_sec;    /* segundos */\n"
+"    long tv_nsec;   /* nanosegundos */\n"
+"};\n"
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<sigmask>"
+msgstr "I<sigmask>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, fuzzy
+#| msgid ""
+#| "This argument holds a set of signals to allow while performing a "
+#| "B<pselect> call (see B<sigaddset>(3) and B<sigprocmask>(2)). It can be "
+#| "passed as NULL, in which case it does not modify the set of allowed "
+#| "signals on entry and exit to the function. It will then behave just like "
+#| "B<select>."
+msgid ""
+"This argument holds a set of signals that the kernel should unblock (i.e., "
+"remove from the signal mask of the calling thread), while the caller is "
+"blocked inside the B<pselect>()  call (see B<sigaddset>(3)  and "
+"B<sigprocmask>(2)).  It may be NULL, in which case the call does not modify "
+"the signal mask on entry and exit to the function.  In this case, "
+"B<pselect>()  will then behave just like B<select>()."
+msgstr ""
+"Este argumento contiene un conjunto de señales permitidas mientras se "
+"realiza una llamada a B<pselect> (vea B<sigaddset>(3) y B<sigprocmask>(2)). "
+"Puede valer NULL, en cuyo caso no modifica el conjunto de señales permitidas "
+"en la entrada y la salida de la función. Se comportará igual que B<select>."
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, fuzzy
+#| msgid ""
+#| "B<pselect> must be used if you are waiting for a signal as well as data "
+#| "from a file descriptor. Programs that receive signals as events normally "
+#| "use the signal handler only to raise a global flag. The global flag will "
+#| "indicate that the event must be processed in the main loop of the "
+#| "program. A signal will cause the B<select> (or B<pselect>)  call to "
+#| "return with B<errno> set to B<EINTR>. This behavior is essential so that "
+#| "signals can be processed in the main loop of the program, otherwise "
+#| "B<select> would block indefinitely. Now, somewhere in the main loop will "
+#| "be a conditional to check the global flag. So we must ask: what if a "
+#| "signal arrives after the conditional, but before the B<select> call? The "
+#| "answer is that B<select> would block indefinitely, even though an event "
+#| "is actually pending. This race condition is solved by the B<pselect> "
+#| "call. This call can be used to mask out signals that are not to be "
+#| "received except within the B<pselect> call. For instance, let us say that "
+#| "the event in question was the exit of a child process. Before the start "
+#| "of the main loop, we would block B<SIGCHLD> using B<sigprocmask>. Our "
+#| "B<pselect> call would enable B<SIGCHLD> by using the virgin signal mask. "
+#| "Our program would look like:"
+msgid ""
+"B<pselect>()  is useful if you are waiting for a signal as well as for file "
+"descriptor(s) to become ready for I/O.  Programs that receive signals "
+"normally use the signal handler only to raise a global flag.  The global "
+"flag will indicate that the event must be processed in the main loop of the "
+"program.  A signal will cause the B<select>()  (or B<pselect>())  call to "
+"return with I<errno> set to B<EINTR>.  This behavior is essential so that "
+"signals can be processed in the main loop of the program, otherwise "
+"B<select>()  would block indefinitely.  Now, somewhere in the main loop will "
+"be a conditional to check the global flag.  So we must ask: what if a signal "
+"arrives after the conditional, but before the B<select>()  call? The answer "
+"is that B<select>()  would block indefinitely, even though an event is "
+"actually pending.  This race condition is solved by the B<pselect>()  call.  "
+"This call can be used to set the signal mask to a set of signals that are to "
+"be received only within the B<pselect>()  call.  For instance, let us say "
+"that the event in question was the exit of a child process.  Before the "
+"start of the main loop, we would block B<SIGCHLD> using B<sigprocmask>(2).  "
+"Our B<pselect>()  call would enable B<SIGCHLD> by using an empty signal "
+"mask.  Our program would look like:"
+msgstr ""
+"B<pselect> debe ser usada si está esperando una señal así como datos de un "
+"descriptor de fichero. Los programas que reciben señales como eventos "
+"normalmente utilizan el manejador de señales para activar una bandera "
+"global.  La bandera global indicará que el evento debe ser procesado en el "
+"bucle principal del programa. Una señal provocará que la llamada a B<select> "
+"(o B<pselect>)  regrese tomando la variable B<errno> el valor B<EINTR>. Este "
+"comportamiento es esencial para que las señales puedan ser procesadas en el "
+"bucle principal del programa, de otra manera B<select> se bloquearía "
+"indefinidamente.  Ahora, en algún lugar del bucle principal habrá una "
+"condición para comprobar la bandera global. Así que debemos preguntarnos: "
+"¿qué ocurre si una señal llega después de la condición, pero antes de la "
+"llamada a B<select>? La respuesta es que B<select> se bloquearía "
+"indefinidamente, incluso aún si hay un evento pendiente. Esta condición de "
+"carrera se soluciona con la llamada B<pselect>. Esta llamada puede "
+"utilizarse para enmascarar señales que no van a ser recibidas salvo dentro "
+"de la llamada B<pselect>. Por ejemplo, digamos que el evento en cuestión fue "
+"la salida de un proceso hijo. Antes del comienzo del bucle principal, "
+"bloquearíamos B<SIGCHLD> usando B<sigprocmask>. Nuestra llamada B<pselect> "
+"podría habilitar B<SIGCHLD> usando la máscara de señal virgen. Nuestro "
+"programa se podría parecer a ésto:"
+
+#. type: SS
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "Usleep emulation"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"On systems that do not have a B<usleep>(3)  function, you can call "
+"B<select>()  with a finite timeout and no file descriptors as follows:"
+msgstr ""
+"En sistemas que no tienen una función B<usleep>(3), puede llamar a "
+"B<select>() con un plazo de espera finito y sin descriptores de fichero de "
+"la siguiente manera:"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"struct timeval tv;\n"
+"tv.tv_sec = 0;\n"
+"tv.tv_usec = 200000;  /* 0.2 seconds */\n"
+"select(0, NULL, NULL, NULL, &tv);\n"
+msgstr ""
+"struct timeval tv;\n"
+"tv.tv_sec = 0;\n"
+"tv.tv_usec = 200000;  /* 0.2 segundos */\n"
+"select(0, NULL, NULL, NULL, &tv);\n"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "This is guaranteed to work only on UNIX systems, however."
+msgstr "Sin embargo, sólo se garantiza que funcionará en sistemas UNIX."
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"On success, B<select>()  returns the total number of file descriptors still "
+"present in the file descriptor sets."
+msgstr ""
+"En caso de éxito, B<select>() devuelve el número total de descriptores que "
+"están presentes todavía en los conjuntos de descriptores de fichero."
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, fuzzy
+#| msgid ""
+#| "If B<select> timed out, then the file descriptors sets should be all "
+#| "empty (but may not be on some systems). However the return value will "
+#| "definitely be zero."
+msgid ""
+"If B<select>()  timed out, then the return value will be zero.  The file "
+"descriptors set should be all empty (but may not be on some systems)."
+msgstr ""
+"Si se cumple el plazo de espera para B<select>, los conjuntos de "
+"descriptores de fichero deberían estar vacíos (pero en algunos sistemas "
+"puede que no sea así).  Sin embargo el valor devuelto será definitivamente "
+"cero."
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, fuzzy
+#| msgid ""
+#| "A return value of -1 indicates an error, with B<errno> being set "
+#| "appropriately. In the case of an error, the returned sets and the timeout "
+#| "struct contents are undefined and should not be used.  B<pselect> however "
+#| "never modifies I<ntimeout>."
+msgid ""
+"A return value of -1 indicates an error, with I<errno> being set "
+"appropriately.  In the case of an error, the contents of the returned sets "
+"and the I<struct timeout> contents are undefined and should not be used.  "
+"B<pselect>()  however never modifies I<ntimeout>."
+msgstr ""
+"Un valor devuelto de -1 indica un error, y la variable B<errno> será "
+"modificada apropiadamente. En caso de error, el contenido de los conjuntos "
+"devueltos y la estructura timeout es indefinido y no debería ser usado.  "
+"B<pselect>, sin embargo, no modifica nunca I<ntimeout>."
+
+#. type: SH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "EXAMPLE"
+msgstr "EJEMPLO"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"#include E<lt>stdlib.hE<gt>\n"
+"#include E<lt>stdio.hE<gt>\n"
+"#include E<lt>unistd.hE<gt>\n"
+"#include E<lt>sys/time.hE<gt>\n"
+"#include E<lt>sys/types.hE<gt>\n"
+"#include E<lt>string.hE<gt>\n"
+"#include E<lt>signal.hE<gt>\n"
+"#include E<lt>sys/socket.hE<gt>\n"
+"#include E<lt>netinet/in.hE<gt>\n"
+"#include E<lt>arpa/inet.hE<gt>\n"
+"#include E<lt>errno.hE<gt>\n"
+msgstr ""
+"#include E<lt>stdlib.hE<gt>\n"
+"#include E<lt>stdio.hE<gt>\n"
+"#include E<lt>unistd.hE<gt>\n"
+"#include E<lt>sys/time.hE<gt>\n"
+"#include E<lt>sys/types.hE<gt>\n"
+"#include E<lt>string.hE<gt>\n"
+"#include E<lt>signal.hE<gt>\n"
+"#include E<lt>sys/socket.hE<gt>\n"
+"#include E<lt>netinet/in.hE<gt>\n"
+"#include E<lt>arpa/inet.hE<gt>\n"
+"#include E<lt>errno.hE<gt>\n"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, fuzzy, no-wrap
+#| msgid ""
+#| "    if (!inet_aton(address, (struct in_addr *) &addr.sin_addr.s_addr)) {\n"
+#| "        fprintf(stderr, \"inet_aton(): bad IP address format\\en\");\n"
+#| "        close(cfd);\n"
+#| "        return -1;\n"
+#| "    }\n"
+msgid ""
+"    if (!inet_aton(address, (struct in_addr *) &addr.sin_addr.s_addr)) {\n"
+"        perror(\"bad IP address format\");\n"
+"        close(cfd);\n"
+"        return -1;\n"
+"    }\n"
+msgstr ""
+"    if (!inet_aton(address, (struct in_addr *) &addr.sin_addr.s_addr)) {\n"
+"        fprintf(stderr, \"inet_aton(): formato de dirección IP incorrecto\\en\");\n"
+"        close(cfd);\n"
+"        return -1;\n"
+"    }\n"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"                /* Skip any events on the old, closed file descriptors. */\n"
+"                continue;\n"
+"            }\n"
+"        }\n"
+msgstr ""
+
+#.  .SH AUTHORS
+#.  This man page was written by Paul Sheer.
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"B<accept>(2), B<connect>(2), B<ioctl>(2), B<poll>(2), B<read>(2), "
+"B<recv>(2), B<select>(2), B<send>(2), B<sigprocmask>(2), B<write>(2), "
+"B<sigaddset>(3), B<sigdelset>(3), B<sigemptyset>(3), B<sigfillset>(3), "
+"B<sigismember>(3), B<epoll>(7)"
+msgstr ""
+"B<accept>(2), B<connect>(2), B<ioctl>(2), B<poll>(2), B<read>(2), "
+"B<recv>(2), B<select>(2), B<send>(2), B<sigprocmask>(2), B<write>(2), "
+"B<sigaddset>(3), B<sigdelset>(3), B<sigemptyset>(3), B<sigfillset>(3), "
+"B<sigismember>(3), B<epoll>(7)"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+"Esta página es parte de la versión 4.16 del proyecto Linux I<man-pages>. "
+"Puede encontrar una descripción del proyecto, información sobre cómo "
+"informar errores y la última versión de esta página en \\%https://www.kernel."
+"org/doc/man-pages/."

@@ -1,0 +1,1556 @@
+.\" {PTM/WK/2000-VI}
+.TH MAWK 1  "22 grudnia 1994" "wersja 1.2" "POLECENIA UŻYTKOWNIKA"
+.\" strings
+.ds ex \fIwyraż\fR
+.SH NAZWA
+mawk \- język wyszukiwania wzorców i przetwarzania tekstu
+.SH SKŁADNIA
+.TP 6
+.B mawk
+.RB [ -W
+.IR opcja ]
+.RB [ -F
+.IR wartość ]
+.RB [ -v
+.IR zmn\fB=\fPwartość ]
+.br
+.RB [ \-\- "] 'tekst programu'"
+.RI [ plik ...]
+.TP
+.B mawk
+.RB [ -W
+.IR opcja ]
+.RB [ -F
+.IR wartość ]
+.RB [ -v
+.IR zmn\fB=\fPwartość ]
+.br
+.RB [ -f
+.IR plik-programu ]
+.RB [ \-\- ]
+.RI [ plik ...]
+.SH OPIS
+.B mawk
+jest interpreterem języka programowania AWK. Język AWK jest użyteczny
+w działaniach na plikach danych, wyszukiwaniu i przetwarzaniu tekstu oraz
+tworzeniu prototypów i eksperymentowaniu z algorytmami.
+.B mawk
+implementuje język AWK, jak go zdefiniowali Aho, Kernighan i Weinberger
+w książce
+.IR "The AWK Programming Language" ,
+Addison-Wesley Publishing, 1988 (dalej wzmiankowanej jako książka AWK).
+.B mawk
+jest zgodny z definicją języka AWK ze standardu Posix 1003.2
+(propozycja 11.3), zawierającą nowe cechy nie opisane w książce AWK.
+Dodatkowo
+.B mawk
+zawiera nieco rozszerzeń.
+.PP
+Program AWK jest sekwencją par \fIwzorzec {akcja}\fP i definicji funkcji.
+Krótkie programy wprowadzane są w wierszu poleceń, zwykle ujęte w ' ', by
+uniknąć interpretacji ich składowych przez powłokę.
+Dłuższe programy mogą być czytane z pliku przy pomocy opcji \fB-f\fP.
+dane wejściowe odczytywane  są z listy plików z wiersza poleceń lub
+ze standardowego wejścia, gdy lista ta jest pusta.
+Wejście rozbijane jest na rekordy określone według zmiennej opisującej
+separator rekordów, \fBRS\fP (record separator). Początkowo
+\fBRS\fP="\en"
+a rekordy są tożsame z wierszami. Każdy z rekordów porównywany jest z każdym
+ze
+.IR wzorców ,
+a jeśli pasuje, wykonywany jest tekst programu dla
+.IR "{akcji}" .
+.SH OPCJE
+.TP \w'\-\fBW'u+\w'\fRsprintf=\fInum\fR'u+2n
+\fB\-F \fIwartość
+ustawia separator pól, \fBFS\fP, na
+.IR wartość .
+.TP
+\fB\-f \fIplik
+Tekst programu jest czytany z \fIpliku\fP zamiast z wiersza poleceń.
+Dopuszcza się wielokrotne użycie opcji
+.BR \-f .
+.TP
+\fB\-v \fIzmn\fB=\fPwartość
+przypisuje
+.I wartość
+zmiennej programu
+.IR zmn .
+.TP
+.B \-\|\-
+wskazuje jednoznaczny koniec opcji.
+.PP
+Powyższe opcje będą dostępne w każdej zgodnej z Posix implementacji AWK.
+Opcje specyficzne dla danej implementacji poprzedzane są przez
+.BR \-W .
+.B mawk
+udostępnia sześć takich rozszerzeń:
+.TP \w'\-\fBW'u+\w'\fRsprintf=\fInum\fR'u+2n
+.B \-W version
+.B mawk
+wypisuje swą wersję i prawa autorskie na stdout (standardowym wyjściu), zaś
+wkompilowane ograniczenia na stderr (standardowym wyjściu błędów).
+Kończy pracę z kodem 0.
+.TP
+.B \-W dump
+wypisuje na stdout asembleropodobny listing wewnętrznej
+reprezentacji programu i kończy pracę z kodem 0 (przy pomyślnej kompilacji).
+.TP
+.B \-W interactive
+ustawia niebuforowane zapisy na stdout i buforowane wierszami odczyty
+z stdin (standardowego wejścia). Rekordy z stdin są wierszami niezależnie
+od wartości
+.BR RS .
+.TP
+.B \-W exec \fIplik
+Tekst programu czytany jest z
+.I pliku
+i jest to ostatnia opcja. Przydatne na systemach obsługujących konwencję
+"liczb magicznych"
+.B #!
+dla skryptów wykonywalnych.
+.TP
+.B \-W sprintf=\fInum
+ustawia rozmiar bufora wewnętrznego sprintf
+na
+.I num
+bajtów. Częstsze niż sporadyczne stosowanie tej opcji wskazuje, że
+.B mawk
+powinien zostać zrekompilowany.
+.TP
+.B \-W posix_space
+wymusza na
+.BR mawk ,
+by nie uważał '\en' za odstęp.
+.PP
+Rozpoznawane są krótkie postacie
+.BR \-W [ vdiesp ],
+zaś w niektórych systemach \fB\-We\fP jest obowiązkowe dla uniknięcia
+ograniczeń długości wiersza poleceń.
+.SH "JĘZYK AWK"
+.SS "1. Struktura programu"
+Program w języku AWK jest składa się z sekwencji par
+.I "wzorzec {akcja}"
+i definicji funkcji użytkownika.
+.PP
+Wzorcem może być:
+.nf
+.RS
+.B BEGIN
+.B END
+.I wyrażenie
+.IB wyrażenie ", " wyrażenie
+.sp
+.RE
+.fi
+Można pominąc jeden z elementów z pary \fIwzorzec {akcja}\fP, ale nie oba.
+Jeżeli pominięto
+.IR {akcję} ,
+to jest nią domniemane \fB{ print }\fP.
+Jeżeli pominięto
+.IR wzorzec ,
+to jest on niejawnie dopasowany.
+Wzorce
+.B BEGIN
+i
+.B END
+wymagają akcji.
+.PP
+Instrukcje zakończone są znakami nowej linii, średnikami
+lub oboma tymi znakami.
+Grupy instrukcji, jak akcje czy ciała pętli, łączone są w bloki
+za pośrednictwem \fB{ ... }\fP, jak w C.
+Ostatnia instrukcja w bloku nie wymaga znaku kończącego.
+Puste wiersza nie mają znaczenia; pusta instrukcja zakończona jest
+średnikiem. Długie instrukcje można kontynuować przy pomocy odwrotnego
+ukośnika \fB\e\fP.
+Instrukcję można podzielić między wiersze bez użycia odwrotnego ukośnika
+po przecinku, nawiasie otwierającym, &&, ||,
+.BR do ,
+.BR else  ,
+nawiasie zamykającym instrukcji
+.BR if ,
+.B while
+lub
+.B for
+oraz nawiasie zamykającym definicji funkcji.
+Komentarze zaczynają się od \fB#\fP i rozciągają się do aż końca wiersza,
+choć go nie obejmują.
+.PP
+Poniższe instrukcje sterują przepływem programu wewnątrz bloków.
+.RS
+.PP
+.B if
+( \*(ex )
+.I instrukcja
+.PP
+.B if
+( \*(ex )
+.I instrukcja
+.B else
+.I instrukcja
+.PP
+.B while
+( \*(ex )
+.I instrukcja
+.PP
+.B do
+.I instrukcja
+.B while
+( \*(ex )
+.PP
+.B for
+(
+\fIwyr_opc\fR ;
+\fIwyr_opc\fR ;
+\fIwyr_opc\fR
+)
+.I instrukcja
+.PP
+.B for
+( \fIzmn \fBin \fItablica\fR )
+.I instrukcja
+.PP
+.B continue
+.PP
+.B break
+.RE
+.\"
+.SS "2. Typy danych, konwersja i porównywanie"
+Istnieją dwa podstawowe typy danych, numeryczny i łańcuch znakowy.
+Stałe liczbowe mogą być całkowite, jak \-2, dziesiętne jak 1.08,
+lub podane w notacji naukowej jak \-1.1e4 czy .28E\-3. Wszystkie liczby
+są reprezentowane wewnętrznie w arytmetyce zmiennoprzecinkowej. Wszystkie
+obliczenia również są zmiennoprzecinkowe.
+Tak więc, na przykład, wyrażenie
+0.2e2 == 20
+jest prawdą. Prawda reprezentowana jest jako 1.0.
+.PP
+Stałe łańcuchowe ujęte są w cudzysłowy.
+.sp
+.ce
+"To jest łańcuch ze znakiem nowej linii na końcu.\en"
+.sp
+Łańcuchy znakowe mogą być kontynuowane w kolejnych wierszach dzięki
+poprzedzeniu znaku nowej linii odwrotnym ukośnikiem (\e).
+Rozpoznawane są następujące sekwencje specjalne:
+.nf
+.sp
+    \e\e        \e
+    \e"        "
+    \ea        dzwonek, ascii 7
+    \eb        backspace, ascii 8
+    \et        tabulacja, ascii 9
+    \en        znak nowej linii, newline , ascii 10
+    \ev        tabulacja pionowa, ascii 11
+    \ef        wysuw strony, formfeed, ascii 12
+    \er        powrót karetki, carriage return, ascii 13
+    \eddd      1, 2 lub 3 cyfry ósemkowe dla ascii ddd
+    \exhh      1 lub 2 cyfry szesnastkowe dla ascii hh
+.sp
+.fi
+Jeżeli odwrotnym ukośnikiem zostanie poprzedzony inny znak, np. \ec, wynikiem
+będzie sekwencja źródłowa: \ec, tzn.
+.B mawk
+zignoruje specjalne właściwości odwrotnego ukośnika.
+.PP
+Naprawdę istnieją trzy podstawowe typy danych; trzecim jest
+.IR "liczba i łańcuch" ,
+posiadający równocześnie wartość liczbową i wartość łańcuchową.
+Zmienne definiowane przez użytkownika pojawiają się przy pierwszym
+ich użyciu i są inicjowane na
+.IR null ,
+typu "liczba i łańcuch",
+mające wartość numeryczną 0 a łańcuchową "".
+Nietrywialne dane typu liczbowo-łańcuchowego pochodzą z wejścia
+i zwykle przechowywane są w polach (zobacz sekcja 4).
+.PP
+Typ wyrażenia określany jest przez jego kontekst. W razie potrzeby wykonywana
+jest automatyczna konwersja typów. Na przykład, wyznaczenie wartości
+instrukcji
+.nf
+.sp
+	y = x + 2  ;  z = x  "hello"
+.sp
+.fi
+Wartość przechowywana w zmiennej y otrzyma typ numeryczny.
+Jeżeli x nie jest numeryczne, to wartość odczytana z x zostanie
+skonwertowana na liczbę przed dodaniem do 2 i zachowaniem w y.
+Wartość przechowywana w zmiennej z będzie typu łańcuchowego: wartość x
+zostanie przekształcona na łańcuch, jeśli będzie to niezbędne, i złączona
+z "hello". Oczywiście, wartość i typ przechowywane w x nie zmieniają się
+w żadnej z tych konwersji.
+Wyrażenie łańcuchowe przekształcane jest na numeryczne przy zastosowaniu
+najdłuższego swego przedrostka numerycznego jak w
+.IR atof (3).
+Wyrażenie numeryczne konwertowane jest na łańcuch poprzez zastąpienie
+.I wyraż
+przez
+.BR sprintf(CONVFMT ,
+.IR wyraż ),
+chyba że
+.I wyraż
+może być reprezentowane w danym komputerze jako dokładna liczba całkowita,
+wówczas przekształcane jest na \fBsprintf\fR("%d", \*(ex).
+.B Sprintf()
+jest funkcją wbudowaną AWK, dublującą działanie
+.IR sprintf (3),
+zaś
+.B CONVFMT
+jest wbudowaną zmienną używaną do wewnętrznej konwersji z liczby na łańcuch
+i inicjowaną na "%.6g".
+Można wymusić jawną konwersję typów:
+\*(ex ""
+jest łańcuchowe, a
+\*(ex+0
+jest numeryczne.
+.PP
+Przy wyliczaniu,
+\fIwyraż1\fP \fBop-rel\fP \fIwyraż2\fP,
+jeżeli oba operandy są numeryczne lub numeryczno-łańcuchowe, to
+porównywanie jest numeryczne; jeżeli oba operandy są łańcuchami to
+porównywanie jest łańcuchowe; jeśli jeden z operandów jest łańcuchem, to
+operand nie-łańcuchowy jest przekształcany i porównywanie jest łańcuchowe.
+Wynik jest numeryczny, 1 lub 0.
+.PP
+W kontekstach logicznych, jak
+\fBif\fP ( \*(ex ) \fIinstrukcja\fP,
+wartością wyrażenia łańcuchowego jest prawda wtedy i tylko wtedy, gdy
+nie jest ono łańcuchem pustym ""; wyrażeń liczbowych wtedy i tylko wtedy
+gdy nie są numerycznie zerem.
+.\"
+.SS "3. Wyrażenia regularne"
+W języku AWK rekordy, pola i łańcuchy są często sprawdzane na dopasowanie
+do
+.IR "wyrażenia regularnego" .
+Wyrażenia regularne umieszczone są między ukośnikami, a
+.nf
+.sp
+	\*(ex ~ /\fIr\fR/
+.sp
+.fi
+jest wyrażeniem AWK o wartości 1 jeśli \*(ex "pasuje do"
+.IR r ,
+co oznacza, że pewien podłańcuch \*(ex jest w zestawie łańcuchów
+zdefiniowanych przez
+.IR r .
+Jeśli nie występuje dopasowanie, to wyrażenie otrzymuje wartość 0;
+zastąpienie \fB~\fP operatorem "nie pasuje", \fB!~\fP, odwraca znaczenia.
+Pary wzorzec-akcja
+.nf
+.sp
+        /\fIr\fR/ { \fIakcja\fR }   i\
+   \fB$0\fR ~ /\fIr\fR/ { \fIakcja\fR }
+.sp
+.fi
+są takie same,
+zaś dla każdego rekordu wejściowego pasującego do
+.IR r
+wykonywana jest
+.IR akcja .
+Faktycznie, /\fIr\fR/ jest wyrażeniem AWK równoważnym (\fB$0\fR ~ /\fIr\fR/)
+wszędzie z wyjątkiem wystąpienia po prawej stronie operatora dopasowania
+lub przekazywania do funkcji wbudowanej oczekującej jako argumentu wyrażenia
+regularnego.
+.PP
+AWK stosuje rozszerzone wyrażenia regularne jak
+.BR egrep (1).
+Metaznakami wyrażeń regularnych, tj. znakami o specjalnym znaczeniu
+w wyrażeniach regularnych są
+.nf
+.sp
+	\ ^ $ . [ ] | ( ) * + ?
+.sp
+.fi
+Wyrażenia regularne konstruowane są ze znaków jak niżej:
+.RS
+.TP \w'[^c\d1\uc\d2\uc\d3\u...]'u+1n
+\fIc\fR
+dopasowuje dowolny znak nie będący metaznakiem
+.IR c .
+.TP
+\fB\e\fIc
+dopasowuje znak zdefiniowany przez tę samą sekwencję specjalną używaną
+w stałych łańcuchowych lub dosłowny znak
+.I c
+jeśli
+\e\fIc
+nie jest sekwencją specjalną.
+.TP
+\fB\&\.
+dopasowuje dowolny znak (łącznie ze znakiem nowej linii).
+.TP
+\fB^
+dopasowuje początek łańcucha.
+.TP
+\fB$
+dopasowuje koniec łańcucha.
+.TP
+\fB[\fIc\d1\uc\d2\uc\d3\u\fR...\fB]
+dopasowuje dowolny znak z klasy \fIc\d1\uc\d2\uc\d3\u\fP... .
+Zakres znaków oznaczany jest przez \fIc\d1\u\fP\fB\-\fP\fIc\d2\u\fP
+wewnątrz klasy [...].
+.TP
+\fB[^\fIc\d1\uc\d2\uc\d3\u\fR...\fB]
+dopasowuje dowolny znak nie należący do klasy \fIc\d1\uc\d2\uc\d3\u\fP...
+.RE
+.sp
+Wyrażenia regularne konstruowane są z innych wyrażeń regularnych
+w następujący sposób:
+.RS
+.TP \w'[^c\d1\uc\d2\uc\d3\u...]'u+1n
+\fIr\d1\u\fIr\d2\u
+dopasowuje \fIr\d1\u\fP, bezpośrednio po którym następuje \fIr\d2\u\fP
+(konkatenacja).
+.TP
+\fIr\d1\u \fB| \fIr\d2\u
+dopasowuje \fIr\d1\u\fP lub \fIr\d2\u\fP (alternatywa).
+.TP
+\fIr\fB*
+dopasowuje zero lub więcej wystąpień \fIr\fP .
+.TP
+\fIr\fB+
+dopasowuje jedno lub więcej \fIr\fP.
+.TP
+\fIr\fB?
+dopasowuje zero lub jedno \fIr\fP.
+.TP
+\fB(\fIr\fB)
+dopasowuje \fIr\fP, umożliwiając grupowanie.
+.RE
+.sp
+Operatory według rosnącego priorytetu: alternatywa, konkatenacja
+(złączenie) i operatory jednoargumentowe (*, + lub ?).
+.PP
+Na przykład,
+.nf
+.sp
+    /^[_a\-zA-Z][_a\-zA\-Z0\-9]*$/  i
+    /^[\-+]?([0\-9]+\e\|.?|\e\|.[0\-9])[0\-9]*([eE][\-+]?[0\-9]+)?$/
+.sp
+.fi
+dopasowują odpowiednio identyfikatory AWK i stałe liczbowe AWK.
+Zauważ, że kropka \fB.\fP musi być chroniona odwrotnym ukośnikiem, by została
+rozpoznana jako kropka dziesiętna, a nie dopasowanie dowolnego znaku,
+a metaznaki wewnątrz klas znaków tracą swe specjalne znaczenie.
+.PP
+Po prawej stronie operatorów ~ lub !~ może zostać użyte dowolne wyrażenie.
+Podobnie, dowolne wyrażenie można przekazać do funkcji wbudowanej oczekującej
+wyrażenia regularnego.
+W razie potrzeby zostanie ono przekształcone na łańcuch, a następnie
+zinterpretowane jako wyrażenie regularne. Na przykład,
+.nf
+.sp
+	BEGIN { identifier = "[_a\-zA\-Z][_a\-zA\-Z0\-9]*" }
+
+	$0 ~ "^" identifier
+.sp
+.fi
+wypisuje wszystkie wiersze zaczynające się od jakiegoś identyfikatora AWK.
+.PP
+.B mawk
+rozpoznaje puste wyrażenie regularne, //\|, dopasowujące łańcuch pusty.
+Zatem pasuje do niego dowolny łańcuch na początku, końcu i pomiędzy dowolnym
+znakiem. Na przykład,
+.nf
+.sp
+	echo  abc | mawk '{ gsub(//, "X") ; print }'
+	XaXbXcX
+.sp
+.fi
+.\"
+.SS "4. Rekordy i pola"
+Rekordy czytane są po jednym na raz, i przechowywane w zmiennej
+.BR $0 .
+Rekord rozbijany jest na
+.IR pola ,
+przechowywane w
+.BR $1 ,
+.BR $2 ", ...,"
+.BR $NF .
+Wbudowana zmienna
+.B NF
+ustawiana jest na liczbę pól, a
+.B NR
+i
+.B FNR
+są zwiększane o 1.
+Pola powyżej
+.B $NF
+ustawiane są na "".
+.PP
+Przypisanie do
+.B $0
+powoduje, że pola i
+.B NF
+są obliczane ponownie.
+Przypisanie do
+.B NF
+lub do pola
+powoduje, że
+.B $0
+jest ponownie tworzone przez złączenie kolejnych pól separowanych przez
+.BR OFS .
+Przypisanie do pola o indeksie większym od
+.BR NF ,
+powiększa
+.B NF
+i powoduje ponowne utworzenie
+.BR $0 .
+.PP
+Dane wejściowe przechowywane w polach są łańcuchami, chyba że całe pole
+ma postać numeryczną a wówczas typ jest liczbowo-łańcuchowy.
+Na przykład,
+.sp
+.nf
+	echo 24 24E |
+	mawk '{ print($1>100, $1>"100", $2>100, $2>"100") }'
+	0 1 1 1
+.fi
+.sp
+.B $0
+i
+.B $2
+są łańcuchami a
+.B $1
+jest liczbowo-łańcuchowe. Pierwsze porównanie jest numeryczne, drugie
+łańcuchowe, trzecie łańcuchowe (100 jest konwertowane na "100"),
+i ostatnie łańcuchowe.
+.\"
+.SS "5. Wyrażenia i operatory"
+.PP
+Składnia wyrażeń jest podobna jak w C. Wyrażeniami pierwotnymi są stałe
+liczbowe, stałe łańcuchowe, zmienne, pola, tablice i wywołania funkcji.
+Identyfikator zmiennej, tablicy bądź funkcji może być ciągiem liter, cyfr
+i znaków podkreślenia, nie rozpoczynającym się od cyfry.
+Zmienne nie są deklarowane; zaistnieją przy pierwszym do nich odwołaniu,
+a inicjowane są na
+.IR null .
+.PP
+Nowe wyrażenia tworzone są z użyciem poniższych, podanych w kolejności
+rosnącego priorytetu, operatorów:
+.PP
+.RS
+.nf
+.vs +2p  \"  open up a little
+\fIprzypisanie\fR                =  +=  \-=  *=  /=  %=  ^=
+\fIwarunkowe\fR                 ?  :
+\fIlogiczne or\fR               ||
+\fIlogiczne and\fR              &&
+\fIprzynależność do tablicy\fR  \fBin
+\fIdopasowanie\fR               ~   !~
+\fIrelacyjne\fR                 <  >   <=  >=  ==  !=
+\fIkonkatenacja\fR              (bez specjalnego operatora)
+\fIdodawanie/odejmowanie\fR     +  \-
+\fImnożenie/dzielenie\fR        *  /  %
+\fIjednoargumentowe\fR          +  \-
+\fIlogiczne not\fR              !
+\fIpotęgowanie\fR               ^
+\fIinkrementacja/dekr.\fR       ++ \-\|\- (zarówno post jak i pre)
+\fIpole\fR                      $
+.vs
+.RE
+.PP
+.fi
+Przypisanie, operatory warunkowe i potęgowanie wiążą od prawej do lewej;
+pozostałe  od lewej do prawej. Każde wyrażenie może być umieszczone
+w nawiasach.
+.\"
+.SS "6. Tablice"
+.ds ae \fItablica\fR[\fIwyraż\fR]
+Awk obsługuje tablice jednowymiarowe. Elementy tablic wskazuje się jako \*(ae.
+.I Wyraż
+jest przekształcane wewnętrznie na typ łańcuchowy, więc, na przykład,
+A[1] i A["1"] są tym samym elementem, a faktycznym indeksem jest "1".
+Tablice indeksowane łańcuchami zwane są tablicami asocjacyjnymi (tablicami
+przyporządkowującymi).
+Pierwotnie tablica jest pusta; elementy zaistnieją przy pierwszym do nich
+odwołaniu.
+Wyrażenie
+\fIwyraż\fB in\fI tablica\fR
+daje w wyniku 1 jeżeli istnieje \*(ae, w przeciwnym razie 0.
+.PP
+Istnieje postać instrukcji
+.B for
+wykonująca pętlę po wszystkich indeksach tablicy.
+.nf
+.sp
+        \fBfor\fR ( \fIzmn\fB in \fItablica \fR) \fIinstrukcja\fR
+.sp
+.fi
+ustawia
+.I zmn
+na każdy z indeksów
+.I tablicy
+i wykonuje
+.IR instrukcję .
+Kolejność, w jakiej
+.I zmn
+przechodzi przez indeksy
+.I tablicy
+nie jest zdefiniowana.
+.PP
+Instrukcja
+.B delete
+\*(ae,
+powoduje usunięcie
+\*(ae.
+.B mawk
+obsługuje rozszerzenie,
+.B delete
+.IR tablica ,
+które usuwa wszystkie elementy
+.IR tablicy .
+.PP
+Tablice wielowymiarowe tworzone są sztucznie przez konkatenację
+z zastosowaniem wbudowanej zmiennej
+.BR SUBSEP .
+\fItablica\fB[\fIwyraż\d1\u\fB,\fIwyraż\d2\u\fB]\fR
+jest równoważnikiem
+\fItablica\fB[\fIwyraż\d1\u \fBSUBSEP \fIwyraż\d2\u\fB]\fR.
+Sprawdzanie elementu tablicy wielowymiarowej używa indeksu w nawiasach,
+jak w
+.sp
+.nf
+	if ( (i, j) in A )  print A[i, j]
+.fi
+.sp
+.\"
+.SS "7. Zmienne wbudowane"
+.PP
+Poniższe zmienne są zmiennymi wbudowanymi. Są one inicjowane przed wykonaniem
+programu.
+.RS
+.TP \w'FILENAME'u+2n
+.B ARGC
+liczba argumentów wiersza poleceń.
+.TP
+.B ARGV
+tablica argumentów wiersza poleceń, 0..ARGC-1.
+.TP
+.B CONVFMT
+format do wewnętrznej konwersji liczb na łańcuchy, początkowo = "%.6g".
+.TP
+.B ENVIRON
+tablica zaindeksowana zmiennymi środowiska. Łańcuch środowiska,
+\fIzmn=wartość\fR przechowywany jest jako
+.BI ENVIRON[ zmn "] ="
+.IR wartość .
+.TP
+.B FILENAME
+nazwa bieżącego pliku wejściowego.
+.TP
+.B FNR
+numer bieżącego rekordu w
+.BR FILENAME .
+.TP
+.B FS
+dzieli rekordy na pola jako wyrażenie regularne.
+.TP
+.B NF
+liczba pól bieżącego rekordu.
+.TP
+.B NR
+numer bieżącego rekordu w całkowitym strumieniu wejściowym.
+.TP
+.B OFMT
+format do wydruku liczb; początkowo = "%.6g".
+.TP
+.B OFS
+wstawiane pomiędzy polami w wyjściu, początkowo = " ".
+.TP
+.B ORS
+kończy każdy z rekordów wyjściowych, początkowo = "\en".
+.TP
+.B RLENGTH
+długość ustawiona przez ostatnie wywołanie wbudowanej funkcji
+.BR match() .
+.TP
+.B RS
+separator rekordów wejściowych, początkowo = "\en".
+.TP
+.B  RSTART
+indeks ustawiony przez ostatnie wywołanie
+.BR match() .
+.TP
+.B SUBSEP
+używany do budowy indeksów tablic wielowymiarowych, początkowo = "\e034".
+.RE
+.\"
+.SS "8. Funkcje wbudowane"
+Funkcje łańcuchowe
+.RS
+.TP
+.RI \fBgsub\fP( r , s , t ")  \fBgsub\fP(" r , s )
+Zastępowanie globalne (global substitution), każde dopasowanie wyrażenia
+regularnego
+.I r
+w zmiennej
+.I t
+zastępowane jest łańcuchem
+.IR s .
+Zwracana jest liczba wykonanych zastąpień.
+Jeżeli pominięto
+.IR t ,
+to używane jest
+.BR $0 .
+Znak \fB&\fP w łańcuchu zastępującym
+.I s
+zastępowany jest dopasowanym podłańcuchem łańcucha
+.IR t .
+\fB\e&\fP oraz \fB\e\e\fP dają, odpowiednio, dosłowne \fB&\fP i \fB\e\fP
+w łańcuchu zastępującym.
+.TP
+.RI \fBindex\fP( s , t )
+Jeżeli
+.I t
+jest podłańcuchem
+.IR s ,
+to zwracana jest pozycja, na której rozpoczyna się
+.IR t ,
+w przeciwnym razie zwracane jest 0.
+Pierwszy znak
+.I s
+jest na pozycji 1.
+.TP
+.RI \fBlength\fP( s )
+Zwraca długość łańcucha
+.IR s .
+.TP
+.RI \fBmatch\fP( s , r )
+Zwraca indeks pierwszego najdłuższego dopasowania wyrażenia regularnego
+.I r
+w łańcuchu
+.IR s .
+Zwraca 0 jeśli nie występuje dopasowanie.
+Jako skutek uboczny, następuje ustawienie
+.B RSTART
+na zwracaną wartość.
+.B RLENGTH
+ustawiane jest na długość dopasowania lub \-1 jeśli brak dopasowania.
+Jeżeli dopasowano łańcuch pusty, to
+.B RLENGTH
+ustawiane jest na 0, a zwracane jest 1 jeśli dopasowanie było na początku,
+zaś length(\fIs\fR)+1, gdy na końcu łańcucha.
+.TP
+.RI \fBsplit\fP( s , A , r ")  \fBsplit\fP(" s , A )
+Łańcuch
+.I s
+rozbijany jest na pola przez wyrażenie regularne
+.I  r
+a pola wpisywane są do tablicy
+.IR A .
+Zwracana jest liczba pól. Szczegóły w sekcji 11 poniżej.
+Jeżeli pominięto
+.IR r ,
+używane jest
+.BR FS .
+.TP
+.RI \fBsprintf\fP( format , lista-wyraż )
+Zwraca łańcuch utworzony z
+.I listy-wyrażeń
+zgodnie z
+.IR formatem .
+Zobacz opis printf() poniżej.
+.TP
+.RI \fBsub\fP( r , s , t ")  \fBsub\fP(" r , s )
+Pojedyncze zastąpienie. Takie samo, jak gsub(), z wyjątkiem tego, że
+wykonywane jest co najwyżej jedno zastąpienie.
+.TP
+.RI \fBsubstr\fP( s , i , n ")  \fBsubstr\fP(" s , i )
+Zwraca podłańcuch łańcucha
+.IR s ,
+poczynając od indeksu
+.IR i ,
+o długości
+.IR n .
+Jeśli pominięto
+.IR n ,
+zwracana jest końcówka
+.IR s ,
+poczynając od pozycji
+.IR i .
+.TP
+.RI \fBtolower\fP( s )
+Zwraca kopię
+.I s
+ze wszystkimi dużymi literami przekształconymi na małe.
+.TP
+.RI \fBtoupper\fP( s )
+Zwraca kopię
+.I s
+ze wszystkimi małymi literami przekształconymi na duże.
+.RE
+.PP
+Funkcje arytmetyczne
+.RS
+.PP
+.nf
+\fBatan2\fR(\fIy\fR,\fIx\fR)     arcus tangens z \fIy\fR/\fIx\fR pomiędzy \-PI i PI.
+.PP
+\fBcos\fR(\fIx\fR)         funkcja cosinus, \fIx\fR w radianach.
+.PP
+\fBexp\fR(\fIx\fR)         funkcja wykładnicza.
+.PP
+\fBint\fR(\fIx\fR)         zwraca \fIx\fR obcięte w stronę zera.
+.PP
+\fBlog\fR(\fIx\fR)         logarytm naturalny.
+.PP
+\fBrand\fR()         zwraca liczbę losową między zero a jeden.
+.PP
+\fBsin\fR(\fIx\fR)         funkcja sinus, \fIx\fR w radianach.
+.TP
+\fBsqrt\fR(\fIx\fR)        zwraca pierwiastek kwadratowy z \fIx\fR.
+.fi
+.TP
+.RI \fBsrand\fP( wyraż ")  \fBsrand\fP()"
+Inicjuje ziarenko generatora liczb losowych, używając zegara jeśli pominięto
+.IR wyraż ,
+i zwraca wartość poprzedniego ziarenka losowego.
+.B mawk
+inicjuje generator liczb losowych według zegara przy uruchomieniu,
+więc nie ma faktycznej potrzeby wywoływania srand(). Srand(\fIwyraż\fR)
+przydaje się do powtarzania ciągów pseudolosowych.
+.RE
+.\"
+.SS "9. Wejście i wyjście"
+Istnieją dwie instrukcje wyjścia:
+.B print
+i
+.BR printf .
+.RS
+.TP
+.B print
+zapisuje na standardowe wyjście
+.BR "$0  ORS" .
+.TP
+\fBprint\fP \fIwyraż\d1\u\fR, \fIwyraż\d2\u\fR, ..., \fIwyraż\dn\u
+zapisuje na standardowe wyjście
+\fIwyraż\d1\u \fBOFS \fIwyraż\d2\u \fBOFS\fR ... \fIwyraż\dn\u
+.BR ORS .
+Wyrażenia numeryczne są konwertowane na łańcuchy zgodnie z
+.BR OFMT .
+.TP
+\fBprintf \fIformat\fR, \fIlista-wyraż
+powiela funkcję biblioteczną printf z C, pisząc na standardowe wyjście.
+Rozpoznawany jest komplet specyfikacji formatów z ANSI C z konwersjami
+%c, %d, %e, %E, %f, %g, %G, %i, %o, %s, %u, %x, %X i %%,
+oraz kwalifikatorami konwersji h i l.
+.RE
+.PP
+Lista argumentów print lub printf może być opcjonalnie ujęta w nawiasy.
+Print formatuje liczby przy pomocy
+.B OFMT
+lub "%d" dla dokładnie całkowitych.
+"%c" z argumentem numerycznym wypisuje odpowiedni znak 8-bitowy, z argumentem
+łańcuchowym wypisuje pierwszy znak łańcucha.
+Wyjście print i printf można przekierować do pliku lub polecenia dołączając
+.B >
+.IR plik ,
+.B >>
+.I plik
+lub
+.B |
+.I polecenie
+na końcu instrukcji drukowania.
+Przekierowanie otwiera
+.I plik
+lub
+.I polecenie
+tylko raz, kolejne przekierowania dołączane są do już otwartego strumienia.
+Zgodnie z konwencją,
+.B mawk
+łączy nazwę pliku "/dev/stderr" z stderr, co pozwala na przekierowanie
+wyników print i printf na standardowe wyjście diagnostyczne.
+.B mawk
+wiąże również, odpowiednio, "\-" i "/dev/stdout" z stdin i stdout, co
+umożliwia przysyłanie tych strumieni do funkcji.
+.PP
+Funkcja wejścia
+.B getline
+ma następujące warianty:
+.RS
+.TP
+.B getline
+czyta do
+.BR $0 ,
+aktualizuje pola,
+.BR NF ,
+.B  NR
+i
+.BR FNR .
+.TP
+.B getline < \fIplik
+czyta do
+.B $0
+z \fIpliku\fP, aktualizuje pola i
+.BR NF .
+.TP
+.B getline \fIzmn
+czyta następny rekord do zmiennej
+.IR zmn ,
+aktualizuje
+.B NR
+i
+.BR FNR .
+.TP
+.B getline \fIzmn\fP < \fIplik
+czyta następny rekord
+.I pliku
+do zmiennej
+.IR zmn .
+.TP
+\fIpolecenie\fB | getline
+przesyła potokiem rekord z
+.I polecenia
+do
+.B $0
+i aktualizuje pola i
+.BR NF .
+.TP
+\fIpolecenie\fB | getline \fIzmn
+przesyła potokiem rekord z
+.I polecenia
+do zmiennej
+.IR zmn .
+.RE
+.PP
+Getline zwraca 0 na końcu pliku, \-1 przy błędzie, w pozostałych
+przypadkach 1.
+.PP
+Polecenia na końcu potoków wykonywane są przez /bin/sh.
+.PP
+Funkcja \fBclose\fR(\*(ex) zamyka plik lub potok skojarzony z
+.IR wyraż .
+Close zwraca 0 jeżeli
+.I wyraż
+jest otwartym plikiem, kod zakończenia jeśli
+.I wyraż
+jest poleceniem potoku, a \-1 w pozostałych przypadkach.
+Close stosowane jest do ponownego odczytu pliku lub polecenia, upewnienia
+się, że drugi koniec potoku wyjściowego jest zakończony lub do zachowania
+zasobów plikowych.
+.\" conserve file resources.
+.PP
+Funkcja \fBfflush\fR(\*(ex) wymiata plik wyjściowy lub potok skojarzony z
+.IR wyraż .
+Fflush zwraca 0 jeśli
+.I wyraż
+jest otwartym strumieniem wyjściowym, w przeciwnym razie \-1.
+Fflush bez argumentu opróżnia stdout.
+Fflush z pustym argumentem ("") opróżnia wszystkie otwarte wyjścia.
+.PP
+Funkcja
+\fBsystem\fR(\fIwyraż\fR)
+wykorzystuje
+/bin/sh
+do wykonania
+.I wyraż
+i zwraca kod zakończenia polecenia
+.IR wyraż .
+Zmiany tablicy
+.B ENVIRON
+nie są przekazywane poleceniom wykonywanym przez
+.B system
+lub potoki.
+.SS "10. Funkcje definiowane przez użytkownika"
+Funkcja definiowana przez użytkownika ma następującą składnię:
+.nf
+.sp
+    \fBfunction\fI nazwa\fR( \fIargumenty\fR ) { \fIinstrukcje\fR }
+.sp
+.fi
+Ciało funkcji może zawierać instrukcję zwrócenia wartości (return)
+.nf
+.sp
+     \fBreturn\fI opcjonalne-wyraż\fR
+.sp
+.fi
+Instrukcja return nie jest wymagana.
+Wywołania funkcji mogą być zagnieżdżane lub rekurencyjne.
+Wyrażenia przekazywane są funkcjom przez wartość a tablice przez wskazanie.
+Dodatkowe argumenty służą jako zmienne lokalne i są inicjowane na
+.IR null .
+Na przykład,
+.RI csplit( s , A )
+wstawia każdy znak
+.I s
+do tablicy
+.I A
+i zwraca długość
+.IR s .
+.nf
+.sp
+	function csplit(s, A,	n, i)
+	{
+	  n = length(s)
+	  for( i = 1 ; i <= n ; i++ ) A[i] = substr(s, i, 1)
+	  return n
+	}
+.sp
+.fi
+Wstawienie dodatkowych odstępów pomiędzy przekazywanymi parametrami
+a zmiennymi lokalnymi wynika z konwencji.
+Do funkcji można odwoływać się przed ich zdefiniowaniem, ale nazwa funkcji
+i nawias '(' rozpoczynający listę argumentów muszą się stykać, by uniknąć
+pomyłki z konkatenacją.
+.\"
+.SS "11. Podział łańcuchów, rekordów i plików"
+Programy awk używają tego samego algorytmu do rozbicia łańcuchów na tablice
+przy pomocy split() i rekordów na pola według
+.BR FS .
+.B mawk
+stosuje zasadniczo ten sam algorytm przy podziale plików na rekordy
+według
+.BR RS .
+.PP
+.RI \fBSplit\fP( wyraż , A, sep )
+działa następująco:
+.RS
+.TP
+(1)
+Jeżeli pominięto
+.IR sep ,
+to jest on zastępowany przez
+.BR FS .
+.I Sep
+może być wyrażeniem lub wyrażeniem regularnym. Jeżeli jest wyrażeniem typu
+nie-łańcuchowego, to jest przekształcane na łańcuch.
+.TP
+(2)
+Jeśli
+.I sep
+= " " (pojedyncza spacja),
+to <ODSTĘP> jest obcinana z początku i końca
+.IR wyraż ,
+a
+.I sep
+staje się <ODSTĘPEM>.
+.B mawk
+definiuje <ODSTĘP> jako wyrażenie regularne
+/[\ \et\en]+/.
+W przeciwnym wypadku
+.I sep
+traktowany jest jako wyrażenie regularne, z wyjątkiem tego, że metaznaki
+dla łańcucha o długości 1 są ignorowane, np.
+split(x, A, "*") i split(x, A, /\e*/) są tym samym.
+.TP
+(3)
+Jeżeli \*(ex nie jest łańcuchem, jest przekształcane na łańcuch.
+Jeżeli \*(ex jest wówczas łańcuchem pustym "", to split() zwraca 0
+a
+.I A
+jest ustawiane jako puste.
+W przeciwnym razie, wszystkie nienakładające się, niepuste i najdłuższe
+dopasowania
+.I sep
+w
+.IR wyraż ,
+dzielą
+.I wyraż
+na pola, które wpisywane są do
+.IR A .
+Pola są umieszczane w
+A[1], A[2], ..., A[n] a split() zwraca n, liczbę pól, równą liczbie dopasowań
+plus jeden.
+Dane umieszczone w
+.I A
+wyglądające na numeryczne otrzymują typ liczbowo-łańcuchowy.
+.RE
+.PP
+Podział rekordów na pola działa tak samo, z wyjątkiem tego, iż części
+wpisywane są do
+.BR $1 ,
+\fB$2\fR,...,
+.BR $NF .
+Jeżeli
+.B $0
+jest puste,
+.B NF
+jest ustawiane na 0 a wszystkie
+.B $i
+na "".
+.PP
+.B mawk
+dzieli pliki na rekordy przy pomocy tego samego algorytmu, ale z tą niewielką
+różnicą, iż
+.B RS
+jest faktycznie ciągiem kończącym a nie separatorem.
+(\fBORS\fR też jest faktycznie ciągiem kończącym).
+.RS
+.PP
+Np., jeżeli
+.B FS
+= ":+" a
+.B $0
+= "a::b:" , to
+.B NF
+= 3 a
+.B $1
+= "a",
+.B $2
+= "b" i
+.B $3
+= "", ale
+jeżeli zawartością pliku wejściowego jest "a::b:", zaś
+.B RS
+= ":+", to
+istnieją dwa rekordy "a" i "b".
+.RE
+.PP
+.B RS
+= " " nie ma specjalnego znaczenia.
+.PP
+Jeżeli
+.B FS
+= "", to
+.B mawk
+rozbija rekord na pojedyncze znaki, i, podobnie
+.RI split( s , A ,"")
+umieszcza poszczególne znaki
+.I s
+w
+.IR A .
+.\"
+.SS "12. Rekordy wielowierszowe"
+Ponieważ
+.B mawk
+interpretuje
+.B RS
+jako wyrażenie regularne, obsługa rekordów wielowierszowych jest łatwa.
+Ustawienie
+.B RS
+= "\en\en+", powoduje, że rekordy rozdzielane są co najmniej jednym pustym
+wierszem. Jeżeli
+.B FS
+= " " (domyślnie), to pojedyncze znaki nowej linii, według zasad <ODSTĘPU>
+powyżej, stają się odstępami a pojedyncze znaki nowej linii są separatorami
+pól.
+.RS
+.PP
+Na przykład, jeśli w pliku jest "a\ b\enc\en\en",
+.B RS
+= "\en\en+" a
+.B FS
+= "\ ", to mamy jeden rekord "a\ b\enc" z trzema polami "a", "b" i "c".
+Zmiana
+.B FS
+= "\en", daje dwa pola "a b" i "c"; zmieniając
+.B FS
+= "", otrzymujemy jedno pole identyczne jak rekord.
+.RE
+.PP
+Traktowanie wierszy ze spacjami lub tabulacjami jako pustych można uzyskać
+ustawiając
+.B RS
+= "\en([\ \et]*\en)+".
+W celu utrzymania zgodności z innymi implementacjami awk, ustawienie
+.B RS
+= "" daje te same wyniki, co usunięcie pustych wierszy z początku i końca
+pliku i określanie rekordów tak, jakby
+.B RS
+= "\en\en+".
+Posix wymaga, by "\en" zawsze separowało rekordy gdy
+.B RS
+= "" niezależnie od wartości
+.BR FS .
+.B mawk
+nie obsługuje tej konwencji, gdyż zdefiniowanie "\en" jako <ODSTĘPU>
+czyni ją zbędną.
+.\"
+.PP
+W większości przypadków zmieniając
+.B RS
+w celu obsługi rekordów wielowierszowych, stosuje się też zmienione
+na "\en\en"
+.BR ORS ,
+aby na wyjściu zachować odstępy między rekordami.
+.\"
+.SS "13. Wykonywanie programu"
+Ta sekcja opisuje kolejność wykonywania programu.
+Po pierwsze,
+.B ARGC
+ustawiane jest na całkowitą liczbę argumentów wiersza poleceń przekazanych
+do fazy wykonania programu.
+.B ARGV[0]
+ustawiane jest na nazwę interpretera AWK a
+\fBARGV[1]\fR ...
+.B ARGV[ARGC-1]
+przechowuje pozostałe argumenty wiersza poleceń z wyjątkiem opcji
+i źródła programu.
+Na przykład, dla
+.nf
+.sp
+	mawk  \-f  prog  v=1  A  t=hello  B
+.sp
+.fi
+.B ARGC
+= 5 oraz
+.B ARGV[0]
+= "mawk",
+.B ARGV[1]
+= "v=1",
+.B ARGV[2]
+= "A",
+.B ARGV[3]
+= "t=hello" i
+.B ARGV[4]
+= "B".
+.PP
+Następnie wykonywany jest kolejno każdy z bloków
+.BR BEGIN .
+Jeżeli program składa się wyłącznie z bloków
+.BR BEGIN ,
+to na tym wykonywanie się kończy, w przeciwnym razie otwierany jest strumień
+wejściowy i wykonywanie jest kontynuowane.
+Jeżeli
+.B ARGC
+równa się 1,
+strumień wejściowy ustawiany jest na stdin, w przypadku przeciwnym
+w poszukiwaniu argumentu plikowego sprawdzane są argumenty wiersza poleceń
+.BR ARGV[1]  " ..."
+.BR ARGV[ARGC-1] .
+.PP
+Argumenty wiersza poleceń dzielą się na trzy grupy:
+argumenty plikowe, argumenty przypisań i łańcuchy puste "".
+Przypisanie ma postać
+\fIzmn\fR=\fIłańcuch\fR.
+Podczas sprawdzania
+.B ARGV[i]
+jako możliwego argumentu plikowego, jeśli jest ono puste to jest
+pomijane; jeśli jest argumentem typu przypisania, odbywa się przypisanie
+wartości zmiennej
+.I zmn
+a
+.B i
+zmienia się na następny argument; w pozostałych przypadkach
+.B ARGV[i]
+jest otwierane jako wejście.
+Jeżeli otwarcie nie powiedzie się, wykonywanie programu jest kończone
+z kodem 2.
+Jeżeli żaden z argumentów wiersza poleceń nie jest argumentem plikowym, to
+wejście pochodzi z stdin.
+Getline w akcji
+.B BEGIN
+otwiera wejście.  "\-" jako argument plikowy oznacza stdin.
+.PP
+Po otwarciu strumienia wejściowego każdy z rekordów wejścia sprawdzany jest
+z każdym ze
+.IR wzorców ,
+a jeśli pasuje, to wykonywana jest
+.I akcja
+skojarzona z danym wzorcem.
+Wzorzec w postaci wyrażenia pasuje jeśli jego wartością logiczną jest prawda
+(zobacz koniec sekcji 2).
+Wzorzec
+.B BEGIN
+zestawiany jest przed rozpoczęciem odczytu wejścia,
+zaś wzorzec
+.B END
+po przeczytaniu całego wejścia.
+Wzorzec zakresu, \fIwyraż1\fP\fB,\fP\fIwyraż2\fP, dopasowuje
+każdy rekord pomiędzy rekordem pasującym do
+.I wyraż1
+a rekordem pasującym do
+.I wyraż2
+łącznie z nimi.
+.PP
+Po napotkaniu końca pliku w strumieniu wejściowym, sprawdzane są pozostałe
+argumenty wiersza poleceń w poszukiwaniu kolejnego argumentu plikowego.
+Jeśli taki istnieje, to jest otwierany, w przeciwnym wypadku przyjmuje się,
+że został dopasowany
+.I wzorzec
+.B END
+i wykonywane są wszystkie
+.I akcje
+.BR END .
+.PP
+W rozważanym przykładzie, przypisanie
+v=1
+ma miejsce po wykonaniu
+.I akcji
+.BR BEGIN ,
+a dana umieszczona w
+v
+otrzymuje typ liczbowo-łańcuchowy.
+Następnie z pliku A jest czytane wejście.
+Po końcu pliku A, zmienna
+t
+jest ustawiana na łańcuch "hello", a B jest otwierany jako wejście.
+Po osiągnięciu końca pliku B są wykonywane
+.I akcje
+wzorca
+.BR END .
+.PP
+Przebieg programu na poziomie
+.I wzorzec
+.I {akcja}
+można zmienić przy pomocy instrukcji
+.nf
+.sp
+     \fBnext
+     \fBexit  \fIwyraż-opcjonalne\fR.
+.sp
+.fi
+Instrukcja
+.B next
+powoduje, że odczyt następnego rekordu wejściowego i ponowne sprawdzanie
+wzorców, od pierwszej pary
+.I "wzorzec {akcja}"
+programu.
+Polecenie
+.B  exit
+powoduje natychmiastowe wykonanie akcji
+.B END
+lub zakończenie programu, jeśli nie ma takich akcji lub jeżeli
+.B exit
+wystąpiło w akcji
+.BR END .
+.I wyraż-opcjonalne
+ustawia wartość kodu zakończenia programu, chyba że zostanie ona przesłonięta
+przez późniejszy
+.B exit
+lub ujawniony potem błąd.
+.SH PRZYKŁADY
+.nf
+1. emulacja cat.
+
+     { print }
+
+2. emulacja wc.
+
+     { chars += length($0) + 1  # dodaje jeden dla \en
+       words += NF
+     }
+
+     END{ print NR, words, chars }
+
+3. zliczanie niepowtarzających się "faktycznych słów".
+
+     BEGIN { FS = "[^A-Za-z]+" }
+
+     { for(i = 1 ; i <= NF ; i++)  word[$i] = "" }
+
+     END { delete word[""]
+           for ( i in word )  cnt++
+           print cnt
+     }
+
+.fi
+4. sumowanie drugiego pola każdego rekordu w oparciu
+o pierwsze pole.
+.nf
+
+     $1 ~ /credit\||\|gain/ { sum += $2 }
+     $1 ~ /debit\||\|loss/  { sum \-= $2 }
+
+     END { print sum }
+
+5. sortowanie pliku, porównywanie łańcuchowe
+
+     { line[NR] = $0 "" }  # wymusza typ porównywania: gdyby
+                           # jakieś wiersze wyglądały
+                           # na numeryczne
+
+     END {  isort(line, NR)
+       for(i = 1 ; i <= NR ; i++) print line[i]
+     }
+
+     #sortowanie A[1..n] metodą wstawiania
+     function isort( A, n,   i, j, hold)
+     {
+       for( i = 2 ; i <= n ; i++)
+       {
+         hold = A[j = i]
+         while ( A[j\-1] > hold )
+         { j\-\|\- ; A[j+1] = A[j] }
+         A[j] = hold
+       }
+       # w razie potrzeby będzie utworzony wartownik A[0] = ""
+     }
+
+.fi
+.SH "KWESTIE ZGODNOŚCI"
+Posix-owa 1003.2 (propozycja 11.3) definicja języka AWK jest AWK opisanym
+w książce AWK z kilkoma rozszerzeniami, jakie pojawiły się w nawk
+z SystemVR4. Rozszerzeniami tymi są:
+.sp
+.RS
+Nowe funkcje: toupper() i tolower().
+
+Nowe zmienne: ENVIRON[\|] i CONVFMT.
+
+Specyfikacje konwersji w printf() i sprintf() wzięte z ANSI C.
+
+Nowe opcje polecenia:  \-v zmn=wartość, wielokrotne opcje \-f i opcje
+charakterystyczne dla implementacji jako argumenty \-W.
+.RE
+.sp
+
+Posix-owy AWK przetwarza pojedyncze wiersze plików.
+.B RS
+można zmienić z "\en" na inny pojedynczy znak, ale trudno jest znaleźć
+jakieś tego zastosowanie \(em w książce AWK brak odpowiednich przykładów.
+Zgodnie z konwencją, \fBRS\fR = "", powoduje, że jeden lub więcej pustych
+wierszy rozdziela rekordy, umożliwiając obsługę rekordów wielowierszowych.
+Gdy \fBRS\fR = "", "\en" jest zawsze separatorem pól, niezależnie od wartości
+.BR FS .
+.PP
+.BR mawk ,
+z kolei,
+pozwala by
+.B RS
+było wyrażeniem regularnym.
+Pojawiające się w rekordach "\en" jest traktowane jak odstęp, a
+.B FS
+zawsze określa pola.
+.PP
+Pozbycie się paradygmatu operowania pojedynczym wierszem może uprościć
+niektóre programy i często poprawić wydajność. Na przykład, zmienieniony
+przykład 3 (zobacz powyżej),
+.nf
+.sp
+	BEGIN { RS = "[^A-Za-z]+" }
+
+	{ word[ $0 ] = "" }
+
+	END { delete  word[ "" ]
+	  for( i in word )  cnt++
+	  print cnt
+	}
+.sp
+.fi
+zlicza ilość niepowtarzających się słów przez
+traktowanie każdego słowa jako rekordu.
+Przy plikach średnich rozmiarów
+.B mawk
+wykonuje go dwukrotnie szybciej, dzięki uproszczonej pętli wewnętrznej.
+.PP
+Poniższy program zastępuje każdy z komentarzy w pliku programu C
+pojedynczą spacją,
+.nf
+.sp
+	BEGIN {
+	  RS = "/\|\e*([^*]\||\|\e*+[^/*])*\e*+/"
+                # komentarz jest separatorem rekordów
+	  ORS = " "
+	  getline  hold
+       }
+
+       { print hold ; hold = $0 }
+
+       END { printf "%s" , hold }
+.sp
+.fi
+Buforowanie rekordu jest niezbędne, by uniknąć zakończenia ostatniego
+z rekordów spacją.
+.PP
+W
+.B mawk
+poniższe wyrażenia są równoważne,
+.nf
+.sp
+	x ~ /a\e+b/    x ~ "a\e+b"     x ~ "a\e\e+b"
+.sp
+.fi
+Powyższe łańcuchy będą analizowane dwukrotnie: raz jako łańcuch i raz jako
+wyrażenie regularne. Przy analizie łańcucha
+.B mawk
+ignoruje stosowanie cytowania odwrotnym ukośnikiem do znaków nie będących
+znakami specjalnymi, zatem
+.I \ec
+interpretuje jako
+.IR \ec .
+Natomiast książka AWK przychyla się do tego, by
+.I \ec
+było rozpoznawane jako
+.IR c ,
+co wymaga podwojonego cytowania metaznaków w łańcuchach.
+Posix wprost odmawia zdefiniowania pożądanego zachowania, przez co
+pośrednio wymusza na programach muszących działać z różnymi wersjami
+awk stosowanie bardziej przenośnego, lecz mniej czytelnego, cytowania
+z użyciem podwójnych odwrotnych ukośników.
+.PP
+Posix-owy AWK nie rozpoznaje "/dev/std{out,err}" ani sekwencji
+specjalnej \ex hex w łańcuchach. W przeciwieństwie do ANSI C,
+.B mawk
+ogranicza liczbę cyfr, jakie mogą występować po \ex do dwóch, gdyż obecna
+implementacja obsługuje tylko znaki 8-bitowe.
+Wbudowane
+.B fflush
+pojawiło się po raz pierwszy w ostatnim (1993) awk AT&T wydanym dla netlib,
+i nie jest częścią standardu Posix. Całościowe usuwanie tablicy przez
+.B delete
+.I tablica
+nie jest częścią standardu Posix.
+.PP
+Posix jawnie zostawia niezdefiniowane zachowanie się
+.B FS
+= "" i wspomina o podziale rekordów na znaki jako
+możliwej interpretacji, ale obecnie takie zastosowanie nie jest przenośne
+między implementacjami.
+.PP
+Na koniec, sposób w jaki
+.B mawk
+obsługuje przypadki wyjątkowe nie opisane w książce AWK ani w propozycji
+Posix. Niebezpiecznie jest zakładanie spójności pomiędzy implementacjami
+awk, a bezpiecznie przejść do następnej sekcji.
+.PP
+.RS
+substr(s, i, n) zwraca znaki łańcucha s o pozycjach z części wspólnej
+przedziału zamkniętego [1, length(s)] i półotwartego [i, i+n).  Gdy
+część wspólna jest pusta, zwracany jest łańcuch pusty; zatem
+substr("ABC", 1, 0) = "" a substr("ABC", \-4, 6) = "A".
+.PP
+Każdy łańcuch, nawet pusty, pasuje początkiem do łańcucha pustego, więc
+s ~ // i s ~ "", są zawsze równe 1, tak jak match(s, //) i match(s, "").
+Ostanie dwa ustawiają
+.B RLENGTH
+na 0.
+.PP
+index(s, t) jest zawsze tym samym, co match(s, t1), gdzie t1, to to samo, co
+t z cytowanymi metaznakami. Stąd spójność z match wymaga, by index(s, "")
+zawsze zwracało 1.
+Również warunek: index(s,t) != 0 wtedy i tylko wtedy, gdy t jest podłańcuchem
+łańcucha s, wymusza by index("","") = 1.
+.PP
+Jeżeli getline napotka koniec pliku, getline zmn pozostawia zmienną zmn
+bez zmian. Podobnie, w momencie rozpoczęcia akcji
+.BR END ,
+wartości
+.BR $0 ,
+pól i
+.B NF
+pozostają niezmienione od ostatniego rekordu.
+.SH ZOBACZ TAKŻE
+.BR egrep (1)
+.PP
+Aho, Kernighan and Weinberger,
+.IR "The AWK Programming Language" ,
+Addison-Wesley Publishing, 1988, (książka AWK),
+definiuje język, rozpoczynając się samouczkiem a dochodząc do wielu
+interesujących programów i wchodząc głęboko w kwestie projektowania
+i analizy programów istotne przy programowaniu w każdym języku.
+.PP
+.IR "The GAWK Manual" ,
+The Free Software Foundation, 1991, stanowi podręcznik i opis
+języka nie usiłujący sięgnąć głębi książki AWK. Zakłada, że
+czytelnik może być początkującym programistą. Sekcja poświęcona tablicom
+w AWK jest doskonała. Omawia także wymagania stawiane AWK przez Posix.
+.SH BŁĘDY
+.B mawk
+nie obsługuje znaku ascii NUL \e0 w plikach źródłowych czy plikach danych.
+Można wypisać NUL przy pomocy printf z %c, a w wejściu
+są dopuszczalne wszystkie inne znaki 8-bitowe.
+.PP
+.B mawk
+implementuje printf() i sprintf() przy pomocy funkcji bibliotecznych C,
+printf i sprintf, więc pełna zgodność z ANSI wymaga biblioteki ANSI C.
+W praktyce oznacza to, że kwalifikator konwersji h może nie być dostępny.
+.B mawk
+przejmuje też wszystkie błędy czy ograniczenia tych funkcji.
+.PP
+Twórcy implementacji języka AWK ukazali zgodny brak wyobraźni
+w nazywaniu swych programów.
+.SH AUTOR
+Mike Brennan (brennan@whidbey.com).

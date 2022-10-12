@@ -1,0 +1,704 @@
+.TH "libalpm_list" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+libalpm_list \- libalpm_list(3)
+.PP
+ \- Functions to manipulate \fBalpm_list_t\fP lists\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBalpm_list_t\fP"
+.br
+.RI "A doubly linked list\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBFREELIST\fP(p)   do { \fBalpm_list_free_inner\fP(p, free); \fBalpm_list_free\fP(p); p = NULL; } while(0)"
+.br
+.RI "Frees a list and its contents\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef void(* \fBalpm_list_fn_free\fP) (void *item)"
+.br
+.RI "item deallocation callback\&. "
+.ti -1c
+.RI "typedef int(* \fBalpm_list_fn_cmp\fP) (const void *, const void *)"
+.br
+.RI "item comparison callback "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBalpm_list_free\fP (\fBalpm_list_t\fP *list)"
+.br
+.RI "Free a list, but not the contained data\&. "
+.ti -1c
+.RI "void \fBalpm_list_free_inner\fP (\fBalpm_list_t\fP *list, \fBalpm_list_fn_free\fP fn)"
+.br
+.RI "Free the internal data of a list structure but not the list itself\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_add\fP (\fBalpm_list_t\fP *list, void *data)"
+.br
+.RI "Add a new item to the end of the list\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_append\fP (\fBalpm_list_t\fP **list, void *data)"
+.br
+.RI "Add a new item to the end of the list\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_append_strdup\fP (\fBalpm_list_t\fP **list, const char *data)"
+.br
+.RI "Duplicate and append a string to a list\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_add_sorted\fP (\fBalpm_list_t\fP *list, void *data, \fBalpm_list_fn_cmp\fP fn)"
+.br
+.RI "Add items to a list in sorted order\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_join\fP (\fBalpm_list_t\fP *first, \fBalpm_list_t\fP *second)"
+.br
+.RI "Join two lists\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_mmerge\fP (\fBalpm_list_t\fP *left, \fBalpm_list_t\fP *right, \fBalpm_list_fn_cmp\fP fn)"
+.br
+.RI "Merge the two sorted sublists into one sorted list\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_msort\fP (\fBalpm_list_t\fP *list, size_t n, \fBalpm_list_fn_cmp\fP fn)"
+.br
+.RI "Sort a list of size \fCn\fP using mergesort algorithm\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_remove_item\fP (\fBalpm_list_t\fP *haystack, \fBalpm_list_t\fP *item)"
+.br
+.RI "Remove an item from the list\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_remove\fP (\fBalpm_list_t\fP *haystack, const void *needle, \fBalpm_list_fn_cmp\fP fn, void **data)"
+.br
+.RI "Remove an item from the list\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_remove_str\fP (\fBalpm_list_t\fP *haystack, const char *needle, char **data)"
+.br
+.RI "Remove a string from a list\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_remove_dupes\fP (const \fBalpm_list_t\fP *list)"
+.br
+.RI "Create a new list without any duplicates\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_strdup\fP (const \fBalpm_list_t\fP *list)"
+.br
+.RI "Copy a string list, including data\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_copy\fP (const \fBalpm_list_t\fP *list)"
+.br
+.RI "Copy a list, without copying data\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_copy_data\fP (const \fBalpm_list_t\fP *list, size_t size)"
+.br
+.RI "Copy a list and copy the data\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_reverse\fP (\fBalpm_list_t\fP *list)"
+.br
+.RI "Create a new list in reverse order\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_nth\fP (const \fBalpm_list_t\fP *list, size_t n)"
+.br
+.RI "Return nth element from list (starting from 0)\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_next\fP (const \fBalpm_list_t\fP *list)"
+.br
+.RI "Get the next element of a list\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_previous\fP (const \fBalpm_list_t\fP *list)"
+.br
+.RI "Get the previous element of a list\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_last\fP (const \fBalpm_list_t\fP *list)"
+.br
+.RI "Get the last item in the list\&. "
+.ti -1c
+.RI "size_t \fBalpm_list_count\fP (const \fBalpm_list_t\fP *list)"
+.br
+.RI "Get the number of items in a list\&. "
+.ti -1c
+.RI "void * \fBalpm_list_find\fP (const \fBalpm_list_t\fP *haystack, const void *needle, \fBalpm_list_fn_cmp\fP fn)"
+.br
+.RI "Find an item in a list\&. "
+.ti -1c
+.RI "void * \fBalpm_list_find_ptr\fP (const \fBalpm_list_t\fP *haystack, const void *needle)"
+.br
+.RI "Find an item in a list\&. "
+.ti -1c
+.RI "char * \fBalpm_list_find_str\fP (const \fBalpm_list_t\fP *haystack, const char *needle)"
+.br
+.RI "Find a string in a list\&. "
+.ti -1c
+.RI "void \fBalpm_list_diff_sorted\fP (const \fBalpm_list_t\fP *left, const \fBalpm_list_t\fP *right, \fBalpm_list_fn_cmp\fP fn, \fBalpm_list_t\fP **onlyleft, \fBalpm_list_t\fP **onlyright)"
+.br
+.RI "Find the differences between list \fCleft\fP and list \fCright\fP "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_list_diff\fP (const \fBalpm_list_t\fP *lhs, const \fBalpm_list_t\fP *rhs, \fBalpm_list_fn_cmp\fP fn)"
+.br
+.RI "Find the items in list \fClhs\fP that are not present in list \fCrhs\fP\&. "
+.ti -1c
+.RI "void * \fBalpm_list_to_array\fP (const \fBalpm_list_t\fP *list, size_t n, size_t size)"
+.br
+.RI "Copy a list and data into a standard C array of fixed length\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Functions to manipulate \fBalpm_list_t\fP lists\&. 
+
+These functions are designed to create, destroy, and modify lists of type \fBalpm_list_t\fP\&. This is an internal list type used by libalpm that is publicly exposed for use by frontends if desired\&.
+.PP
+It is exposed so front ends can use it to prevent the need to reimplement lists of their own; however, it is not required that the front end uses it\&. 
+.SH "Data Structure Documentation"
+.PP 
+.SH "struct alpm_list_t"
+.PP 
+A doubly linked list\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+void * \fIdata\fP data held by the list node 
+.br
+.PP
+struct __alpm_list_t * \fInext\fP pointer to the next node 
+.br
+.PP
+struct __alpm_list_t * \fIprev\fP pointer to the previous node 
+.br
+.PP
+.RE
+.PP
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define FREELIST(p)   do { \fBalpm_list_free_inner\fP(p, free); \fBalpm_list_free\fP(p); p = NULL; } while(0)"
+
+.PP
+Frees a list and its contents\&. 
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef int(* alpm_list_fn_cmp) (const void *, const void *)"
+
+.PP
+item comparison callback 
+.SS "typedef void(* alpm_list_fn_free) (void *item)"
+
+.PP
+item deallocation callback\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP the item to free 
+.RE
+.PP
+
+.SH "Function Documentation"
+.PP 
+.SS "\fBalpm_list_t\fP * alpm_list_add (\fBalpm_list_t\fP * list, void * data)"
+
+.PP
+Add a new item to the end of the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list to add to 
+.br
+\fIdata\fP the new item to be added to the list
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the resultant list 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_add_sorted (\fBalpm_list_t\fP * list, void * data, \fBalpm_list_fn_cmp\fP fn)"
+
+.PP
+Add items to a list in sorted order\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list to add to 
+.br
+\fIdata\fP the new item to be added to the list 
+.br
+\fIfn\fP the comparison function to use to determine order
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the resultant list 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_append (\fBalpm_list_t\fP ** list, void * data)"
+
+.PP
+Add a new item to the end of the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list to add to 
+.br
+\fIdata\fP the new item to be added to the list
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the newly added item 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_append_strdup (\fBalpm_list_t\fP ** list, const char * data)"
+
+.PP
+Duplicate and append a string to a list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list to append to 
+.br
+\fIdata\fP the string to duplicate and append
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the newly added item 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_copy (const \fBalpm_list_t\fP * list)"
+
+.PP
+Copy a list, without copying data\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list to copy
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a copy of the original list 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_copy_data (const \fBalpm_list_t\fP * list, size_t size)"
+
+.PP
+Copy a list and copy the data\&. Note that the data elements to be copied should not contain pointers and should also be of constant size\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list to copy 
+.br
+\fIsize\fP the size of each data element
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a copy of the original list, data copied as well 
+.RE
+.PP
+
+.SS "size_t alpm_list_count (const \fBalpm_list_t\fP * list)"
+
+.PP
+Get the number of items in a list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the number of list items 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_diff (const \fBalpm_list_t\fP * lhs, const \fBalpm_list_t\fP * rhs, \fBalpm_list_fn_cmp\fP fn)"
+
+.PP
+Find the items in list \fClhs\fP that are not present in list \fCrhs\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlhs\fP the first list 
+.br
+\fIrhs\fP the second list 
+.br
+\fIfn\fP the comparison function
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a list containing all items in \fClhs\fP not present in \fCrhs\fP 
+.RE
+.PP
+
+.SS "void alpm_list_diff_sorted (const \fBalpm_list_t\fP * left, const \fBalpm_list_t\fP * right, \fBalpm_list_fn_cmp\fP fn, \fBalpm_list_t\fP ** onlyleft, \fBalpm_list_t\fP ** onlyright)"
+
+.PP
+Find the differences between list \fCleft\fP and list \fCright\fP The two lists must be sorted\&. Items only in list \fCleft\fP are added to the \fConlyleft\fP list\&. Items only in list \fCright\fP are added to the \fConlyright\fP list\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIleft\fP the first list 
+.br
+\fIright\fP the second list 
+.br
+\fIfn\fP the comparison function 
+.br
+\fIonlyleft\fP pointer to the first result list 
+.br
+\fIonlyright\fP pointer to the second result list 
+.RE
+.PP
+
+.SS "void * alpm_list_find (const \fBalpm_list_t\fP * haystack, const void * needle, \fBalpm_list_fn_cmp\fP fn)"
+
+.PP
+Find an item in a list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIneedle\fP the item to search 
+.br
+\fIhaystack\fP the list 
+.br
+\fIfn\fP the comparison function for searching (!= NULL)
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fCneedle\fP if found, NULL otherwise 
+.RE
+.PP
+
+.SS "void * alpm_list_find_ptr (const \fBalpm_list_t\fP * haystack, const void * needle)"
+
+.PP
+Find an item in a list\&. Search for the item whose data matches that of the \fCneedle\fP\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIneedle\fP the data to search for (== comparison) 
+.br
+\fIhaystack\fP the list
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fCneedle\fP if found, NULL otherwise 
+.RE
+.PP
+
+.SS "char * alpm_list_find_str (const \fBalpm_list_t\fP * haystack, const char * needle)"
+
+.PP
+Find a string in a list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIneedle\fP the string to search for 
+.br
+\fIhaystack\fP the list
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fCneedle\fP if found, NULL otherwise 
+.RE
+.PP
+
+.SS "void alpm_list_free (\fBalpm_list_t\fP * list)"
+
+.PP
+Free a list, but not the contained data\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list to free 
+.RE
+.PP
+
+.SS "void alpm_list_free_inner (\fBalpm_list_t\fP * list, \fBalpm_list_fn_free\fP fn)"
+
+.PP
+Free the internal data of a list structure but not the list itself\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list to free 
+.br
+\fIfn\fP a free function for the internal data 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_join (\fBalpm_list_t\fP * first, \fBalpm_list_t\fP * second)"
+
+.PP
+Join two lists\&. The two lists must be independent\&. Do not free the original lists after calling this function, as this is not a copy operation\&. The list pointers passed in should be considered invalid after calling this function\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIfirst\fP the first list 
+.br
+\fIsecond\fP the second list
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the resultant joined list 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_last (const \fBalpm_list_t\fP * list)"
+
+.PP
+Get the last item in the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the last element in the list 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_mmerge (\fBalpm_list_t\fP * left, \fBalpm_list_t\fP * right, \fBalpm_list_fn_cmp\fP fn)"
+
+.PP
+Merge the two sorted sublists into one sorted list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIleft\fP the first list 
+.br
+\fIright\fP the second list 
+.br
+\fIfn\fP comparison function for determining merge order
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the resultant list 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_msort (\fBalpm_list_t\fP * list, size_t n, \fBalpm_list_fn_cmp\fP fn)"
+
+.PP
+Sort a list of size \fCn\fP using mergesort algorithm\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list to sort 
+.br
+\fIn\fP the size of the list 
+.br
+\fIfn\fP the comparison function for determining order
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the resultant list 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_next (const \fBalpm_list_t\fP * list)"
+
+.PP
+Get the next element of a list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list node
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the next element, or NULL when no more elements exist 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_nth (const \fBalpm_list_t\fP * list, size_t n)"
+
+.PP
+Return nth element from list (starting from 0)\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list 
+.br
+\fIn\fP the index of the item to find (n < alpm_list_count(list) IS needed)
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+an \fBalpm_list_t\fP node for index \fCn\fP 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_previous (const \fBalpm_list_t\fP * list)"
+
+.PP
+Get the previous element of a list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list head
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the previous element, or NULL when no previous element exist 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_remove (\fBalpm_list_t\fP * haystack, const void * needle, \fBalpm_list_fn_cmp\fP fn, void ** data)"
+
+.PP
+Remove an item from the list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhaystack\fP the list to remove the item from 
+.br
+\fIneedle\fP the data member of the item we're removing 
+.br
+\fIfn\fP the comparison function for searching 
+.br
+\fIdata\fP output parameter containing data of the removed item
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the resultant list 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_remove_dupes (const \fBalpm_list_t\fP * list)"
+
+.PP
+Create a new list without any duplicates\&. This does NOT copy data members\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list to copy
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a new list containing non-duplicate items 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_remove_item (\fBalpm_list_t\fP * haystack, \fBalpm_list_t\fP * item)"
+
+.PP
+Remove an item from the list\&. item is not freed; this is the responsibility of the caller\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIhaystack\fP the list to remove the item from 
+.br
+\fIitem\fP the item to remove from the list
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the resultant list 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_remove_str (\fBalpm_list_t\fP * haystack, const char * needle, char ** data)"
+
+.PP
+Remove a string from a list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhaystack\fP the list to remove the item from 
+.br
+\fIneedle\fP the data member of the item we're removing 
+.br
+\fIdata\fP output parameter containing data of the removed item
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the resultant list 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_reverse (\fBalpm_list_t\fP * list)"
+
+.PP
+Create a new list in reverse order\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list to copy
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a new list in reverse order 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_list_strdup (const \fBalpm_list_t\fP * list)"
+
+.PP
+Copy a string list, including data\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list to copy
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a copy of the original list 
+.RE
+.PP
+
+.SS "void * alpm_list_to_array (const \fBalpm_list_t\fP * list, size_t n, size_t size)"
+
+.PP
+Copy a list and data into a standard C array of fixed length\&. Note that the data elements are shallow copied so any contained pointers will point to the original data\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIlist\fP the list to copy 
+.br
+\fIn\fP the size of the list 
+.br
+\fIsize\fP the size of each data element
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+an array version of the original list, data copied as well 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libalpm from the source code\&.

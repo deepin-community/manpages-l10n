@@ -1,0 +1,227 @@
+#!/bin/bash
+#
+# Copyright © 2020 Dr. Helge Kreutzmann <debian@helgefjell.de>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# This script finds all FIXMEs in manpages and prepeares as much as possible an output suitable for bug reporting
+
+# An example of only upstream is man2/wait.2.po
+# An example of both upstream and ours is man4/vcs.4.po
+
+# CONFIG
+DCSBASE=/scr/build/src/DCS/manpages-l10n/
+CONFIGBASE=$DCSBASE/upstreambug/CONFIG
+DIALOG=$(which dialog)
+sk_temp=$((tempfile) 2>/dev/null)
+SSF_MAILER=/usr/bin/mutt
+SSF_BROWSER=/usr/bin/firefox
+SSF_TMP=/tmp/ssf
+TEMPLATE_FILE=$DCSBASE/upstreambug/TEMPLATE
+SSF_LANGLIST="cs da de es fr it mk nl pl pt_BR ro"
+
+# Allow to customize these variables if necessary
+if [ -f $HOME/.config/reportupstreamrc ] ; then
+    echo "Sourcing local config"
+    . $HOME/.config/reportupstreamrc
+fi
+
+# Check if the files and directories exist
+
+if [ ! -d $DCSBASE ]; then
+    echo "Could not find the git repository directory for manpages-l10n under $DCSBASE"
+    exit
+fi
+
+if [ ! -x $DIALOG ]; then
+    echo "Could not find the the dialog program (or not executable) $DIALOG"
+    exit
+fi
+
+if [ ! -x $SSF_MAILER ]; then
+    echo "Could not find the the mail program (or not executable) $SSF_MAILER"
+    exit
+fi
+
+if [ ! -x $SSF_BROWSER ]; then
+    echo "Could not find the the mail program (or not executable) $SSF_BROWSER"
+    exit
+fi
+
+if [ ! -d $SSF_TMP ]; then
+    mkdir -p $SSF_TMP
+    retval=$?
+
+    if [ $retval != 0 ]; then
+	echo "Dirctory for tempory files $SSF_TMP does not exist and cannot be created"
+	exit
+    fi
+fi
+
+echo "Please wait while scanning for FIXMEs …"
+cd $DCSBASE/po
+
+# Find all PO files with FIXME in them
+for pofile in $(find . -name "*.po"  -exec grep FIXME "{}" -ls ";"  | cut -d/ -f4 | LC_ALL=C sort -u); do 
+    # Now look at them for each language
+    for lang in $SSF_LANGLIST; do
+	for checkfile in $(find $lang -name $pofile); do
+#    echo $checkfile $lang $pofile
+	    grep FIXME $checkfile > $SSF_TMP/ssF.FIX.$lang.$pofile
+	    md5sum $SSF_TMP/ssF.FIX.$lang.$pofile | cut -d " " -f1 > $SSF_TMP/ssF.md5.$lang.$pofile
+	done
+    done
+    mdnumtotal=$(cat $SSF_TMP/ssF.md5.*.$pofile| wc -l)
+    mdunique=$(cat $SSF_TMP/ssF.md5.*.$pofile| sort -u | wc -l)
+#   echo "Md5total: $mdnumtotal Md5unique: $mdunique"
+#   if [ $mdnumtotal -ge 2 ] ; then 
+#if [ $mdunique -eq 1 ] ; then
+    if [ $mdnumtotal -ge 2 -a $mdunique -eq 1 ] ; then
+#    echo "Blacklist-Kandidat $pofile"
+	echo $pofile >> $SSF_TMP/ssF.BLACKLIST
+    else
+	echo $pofile >> $SSF_TMP/ssF.WHITELIST
+	let cfcounter=0
+        cfilename=""
+        for cfile in $CONFIGBASE/CONFIG.*; do
+	   #echo "grep -x $pofile $cfile"
+	    if [ $(grep -x $pofile $cfile) ] ; then
+	    let cfcounter=$cfcounter+1
+	    finalfilename=$(basename $cfile)
+	    fi
+	done
+	if [ $cfcounter -eq 0 ] ; then
+	    echo "ERROR: $pofile not in any CONFIG file, please add and rerun the script" | logger -t $0
+	fi
+	if [ $cfcounter -gt 1 ] ; then
+	    echo "ERROR: $pofile is in serveral ($cfcounter) CONFIG files, please fix them and rerun the script" | logger -t $0
+	fi
+	if [ $cfcounter -eq 1 ] ; then
+	    echo $pofile >> $SSF_TMP/ssF.REPORT.$finalfilename
+	fi
+    fi
+done
+
+# The following line does not work, the first (largest) item is ignored??
+#ls -lhS $SSF_TMP/ssF.REPORT.*| awk '{print $9}'|awk 'FS="." {print $4}'
+
+# This is not very elegant, but works around the issue of skipping the first entry
+echo "Dummy" > $SSF_TMP/ssF.list.Dummy
+ls -lhS $SSF_TMP/ssF.REPORT.*| awk '{print $9}' >> $SSF_TMP/ssF.list.Dummy
+ssf_ANZAHL=$(ls -l $SSF_TMP/ssF.REPORT.* |wc -l)
+
+ssf_STOP=0
+while [ $ssf_STOP -eq 0 ]; do
+    echo -n "$DIALOG --clear --title \"Reporting upstream\" --menu \"Choose which package to report for\" 20 71 $ssf_ANZAHL " > $SSF_TMP/ssf.menu
+    for i in $(cat $SSF_TMP/ssF.list.Dummy|awk 'FS="." {print $4}'|grep -v -E "^$"); do
+	ssF_date="not reported yet"
+	if [ -f $CONFIGBASE/LAST.$i ]; then
+	    ssF_date=$(tail -n1 $CONFIGBASE/LAST.$i)
+	fi
+	echo "Entry: $i (Last reported: $ssF_date)"
+	echo -n "\"$i\" \"$i (Last reported: $ssF_date)\" " >> $SSF_TMP/ssf.menu
+    done
+    chmod +x $SSF_TMP/ssf.menu
+    bash $SSF_TMP/ssf.menu 2> $sk_temp
+    retval=$?
+
+    if [ $retval == 0 ]; then
+	ssf_SELCTION=$(cat $sk_temp)
+
+	echo $ssf_SELCTION
+	bugtype=$(grep Bugtype $CONFIGBASE/CONFIG.$ssf_SELCTION)
+	bfound=$?
+
+	if [ $bfound == 0 ]; then
+	    bugmethod=$(echo $bugtype|cut -d" " -f2)
+	    bugaddres=$(echo $bugtype|cut -d" " -f3)
+	    bnote=$(grep Note: $CONFIGBASE/CONFIG.$ssf_SELCTION|sed 's/Note: //')
+
+	    echo "Reporting bugs for $ssf_SELCTION as $bugtype"
+	    echo ""
+	    echo "Please consider the following when reporting:"
+	    echo "$bnote"
+	    echo ""
+	    echo "Now the template is prepared with all FIXMEs. Please turn the template into"
+	    echo "proper text suitable for reporting. Remove duplications and FIXMEs coming"
+	    echo "from upstream."
+	    echo ""
+	    echo "Press Enter to generate the template"
+	    read
+	    echo "Please wait …"
+	    rm -rf $SSF_TMP/ssF.BUGTEMPLATE
+	    # This command does not work, it also replace double letters by single ones
+	    #cat $TEMPLATE_FILE | tr -s PACKAGE $ssf_SELCTION >> $SSF_TMP/ssF.BUGTEMPLATE
+	    cat $TEMPLATE_FILE >> $SSF_TMP/ssF.BUGTEMPLATE
+	    for rf in $(cat $SSF_TMP/ssF.REPORT.CONFIG.$ssf_SELCTION|sort -u); do
+		echo $rf >> $SSF_TMP/ssF.BUGTEMPLATE
+		find $DCSBASE -name $rf -exec grep -A10 FIXME "{}" ";" >> $SSF_TMP/ssF.BUGTEMPLATE
+		echo "============== End of file ================" >> $SSF_TMP/ssF.BUGTEMPLATE
+	    done
+
+	    if [ $bugmethod == "email" ]; then
+		$SSF_MAILER -s "Errors in man pages" -i $SSF_TMP/ssF.BUGTEMPLATE $bugaddres
+	    elif [ $bugmethod == "web" ]; then
+		$SSF_BROWSER $bugaddres
+		vim $SSF_TMP/ssF.BUGTEMPLATE
+	    elif [ $bugmethod == "reportbug" ]; then
+		# Use --header= instead of --body-file?
+		# FIXME: Not interactive, not asking for confirmation
+		# reportbug --no-debconf --no-config-files --no-query-bts --no-check-installed --no-bug-script --body-file=$SSF_TMP/ssF.BUGTEMPLATE
+		# Try this:
+		reportbug --no-debconf --no-config-files --no-query-bts --no-check-installed --no-bug-script --print --body-file=$SSF_TMP/ssF.BUGTEMPLATE
+	    fi
+	    echo "If you reported the bugs, please answer yes to the following question."
+	    echo ""
+	    echo "Should the bug reporting date be recorded?"
+	    read -p "(y/n)> "
+	    if [ $REPLY == "y" ]; then
+		if [ $CONFIGBASE/LAST.$ssf_SELCT ]; then
+		    date --rfc-3339=date  >> $CONFIGBASE/LAST.$ssf_SELCTION
+		    git add $CONFIGBASE/LAST.$ssf_SELCTION
+		else
+		    date --rfc-3339=date  >> $CONFIGBASE/LAST.$ssf_SELCTION
+		fi
+		git commit -m "reportupstream: Reported bugs for $ssf_SELCTION" $CONFIGBASE/LAST.$ssf_SELCTION
+#		echo "Writing date into $CONFIGBASE/LAST.$ssf_SELCTION"
+#		date --rfc-3339=date
+#	    else
+#		echo "Not recording date."
+	    fi
+#    read
+	else
+	    echo "Reporting bugs unkown, check $CONFIGBASE/CONFIG.$ssf_SELCTION for the field \"bugtype\""
+	    read
+	fi
+    else
+	ssf_STOP=1
+    fi
+done
+
+echo "Should the temporary directory $SSF_TMP be removed?"
+read -p "(y/n)> "
+if [ $REPLY == "y" ]; then
+    rm -r $SSF_TMP
+    retval=$?
+
+    if [ $retval != 0 ]; then
+	echo "Dirctory for tempory files $SSF_TMP could not be removed."
+        exit
+    fi
+fi
+
+clear
+
+# A10 is not enough :-((
+#for i in $(cat $SSF_TMP/ssF.REPORT.CONFIG.linuxmanpages); do find . -name $i -exec grep -A10 FIXME "{}" ";" -print ; done

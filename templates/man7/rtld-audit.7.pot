@@ -1,0 +1,1216 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-09-03 21:25+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "RTLD-AUDIT"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "2020-11-01"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "rtld-audit - auditing API for the dynamic linker"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<#define _GNU_SOURCE>             /* See feature_test_macros(7) */\n"
+"B<#include E<lt>link.hE<gt>>\n"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The GNU dynamic linker (run-time linker)  provides an auditing API that "
+"allows an application to be notified when various dynamic linking events "
+"occur.  This API is very similar to the auditing interface provided by the "
+"Solaris run-time linker.  The necessary constants and prototypes are defined "
+"by including I<E<lt>link.hE<gt>>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"To use this interface, the programmer creates a shared library that "
+"implements a standard set of function names.  Not all of the functions need "
+"to be implemented: in most cases, if the programmer is not interested in a "
+"particular class of auditing event, then no implementation needs to be "
+"provided for the corresponding auditing function."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"To employ the auditing interface, the environment variable B<LD_AUDIT> must "
+"be defined to contain a colon-separated list of shared libraries, each of "
+"which can implement (parts of) the auditing API.  When an auditable event "
+"occurs, the corresponding function is invoked in each library, in the order "
+"that the libraries are listed."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "la_version()"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<unsigned int la_version(unsigned int >I<version>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This is the only function that I<must> be defined by an auditing library: it "
+"performs the initial handshake between the dynamic linker and the auditing "
+"library.  When invoking this function, the dynamic linker passes, in "
+"I<version>, the highest version of the auditing interface that the linker "
+"supports."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"A typical implementation of this function simply returns the constant "
+"B<LAV_CURRENT>, which indicates the version of I<E<lt>link.hE<gt>> that was "
+"used to build the audit module.  If the dynamic linker does not support this "
+"version of the audit interface, it will refuse to activate this audit "
+"module.  If the function returns zero, the dynamic linker also does not "
+"activate this audit module."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"In order to enable backwards compatibility with older dynamic linkers, an "
+"audit module can examine the I<version> argument and return an earlier "
+"version than B<LAV_CURRENT>, assuming the module can adjust its "
+"implementation to match the requirements of the previous version of the "
+"audit interface.  The B<la_version> function should not return the value of "
+"I<version> without further checks because it could correspond to an "
+"interface that does not match the I<E<lt>link.hE<gt>> definitions used to "
+"build the audit module."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "la_objsearch()"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<char *la_objsearch(const char *>I<name>B<, uintptr_t *>I<cookie>B<,>\n"
+"B<                   unsigned int >I<flag>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The dynamic linker invokes this function to inform the auditing library that "
+"it is about to search for a shared object.  The I<name> argument is the "
+"filename or pathname that is to be searched for.  I<cookie> identifies the "
+"shared object that initiated the search.  I<flag> is set to one of the "
+"following values:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_SER_ORIG>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This is the original name that is being searched for.  Typically, this name "
+"comes from an ELF B<DT_NEEDED> entry, or is the I<filename> argument given "
+"to B<dlopen>(3)."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_SER_LIBPATH>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "I<name> was created using a directory specified in B<LD_LIBRARY_PATH>."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_SER_RUNPATH>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"I<name> was created using a directory specified in an ELF B<DT_RPATH> or "
+"B<DT_RUNPATH> list."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_SER_CONFIG>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "I<name> was found via the B<ldconfig>(8)  cache (I</etc/ld.so.cache>)."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_SER_DEFAULT>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "I<name> was found via a search of one of the default directories."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_SER_SECURE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "I<name> is specific to a secure object (unused on Linux)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"As its function result, B<la_objsearch>()  returns the pathname that the "
+"dynamic linker should use for further processing.  If NULL is returned, then "
+"this pathname is ignored for further processing.  If this audit library "
+"simply intends to monitor search paths, then I<name> should be returned."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "la_activity()"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<void la_activity( uintptr_t *>I<cookie>B<, unsigned int >I<flag>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The dynamic linker calls this function to inform the auditing library that "
+"link-map activity is occurring.  I<cookie> identifies the object at the head "
+"of the link map.  When the dynamic linker invokes this function, I<flag> is "
+"set to one of the following values:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_ACT_ADD>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "New objects are being added to the link map."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_ACT_DELETE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Objects are being removed from the link map."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_ACT_CONSISTENT>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Link-map activity has been completed: the map is once again consistent."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "la_objopen()"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<unsigned int la_objopen(struct link_map *>I<map>B<, Lmid_t >I<lmid>B<,>\n"
+"B<                        uintptr_t *>I<cookie>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The dynamic linker calls this function when a new shared object is loaded.  "
+"The I<map> argument is a pointer to a link-map structure that describes the "
+"object.  The I<lmid> field has one of the following values"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LM_ID_BASE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Link map is part of the initial namespace."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LM_ID_NEWLM>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Link map is part of a new namespace requested via B<dlmopen>(3)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"I<cookie> is a pointer to an identifier for this object.  The identifier is "
+"provided to later calls to functions in the auditing library in order to "
+"identify this object.  This identifier is initialized to point to object's "
+"link map, but the audit library can change the identifier to some other "
+"value that it may prefer to use to identify the object."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"As its return value, B<la_objopen>()  returns a bit mask created by ORing "
+"zero or more of the following constants, which allow the auditing library to "
+"select the objects to be monitored by B<la_symbind*>():"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_FLG_BINDTO>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Audit symbol bindings to this object."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_FLG_BINDFROM>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Audit symbol bindings from this object."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"A return value of 0 from B<la_objopen>()  indicates that no symbol bindings "
+"should be audited for this object."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "la_objclose()"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<unsigned int la_objclose(uintptr_t *>I<cookie>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The dynamic linker invokes this function after any finalization code for the "
+"object has been executed, before the object is unloaded.  The I<cookie> "
+"argument is the identifier obtained from a previous invocation of "
+"B<la_objopen>()."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"In the current implementation, the value returned by B<la_objclose>()  is "
+"ignored."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "la_preinit()"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<void la_preinit(uintptr_t *>I<cookie>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The dynamic linker invokes this function after all shared objects have been "
+"loaded, before control is passed to the application (i.e., before calling "
+"I<main>()).  Note that I<main>()  may still later dynamically load objects "
+"using B<dlopen>(3)."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "la_symbind*()"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<uintptr_t la_symbind32(Elf32_Sym *>I<sym>B<, unsigned int >I<ndx>B<,>\n"
+"B<                       uintptr_t *>I<refcook>B<, uintptr_t *>I<defcook>B<,>\n"
+"B<                       unsigned int *>I<flags>B<, const char *>I<symname>B<);>\n"
+"B<uintptr_t la_symbind64(Elf64_Sym *>I<sym>B<, unsigned int >I<ndx>B<,>\n"
+"B<                       uintptr_t *>I<refcook>B<, uintptr_t *>I<defcook>B<,>\n"
+"B<                       unsigned int *>I<flags>B<, const char *>I<symname>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The dynamic linker invokes one of these functions when a symbol binding "
+"occurs between two shared objects that have been marked for auditing "
+"notification by B<la_objopen>().  The B<la_symbind32>()  function is "
+"employed on 32-bit platforms; the B<la_symbind64>()  function is employed on "
+"64-bit platforms."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<sym> argument is a pointer to a structure that provides information "
+"about the symbol being bound.  The structure definition is shown in "
+"I<E<lt>elf.hE<gt>>.  Among the fields of this structure, I<st_value> "
+"indicates the address to which the symbol is bound."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<ndx> argument gives the index of the symbol in the symbol table of the "
+"bound shared object."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<refcook> argument identifies the shared object that is making the "
+"symbol reference; this is the same identifier that is provided to the "
+"B<la_objopen>()  function that returned B<LA_FLG_BINDFROM>.  The I<defcook> "
+"argument identifies the shared object that defines the referenced symbol; "
+"this is the same identifier that is provided to the B<la_objopen>()  "
+"function that returned B<LA_FLG_BINDTO>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<symname> argument points a string containing the name of the symbol."
+msgstr ""
+
+#.  LA_SYMB_STRUCTCALL appears to be unused
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<flags> argument is a bit mask that both provides information about the "
+"symbol and can be used to modify further auditing of this PLT (Procedure "
+"Linkage Table) entry.  The dynamic linker may supply the following bit "
+"values in this argument:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_SYMB_DLSYM>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The binding resulted from a call to B<dlsym>(3)."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_SYMB_ALTVALUE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"A previous B<la_symbind*>()  call returned an alternate value for this "
+"symbol."
+msgstr ""
+
+#.  pltenter/pltexit are called for non-dynamically loaded libraries,
+#.  but don't seem to be called for dynamically loaded libs?
+#.  Is this the same on Solaris?
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"By default, if the auditing library implements B<la_pltenter>()  and "
+"B<la_pltexit>()  functions (see below), then these functions are invoked, "
+"after B<la_symbind>(), for PLT entries, each time the symbol is referenced.  "
+"The following flags can be ORed into I<*flags> to change this default "
+"behavior:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_SYMB_NOPLTENTER>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Don't call B<la_pltenter>()  for this symbol."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<LA_SYMB_NOPLTEXIT>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Don't call B<la_pltexit>()  for this symbol."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The return value of B<la_symbind32>()  and B<la_symbind64>()  is the address "
+"to which control should be passed after the function returns.  If the "
+"auditing library is simply monitoring symbol bindings, then it should return "
+"I<sym-E<gt>st_value>.  A different value may be returned if the library "
+"wishes to direct control to an alternate location."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "la_pltenter()"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The precise name and argument types for this function depend on the hardware "
+"platform.  (The appropriate definition is supplied by I<E<lt>link.hE<gt>>.)  "
+"Here is the definition for x86-32:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<Elf32_Addr la_i86_gnu_pltenter(Elf32_Sym *>I<sym>B<, unsigned int >I<ndx>B<,>\n"
+"B<                 uintptr_t *>I<refcook>B<, uintptr_t *>I<defcook>B<,>\n"
+"B<                 La_i86_regs *>I<regs>B<, unsigned int *>I<flags>B<,>\n"
+"B<                 const char *>I<symname>B<, long *>I<framesizep>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This function is invoked just before a PLT entry is called, between two "
+"shared objects that have been marked for binding notification."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<sym>, I<ndx>, I<refcook>, I<defcook>, and I<symname> are as for "
+"B<la_symbind*>()."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<regs> argument points to a structure (defined in I<E<lt>link.hE<gt>>)  "
+"containing the values of registers to be used for the call to this PLT entry."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<flags> argument points to a bit mask that conveys information about, "
+"and can be used to modify subsequent auditing of, this PLT entry, as for "
+"B<la_symbind*>()."
+msgstr ""
+
+#.  FIXME . Is the following correct?
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<framesizep> argument points to a I<long\\ int> buffer that can be used "
+"to explicitly set the frame size used for the call to this PLT entry.  If "
+"different B<la_pltenter>()  invocations for this symbol return different "
+"values, then the maximum returned value is used.  The B<la_pltexit>()  "
+"function is called only if this buffer is explicitly set to a suitable value."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The return value of B<la_pltenter>()  is as for B<la_symbind*>()."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "la_pltexit()"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<unsigned int la_i86_gnu_pltexit(Elf32_Sym *>I<sym>B<, unsigned int >I<ndx>B<,>\n"
+"B<                 uintptr_t *>I<refcook>B<, uintptr_t *>I<defcook>B<,>\n"
+"B<                 const La_i86_regs *>I<inregs>B<, La_i86_retval *>I<outregs>B<,>\n"
+"B<                 const char *>I<symname>B<);>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This function is called when a PLT entry, made between two shared objects "
+"that have been marked for binding notification, returns.  The function is "
+"called just before control returns to the caller of the PLT entry."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<inregs> argument points to a structure (defined in I<E<lt>link."
+"hE<gt>>)  containing the values of registers used for the call to this PLT "
+"entry.  The I<outregs> argument points to a structure (defined in "
+"I<E<lt>link.hE<gt>>)  containing return values for the call to this PLT "
+"entry.  These values can be modified by the caller, and the changes will be "
+"visible to the caller of the PLT entry."
+msgstr ""
+
+#.  This differs from Solaris, where an audit library that monitors
+#.  symbol binding should return the value of the 'retval' argument
+#.  (not provided by GNU, but equivalent to returning outregs->lrv_eax
+#.  on (say) x86-32).
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"In the current GNU implementation, the return value of B<la_pltexit>()  is "
+"ignored."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CONFORMING TO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This API is nonstandard, but very similar to the Solaris API, described in "
+"the Solaris I<Linker and Libraries Guide>, in the chapter I<Runtime Linker "
+"Auditing Interface>."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Note the following differences from the Solaris dynamic linker auditing API:"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "*"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The Solaris B<la_objfilter>()  interface is not supported by the GNU "
+"implementation."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The Solaris B<la_symbind32>()  and B<la_pltexit>()  functions do not provide "
+"a I<symname> argument."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The Solaris B<la_pltexit>()  function does not provide I<inregs> and "
+"I<outregs> arguments (but does provide a I<retval> argument with the "
+"function return value)."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "BUGS"
+msgstr ""
+
+#.  FIXME . Specifying multiple audit libraries doesn't work on GNU.
+#.  My simple tests on Solaris work okay, but not on Linux -- mtk, Jan 2009
+#.  glibc bug filed: http://sourceware.org/bugzilla/show_bug.cgi?id=9733
+#.  Reportedly, this is fixed on 16 Mar 2009 (i.e., for glibc 2.10)
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"In glibc versions up to and include 2.9, specifying more than one audit "
+"library in B<LD_AUDIT> results in a run-time crash.  This is reportedly "
+"fixed in glibc 2.10."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "EXAMPLES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"#include E<lt>link.hE<gt>\n"
+"#include E<lt>stdio.hE<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"unsigned int\n"
+"la_version(unsigned int version)\n"
+"{\n"
+"    printf(\"la_version(): version = %u; LAV_CURRENT = %u\\en\",\n"
+"            version, LAV_CURRENT);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    return LAV_CURRENT;\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"char *\n"
+"la_objsearch(const char *name, uintptr_t *cookie, unsigned int flag)\n"
+"{\n"
+"    printf(\"la_objsearch(): name = %s; cookie = %p\", name, cookie);\n"
+"    printf(\"; flag = %s\\en\",\n"
+"            (flag == LA_SER_ORIG) ?    \"LA_SER_ORIG\" :\n"
+"            (flag == LA_SER_LIBPATH) ? \"LA_SER_LIBPATH\" :\n"
+"            (flag == LA_SER_RUNPATH) ? \"LA_SER_RUNPATH\" :\n"
+"            (flag == LA_SER_DEFAULT) ? \"LA_SER_DEFAULT\" :\n"
+"            (flag == LA_SER_CONFIG) ?  \"LA_SER_CONFIG\" :\n"
+"            (flag == LA_SER_SECURE) ?  \"LA_SER_SECURE\" :\n"
+"            \"???\");\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    return name;\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"void\n"
+"la_activity (uintptr_t *cookie, unsigned int flag)\n"
+"{\n"
+"    printf(\"la_activity(): cookie = %p; flag = %s\\en\", cookie,\n"
+"            (flag == LA_ACT_CONSISTENT) ? \"LA_ACT_CONSISTENT\" :\n"
+"            (flag == LA_ACT_ADD) ?        \"LA_ACT_ADD\" :\n"
+"            (flag == LA_ACT_DELETE) ?     \"LA_ACT_DELETE\" :\n"
+"            \"???\");\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"unsigned int\n"
+"la_objopen(struct link_map *map, Lmid_t lmid, uintptr_t *cookie)\n"
+"{\n"
+"    printf(\"la_objopen(): loading \\e\"%s\\e\"; lmid = %s; cookie=%p\\en\",\n"
+"            map-E<gt>l_name,\n"
+"            (lmid == LM_ID_BASE) ?  \"LM_ID_BASE\" :\n"
+"            (lmid == LM_ID_NEWLM) ? \"LM_ID_NEWLM\" :\n"
+"            \"???\",\n"
+"            cookie);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    return LA_FLG_BINDTO | LA_FLG_BINDFROM;\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"unsigned int\n"
+"la_objclose (uintptr_t *cookie)\n"
+"{\n"
+"    printf(\"la_objclose(): %p\\en\", cookie);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    return 0;\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"void\n"
+"la_preinit(uintptr_t *cookie)\n"
+"{\n"
+"    printf(\"la_preinit(): %p\\en\", cookie);\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"uintptr_t\n"
+"la_symbind32(Elf32_Sym *sym, unsigned int ndx, uintptr_t *refcook,\n"
+"        uintptr_t *defcook, unsigned int *flags, const char *symname)\n"
+"{\n"
+"    printf(\"la_symbind32(): symname = %s; sym-E<gt>st_value = %p\\en\",\n"
+"            symname, sym-E<gt>st_value);\n"
+"    printf(\"        ndx = %u; flags = %#x\", ndx, *flags);\n"
+"    printf(\"; refcook = %p; defcook = %p\\en\", refcook, defcook);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    return sym-E<gt>st_value;\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"uintptr_t\n"
+"la_symbind64(Elf64_Sym *sym, unsigned int ndx, uintptr_t *refcook,\n"
+"        uintptr_t *defcook, unsigned int *flags, const char *symname)\n"
+"{\n"
+"    printf(\"la_symbind64(): symname = %s; sym-E<gt>st_value = %p\\en\",\n"
+"            symname, sym-E<gt>st_value);\n"
+"    printf(\"        ndx = %u; flags = %#x\", ndx, *flags);\n"
+"    printf(\"; refcook = %p; defcook = %p\\en\", refcook, defcook);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"Elf32_Addr\n"
+"la_i86_gnu_pltenter(Elf32_Sym *sym, unsigned int ndx,\n"
+"        uintptr_t *refcook, uintptr_t *defcook, La_i86_regs *regs,\n"
+"        unsigned int *flags, const char *symname, long *framesizep)\n"
+"{\n"
+"    printf(\"la_i86_gnu_pltenter(): %s (%p)\\en\", symname, sym-E<gt>st_value);\n"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<ldd>(1), B<dlopen>(3), B<ld.so>(8), B<ldconfig>(8)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2017-09-15"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This is the only function that I<must> be defined by an auditing library: it "
+"performs the initial handshake between the dynamic linker and the auditing "
+"library.  When invoking this function, the dynamic linker passes, in "
+"I<version>, the highest version of the auditing interface that the linker "
+"supports.  If necessary, the auditing library can check that this version is "
+"sufficient for its requirements."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"As its function result, this function should return the version of the "
+"auditing interface that this auditing library expects to use (returning "
+"I<version> is acceptable).  If the returned value is 0, or a version that is "
+"greater than that supported by the dynamic linker, then the audit library is "
+"ignored."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"B<Elf32_Addr la_i86_gnu_pltenter(Elf32_Sym *>I<sym>B<, unsigned int >I<ndx>B<,>\n"
+"B<                 uintptr_t *>I<refcook>B<, uintptr_t *>I<defcook>B<,>\n"
+"B<                 La_i86_regs *>I<regs>B<, unsigned int *>I<flags>B<,>\n"
+"B<                 const char *>I<symname>B<, long int *>I<framesizep>B<);>\n"
+msgstr ""
+
+#. type: SH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "EXAMPLE"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"unsigned int\n"
+"la_version(unsigned int version)\n"
+"{\n"
+"    printf(\"la_version(): %d\\en\", version);\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"    return version;\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"uintptr_t\n"
+"la_symbind32(Elf32_Sym *sym, unsigned int ndx, uintptr_t *refcook,\n"
+"        uintptr_t *defcook, unsigned int *flags, const char *symname)\n"
+"{\n"
+"    printf(\"la_symbind32(): symname = %s; sym-E<gt>st_value = %p\\en\",\n"
+"            symname, sym-E<gt>st_value);\n"
+"    printf(\"        ndx = %d; flags = 0x%x\", ndx, *flags);\n"
+"    printf(\"; refcook = %p; defcook = %p\\en\", refcook, defcook);\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"uintptr_t\n"
+"la_symbind64(Elf64_Sym *sym, unsigned int ndx, uintptr_t *refcook,\n"
+"        uintptr_t *defcook, unsigned int *flags, const char *symname)\n"
+"{\n"
+"    printf(\"la_symbind64(): symname = %s; sym-E<gt>st_value = %p\\en\",\n"
+"            symname, sym-E<gt>st_value);\n"
+"    printf(\"        ndx = %d; flags = 0x%x\", ndx, *flags);\n"
+"    printf(\"; refcook = %p; defcook = %p\\en\", refcook, defcook);\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"Elf32_Addr\n"
+"la_i86_gnu_pltenter(Elf32_Sym *sym, unsigned int ndx,\n"
+"        uintptr_t *refcook, uintptr_t *defcook, La_i86_regs *regs,\n"
+"        unsigned int *flags, const char *symname, long int *framesizep)\n"
+"{\n"
+"    printf(\"la_i86_gnu_pltenter(): %s (%p)\\en\", symname, sym-E<gt>st_value);\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

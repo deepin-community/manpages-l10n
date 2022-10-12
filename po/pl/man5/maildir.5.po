@@ -1,0 +1,336 @@
+# Polish translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Wojtek Kotwica <wkotwica@post.pl>, 2001.
+# Robert Luberda <robert@debian.org>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-pl\n"
+"POT-Creation-Date: 2021-08-27 18:21+0200\n"
+"PO-Revision-Date: 2014-09-03 22:45+0200\n"
+"Last-Translator: Robert Luberda <robert@debian.org>\n"
+"Language-Team: Polish <manpages-pl-list@lists.sourceforge.net>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "maildir"
+msgstr "maildir"
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "NAME"
+msgstr "NAZWA"
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "maildir - directory for incoming mail messages"
+msgstr "maildir - katalog na przychodzące wiadomości pocztowe"
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "INTRODUCTION"
+msgstr "WPROWADZENIE"
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"I<maildir> is a structure for directories of incoming mail messages.  It "
+"solves the reliability problems that plague I<mbox> files and I<mh> folders."
+msgstr ""
+"I<maildir> jest strukturą drzewiastą katalogów listów przychodzących. "
+"Rozwiązuje problemy niezawodności, jakie trapiły pliki I<mbox> i katalogi "
+"pocztowe I<mh>."
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "RELIABILITY ISSUES"
+msgstr "KWESTIE NIEZAWODNOŚCI"
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"A machine may crash while it is delivering a message.  For both I<mbox> "
+"files and I<mh> folders this means that the message will be silently "
+"truncated.  Even worse: for I<mbox> format, if the message is truncated in "
+"the middle of a line, it will be silently joined to the next message.  The "
+"mail transport agent will try again later to deliver the message, but it is "
+"unacceptable that a corrupted message should show up at all.  In I<maildir>, "
+"every message is guaranteed complete upon delivery."
+msgstr ""
+"Podczas przekazywania listu może nastąpić załamanie się systemu. W przypadku "
+"plików I<mbox>, jak i katalogów I<mh> list ten zostanie wówczas obcięty. Co "
+"gorsza: przy formacie I<mbox>, jeśli list zostanie ucięty w środku linii, to "
+"zostanie złączony z następnym.  Agent transportu poczty (MTA) będzie później "
+"próbował ponownie dostarczyć list, ale jest niedopuszczalne, żeby popsuta "
+"wiadomość w ogóle się pojawiała. W I<maildir> każdy list po przesłaniu jest "
+"z pewnością kompletny."
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"A machine may have two programs simultaneously delivering mail to the same "
+"user.  The I<mbox> and I<mh> formats require the programs to update a single "
+"central file.  If the programs do not use some locking mechanism, the "
+"central file will be corrupted.  There are several I<mbox> and I<mh> locking "
+"mechanisms, none of which work portably and reliably.  In contrast, in "
+"I<maildir>, no locks are ever necessary.  Different delivery processes never "
+"touch the same file."
+msgstr ""
+"Na danej maszynie mogą równocześnie pracować dwa programy dostarczające "
+"pocztę do tego samego użytkownika. Formaty I<mbox> i I<mh> wymagają, by oba "
+"programy aktualizowały jeden centralny plik. Jeśli nie korzystają one z "
+"jakiegoś mechanizmu blokowania, to plik ten zostanie uszkodzony.  Istnieje "
+"kilka mechanizmów blokowania I<mbox> i I<mh>, z których żaden nie działa "
+"przenośnie i niezawodnie. W przypadku I<maildir> żadne blokady nie są nigdy "
+"potrzebne. Różne procesy dostarczania nigdy nie tykają tego samego pliku."
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"A user may try to delete messages from his mailbox at the same moment that "
+"the machine delivers a new message.  For I<mbox> and I<mh> formats, the "
+"user's mail-reading program must know what locking mechanism the mail-"
+"delivery programs use.  In contrast, in I<maildir>, any delivered message "
+"can be safely updated or deleted by a mail-reading program."
+msgstr ""
+"Użytkownik może próbować usunąć listy ze swojej skrzynki w tej samej chwili, "
+"gdy maszyna dostarcza nowy list. Przy formatach I<mbox> i I<mh> czytnik "
+"poczty użytkownika musi wiedzieć, jakiego mechanizmu blokowania używają "
+"programy dostarczające pocztę. Inaczej jest w przypadku I<maildir>, gdzie "
+"czytnik poczty może bezpiecznie aktualizować lub usuwać dowolny dostarczony "
+"list."
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Many sites use Sun's B<Network F>aB<il>urB<e System> (NFS), presumably "
+"because the operating system vendor does not offer anything else.  NFS "
+"exacerbates all of the above problems.  Some NFS implementations don't "
+"provide B<any> reliable locking mechanism.  With I<mbox> and I<mh> formats, "
+"if two machines deliver mail to the same user, or if a user reads mail "
+"anywhere except the delivery machine, the user's mail is at risk.  "
+"I<maildir> works without trouble over NFS."
+msgstr ""
+"Wiele ośrodków korzysta z Sunowego B<Network F>aB<il>urB<e System> (NFS), "
+"zapewne dlatego, że dostawca systemu operacyjnego nie oferuje niczego "
+"innego. NFS pogarsza wszystkie powyższe problemy. Niektóre z implementacji "
+"NFS nie zapewniają B<żadnego> solidnego mechanizmu blokowania. Przy "
+"formatach I<mbox> i I<mh>, gdy dwie maszyny dostarczają pocztę do tego "
+"samego użytkownika lub gdy użytkownik czyta pocztę gdzieś poza maszyną "
+"dostarczającą, jego poczta jest zagrożona. I<maildir> działa z NFS bez "
+"kłopotów."
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "THE MAILDIR STRUCTURE"
+msgstr "STRUKTURA MAILDIR"
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"A directory in I<maildir> format has three subdirectories, all on the same "
+"filesystem: B<tmp>, B<new>, and B<cur>."
+msgstr ""
+"Katalog w formacie I<maildir> ma trzy podkatalogi, wszystkie na tym samym "
+"systemie plików: B<tmp>, B<new> i B<cur>."
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Each file in B<new> is a newly delivered mail message.  The modification "
+"time of the file is the delivery date of the message.  The message is "
+"delivered I<without> an extra UUCP-style B<From_> line, I<without> any "
+"B<E<gt>From> quoting, and I<without> an extra blank line at the end.  The "
+"message is normally in RFC 822 format, starting with a B<Return-Path> line "
+"and a B<Delivered-To> line, but it could contain arbitrary binary data.  It "
+"might not even end with a newline."
+msgstr ""
+"Każdy plik w B<new> jest świeżo dostarczonym listem. Czas modyfikacji pliku "
+"jest czasem dostarczenia. List jest dostarczany I<bez> dodatkowej linii "
+"B<From_> w stylu UUCP, I<bez> żadnego cytowania B<E<gt>From> i I<bez> "
+"dodatkowej pustej linii na końcu.  Wiadomość ma normalnie format RFC 822, "
+"zaczynając się liniami B<Return-Path> i B<Delivered-To>, ale może zawierać "
+"dowolne dane binarne.  Może nawet nie kończyć się znakiem nowej linii."
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Files in B<cur> are just like files in B<new>.  The big difference is that "
+"files in B<cur> are no longer new mail: they have been seen by the user's "
+"mail-reading program."
+msgstr ""
+"Pliki w B<cur> są takie jak w B<new>.  Różnicę stanowi to, że pliki w B<cur> "
+"nie są już nowymi listami: czytnik poczty użytkownika już je widział."
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "HOW A MESSAGE IS DELIVERED"
+msgstr "JAK LIST JEST DOSTARCZANY"
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"The B<tmp> directory is used to ensure reliable delivery, as discussed here."
+msgstr ""
+"Do zapewnienia niezawodności dostarczania wykorzystuje się katalog B<tmp>."
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"A program delivers a mail message in six steps.  First, it B<chdir()>s to "
+"the I<maildir> directory.  Second, it B<stat()s> the name B<tmp/>I<time.pid."
+"host>, where I<time> is the number of seconds since the beginning of 1970 "
+"GMT, I<pid> is the program's process ID, and I<host> is the host name.  "
+"Third, if B<stat()> returned anything other than ENOENT, the program sleeps "
+"for two seconds, updates I<time>, and tries the B<stat()> again, a limited "
+"number of times.  Fourth, the program creates B<tmp/>I<time.pid.host>.  "
+"Fifth, the program I<NFS-writes> the message to the file.  Sixth, the "
+"program B<link()>s the file to B<new/>I<time.pid.host>.  At that instant the "
+"message has been successfully delivered."
+msgstr ""
+"Program dostarcza przesyłkę pocztową w sześciu etapach. Najpierw, wykonuje "
+"B<chdir()> do katalogu I<maildir>. Potem pobiera za pomocą B<stat()> "
+"informacje o pliku o nazwie B<tmp/>I<time.pid.host>, gdzie I<time> to liczba "
+"sekund od początku roku 1970 strefy czasowej GMT, I<pid> to identyfikator "
+"procesu programu, a  I<host> jest nazwą komputera. W kroku trzecim, jeśli "
+"B<stat()> zwrócił coś innego niż ENOENT [ENOENT=plik nie istnieje], program "
+"zasypia na dwie sekundy, aktualizuje I<time>, i ponownie próbuje B<stat()>, "
+"ograniczoną liczbę razy. W czwartym kroku program tworzy B<tmp/>I<time.pid."
+"host>. W piątym zapisuje przez I<zapis-NFS> przesyłkę do utworzonego pliku. "
+"W szóstym kroku program, za pomocą B<link()> tworzy nowe dowiązanie tego "
+"pliku, B<new/>I<time.pid.host>. W tym momencie list dostał pomyślnie "
+"dostarczony."
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"The delivery program is required to start a 24-hour timer before creating "
+"B<tmp/>I<time.pid.host>, and to abort the delivery if the timer expires.  "
+"Upon error, timeout, or normal completion, the delivery program may attempt "
+"to B<unlink()> B<tmp/>I<time.pid.host>."
+msgstr ""
+"Program dostarczający przed utworzeniem B<tmp/>I<time.pid.host> powinien "
+"uruchomić 24-godzinny licznik czasu i porzucić dostarczanie jeśli licznik "
+"zostanie przekroczony. W przypadku wystąpienia błędu, przekroczenia limitu "
+"czasu czy normalnego zakończenia działania, program może spróbować użyć "
+"B<unlink()> do usunięcia B<tmp/>I<time.pid.host>."
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"I<NFS-writing> means (1) as usual, checking the number of bytes returned "
+"from each B<write()> call; (2) calling B<fsync()> and checking its return "
+"value; (3) calling B<close()> and checking its return value.  (Standard NFS "
+"implementations handle B<fsync()> incorrectly but make up for it by abusing "
+"B<close()>.)"
+msgstr ""
+"I<Zapis-NFS> oznacza (1) jak zwykle, sprawdzenie liczby bajtów zwracanych z "
+"każdego wywołania B<write()>; (2) wywołanie B<fsync()> i sprawdzenie "
+"zwróconej wartości; (3) wywołanie B<close()> i sprawdzenie zwróconej "
+"wartości. (Standardowe implementacje NFS obsługują B<fsync()> niepoprawnie, "
+"ale poprawiają to niewłaściwym użyciem B<close()>)."
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "HOW A MESSAGE IS READ"
+msgstr "JAK LIST JEST CZYTANY"
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "A mail reader operates as follows."
+msgstr "Czytnik poczty działa jak następuje."
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"It looks through the B<new> directory for new messages.  Say there is a new "
+"message, B<new/>I<unique>.  The reader may freely display the contents of "
+"B<new/>I<unique>, delete B<new/>I<unique>, or rename B<new/>I<unique> as "
+"B<cur/>I<unique:info>.  See B<http://pobox.com/~djb/proto/maildir.html> for "
+"the meaning of I<info>."
+msgstr ""
+"Przegląda katalog B<new>, szukając nowych wiadomości. Powiedzmy, że mamy "
+"nowy list, B<new/>I<unikat>. Czytnik może swobodnie wyświetlić zawartość "
+"pliku B<new/>I<unikat>, usunąć go lub zmienić mu nazwę na B<cur/>I<unikat:"
+"info>. Znaczenie I<info> opisano na stronie B<http://pobox.com/~djb/proto/"
+"maildir.html>."
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"The reader is also expected to look through the B<tmp> directory and to "
+"clean up any old files found there.  A file in B<tmp> may be safely removed "
+"if it has not been accessed in 36 hours."
+msgstr ""
+"Oczekuje się również, że czytnik przeglądnie katalog B<tmp> i wyczyści "
+"ewentualne znalezione tam stare pliki.  Plik w B<tmp> można bezpiecznie "
+"usunąć jeśli nie sięgano do niego w ciągu ostatnich 36 godzin."
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"It is a good idea for readers to skip all filenames in B<new> and B<cur> "
+"starting with a dot.  Other than this, readers should not attempt to parse "
+"filenames."
+msgstr ""
+"Warto, by czytniki pomijały wszystkie te pliki w B<new> i B<cur>, których "
+"nazwy zaczynają się od kropki. Czytniki nie powinny próbować analizować nazw "
+"plików."
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "ENVIRONMENT VARIABLES"
+msgstr "ZMIENNE ŚRODOWISKOWE"
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Mail readers supporting I<maildir> use the B<MAILDIR> environment variable "
+"as the name of the user's primary mail directory."
+msgstr ""
+"Czytniki poczty obsługujące I<maildir> korzystają ze zmiennej środowiskowej "
+"B<MAILDIR> jako nazwy podstawowego katalogu pocztowego użytkownika."
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "ZOBACZ TAKŻE"
+
+#
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "mbox(5), qmail-local(8)"
+msgstr "mbox(5), qmail-local(8)"

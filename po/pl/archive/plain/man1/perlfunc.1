@@ -1,0 +1,4417 @@
+.\" 1999 PTM Przemek Borys
+.rn '' }`
+.\" $RCSfile: perlfunc.1,v $$Revision: 1.17 $$Date: 2003/05/29 11:06:06 $
+.\"
+.\" $Log: perlfunc.1,v $
+.\" Revision 1.17  2003/05/29 11:06:06  robert
+.\" poprawki (głównie warningi groffa)
+.\"
+.\" Revision 1.16  2002/08/22 14:47:30  robert
+.\" poprawione błędy formatowania -  nałożony man-pages-pl-0.22-roffix.patch z RedHata
+.\"
+.\" Revision 1.15  2001/07/24 06:59:57  wojtek2
+.\" [błąd] fatalny => krytyczny
+.\"
+.\" Revision 1.14  2001/06/14 08:43:13  wojtek2
+.\" s/,chyba, że/,chyba że/
+.\" plus trochę literówek, formatowania etc.
+.\"
+.\" Revision 1.13  2000/10/22 16:15:28  wojtek2
+.\" wiodące (spacje, zera etc.)->początkowe
+.\" kontrolne (znaki, sekwencje)->sterujące
+.\" także "klawisze kontrolne" (Ctrl+klaw.)->klawisze sterujące
+.\"
+.\" Revision 1.12  2000/03/18 16:00:27  wojtek2
+.\" 1. sprawdzone pakiety mtools i file
+.\" 2. conajmniej->co najmniej
+.\"
+.\" Revision 1.11  1999/09/30 06:37:19  siewca
+.\" poprawki ortograficzne
+.\"
+.\" Revision 1.10  1999/09/11 22:17:18  siewca
+.\" ortografy
+.\"
+.\" Revision 1.9  1999/09/03 01:12:14  siewca
+.\" trochę korekt orgrotografogicznych ;>
+.\"
+.\" Revision 1.8  1999/08/30 08:42:40  wojtek2
+.\" perlfunc: kilka drobnych poprawek
+.\" user*, group*: dodana przestroga
+.\"
+.\" Revision 1.7  1999/08/06 10:51:05  wojtek2
+.\" Pokuta: napis->łańcuch
+.\" rekursja->rekurencja
+.\" inne drobne
+.\"
+.\" Revision 1.6  1999/08/03 11:07:22  wojtek2
+.\" bistable->dwustanowy
+.\" przeważnie " xx rather than yy" -> "xx zamiast yy"
+.\"
+.\" Revision 1.5  1999/08/02 12:08:52  pborys
+.\" string->napis
+.\" shell->powłoka
+.\" kernel->jądro
+.\"
+.\" Revision 1.4  1999/07/31 19:18:54  pborys
+.\" zmiana slashy na ukośniki
+.\"
+.\" Revision 1.3  1999/07/31 15:27:30  pborys
+.\" korekszkenz
+.\"
+.\" Revision 1.2  1999/07/13 14:39:16  pborys
+.\" FAQ - Przestrogi/zastrzeżenia
+.\" robotnicy - wiadomo
+.\" whatis - nowo skompilowany
+.\" perlfunc.1 - poprawiony styl (przynajmniej w tym gupim wstępie ;)
+.\" which.1 - lokalizowanie pliku
+.\" nanosleep.2 - ekstremalnie dokładne pauzowanie
+.\" select.2 - sprawdzanie stanu deskryptorów, przenośny sleep
+.\" sigaction.2 - operacje na sygnałach
+.\" sigblock.2 - bsd'owy sposób blokowania sygnałów
+.\" glob.3 - rozwijanie symbolicznych ścieżek shella w normalne
+.\"
+.\" Revision 1.1  1999/07/12 22:22:53  pborys
+.\" f77.1: dodane tłumaczenia pozostawionych tekstów (poza copying ;)
+.\" FAQ: dodane PRZESTROGI
+.\" perlfunc.1: wersja beeeeta ;)
+.\"
+.\"
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+.\"
+.\"
+.\"     Set up \*(-- to give an unbreakable dash;
+.\"     string Tr holds user defined translation string.
+.\"     Bell System Logo is used as a dummy character.
+.\"
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+.\"   \*(M", \*(S", \*(N" and \*(T" are the equivalent of
+.\"   \*(L" and \*(R", except that they are used on ".xx" lines,
+.\"   such as .IP and .SH, which do another additional levels of
+.\"   double-quote interpretation
+.ds M" """
+.ds S" """
+.ds N" """""
+.ds T" """""
+.ds L' '
+.ds R' '
+.ds M' '
+.ds S' '
+.ds N' '
+.ds T' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds M" ``
+.ds S" ''
+.ds N" ``
+.ds T" ''
+.ds L' `
+.ds R' '
+.ds M' `
+.ds S' '
+.ds N' `
+.ds T' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH PERLFUNC 1 "perl 5.004, patch 01" "12/Jun/97" "Podręcznik programisty perla"
+.IX Title "PERLFUNC 1"
+.UC
+.IX Name "perlfunc - Perl builtin functions"
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH "NAZWA"
+.IX Header "NAME"
+perlfunc \- Wbudowane funkcje perla
+.SH "OPIS"
+.IX Header "DESCRIPTION"
+Funkcje z tej sekcji mogą służyć pomocą w wyrażeniach. Podpadają one pod
+dwie główne kategorie: operatory list, oraz nazwane operatory
+jednoargumentowe. [Przyp. tłum.: w perlu nie ma prawdziwych funkcji, są
+operatory]
+Różnią się one w związku priorytetowym przecinkiem.
+(zobacz tablicę priorytetów na stronie \fIperlop(1)\fR.). Operatory list
+pobierają więcej niż jeden argument, podczas gdy operatory jednoargumentowe,
+z definicji,
+nigdy nie biorą więcej niż jeden argument. Tak więc przecinek kończy argument
+operatora jednoargumentowego, lecz jedynie rozdziela argumenty operatora
+listy. Ogólnie, operator jednoargumentowy daje swojemu argumentowi kontekst 
+skalarny,
+podczas gdy operator listowy może dawać zarówno kontekst skalarny, jak i
+listowy. Jeśli daje obydwa, to argumenty skalarne będą najpierw, a za nimi
+nastąpią argumenty listowe. (Zauważ, że może istnieć tylko jeden argument
+listowy.) Np. funkcja \fIsplice()\fR ma trzy argumenty skalarne, za którymi
+następuje lista.
+.PP
+W opisach składni, które są niżej, operatory list, które oczekują listy (i
+dają kontekst listowy elementom tej listy) są pokazywane z argumentem LISTA.
+Lista taka może składać się z dowolnej kombinacji argumentów
+skalarnych lub wartości listowych; wartości listowe będą włączone w listę
+tak, jakby każdy pojedynczy element był interpolowany w tym punkcie listy,
+tworząc dłuższą, jednowymiarową wartość listową. Elementy typu LISTA powinny
+być oddzielone przecinkami.
+.PP
+Każda funkcja z poniższej listy, może być użyta bez, albo z nawiasami
+wokół swoich argumentów. (Opisy składni pomijają nawiasy.) Jeśli używasz
+nawiasów, to prosta (lecz czasem zaskakująca) reguła jest taka:
+\fIWYGLĄDA\fR jak funkcja, więc \fIJEST\fR funkcją i priorytet nie ma
+znaczenia. W przeciwnym wypadku jest to operator listowy lub operator
+jednoargumentowy i priorytet się liczy. I biała spacja między funkcją i
+lewym nawiasem nie liczy się\*(--więc musisz być czasem ostrożny:
+.PP
+.Vb 5
+\&    print 1+2+4;        # Drukuje 7.
+\&    print(1+2) + 4;     # Drukuje 3.
+\&    print (1+2)+4;      # Też drukuje 3!
+\&    print +(1+2)+4;     # Drukuje 7.
+\&    print ((1+2)+4);    # Drukuje 7.
+.Ve
+Jeśli uruchamiasz perla z przełącznikiem \fB\-w\fR, to będziesz o tym
+ostrzegany. Na przykład trzecia z powyższych linii daje w efekcie:
+.PP
+.Vb 2
+\&    print (...) interpreted as function at - line 1.
+\&    Useless use of integer addition in void context at - line 1.
+.Ve
+Dla instrukcji, które mogą być używane zarówno w kontekstach skalarnych, jak
+i listowych, błąd nie wymagający przerwania jest ogólnie wskazywany w
+kontekście skalarnym przez zwrot niezdefiniowanej wartości, a w kontekście
+listowym przez zwrot listy null.
+.PP
+Zapamiętaj następującą regułę:
+.Ip "\fI\s-1NIE\s0 \s-1ISTNIEJE\s0 \s-1OGÓLNA\s0 \s-1REGUŁA\s0 \s-1KONWERSJI\s0 \s-1LISTY\s0 \s-1W\s0 \s-1SKALAR\s0!\fR" 8
+.IX Item "\fI\s-1THERE\s0 \s-1IS\s0 \s-1NO\s0 \s-1GENERAL\s0 \s-1RULE\s0 \s-1FOR\s0 \s-1CONVERTING\s0 A \s-1LIST\s0 \s-1INTO\s0 A \s-1SCALAR\s0!\fR"
+.PP
+Każdy operator i funkcja decyduje, jaki rodzaj wartości jest najbardziej
+odpowiedni do zwrócenia w kontekście skalarnym. Niektóre operatory zwracają
+długość listy, która byłaby zwrócona w kontekście listowym. Niektóre
+zwracają pierwszą wartość listy. Niektóre zwracają ostatnią wartość listy.
+Inne zwracają liczbę pomyślnych operacji. Ogólnie, robią one to, czego
+chcesz, chyba że oczekujesz spójności.
+.Sh "Funkcje perla według kategorii"
+.IX Subsection "Perl Functions by Category"
+Oto funkcje perla (włączając rzeczy, które wyglądają jak funkcje, np.
+niektóre słowa kluczowe i nazwane operatory), poukładane według kategorii.
+Niektóre funkcje pojawiają się w więcej niż jednym miejscu.
+.Ip "Funkcje dla skalarów lub łańcuchów" 5
+.IX Item "Functions for SCALARs or strings"
+chomp, chop, chr, crypt, hex, index, lc, lcfirst, length,
+oct, ord, pack, q/\s-1ŁAŃCUCH\s0/, qq/\s-1ŁAŃCUCH\s0/, reverse, rindex,
+sprintf, substr, tr///, uc, ucfirst, y///
+.Ip "Wyrażenia regularne i porównywanie wzorców" 5
+.IX Item "Regular expressions and pattern matching"
+m//, pos, quotemeta, s///, split, study
+.Ip "Funkcje numeryczne" 5
+.IX Item "Numeric functions"
+abs, atan2, cos, exp, hex, int, log, oct, rand, sin, sqrt,
+srand
+.Ip "Funkcje dla prawdziwych  tablic (@ARRAYs)" 5
+.IX Item "Functions for real @ARRAYs"
+pop, push, shift, splice, unshift
+.Ip "Funkcje dla danych listowych" 5
+.IX Item "Functions for list data"
+grep, join, map, qw/\s-1ŁAŃCUCH\s0/, reverse, sort, unpack
+.Ip "Funkcje dla %HASHów (tablic asocjacyjnych)" 5
+.IX Item "Functions for real %HASHes"
+delete, each, exists, keys, values
+.Ip "Funkcje wejścia i wyjścia" 5
+.IX Item "Input and output functions"
+binmode, close, closedir, dbmclose, dbmopen, die, eof,
+fileno, flock, format, getc, print, printf, read, readdir,
+rewinddir, seek, seekdir, select, syscall, sysread, sysseek,
+syswrite, tell, telldir, truncate, warn, write
+.Ip "Funkcje dla danych o określonej długości lub rekordów" 5
+.IX Item "Functions for fixed length data or records"
+pack, read, syscall, sysread, syswrite, unpack, vec
+.Ip "Funkcje dla deskryptorów plików, plików lub katalogów" 5
+.IX Item "Functions for filehandles, files, or directories"
+\fI\-X\fR, chdir, chmod, chown, chroot, fcntl, glob, ioctl, link,
+lstat, mkdir, open, opendir, readlink, rename, rmdir,
+stat, symlink, umask, unlink, utime
+.Ip "Słowa kluczowe związane z kontrolą działania programu" 5
+.IX Item "Keywords related to the control flow of your perl program"
+caller, continue, die, do, dump, eval, exit, goto, last,
+next, redo, return, sub, wantarray
+.Ip "Słowa kluczowe związane z zakresami" 5
+.IX Item "Keywords related to scoping"
+caller, import, local, my, package, use
+.Ip "Różne funkcje" 5
+.IX Item "Miscellaneous functions"
+defined, dump, eval, formline, local, my, reset, scalar,
+undef, wantarray
+.Ip "Funkcje dla procesów i grup procesów" 5
+.IX Item "Functions for processes and process groups"
+alarm, exec, fork, getpgrp, getppid, getpriority, kill,
+pipe, qx/\s-1ŁAŃCUCH\s0/, setpgrp, setpriority, sleep, system,
+times, wait, waitpid
+.Ip "Słowa kluczowe związane z modułami perla" 5
+.IX Item "Keywords related to perl modules"
+do, import, no, package, require, use
+.Ip "Słowa kluczowe związane z klasami i obiektowością" 5
+.IX Item "Keywords related to classes and object-orientedness"
+bless, dbmclose, dbmopen, package, ref, tie, tied, untie, use
+.Ip "Niskopoziomowe funkcje gniazd" 5
+.IX Item "Low-level socket functions"
+accept, bind, connect, getpeername, getsockname,
+getsockopt, listen, recv, send, setsockopt, shutdown,
+socket, socketpair
+.Ip "Funkcje komunikacji międzyprocesowej Systemu V" 5
+.IX Item "System V interprocess communication functions"
+msgctl, msgget, msgrcv, msgsnd, semctl, semget, semop,
+shmctl, shmget, shmread, shmwrite
+.Ip "Pobieranie informacji użytkownika i grupy" 5
+.IX Item "Fetching user and group info"
+endgrent, endhostent, endnetent, endpwent, getgrent,
+getgrgid, getgrnam, getlogin, getpwent, getpwnam,
+getpwuid, setgrent, setpwent
+.Ip "Pobieranie informacji sieciowej" 5
+.IX Item "Fetching network info"
+endprotoent, endservent, gethostbyaddr, gethostbyname,
+gethostent, getnetbyaddr, getnetbyname, getnetent,
+getprotobyname, getprotobynumber, getprotoent,
+getservbyname, getservbyport, getservent, sethostent,
+setnetent, setprotoent, setservent
+.Ip "Funkcje związane z czasem" 5
+.IX Item "Time-related functions"
+gmtime, localtime, time, times
+.Ip "Funkcje nowe w perl5" 5
+.IX Item "Functions new in perl5"
+abs, bless, chomp, chr, exists, formline, glob, import, lc,
+lcfirst, map, my, no, prototype, qx, qw, readline, readpipe,
+ref, sub*, sysopen, tie, tied, uc, ucfirst, untie, use
+.Sp
+* \- \f(CWsub\fR było słowem kluczowym w perl4, lecz w perl5 jest to
+operator, który może być używany w wyrażeniach.
+.Ip "Funkcje przedawnione w perl5" 5
+.IX Item "Functions obsoleted in perl5"
+dbmclose, dbmopen
+.Sh "Alfabetyczny listing funkcji perla"
+.IX Subsection "Alphabetical Listing of Perl Functions"
+.Ip "-X \s-1UCHWYTPLIKU\s0" 8
+.IX Item "-X \s-1FILEHANDLE\s0"
+.Ip "-X \s-1WYRAŻ\s0" 8
+.IX Item "-X \s-1EXPR\s0"
+.Ip "-X" 8
+.IX Item "-X"
+Test pliku, gdzie X jest jedną z niżej wymienionych liter. Ten
+jednoargumentowy operator pobiera argument, nazwę pliku lub jego uchwyt.
+Następnie testuje plik i sprawdza, czy coś jest
+w nim prawdziwe. Jeśli argument zostanie pominięty, testuje \f(CW$_\fR,
+nie licząc \f(CW-t\fR, które testuje \s-1STDIN\s0.
+Zasadniczo zwraca \f(CW1\fR dla wyniku pozytywnego i \f(CW''\fR 
+dla negatywnego, a wartość niezdefiniowaną, jeśli plik nie istnieje. Mimo
+śmiesznych nazw, priorytety są takie same jak każdym innym nazwanym
+operatorze jednoargumentowym i argument może być otoczony nawiasami.
+Operator może być jednym z:
+.Sp
+.Vb 4
+\&    \-r  Plik jest odczytywalny przez efektywny uid/gid.
+\&    \-w  Plik jest zapisywalny przez efektywny uid/gid.
+\&    \-x  Plik jest wykonywalny przez efektywny uid/gid.
+\&    \-o  Właścicielem pliku jest efektywny uid.
+.Ve
+.Vb 4
+\&    \-R  Plik jest odczytywalny przez rzeczywisty uid/gid.
+\&    \-W  Plik jest zapisywalny przez rzeczywisty uid/gid.
+\&    \-X  Plik jest wykonywalny przez rzeczywisty uid/gid.
+\&    \-O  Właścicielem pliku jest rzeczywisty uid.
+.Ve
+.Vb 3
+\&    \-e  Plik istnieje.
+\&    \-z  Plik ma rozmiar zerowy.
+\&    \-s  Plik ma rozmiar niezerowy (zwraca rozmiar).
+.Ve
+.Vb 8
+\&    \-f  Plik jest prostym plikiem.
+\&    \-d  Plik jest katalogiem.
+\&    \-l  Plik jest dowiązaniem symbolicznym.
+\&    \-p  Plik jest nazwanym potokiem (FIFO).
+\&    \-S  Plik jest gniazdem.
+\&    \-b  Plik jest blokowym plikiem specjalnym.
+\&    \-c  Plik jest znakowym plikiem specjalnym.
+\&    \-t  Uchwyt pliku jest otwarty do tty.
+.Ve
+.Vb 3
+\&    \-u  Plik ma ustawiony bit `setuid'.
+\&    \-g  Plik ma ustawiony bit `setgid'.
+\&    \-k  Plik ma ustawiony bit `sticky'.
+.Ve
+.Vb 2
+\&    \-T  Plik jest plikiem tekstowym.
+\&    \-B  Plik jest plikiem binarnym (przeciwieństwo \-T).
+.Ve
+.Vb 3
+\&    \-M  Wiek pliku w dniach, gdy uruchomił się skrypt
+\&    \-A  To samo dla czasu dostępu.
+\&    \-C  To samo dla zmiany informacji inode.
+.Ve
+Interpretacja operatorów praw pliku \f(CW-r\fR, \f(CW-R\fR, \f(CW-w\fR,
+\f(CW-W\fR, \f(CW-x\fR i \f(CW-X\fR bazuje jedynie na prawach pliku i
+uid/gid użytkownika. Mogą istnieć inne powody, dla których w rzeczywistości
+nie możesz go odczytać, zapisać lub uruchomić. Zauważ też, że dla
+superużytkownika, operatory \f(CW-r\fR, \f(CW-R\fR, \f(CW-w\fR, i \f(CW-W\fR 
+zawsze zwracają 1, a \f(CW-x\fR i \f(CW-X\fR zwracają 1, jeśli ustawiony
+jest tak dowolny bit wykonania. Skrypty uruchamiane przez superużytkownika
+powinny więc wywoływać do celów testowania praw pliku funkcję
+\fIstat()\fR lub tymczasowo zmienić uid na coś innego.
+.Sp
+Przykład:
+.Sp
+.Vb 5
+\&    while (<>) {
+\&        chop;
+\&        next unless \-f $_;      # ignoruj specjalne
+\&        ...
+\&    }
+.Ve
+Zauważ, że \f(CW-s/a/b/\fR nie dokonuje zanegowanego podstawienia.
+Powiedzenie
+\f(CW-exp($foo)\fR działa wciąż zgodnie z oczekiwaniami, jednak jedynie
+pojedyncze litery za znakiem minusa są interpretowane jako testy plikowe.
+.Sp
+Przełączniki \f(CW-T\fR i \f(CW-B\fR działają tak, że testują pierwszy
+blok pliku w poszukiwaniu dziwnych znaków, takich jak dziwne kody sterujące,
+lub znaki z wysokiego zestawu znaków. Jeśli jest ich zbyt wiele (>30%), to
+jest to plik \f(CW-B\fR, w przeciwnym wypadku to plik \f(CW-T\fR.  
+Dodatkowo, każdy plik, zawierający w pierwszym bloku null jest uważany za
+plik binarny. Jeśli \f(CW-T\fR lub \f(CW-B\fR jest używane na uchwycie
+pliku, to testowany jest bieżący bufor standardowego wejścia zamiast
+pierwszego bloku.
+Zarówno \f(CW-T\fR jak i \f(CW-B\fR zwracają odpowiedź pozytywną
+dla pliku null lub pliku, który jest na EOF podczas testowania jego
+uchwytu. Z uwagi na to, że dla testu \f(CW-T\fR trzeba odczytać plik, 
+w większości przypadków używa się najpierw \f(CW-f\fR, jak w
+\f(CWnext unless \-f $file && \-T $file\fR.
+.Sp
+Jeśli któryś z operatorów testu plików (lub \fIstat()\fR czy \fIlstat()\fR)
+otrzymałby specjalny uchwyt pliku, składający się z samego podkreślenia, to
+użyta zostałaby struktura `stat' z poprzedniego testu pliku, oszczędzając 
+wywołania systemowego. (Nie działa to dla \f(CW-t\fR, a ponadto powinieneś 
+pamiętać,
+że \fIlstat()\fR i \f(CW-l\fR zostawiają w strukturze wartości dla dowiązań
+symbolicznych, a nie rzeczywistych plików.) Przykład:
+.Sp
+.Vb 1
+\&    print "Can do.\en" if \-r $a || \-w _ || \-x _;
+.Ve
+.Vb 9
+\&    stat($filename);
+\&    print "Readable\en" if \-r _;
+\&    print "Writable\en" if \-w _;
+\&    print "Executable\en" if \-x _;
+\&    print "Setuid\en" if \-u _;
+\&    print "Setgid\en" if \-g _;
+\&    print "Sticky\en" if \-k _;
+\&    print "Text\en" if \-T _;
+\&    print "Binary\en" if \-B _;
+.Ve
+.Ip "abs \s-1WARTOŚĆ\s0" 8
+.IX Item "abs \s-1VALUE\s0"
+.Ip "abs" 8
+.IX Item "abs"
+Zwraca moduł argumentu.
+Jeśli parametr \s-1WARTOŚĆ\s0 zostanie pominięty, to używane jest \f(CW$_\fR.
+.Ip "accept \s-1NOWEGNIAZDO\s0,\s-1GNIAZDO\s0" 8
+.IX Item "accept \s-1NEWSOCKET\s0,\s-1GENERICSOCKET\s0"
+Przyjmuje nadchodzące połączenie na gnieździe, podobnie jak wywołanie
+systemowe \fIaccept\fR\|(2). Po sukcesie zwraca spakowany adres, a w razie
+porażki \s-1FALSE\s0. Przykład użycia można znaleźć w sekcji
+\fISockets: Client/Server Communication\fR strony podręcznika \fIperlipc(1)\fR.
+.Ip "alarm \s-1SEKUNDY\s0" 8
+.IX Item "alarm \s-1SECONDS\s0"
+.Ip "alarm" 8
+.IX Item "alarm"
+Powoduje, że sygnał \s-1ALARM\s0 jest dostarczany do tego procesu po
+określonej liczbie sekund. Jeśli nie podano parametru sekund, używana jest
+wartość zachowana w \f(CW$_\fR. (Niestety na niektórych maszynach czas może
+być do sekundy krótszy niż ten, który podasz, zależnie od sposobu zliczania
+sekund.) Naraz odliczać może tylko jeden zegar. Każde wywołanie wyłącza
+poprzedni zegar, a argument 0 wyłącza poprzedni zegar bez uruchamiania
+nowego. Zwrócona wartość jest ilością czasu, pozostającego poprzedniemu
+zegarowi.
+.Sp
+Dla opóźnień lub większej dokładności niż jedna sekunda, możesz użyć
+perlowego interfejsu \fIsyscall()\fR, i dostać się do \fIsetitimer\fR\|(2),
+o ile twój system to obsługuje. W przeciwnym wypadku obejrzyj opis
+\f(CWselect()\fR, gdzieś w tym dokumencie. Ogólnie częstym błędem jest
+łączenie wywołań \fIalarm()\fR i \fIsleep()\fR.
+.Sp
+Jeśli chcesz używać \fIalarm()\fR do timeout'owania wywołania systemowego,
+musisz użyć pary eval/die. Nie można oczekiwać, że alarm spowoduje, że
+wywołanie systemowe się zakończy, z $! ustawionym na \s-1EINTR\s0, gdyż na
+niektórych systemach perl ustawia obsługę sygnałów tak, że wywołania
+systemowe są restartowane. Używanie eval/die działa zawsze.
+.Sp
+.Vb 13
+\&    eval {
+\&        local $SIG{ALRM} = sub { die "alarm\en" };       # NB \en wymagane
+\&        alarm $timeout;
+\&        $nread = sysread SOCKET, $buffer, $size;
+\&        alarm 0;
+\&    };
+\&    die if $@ && $@ ne "alarm\en";       # propaguj błędy
+\&    if ($@) {
+\&        # timeout
+\&    }
+\&    else {
+\&        # bez timeouta
+\&    }
+.Ve
+.Ip "atan2 Y,X" 8
+.IX Item "atan2 Y,X"
+Zwraca arcus tangens z Y/X, w zakresie  \-\*(PI do \*(PI.
+.Sp
+Dla operacji tangens, możesz użyć funkcji \fI\s-1POSIX::\s0tan()\fR,
+lub użyć znanej relacji:
+.Sp
+.Vb 1
+\&    sub tan { sin($_[0]) / cos($_[0])  }
+.Ve
+.Ip "bind \s-1GNIAZDO\s0,\s-1NAZWA\s0" 8
+.IX Item "bind \s-1SOCKET\s0,\s-1NAME\s0"
+Przywiązuje adres sieciowy do gniazda, podobnie jak wywołanie systemowe
+bind(2). Po sukcesie zwraca \s-1TRUE\s0, a w przeciwnym wypadku
+\s-1FALSE\s0. \s-1NAZWA\s0 powinna być spakowanym adresem, typu
+odpowiedniego dla gniazda. Zobacz przykłady w sekcji
+\fISockets: Client/Server Communication\fR na stronie podręcznika
+\fIperlipc(1)\fR.
+.Ip "binmode \s-1UCHWYTYPLIKU\s0" 8
+.IX Item "binmode \s-1FILEHANDLE\s0"
+Powoduje, że plik przełącza się w tryb binarny zapisu/odczytu. Ma to miejsce
+w systemach operacyjnych, które dokonują takiego rozróżnienia. Pliki, które
+nie są w trybie binarnym, ukrywają wejściowe sekwencje \s-1CR\s0 \s-1LF\s0
+pod \s-1LF\s0, a sekwencje wyjściowe \s-1LF\s0 są tłumaczone na
+\s-1CR\s0 \s-1LF\s0. Tryb binarny nie wpływa na nic pod Unixem; jednak pod
+\s-1MS\s0\-\s-1DOS\s0 i innymi archaicznymi systemami, może to być niezbędna
+właściwość\*(--w przeciwnym wypadku twoja biblioteka C może zniekształcić
+plik.  Kluczem do rozróżniania systemów, które potrzebują trybu binarnego od
+tych, które go nie potrzebują, jest ich format pliku tekstowego. Systemy
+podobne do Unix i Plan9, oddzielają linie pojedynczym znakiem i kodują go w
+C jako \*(L'\en\*(R'. Nie potrzebują one trybu binarnego. Wszystkie inne
+potrzebują. Jeśli \s-1UCHWYTPLIKU\s0 jest wyrażeniem, to wartość brana jest
+jako nazwa uchwytu pliku.
+.Ip "bless \s-1REF\s0,\s-1NAZWAKLASY\s0" 8
+.IX Item "bless \s-1REF\s0,\s-1CLASSNAME\s0"
+.Ip "bless \s-1REF\s0" 8
+.IX Item "bless \s-1REF\s0"
+Funkcja ta mówi rzeczy, wskazywanej przez referencję \s-1REF\s0, że jest 
+teraz obiektem
+w pakiecie \s-1NAZWAKLASY\s0\*(--lub w bieżącym pakiecie, jeśli nie podano
+parametru nazwy klasy. Funkcja zwraca dla pewności referencję, gdyż jest ona
+często ostatnią rzeczą w konstruktorze. Jeśli błogosławiona funkcja ma
+być dziedziczona w klasach potomnych, to zawsze używaj wersji 
+dwuargumentowej tej funkcji. Dla dalszych informacji o błogosławieniu
+obiektów zobacz stronę \fIperlobj\fR(1).
+.Ip "caller \s-1WYRAŻ\s0" 8
+.IX Item "caller \s-1EXPR\s0"
+.Ip "caller" 8
+.IX Item "caller"
+Zwraca kontekst bieżącego wywołania podprocedury. W kontekście skalarnym,
+jeśli było wywołanie, tj. jeśli jesteśmy w podprocedurze lub \fIeval()\fR
+lub \fIrequire()\fR, zwraca nazwę pakietu wywołującego, a w przeciwnym razie
+wartość niezdefiniowaną. W kontekście listowym, zwraca
+.Sp
+.Vb 1
+\&    ($pakiet, $nazwapliku, $linia) = caller;
+.Ve
+Z parametrem \s-1WYRAŻ\s0 zwraca trochę dodatkowych danych, z których
+korzysta debugger do drukowania śladu stosu. Wartość \s-1WYRAŻ\s0 wskazuje,
+o ile ramek wywołań należy się cofnąć od bieżącej.
+.Sp
+.Vb 2
+\&    ($pakiet, $nazwapliku, $linia, $podprocedura,
+\&     $maargumenty, $chcetablię, $teksteval, $jest_require) = caller($i);
+.Ve
+\f(CW$podprocedura\fR tutaj może być \f(CW"(eval)"\fR, jeśli ramka nie jest
+wywołaniem podproceduralnym. W tej sytuacji ustawiane są dodatkowe elementy,
+\f(CW$teksteval\fR i \f(CW$jest_require\fR: 
+\f(CW$jest_require\fR jest prawdziwe, jeśli ramka została utworzona w
+instrukcji \f(CWrequire\fR lub \f(CWuse\fR, \f(CW$teksteval\fR 
+zawiera tekst instrukcji \f(CWeval WYRAŻ\fR.  
+Praktycznie, dla instrukcji \f(CWeval BLOCK\fR,
+\f(CW$nazwapliku\fR to \f(CW"(eval)"\fR, a \f(CW$teksteval\fR jest
+niezdefiniowany.  (Zauważ też, że każda instrukcja
+\f(CWuse\fR tworzy ramkę \f(CWrequire\fR. (wewnątrz ramki \f(CWeval WYRAŻ\fR)
+.Sp
+Co więcej, po wywołaniu z pakietu \s-1DB\s0, caller zwraca jeszcze
+dokładniejsze dane: ustawia zmienną listową \f(CW@DB::args\fR na argumenty,
+z którymi wywołano podprocedurę.
+.Ip "chdir \s-1WYRAŻ\s0" 8
+.IX Item "chdir \s-1EXPR\s0"
+Zmienia katalog roboczy na \s-1WYRAŻ\s0. Jeśli \s-1WYRA\s0 jest pominięte,
+to zmienia katalog na katalog domowy. Po sukcesie zwraca \s-1TRUE\s0, a w
+przeciwnym wypadku \s-1FALSE\s0. Zobacz przykład przy opisie \fIdie()\fR.
+.Ip "chmod \s-1LISTA\s0" 8
+.IX Item "chmod \s-1LIST\s0"
+Zmienia prawa listy plików. Pierwszy element listy musi być numerycznym
+zapisem praw, który powinien być liczbą ósemkową, a który z pewnością nie
+powinien być łańcuchem cyfr ósemkowych:
+\f(CW0644\fR jest ok, ale \f(CW'0644'\fR nie jest.  Zwraca liczbę plików,
+których prawa zmieniono. Jeśli wszystkim co masz jest łańcuch,
+zobacz też wpis \f(CWoct\fR, znajdujący się gdzie indziej w tym dokumencie.
+.Sp
+.Vb 5
+\&    $cnt = chmod 0755, 'foo', 'bar';
+\&    chmod 0755, @executables;
+\&    $mode = '0644'; chmod $mode, 'foo';      # ustawia prawa na \-\-w\-\-\-\-r\-T!
+\&    $mode = '0644'; chmod oct($mode), 'foo'; # to jest lepsze
+\&    $mode = 0644;   chmod $mode, 'foo';      # to jest najlepsze
+.Ve
+.Ip "chomp \s-1ZMIENNA\s0" 8
+.IX Item "chomp \s-1VARIABLE\s0"
+.Ip "chomp \s-1LISTA\s0" 8
+.IX Item "chomp \s-1LIST\s0"
+.Ip "chomp" 8
+.IX Item "chomp"
+Jest to troszkę bezpieczniejsza wersja wpisu \f(CWchop\fR, opisanego gdzie
+indziej w tym dokumencie. Usuwa wszelkie zakończenia linii, które
+odpowiadają bieżącej wartości \f(CW$/\fR (znanego też jako
+\f(CW$INPUT_RECORD_SEPARATOR\fR w module \f(CWEnglish\fR).  
+Zwraca całkowitą liczbę znaków, usuniętych ze wszystkich argumentów. Często
+jest używany do usuwania nowych linii z końca rekordu wejściowego jeśli
+obawiasz się, że rekordowi może jej brakować. W trybie `paragraph'
+(\f(CW$/ = ""\fR), usuwa wszystkie kończące znaki nowych linii z łańcuchów.
+Jeśli pominięta zostanie \s-1ZMIENNA\s0, to ucinane jest \f(CW$_\fR.
+Przykład:
+.Sp
+.Vb 5
+\&    while (<>) {
+\&        chomp;  # zapobiegaj \en na ostatnim polu
+\&        @array = split(/:/);
+\&        ...
+\&    }
+.Ve
+Możesz w zasadzie uciąć wszystko co jest lwartością, włączając przypisanie:
+.Sp
+.Vb 2
+\&    chomp($cwd = `pwd`);
+\&    chomp($answer = <STDIN>);
+.Ve
+Jeśli ucinasz listę, obcinany jest każdy element, a zwracana jest lista
+usuniętych znaków.
+.Ip "chop \s-1ZMIENNA\s0" 8
+.IX Item "chop \s-1VARIABLE\s0"
+.Ip "chop \s-1LISTA\s0" 8
+.IX Item "chop \s-1LIST\s0"
+.Ip "chop" 8
+.IX Item "chop"
+Odrywa ostatni znak łańcucha i zwraca jego wartość. Jest przede wszystkim
+używany do usuwania nowej linii z końca rekordu wejściowego, lecz jest dużo
+bardziej efektywny niż \f(CWs/\en//\fR, ponieważ ani nie skanuje, ani nie
+kopiuje łańcucha. Jeśli pominięto \s-1ZMIENNĄ\s0, odrywa \f(CW$_\fR.
+Przykład:
+.Sp
+.Vb 5
+\&    while (<>) {
+\&        chop;   # zapobież \en na ostatnim polu
+\&        @array = split(/:/);
+\&        ...
+\&    }
+.Ve
+Możesz w zasadzie oderwać cokolwiek, co jest lwartością, włączając
+przypisanie:
+.Sp
+.Vb 2
+\&    chop($cwd = `pwd`);
+\&    chop($answer = <STDIN>);
+.Ve
+Jeśli obrywasz listę, obrywany jest każdy element. Zwracana jest tylko
+wartość ostatniego oderwania.
+.Sp
+Zauważ, że chop zwraca ostatni znak. Aby zwrócić wszystkie poza ostatnim,
+użyj \f(CWsubstr($lancuch, 0, \-1)\fR.
+.Ip "chown \s-1LISTA\s0" 8
+.IX Item "chown \s-1LIST\s0"
+Zmienia właściciela (i grupę) listy plików. Pierwsze dwa argumenty listy
+muszą być \fI\s-1NUMERYCZNYMI\s0\fR uid i gid, podanym w tej kolejności.
+Zwraca liczbę plików, na których powiodła się zamiana.
+.Sp
+.Vb 2
+\&    $cnt = chown $uid, $gid, 'foo', 'bar';
+\&    chown $uid, $gid, @filenames;
+.Ve
+Oto przykład, który podgląda nienumeryczne uid'y w pliku z hasłami:
+.Sp
+.Vb 4
+\&    print "User: ";
+\&    chop($user = <STDIN>);
+\&    print "Files: "
+\&    chop($pattern = <STDIN>);
+.Ve
+.Vb 2
+\&    ($login,$pass,$uid,$gid) = getpwnam($user)
+\&        or die "$user not in passwd file";
+.Ve
+.Vb 2
+\&    @ary = <${pattern}>;        # rozwiń nazwy plików
+\&    chown $uid, $gid, @ary;
+.Ve
+Na większości systemów nie możesz zmieniać właścicielstwa, chyba że jesteś
+superużytkownikiem, choć powinieneś być w stanie zmieniać grupę na dowolną z
+twoich drugorzędnych grup. Na niezabezpieczonych systemach ograniczenia te
+mogą być mniejsze, lecz nie jest to przenośne założenie.
+.Ip "chr \s-1LICZBA\s0" 8
+.IX Item "chr \s-1NUMBER\s0"
+.Ip "chr" 8
+.IX Item "chr"
+Zwraca znak, reprezentowany przez \s-1LICZBĘ\s0 w zbiorze znaków.
+Na przykład, \f(CWchr(65)\fR to \*(L"A\*(R" w \s-1ASCII\s0.  
+Dla odwrócenia tego działania, użyj \f(CWord\fR, które jest opisane gdzie
+indziej w tym dokumencie.
+.Sp
+Jeśli pominięto \s-1LICZBĘ\s0, to używane jest \f(CW$_\fR.
+.Ip "chroot \s-1NAZWAPLIKU\s0" 8
+.IX Item "chroot \s-1FILENAME\s0"
+.Ip "chroot" 8
+.IX Item "chroot"
+Funkcja ta działa tak samo jak wywołanie systemowe chroot(2): powoduje, że
+podany katalog staje się nowym katalogiem głównym dla wszelkich nowych
+ścieżek, które będą się zaczynały od \*(L"/\*(R". Tyczy się to twojego
+procesu i jego dzieci. Ze względów bezpieczeństwa, wywołanie to jest
+zastrzeżone dla superużytkownika. Jeśli pominięto \s-1NAZWĘPLIKU\s0, to
+używany jest \f(CW$_\fR.
+.Ip "close \s-1UCHWYTPLIKU\s0" 8
+.IX Item "close \s-1FILEHANDLE\s0"
+Zamyka plik lub potok związany z uchwytem, zwracając \s-1TRUE\s0 jedynie w
+wypadku, gdy stdio da radę opróżnić wszystkie bufory i zamknąć systemowy
+deskryptor pliku. Jeśli uchwyt pliku pochodził od otwartego potoku, funkcja
+zwróci \s-1FALSE\s0 jeśli któreś z potrzebnych wywołań systemowych
+zawiedzie lub jeśli program zakończy pracę z niezerowym statusem. (Jeśli
+problemem jest fakt, że program skończył się z niezerowym kodem, to $!
+będzie ustawione na 0.)
+Nie musisz zamykać \s-1UCHWYTUPLIKU\s0, jeśli chcesz go zaraz potem
+wykorzystać do innego otwarcia \fIopen()\fR, ponieważ funkcja \fIopen()\fR
+zamknie go za ciebie. Jednak jawne zamknięcie pliku wejściowego resetuje
+licznik linii ($.), podczas gdy niejawne zamknięcie w \fIopen()\fR tego nie
+robi. Poza tym, zamykanie potoku powoduje oczekiwanie na zakończenie procesu
+z potoku, na wypadek gdybyś chciał później obejrzeć wyjście potoku. Jawne
+zamykanie potoku wstawia wartość statusu komendy do \f(CW$?\fR.  Przykład:
+.Sp
+.Vb 4
+\&    open(OUTPUT, '|sort >foo'); # potok do `sort'
+\&    ...                         # drukuj różne rzeczy na wyjście
+\&    close OUTPUT;               # czekaj na zakończenie `sort'
+\&    open(INPUT, 'foo');         # pobierz wyniki sortowania
+.Ve
+\s-1UCHWYTPLIKU\s0 może być wyrażeniem, którego wartość daje rzeczywistą
+nazwę uchwytu pliku.
+.Ip "closedir \s-1UCHWYTKATALOGU\s0" 8
+.IX Item "closedir \s-1DIRHANDLE\s0"
+Zamyka katalog, otworzony funkcją \fIopendir()\fR.
+.Ip "connect \s-1GNIAZDO\s0,\s-1NAZWA\s0" 8
+.IX Item "connect \s-1SOCKET\s0,\s-1NAME\s0"
+Próbuje połączyć się ze zdalnym gniazdem, zupełnie tak jak wywołanie
+systemowe connect(2). Po sukcesie zwraca \s-1TRUE\s0, a w przeciwnym wypadku
+\s-1FALSE\s0. \s-1NAZWA\s0 powinna być spakowanym typem adresu, odpowiednim
+dla gniazda. Zobacz przykłady w sekcji
+\fISockets: Client/Server Communication\fR na stronie podręcznika
+\fIperlipc\fR(1).
+.Ip "continue \s-1BLOK\s0" 8
+.IX Item "continue \s-1BLOCK\s0"
+W rzeczywistości jest to instrukcja kontroli wykonywania programu, a nie
+funkcja. Jeśli do \s-1BLOKU\s0 dołączone jest \f(CWcontinue\fR \s-1BLOK\s0
+(zazwyczaj we \f(CWwhile\fR lub \f(CWforeach\fR),
+to jest zawsze wykonywany tuż przed kolejnym wykonaniem warunku, zupełnie
+jak trzecia część pętli \f(CWfor\fR w C. Tak więc może być używane do
+zwiększania zmiennej pętli, nawet gdy pętla była kontynuowana z pomocą
+instrukcji \f(CWnext\fR (która jest podobna do instrukcji \f(CWcontinue\fR z C).
+.Ip "cos \s-1WYRAŻ\s0" 8
+.IX Item "cos \s-1EXPR\s0"
+Zwraca cosinus z \s-1WYRAŻ\s0 (wyrażonego w radianach). Jeśli pominie się
+argument \s-1WYRAŻ\s0, to używany jest \f(CW$_\fR.
+.Sp
+Dla operacji arcus cosinus, możesz użyć funkcji \fI\s-1POSIX::\s0acos()\fR,
+lub następującej relacji:
+.Sp
+.Vb 1
+\&    sub acos { atan2( sqrt(1 - $_[0] * $_[0]), $_[0] ) }
+.Ve
+.Ip "crypt \s-1CZYSTYTEKST\s0,\s-1SALT\s0" 8
+.IX Item "crypt \s-1PLAINTEXT\s0,\s-1SALT\s0"
+Koduje łańcuch na wzór funkcji \fIcrypt\fR\|(3) z biblioteki C. Może to być
+użyteczne np. do sprawdzania plików z hasłami w poszukiwaniu słabych haseł.
+Robić to powinni tylko ludzie noszący białe kapelusze.
+.Sp
+Zauważ, że crypt jest funkcję jednokierunkową, podobnie jak rozbijanie jajek
+na omlet. Nie istnieje (znana) funkcja dekodująca. W wyniku, funkcja wcale
+nie jest tak użyteczna do kryptografii. (Dla tego, zobacz najbliższy mirror
+\s-1CPAN\s0.)
+.Sp
+Oto przykład, który daje pewność, że ktokolwiek uruchomi ten program, zna
+swoje własne hasło:
+.Sp
+.Vb 2
+\&    $pwd = (getpwuid($<))[1];
+\&    $salt = substr($pwd, 0, 2);
+.Ve
+.Vb 5
+\&    system "stty \-echo";
+\&    print "Hasło: ";
+\&    chop($word = <STDIN>);
+\&    print "\en";
+\&    system "stty echo";
+.Ve
+.Vb 5
+\&    if (crypt($word, $salt) ne $pwd) {
+\&        die "Niezmiernie mi przykro...\en";
+\&    } else {
+\&        print "ok\en";
+\&    }
+.Ve
+Oczywiście wpisywanie swojego hasła za każdym razem, gdy ktoś o nie poprosi
+jest niemądre.
+.Ip "dbmclose \s-1HASH\s0" 8
+.IX Item "dbmclose \s-1HASH\s0"
+[Funkcja ta jest przedawniona przez funkcję \fIuntie()\fR.]
+.Sp
+Przerywa powiązanie między plikiem \s-1DBM\s0 a tablicą asocjacyjną.
+.Ip "dbmopen \s-1HASH\s0,\s-1NAZWADB\s0,\s-1PRAWA\s0" 8
+.IX Item "dbmopen \s-1HASH\s0,\s-1DBNAME\s0,\s-1MODE\s0"
+[funkcja ta jest przedawniona przez funkcję \fItie()\fR.]
+.Sp
+Łączy to plik \fIdbm\fR\|(3), \fIndbm\fR\|(3), \fIsdbm\fR\|(3), \fIgdbm()\fR,
+lub Berkeley \s-1DB\s0 z tablicą asocjacyjną. \s-1HASH\s0 jest nazwą tablicy
+asocjacyjnej. (w
+przeciwieństwie do normalnego otwierania, pierwszy argument
+\fI\s-1NIE\s0\fR jest uchwytem pliku, choć wygląda podobnie). \s-1NAZWADB\s0
+jest nazwą bazy danych (bez rozszerzeń w rodzaju \fI.dir\fR czy \fI.pag\fR).
+Jeśli baza nie istnieje, to jest tworzona z prawami określanymi przez
+\s-1PRAWA\s0 (zmodyfikowanymi przez \fIumask()\fR). Jeśli twój system
+obsługuje tylko starsze funkcje \s-1DBM\s0, to możesz w swoim programie
+wykonać tylko jeden \fIdbmopen()\fR. W starszych wersjach perla, jeśli
+system nie miał ani \s-1DBM\s0, ani  ndbm, wywołanie \fIdbmopen\fR
+powodowało błąd krytyczny; teraz schodzi do
+\fIsdbm\fR\|(3).
+.Sp
+Jeśli nie masz prawa zapisu do pliku \s-1DBM\s0, to możesz tylko odczytywać
+zmienne asocjacyjne, nie możesz ich ustawiać. Jeśli chcesz spróbować, czy możesz
+zapisywać, użyj albo testów plikowych, albo spróbuj ustawić próbny wpis
+asocjacyjny wewnątrz \fIeval()\fR, co przechwyci błąd.
+.Sp
+Zauważ, że funkcje takie, jak \fIkeys()\fR i \fIvalues()\fR mogą zwracać
+w użyciu z plikami \s-1DBM\s0 wielkie tablice. Możesz do iteracji przez
+wielkie pliki \s-1DBM\s0 używać także \fIeach()\fR. Przykład:
+.Sp
+.Vb 6
+\&    # drukuj offsety pliku historii
+\&    dbmopen(%HIST,'/usr/lib/news/history',0666);
+\&    while (($key,$val) = each %HIST) {
+\&        print $key, ' = ', unpack('L',$val), "\en";
+\&    }
+\&    dbmclose(%HIST);
+.Ve
+Zobacz też stronę podręcznika \fIAnyDBM_File\fR -- jest tam bardziej ogólny
+opis wad i zalet różnych podejść dbm. Zobacz też stronę \fIDB_File\fR, dla
+bogatej implementacji.
+.Ip "defined \s-1WYRAŻ\s0" 8
+.IX Item "defined \s-1EXPR\s0"
+.Ip "defined" 8
+.IX Item "defined"
+Zwraca wartość logiczną, mówiącą czy \s-1WYRAŻ\s0 ma wartość inną od
+niezdefiniowanej \f(CWundef\fR. Jeśli \s-1WYRAŻ\s0 nie jest obecne,
+to testowane jest \f(CW$_\fR.
+.Sp
+Wiele operacji zwraca \f(CWundef\fR aby wskazać błąd, koniec pliku, błąd
+systemowy, niezainicjalizowaną zmienną i inne wyjątki. Funkcja ta pozwala
+odróżnić \f(CWundef\fR od innych wartości. (Prosty test logiczny nie rozróżni
+\f(CWundef\fR, zero, pustego łańcucha, i \*(L"0\*(R", które wszystkie są
+jednakowo fałszywe.)
+Zauważ, że ponieważ \f(CWundef\fR jest prawidłowym skalarem, to jego obecność
+\fIniekoniecznie\fR musi wskazywać warunek wyjątkowy: \fIpop()\fR zwraca
+\f(CWundef\fR gdy jego argument jest pustą tablicą, \fIlub\fR gdy zwracany
+element jest wartością \fCWundef\fR.
+.Sp
+\fIdefined()\fR można używać też do sprawdzania czy podprocedura wychodzi. Z
+drugiej strony, używanie \fIdefined()\fR na agregatach (tablicach
+asocjacyjnych i tablicach)
+nie musi zwrócić zgodnych z intuicją wyników i powinno się go w tych
+przypadkach unikać.
+.Sp
+Gdy używane na elemencie tablicy asocjacyjnej, mówi czy wartość jest 
+zdefiniowana, a nie
+czy taki klucz istnieje w tablicy. Dla tego celu, użyj \f(CWexists\fR, które
+jest opisane gdzie indziej w tym dokumencie.
+.Sp
+Przykłady:
+.Sp
+.Vb 6
+\&    print if defined $switch{'D'};
+\&    print "$val\en" while defined($val = pop(@ary));
+\&    die "Can't readlink $sym: $!"
+\&        unless defined($value = readlink $sym);
+\&    sub foo { defined &$bar ? &$bar(@_) : die "Brak bar"; }
+\&    $debugging = 0 unless defined $debugging;
+.Ve
+Uwaga: Wielu ludzi nadużywa \fIdefined()\fR, a potem są oni zaskoczeni, że
+liczba 0 i "" (łańcuch o długości zero) są w rzeczywistości wartościami
+zdefiniowanymi. Na przykład, jeśli powiesz
+.Sp
+.Vb 1
+\&    "ab" =~ /a(.*)b/;
+.Ve
+to porównanie wzorca się powiedzie i \f(CW$1\fR będzie zdefiniowane,
+niezależnie od tego, że trafiło w "nic". W rzeczywistości nie można
+powiedzieć, że trafiło w "nic". Raczej trafiło w coś, o długości zera
+znaków. Jest to wszystko bardzo czyste i uczciwe. Gdy funkcja zwraca wartość
+niezdefiniowaną, jest to przyznanie się, że nie mogła dać uczciwej
+odpowiedzi. Tak więc powinieneś używać \fIdefined()\fR tylko jeśli
+sprawdzasz działanie tego, co próbujesz osiągnąć. W niektórych wypadkach,
+rzeczą, której oczekujesz jest proste porównanie z 0 lub "".
+.Sp
+Obecnie używanie \fIdefined()\fR na całej tablicy lub tablicy asocjacyjnej, 
+zgłasza tylko czy
+została dla niego zaalokowana pamięć. Tak więc tablica, którą ustawiasz na
+pustą listę jest początkowo niezdefiniowana, a gdy się zapełni, staje się
+zdefiniowana. Zamiast tego powinieneś użyć prostego testu rozmiaru:
+.Sp
+.Vb 2
+\&    if (@an_array) { print "ma elementy tablicowe\en" }
+\&    if (%a_hash)   { print "ma elementy asocjacyjne\en"   }
+.Ve
+Użycie na nich \fIundef()\fR powoduje wyczyszczenie ich pamięci i
+zgłoszenie, że nie są już zdefiniowane. Nie powinno się jednak tego robić,
+chyba że nie masz zamiaru ich więcej używać, ponieważ po prostu szybciej
+jest używać pamięci gotowej do wypełnienia, niż alokować ją od nowa.
+.Sp
+Zachowanie \fIdefined()\fR na agregatach może zostać zmienione, poprawione,
+lub zepsute w następnych wersjach perla.
+.Sp
+Zobacz też opisy \f(CWundef\fR, \f(CWexists\fR,  i \f(CWref\fR, znajdujące
+się w innych miejscach tego dokumentu.
+.Ip "delete \s-1WYRAŻ\s0" 8
+.IX Item "delete \s-1EXPR\s0"
+Kasuje podany \fIklucz\fR\|(e) i związane z nim wartości z tablicy
+asocjacyjnej. Dla każdego
+klucza, zwracana jest skasowana wartość związana z kluczem albo wartość
+niezdefiniowana, jeśli taki klucz nie istniał. Kasowanie z \f(CW$ENV{}\fR
+modyfikuje środowisko. Kasowanie z tablicy asocjacyjnej, podłączonej do 
+pliku \s-1DBM\s0,
+kasuje wpis z pliku. (lecz kasowanie z takiego pliku nie musi zwracać
+niczego.)
+.Sp
+Następujący przykład kasuje wszystkie wartości tablicy asocjacyjnej:
+.Sp
+.Vb 3
+\&    foreach $key (keys %HASH) {
+\&        delete $HASH{$key};
+\&    }
+.Ve
+Podobnie robi następujące:
+.Sp
+.Vb 1
+\&    delete @HASH{keys %HASH}
+.Ve
+(Ale obydwa są wolniejsze niż komenda \fIundef()\fR.)
+Zauważ, że
+\s-1WYRAŻ\s0 
+może być arbitralnie skomplikowany tak długo, dopóki końcowa operacja jest
+podejrzeniem elementu asocjacyjnego lub wycinkiem tablicy asocjacyjnej
+(`hash slice'):
+.Sp
+.Vb 2
+\&    delete $ref->[$x][$y]{$key};
+\&    delete @{$ref->[$x][$y]}{$key1, $key2, @morekeys};
+.Ve
+.Ip "die \s-1LISTA\s0" 8
+.IX Item "die \s-1LIST\s0"
+Poza obrębem \fIeval()\fR drukuje wartość \s-1LISTY\s0 na \f(CWSTDERR\fR 
+i kończy pracę z bieżącą wartością \f(CW$!\fR (errno). Jeśli \f(CW$!\fR
+wynosi 0, to kończy z wartością \f(CW($? >> 8)\fR (status poprzedniej
+`komendy`).  Jeśli \f(CW($? >> 8)\fR jest zerem, to kończy z wartością 255.
+Wewnątrz \fIeval\fR, komunikat o błędzie jest pakowany do \f(CW$@\fR,
+a \fIeval()\fR jest przerywany wartością niezdefiniowaną; powoduje to, że
+\fIdie()\fR może podnieść wyjątek.
+.Sp
+Równoważne przykłady:
+.Sp
+.Vb 2
+\&    die "Nie mogę przejść do spool: $!\en" unless chdir '/usr/spool/news';
+\&    chdir '/usr/spool/news' or die "Nie mogę przejść do spool: $!\en"
+.Ve
+Jeśli wartość \s-1WYRAŻ\s0 nie kończy się nową linią, drukowany jest również
+numer bieżącej linii skryptu i wejścia, a za nimi doklejana jest nowa linia.
+Wskazówka: Czasami dodanie \*(L", stopped\*(R" do twojego komunikatu może
+nadać mu więcej sensu po doklejeniu łańcucha \*(L"at foo line 123\*(R".
+Załóżmy, że uruchamiasz skrypt \*(L"canasta\*(R".
+.Sp
+.Vb 2
+\&    die "/etc/games is no good";
+\&    die "/etc/games is no good, stopped";
+.Ve
+dają w efekcie odpowiednio:
+.Sp
+.Vb 2
+\&    /etc/games is no good at canasta line 123.
+\&    /etc/games is no good, stopped at canasta line 123.
+.Ve
+Zobacz także \fIexit()\fR i \fIwarn()\fR.
+.Sp
+Można zaaranżować sprawę tak, że callback będzie wywoływany tuż przed
+uczynieniem swojej powinności przez \fIdie()\fR. Należy w tym celu ustawić
+hak \f(CW$SIG{__DIE__}\fR.  Związany handler zostanie wywołany z tekstem
+błędu i może zmienić treść komunikatu błędu, wywołując \fIdie()\fR ponownie.
+Zobacz stronę \fIperlvar\fR(1), dla dalszych detali o ustawianiu wpisów
+\f(CW%SIG\fR, a także opis \fIeval()\fR dla paru przykładów.
+.Ip "do \s-1BLOK\s0" 8
+.IX Item "do \s-1BLOCK\s0"
+Nie jest to funkcja. Zwraca wartość ostatniej komendy w sekwencji komend,
+wskazywanych przez \s-1BLOK\s0. Po zmodyfikowaniu przez modyfikator pętli,
+wywołuje jednokrotnie \s-1BLOK\s0 przed sprawdzeniem warunku pętli. (W
+innych instrukcjach modyfikatory pętli sprawdzają warunek na samym
+początku.)
+.Ip "do \s-1PODPROCEDURA\s0(\s-1LISTA\s0)" 8
+.IX Item "do \s-1SUBROUTINE\s0(\s-1LIST\s0)"
+Niezalecana forma wywołania podprocedury. Zobacz stronę \fIperlsub\fR(1).
+.Ip "do \s-1WYRAŻ\s0" 8
+.IX Item "do \s-1EXPR\s0"
+Używa wartości \s-1WYRAŻ\s0 jako nazwy pliku i wykonuje zawartość tego pliku
+jako skrypt perla. Podstawowym zadaniem tej instrukcji jest włączanie
+podprocedur z bibliotek perla.
+.Sp
+.Vb 1
+\&    do 'stat.pl';
+.Ve
+jest zupełnie jak
+.Sp
+.Vb 1
+\&    eval `cat stat.pl`;
+.Ve
+tylko trochę bardziej efektywne, utrzymuje śledzenie bieżącej nazwy plików
+dla komunikatów o błędach i przeszukuje wszystkie katalogi \fB\-I\fR, jeśli
+plik nie znajduje się w katalogu bieżącym (zobacz także tablicę \f(CW@INC\fR
+w sekcji \fIPredefined Names\fR podręcznika \fIperlvar\fR(1)).
+Jednak jest takie samo w sensie, że przetwarza (parses) plik za każdym razem,
+gdy go wywołasz, więc przypuszczalnie nie chciałbyś tego wewnątrz pętli.
+.Sp
+Zauważ, że włączanie modułów bibliotecznych można załatwić lepiej z pomocą
+operatorów \fIuse()\fR i \fIrequire()\fR, 
+które również dokonują sprawdzania błędów i powodują wyjątki jeśli jest
+jakiś problem.
+.Ip "dump \s-1ETYKIETA\s0" 8
+.IX Item "dump \s-1LABEL\s0"
+Powoduje to natychmiastowy zrzut core. Jest to po to, byś mógł użyć programu
+\fBundump\fR do konwertowania zrzutu core do pliku binarnego po
+zainicjalizowaniu wszystkich zmiennych z początku programu. Po uruchomieniu
+nowego binarium, rozpocznie się ono od wywołania
+\f(CWgoto ETYKIETA\fR (ze wszystkimi ograniczeniami, na które cierpi
+\f(CWgoto\fR).  Myśl o tym, jak o goto z interweniującym zrzutem core i
+reinkarnacją. Jeśli \s-1ETYKIETA\s0 jest pominięta, program restartuje się
+od początku. \s-1UWAGA\s0: wszelkie pliki, które były otwarte w momencie
+zrzutu core nie będą otwarte w nowej inkarnacji programu, powodując
+przypuszczalnie zamieszanie w części perla. Zobacz też opcję \fB\-u\fR ze
+strony \fIperlrun\fR(1).
+.Sp
+Przykład:
+.Sp
+.Vb 12
+\&    #!/usr/bin/perl
+\&    require 'getopt.pl';
+\&    require 'stat.pl';
+\&    %days = (
+\&        'Sun' => 1,
+\&        'Mon' => 2,
+\&        'Tue' => 3,
+\&        'Wed' => 4,
+\&        'Thu' => 5,
+\&        'Fri' => 6,
+\&        'Sat' => 7,
+\&    );
+.Ve
+.Vb 1
+\&    dump QUICKSTART if $ARGV[0] eq '\-d';
+.Ve
+.Vb 2
+\&    QUICKSTART:
+\&    Getopt('f');
+.Ve
+.Ip "each \s-1HASH\s0" 8
+.IX Item "each \s-1HASH\s0"
+Po wywołaniu w kontekście listowym, zwraca dwuelementową tablicę, składającą
+się z klucza i wartości następnego elementu asocjacyjnego, tak że możesz 
+iterować poprzez tablicę. Po wywołaniu w kontekście skalarnym, zwraca 
+tylko klucz  dla
+następnego elementu asocjacyjnego. (Uwaga: Klucze mogą mieć wartość "0" lub "", 
+co jest
+logicznie nieprawidłowe; możesz w tym celu chcieć zapobiec konstrukcjom jak 
+\f(CWwhile ($k = each %foo) {}\fR .)
+.Sp
+Wpisy są zwracane w kolejności dość losowej. Gdy tablica asocjacyjna jest 
+całkowicie odczytana, w
+kontekście listowym zwracana jest tablica null (co po przypisaniu daje
+wartość \s-1FALSE\s0 (0)), a w kontekście skalarnym zwracany jest 
+\f(CWundef\fR.
+Następne wywołanie \fIeach()\fR po tym rozpocznie iterowanie od nowa.
+Dla każdej tablicy asocjacyjnej istnieje pojedynczy iterator, dzielony przez
+funkcje \fIeach()\fR, \fIkeys()\fR i \fIvalues()\fR; może być zresetowany
+przez odczytanie wszystkich elementów tablicy lub przez wywołanie
+\f(CWkeys HASH\fR lub \f(CWvalues HASH\fR.
+Jeśli dodajesz, lub kasujesz elementy tablicy asocjacyjnej podczas jej
+iterowania, to może
+się zdarzyć, że niektóre wpisy utracisz, a niektóre dostaniesz zduplikowane.
+Nie rób więc tego.
+.Sp
+Następujący przykład drukuje środowisko, podobnie jak program 
+\fIprintenv\fR\|(1), lecz w odwrotnej kolejności:
+.Sp
+.Vb 3
+\&    while (($key,$value) = each %ENV) {
+\&        print "$key=$value\en";
+\&    }
+.Ve
+Zobacz też \fIkeys()\fR i \fIvalues()\fR.
+.Ip "eof \s-1UCHWYTPLIKU\s0" 8
+.IX Item "eof \s-1FILEHANDLE\s0"
+.Ip "eof ()" 8
+.IX Item "eof ()"
+.Ip "eof" 8
+.IX Item "eof"
+Zwraca 1, jeśli następny odczyt z \s-1UCHWYTUPLIKU\s0 zwróci koniec pliku
+(eof) lub jeśli \s-1UCHWYTPLIKU\s0 nie jest otwarty. \s-1UCHWYTPLIKU\s0
+może być wyrażeniem, którego wartość daje prawdziwą nazwę uchwytu pliku.
+(Zauważ, że ta funkcja w rzeczywistości odczytuje znak, a potem wstawia go z
+powrotem, więc nie jest zbyt użyteczna w kontekście interaktywnym.)
+Nie czytaj z pliku terminalowego  (lub nie wołaj \f(CWeof(UCHWYTPLIKU)\fR)
+po osiągnięciu końca pliku. Pliki takie, jak terminale mogą po takim zabiegu
+utracić warunek końca pliku.
+.Sp
+\f(CWeof\fR bez argumentów, używa jako argumentu ostatniego odczytu pliku.
+Puste nawiasy () mogą wskazywać na pseudo plik, złożony z plików,
+wymienionych w linii komend, np. \f(CWeof()\fR dobrze jest używać wewnątrz
+pętli \f(CWwhile (<>)\fR, aby wykryć koniec ostatniego pliku. Przykłady:
+.Sp
+.Vb 5
+\&    # resetuj numerowanie linii dla każdego pliku wejściowego
+\&    while (<>) {
+\&        print "$.\et$_";
+\&        close(ARGV) if (eof);   # Nie eof().
+\&    }
+.Ve
+.Vb 9
+\&    # wstaw kreski przed ostatnią linią ostatniego pliku
+\&    while (<>) {
+\&        if (eof()) {
+\&            print "--------------\en";
+\&            close(ARGV);        # close or break; is needed if we
+\&                                # are reading from the terminal
+\&        }
+\&        print;
+\&    }
+.Ve
+Wskazówka praktyczna: w perlu prawie nigdy nie trzeba używać \f(CWeof\fR,
+ponieważ operatory wejściowe zwracają undef gdy nie będą miały więcej
+danych.
+.Ip "eval \s-1WYRAŻ\s0" 8
+.IX Item "eval \s-1EXPR\s0"
+.Ip "eval \s-1BLOK\s0" 8
+.IX Item "eval \s-1BLOCK\s0"
+\s-1WYRAŻ\s0 jest przetwarzany i wykonywany tak, jakby był maleńkim
+programem perla. Jest wywoływany w kontekście bieżącego programu perla, więc
+wszelkie ustawienia zmiennych lub definicje podprocedur i formatów zostają
+dalej. Zwracana wartość jest wartością ostatniego wykonanego wyrażenia, lub
+wartością, przekazaną przez return, czyli tak jak w podprocedurach. Ostatnie
+wyrażenie jest wykonywane w kontekście skalarnym, lub tablicowym, zależnie
+od kontekstu eval.
+.Sp
+Jeśli pojawi się błąd składni lub błąd czasu działania albo jeśli wykonana
+zostanie instrukcja \fIdie()\fR, to zwrócona zostanie wartość
+niezdefiniowana, a \f(CW$@\fR zostanie ustawione na komunikat o błędzie.
+Jeśli nie było błędu, \f(CW$@\fR będzie łańcuchem null. 
+Jeśli \s-1WYRAŻ\s0 zostanie pominięte, to wykonywane jest \f(CW$_\fR.
+Ostatni średnik,
+jeśli taki istnieje, może być pominięty w wyrażeniu. Ostrzegam jednak, że
+używanie \fIeval()\fR  nie wycisza perla od drukowania ostrzeżeń na
+\s-1STDERR\s0, ani nie upycha tekstu tych komunikatów do \f(CW$@\fR.
+Aby zrobić którąś z tych rzeczy, musisz użyć zabudowania
+\f(CW$SIG{__WARN__}\fR. Zobacz \fIwarn()\fR i stronę \fIperlvar\fR(1).
+.Sp
+Zauważ, że ponieważ \fIeval()\fR przechwytuje krytyczne (w innych wypadkach)
+błędy, to jest przydatny dla określania czy konkretna właściwość (taka, jak
+np. \fIsocket()\fR, \fIsymlink()\fR, itp. jest zaimplementowana. Jest to
+również mechanizm perla obsługiwania wyjątków, gdzie operator die jest
+mechanizmem ich podnoszenia.
+.Sp
+Jeśli wykonywany kod się nie różni, możesz użyć postaci eval-\s-1BLOK\s0 do
+wychwytywania błędów czasu działania, bez potrzeby rekompilacji za każdym
+razem. Błąd, jeśli się pojawi, jest wciąż zwracany w \f(CW$@\fR.
+Przykłady:
+.Sp
+.Vb 2
+\&    # spowoduj, by dzielenie przez zero nie było krytyczne
+\&    eval { $answer = $a / $b; }; warn $@ if $@;
+.Ve
+.Vb 2
+\&    # to samo, mniej efektywnie
+\&    eval '$answer = $a / $b'; warn $@ if $@;
+.Ve
+.Vb 2
+\&    # błąd czasu kompilacji
+\&    eval { $answer = };
+.Ve
+.Vb 2
+\&    # błąd czasu działania
+\&    eval '$answer =';   # ustawia $@
+.Ve
+Używając postaci eval{} jako pułapki na wyjątki w bibliotekach, możesz nie
+życzyć sobie uruchamiania haków \f(CW__DIE__\fR, które mógł sobie ustawić
+użytkownik. Dla tego celu można wykorzystać konstrukcję 
+\f(CWlocal $SIG{__DIE__}\fR. Przykład:
+.Sp
+.Vb 2
+\&    # bardzo prywatna pułapka na wyjątek dzielenia przez zero
+\&    eval { local $SIG{'__DIE__'}; $answer = $a / $b; }; warn $@ if $@;
+.Ve
+Jest to szczególnie istotne, gdyż haki \f(CW__DIE__\fR mogą wywoływać
+\fIdie()\fR ponownie, co ma efekt zmieniania komunikatów o błędach:
+.Sp
+.Vb 6
+\&    # haki __DIE__ mogą modyfikować komunikaty o błędach
+\&    {
+\&       local $SIG{'__DIE__'} = sub { (my $x = $_[0]) =~ s/foo/bar/g; die $x };
+\&       eval { die "foo foofs here" };
+\&       print $@ if $@;                # drukuje "bar barfs here"
+\&    }
+.Ve
+Używając \fIeval()\fR, powinieneś szczególnie uważać, by pamiętać na co się
+patrzy gdy:
+.Sp
+.Vb 2
+\&    eval $x;            # PRZYPADEK 1
+\&    eval "$x";          # PRZYPADEK 2
+.Ve
+.Vb 2
+\&    eval '$x';          # PRZYPADEK 3
+\&    eval { $x };        # PRZYPADEK 4
+.Ve
+.Vb 2
+\&    eval "\e$$x++"       # PRZYPADEK 5
+\&    $$x++;              # PRZYPADEK 6
+.Ve
+Przypadki 1 i 2 zachowują się jednakowo: uruchamiają kod, zawarty w zmiennej
+\f(CW$x\fR. (Chociaż przypadek 2 ma ogłupiające cudzysłowy, powodujące, że
+czytelnik zastanawia się, co jeszcze może się zdarzyć (nic nie może).)
+Przypadki 3 i 4 zachowują się podobnie: wykonują one kod \*(L'$x\*(R', który
+nie robi nic poza zwróceniem wartości \f(CW$x\fR. (Przypadek 4 jest
+preferowany ze względów estetycznych, ma też zaletę kompilowania podczas
+kompilacji, a nie podczas działania.) Przypadek 5 jest miejscem, gdzie
+normalnie chciałbyś użyć cudzysłowów, poza tym, że w tej konkretnej sytuacji
+można użyć po prostu symbolicznych referencji. Jest tak w przypadku 6.
+.Ip "exec \s-1LISTA\s0" 8
+.IX Item "exec \s-1LIST\s0"
+Funkcja \fIexec()\fR wykonuje komendę systemową \fI\s-1i\s0 \s-1NIGDY\s0
+\s-1NIE\s0 \s-1POWRACA\s0\fR, chyba że komenda nie istnieje i jest
+wykonywana bezpośrednio, zamiast przez \f(CW/bin/sh \-c\fR (patrz niżej).
+Jeśli chcesz powrócić, użyj zamiast \fIexec()\fR instrukcji \fIsystem()\fR.
+.Sp
+Jeśli w \s-1LIŚCIE\s0 jest więcej niż jeden argument, lub jeśli jest to
+tablica z więcej niż jedną wartością, wywoływany jest
+\fIexecvp\fR\|(3) (z argumentami z \s-1LISTY\s0).  Jeśli jest tylko jeden
+argument skalarny, to jest on sprawdzany w poszukiwaniu metaznaków powłoki.
+Jeśli są tam jakieś znaki, to cały argument jest przekazywany do przetworzenia
+przez \f(CW/bin/sh \-c\fR.
+Jeśli nie ma żadnych metaznaków, to argument jest dzielony na słowa i
+przekazywany bezpośrednio do \fIexecvp(3)\fR, co jest bardziej efektywne.
+Uwaga: \fIexec()\fR i \fIsystem()\fR nie opróżniają twojego bufora
+wejściowego, więc możliwe, że aby zapobiec utracie wyjścia, będziesz musiał 
+ustawić \f(CW$|\fR.  Przykłady:
+.Sp
+.Vb 2
+\&    exec '/bin/echo', 'Twoimi argumentami są: ', @ARGV;
+\&    exec "sort $outfile | uniq";
+.Ve
+Jeśli tak naprawdę nie potrzebujesz wywołać pierwszego argumentu, lecz
+chcesz oszukać program, który wykonujesz co do jego nazwy, to możesz podać
+program, który chcesz wywołać jako \*(L"obiekt niebezpośredni\*(R" (bez
+przecinka) na samym początku \s-1LISTY\s0. (Wymusza to zawsze interpretację
+\s-1LISTY\s0 jako listy wielowartościowej, nawet jeśli jest tam tylko
+pojedynczy skalar.) Przykład:
+.Sp
+.Vb 2
+\&    $shell = '/bin/csh';
+\&    exec $shell '\-sh';          # udaj, że to powłoka loginowa
+.Ve
+lub, bardziej bezpośrednio,
+.Sp
+.Vb 1
+\&    exec {'/bin/csh'} '\-sh';    # udaj, że to powłoka loginowy
+.Ve
+.Ip "exists \s-1WYRAŻ\s0" 8
+.IX Item "exists \s-1EXPR\s0"
+Zwraca \s-1TRUE\s0, jeśli podany klucz asocjacyjny istnieje w tablicy
+asocjacyjnej. Wartość jest prawdziwa nawet gdy odpowiadająca kluczowi
+wartość jest niezdefiniowana.
+.Sp
+.Vb 3
+\&    print "Istnieje\en" if exists $array{$key};
+\&    print "Zdefiniowany\en" if defined $array{$key};
+\&    print "Prawdziwy\en" if $array{$key};
+.Ve
+Element asocjacyjny może być prawdziwy tylko wtedy, gdy jest zdefiniowany, a
+zdefiniowany jeśli istnieje, lecz odwrotna kolejność niekoniecznie jest
+prawdziwa.
+.Sp
+Zauważ, że \s-1WYRAŻ\s0 może być skomplikowany tak daleko, dopóki ostateczna
+operacja jest podejrzeniem klucza asocjacyjnego:
+.Sp
+.Vb 1
+\&    if (exists $ref->[$x][$y]{$key}) { ... }
+.Ve
+.Ip "exit \s-1WYRAŻ\s0" 8
+.IX Item "exit \s-1EXPR\s0"
+Wykonuje \s-1WYRAŻ\s0 i kończy pracę z tą wartością. (W
+rzeczywistości, wywołuje najpierw zdefiniowane procedury \f(CWEND\fR, lecz
+procedury te mogą przerwać kończenie. Podobnie, również przed wyjściem
+wołane są wszelkie destruktory obiektów.) Przykład: 
+.Sp
+.Vb 2
+\&    $ans = <STDIN>;
+\&    exit 0 if $ans =~ /^[Xx]/;
+.Ve
+Zobacz też \fIdie()\fR. Jeśli \s-1WYRAŻ\s0 jest pominięte, to praca kończy
+się statusem 0. Jedynymi, uniwersalnymi i przenośnymi wartościami
+\s-1WYRAŻ\s0 są 0 dla sukcesu i 1 dla błędu; wszelkie inne są podstawą do
+dziwnych interpretacji, zależnych od środowiska, w którym program jest
+uruchomiony.
+.Sp
+Nie powinieneś używać \fIexit()\fR do przerywania podprocedury, jeśli
+istnieje szansa, że ktoś mógłby chcieć ustawić pułapkę na błąd. Zamiast tego
+użyj \fIdie()\fR, który może być przechwycony przez \fIeval()\fR.
+.Ip "exp \s-1WYRAŻ\s0" 8
+.IX Item "exp \s-1EXPR\s0"
+.Ip "exp" 8
+.IX Item "exp"
+Zwraca \fIe\fR (naturalna podstawa logarytmu) do potęgi \s-1WYRAŻ\s0. Jeśli
+\s-1WYRAŻ\s0 jest pominięte, zwraca \f(CWexp($_)\fR.
+.Ip "fcntl \s-1UCHWYTPLIKU\s0,\s-1FUNKCJA\s0,\s-1SKALAR\s0" 8
+.IX Item "fcntl \s-1FILEHANDLE\s0,\s-1FUNCTION\s0,\s-1SCALAR\s0"
+Implementuje funkcję \fIfcntl\fR\|(2). Przypuszczalnie będziesz musiał
+zaznaczyć
+.Sp
+.Vb 1
+\&    use Fcntl;
+.Ve
+aby móc się nią posługiwać. Przetwarzanie argumentów i zwracanie wartości
+działa zupełnie jak w \fIioctl()\fR, opisanym niżej. Zauważ, że
+\fIfcntl()\fR da błąd krytyczny po użyciu na maszynie, nie implementującej
+\fIfcntl\fR\|(2). Na przykład:
+.Sp
+.Vb 2
+\&    use Fcntl;
+\&    fcntl($filehandle, F_GETLK, $packed_return_buffer);
+.Ve
+.Ip "fileno \s-1UCHWYTPLIKU\s0" 8
+.IX Item "fileno \s-1FILEHANDLE\s0"
+Zwraca deskryptor pliku dla uchwytu pliku. Jest to przydatne dla
+konstruowania bitmap dla \fIselect()\fR. Jeśli \s-1UCHWYTPLIKU\s0 jest
+wyrażeniem, to jego wartość brana jest za nazwę uchwytu pliku.
+.Ip "flock \s-1UCHWYTPLIKU\s0,\s-1OPERACJA\s0" 8
+.IX Item "flock \s-1FILEHANDLE\s0,\s-1OPERATION\s0"
+Wywołuje \fIflock\fR\|(2), lub emuluje go dla uchwytu \s-1UCHWYTPLIKU\s0.
+Zwraca \s-1TRUE\s0 po sukcesie, \s-1FALSE\s0 w wypadku jakiegoś problemu. Na
+maszynach nie implementujących blokowania \fIflock\fR\|(2), \fIfcntl\fR\|(2),
+lub \fIlockf\fR\|(3), powoduje błąd krytyczny.  \fIflock()\fR
+jest przenośnym perlowym interfejsem blokowania plików, choć blokuje tylko
+całe pliki, a nie rekordy.
+.Sp
+\s-1OPERACJA\s0 jest jedną z \s-1LOCK_SH\s0, \s-1LOCK_EX\s0, lub
+\s-1LOCK_UN\s0. Możliwa jest jeszcze kombinacja z \s-1LOCK_NB\s0. Stałe te
+mają tradycyjne wartości 1, 2, 8 i 4, lecz możesz używać nazw symbolicznych
+po zaimportowaniu ich z modułu Fcntl, robiąc to albo pojedynczo, albo
+grupowo, używając tagu \*(L':flock\*(R' .  
+\s-1LOCK_SH\s0 żąda blokady dzielonej, \s-1LOCK_EX\s0 żąda blokady na
+wyłączność,
+a \s-1LOCK_UN\s0 zwalnia poprzednio zażądaną blokadę. Jeśli do \s-1LOCK_SH\s0
+lub \s-1LOCK_EX\s0 dodany zostanie \s-1LOCK_NB\s0, to \fIflock\fR nie będzie
+blokował, oczekując na zablokowanie, lecz zakończy działanie natychmiast (aby
+dowiedzieć się, czy uzyskałeś blokadę, sprawdź status wyjścia).
+.Sp
+Aby zapobiec prawdopodobnie dekoordynacji, perl opróżnia \s-1UCHWYTPLIKU\s0
+przed jego (od)blokowaniem.
+.Sp
+Zauważ, że emulacja zbudowana za pomocą \fIlockf\fR(3) nie daje blokad
+dzielonych i wymaga, by \s-1UCHWYTPLIKU\s0 był otwarty z zamiarem zapisu.
+Jest to semantyka, którą implementuje \fIlockf\fR\|(3).  Większość
+(wszystkie?) systemów jednak implementuje \fIlockf\fR(3) na zasadach blokowania
+\fIfcntl\fR(2), więcej różnice nie powinny się dawać we znaki.
+.Sp
+Zauważ też, że niektóre wersje \fIflock()\fR nie mogą blokować rzeczy
+poprzez sieć; będziesz musiał użyć  do tego bardziej specyficznego dla
+systemu
+\fIfcntl()\fR. Jeśli chcesz, możesz zmusić perla do ignorowania systemowej
+funkcji \fIflock\fR(2) i używać jego własnej, opartej o \fIfcntl\fR(2)
+emulacji. Robi się to, podając programowi \fIConfigure\fR przełącznik
+\f(CW-Ud_flock\fR. Trzeba to oczywiście zrobić podczas konfigurowania perla
+jako takiego.
+.Sp
+Oto doklejacz mailboxa dla systemów \s-1BSD\s0.
+.Sp
+.Vb 1
+\&    use Fcntl ':flock'; # importuj stałe LOCK_*
+.Ve
+.Vb 6
+\&    sub lock {
+\&        flock(MBOX,LOCK_EX);
+\&        # a w wypadku, gdyby ktoś dokleił
+\&        # podczas naszego oczekiwania...
+\&        seek(MBOX, 0, 2);
+\&    }
+.Ve
+.Vb 3
+\&    sub unlock {
+\&        flock(MBOX,LOCK_UN);
+\&    }
+.Ve
+.Vb 2
+\&    open(MBOX, ">>/usr/spool/mail/$ENV{'USER'}")
+\&            or die "Nie mogę otworzyć mailboxa!: $!";
+.Ve
+.Vb 3
+\&    lock();
+\&    print MBOX $msg,"\en\en";
+\&    unlock();
+.Ve
+Zobacz też stronę podręcznika. Są tam inne przykłady  \fIflock()\fR.
+.Ip "fork" 8
+.IX Item "fork"
+Wykonuje wywołanie systemowe \fIfork\fR\|(2). Zwraca procesowi
+rodzicielskiemu pid dziecka, a w wątku dziecka zwraca zero. W wypadku błędu,
+zwraca \f(CWundef\fR.
+Uwaga: nieopróżnione bufory pozostają nieopróżnione w obydwu procesach, co
+znaczy, że będziesz musiał ustawić
+\f(CW$|\fR ($\s-1AUTOFLUSH\s0 w English) lub wywołać metodę \fIautoflush()\fR
+z \s-1IO::\s0Handle aby zapobiec duplikacji wyjścia.
+.Sp
+Jeśli \fIfork()\fR'ujesz bez czekania na dzieci, zbierzesz zombies.
+(Osierocone procesy.)
+.Sp
+.Vb 1
+\&    $SIG{CHLD} = sub { wait };
+.Ve
+Istnieje też trik podwójnego forka (sprawdzanie błędów forka zostało
+pominięte);
+.Sp
+.Vb 11
+\&    unless ($pid = fork) {
+\&        unless (fork) {
+\&            exec "co naprawdę chcesz robić";
+\&            die "bez exec";
+\&            # ... or ...
+\&            ## (jakiś_kod_perla)
+\&            exit 0;
+\&        }
+\&        exit 0;
+\&    }
+\&    waitpid($pid,0);
+.Ve
+Zobacz też stronę podręcznika \fIperlipc\fR(1). Są tam dalsze przykłady
+forkowania i zbierania konających dzieci.
+.Sp
+Zauważ, że jeśli twoje forkowane dziecko dziedziczy systemowe deskryptory
+plików, takie jak \s-1STDIN\s0 i \s-1STDOUT\s0, które w rzeczywistości są
+połączone potokiem lub gniazdem, to jeśli skończysz działanie, zdalny
+serwer (taki jak httpd, rsh) nie będzie myślał, że rzeczywiście skończyłeś.
+Powinieneś je otworzyć na nowo na /dev/null.
+.Ip "format" 8
+.IX Item "format"
+Zadeklaruj format obrazka, używanego z funkcją \fIwrite()\fR. Na przykład:
+.Sp
+.Vb 4
+\&    format Something =
+\&        Test: @<<<<<<<< @||||| @>>>>>
+\&              $str,     $%,    '$' . int($num)
+\&    .
+.Ve
+.Vb 4
+\&    $str = "widget";
+\&    $num = $cost/$quantity;
+\&    $~ = 'Something';
+\&    write;
+.Ve
+Dla dalszych opisów i przykładów, zobacz stronę \fIperlform\fR(1).
+.Ip "formline \s-1OBRAZEK\s0,\s-1LISTA\s0" 8
+.IX Item "formline \s-1PICTURE\s0,\s-1LIST\s0"
+Jest to funkcja wewnętrzna, używana przez \f(CWformat\fRy. Można ją jednak
+wywołać też samodzielnie. Formatuje ona (zobacz stronę \fIperlform\fR(1))
+listę wartości zależnie od zawartości \s-1OBRAZKA\s0, umieszczając wyjście w
+akumulatorze wyjścia formatowego, \f(CW$^A\fR (\f(CW$ACCUMULATOR\fR w English).
+Ostatecznie, po dokonaniu \fIwrite()\fR, zawartość
+\f(CW$^A\fR jest zapisywana do jakiegoś uchwytu pliku. Możesz jednak
+odczytać go samodzielnie i ustawić na "". Zauważ, że format zazwyczaj
+wykonuje jeden \fIformline()\fR na każdą linię formy, lecz sama funkcja
+\fIfromline\fR nie zwraca uwagi na to, ile nowych linii jest osadzonych w
+\s-1OBRAZKU\s0. Znaczy to, że tokeny \f(CW~\fR i \f(CW~~\fR będą traktować
+cały \s-1OBRAZEK\s0 jako linię pojedynczą. Możesz więc być zmuszonym do
+używania wielu linii form, aby zaimplementować pojedynczy format zapisu,
+podobnie jak kompilator format.
+.Sp
+Uważaj, jeśli wstawiasz wokół obrazka podwójne cudzysłowy--znak
+\*(L"\f(CW@\fR\*(R" może być wzięty za początek nazwy tablicy.
+\fIformline()\fR zawsze zwraca \s-1TRUE\s0. Zobacz stronę \fIperlform\fR(1) dla
+dalszych przykładów.
+.Ip "getc \s-1UCHWYTPLIKU\s0" 8
+.IX Item "getc \s-1FILEHANDLE\s0"
+.Ip "getc" 8
+.IX Item "getc"
+Zwraca następny znak z pliku wejściowego, identyfikowanego przez
+\s-1UCHWYTPLIKU\s0. Na końcu pliku zwraca łańcuch null. Jeśli
+\s-1UCHWYTPLIKU\s0 zostanie pominięty, odczyt następuje ze \s-1STDIN\s0.
+Nie jest to efektywne. Nie może być używane do pobierania niebuforowanych
+pojedynczych znaków. Do tego celu spróbuj raczej czegoś w rodzaju:
+.Sp
+.Vb 6
+\&    if ($BSD_STYLE) {
+\&        system "stty cbreak </dev/tty >/dev/tty 2>&1";
+\&    }
+\&    else {
+\&        system "stty", '\-icanon', 'eol', "\e001";
+\&    }
+.Ve
+.Vb 1
+\&    $key = getc(STDIN);
+.Ve
+.Vb 7
+\&    if ($BSD_STYLE) {
+\&        system "stty \-cbreak </dev/tty >/dev/tty 2>&1";
+\&    }
+\&    else {
+\&        system "stty", 'icanon', 'eol', '^@'; # ASCII null
+\&    }
+\&    print "\en";
+.Ve
+Określenie, czy \f(CW$BSD_STYLE\fR powinno być ustawione, pozostawiamy jako
+ćwiczenie dla czytelnika.
+.Sp
+Na systemach, kompatybilnych z  \s-1POSIX\s0, bardziej przenośna do tego
+celu może być funkcja \fI\s-1POSIX::\s0getattr()\fR.
+Zobacz też moduł \f(CWTerm::ReadKey\fR z najbliższego mirrora \s-1CPAN\s0;
+szczegóły o \s-1CPAN\s0 można znaleźć we wpisie \f(CWCPAN\fR ze strony
+podręcznika \fIperlmod\fR(1).
+.Ip "getlogin" 8
+.IX Item "getlogin"
+Zwraca bieżący login z \fI/etc/utmp\fR. (o ile istnieje.) 
+W wypadku nulla, użyj \fIgetpwuid()\fR.
+.Sp
+.Vb 1
+\&    $login = getlogin || getpwuid($<) || "Kilroy";
+.Ve
+Nie wykorzystuj \fIgetlogin()\fR do autentykacji: nie jest tak bezpieczny
+jak \fIgetpwuid()\fR.
+.Ip "getpeername \s-1GNIZADO\s0" 8
+.IX Item "getpeername \s-1SOCKET\s0"
+Zwraca spakowany adres sockaddr drugiego końca z połączenia na
+\s-1GNIEŹDZIE\s0.
+.Sp
+.Vb 5
+\&    use Socket;
+\&    $hersockaddr    = getpeername(SOCK);
+\&    ($port, $iaddr) = unpack_sockaddr_in($hersockaddr);
+\&    $herhostname    = gethostbyaddr($iaddr, AF_INET);
+\&    $herstraddr     = inet_ntoa($iaddr);
+.Ve
+.Ip "getpgrp \s-1PID\s0" 8
+.IX Item "getpgrp \s-1PID\s0"
+Zwraca bieżącą grupę procesu dla podanego \s-1PID\s0a. Aby uzyskać
+grupę bieżącego procesu, użyj wartości \s-1PID\s0 równej zero.
+Użycie tej funkcji na maszynie, nie implementującej \fIgetpgrp\fR\|(2)
+podniesie wyjątek. Jeśli parametr \s-1PID\s0 zostanie pominięty, to zwracana
+jest grupa bieżącego procesu. Zauważ, że wersja \s-1POSIX\s0 \fIgetpgrp\fR
+nie przyjmuje argumentu \s-1PID\s0, więc naprawdę przenośna jest tylko
+konstrukcja \s-1PID\s0==0.
+.Ip "getppid" 8
+.IX Item "getppid"
+Zwraca identyfikator procesu rodzicielskiego.
+.Ip "getpriority \s-1CZYJE\s0,\s-1KTO\s0" 8
+.IX Item "getpriority \s-1WHICH\s0,\s-1WHO\s0"
+Zwraca bieżący priorytet procesu, grupy procesów, lub użytkownika. (Zobacz
+stronę podręcznika \fIgetpriority(2)\fR.)
+Użycie tej funkcji na maszynie nie implementującej \fIgetpriority\fR\|(2)
+podniesie wyjątek krytyczny.
+.Ip "getpwnam \s-1NAZWA\s0" 8
+.IX Item "getpwnam \s-1NAME\s0"
+.Ip "getgrnam \s-1NAZWA\s0" 8
+.IX Item "getgrnam \s-1NAME\s0"
+.Ip "gethostbyname \s-1NAZWA\s0" 8
+.IX Item "gethostbyname \s-1NAME\s0"
+.Ip "getnetbyname \s-1NAZWA\s0" 8
+.IX Item "getnetbyname \s-1NAME\s0"
+.Ip "getprotobyname \s-1NAZWA\s0" 8
+.IX Item "getprotobyname \s-1NAME\s0"
+.Ip "getpwuid \s-1UID\s0" 8
+.IX Item "getpwuid \s-1UID\s0"
+.Ip "getgrgid \s-1GID\s0" 8
+.IX Item "getgrgid \s-1GID\s0"
+.Ip "getservbyname \s-1NAZWA\s0,\s-1PROTO\s0" 8
+.IX Item "getservbyname \s-1NAME\s0,\s-1PROTO\s0"
+.Ip "gethostbyaddr \s-1ADR\s0,\s-1TYPADRESU\s0" 8
+.IX Item "gethostbyaddr \s-1ADDR\s0,\s-1ADDRTYPE\s0"
+.Ip "getnetbyaddr \s-1ADR\s0,\s-1TYPADRESU\s0" 8
+.IX Item "getnetbyaddr \s-1ADDR\s0,\s-1ADDRTYPE\s0"
+.Ip "getprotobynumber \s-1LICZBA\s0" 8
+.IX Item "getprotobynumber \s-1NUMBER\s0"
+.Ip "getservbyport \s-1PORT\s0,\s-1PROTO\s0" 8
+.IX Item "getservbyport \s-1PORT\s0,\s-1PROTO\s0"
+.Ip "getpwent" 8
+.IX Item "getpwent"
+.Ip "getgrent" 8
+.IX Item "getgrent"
+.Ip "gethostent" 8
+.IX Item "gethostent"
+.Ip "getnetent" 8
+.IX Item "getnetent"
+.Ip "getprotoent" 8
+.IX Item "getprotoent"
+.Ip "getservent" 8
+.IX Item "getservent"
+.Ip "setpwent" 8
+.IX Item "setpwent"
+.Ip "setgrent" 8
+.IX Item "setgrent"
+.Ip "sethostent \s-1STAYOPEN\s0" 8
+.IX Item "sethostent \s-1STAYOPEN\s0"
+.Ip "setnetent \s-1STAYOPEN\s0" 8
+.IX Item "setnetent \s-1STAYOPEN\s0"
+.Ip "setprotoent \s-1STAYOPEN\s0" 8
+.IX Item "setprotoent \s-1STAYOPEN\s0"
+.Ip "setservent \s-1STAYOPEN\s0" 8
+.IX Item "setservent \s-1STAYOPEN\s0"
+.Ip "endpwent" 8
+.IX Item "endpwent"
+.Ip "endgrent" 8
+.IX Item "endgrent"
+.Ip "endhostent" 8
+.IX Item "endhostent"
+.Ip "endnetent" 8
+.IX Item "endnetent"
+.Ip "endprotoent" 8
+.IX Item "endprotoent"
+.Ip "endservent" 8
+.IX Item "endservent"
+Funkcje te dokonują tych samych akcji, co ich odpowiedniki z biblioteki
+systemowej. W kontekście listowym, wartości zwracane różnych funkcji `get'
+są następujące:
+.Sp
+.Vb 7
+\&    ($nazwa,$hasło,$uid,$gid,
+\&       $quota,$komentarz,$gcos,$katalog,$shell) = getpw*
+\&    ($nazwa,$hasło,$gid,$członkowie) = getgr*
+\&    ($nazwa,$aliasy,$typadresu,$długość,@addrs) = gethost*
+\&    ($nazwa,$aliasy,$typadresu,$sieć) = getnet*
+\&    ($nazwa,$aliasy,$protokół) = getproto*
+\&    ($nazwa,$aliasy,$port,$protokół) = getserv*
+.Ve
+(Jeśli wpis nie istnieje, dostaniesz listę null.)
+.Sp
+W kontekście skalarnym, dostajesz nazwę. Wyjątkiem jest funkcja podglądania
+według nazwy, gdzie dostajesz inną rzecz, jaką by ona nie była.
+(Jeśli wpis nie istnieje, otrzymujesz wartość niezdefiniowaną.)  Na
+przykład:
+.Sp
+.Vb 7
+\&    $uid = getpwnam
+\&    $nazwa = getpwuid
+\&    $nazwa = getpwent
+\&    $gid = getgrnam
+\&    $nazwa = getgrgid
+\&    $nazwa = getgrent
+\&    itd.
+.Ve
+Wartość \f(CW$członkowie\fR, zwracana przez \fIgetgr*()\fR to oddzielona
+spacjami lista nazw loginowych członków grupy.
+.Sp
+Jeśli w C obsługiwana jest zmienna errno, to dla funkcji \fIgethost*()\fR
+jego wartość będzie przekazywana przez \f(CW$?\fR. Wartość \f(CW@addrs\fR,
+zwracana przez wykonane wywołanie, jest listą czystych (raw) adresów,
+zwróconych przez odpowiednie wywołanie systemowe. W domenie internetowej,
+każdy adres jest czterobajtowy, a rozpakować go możesz, mówiąc coś w
+rodzaju:
+.Sp
+.Vb 1
+\&    ($a,$b,$c,$d) = unpack('C4',$addr[0]);
+.Ve
+.Ip "getsockname \s-1GNIAZDO\s0" 8
+.IX Item "getsockname \s-1SOCKET\s0"
+Zwraca spakowany adres sockaddr tego końca połączenia na \s-1GNIEŹDZIE\s0.
+.Sp
+.Vb 3
+\&    use Socket;
+\&    $mysockaddr = getsockname(SOCK);
+\&    ($port, $myaddr) = unpack_sockaddr_in($mysockaddr);
+.Ve
+.Ip "getsockopt \s-1GNIAZDO\s0,\s-1POZIOM\s0,\s-1NAZWAOPCJI\s0" 8
+.IX Item "getsockopt \s-1SOCKET\s0,\s-1LEVEL\s0,\s-1OPTNAME\s0"
+Zwraca zażądaną opcję gniazda, lub wartość niezdefiniowaną w wypadku błędu.
+.Ip "glob \s-1WYRAŻ\s0" 8
+.IX Item "glob \s-1EXPR\s0"
+.Ip "glob" 8
+.IX Item "glob"
+Zwraca wartość \s-1WYRAŻ\s0 z rozwinięciami nazwy plików, takimi jakich
+dokonałaby powłoka. Funkcja ta jest wewnętrzną funkcją implementującą operator
+\f(CW<*.c>\fR, lecz możesz jej użyć bezpośrednio. Jeśli pominięte zostanie
+\s-1WYRAŻ\s0, to używane będzie \f(CW$_\fR. 
+Operator \f(CW<*.c>\fR jest omówiony bliżej w sekcji \fII/O Operators\fR na
+stronie \fIperlop\fR(1).
+.Ip "gmtime \s-1WYRAŻ\s0" 8
+.IX Item "gmtime \s-1EXPR\s0"
+Konwertuje czas zwrócony przez funkcję time do 9 elementowej tablicy, w
+której znajduje się czas zlokalizowany do standardowej strefy Greenwich.
+Zazwyczaj jest to używane następująco:
+.Sp
+.Vb 3
+\&    #  0    1    2     3     4    5     6     7     8
+\&    ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) =
+\&                                            gmtime(time);
+.Ve
+Wszystkie elementy tablicy są numeryczne i pochodzą wprost ze struktury tm.
+Ogólnie znaczy to, że \f(CW$mon\fR ma zakres 0..11, a \f(CW$wday\fR 0..6, z
+niedzielą kryjącą się pod 0. Dodatkowo, \f(CW$year\fR jest liczbą lat od
+1900, a \fInie\fR po prostu dwiema ostatnimi cyframi roku.
+.Sp
+Jeśli \s-1WYRAŻ\s0 jest pominięte, wykonuje \f(CWgmtime(time())\fR.
+.Sp
+W kontekście skalarnym, zwraca wartość \fIctime\fR\|(3):
+.Sp
+.Vb 1
+\&    $now_string = gmtime;  # np. "Thu Oct 13 04:54:34 1994"
+.Ve
+Zobacz też funkcję \fItimegm()\fR, udostępnianą przez moduł Time::Local, a
+także funkcję \fIstrftime\fR\|(3), dostępną przez moduł \s-1POSIX\s0.
+.Ip "goto \s-1ETYKIETA\s0" 8
+.IX Item "goto \s-1LABEL\s0"
+.Ip "goto \s-1WYRAŻ\s0" 8
+.IX Item "goto \s-1EXPR\s0"
+.Ip "goto &\s-1NAZWA\s0" 8
+.IX Item "goto &\s-1NAME\s0"
+Postać goto-\s-1ETYKIETA\s0 szuka instrukcji, oznaczonej przez
+\s-1ETYKIETA\s0 i kontynuuje działanie od tamtego miejsca. Nie może być
+używane do przechodzenia do konstrukcji, wymagającej inicjalizacji, takiej
+jak podprocedura czy pętla foreach. Nie może też być używane do
+przechodzenia do konstrukcji optymalizowanej, lub do wychodzenia z bloku,
+lub podprocedury, przekazanej do \fIsort()\fR.
+Można nim natomiast przeskoczyć prawie we wszystkie inne miejsca zakresu
+dynamicznego, włączając wychodzenie z podprocedur, choć w tym wypadku lepiej
+użyć innej konstrukcji, takiej jak last lub die. Autor perla nigdy nie czuł
+potrzeby używania tej postaci goto (tzn. w perlu\*(--C jest inną sprawą).
+.Sp
+Postać goto-\s-1WYRAŻ\s0 oczekuje nazwy etykiety, której zakres może być
+rozwiązany dynamicznie. Pozwala to na obliczane goto per \s-1FORTRAN\s0,
+lecz nie jest zbyt zalecane, jeśli optymalizujesz ze względu na łatwość
+konserwacji programu:
+.\" maintainowanie:
+.Sp
+.Vb 1
+\&    goto ("FOO", "BAR", "GLARCH")[$i];
+.Ve
+Postać goto-&\s-1NAZWA\s0 jest bardzo magiczna i podmienia wywołanie do
+nazwanej podprocedury dla bieżącej procedury. Jest to używane przez
+podprocedury \s-1AUTOLOAD\s0, które chcą ładować inne podprocedury, a potem
+udawać, że ta inna podprocedura została wywołana jako pierwsza (poza tym,
+wszelkie zmiany \f(CW@_\fR bieżącej podprocedury są przekazywane innej
+podprocedurze.) Po tym goto, nawet \fIcaller()\fR nie będzie w stanie
+powiedzieć, że ta procedura była wywołana pierwsza.
+.Ip "grep \s-1BLOK\s0 \s-1LISTA\s0" 8
+.IX Item "grep \s-1BLOCK\s0 \s-1LIST\s0"
+.Ip "grep \s-1WYRAŻ\s0,\s-1LISTA\s0" 8
+.IX Item "grep \s-1EXPR\s0,\s-1LIST\s0"
+Jest to podobne duchowo, lecz nie identyczne do \fIgrep\fR\|(1) i krewnych.
+W rzeczywistości, nie jest ograniczone do używania wyrażeń regularnych.
+.Sp
+Wykonuje \s-1BLOK\s0 lub \s-1WYRAŻ\s0 dla każdego elementu \s-1LISTY\s0
+(ustawiając lokalnie \f(CW$_\fR na każdy element) i zwracając listę
+wartości, składających się z tych, dla których wykonane wyrażenie było
+prawdziwe. W kontekście skalarnym, zwraca liczbę prawdziwych wyrażeń.
+.Sp
+.Vb 1
+\&    @foo = grep(!/^#/, @bar);    # Pozbądź się komentarzy
+.Ve
+lub równoważnie,
+.Sp
+.Vb 1
+\&    @foo = grep {!/^#/} @bar;    # pozbądź się komentarzy
+.Ve
+Zauważ, że skoro \f(CW$_\fR jest referencją do wartości listy, może być
+używane do modyfikowania elementów tablicy. Podczas gdy jest to przydatne i
+obsługiwane, może to spowodować też nieoczekiwane rezultaty, szczególnie w
+wypadku gdy \s-1LISTA\s0 nie jest nazwaną tablicą. 
+.Sp
+Grep zwraca aliasy do oryginalnej listy. Znaczy to, że modyfikowanie
+elementu listy zwróconej przez to polecenie, modyfikuje też element listy
+oryginalnej.
+.Ip "hex \s-1WYRAŻ\s0" 8
+.IX Item "hex \s-1EXPR\s0"
+.Ip "hex" 8
+.IX Item "hex"
+Interpretuje \s-1WYRAŻ\s0 jako łańcuch szesnastkowy i zwraca odpowiadającą mu
+wartość. (Dla konwersji łańcuchów, które mogą się zaczynać od 0, lub 0x,
+zobacz opis \f(CWoct\fR, znajdujący się gdzieś w tym dokumencie.) Jeśli
+\s-1WYRAŻ\s0 zostanie pominięte, to używane jest \f(CW$_\fR.
+.Sp
+.Vb 2
+\&    print hex '0xAf'; # drukuje '175'
+\&    print hex 'aF';   # to samo
+.Ve
+.Ip "import" 8
+.IX Item "import"
+Nie istnieje wbudowana funkcja \fIimport\fR. Jest to zwyczajna metoda
+(podprocedura), definiowana (dziedziczona) przez moduły, które życzą sobie
+eksportować nazwy do kolejnych modułów. [potem] funkcja \f(CWuse()\fR woła 
+metodę \fIimport()\fR dla używanego pakietu. Zobacz jeszcze opis \f(CWuse()\fR
+i stronę  \fIperlmod\fR(1) oraz stronę \fIExporter\fR.
+.Ip "index \s-1STR\s0,\s-1SUBSTR\s0,\s-1POZYCJA\s0" 8
+.IX Item "index \s-1STR\s0,\s-1SUBSTR\s0,\s-1POSITION\s0"
+.Ip "index \s-1STR\s0,\s-1SUBSTR\s0" 8
+.IX Item "index \s-1STR\s0,\s-1SUBSTR\s0"
+Zwraca pozycję pierwszego pojawienia się \s-1SUBSTR\s0 w łańcuchu \s-1STR\s0.
+Jeśli \s-1POZYCJA\s0 jest pominięta, to przeszukiwanie rozpoczyna się od
+początku łańcucha. Wartość zwracana jest oparta o 0 (lub tego, na co ustawisz
+zmienną \f(CW$[\fR \*(--lecz lepiej tego nie rób). Jeśli podciąg nie może
+zostać zlokalizowany, zwracana jest podstawa - 1, czyli normalnie \-1.
+.Ip "int \s-1WYRAŻ\s0" 8
+.IX Item "int \s-1EXPR\s0"
+.Ip "int" 8
+.IX Item "int"
+Zwraca część całkowitą z \s-1WYRAŻ\s0. Jeśli \s-1WYRAŻ\s0 jest pominięte,
+używane jest \f(CW$_\fR.
+.Ip "ioctl \s-1UCHWYTPLIKU\s0,\s-1FUNKCJA\s0,\s-1SKALAR\s0" 8
+.IX Item "ioctl \s-1FILEHANDLE\s0,\s-1FUNCTION\s0,\s-1SCALAR\s0"
+Implementuje funkcję \fIioctl\fR\|(2). Przypuszczalnie aby jej używać,
+będziesz musiał powiedzieć
+.Sp
+.Vb 1
+\&    require "ioctl.ph"; # przypuszczalnie w /usr/local/lib/perl/ioctl.ph
+.Ve
+Jeśli \fIioctl.ph\fR nie istnieje, lub nie ma właściwych definicji, będziesz
+musiał użyć swojej własnej, opartej na nagłówkach C, takich jak
+\fI<sys/ioctl.h>\fR. 
+(Istnieje skrypt perla o nazwie \fBh2ph\fR(1), która pomaga w konwersji,
+lecz jest to nietrywialna sprawa.) \s-1SKALAR\s0 jest wartością zapisywaną,
+lub odczytywaną, zależnie od \s-1FUNKCJI\s0\*(--wskaźnik do wartości
+łańcuchowej \s-1SKALARA\s0 będzie przekazany jako trzeci argument właściwego
+wywołania ioctl. (Jeśli \s-1SKALAR\s0 nie ma wartości łańcuchowej, lecz ma
+numeryczną, to zostanie przekazana ta wartość zamiast wskaźnika do
+łańcucha.  Aby zapewnić, że będzie to prawdziwe, przed użyciem dodaj do 
+skalara 0). Do manipulowania na wartościach struktur, używanych przez
+\fIioctl()\fR przydatne są funkcje \fIpack()\fR i \fIunpack()\fR.
+Następujący przykład ustawia znak kasowania na \s-1DEL\s0.
+.Sp
+.Vb 11
+\&    require 'ioctl.ph';
+\&    $getp = &TIOCGETP;
+\&    die "NO TIOCGETP" if $@ || !$getp;
+\&    $sgttyb_t = "ccccs";                # 4 znaki i short
+\&    if (ioctl(STDIN,$getp,$sgttyb)) {
+\&        @ary = unpack($sgttyb_t,$sgttyb);
+\&        $ary[2] = 127;
+\&        $sgttyb = pack($sgttyb_t,@ary);
+\&        ioctl(STDIN,&TIOCSETP,$sgttyb)
+\&            || die "Nie mogę wykonać ioctl: $!";
+\&    }
+.Ve
+Wartość zwracana ioctl (i fcntl) jest następująca:
+.Sp
+.Vb 4
+\&        gdy OS zwraca:          to Perl zwraca:
+\&            \-1               wartość niezdefiniowaną
+\&             0                łańcuch "0 but true"
+\&         coś innego                 to samo
+.Ve
+Tak więc, mimo że perl zwraca po sukcesie \s-1TRUE\s0, a w wypadku 
+niepowodzenia \s-1FALSE\s0, możesz łatwo określić rzeczywistą wartość
+zwróconą przez system operacyjny:
+.Sp
+.Vb 2
+\&    ($retval = ioctl(...)) || ($retval = \-1);
+\&    printf "System zwrócił %d\en", $retval;
+.Ve
+.Ip "join \s-1WYRAŻ\s0,\s-1LISTA\s0" 8
+.IX Item "join \s-1EXPR\s0,\s-1LIST\s0"
+Łączy osobne łańcuchy \s-1LISTY\s0 w pojedynczy łańcuch, w którym pola są
+rozdzielone wartościami \s-1WYRAŻ\s0. Zwraca ten łańcuch.
+Przykład:
+.Sp
+.Vb 1
+\&    $_ = join(':', $login,$passwd,$uid,$gid,$gcos,$home,$shell);
+.Ve
+Zobacz też opis \f(CWsplit\fR.
+.Ip "keys \s-1HASH\s0" 8
+.IX Item "keys \s-1HASH\s0"
+Zwraca normalna tablicę, składającą się z wszystkich kluczy nazwanej tablicy
+asocjacyjnej. (W kontekście skalarnym, zwraca liczbę kluczy.) Klucze są
+zwracane w dość losowej kolejności, lecz w tej samej, w której swoje
+wartości produkują funkcje \fIvalues()\fR i \fIeach()\fR (o ile tablica
+asocjacyjna nie była [w międzyczasie] zmieniana).
+W efekcie ubocznym, funkcja resetuje iterator tablicy.
+.Sp
+A oto jeszcze inny sposób na wydrukowanie środowiska:
+.Sp
+.Vb 5
+\&    @keys = keys %ENV;
+\&    @values = values %ENV;
+\&    while ($#keys >= 0) {
+\&        print pop(@keys), '=', pop(@values), "\en";
+\&    }
+.Ve
+a co, jeśli by je posortować według klucza:
+.Sp
+.Vb 3
+\&    foreach $key (sort(keys %ENV)) {
+\&        print $key, '=', $ENV{$key}, "\en";
+\&    }
+.Ve
+Aby posortować tablicę według wartości, będziesz musiał użyć funkcji
+\f(CWsort\fR. Oto numeryczne posortowanie tablicy asocjacyjnej według jej
+wartości:
+.Sp
+.Vb 3
+\&    foreach $key (sort { $hash{$b} <=> $hash{$a} } keys %hash)) {
+\&        printf "%4d %s\en", $hash{$key}, $key;
+\&    }
+.Ve
+Jako lwartość, \f(CWkeys\fR umożliwia zwiększanie liczby komórek
+asocjacyjnych, zaalokowanych dla danej tablicy asocjacyjnej. Możesz zyskać
+na efektywności, jeśli tablica ma być duża. (Jest to podobne do
+pre-rozszerzania tablicy przez przeznaczanie $#array większego numeru.)
+Jeśli powiesz
+.Sp
+.Vb 1
+\&    keys %hash = 200;
+.Ve
+to \f(CW%hash\fR będzie  miał co najmniej 200 zaalokowanych komórek. Komórki
+te będą utrzymywane nawet, jeśli zrobisz \f(CW%hash = ()\fR. Jeśli chcesz
+zwolnić zasób wewnątrz zakresu, użyj \f(CWundef %hash\fR.
+Korzystając z powyższej właściwości, zawsze można zmniejszyć liczbę 
+zaalokowanych komórek.
+.Ip "kill \s-1LISTA\s0" 8
+.IX Item "kill \s-1LIST\s0"
+Wysyła sygnał do listy procesów. Pierwszy element listy musi być nazwą
+sygnału. Zwraca liczbę procesów, do których udało się przesłać sygnał.
+.Sp
+.Vb 2
+\&    $cnt = kill 1, $child1, $child2;
+\&    kill 9, @goners;
+.Ve
+W przeciwieństwie do zachowania w powłoce, w perlu jeśli \fI-1SYGNAŁ\s0\fR
+jest ujemny, to killuje grupy procesów, zamiast procesów. (W Systemie V,
+ujemny numer \fI\s-1PROCESU\s0\fR odnosi się też do grup procesów, lecz nie
+jest to przenośne.) Oznacza to, że zazwyczaj chcesz przekazywać sygnały
+dodatnie. Możesz też używać nazw sygnałów w cudzysłowach. Zobacz jeszcze sekcję
+\fISignals\fR w podręczniku \fIperlipc\fR(1).
+.Ip "last \s-1ETYKIETA\s0" 8
+.IX Item "last \s-1LABEL\s0"
+.Ip "last" 8
+.IX Item "last"
+Komenda \f(CWlast\fR jest podobna do instrukcji \f(CWbreak\fR z C (używanej
+w pętlach); przerywa natychmiastowo pętlę. Jeśli pominięty jest parametr
+\s-1ETYKIETY\s0, to komenda odnosi się do najbardziej wewnętrznej pętli
+zamykającej. Potencjalna instrukcja bloku \f(CWcontinue\fR nie jest
+wykonywana:
+.Sp
+.Vb 4
+\&    LINE: while (<STDIN>) {
+\&        last LINE if /^$/;      # zakończ po skończeniu z nagłówkiem
+\&        ...
+\&    }
+.Ve
+.Ip "lc \s-1WYRAŻ\s0" 8
+.IX Item "lc \s-1EXPR\s0"
+.Ip "lc" 8
+.IX Item "lc"
+Zwraca \s-1WYRAŻ\s0 w małych literach. Jest to wewnętrzna funkcja,
+implementująca escape \eL w łańcuchach ujętych w cudzysłowy. Jeśli włączone
+jest \f(CWuse locale\fR, to szanuje bieżące locale \s-1LC_CTYPE\s0.
+Zobacz stronę podręcznika \fIperllocale\fR(1).
+.Sp
+Jeśli \s-1WYRAŻ\s0 jest pominięte, używane jest \f(CW$_\fR.
+.Ip "lcfirst \s-1WYRAŻ\s0" 8
+.IX Item "lcfirst \s-1EXPR\s0"
+.Ip "lcfirst" 8
+.IX Item "lcfirst"
+Zwraca wartość \s-1WYRAŻ\s0, w którym pierwszy znak jest zastąpiony małą
+literą. Jest to funkcja wewnętrzna, implementująca escape \el w łańcuchach
+ujętych w podwójne cudzysłowy. Jeśli włączone jest \f(CWuse locale\fR, to
+szanuje bieżące locale \s-1LC_CTYPE\s0. Zobacz stronę podręcznika
+\fIperllocale\fR(1).
+.Sp
+Jeśli \s-1WYRAŻ\s0 jest pominięte, używane jest \f(CW$_\fR.
+.Ip "length \s-1WYRAŻ\s0" 8
+.IX Item "length \s-1EXPR\s0"
+.Ip "length" 8
+.IX Item "length"
+Zwraca długość w znakach wartości \s-1WYRAŻ\s0. Jeśli \s-1WYRAŻ\s0 jest
+pominięte, zwracana jest długość \f(CW$_\fR.
+.Ip "link \s-1STARYPLIK\s0,\s-1NOWYPLIK\s0" 8
+.IX Item "link \s-1OLDFILE\s0,\s-1NEWFILE\s0"
+Tworzy nową nazwę pliku, dowiązaną do starej nazwy pliku. Po sukcesie zwraca
+1, a w przeciwnym wypadku 0.
+.Ip "listen \s-1GNIAZDO\s0,\s-1ROZMIARKOLEJKI\s0" 8
+.IX Item "listen \s-1SOCKET\s0,\s-1QUEUESIZE\s0"
+Robi to samo, co wywołanie systemowe listen(2). Zwraca \s-1TRUE\s0 po
+sukcesie, a w przeciwnym wypadku \s-1FALSE\s0. Zobacz przykład w sekcji 
+\fISockets: Client/Server Communication\fR w podręczniku \fIperlipc\fR(1).
+.Ip "local \s-1WYRAŻ\s0" 8
+.IX Item "local \s-1EXPR\s0"
+Local modyfikuje wymienione zmienne tak, że są lokalne w otaczającym je
+bloku, podprocedurze, \f(CWeval{}\fR, lub \f(CWdo\fR. Jeśli wymieniona jest
+więcej niż jedna wartość, to lista musi być umieszczona w nawiasach. Zobacz
+sekcję \fITemporary Values via local()\fR w podręczniku \fIperlsub\fR(1).
+.Sp
+Zamiast \fIlocal()\fR, często raczej wolałbyś użyć \fImy()\fR, gdyż to
+pierwsze tak naprawdę nie jest tym czym się większości ludzi wydaje. 
+Odsyłam do sekcji \fIPrivate Variables via my()\fR w podręczniku
+\fIperlsub\fR(1).
+.Ip "localtime \s-1WYRAŻ\s0" 8
+.IX Item "localtime \s-1EXPR\s0"
+Konwertuje czas, zwrócony przez funkcję time na 9-elementową tablicę, której
+czas jest zanalizowany dla lokalnej strefy czasowej. Zazwyczaj jest to
+używane następująco:
+.Sp
+.Vb 3
+\&    #  0    1    2     3     4    5     6     7     8
+\&    ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) =
+\&                                                localtime(time);
+.Ve
+Wszystkie elementy tablicy są numeryczne i pochodzą wprost ze struktury tm.
+W rzeczywistości znaczy to, że \f(CW$mon\fR ma zasięg 0..11, a \f(CW$wday\fR
+0..6, gdzie 0 oznacza niedzielę. Poza tym, \f(CW$year\fR jest liczbą lat ot
+1900 roku, tj. rok 123 oznacza 2023.
+.Sp
+Jeśli \s-1WYRAŻ\s0 zostanie pominięte, to używany jest czas bieżący
+(\f(CWlocaltime(time)\fR).
+.Sp
+W kontekście skalarnym, zwraca wartość \fIctime\fR\|(3):
+.Sp
+.Vb 1
+\&    $now_string = localtime;  # np., "Thu Oct 13 04:54:34 1994"
+.Ve
+Zobacz też moduł Time::Local i funkcje  \fIstrftime\fR\|(3) i
+\fImktime\fR\|(3), dostępne przez moduł \s-1POSIX\s0.
+.Ip "log \s-0WYRAŻ\s0" 8
+.IX Item "log \s-1EXPR\s0"
+.Ip "log" 8
+.IX Item "log"
+Zwraca logarytm (podstawa \fIe\fR) z \s-1WYRAŻ\s0. Jeśli \s-1WYRAŻ\s0 jest
+pominięte, zwraca wartość dla \f(CW$_\fR.
+.Ip "lstat \s-1UCHWYTPLIKU\s0" 8
+.IX Item "lstat \s-1FILEHANDLE\s0"
+.Ip "lstat \s-1WYRAŻ\s0" 8
+.IX Item "lstat \s-1EXPR\s0"
+.Ip "lstat" 8
+.IX Item "lstat"
+Robi to samo, co funkcja \fIstat()\fR, lecz zamiast plików, na które
+wskazują dowiązania symboliczne, testuje same dowiązania. Jeśli twój system
+nie obsługuje dowiązań symbolicznych, dokonywany jest zwykły \fIstat()\fR.
+.Sp
+Jeśli \s-1WYRAŻ\s0 jest pominięte, używane jest \f(CW$_\fR.
+.Ip "m//" 8
+.IX Item "m//"
+Operator porównania. Zobacz stronę \fIperlop\fR(1).
+.Ip "map \s-1BLOK\s0 \s-1LISTA\s0" 8
+.IX Item "map \s-1BLOCK\s0 \s-1LIST\s0"
+.Ip "map \s-1WYRAŻ\s0,\s-1LISTA\s0" 8
+.IX Item "map \s-1EXPR\s0,\s-1LIST\s0"
+Analizuje \s-1BLOK\s0 lub \s-1WYRAŻ\s0 dla każdego elementu \s-1LISTY\s0
+(ustawiając lokalnie \f(CW$_\fR na każdy element) i zwraca wartość listową,
+złożoną z wyników każdego analizowania. \s-1BLOK\s0 lub \s-1WYRAŻ\s0 jest
+analizowany w kontekście listowym, więc każdy element \s-1LISTY\s0 może dać
+zero, jeden, lub więcej elementów w wartości zwracanej.
+.Sp
+.Vb 1
+\&    @chars = map(chr, @nums);
+.Ve
+tłumaczy listę liczb na odpowiadające im znaki. A
+.Sp
+.Vb 1
+\&    %hash = map { getkey($_) => $_ } @array;
+.Ve
+jest tylko śmiesznym sposobem zapisania
+.Sp
+.Vb 4
+\&    %hash = ();
+\&    foreach $_ (@array) {
+\&        $hash{getkey($_)} = $_;
+\&    }
+.Ve
+.Ip "mkdir \s-1NAZWAPLIKU\s0,\s-1PRAWA\s0" 8
+.IX Item "mkdir \s-1FILENAME\s0,\s-1MODE\s0"
+Tworzy katalog, podany jako \s-1NAZWAPLIKU\s0, którego prawa są określone
+przez \s-1PRAWA\s0 (zmodyfikowane przez umaskę). Jeśli operacja zakończy się
+sukcesem, zwraca 1, w przeciwnym wypadku zwraca 0 i ustawia \f(CW$!\fR
+(errno).
+.Ip "msgctl \s-1ID\s0,\s-1CMD\s0,\s-1ARG\s0" 8
+.IX Item "msgctl \s-1ID\s0,\s-1CMD\s0,\s-1ARG\s0"
+Woła funkcję IPC \fImsgctl\fR\|(2) z Systemu V. Jeśli \s-1CMd\s0 jest
+&\s-1IPC_STAT\s0, to \s-1ARG\s0 musi być zmienną, która będzie przechowywać
+zwróconą strukturę msquid_ds. Wartość zwracana tej funkcji jest podobna do
+ioctl: dla błędu wartość niezdefiniowana, \*(L"0 but true\*(R" dla zera,
+oraz rzeczywista wartość zwracana dla innych wypadków.
+.Ip "msgget \s-1KLUCZ\s0,\s-1FLAGI\s0" 8
+.IX Item "msgget \s-1KEY\s0,\s-1FLAGS\s0"
+Woła funkcję IPC \fImsgget\fR\|(2) z Systemu V. Zwraca identyfikator kolejki
+komunikatów, lub wartość niezdefiniowaną (w wypadku błędu).
+.Ip "msgsnd \s-1ID\s0,\s-1MSG\s0,\s-1FLAGI\s0" 8
+.IX Item "msgsnd \s-1ID\s0,\s-1MSG\s0,\s-1FLAGS\s0"
+Woła funkcję IPC \fImsgsnd\fR\|(2) z Systemu V, która przesyła komunikat
+\s-1MSG\s0 do kolejki komunikatów \s-1ID\s0. \s-1MSG\s0 musi zaczynać się
+wartością long int, określającą typ, którą można utworzyć z pomocą 
+\f(CWpack("l",$typ)\fR.
+Zwraca \s-1TRUE\s0 po sukcesie i \s-1FALSE\s0 w wypadku błędu.
+.Ip "msgrcv \s-1ID\s0,\s-1VAR\s0,\s-1ROZMIAR\s0,\s-1TYP\s0,\s-1FLAGI\s0" 8
+.IX Item "msgrcv \s-1ID\s0,\s-1VAR\s0,\s-1SIZE\s0,\s-1TYPE\s0,\s-1FLAGS\s0"
+Woła funkcję IPC \fImsgrcv\fR(2) z Systemu V. Funkcja odbiera komunikat z
+kolejki komunikatów \s-1ID\s0 i zapisuje go do zmiennej \s-1VAR\s0.
+Maksymalna odbierana wiadomość ma wielkość \s-1ROZMIAR\s0. Zauważ, że gdy 
+wiadomość jest odbierana, to jej typ będzie pierwszą rzeczą, lądującą w 
+\s-1VAR\s0, a maksymalna długość \s-1VAR\s0 to \s-1ROZMIAR\s0 plus rozmiar
+typu komunikatu. Zwraca \s-1TRUE\s0 po sukcesie, a \s-1FALSE\s0 w wypadku
+błędu. [przyp.tłum.: pole TYPE generalnie w IPC oznacza typ, zdefiniowany w
+pierwszych 4 bajtach komunikatu]
+.Ip "my \s-1WYRAŻ\s0" 8
+.IX Item "my \s-1EXPR\s0"
+Instrukcja \*(L"my\*(R" deklaruje wymienione zmienne jako lokalne dla
+zamkniętego bloku, podprocedury, \f(CWeval\fR lub pliku potraktowanego
+instrukcjami \f(CWdo/require/use\fR.
+Jeśli wymieniono więcej niż jedną wartość, lista musi być ujęta w nawiasy.
+Zobacz jeszcze sekcję \fIPrivate Variables via my()\fR w podręczniku
+\fIperlsub\fR(1).
+.Ip "next \s-1ETYKIETA\s0" 8
+.IX Item "next \s-1LABEL\s0"
+.Ip "next" 8
+.IX Item "next"
+Komenda \f(CWnext\fR jest podobna do instrukcji \f(CWcontinue\fR w C;
+rozpoczyna kolejną iterację pętli:
+.Sp
+.Vb 4
+\&    LINE: while (<STDIN>) {
+\&        next LINE if /^#/;      # pozbądź się komentarzy
+\&        ...
+\&    }
+.Ve
+Zauważ, że jeśli powyżej był blok \f(CWcontinue\fR, to zostałby on wykonany
+nawet na usuniętych liniach. Jeśli argument \s-1ETYKIETY\s0 jest pominięty,
+komenda odnosi się do najbardziej wewnętrznej otaczającej pętli.
+.Ip "no Module \s-1LISTA\s0" 8
+.IX Item "no Module \s-1LIST\s0"
+Zobacz funkcję \*(L"use\*(R", gdzie \*(L"no\*(R" jest przeciwieństwem.
+.Ip "oct \s-1WYRAŻ\s0" 8
+.IX Item "oct \s-1EXPR\s0"
+.Ip "oct" 8
+.IX Item "oct"
+Interpretuje \s-1WYRAŻ\s0 jako łańcuch ósemkowy i zwraca odpowiadającą
+wartość. (Jeśli \s-1WYRAŻ\s0 zaczyna się od 0x, jest interpretowane jako
+łańcuch szesnastkowy.) Następujący kod obsługuje liczby dziesiętne, ósemkowe
+i szesnastkowe w standardowej notacji perla lub C:
+.Sp
+.Vb 1
+\&    $val = oct($val) if $val =~ /^0/;
+.Ve
+Jeśli \s-1WYRAŻ\s0 jest pominięte, używa \f(CW$_\fR. Funkcja ta jest często
+używana gdy łańcuch w rodzaju \*(L"644\*(R" musi być np. przekonwertowany na
+prawa pliku. (Chociaż perl automatycznie konwertuje łańcuchy na liczby,
+zgodnie z potrzebami, to automatyczna konwersja zakłada podstawę 10.)
+.Ip "open \s-1UCHWYTPLIKU\s0,\s-1WYRAŻ\s0" 8
+.IX Item "open \s-1FILEHANDLE\s0,\s-1EXPR\s0"
+.Ip "open \s-1UCHWYTPLIKU\s0" 8
+.IX Item "open \s-1FILEHANDLE\s0"
+Otwiera plik, którego nazwa jest przekazywana \s-1WYRAŻ\s0, a następnie
+wiąże go z \s-1UCHWYTEMPLIKU\s0. Jeśli \s-1UCHWYTPLIKU\s0 jest wyrażeniem,
+to jego wartość jest używana jako nazwa rzeczywistego uchwytu pliku.
+Jeśli \s-1WYRAŻ\s0 jest pominięte, to przyjmuje się, że zmienna skalarna o 
+tej samej nazwie co \s-1UCHWYTPLIKU\s0 zawiera nazwę pliku.
+(Zauważ, że zmienne leksykalne\*(--te, deklarowane z pomocą \f(CWmy\fR--nie
+będą w ten sposób działały.)
+.Sp
+Jeśli nazwa pliku rozpoczyna się od \*(L'<\*(R' lub od niczego, plik jest
+otwierany dla wejścia (odczytu). Jeśli nazwa pliku rozpoczyna się
+od \*(L'>\*(R', plik jest kasowany i otwierany dla zapisu. Jeśli nazwa pliku
+rozpoczyna się od \*(L'>>\*(R', plik jest otwierany dla dopisywania.
+Jeśli przed \*(L'>\*(R' lub \*(L'<\*(R' postawisz \*(L'+\*(R', oznacza to,
+że chcesz zarówno czytać, jak i zapisywać do pliku. Tryb \*(L'+<\*(R' 
+jest zazwyczaj preferowany dla poprawek odczytu/zapisu\*(--tryb \*(L'+>\*(R' 
+najpierw pobiłby plik. Przedrostek i nazwa pliku mogą być
+oddzielone spacjami. Wszystkie te przedrostki odpowiadają trybom otwarcia
+funkcji \fIfopen\fR\|(3).
+.Sp
+Jeśli nazwa pliku rozpoczyna się od \*(L"|\*(R", to plik jest rozumiany jako
+komenda, do której potokiem przesyłane jest wyjście. Odwrotnie, jeśli nazwa
+pliku kończy się tym symbolem, to nazwa pliku jest interpretowana jako
+komenda, której wyjście jest przesyłane potokiem na nasze wejście (Zobacz
+sekcję \fIUsing open() for \s-1IPC\s0\fR w podręczniku \fIperlipc\fR(1)).
+(Możesz nie mieć czystego \fIopen()\fR, powodującego, że komenda jest zarówno
+potokiem wejściowym, jak i wyjściowym. Są jednak na to rady, zobacz stronę
+podręcznika \fI\s-1IPC::\s0Open2\fR, \fI\s-1IPC::\s0Open3\fR, 
+oraz sekcję \fIBidirectional Communication\fR w podręczniku
+\fIperlipc\fR(1).)
+.Sp
+Otwieranie \*(L'\-\*(R' otwiera strumień \s-1STDIN\s0, a
+otwieranie \*(L'>\-\*(R' otwiera \s-1STDOUT\s0.  
+Open po sukcesie zwraca zero, a w przeciwnym wypadku wartość niezdefiniowaną.
+Jeśli open otworzył potok, wartość zwracana jest identyfikatorem podprocesu
+(pid).
+.Sp
+Jeśli masz na tyle pecha, że pracujesz z perlem na systemie, który odróżnia
+pliki tekstowe i binarne (nowoczesne systemy ich nie rozróżniają), to
+powinieneś poczytać o funkcji \f(CWbinmode\fR, opisanej gdzieś w tym
+dokumencie. Systemy, wymagające binmode rozpoznaje się po ich formacie
+pliku tekstowego. Systemy takie, jak Unix i Plan9, które oddzielają linie
+pojedynczym znakiem i które kodują go w C jako
+\&\f(CW"\en"\fR, nie potrzebują \f(CWbinmode\fR.  Reszta tak.
+.Sp
+Przykłady:
+.Sp
+.Vb 3
+\&    $ARTICLE = 100;
+\&    open ARTICLE or die "Nie mogę znaleźć artykułu $ARTICLE: $!\en";
+\&    while (<ARTICLE>) {...
+.Ve
+.Vb 1
+\&    open(LOG, '>>/usr/spool/news/twitlog'); # (log jest zarezerwowany)
+.Ve
+.Vb 1
+\&    open(DBASE, '+<dbase.mine');            # otwórz dla odnowienia
+.Ve
+.Vb 1
+\&    open(ARTICLE, "caesar <$article |");    # dekoduj artykuł
+.Ve
+.Vb 1
+\&    open(EXTRACT, "|sort >/tmp/Tmp$$");     # $$ jest pidem naszego procesu
+.Ve
+.Vb 1
+\&    # przetwórz listę argumentów plików, wraz z wszelkimi załącznikami
+.Ve
+.Vb 3
+\&    foreach $file (@ARGV) {
+\&        process($file, 'fh00');
+\&    }
+.Ve
+.Vb 7
+\&    sub process {
+\&        local($filename, $input) = @_;
+\&        $input++;               # jest to inkrementacja łańcuchowa
+\&        unless (open($input, $filename)) {
+\&            print STDERR "Nie mogę otworzyć $filename: $!\en";
+\&            return;
+\&        }
+.Ve
+.Vb 8
+\&        while (<$input>) {              # note use of indirection
+\&            if (/^#include "(.*)"/) {
+\&                process($1, $input);
+\&                next;
+\&            }
+\&            ...         # cokolwiek
+\&        }
+\&    }
+.Ve
+Możesz również, zgodnie z tradycją powłoki Bourne, podać \s-1WYRAŻ\s0,
+zaczynający się od \*(L">&\*(R", co oznacza, że reszta łańcucha jest
+interpretowana jako nazwa uchwytu pliku (lub numerycznego deskryptora
+pliku), który należy zduplikować i otworzyć. & można użyć po >, >>, <, +>, 
++>>, i +<.  Tryb, który podasz, powinien odpowiadać trybowi oryginalnego
+uchwytu pliku. (Duplikowanie uchwytów pliku nie pobiera na konto żadnych
+istniejących zawartości buforów stdio.)
+Oto skrypt, który zachowuje, przekierowuje i odświeża \s-1STDOUT\s0 i
+\s-1STDERR\s0:
+.Sp
+.Vb 3
+\&    #!/usr/bin/perl
+\&    open(SAVEOUT, ">&STDOUT");
+\&    open(SAVEERR, ">&STDERR");
+.Ve
+.Vb 2
+\&    open(STDOUT, ">foo.out") || die "Nie mogę przekierować stdout";
+\&    open(STDERR, ">&STDOUT") || die "Nie mogę zduplikować stdout";
+.Ve
+.Vb 2
+\&    select(STDERR); $| = 1;     # zrób niebuforowane
+\&    select(STDOUT); $| = 1;     # j/w
+.Ve
+.Vb 2
+\&    print STDOUT "stdout 1\en";  # działa to też dla
+\&    print STDERR "stderr 1\en";  # podprocesów
+.Ve
+.Vb 2
+\&    close(STDOUT);
+\&    close(STDERR);
+.Ve
+.Vb 2
+\&    open(STDOUT, ">&SAVEOUT");
+\&    open(STDERR, ">&SAVEERR");
+.Ve
+.Vb 2
+\&    print STDOUT "stdout 2\en";
+\&    print STDERR "stderr 2\en";
+.Ve
+Możesz podać \*(L"<&=N\*(R", gdzie N jest liczbą. Perl wtedy dokona operacji
+równoważnej \fIfdopen(3)\fR z C. Na przykład:
+.Sp
+.Vb 1
+\&    open(FILEHANDLE, "<&=$fd")
+.Ve
+Jeśli otwierasz potok do komendy \*(L"\-\*(R", np. albo \*(L"|\-\*(R" 
+albo \*(L"\-|\*(R", to dokonywany jest niejawny fork, a zwrócona wartość
+open jest wewnątrz procesu rodzicielskiego pidem potomka, a w wątku potomka
+zerem. (Aby określić, czy open był pomyślny, użyj \f(CWdefined($pid)\fR.)
+Uchwyt pliku u rodzica zachowuje się normalnie, lecz i/o dla tego uchwytu
+jest przesyłane przez potok \s-1STDOUT/STDIN\s0 procesu potomnego.
+W procesie potomny uchwyt nie jest otwierany\*(--i/o jest z/do nowego
+\s-1STDOUT\s0 lub \s-1STDIN\s0. Zazwyczaj jest to używane jak normalny
+potokowy open, lecz daje lepszą kontrolę nad wywoływaniem komendy potoku,
+np. gdy pracujesz w suid i nie chcesz być zmuszonym do skanowania komend
+powłoki w poszukiwaniu metaznaków. 
+Następujące pary są mniej lub bardziej równoważne:
+.Sp
+.Vb 2
+\&    open(FOO, "|tr '[a-z]' '[A-Z]'");
+\&    open(FOO, "|-") || exec 'tr', '[a-z]', '[A-Z]';
+.Ve
+.Vb 2
+\&    open(FOO, "cat \-n '$file'|");
+\&    open(FOO, "\-|") || exec 'cat', '\-n', $file;
+.Ve
+Dla szczegółów, zobacz sekcję \fISafe Pipe Opens\fR w podręczniku
+\fIperlipc\fR(1).
+.Sp
+\s-1UWAGA\s0: Przy każdej operacji, dokonującej forkowania, nieopróżnione
+bufory pozostają takie w obydwu procesach, co znaczy, że lepiej ustawić
+\f(CW$|\fR, aby zapobiec duplikowaniu wyjścia.
+.Sp
+Zamykanie potokowego uchwytu pliku powoduje, że proces rodzicielski czeka,
+aż dziecko zakończy i zwraca wartość statusu w \f(CW$?\fR.
+.Sp
+Jeśli używasz konstruktora z pakietu \s-1IO::\s0Handle (lub z jego podklas,
+takich jak \s-1IO::\s0File czy \s-1IO::\s0Socket), możesz generować
+anonimowe uchwyty plików, które mają zakres dowolnych zmiennych, które
+utrzymują do nich referencje. Zamykają się one automatycznie po wyjściu z
+zakresu:
+.Sp
+.Vb 12
+\&    use IO::File;
+\&    ...
+\&    sub read_myfile_munged {
+\&        my $ALL = shift;
+\&        my $handle = new IO::File;
+\&        open($handle, "myfile") or die "myfile: $!";
+\&        $first = <$handle>
+\&            or return ();     # Automatyczne zamknięcie tutaj.
+\&        mung $first or die "mung failed";       # Lub tutaj.
+\&        return $first, <$handle> if $ALL;       # Lub tutaj.
+\&        $first;                                 # Lub tutaj.
+\&    }
+.Ve
+Nazwa pliku, która jest przekazana open, przechodzi operację usuwania
+prowadzących i kończących białych spacji. Aby otworzyć plik, posiadający te
+dziwne znaki, trzeba je chronić:
+.Sp
+.Vb 2
+\&    $file =~ s#^(\es)#./$1#;
+\&    open(FOO, "< $file\e0");
+.Ve
+Jeśli chcesz użyć prawdziwego, znanego z C \fIopen()\fR (zobacz stronę
+\fIopen(2)\fR), to powinieneś użyć funkcji \fIsysopen()\fR. Jest to inny
+sposób chronienia nazw plików przed interpretacją. Np:
+.Sp
+.Vb 7
+\&    use IO::Handle;
+\&    sysopen(HANDLE, $path, O_RDWR|O_CREAT|O_EXCL, 0700)
+\&        or die "sysopen $path: $!";
+\&    HANDLE->autoflush(1);
+\&    HANDLE->print("stuff $$\en");
+\&    seek(HANDLE, 0, 0);
+\&    print "Plik zawiera: ", <HANDLE>;
+.Ve
+Dla dalszych detali o miksowaniu odczytywania i zapisywania, obejrzyj opis
+\f(CWseek()\fR, znajdujący się gdzie indziej w tym dokumencie.
+.Ip "opendir \s-1UCHWYTKATALOGU\s0,\s-1WYRAŻ\s0" 8
+.IX Item "opendir \s-1DIRHANDLE\s0,\s-1EXPR\s0"
+Otwiera katalog o nazwie \s-1WYRAŻ\s0. Otwarty uchwyt można przetwarzać
+funkcjami \fIreaddir()\fR, \fItelldir()\fR,
+\fIseekdir()\fR, \fIrewinddir()\fR, i \fIclosedir()\fR.  
+Po sukcesie zwraca \s-1TRUE\s0. Uchwyty katalogów mają swoją własną
+przestrzeń nazw. Jest ona oddzielna od uchwytów plików.
+.Ip "ord \s-1WYRAŻ\s0" 8
+.IX Item "ord \s-1EXPR\s0"
+.Ip "ord" 8
+.IX Item "ord"
+Zwraca numeryczną wartość ascii pierwszego znaku \s-1WYRAŻ\s0. Jeśli
+\s-1WYRAŻ\s0 zostało pominięte, używane jest \f(CW$_\fR. Dla operacji
+odwrotnej, zobacz opis \f(CWchr\fR, znajdujący się gdzieś w tym dokumencie.
+.Ip "pack \s-1WZORZEC\s0,\s-1LISTA\s0" 8
+.IX Item "pack \s-1TEMPLATE\s0,\s-1LIST\s0"
+Pobiera tablicę lub listę wartości i pakuje ją w strukturę binarną,
+zwracając łańcuch, zawierający tę strukturę. \s-1WZORZEC\s0 jest sekwencją
+znaków, które pokazują kolejność i typy wartości. Są one następujące:
+.Sp
+.Vb 6
+\&    A   Łańcuch ascii, dopełniany spacjami.
+\&    a   Łańcuch ascii, dopełniany przez null.
+\&    b   Łańcuch bitowy (wznosząca kolejność bitów, jak w vec()).
+\&    B   Łańcuch bitowy (malejąca kolejność bitów).
+\&    h   Łańcuch szesnastkowy (najpierw niski nibble).
+\&    H   Łańcuch szesnastkowy (najpierw wysoki nibble).
+.Ve
+.Vb 2
+\&    c   Wartość char ze znakiem.
+\&    C   Wartość char bez znaku.
+.Ve
+.Vb 4
+\&    s   Wartość short.
+\&    S   Wartość short bez znaku.
+\&          (Ten 'short' jest _dokładnie_ 16 bitowy, co może się różnić od
+\&	     tego, co lokalny kompilator C nazywa jako 'short'.)
+.Ve
+.Vb 5
+\&    i   Wartość int ze znakiem.
+\&    I   Wartość int bez znaku.
+\&          (Ten 'int' jest przynajmniej 32 bitowy. Dokładny rozmiar zależy
+\&           od tego, co lokalny kompilator C uważa za 'int' i może być nawet
+\&           większe niż 'long', opisywany dalej.)
+.Ve
+.Vb 4
+\&    l   Wartość long ze znakiem.
+\&    L   Wartość long bez znaku.
+\&          (Ta wartość 'long' jest _dokładnie_ 32 bitowa, co może się
+\&           różnić od tego, co lokalny kompilator C uważa za 'long'.)
+.Ve
+.Vb 6
+\&    n   Short w porządku sieciowym (big-endian).
+\&    N   Long w porządku sieciowym (big-endian).
+\&    v   Short w porządku "VAX" (little-endian).
+\&    V   Long w porządku "VAX" (little-endian).
+\&          (Te 'short' i 'long' są _dokładnie_ 16 i
+\&           32 bitowe (odpowiednio).)
+.Ve
+.Vb 2
+\&    f   Float pojedynczej precyzji w formacie macierzystym.
+\&    d   Float podwójnej precyzji w formacie macierzystym.
+.Ve
+.Vb 2
+\&    p   Wskaźnik do łańcucha zakończonego zerem.
+\&    P   Wskaźnik do struktury (łańcuch o ustalonej długości).
+.Ve
+.Vb 1
+\&    u   Uuencodowany łańcuch.
+.Ve
+.Vb 4
+\&    w   Skompresowany integer BER. Jego bajty reprezentują całkowity
+\&        integer o podstawie 128, najpierw bardziej znaczące cyfry,
+\&        z tak małą ilością cyfr, jak tylko się da. Ósmy bit jest ustawiany
+\&        na każdym bajcie, poza ostatnim.
+.Ve
+.Vb 3
+\&    x   Bajt null.
+\&    X   Wstecz o bajt (?) (Back up a byte).
+\&    @   Wypełnienie null do bezwzględnej pozycji (?)
+\&        (Null fill to absolute position).
+.Ve
+Po każdej literze może opcjonalnie następować liczba, która podaje licznik
+powtórzeń. Dla wszystkich typów, poza \*(L"a\*(R", \*(L"A\*(R", \*(L"b\*(R", \*(L"B\*(R", \*(L"h\*(R", \*(L"H\*(R",
+i \*(L"P\*(R", funkcja pack pożre tyle samo wartości z \s-1LISTY\s0.
+Gwiazdka (*) dla licznika powtórzeń, oznacza użycie wszystkich elementów,
+które pozostały. Typy \*(L"a\*(R" i \*(L"A\*(R" pobierają tylko jedną
+wartość, lecz pakują ją jako łańcuch o podanej długości, wypełniając ją 
+w razie potrzeby zerami, lub spacjami. (Podczas rozpakowywania, \*(L"A\*(R"
+zdejmuje kończące spacje i zera, lecz \*(L"a\*(R" tego nie robi.)  
+Podobnie, pola \*(L"b\*(R" i \*(L"B\*(R" pakują łańcuchy, które są długości
+tylu bitów. \*(L"h\*(R" i \*(L"H\*(R" pakują łańcuchy, które są długości tylu
+nibblów. \*(L"P\*(R" pakuje wskaźnik do struktury, której rozmiar jest
+wskazywany przez długość. Liczby rzeczywiste (float, double) są tylko w
+formacie macierzystym maszyny; z powodu wielości formatów zmiennoprzecinkowych i
+braku standardowej reprezentacji \*(L"sieciowej\*(R", nie ma żadnego sposobu
+uniwersalnej wymiany. Oznacza to, że spakowane dane zmiennoprzecinkowe,
+zapisane na jednej maszynie, mogą nie być odczytywalne na innej \- nawet
+jeśli obydwie używają arytmetyki zmiennoprzecinkowej \s-1IEEE\s0 (gdyż
+endainowość pamięci nie jest częścią specyfikacji \s-1IEEE\s0). Zauważ, że
+perl używa wewnętrznie dla wszystkich obliczeń numerycznych reprezentacji
+double i że konwersja z double na float, a potem z powrotem na double
+powoduje utratę precyzji (np. \f(CWunpack("f", pack("f", $foo)\fR) 
+nie będzie w ogólnym przypadku się równać \f(CW$foo\fR).
+.Sp
+Przykłady:
+.Sp
+.Vb 4
+\&    $foo = pack("cccc",65,66,67,68);
+\&    # foo to "ABCD"
+\&    $foo = pack("c4",65,66,67,68);
+\&    # to samo
+.Ve
+.Vb 2
+\&    $foo = pack("ccxxcc",65,66,67,68);
+\&    # foo to "AB\e0\e0CD"
+.Ve
+.Vb 3
+\&    $foo = pack("s2",1,2);
+\&    # "\e1\e0\e2\e0" na little-endian
+\&    # "\e0\e1\e0\e2" na big-endian
+.Ve
+.Vb 2
+\&    $foo = pack("a4","abcd","x","y","z");
+\&    # "abcd"
+.Ve
+.Vb 2
+\&    $foo = pack("aaaa","abcd","x","y","z");
+\&    # "axyz"
+.Ve
+.Vb 2
+\&    $foo = pack("a14","abcdefg");
+\&    # "abcdefg\e0\e0\e0\e0\e0\e0\e0"
+.Ve
+.Vb 2
+\&    $foo = pack("i9pl", gmtime);
+\&    # rzeczywista struktura tm (przynajmniej na moim systemie)
+.Ve
+.Vb 3
+\&    sub bintodec {
+\&        unpack("N", pack("B32", substr("0" x 32 . shift, \-32)));
+\&    }
+.Ve
+Ten sam wzorzec może być ogólnie używany też w funkcji unpack.
+.Ip "package \s-1PRZESTRZEŃNAZW\s0" 8
+.IX Item "package \s-1NAMESPACE\s0"
+Deklaruje jednostkę kompilacji, przynależącą do danej przestrzeni nazw.
+Zakres deklaracji pakietu leży od deklaracji, do końca otaczającego bloku
+(tak samo, jak zakres operatora \fIlocal()\fR). Wszelkie dalsze
+niekwalifikowane identyfikatory dynamiczne będą wewnątrz tej przestrzeni
+nazw. Instrukcja package dotyczy tylko zmiennych dynamicznych\*(--włączając
+w to te, których użyłeś lokalnie (\fIlocal()\fR),\*(--lecz \fInie\fR zmienne
+leksykalne, utworzone przez \fImy()\fR. Zazwyczaj jest to pierwsza
+deklaracja we włączanym przez \f(CWrequire\fR lub \fIuse\fR pliku.
+Możesz przełączyć się do pakietu w więcej niż jednym miejscu; ma to wpływ
+jedynie na to, której tablicy symboli używa kompilator dla reszty bloku.
+Do zmiennych i uchwytów plików  z innych pakietów, możesz odnosić się,
+poprzedzając identyfikatory nazwami pakietów, za którymi następują dwa
+dwukropki: \f(CW$Pakiet::Zmienna\fR.  Jeśli nazwa pakietu jest zerowa,
+używany jest pakiet \f(CWmain\fR. Tak więc \f(CW$::sail\fR jest równoważne \f(CW$main::sail\fR.
+.Sp
+Zobacz sekcję \fIPackages\fR w podręczniku \fIperlmod\fR(1).
+Zobacz też podręcznik \fIperlsub\fR(1), gdzie opisane są problemy zakresów.
+.Ip "pipe \s-1UCHWYTODCZYTU\s0,\s-1UCHWYTZAPISU\s0" 8
+.IX Item "pipe \s-1READHANDLE\s0,\s-1WRITEHANDLE\s0"
+Otwiera parę połączonych potoków, zupełnie jak wywołanie systemowe
+\fIpipe\fR(2). Zauważ, że jeśli zestawiasz pętle potokowych procesów, to o
+ile nie zachowasz ostrożności, może pojawić się deadlock. Dodatkowo, zauważ,
+że potoki perla używają buforowania stdio, więc możesz być zmuszonym ustawić
+\f(CW$|\fR, aby opróżnić swój \s-1UCHWYTZAPISU\s0 po każdej z komend,
+zależnie od aplikacji.
+.Sp
+Obejrzyj jeszcze stronę \fI\s-1IPC::\s0Open2\fR, \fI\s-1IPC::\s0Open3\fR
+oraz sekcję \fIBidirectional Communication\fR z podręcznika
+\fIperlipc\fR(1). Są tam przykłady takich rzeczy.
+.Ip "pop \s-1TABLICA\s0" 8
+.IX Item "pop \s-1ARRAY\s0"
+.Ip "pop" 8
+.IX Item "pop"
+Pobiera i zwraca ostatnią wartość tablicy, skracając ją o jeden. Ma podobne
+działanie do
+.Sp
+.Vb 1
+\&    $tmp = $ARRAY[$#ARRAY--];
+.Ve
+Jeśli tablica nie ma elementów, zwracana jest wartość niezdefiniowana.
+Jeśli parametr \s-1TABLICA\s0 zostanie pominięty, to pobiera z tablicy
+\f(CW@ARGV\fR w programie głównym, oraz z \f(CW@_\fR w podprocedurach,
+podobnie jak \fIshift()\fR.
+.Ip "pos \s-1SKALAR\s0" 8
+.IX Item "pos \s-1SCALAR\s0"
+.Ip "pos" 8
+.IX Item "pos"
+Zwraca offset, gdzie dla zmiennej \s-1SKALAR\s0 zakończyło się ostatnie 
+przeszukiwanie \f(CWm//g\fR. (Jeśli nie podano zmiennej, używany jest $_).
+Można go modyfikować w celu zmieniania offsetu. Modyfikacja ta wpłynie
+również na zapewnienia zerowej szerokości \f(CW\eG\fR w wyrażeniach
+regularnych. Zobacz podręczniki \fIperlref\fR(1) i \fIperlop\fR(1).
+.Ip "print \s-1UCHWYTPLIKU\s0 \s-1LISTA\s0" 8
+.IX Item "print \s-1FILEHANDLE\s0 \s-1LIST\s0"
+.Ip "print \s-1LISTA\s0" 8
+.IX Item "print \s-1LIST\s0"
+.Ip "print" 8
+.IX Item "print"
+Drukuje oddzieloną przecinkami listę łańcuchów. Po sukcesie zwraca
+\s-1TRUE\s0. \s-1UCHWYTPLIKU\s0 może być nazwą zmiennej skalarnej, w którym
+wypadku zmienna ta przechowuje nazwę lub referencję do uchwytu pliku,
+wprowadzając tak poziom niebezpośredniości.
+(\s-1UWAGA\s0: Jeśli \s-1UCHYTPLIKU\s0 jest zmienną, a następny token jest
+[term], to może to być źle zinterpretowane jako operator, chyba że wstawisz +,
+lub ujmiesz argumenty w nawiasy.) Jeśli \s-1UCHWYTPLIKU\s0 jest pominięty,
+drukowanie następuje na standardowe wyjście (lub do ostatnio wybranego
+kanału wyjściowego\*(--zobacz opis \f(CWselect\fR, znajdujący się gdzieś w tym dokumencie ).
+Jeśli pominięto również argument \s-1LISTY\s0, na STDOUT drukowane jest $_.
+Aby ustawić kanał wyjściowy na coś innego niż
+\s-1STDOUT\s0, użyj operacji select. Zauważ, że z uwagi na to, że print
+pobiera \s-1LISTĘ\s0, wszystko z \s-1LISTY\s0 jest analizowane w kontekście
+listowym, a  wszelka podprocedura, którą wywołasz, będzie miała jedno, lub
+więcej wyrażeń analizowanych w kontekście listowym. Uważaj też, by nie
+wpisywać z słowem kluczowym print lewego nawiasu, chyba że chcesz by
+odpowiadający prawy nawias kończył argumenty do drukowania\*(--wstaw +, lub
+otocz wszystkie argumenty nawiasami.
+.Sp
+Zauważ, że jeśli przechowujesz \s-1UCHWYTYPLIKÓW\s0 w tablicy, lub innym
+wyrażeniu, będziesz musiał używać bloku, zwracającego jego wartość:
+.Sp
+.Vb 2
+\&    print { $files[$i] } "stuff\en";
+\&    print { $OK ? STDOUT : STDERR } "stuff\en";
+.Ve
+.Ip "printf \s-1UCHWYTPLIKU\s0 \s-1FORMAT\s0, \s-1LISTA\s0" 8
+.IX Item "printf \s-1FILEHANDLE\s0 \s-1FORMAT\s0, \s-1LIST\s0"
+.Ip "printf \s-1FORMAT\s0, \s-1LISTA\s0" 8
+.IX Item "printf \s-1FORMAT\s0, \s-1LIST\s0"
+Równoważne \f(CWprint UCHWYTPLIKU sprintf(FORMAT, LISTA)\fR.  
+Pierwszy argument list będzie interpretowany jako format printf. 
+Jeśli włączone jest \f(CWuse locale\fR, to znak używany dla kropki
+dziesiętnej jest zależny od locala \s-1LC_NUMERIC\s0. Zobacz stronę
+podręcznika \fIperllocale\fR(1).
+.Sp
+Nie wpadnij w pułapkę używania \fIprintf()\fR, gdy wystarczyłby zwykły
+\fIprint()\fR. Funkcja \fIprint()\fR jest efektywniejsza i mniej wrażliwa na
+błędy.
+.Ip "prototype \s-1FUNKCJA\s0" 8
+.IX Item "prototype \s-1FUNCTION\s0"
+Zwraca w postaci łańcucha prototyp funkcji (lub \f(CWundef\fR, jeśli funkcja
+nie ma prototypu). \s-1FUNKCJA\s0 jest referencją lub nazwą funkcji, której
+prototyp usiłujemy uzyskać.
+.Ip "push \s-1TABLICA\s0,\s-1LISTA\s0" 8
+.IX Item "push \s-1ARRAY\s0,\s-1LIST\s0"
+Traktuje \s-1TABLICĘ\s0 jako stos i wrzuca na jej szczyt wartości \s-1LISTY\s0.
+Długość \s-1TABLICY\s0 zwiększa się o długość \s-1LISTY\s0. Ma takie samo
+działanie jak
+.Sp
+.Vb 3
+\&    for $value (LIST) {
+\&        $ARRAY[++$#ARRAY] = $value;
+\&    }
+.Ve
+lecz jest efektywniejsze. Zwraca nową liczbę elementów tablicy.
+.Ip "q/\s-1ŁAŃCUCH\s0/" 8
+.IX Item "q/\s-1ŁAŃCUCH\s0/"
+.Ip "qq/\s-1ŁAŃCUCH\s0/" 8
+.IX Item "qq/\s-1ŁAŃCUCH\s0/"
+.Ip "qx/\s-1ŁAŃCUCH\s0/" 8
+.IX Item "qx/\s-1ŁAŃCUCH\s0/"
+.Ip "qw/\s-1ŁAŃCUCH\s0/" 8
+.IX Item "qw/\s-1ŁAŃCUCH\s0/"
+Uogólnione cudzysłowy. Zobacz stronę \fIperlop\fR(1).
+.Ip "quotemeta \s-1WYRAŻ\s0" 8
+.IX Item "quotemeta \s-1EXPR\s0"
+.Ip "quotemeta" 8
+.IX Item "quotemeta"
+Zwraca wartość \s-1WYRAŻ\s0 z poprzedzonymi odwróconymi ukośnikami wszystkimi
+nie-alfanumerycznymi znakami. (To znaczy, że wszystkie znaki, nie podpadające
+pod \f(CW/[A-Za-z_0-9]/\fR zostaną poprzedzone odwrotnym ukośnikiem, 
+niezależnie od ustawień locale.)
+Jest to wewnętrzna funkcja, implementująca escape Q w łańcuchach z
+podwójnych cudzysłowów.
+.Sp
+Jeśli \s-1WYRAŻ\s0 jest pominięte, używane jest \f(CW$_\fR.
+.Ip "rand \s-1WYRAŻ\s0" 8
+.IX Item "rand \s-1EXPR\s0"
+.Ip "rand" 8
+.IX Item "rand"
+Zwraca losową liczbę, większą lub równą 0 i mniejszą od wartości
+\s-1WYRAŻ\s0. (\s-1WYRAŻ\s0 powinno być dodatnie.) Jeśli \s-1WYRAŻ\s0 jest
+pominięte, używana jest wartość 1. Automatycznie wywołuje \fIsrand()\fR,
+chyba że był on już wywołany. Zobacz też opis \fIsrand()\fR.
+.Sp
+(Uwaga: Jeśli twoja funkcja rand zwraca stale liczby, które są zbyt wielkie,
+lub zbyt małe, to znaczy, że twoja wersja perla prawdopodobnie została
+skompilowana ze złą liczbą \s-1RANDBITS\s0.)
+.Ip "read \s-1UCHWYTPLIKU\s0,\s-1SKALAR\s0,\s-1DŁUGOŚĆ\s0,\s-1OFFSET\s0" 8
+.IX Item "read \s-1UCHWYTPLIKU\s0,\s-1SKALAR\s0,\s-1DŁUGOŚĆ\s0,\s-1OFFSET\s0"
+.Ip "read \s-1UCHWYTPLIKU\s0,\s-1SKALAR\s0,\s-1DŁUGOŚĆ\s0" 8
+.IX Item "read \s-1FILEHANDLE\s0,\s-1SCALAR\s0,\s-1LENGTH\s0"
+Próbuje odczytać \s-1DŁUGOŚĆ\s0 bajtów danych do zmiennej \s-1SKALAR\s0 z
+pliku wskazywanego przez \s-1UCHWYTPLIKU\s0. Zwraca liczbę odczytanych
+bajtów, lub undef w wypadku błędu. \s-1SKALAR\s0 zostanie rozciągnięty, lub
+skurczony do rzeczywistej długości odczytanych danych. Można też podać
+\s-1OFFSET\s0. Wtedy odczyt nastąpi w innym miejscu niż początek łańcucha.
+Wywołanie to jest w rzeczywistości zaimplementowane w oparciu o wywołanie
+fread(3) stdio. Aby uzyskać prawdziwe wywołanie systemowe read(2), użyj
+\fIsysread()\fR.
+.Ip "readdir \s-1UCHWYTKATALOGU\s0" 8
+.IX Item "readdir \s-1DIRHANDLE\s0"
+Zwraca następny wpis katalogu, otwartego przez \fIopendir()\fR. Jeśli jest
+używane w kontekście listowym, zwraca resztę wpisów w katalogu. Jeśli nie ma
+już więcej wpisów, w kontekście skalarnym zwracana jest wartość
+niezdefiniowana, a w kontekście listowym listę null.
+.Sp
+Jeśli masz zamiar dokonywać testów plikowych na wartościach zwracanych przez
+\fIreaddir()\fR, to lepiej poprzedź te nazwy katalogiem. Powinno się tak
+robić, gdyż nie \fIreaddir()\fR nie przechodzi do swojego katalogu i
+zaszło by testowanie nie tego pliku co trzeba.
+.Sp
+.Vb 3
+\&    opendir(DIR, $some_dir) || die "Nie powiódł się opendir $some_dir: $!";
+\&    @dots = grep { /^\e./ && \-f "$some_dir/$_" } readdir(DIR);
+\&    closedir DIR;
+.Ve
+.Ip "readlink \s-1WYRAŻ\s0" 8
+.IX Item "readlink \s-1EXPR\s0"
+.Ip "readlink" 8
+.IX Item "readlink"
+Zwraca wartość dowiązania symbolicznego. Działa to, jeśli dowiązania
+symboliczne są zaimplementowane [w systemie]. W przeciwnym wypadku powstaje
+błąd krytycznych. W wypadku błędu systemowego, zwracana jest wartość
+niezdefiniowana i ustawiane jest \f(CW$!\fR (errno). Jeśli \s-1WYRAŻ\s0
+zostanie pominięte, używane jest \f(CW$_\fR.
+.Ip "recv \s-1GNIAZDO\s0,\s-1SKALAR\s0,\s-1DŁUGOŚĆ\s0,\s-1FLAGI\s0" 8
+.IX Item "recv \s-1SOCKET\s0,\s-1SCALAR\s0,\s-1LEN\s0,\s-1FLAGS\s0"
+Odbiera komunikat na gnieździe. Próbuje odebrać \s-1DŁUGOŚĆ\s0 bajtów do
+zmiennej \s-1SKALAR\s0. (\s-1GNIAZDO\s0 to uchwyt gniazda).
+W rzeczywistości funkcja wykonuje odpowiednik funkcji C \fIrecvfrom()\fR(2), 
+więc zwraca adres nadawcy. W wypadku błędu, zwracana jest wartość
+niezdefiniowana. \s-1SKALAR\s0 będzie rozciągany do długości rzeczywiście
+odczytanych danych. Flagi są takie same jak w wywołaniu systemowym o tej
+samej nazwie.
+Zobacz jeszcze sekcję \fI\s-1UDP\s0: Message Passing\fR w podręczniku
+\fIperlipc\fR(1). Są tam przykłady.
+.Ip "redo \s-1ETYKIETA\s0" 8
+.IX Item "redo \s-1LABEL\s0"
+.Ip "redo" 8
+.IX Item "redo"
+Komenda \f(CWredo\fR restartuje blok pętli, nie analizując przy tym warunku.
+Blok \f(CWcontinue\fR (jeśli taki istnieje) również nie jest wykonywany.
+Jeśli pominięta zostanie \s-1ETYKIETA\s0, komenda odnosi się do najbardziej
+wewnętrznej otaczającej pętli. Komenda ta jest zazwyczaj wykorzystywana
+przez programy, które chcą się oszukiwać co do tego, co było właśnie
+pobrane:
+.Sp
+.Vb 16
+\&    # Uproszczony ogołacacz komentarzy Pascala
+\&    # (uwaga: zakłada brak { i } w łańcuchach)
+\&    LINE: while (<STDIN>) {
+\&        while (s|({.*}.*){.*}|$1 |) {}
+\&        s|{.*}| |;
+\&        if (s|{.*| |) {
+\&            $front = $_;
+\&            while (<STDIN>) {
+\&                if (/}/) {      # Koniec komentarza?
+\&                    s|^|$front{|;
+\&                    redo LINE;
+\&                }
+\&            }
+\&        }
+\&        print;
+\&    }
+.Ve
+.Ip "ref \s-1WYRAŻ\s0" 8
+.IX Item "ref \s-1EXPR\s0"
+.Ip "ref" 8
+.IX Item "ref"
+Jeśli wartość \s-1WYRAŻ\s0 jest referencją, zwracane jest \s-1TRUE\s0, a w
+przeciwnym wypadku \s-1FALSE\s0. Jeśli \s-1WYRAŻ\s0 zostanie pominięte,
+użyte zostanie \f(CW$_\fR. Zwracana wartość zależy od typu, do którego
+referencja jest referencją.
+Wbudowane typy to:
+.Sp
+.Vb 6
+\&    REF
+\&    SCALAR
+\&    ARRAY
+\&    HASH
+\&    CODE
+\&    GLOB
+.Ve
+Jeśli referencjowany obiekt został błogosławiony (\fIbless()\fR) do pakietu,
+to zwracana jest nazwa pakietu. Możesz myśleć o \fIref()\fR jak o operatorze
+\fItypeof()\fR.
+.Sp
+.Vb 6
+\&    if (ref($r) eq "HASH") {
+\&        print "r jest referencją do tablicy asocjacyjnej.\en";
+\&    }
+\&    if (!ref ($r) {
+\&        print "r nie jest referencją.\en";
+\&    }
+.Ve
+Zobacz też stronę podręcznika \fIperlref\fR(1).
+.Ip "rename \s-1STARANAZWA\s0,\s-1NOWANAZWA\s0" 8
+.IX Item "rename \s-1OLDNAME\s0,\s-1NEWNAME\s0"
+Zmienia nazwę pliku. Po sukcesie zwraca 1, w przeciwnym wypadku 0. Nie
+działa między granicami systemów plików.
+.Ip "require \s-1WYRAŻ\s0" 8
+.IX Item "require \s-1EXPR\s0"
+.Ip "require" 8
+.IX Item "require"
+Zażądaj pewnej właściwości, podanej przez \s-1WYRAŻ\s0, lub \f(CW$_\fR, jeśli
+go nie podano. Jeśli \s-1WYRAŻ\s0 jest numeryczne, to wymaga ono by bieżąca
+wersja perla (\f(CW$]\fR lub \f(CW$PERL_VERSION\fR) była większa lub równa
+\s-1WYRAŻ\s0.
+.Sp
+W przeciwnym wypadku żąda włączenia pliku biblioteki (o ile nie jest on już
+włączony). Plik jest włączany z użyciem mechanizmu do-\s-1PLIK\s0, który w
+zasadzie jest wariacją \fIeval()\fR. Semantyka jest podobna do następującej
+podprocedury:
+.Sp
+.Vb 19
+\&    sub require {
+\&        local($filename) = @_;
+\&        return 1 if $INC{$filename};
+\&        local($realfilename,$result);
+\&        ITER: {
+\&            foreach $prefix (@INC) {
+\&                $realfilename = "$prefix/$filename";
+\&                if (\-f $realfilename) {
+\&                    $result = do $realfilename;
+\&                    last ITER;
+\&                }
+\&            }
+\&            die "Nie mogę znaleźć $filename w \e@INC";
+\&        }
+\&        die $@ if $@;
+\&        die "$filename nie zwróciło prawdziwej wartości" unless $result;
+\&        $INC{$filename} = $realfilename;
+\&        $result;
+\&    }
+.Ve
+Zauważ, że plik nie będzie włączany pod tą samą nazwą dwukrotnie. Jako
+ostatnią instrukcję, plik musi zwracać \s-1TRUE\s0, wskazując tak pomyślne
+wykonanie kodu inicjalizacji, więc zazwyczaj kończy się takie pliki \*(L"1;\*(R",
+chyba że jesteś pewien, że zwróci \s-1TRUE\s0 tak czy inaczej. Lepiej
+jednak wstawić po prostu\*(L"\f(CW1;\fR\*(R", na wypadek np. dodania nowych
+instrukcji.
+.Sp
+Jeśli \s-1WYRAŻ\s0 jest prostym słowem, require zakłada rozszerzenie \*(L"\fI.pm\fR\*(R"
+i samodzielnie zamienia \*(L"\fI::\fR\*(R" na \*(L"\fI/\fR\*(R",
+ułatwiając ładowanie modułów standardowych. Ta postać ładowania modułów nie
+ryzykuje zmieniania twojej przestrzeni nazw.
+to make it easy to load standard modules.  This form of loading of
+modules does not risk altering your namespace.
+.Sp
+Dla potężniejszego narzędzia importu, obejrzyj opis \f(CWuse\fR, znajdujący
+się w tym dokumencie, oraz stronę \fIperlmod\fR(1).
+.Ip "reset \s-1WYRAŻ\s0" 8
+.IX Item "reset \s-1EXPR\s0"
+.Ip "reset" 8
+.IX Item "reset"
+Ogólnie, używane w bloku \f(CWcontinue\fR na końcu pętli, w celu
+wyczyszczenia zmiennych i resetowania przeszukiwań ??, tak by znów działały.
+Wyrażenie jest interpretowane jako lista pojedynczych znaków (dla podawania
+zakresów, można używać myślników). Wszystkie zmienne i tablice,
+rozpoczynające się na jedną z tych liter, są resetowane do stanu
+pierwotnego. Jeśli wyrażenie zostanie pominięte, przeszukiwania
+jednego-trafienia (?wzorzec?) są resetowane do ponownego trafienia.
+Resetowanie tyczy się tylko obiektów bieżącego pakietu. Zwracane jest zawsze 1.
+Przykłady:
+.Sp
+.Vb 3
+\&    reset 'X';          # resetuj wszystkie zmienne X
+\&    reset 'a-z';        # resetuj zmienne małoliterowe
+\&    reset;              # resetuj tylko przeszukiwania ??
+.Ve
+Resetowanie \*(L"A\-Z\*(R" nie jest zalecane, gdyż odniesie się ono również
+do tablic \s-1ARGV\s0 i \s-1ENV\s0.  Resetowane są tylko zmienne
+pakietu\*(--zmienne leksykalne są nietykane, lecz one i tak oczyszczają się
+na wyjściu z zakresu. Zobacz opis \f(CWmy\fR, znajdujący się gdzieś w tym
+dokumencie.
+.Ip "return \s-1WYRAŻ\s0" 8
+.IX Item "return \s-1EXPR\s0"
+.Ip "return" 8
+.IX Item "return"
+Powraca z podprocedury, \fIeval()\fR, lub z do \s-1PLIK\s0, z wartością
+podaną przez \s-1WYRAŻ\s0. Analiza \s-1WYRAŻ\s0 może zachodzić w kontekście
+listowym, skalarnym, lub pustym (void). Zależy to od sposobu użycia wartości
+zwracanej, a kontekst może się zmieniać od jednego wywołania do drugiego
+(zobacz \fIwantarray()\fR). Jeśli \s-1WYRAŻ\s0 nie jest podane, w kontekście
+skalarnym zwracana jest wartość niezdefiniowana, w listowym pusta lista, a w
+pustym (void) nic.
+.Sp
+(Zauważ, że przy braku return, podprocedura, eval, lub do \s-1PLIK\s0
+zakończą automatycznie z wartością ostatniego wykonanego wyrażenia.)
+.Ip "reverse \s-1LISTA\s0" 8
+.IX Item "reverse \s-1LIST\s0"
+W kontekście listowym, zwraca wartość listową, składającą się z elementów
+\s-1LISTY\s0, ułożonych w przeciwnym porządku. W kontekście skalarnym,
+elementy listy są łączone w łańcuch i zwracane w odwróconym porządku.
+.Sp
+.Vb 1
+\&    print reverse <>;           # line tac, last line first
+.Ve
+.Vb 2
+\&    undef $/;                   # for efficiency of <>
+\&    print scalar reverse <>;    # byte tac, last line tsrif
+.Ve
+Operator ten jest też przydatny do inwersji tablicy asocjacyjnej, choć są tu
+pewne zastrzeżenia. Jeśli wartość jest w oryginalnej tablicy zduplikowana,
+to tylko jedna z nich może być reprezentowana jako klucz w tablicy
+odwróconej. Musi to też przewinąć całą tablicę i zbudować nową, co dla dużej
+tablicy może trochę potrwać.
+.Sp
+.Vb 1
+\&    %by_name = reverse %by_address;     # Inwersja tablicy asocjacyjnej
+.Ve
+.Ip "rewinddir \s-1UCHWYTKATALOGU\s0" 8
+.IX Item "rewinddir \s-1DIRHANDLE\s0"
+Ustawia bieżącą pozycję (dla funkcji \fIreaddir()\fR) na początek katalogu,
+wskazywanego przez \s-1UCHWYTKATALOGU\s0.
+.Ip "rindex \s-1STR\s0,\s-1SUBSTR\s0,\s-1POZYCJA\s0" 8
+.IX Item "rindex \s-1STR\s0,\s-1SUBSTR\s0,\s-1POSITION\s0"
+.Ip "rindex \s-1STR\s0,\s-1SUBSTR\s0" 8
+.IX Item "rindex \s-1STR\s0,\s-1SUBSTR\s0"
+Działa tak samo jak index, lecz zwraca pozycję ostatniego pojawienia się
+\s-1SUBSTR\s0 w \s-1STR\s0. Jeśli podano \s-1POZYCJĘ\s0, to zwracane jest
+ostatnie pojawienie na, lub przed tą pozycją.
+.Ip "rmdir \s-1NAZWAPLIKU\s0" 8
+.IX Item "rmdir \s-1FILENAME\s0"
+.Ip "rmdir" 8
+.IX Item "rmdir"
+Kasuje pusty katalog podany przez \s-1NAZWĘPLIKU\s0. Jeśli operacja się
+powiedzie, zwraca 1. W przeciwnym wypadku zwracane jest zero i ustawiane
+jest \f(CW$!\fR (errno). Jeśli \s-1NAZWAPLIKU\s0 jest pominięta, używane
+jest \f(CW$_\fR.
+.Ip "s///" 8
+.IX Item "s///"
+Operator podmienienia. Zobacz stronę \fIperlop\fR(1).
+.Ip "scalar \s-1WYRAŻ\s0" 8
+.IX Item "scalar \s-1EXPR\s0"
+Wymusza interpretację skalarną wyrażenia \s-1WYRAŻ\s0 i zwraca jego wartość.
+.Sp
+.Vb 1
+\&    @counts = ( scalar @a, scalar @b, scalar @c );
+.Ve
+Nie istnieje odpowiednik, konwertujący skalar w listę. Jest tak dlatego, że
+w praktyce nie jest on nigdy potrzebny. Jeśli jednak naprawdę chcesz tak
+zrobić, możesz użyć konstrukcji \f(CW@{[ (jakieś wyrażenie) ]}\fR, 
+a zwykle powinno wystarczyć zwykłe \f(CW(some expression)\fR.
+.Ip "seek \s-1UCHWYTPLIKU\s0,\s-1POZYCJA\s0,\s-1GDZIE\s0" 8
+.IX Item "seek \s-1FILEHANDLE\s0,\s-1POSITION\s0,\s-1WHENCE\s0"
+Ustawia pozycję \s-1UCHWYTUPLIKU\s0, podobnie jak \fIfseek\fR(3) w stdio.
+\s-1UCHYTPLIKU\s0 może być wyrażeniem, którego wartość daje nazwę uchwytu
+pliku. Wartości \s-1GDZIE\s0 to 0, oznaczające ustawianie nowej pozycji na
+\s-1POZYCJĘ\s0, 1 oznaczające ustawianie pozycji na pozycję bieżącą plus
+\s-1POZYCJĘ\s0, oraz 2 ustawiające pozycję na EOF plus \s-1POZYCJĘ\s0
+(zazwyczaj ujemną).
+Zamiast numerycznych wartości \s-1GDZIE\s0, można używać stałych
+\s-1SEEK_SET\s0, \s-1SEEK_CUR\s0 i \s-1SEEK_END\s0 z modułu
+\s-1IO::\s0Seekable lub \s-1POSIX\s0.  Po sukcesie zwracane jest 1, po
+błędzie 0.
+.Sp
+Jeśli chcesz ustawić pozycję pliku dla \fIsysread()\fR i \fIsyswrite()\fR,
+nie używaj \fIseek()\fR -- użyj \fIsysseek()\fR.
+.Sp
+Na niektórych systemach musisz wykonać seek za każdym razem, gdy przełączasz
+się między zapisem i odczytem. Wśród innych rzeczy, może to mieć efekt
+wołania funkcji stdio \fIclearerr\fR\|(3). Wartość \s-1GDZIE\s0 1 jest
+przydatna do nie ruszania się z pozycji pliku:
+.Sp
+.Vb 1
+\&    seek(TEST,0,1);
+.Ve
+Jest to również przydatne dla aplikacji, emulujących \f(CWtail \-f\fR. Gdy
+raz wejdziesz na \s-1EOF\s0, a potem zaśniesz na chwilę, to dobrze przed
+następnym odczytem użyć \fIseek()\fR, aby wszystko zresetować. \fIseek()\fR
+nie zmienia bieżącej pozycji, lecz \fIczyści\fR warunek EOF uchwytu, więc
+następne \f(CW<PLIK>\fR powoduje, że perl znów coś będzie próbował odczytać.
+Mamy przynajmniej taką nadzieję.
+.Sp
+Jeśli to nie działa (niektóre stdio są szczególnie dziwne), to możesz
+potrzebować czegoś więcej, jak:
+.Sp
+.Vb 7
+\&    for (;;) {
+\&        for ($curpos = tell(FILE); $_ = <FILE>; $curpos = tell(FILE)) {
+\&            # szukaj jakichś rzeczy i wstaw je do plików
+\&        }
+\&        sleep($for_a_while);
+\&        seek(FILE, $curpos, 0);
+\&    }
+.Ve
+.Ip "seekdir \s-1UCHWYTKATALOGU\s0,\s-1POZYCJA\s0" 8
+.IX Item "seekdir \s-1DIRHANDLE\s0,\s-1POS\s0"
+Ustawia bieżącą pozycję polecenia \fIreaddir()\fR dla katalogu wskazywanego
+przez \s-1UCHWYTKATALOGU\s0. \s-1POZYCJA\s0 musi mieć wartość zwracaną
+przez \fItelldir()\fR. 
+.Ip "select \s-1UCHWYTPLIKU\s0" 8
+.IX Item "select \s-1FILEHANDLE\s0"
+.Ip "select" 8
+.IX Item "select"
+Zwraca obecnie wybrany uchwyt pliku. Jeśli podano \s-1UCHWYTPLIKU\s0,
+ustawia domyślny uchwyt pliku dla wyjścia. Daje to dwa efekty: po pierwsze
+\f(CWwrite\fR, lub \f(CWprint\fR bez uchwytu pliku będą zapisywały domyślnie
+do tego \s-1UCHWYTUPLIKU\s0. Po drugie, odniesienia zmiennych, związanych z
+wyjściem, będą się odnosiły do tego kanału wyjścia. Np. jeśli masz ustawić
+początek formatu formy dla więcej niż jednego kanału, mógłbyś użyć 
+następującego:
+.Sp
+.Vb 4
+\&    select(REPORT1);
+\&    $^ = 'report1_top';
+\&    select(REPORT2);
+\&    $^ = 'report2_top';
+.Ve
+\s-1UCHWYTPLIKU\s0 może być wyrażeniem, które daje nazwę rzeczywistego
+uchwytu pliku. Tak więc:
+.Sp
+.Vb 1
+\&    $oldfh = select(STDERR); $| = 1; select($oldfh);
+.Ve
+Niektórzy programiści wolą myśleć o uchwytach pliku jak o obiektach,
+posiadających metody, zapisując ostatni przykład jako:
+.Sp
+.Vb 2
+\&    use IO::Handle;
+\&    STDERR->autoflush(1);
+.Ve
+.Ip "select \s-1RBITS\s0,\s-1WBITS\s0,\s-1EBITS\s0,\s-1TIMEOUT\s0" 8
+.IX Item "select \s-1RBITS\s0,\s-1WBITS\s0,\s-1EBITS\s0,\s-1TIMEOUT\s0"
+Funkcja ta woła z podanymi maskami bitowymi wywołanie systemowe 
+\fIselect\fR\|(2). Maski można skonstruować, używając \fIfileno()\fR i
+\fIvec()\fR:
+.Sp
+.Vb 4
+\&    $rin = $win = $ein = '';
+\&    vec($rin,fileno(STDIN),1) = 1;
+\&    vec($win,fileno(STDOUT),1) = 1;
+\&    $ein = $rin | $win;
+.Ve
+Jeśli chcesz wykonywać tę funkcję na wielu uchwytach plików, możesz napisać
+podprocedurę:
+.Sp
+.Vb 9
+\&    sub fhbits {
+\&        local(@fhlist) = split(' ',$_[0]);
+\&        local($bits);
+\&        for (@fhlist) {
+\&            vec($bits,fileno($_),1) = 1;
+\&        }
+\&        $bits;
+\&    }
+\&    $rin = fhbits('STDIN TTY SOCK');
+.Ve
+Spotykanym idiomem jest:
+.Sp
+.Vb 2
+\&    ($nfound,$timeleft) =
+\&      select($rout=$rin, $wout=$win, $eout=$ein, $timeout);
+.Ve
+aby blokować, aż coś stanie się gotowe, wykonaj po prostu
+.Sp
+.Vb 1
+\&    $nfound = select($rout=$rin, $wout=$win, $eout=$ein, undef);
+.Ve
+Większość systemów nie zwraca niczego mądrego w \f(CW$timeleft\fR, więc
+wywołanie \fIselect()\fR w kontekście skalarnym zwróci po prostu \f(CW$nfound\fR.
+.Sp
+Każda z masek bitowych może być niezdefiniowana. Podany timeout jest
+podawany w sekundach. Może być ułamkowy. Uwaga: nie wszystkie implementacje
+zwracają \f(CW$timeleft\fR.  Jeśli go nie zwracają, to zwracają wartość równą
+tej, przekazanej w \f(CW$timeout\fR.
+.Sp
+A oto 250 milisekundowe zaśnięcie:
+.Sp
+.Vb 1
+\&    select(undef, undef, undef, 0.25);
+.Ve
+\fB\s-1UWAGA\s0\fR: Nie próbuj łączyć buforowanego I/O (np. \fIread\fR czy
+\fR<\s-1FH\s0>) z funkcją \fIselect\fR. Użyj zamiast tego \fIsysread()\fR.
+.Ip "semctl \s-1ID\s0,\s-1SEMNUM\s0,\s-1CMD\s0,\s-1ARG\s0" 8
+.IX Item "semctl \s-1ID\s0,\s-1SEMNUM\s0,\s-1CMD\s0,\s-1ARG\s0"
+Woła funkcję IPC \fIsemctl\fR(2) z Systemu V. Jeśli \s-1CMD\s0 to &\s-1IPC_STAT\s0
+lub &\s-1GETALL\s0, to \s-1ARG\s0 musi być zmienną, która będzie
+przechowywać zwróconą strukturę semid_ds, lub tablicę wartości semafora.
+Podczas błędu, podobnie jak ioctl zwraca wartość niezdefiniowaną, dla zera
+łańcuch \*(L"0 but true\*(R", a dla pozostałych wartości rzeczywistą wartość
+zwróconą.
+.Ip "semget \s-1KLUCZ\s0,\s-1NSEMS\s0,\s-1FLAGI\s0" 8
+.IX Item "semget \s-1KEY\s0,\s-1NSEMS\s0,\s-1FLAGS\s0"
+Woła funkcję IPC \fIsemget\fR(2) z Systemu V. Zwraca identyfikator semafora,
+lub wartość niezdefiniowaną w przypadku błędu.
+.Ip "semop \s-1KLUCZ\s0,\s-1ŁAŃCUCHOP\s0" 8
+.IX Item "semop \s-1KEY\s0,\s-1OPŁAŃCUCH\s0"
+Woła funkcję IPC \fIsemop\fR(2) z Systemu V. Funkcja ta dokonuje operacji
+semaforowych, np. sygnalizowania i czekania. \s-1ŁAŃCUCHOP\s0 musi być
+spakowaną tablicą struktur semop. Każdą ze struktur semop można wygenerować
+z pomocą
+\f(CWpack("sss", $semnum, $semop, $semflag)\fR.  
+Liczba operacji semaforowych jest implikowana długością \s-1ŁAŃCUCHOP\s0. Po
+sukcesie, funkcja zwraca \s-1TRUE\s0, a w wypadku błędu \s-1FALSE\s0. Na
+przykład następujący fragment kodu oczekuje na semaforze
+\f(CW$semnum\fR z identyfikatora \f(CW$semid:\fR
+.Sp
+.Vb 2
+\&    $semop = pack("sss", $semnum, \-1, 0);
+\&    die "Problem z semaforem: $!\en" unless semop($semid, $semop);
+.Ve
+Aby ustawić semafor, zamień \*(L"\-1\*(R" na \*(L"1\*(R".
+.Ip "send \s-1GNIAZDO\s0,\s-1MSG\s0,\s-1FLAGI\s0,\s-1DO\s0" 8
+.IX Item "send \s-1SOCKET\s0,\s-1MSG\s0,\s-1FLAGS\s0,\s-1TO\s0"
+.Ip "send \s-1GNIAZDO\s0,\s-1MSG\s0,\s-1FLAGI\s0" 8
+.IX Item "send \s-1SOCKET\s0,\s-1MSG\s0,\s-1FLAGS\s0"
+Wysyła na gniazdo komunikat. Pobiera takie same flagi, jak wywołanie
+systemowe \fIsend\fR(2). Na gniazdach niepodłączonych, należy podać cel
+wysyłania, czyli argument \s-1DO\s0. W tej sytuacji użyta zostanie funkcja C
+\fIsendto\fR(2). Funkcja zwraca liczbę wysłanych znaków, lub w wypadku błędu
+wartość niezdefiniowaną.
+Zobacz jeszcze sekcję \fI\s-1UDP\s0: Message Passing\fR w podręczniku
+\fIperlipc\fR(1). Są tam przykłady.
+.Ip "setpgrp \s-1PID\s0,\s-1PGRP\s0" 8
+.IX Item "setpgrp \s-1PID\s0,\s-1PGRP\s0"
+Ustawia bieżącą grupę procesów dla podanego \s-1PID\s0a (wynoszącego 0 dla
+procesu bieżącego). Funkcja powoduje błąd krytyczny na maszynach nie
+implementujących \fIsetpgrp\fR\|(2). Jeśli argumenty są pominięte, odnosi
+się to domyślnie do 0,0. Zauważ, że wersja \s-1POSIX\s0 \fIsetpgrp()\fR nie
+przyjmuje żadnych argumentów, więc przenośne jest tylko setpgrp 0,0.
+.Ip "setpriority \s-1CZYJE\s0,\s-1KTO\s0,\s-1PRIORYTET\s0" 8
+.IX Item "setpriority \s-1WHICH\s0,\s-1WHO\s0,\s-1PRIORITY\s0"
+Ustawia bieżący priorytet procesu, grupy procesów, lub użytkownika. (Zobacz
+\fIsetpriority\fR\|(2).) Na maszynach nie implementujących tego wywołania
+systemowego, powoduje błąd krytyczny.
+.Ip "setsockopt \s-1GNIAZDO\s0,\s-1POZIOM\s0,\s-1NAZWAOPC\s0,\s-1WARTOPC\s0" 8
+.IX Item "setsockopt \s-1SOCKET\s0,\s-1LEVEL\s0,\s-1OPTNAME\s0,\s-1OPTVAL\s0"
+Ustawia żądaną opcję gniazda. W wypadku błędu, zwraca wartość
+niezdefiniowaną. Jeśli nie chcesz przekazywać argumentu, \s-1WARTOPC\s0 może 
+być podane jako undef.
+.Ip "shift \s-1TABLICA\s0" 8
+.IX Item "shift \s-1ARRAY\s0"
+.Ip "shift" 8
+.IX Item "shift"
+Wysuwa pierwszą wartość tablicy i zwraca ją, skracając tablicę o 1 i
+przenosząc wszystko w dół. Jeśli w tablicy nie ma elementów, zwracana jest
+wartość niezdefiniowana. Jeśli \s-1TABLICA\s0 zostanie pominięta, to
+przesuwana jest w programie głównym tablica \f(CW@ARGV\fR, oraz \f(CW@_\fR w
+podprocedurach. (Jest to określone leksykalnie.) Zobacz też
+\fIunshift()\fR, \fIpush()\fR oraz \fIpop()\fR.
+\fIShift()\fR i \fIunshift()\fR robią to samo na lewym końcu tablicy, co 
+\fIpop()\fR i \fIpush()\fR na prawym.
+.Ip "shmctl \s-1ID\s0,\s-1CMD\s0,\s-1ARG\s0" 8
+.IX Item "shmctl \s-1ID\s0,\s-1CMD\s0,\s-1ARG\s0"
+Woła funkcję IPC \fIshmctl\fR(2) z Systemu V. Jeśli \s-1CMD\s0 jest &\s-1IPC_STAT\s0,
+to \s-1ARG\s0 musi być zmienną, która będzie przechowywać zwróconą strukturę
+shmid_ds. Wartość zwracana jest jak w ioctl: wartość niezdefiniowana dla
+błędu, \*(L"0 but true\*(R" dla zera i rzeczywista wartość zwrócona w innych
+wypadkach.
+.Ip "shmget \s-1KLUCZ\s0,\s-1ROZMIAR\s0,\s-1FLAGI\s0" 8
+.IX Item "shmget \s-1KEY\s0,\s-1SIZE\s0,\s-1FLAGS\s0"
+Woła funkcję IPC \fIshmget\fR(2) z Systemu V. Zwraca identyfikator pamięci
+dzielonej, a w przypadku błędu wartość niezdefiniowaną.
+.Ip "shmread \s-1ID\s0,\s-1ZMIENNA\s0,\s-1POZYCJA\s0,\s-1ROZMIAR\s0" 8
+.IX Item "shmread \s-1ID\s0,\s-1VAR\s0,\s-1POS\s0,\s-1SIZE\s0"
+.Ip "shmwrite \s-1ID\s0,\s-1ŁAŃCUCH\s0,\s-1POZYCJA\s0,\s-1ROZMIAR\s0" 8
+.IX Item "shmwrite \s-1ID\s0,\s-1ŁAŃCUCH\s0,\s-1POS\s0,\s-1SIZE\s0"
+Odczytuje, lub zapisuje segment pamięci dzielonej, rozpoczynając w pozycji
+\s-1POZYCJA\s0 i obsługując rozmiar \s-1ROZMIAR\s0 bajtów.
+Podczas odczytu, \s-1ZMIENNA\s0 musi być elementem, który będzie
+przechowywał odczytane dane. Podczas zapisywania, jeśli \s-1ŁAŃCUCH\s0 jest
+zbyt długi, użytych zostanie tylko \s-1ROZMIAR\s0 bajtów; jeśli
+\s-1ŁAŃCUCH\s0 jest zbyt krótki, to reszta zostanie wypełniona nullami.
+Funkcja zwraca po sukcesie \s-1TRUE\s0 oraz \s-1FALSE\s0 w wypadku błędu.
+.Ip "shutdown \s-1GNIAZDO\s0,\s-1JAK\s0" 8
+.IX Item "shutdown \s-1SOCKET\s0,\s-1HOW\s0"
+Wyłącza połączenie na gnieździe, w sposób wskazany przez \s-1JAK\s0, który
+ma taką samą interpretację, jak w wywołaniu systemowym \fIshutdown\fR(2).
+.Ip "sin \s-1WYRAŻ\s0" 8
+.IX Item "sin \s-1EXPR\s0"
+.Ip "sin" 8
+.IX Item "sin"
+Zwraca sinus z \s-1WYRAŻ\s0 (podanego w radianach). Jeśli \s-1WYRAŻ\s0 jest
+pominięte, zwracana jest wartość dla \f(CW$_\fR.
+.Sp
+Dla operacji odwrotnej do sinusa, możesz użyć funkcji
+\fI\s-1POSIX::\s0asin()\fR, lub następującej relacji:
+.Sp
+.Vb 1
+\&    sub asin { atan2($_[0], sqrt(1 - $_[0] * $_[0])) }
+.Ve
+.Ip "sleep \s-1WYRAŻ\s0" 8
+.IX Item "sleep \s-1EXPR\s0"
+.Ip "sleep" 8
+.IX Item "sleep"
+Powoduje, że skrypt zasypia na \s-1WYRAŻ\s0 sekund, lub na zawsze, jeśli nie
+podano \s-1WYRAŻ\s0.  Spanie można przerwać, przesyłając procesowi
+\s-1SIGALRM\s0. Zwraca ilość przespanych sekund. Przypuszczalnie nie powinno
+się łączyć wywołań \fIalarm()\fR i \fIsleep()\fR, gdyż \fIsleep()\fR jest
+często implementowane przy użyciu \fIalarm()\fR.
+.Sp
+Na niektórych systemach, spanie może trwać do sekundy mniej niż żądałeś,
+zależnie od sposobu obliczania sekund. Większość nowoczesnych systemów
+przesypia cały okres.
+.Sp
+Dla pauz, lub większej dokładności niż sekunda, możesz użyć interfejsu
+\fIsyscall()\fR perla i dostać się do funkcji \fIsetitimer\fR\|(2),
+o ile jest ona obsługiwana przez twój system. Możesz też zapoznać się z
+opisem \f(CWselect()\fR, znajdującym się gdzieś w tym dokumencie.
+.Sp
+Zobacz także funkcję \fIsigpause()\fR z modułu \s-1POSIX\s0.
+.Ip "socket \s-1GNIAZDO\s0,\s-1DOMENA\s0,\s-1TYP\s0,\s-1PROTOKÓŁ\s0" 8
+.IX Item "socket \s-1SOCKET\s0,\s-1DOMAIN\s0,\s-1TYPE\s0,\s-1PROTOCOL\s0"
+Otwiera gniazdo podanego typu i przywiązuje je do uchwytu pliku
+\s-1GNIAZDO\s0.  \s-1DOMENA\s0, \s-1TYP\s0 i \s-1PROTOKÓŁ\s0 są takie same
+jak dla wywołania systemowego socket(2). Przed używaniem tej funkcji,
+powinieneś użyć \*(L"use Socket;\*(R", aby zaimportować odpowiednie definicje.
+Obejrzyj przykład w sekcji \fISockets: Client/Server Communication\fR w
+podręczniku \fIperlipc\fR(1).
+.Ip "socketpair \s-1GNIAZDO1\s0,\s-1GNIAZDO2\s0,\s-1DOMENA\s0,\s-1TYP\s0,\s-1PROTOKÓŁ\s0" 8
+.IX Item "socketpair \s-1SOCKET1\s0,\s-1SOCKET2\s0,\s-1DOMAIN\s0,\s-1TYPE\s0,\s-1PROTOCOL\s0"
+Tworzy nienazwaną parę gniazd danego typu, w podanej domenie. \s-1DOMENA\s0,
+\s-1TYP\s0 i \s-1PROTOKÓŁ\s0 są podawane tak samo, jak dla wywołania
+systemowego socketpair(2). Jeśli funkcja nie jest zaimplementowana, to
+powoduje błąd krytyczny. Po sukcesie zwracane jest \s-1TRUE\s0.
+.Ip "sort \s-1NAZWA\s0 \s-1LISTA\s0" 8
+.IX Item "sort \s-1SUBNAME\s0 \s-1LISTA\s0"
+.Ip "sort \s-1BLOK\s0 \s-1LISTa\s0" 8
+.IX Item "sort \s-1BLOK\s0 \s-1LISTA\s0"
+.Ip "sort \s-1LISTA\s0" 8
+.IX Item "sort \s-1LISTA\s0"
+Sortuje \s-1LISTĘ\s0 i zwraca posortowaną wartość listową. Jeśli pominięte
+zostaną parametry \s-1NAZWA\s0 lub \s-1BLOK\s0, sortowanie następuje w
+porządku porównywania łańcuchów. Jeśli podano \s-1NAZWĘ\s0, to wskazuje ona
+na podprocedurę, zwracającą liczbę całkowitą, która jest mniejsza, równa,
+lub większa od zera, zależnie od tego, jak elementy tablicy mają być
+poukładane. W takich procedurach bardzo przydatne są operatory \f(CW<=>\fR 
+oraz \f(CWcmp\fR. \s-1NAZWA\s0 może być nazwą zmiennej skalarnej--w tym
+wypadku wartość daje nazwę używanej podprocedury. Zamiast \s-1NAZWY\s0 można
+podać \s-1BLOK\s0, czyli anonimową podprocedurę sortującą.
+.Sp
+W celu polepszenia efektywności, pomijany jest normalny kod wołania
+podprocedur: podprocedura nie może być rekurencyjna, a dwa porównywane
+elementy nie są przekazywane przez \f(CW@_\fR, lecz jako globalne zmienna
+pakietu \f(CW$a\fR oraz \f(CW$b\fR (zobacz przykład poniżej). Są one
+przekazywane przez referencję, więc nie modyfikuj ani \f(CW$a\fR, ani
+\f(CW$b\fR. Nie próbuj też deklarować ich jako leksykalne.
+.Sp
+Nie można też wyjść z bloku sortującego przy użyciu żadnego operatora kontroli
+pętli czy \fIgoto()\fR.
+.Sp
+Gdy działa \f(CWuse locale\fR, \f(CWsort LIST\fR sortuje \s-1LISTĘ\s0 
+według odpowiedniego locale. Zobacz stronę \fIperllocale\fR(1).
+.Sp
+Przykłady:
+.Sp
+.Vb 2
+\&    # sortuj leksykalnie
+\&    @articles = sort @files;
+.Ve
+.Vb 2
+\&    # to samo, z jawną procedurą sortującą
+\&    @articles = sort {$a cmp $b} @files;
+.Ve
+.Vb 2
+\&    # teraz niewrażliwie na wielkość liter
+\&    @articles = sort {uc($a) cmp uc($b)} @files;
+.Ve
+.Vb 2
+\&    # to samo w odwrotnym porządku
+\&    @articles = sort {$b cmp $a} @files;
+.Ve
+.Vb 2
+\&    # sortuj rosnąco, numerycznie
+\&    @articles = sort {$a <=> $b} @files;
+.Ve
+.Vb 2
+\&    # j/w, malejąco
+\&    @articles = sort {$b <=> $a} @files;
+.Ve
+.Vb 5
+\&    # sortuj, używając jawnej nazwy podprocedury
+\&    sub byage {
+\&        $age{$a} <=> $age{$b};  # założenie numeryczności
+\&    }
+\&    @sortedclass = sort byage @class;
+.Ve
+.Vb 3
+\&    # to sortuje tablicę asocjacyjną %age według wartości (zamiast klucza)
+\&    # przy użyciu funkcji inline
+\&    @eldest = sort { $age{$b} <=> $age{$a} } keys %age;
+.Ve
+.Vb 9
+\&    sub backwards { $b cmp $a; }
+\&    @harry = ('dog','cat','x','Cain','Abel');
+\&    @george = ('gone','chased','yz','Punished','Axed');
+\&    print sort @harry;
+\&            # drukuje AbelCaincatdogx
+\&    print sort backwards @harry;
+\&            # drukuje xdogcatCainAbel
+\&    print sort @george, 'to', @harry;
+\&            # drukuje AbelAxedCainPunishedcatchaseddoggonetoxyz
+.Ve
+.Vb 3
+\&    # sortuj nieefektywnie według malejącego porównania numerycznego,
+\&    # używając pierwszej liczby całkowitej po znaku =, lub w przeciwnym
+\&    # wypadku cały rekord, bez zwracania uwagi na wielkość liter.
+.Ve
+.Vb 5
+\&    @new = sort {
+\&        ($b =~ /=(\ed+)/)[0] <=> ($a =~ /=(\ed+)/)[0]
+\&                            ||
+\&                    uc($a)  cmp  uc($b)
+\&    } @old;
+.Ve
+.Vb 8
+\&    # to samo, dużo efektywniej;
+\&    # zbudujemy zewnętrzne indeksy
+\&    @nums = @caps = ();
+\&    for (@old) {
+\&        push @nums, /=(\ed+)/;
+\&        push @caps, uc($_);
+\&    }
+.Ve
+.Vb 6
+\&    @new = @old[ sort {
+\&                        $nums[$b] <=> $nums[$a]
+\&                                 ||
+\&                        $caps[$a] cmp $caps[$b]
+\&                       } 0..$#old
+\&               ];
+.Ve
+.Vb 6
+\&    # to samo, przy użyciu Schwartzian Transform (bez tymczasowych)
+\&    @new = map { $_->[0] }
+\&        sort { $b->[1] <=> $a->[1]
+\&                        ||
+\&               $a->[2] cmp $b->[2]
+\&        } map { [$_, /=(\ed+)/, uc($_)] } @old;
+.Ve
+Jeśli używasz strict, nie możesz deklarować \f(CW$a\fR i \f(CW$b\fR jako
+leksykalia. Są one pakietowymi globaliami. Znaczy to, że jeśli jesteś w
+pakiecie głównym (\f(CWmain\fR), to jest to
+.Sp
+.Vb 1
+\&    @articles = sort {$main::b <=> $main::a} @files;
+.Ve
+kub po prostu
+.Sp
+.Vb 1
+\&    @articles = sort {$::b <=> $::a} @files;
+.Ve
+lecz jeśli jesteś w pakiecie \f(CWFooPack\fR, to jest to
+.Sp
+.Vb 1
+\&    @articles = sort {$FooPack::b <=> $FooPack::a} @files;
+.Ve
+Funkcja porównująca musi się zachowywać [jednoznacznie]. Jeśli zwraca 
+niespójne, nielogiczne wyniki (np. czasem mówiąc, że \f(CW$x\fR[1] jest mniejsze 
+niż \f(CW$x\fR[2], a czasem odwrotnie), to interpreter perla prawdopodobnie
+się wysypie i zrzuci core.
+Wynika to całkowicie z zależności od systemowej funkcji bibliotecznej
+\fIqsort\fR\|(3); funkcja ta często nie dokonuje pewnych sprawdzeń w
+celu polepszenia szybkości.
+.Ip "splice \s-1TABLICA\s0,\s-1OFFSET\s0,\s-1DŁUGOŚĆ\s0,\s-1LISTA\s0" 8
+.IX Item "splice \s-1ARRAY\s0,\s-1OFFSET\s0,\s-1LENGTH\s0,\s-1LIST\s0"
+.Ip "splice \s-1TABLICA\s0,\s-1OFFSET\s0,\s-1DŁUGOŚĆ\s0" 8
+.IX Item "splice \s-1ARRAY\s0,\s-1OFFSET\s0,\s-1LENGTH\s0"
+.Ip "splice \s-1TABLICA\s0,\s-1OFFSET\s0" 8
+.IX Item "splice \s-1ARRAY\s0,\s-1OFFSET\s0"
+Usuwa z tablicy elementy wskazane przez \s-1OFFSET\s0 i \s-1DŁUGOŚĆ\s0, oraz
+zamienia je ewentualnie podanymi elementami \s-1LISTY\s0. Zwraca elementy,
+które zostały z tablicy usunięte. Tablica zgodnie z potrzebami rośnie, lub 
+maleje. Jeśli parametr \s-1DŁUGOŚĆ\s0 zostanie pominięty, to usuwane jest
+wszystko, poczynając od \s-1OFFSET\s0. A oto pewne równoważności
+(zakładając, że \f(CW$[ == 0\fR):
+.Sp
+.Vb 5
+\&    push(@a,$x,$y)      splice(@a,$#a+1,0,$x,$y)
+\&    pop(@a)             splice(@a,-1)
+\&    shift(@a)           splice(@a,0,1)
+\&    unshift(@a,$x,$y)   splice(@a,0,0,$x,$y)
+\&    $a[$x] = $y         splice(@a,$x,1,$y);
+.Ve
+Przykład, przy założeniu, że długości tablic są przekazywane przed
+tablicami:
+.Sp
+.Vb 10
+\&    sub aeq {   # porównaj dwie wartości listowe
+\&        local(@a) = splice(@_,0,shift);
+\&        local(@b) = splice(@_,0,shift);
+\&        return 0 unless @a == @b;       # ta sama długość?
+\&        while (@a) {
+\&            return 0 if pop(@a) ne pop(@b);
+\&        }
+\&        return 1;
+\&    }
+\&    if (&aeq($len,@foo[1..$len],0+@bar,@bar)) { ... }
+.Ve
+.Ip "split /\s-1WZORZEC\s0/,\s-1WYRAŻ\s0,\s-1LIMIT\s0" 8
+.IX Item "split /\s-1PATTERN\s0/,\s-1EXPR\s0,\s-1LIMIT\s0"
+.Ip "split /\s-1WZORZEC\s0/,\s-1WYRAŻ\s0" 8
+.IX Item "split /\s-1PATTERN\s0/,\s-1EXPR\s0"
+.Ip "split /\s-1WZORZEC\s0/" 8
+.IX Item "split /\s-1PATTERN\s0/"
+.Ip "split" 8
+.IX Item "split"
+Dzieli łańcuch na tablicę łańcuchów i zwraca tę tablicę.
+.Sp
+Jeśli nie jest w kontekście listowym, to zwraca listę znalezionych pól i
+dzieli do tablicy \f(CW@_\fR. (w kontekście listowym możesz wymusić
+dzielenie do \f(CW@_\fR, używając jako rozdzielaczy wzorca \f(CW??\fR, lecz
+będzie wciąż zwracać wartość tablicową.) Używanie jawnego dzielenia do
+\f(CW@_\fR nie jest jednak zalecane.
+.Sp
+Jeśli \s-1WYRAŻ\s0 jest pominięty, dzielony jest łańcuch \f(CW$_\fR. Jeśli
+pominięty jest też \s-1WZORZEC\s0, dzielenie następuje na białych spacjach
+(po pominięciu wszelkich prowadzących białych spacji). Wszystko,
+odpowiadające \s-1WZORCOWI\s0 jest uważane za rozdzielacz pól. (Zauważ, że
+rozdzielacz może być dłuższy niż jeden znak.) Jeśli podano wartość
+\s-1LIMIT\s0 i nie jest to liczba ujemna, dzielenie następuje do nie więcej
+niż tej ilości pól. Jeśli \s-1LIMIT\s0 nie jest podany, kończące wypełnienia
+nullowe są obcinane (co dobrze pamiętać użytkownikom \fIpop()\fR). Jeśli
+\s-1LIMIT\s0 jest ujemny, to jest traktowany tak, jakby podano arbitralnie duży
+\s-1LIMIT\s0.
+.Sp
+Wzorzec, odpowiadający łańcuchowi null (żeby nie być zmylonym ze wzorcem null
+\f(CW//\fR, który jest tylko jednym członkiem z zestawu wzorców
+odpowiadających łańcuchowi null) będzie dzielił wartość \s-1WYRAŻ\s0 na
+oddzielne znaki w każdym punkcie, który odpowie zapytaniu. 
+Na przykład:
+.Sp
+.Vb 1
+\&    print join(':', split(/ */, 'hi there'));
+.Ve
+da w wyniku \*(L'h:i:t:h:e:r:e\*(R'.
+.Sp
+Parametr \s-1LIMIT\s0 może być użyty do podzielenia linii częściowo
+.Sp
+.Vb 1
+\&    ($login, $passwd, $remainder) = split(/:/, $_, 3);
+.Ve
+Podczas przypisywania do listy, jeśli nie podano \s-1LIMITU\s0, perl ustawia
+domyślny limit wielkości o 1 większej niż lista zmiennych na liście,
+zapobiegając tak niepotrzebnej pracy. Dla powyższej listy, \s-1LIMIT\s0
+byłby ustawiony domyślnie na 4.  W aplikacjach, gdzie czas jest krytycznym
+czynnikiem, powstrzymuje cię to od dzielenia na więcej pól, niż rzeczywiście
+potrzebujesz.
+.Sp
+Jeśli \s-1WZORZEC\s0 zawiera nawiasy, z łańcuchów odpowiadającym
+podłańcuchom rozdzielacza tworzone są dodatkowe elementy tablicy.
+.Sp
+.Vb 1
+\&    split(/([,-])/, "1-10,20", 3);
+.Ve
+daje wartość listową
+.Sp
+.Vb 1
+\&    (1, '-', 10, ',', 20)
+.Ve
+Jeśli masz cały nagłówek normalnego unixowego komunikatu pocztowego w
+nagłówku \f(CW$header\fR, to możesz rozdzielić go na pola i wartości w
+następujący sposób:
+.Sp
+.Vb 2
+\&    $header =~ s/\en\es+/ /g;  # obsłuż linie kontynuacji
+\&    %hdrs   =  (UNIX_FROM => split /^(.*?):\es*/m, $header);
+.Ve
+Wzorzec \f(CW/WZORZEC/\fR może być zamieniony wyrażeniem, umożliwiając tak
+podawanie wzorców, które zmieniają się w czasie. (aby dokonać kompilacji
+czasu działania tylko raz, użyj \f(CW/$variable/o\fR.)
+.Sp
+Specjalnym przypadkiem jest podanie jako \s-1WZORZEC\s0 spacji (\f(CW' '\fR).
+Będzie to powodować dzielenie na białych spacjach, podobnie jak domyślna
+wersja split. Tak więc \fIsplit\fR\|(' \*(L') może być używany do domyślnego
+zachowania \fBawk\fR, gdzie \f(CWsplit(/ /)\fR daje tyle łańcuchów null, ile
+jest prowadzących białych spacji. Split dla /\es+/ jest podobny do 
+\fIsplit\fR\|(' \*(L'), lecz dowolna biała spacja powoduje null na pierwszym
+polu. Split bez argumentów dokonuje w rzeczywistości wewnętrznie
+\f(CWsplit(' ', $_)\fR.
+.Sp
+Przykład:
+.Sp
+.Vb 6
+\&    open(passwd, '/etc/passwd');
+\&    while (<passwd>) {
+\&        ($login, $passwd, $uid, $gid, $gcos,
+\&            $home, $shell) = split(/:/);
+\&        ...
+\&    }
+.Ve
+(Zauważ, że \f(CW$shell\fR w powyższym będzie miał za sobą nową linię.
+Aby ją usunąć, zapoznaj się z funkcjami \f(CWchop\fR, \f(CWchomp\fR i
+\f(CWjoin\fR, opisanymi gdzieś w tym dokumencie.)
+.Ip "sprintf \s-1FORMAT\s0, \s-1LISTA\s0" 8
+.IX Item "sprintf \s-1FORMAT\s0, \s-1LIST\s0"
+Zwraca łańcuch, sformatowany według konwencji printf, funkcji bibliotecznej
+języka C, \fIsprintf\fR(3). 
+.Sp
+Perl emuluje funkcję C \fIsprintf()\fR, lecz nie używa jej (poza liczbami
+zmiennoprzecinkowymi, a nawet wtedy dozwolone są tylko standardowe
+modyfikatory). W wyniku, w perlu nie są dostępne żadne niestandardowe
+rozszerzenia lokalnej wersji \fIsprintf()\fR.
+.Sp
+Perlowy \fIsprintf()\fR zezwala na następujące, ogólnie znane konwersje:
+.Sp
+.Vb 10
+\&   %%   znak procentu
+\&   %c   znak o podanym kodzie
+\&   %s   łańcuch
+\&   %d   integer ze znakiem, dziesiętnie
+\&   %u   integer bez znaku, dziesiętnie
+\&   %o   integer bez znaku, ósemkowo
+\&   %x   integer bez znaku, szesnastkowo
+\&   %e   liczba zmiennoprzecinkowa w notacji naukowej
+\&   %f   liczba zmiennoprzecinkowa w ustalonej notacji dziesiętnej
+\&   %g   liczba zmiennoprzecinkowa w notacji %e lub %f
+.Ve
+Dodatkowo, perl zezwala na następujące szeroko-obsługiwane konwersje:
+.Sp
+.Vb 6
+\&   %X   podobne do %x, lecz na dużych literach
+\&   %E   podobne do %e, lecz z użyciem dużego E
+\&   %G   podobne do %g, lecz z użyciem dużego E
+\&   %p   wskaźnik (daje adres wartości, podany szesnastkowo)
+\&   %n   specjalne: przechowuje liczbę dotychczas wpisanych do następnej
+\&        zmiennej z listy parametrów
+.Ve
+I w końcu, dla kompatybilności wstecznej, perl zezwala na poniższe zbyteczne,
+lecz szeroko obsługiwane konwersje:
+.Sp
+.Vb 5
+\&   %i   synonim %d
+\&   %D   synonim %ld
+\&   %U   synonim %lu
+\&   %O   synonim %lo
+\&   %F   synonim %f
+.Ve
+Perl zezwala na użycie następujących uniwersalnych flag między znakiem
+\f(CW%\fR, a literą konwersji:
+.Sp
+.Vb 10
+\&   spacja  poprzedź liczbę dodatnią spacją
+\&   +       poprzedź liczbę dodatnią plusem
+\&   -       wyrównuj do lewej w obszarze pola
+\&   0       użyj zer zamiast spacji do wyrównywania w prawo
+\&   #       poprzedź liczbę ósemkową "0", szesnastkową "0x"
+\&   liczba  minimalna wielkość pola
+\&   .liczba "precyzja": liczba cyfr po kropce dziesiętnej dla
+\&           zmiennoprzecinkowych, maksymalna długość dla łańcucha, lub 
+\&           minimalna długość dla liczby całkowitej (integer)
+\&   l       interpretuj integer jak typ C "long", lub "unsigned long"
+\&   h       interpretuj integer jak typ C "short", lub "unsigned short"
+.Ve
+Istnieje też jedna flaga specyficzna dla perla:
+.Sp
+.Vb 1
+\&   V       interpretuj integer jako standardowy typ integera w perlu
+.Ve
+Tam, gdzie we flagach pojawia się liczba, można użyć gwiazdki ("*"). W tym
+wypadku perl używa zamiast liczby wartości następnego argumentu z listy
+parametrów. Jeśli szerokość pola, uzyskana przez \*(L"*\*(R" 
+jest ujemna, to ma to samo działanie, co flaga \*(L'\-\*(R': 
+wyrównywanie do lewej.
+.Sp
+Jeśli działa \f(CWuse locale\fR, znaki używane do kropki dziesiętnej będą
+drukowane według locale \s-1LC_NUMERIC\s0. Zobacz stronę
+\fIperllocale\fR(1).
+.Ip "sqrt \s-1WYRAŻ\s0" 8
+.IX Item "sqrt \s-1EXPR\s0"
+.Ip "sqrt" 8
+.IX Item "sqrt"
+Zwraca pierwiastek kwadratowy z \s-1WYRAŻ\s0. Jeśli \s-1WYRAŻ\s0 jest
+pominięte, zwraca wartość dla \f(CW$_\fR.
+.Ip "srand \s-1WYRAŻ\s0" 8
+.IX Item "srand \s-1EXPR\s0"
+.Ip "srand" 8
+.IX Item "srand"
+Ustawia nasionko liczby losowej dla operatora \f(CWrand\fR. Jeśli pominięte
+zostanie \s-1WYRAŻ\s0, używana jest pseudolosowa wartość, oparta o bieżący
+czas i identyfikator procesu. W wersjach perla wcześniejszych niż 5.004,
+domyślnym nasionkiem był po prostu bieżący czas \fItime()\fR. Nie jest to
+szczególnie dobre nasionko, więc wiele starych programów załączało swoją
+własną wartość inicjującą (często \f(CWtime ^ $$\fR, lub
+C<time ^ ($$ + ($$ << 15))>), lecz teraz nie jest to konieczne.
+.Sp
+W rzeczywistości, zazwyczaj w ogóle nie jest konieczne wywoływanie
+\fIsrand\fR, ponieważ jest ono wywoływane niejawnie przy pierwszym użyciu
+operatora \f(CWrand\fR. Jednak nie było tak w wersjach wcześniejszych niż
+perl 5.005, więc jeśli twój skrypt ma działać ze starszymi wersjami,
+powinien jednak wołać \fIsrand()\fR.
+.Sp
+Zauważ, że dla potrzeb kryptografii potrzebujesz czegoś więcej niż tylko
+wylosować domyślne nasionko. Popularną metodą jest sprawdzanie sum
+kontrolnych skompresowanego wyjścia z jednego, lub więcej programów szybko
+zmieniającego się statusu systemu operacyjnego. Na przykład:
+.Sp
+.Vb 1
+\&    srand (time ^ $$ ^ unpack "%L*", `ps axww | gzip`);
+.Ve
+Jeśli naprawdę ci na tym zależy, zobacz moduł Math::TrulyRandom
+w \s-1CPAN\s0.
+.Sp
+\fINie\fR wołaj \fIsrand()\fR wielokrotnie, chyba że dokładnie wiesz co i w
+jakim celu robisz. Celem tej funkcji jest zasilenie funkcji \fIrand()\fR
+tak, by \fIrand()\fR zwracał inną sekwencję dla każdego uruchomienia
+programu. Zrób to raz, na samym początku programu, bo w przeciwnym wypadku
+\fInie\fR uzyskasz z \fIrand()\fR liczb losowych!
+.Sp
+Często wywoływane programy (takie jak skrypty \s-1CGI\s0), które jako
+nasionka używają po prostu
+.Sp
+.Vb 1
+\&    time ^ $$
+.Ve
+mogą paść ofiarą własności matematycznej, że
+.Sp
+.Vb 1
+\&    a^b == (a+1)^(b+1)
+.Ve
+przez jedną trzecią czasu. Więc nie rób tego.
+.Ip "stat \s-1UCHWYTPLIKU\s0" 8
+.IX Item "stat \s-1FILEHANDLE\s0"
+.Ip "stat \s-1WYRAŻ\s0" 8
+.IX Item "stat \s-1EXPR\s0"
+.Ip "stat" 8
+.IX Item "stat"
+Zwraca 13 elementową tablicę, opisującą status pliku--otwartego przez
+\s-1UCHWYTPLIKU\s0 lub nazwanego przez \s-1WYRAŻ\s0. Jeśli \s-1WYRAŻ\s0
+jest pominięte, używany jest \f(CW$_\fR. Gdy funkcja zawiedzie, zwraca listę
+null. Zazwyczaj jest to używane następująco:
+.Sp
+.Vb 3
+\&    ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,
+\&       $atime,$mtime,$ctime,$blksize,$blocks)
+\&           = stat($filename);
+.Ve
+Nie wszystkie z tych pól są obsługiwane na wszystkich rodzajach systemów
+plików. Oto znaczenia pól:
+.Sp
+.Vb 13
+\&  0 dev      numer urządzenia systemu plików
+\&  1 ino      numer inode
+\&  2 mode     prawa pliku (typ i prawa)
+\&  3 nlink    liczba twardych dowiązań do pliku
+\&  4 uid      numeryczny UID właściciela
+\&  5 gid      numeryczny GID właściciela
+\&  6 rdev     identyfikator urządzenia (tylko dla plików specjalnych)
+\&  7 size     całkowity rozmiar w bajtach
+\&  8 atime    ostatni dostęp od epoki
+\&  9 mtime    ostatnia modyfikacja od epoki
+\& 10 ctime    ostatnia zmiana inode od epoki
+\& 11 blksize  preferowany rozmiar bloku dla I/O systemu plików
+\& 12 blocks   rzeczywista liczba zaalokowanych bloków
+.Ve
+(Epoka nastąpiła o 00:00 1 stycznia, 1970 \s-1GMT\s0.)
+.Sp
+Jeśli funkcja dostanie specjalny uchwyt pliku, składający się z
+podkreślenia, to nie jest ona wykonywana, lecz przekazywana jest zawartość
+ostatniego testu pliku. Przykład:
+.Sp
+.Vb 3
+\&    if (\-x $file && (($d) = stat(_)) && $d < 0) {
+\&        print "$file jest wykonywalnym plikiem NFS\en";
+\&    }
+.Ve
+(Działa to tylko na maszynach, dla których numer urządzenia jest ujemny dla
+\s-1NFS\s0.)
+.Ip "study \s-1SKALAR\s0" 8
+.IX Item "study \s-1SCALAR\s0"
+.Ip "study" 8
+.IX Item "study"
+Zajmuje trochę czasu, by przestudiować \s-1SKALAR\s0 (lub \f(CW$_\fR, jeśli
+go nie podano), przygotowując się na wiele przeszukiwań wzorców na tym
+łańcuchu, przed jego kolejną modyfikacją. Może to pozwolić zyskać na czasie,
+zależnie od natury i liczby wzorców, a także od rozłożenia częstotliwości
+znaków w przeszukiwanym łańcuchu. Najlepiej sprawdzić empirycznie, czy funkcja 
+ta wpływa na szybkość dodatnio, czy ujemnie. Najwięcej zyskają pętle,
+szukające wielu krótkich, stałych łańcuchów (włączając stałe części bardziej
+złożonych wzorców). Naraz można mieć obsługiwany przez study tylko jeden
+łańcuch. Jeśli przejdziesz na inny skalar, to poprzedni stanie się
+nieprzestudiowany. (study działa następująco: najpierw robiona jest lista
+powiązana dla każdego znaku przeszukiwanego łańcucha, tak że wiemy na
+przykład gdzie znajdują się wszystkie znaki \*(L'k\*(R'.
+W każdym szukanym łańcuchu wybierany jest w oparciu o statyczne tablice
+rozkładu najrzadziej występujący znak. Łańcuch jest poszukiwany w miejscach,
+gdzie znajduje się ten najrzadszy znak.)
+.Sp
+Na przykład oto pętla, która wstawia wpisy tworzące indeks przed każdą
+linię, zawierającą określony wzorzec:
+.Sp
+.Vb 8
+\&    while (<>) {
+\&        study;
+\&        print ".IX foo\en" if /\ebfoo\eb/;
+\&        print ".IX bar\en" if /\ebbar\eb/;
+\&        print ".IX blurfl\en" if /\ebblurfl\eb/;
+\&        ...
+\&        print;
+\&    }
+.Ve
+Użycie study spowoduje szukanie /\ebfoo\eb/ tylko w miejscach \f(CW$_\fR, 
+które zawierają \*(L"f\*(R", gdyż jest to najrzadszy znak. Ogólnie, daje to
+duże zyski, poza przypadkami patologicznymi. Jedynym pytaniem jest to, czy
+zachowuje ci to więcej czasu niż zabrało zbudowanie powiązanej listy.
+.Sp
+Zauważ, że jeśli musisz szukać łańcuchów, o których nic nie wiesz, aż do
+uruchomienia, to możesz zbudować całą pętlę jako łańcuch i \fIeval\fRować to, by
+zapobiec ciągłemu rekompilowaniu wzorców. W połączeniu z czynieniem $/
+niezdefiniowanym, aby wessać całe pliki jako jeden rekord, może to być
+bardzo szybkie, często szybsze niż specjalizowane programy typu
+\fIfgrep\fR\|(1). Następujący przykład skanuje listę plików (\f(CW@files\fR)
+w poszukiwaniu listy słów (\f(CW@words\fR) i drukuje nazwy plików,
+zawierających odpowiednik:
+.Sp
+.Vb 12
+\&    $search = 'while (<>) { study;';
+\&    foreach $word (@words) {
+\&        $search .= "++\e$seen{\e$ARGV} if /\e\eb$word\e\eb/;\en";
+\&    }
+\&    $search .= "}";
+\&    @ARGV = @files;
+\&    undef $/;
+\&    eval $search;               # to krzyczy
+\&    $/ = "\en";          # ustaw normalny rozdzielacz wejścia
+\&    foreach $file (sort keys(%seen)) {
+\&        print $file, "\en";
+\&    }
+.Ve
+.Ip "sub \s-1BLOK\s0" 8
+.IX Item "sub \s-1BLOCK\s0"
+.Ip "sub \s-1NAZWA\s0" 8
+.IX Item "sub \s-1NAME\s0"
+.Ip "sub \s-1NAZWA\s0 \s-1BLOK\s0" 8
+.IX Item "sub \s-1NAME\s0 \s-1BLOCK\s0"
+Nie jest to prawdziwa funkcja, lecz definicja podprocedury. Jeśli zawiera
+tylko \s-1NAZWĘ\s0 (i przypuszczalnie prototypy), jest to tylko deklaracja.
+Bez \s-1NAZWY\s0 jest to deklaracja anonimowej funkcji i zwraca wartość:
+referencję \s-1CODE\s0 zawężenia, które właśnie utworzyłeś. Dla dalszych
+szczegółów, zobacz stronę podręcznika \fIperlref\fR(1).
+.Ip "substr \s-1WYRAŻ\s0,\s-1OFFSET\s0,\s-1DŁUGOŚĆ\s0" 8
+.IX Item "substr \s-1EXPR\s0,\s-1OFFSET\s0,\s-1LEN\s0"
+.Ip "substr \s-1WYRAŻ\s0,\s-1OFFSET\s0" 8
+.IX Item "substr \s-1EXPR\s0,\s-1OFFSET\s0"
+Wyciąga z \s-1WYRAŻ\s0 podłańcuch i zwraca go. Pierwszy znak znajduje się pod
+offsetem 0, lub tym, na co ustawiłeś \f(CW$[\fR (lecz nie rób tego).
+Jeśli \s-1OFFSET\s0 jest ujemny, rozpoczyna się w tej odległości od końca
+łańcucha. Jeśli \s-1DŁUGOŚĆ\s0 jest pominięta, zwracane jest wszystko, aż do
+końca łańcucha. Jeśli \s-1DŁUGOŚĆ\s0 jest ujemna, pozostawia tyle znaków z
+końca łańcucha.
+.Sp
+Funkcji \fIsubstr()\fR możesz użyć jako lwartości, w którym wypadku
+\s-1WYRAŻ\s0 musi być lwartością. Jeśli przyznasz coś krótszego niż
+\s-1DŁUGOŚĆ\s0, łańcuch zostanie skrócony, a jeśli coś dłuższego, to łańcuch
+zostanie rozciągnięty. Aby zachować stałą długość łańcucha, możesz
+potrzebować dopełnić, lub obciąć wartości przy użyciu
+\fIsprintf()\fR.
+.Ip "symlink \s-1STARYPLIK\s0,\s-1NOWYPLIK\s0" 8
+.IX Item "symlink \s-1OLDFILE\s0,\s-1NEWFILE\s0"
+Tworzy nową nazwę pliku, dowiązaną symbolicznie do starej. Po sukcesie
+zwraca 1, w przeciwnym wypadku 0. Na systemach nie obsługujących dowiązań
+symbolicznych, funkcja ta powoduje błąd krytyczny podczas działania. Aby go
+wychwycić, użyj eval:
+.Sp
+.Vb 1
+\&    $symlink_exists = (eval {symlink("","")};, $@ eq '');
+.Ve
+.Ip "syscall \s-1LISTA\s0" 8
+.IX Item "syscall \s-1LIST\s0"
+Wywołuje wywołanie systemowe, podane jako pierwszy element listy,
+przekazując resztę elementów jako argumenty wywołania. Jeśli nie jest to
+zaimplementowane, powoduje błąd krytyczny. Argumenty są interpretowane
+następująco: jeśli podany argument jest numeryczny, przekazywany argument to
+int. Jeśli nie, przekazywany jest wskaźnik do wartości tekstowej.
+Odpowiadasz za upewnienie się, że łańcuch jest dość długi, by odebrać
+określony wynik, który może być do niego zapisany. Jeśli twoje argumenty int
+nie są literałami i nie były nigdy interpretowane w kontekście numerycznym,
+możesz być zmuszonym dodać do nich 0, aby wymusić na nich wygląd liczbowy.
+.Sp
+.Vb 2
+\&    require 'syscall.ph';               # może być niezbędne h2ph
+\&    syscall(&SYS_write, fileno(STDOUT), "hi there\en", 9);
+.Ve
+Zauważ, że perl obsługuje przekazywanie do 14 argumentów do wywołania
+systemowego, co w praktyce powinno wystarczyć.
+.Ip "sysopen \s-1UCHWYTPLIKU\s0,\s-1NAZWAPLIKU\s0,\s-1TRYB\s0" 8
+.IX Item "sysopen \s-1FILEHANDLE\s0,\s-1FILENAME\s0,\s-1MODE\s0"
+.Ip "sysopen \s-1UCHWYTPLIKU\s0,\s-1NAZWAPLIKU\s0,\s-1TRYB\s0,\s-1PRAWA\s0" 8
+.IX Item "sysopen \s-1FILEHANDLE\s0,\s-1FILENAME\s0,\s-1MODE\s0,\s-1PERMS\s0"
+Otwiera plik \s-1NAZWAPLIKU\s0 i wiąże go z \s-1UCHWYTEMPLIKU\s0. Jeśli
+\s-1UCHWYTPLIKU\s0 jest wyrażeniem, to jego wartość jest używana jako nazwa
+rzeczywistego uchwytu pliku. Funkcja ta woła podlegającą jej funkcję systemu
+operacyjnego, \f(CWopen\fR z parametrami
+\s-1NAZWAPLIKU\s0, \s-1TRYB\s0, \s-1PRAWA\s0.
+.Sp
+Prawidłowe wartości i bity flag parametru \s-1TRYB\s0 są zależne od systemu;
+są one dostępne przez standardowy moduł \f(CWFcntl\fR. Jednak z przyczyn
+historycznych, niektóre wartości są uniwersalne;
+zero oznacza tylko dla odczytu, jeden tylko dla zapisu, a dwa dla zapisu i
+odczytu.
+.Sp
+Jeśli plik \s-1NAZWAPLIKU\s0 nie istnieje, a wywołanie \f(CWopen\fR go
+tworzy (zazwyczaj dlatego, że \s-1TRYB\s0 zawiera flagę O_CREAT), to wartość
+\s-1PRAW\s0 określa prawa nowo utworzonego pliku. Jeśli są one pominięte,
+używana jest domyślna wartość 0666, która umożliwia wszystkim odczyt i
+zapis. Wartość ta ma sens, zobacz \f(CWumask\fR.
+.Sp
+Moduł \s-1IO::\s0File daje bardziej obiektowe podejście do tych rzeczy.
+.Ip "sysread \s-1UCHWYTPLIKU\s0,\s-1SKALAR\s0,\s-1DŁUGOŚĆ\s0,\s-1OFFSET\s0" 8
+.IX Item "sysread \s-1FILEHANDLE\s0,\s-1SCALAR\s0,\s-1LENGTH\s0,\s-1OFFSET\s0"
+.Ip "sysread \s-1UCHWYTPLIKU\s0,\s-1SKALAR\s0,\s-1DŁUGOŚĆ\s0" 8
+.IX Item "sysread \s-1FILEHANDLE\s0,\s-1SCALAR\s0,\s-1LENGTH\s0"
+Próbuje odczytać \s-1DŁUGOŚĆ\s0 bajtów danych do zmiennej \s-1SKALAR\s0.
+Odczyt następuje z pliku wskazywanego przez \s-1UCHWYTPLIKU\s0, przy użyciu
+wywołania systemowego \fIread\fR\|(2). Pomija to stdio, więc łączenie tej
+funkcji z innym rodzajami odczytu, z \fIprint()\fR, \fIwrite()\fR, 
+\fIseek()\fR, lub \fItell()\fR może powodować problemy. Zwraca ilość
+odczytanych bajtów, lub undef w wypadku błędu. \s-1SKALAR\s0 będzie
+rozciągany tak, by pasował do liczby odczytanych bajtów.
+.Sp
+Aby spowodować odczyt danych z któregoś miejsca łańcucha (różnego niż
+początek), można podać dodatkowo parametr \s-1OFFSET\s0. Jeśli parametr ten
+jest ujemny, to wskazywana jest pozycja przesunięta o tyleż bajtów w tył od
+końca łańcucha.
+Jeśli dodatni offset jest większy od długości \s-1SKALARA\s0, to wynikiem
+jest wypełnienie do wymaganego rozmiaru znakami \*(L"\e-\*(R", a następnie
+doklejenie odczytu.
+.Ip "sysseek \s-1UCHWYTPLIKU\s0,\s-1POZYCJA\s0,\s-1GDZIE\s0" 8
+.IX Item "sysseek \s-1FILEHANDLE\s0,\s-1POSITION\s0,\s-1WHENCE\s0"
+Zmienia pozycję \s-1UCHWYTUPLIKU\s0 przy użyciu wywołania systemowego
+\fIlseek\fR\|(2). Pomija stdio, więc łączenie tego z odczytami (innymi niż
+\fIsysread()\fR), z
+\fIprint()\fR, \fIwrite()\fR, \fIseek()\fR, lub \fItell()\fR 
+może wprowadzić problemy. \s-1UCHWYTPLIKU\s0 może być wyrażeniem, którego
+wartość daje nazwę uchwytu pliku. Wartości dla \s-1GDZIE\s0 to 0 dla
+ustawienia nowej pozycji, 1 dla dodania nowej pozycji do bieżącej i 2 do
+ustawienia pozycji EOF plus offset. Dla parametru \s-1GDZIE\s0 można używać
+stałych \s-1SEEK_SET\s0, \s-1SEEK_CUR\s0 i \s-1SEEK_END\s0 z modułu 
+\s-1IO::\s0Seekable lub \s-1POSIX\s0.
+.Sp
+Zwracana jest nowa pozycja, lub wartość niezdefiniowana w wypadku błędu.
+Pozycja zerowa zwracana jest jako łańcuch \*(L"0 but true\*(R"; tak więc
+\fIsysseek()\fR zwraca \s-1TRUE\s0 po sukcesie i \s-1FALSE\s0 po błędzie, 
+lecz wciąż możesz łatwo ustalić nową pozycję.
+.Ip "system \s-1LISTA\s0" 8
+.IX Item "system \s-1LIST\s0"
+Robi dokładnie to samo, co \*(L"exec \s-1LISTA\s0\*(R", poza tym, że
+dokonuje przed tym forka i proces rodzicielski czeka, aż dziecko dokona
+żywota. Zauważ, że przetwarzanie argumentów różni się, zależnie od liczby
+argumentów. Wartość zwracana jest statusem wyjścia programu, zwróconym przez
+wywołanie \fIwait()\fR. Aby uzyskać rzeczywistą wartość wyjścia, podziel ją
+przez 256. Zobacz też opis \f(CWexec\fR, znajdujący się gdzieś w tym
+dokumencie. \fINie\fR jest to sposób, którego należy używać do
+przechwytywania wyjścia z komendy, dla tego celu użyj zwykłych odwróconych
+apostrofów (backticks?) lub qx//, jak opisano w sekcji 
+\fI`\s-1ŁAŃCUCH\s0`\fR podręcznika \fIperlop\fR(1).
+.Sp
+Ponieważ zarówno \fIsystem()\fR i odwrotne apostrofy blokują \s-1SIGINT\s0 i
+\s-1SIGQUIT\s0, ubicie ich nie powoduje przerwania twojego programu.
+.Sp
+.Vb 3
+\&    @args = ("command", "arg1", "arg2");
+\&    system(@args) == 0
+\&         or die "system @args się nie powiódł: $?"
+.Ve
+A oto bardziej wyrafinowany przykład analizowania wartości zwracanej przez
+\fIsystem()\fR. Ma to miejsce na systemie unixowym i jest robione, aby
+sprawdzić wszystkie możliwości, włącznie z sygnałami i zrzutami core.
+.Sp
+.Vb 21
+\&    $rc = 0xffff & system @args;
+\&    printf "system(%s) zwrócił %#04x: ", "@args", $rc;
+\&    if ($rc == 0) {
+\&        print "normalne zakończenie\en";
+\&    }
+\&    elsif ($rc == 0xff00) {
+\&        print "komenda się nie powiodła: $!\en";
+\&    }
+\&    elsif ($rc > 0x80) {
+\&        $rc >>= 8;
+\&        print "niezerowy status wyjścia $rc\en";
+\&    }
+\&    else {
+\&        print "skończył z ";
+\&        if ($rc &   0x80) {
+\&            $rc &= ~0x80;
+\&            print "zrzutem core z ";
+\&        }
+\&        print "sygnałem $rc\en"
+\&    }
+\&    $ok = ($rc != 0);
+.Ve
+.Ip "syswrite \s-1UCHWYTPLIKU\s0,\s-1SKALAR\s0,\s-1DŁUGOŚĆ\s0,\s-1OFFSET\s0" 8
+.IX Item "syswrite \s-1FILEHANDLE\s0,\s-1SCALAR\s0,\s-1LENGTH\s0,\s-1OFFSET\s0"
+.Ip "syswrite \s-1UCHWYTPLIKU\s0,\s-1SKALAR\s0,\s-1DŁUGOŚĆ\s0" 8
+.IX Item "syswrite \s-1FILEHANDLE\s0,\s-1SCALAR\s0,\s-1LENGTH\s0"
+Próbuje zapisać \s-1DŁUGOŚĆ\s0 bajtów ze \s-1SKALARA\s0 do pliku podanego
+przez \s-1UCHWYTPLIKU\s0 przy użyciu wywołania systemowego \fIwrite\fR\|(2).
+Pomija stdio, więc łączenie tego z odczytami (innymi niż \fIsysread()\fR), z
+\fIprint()\fR, \fIwrite()\fR, \fIseek()\fR, lub \fItell()\fR może spowodować
+problemy. Zwraca liczbę zapisanych bajtów, lub undef w wypadku błędu. Jeśli
+długość jest większa niż dostępne dane, zapisywanych jest tylko tyle danych,
+ile jest dostępnych.
+.Sp
+Dodatkowo można podać \s-1OFFSET\s0, aby zapisać dane z jakiejś części
+łańcucha, która nie jest początkiem. Ujemna wartość offsetu nakazuje
+zapisywanie od miejsca, przesuniętego o tyle bajtów od końca łańcucha.
+.Ip "tell \s-1UCHWYTPLIKU\s0" 8
+.IX Item "tell \s-1FILEHANDLE\s0"
+.Ip "tell" 8
+.IX Item "tell"
+Zwraca bieżącą pozycję pliku dla \s-1UCHWYTUPLIKU\s0. \s-1UCHWYTPLIKU\s0
+może być wyrażeniem, którego wartość podaje nazwę rzeczywistego uchwytu
+pliku. Jeśli \s-1UCHWYTPLIKU\s0 jest pominięty, zakładany jest plik, z
+którego ostatnio czytano.
+.Ip "telldir \s-1UCHWYTKATALOGU\s0" 8
+.IX Item "telldir \s-1DIRHANDLE\s0"
+Zwraca bieżącą pozycję funkcji \fIreaddir()\fR dla \s-1UCHWYTUKATALOGU\s0.
+Do \fIseekdir()\fR można przekazać wartość, każącą osiągnąc określoną
+pozycję w katalogu. 
+.Ip "tie \s-1ZMIENNA\s0,\s-1NAZWAKLASY\s0,\s-1LISTA\s0" 8
+.IX Item "tie \s-1VARIABLE\s0,\s-1CLASSNAME\s0,\s-1LIST\s0"
+Funkcja ta łączy zmienną z klasą pakietu, która opisuje jej implementację.
+\s-1ZMIENNA\s0 jest nazwą czarowanej zmiennej. \s-1NAZWAKLASY\s0 jest nazwą
+klasy, implementującej obiekty właściwego typu. Wszelkie dodatkowe 
+argumenty są przekazywane metodzie \*(L"new\*(R" klasy (czyli
+\s-1TIESCALAR\s0, \s-1TIEARRAY\s0, lub \s-1TIEHASH\s0).
+Zazwyczaj, argumenty te  wyglądają tak, jak te, które są przekazywane
+funkcji \fIdbm_open()\fR z C. Obiekt, zwrócony przez metodę \*(L"new\*(R"
+jest też zwracany przez \fItie()\fR, co jest przydatne, jeśli chcesz dostać
+się do innych metod w \s-1NAZWIEKLASY\s0.
+.Sp
+Zauważ, że funkcje takie, jak \fIkeys()\fR i \fIvaluse()\fR mogą zwracać
+wielkie wartości tablicowe, jeśli użyć je na dużych obiektach, takich jak
+pliki \s-1DBM\s0. Lepiej może być użyć funkcji \fIeach()\fR i na nich
+iterować. Przykład:
+.Sp
+.Vb 7
+\&    # drukuj offsety pliku historii
+\&    use NDBM_File;
+\&    tie(%HIST, 'NDBM_File', '/usr/lib/news/history', 1, 0);
+\&    while (($key,$val) = each %HIST) {
+\&        print $key, ' = ', unpack('L',$val), "\en";
+\&    }
+\&    untie(%HIST);
+.Ve
+Klasa, implementująca tablicę asocjacyjną, powinna mieć następujące metody:
+.Sp
+.Vb 8
+\&    TIEHASH classname, LIST
+\&    DESTROY this
+\&    FETCH this, key
+\&    STORE this, key, value
+\&    DELETE this, key
+\&    EXISTS this, key
+\&    FIRSTKEY this
+\&    NEXTKEY this, lastkey
+.Ve
+Klasa, implementująca zwykłą tablicę, powinna mieć następujące metody:
+.Sp
+.Vb 5
+\&    TIEARRAY classname, LIST
+\&    DESTROY this
+\&    FETCH this, key
+\&    STORE this, key, value
+\&    [others TBD]
+.Ve
+Klasa, implementująca skalar, powinna mieć następujące metody:
+.Sp
+.Vb 4
+\&    TIESCALAR classname, LIST
+\&    DESTROY this
+\&    FETCH this,
+\&    STORE this, value
+.Ve
+W przeciwieństwie do funkcji \fIdbmopen()\fR, funkcja \fItie()\fR nie używa,
+lub wymaga dla ciebie modułów (use, require)\*(--musisz o to zadbać
+samodzielnie. Zobacz podręcznik \fIDB_File\fR oraz moduł
+\fIConfig\fR dla interesujących implementacji \fItie()\fR.
+.Ip "tied \s-1ZMIENNA\s0" 8
+.IX Item "tied \s-1VARIABLE\s0"
+Zwraca referencję do obiektu kryjącego się pod \s-1ZMIENNĄ\s0 (wartość,
+która była początkowo zwrócona przez \fItie()\fR, które powiązał zmienną z
+pakietem.) Gdy \s-1ZMIENNA\s0 nie jest powiązana, zwracana jest wartość
+niezdefiniowana.
+.Ip "time" 8
+.IX Item "time"
+Zwraca liczbę sekund od początku epoki (tj. na MacOs
+od 00:00:00, 1 Stycznia, 1904, a od 00:00:00 \s-1UTC\s0, 1 Stycznia, 1970 
+dla większości innych systemów).
+Wystarczające do przekazania dla \fIgmtime()\fR lub \fIlocaltime()\fR.
+.Ip "times" 8
+.IX Item "times"
+Zwraca czteroelementową tablicę, podającą w sekundach czasy użytkownika i 
+systemu. Wartości są dla tego procesu, oraz dla dzieci tego procesu.
+.Sp
+.Vb 1
+\&    ($user,$system,$cuser,$csystem) = times;
+.Ve
+.Ip "tr///" 8
+.IX Item "tr///"
+Operator translacji. To samo co y///. Zobacz stronę \fIperlop\fR(1).
+.Ip "truncate \s-1UCHWYTPLIKU\s0,\s-1DŁUGOŚĆ\s0" 8
+.IX Item "truncate \s-1FILEHANDLE\s0,\s-1LENGTH\s0"
+.Ip "truncate \s-1WYRAŻ\s0,\s-1DŁUGOŚĆ\s0" 8
+.IX Item "truncate \s-1EXPR\s0,\s-1LENGTH\s0"
+Skraca plik, otwarty na \s-1UCHWYCIEPLIKU\s0 lub nazwany przez \s-1WYRAŻ\s0
+do podanej długości. Na systemach, gdzie nie jest to zaimplementowane,
+powoduje błąd krytyczny.
+.Ip "uc \s-1WYRAŻ\s0" 8
+.IX Item "uc \s-1EXPR\s0"
+.Ip "uc" 8
+.IX Item "uc"
+Zwraca \s-1WYRAŻ\s0 w dużych literach. Jest to funkcja wewnętrzna,
+implementująca escape \eU na łańcuchach ujętych w podwójne cudzysłowy.
+Szanuje bieżące ustawienie \s-1LC_CTYPE\s0, jeśli włączono \f(CWuse locale\fR. 
+Zobacz podręcznik \fIperllocale\fR(1).
+.Sp
+Jeśli \s-1WYRAŻ\s0 jest pominięte, używa \f(CW$_\fR.
+.Ip "ucfirst \s-1WYRAŻ\s0" 8
+.IX Item "ucfirst \s-1EXPR\s0"
+.Ip "ucfirst" 8
+.IX Item "ucfirst"
+Zwraca \s-1WYRAŻ\s0, z pierwszym znakiem zmienionym na dużą literę. Jest to
+funkcja wewnętrzna, implementująca escape \eu na łańcuchach ujętych w
+cudzysłowy.
+Szanuje bieżące ustawienie \s-1LC_CTYPE\s0, jeśli włączono \f(CWuse locale\fR. 
+Zobacz podręcznik \fIperllocale\fR(1).
+.Sp
+If \s-1EXPR\s0 is omitted, uses \f(CW$_\fR.
+.Ip "umask \s-1WYRAŻ\s0" 8
+.IX Item "umask \s-1EXPR\s0"
+.Ip "umask" 8
+.IX Item "umask"
+Ustawia umaskę procesu na \s-1WYRAŻ\s0 i zwraca wartość poprzednią. Jeśli
+\s-1WYRAŻ\s0 jest pominięte, po prostu zwraca bieżącą umaskę. Pamiętaj, że
+umaska jest liczbą, zazwyczaj podawaną ósemkowo; \fInie\fR jest łańcuchem
+cyfr ósemkowych. Zobacz opis \f(CWoct\fR, znajdujący się gdzieś w tym
+dokumencie, jeśli masz tylko łańcuch.
+.Ip "undef \s-1WYRAŻ\s0" 8
+.IX Item "undef \s-1EXPR\s0"
+.Ip "undef" 8
+.IX Item "undef"
+Powoduje, że wartość \s-1WYRAŻ\s0, która musi być lwartością, staje się 
+niezdefiniowana. Używaj tego tylko na wartościach skalarnych, całej tablicy,
+całej tablicy asocjacyjnej, lub na nazwie podprocedury (przy użyciu
+\*(L"&").  (Używanie tej funkcji w innych wypadkach przypuszczalnie nie
+doprowadzi do takich rezultatów, jakich można by oczekiwać.) Zawsze zwraca
+wartość niezdefiniowaną. Możesz pominąć \s-1WYRAŻ\s0--w tym wypadku nic nie
+jest pozbawiane zdefiniowania, lecz mimo to uzyskujesz wartość
+niezdefiniowaną, którą możesz np. zwrócić z podprocedury, przypisać
+zmiennej,lub przekazać jako parametr. Przykłady:
+.Sp
+.Vb 8
+\&    undef $foo;
+\&    undef $bar{'blurfl'};             # Porównaj z: delete $bar{'blurfl'};
+\&    undef @ary;
+\&    undef %hash;
+\&    undef &mysub;
+\&    return (wantarray ? (undef, $errmsg) : undef) if $they_blew_it;
+\&    select undef, undef, undef, 0.25;
+\&    ($a, $b, undef, $c) = &foo;       # Ignoruj trzecią zwróconą wartość
+.Ve
+.Ip "unlink \s-1LISTA\s0" 8
+.IX Item "unlink \s-1LIST\s0"
+.Ip "unlink" 8
+.IX Item "unlink"
+Kasuje listę plików. Zwraca liczbę skasowanych plików.
+.Sp
+.Vb 3
+\&    $cnt = unlink 'a', 'b', 'c';
+\&    unlink @goners;
+\&    unlink <*.bak>;
+.Ve
+Uwaga: unlink nie skasuje katalogów, chyba że jesteś superużytkownikiem i
+przekazałeś perlowi flagę \fB\-U\fR. Nawet gdy te warunki są spełnione, bądź
+ostrzeżony, że skasowanie katalogu może wywołać uszkodzenie systemu plików.
+Zamiast tego użyj rmdir.
+.Sp
+Jeśli \s-1LISTA\s0 jest pominięta, używa \f(CW$_\fR.
+.Ip "unpack \s-1WZORZEC\s0,\s-1WYRAŻ\s0" 8
+.IX Item "unpack \s-1TEMPLATE\s0,\s-1EXPR\s0"
+Unpack robi odwrotność tego, co pack: pobiera łańcuch, reprezentujący
+strukturę
+i rozwija go na listę wartości, zwracają wartość tablicową (w kontekście
+skalarnym zwraca tylko pierwszą wartość tablicy). \s-1WZORZEC\s0 jest tego
+samego formatu co dla funkcji pack. Oto podprocedura, która dokonuje
+substringu:
+.Sp
+.Vb 4
+\&    sub substr {
+\&        local($what,$where,$howmuch) = @_;
+\&        unpack("x$where a$howmuch", $what);
+\&    }
+.Ve
+a potem mamy
+.Sp
+.Vb 1
+\&    sub ordinal { unpack("c",$_[0]); } # to samo co ord()
+.Ve
+Dodatkowo, możesz poprzedzić pola %<liczbą>, wskazując, że chcesz
+<liczba>-bitową sumę szesnastkową elementów, zamiast samych elementów.
+Domyślna jest suma 16-bitowa. Na przykład, następujący przykład oblicza tę
+samą liczbę co program sum z Systemu V:
+.Sp
+.Vb 4
+\&    while (<>) {
+\&        $checksum += unpack("%16C*", $_);
+\&    }
+\&    $checksum %= 65536;
+.Ve
+Następujący fragment efektywnie oblicza liczbę ustawionych bitów w wektorze
+bitowym:
+.Sp
+.Vb 1
+\&    $setbits = unpack("%32b*", $selectmask);
+.Ve
+.Ip "untie \s-1ZMIENNA\s0" 8
+.IX Item "untie \s-1VARIABLE\s0"
+Rozbija powiązanie między zmienną, a pakietem. Zobacz \fItie()\fR.
+.Ip "unshift \s-1TABLICA\s0,\s-1LISTA\s0" 8
+.IX Item "unshift \s-1ARRAY\s0,\s-1LIST\s0"
+Robi odwrotną rzecz do \f(CWshift\fR. Lub odwrotną do \f(CWpush\fR, zależnie
+jak na to spojrzeć. Dokleja listę do początku tablicy i zwraca nową liczbę
+elementów.
+.Sp
+.Vb 1
+\&    unshift(ARGV, '\-e') unless $ARGV[0] =~ /^\-/;
+.Ve
+Zauważ, że \s-1LISTA\s0 jest doklejana cała, a nie jeden element naraz, więc
+doklejone elementy pozostają w tej samej kolejności. Aby ją odwrócić, użyj
+reverse.
+.Ip "use Module \s-1LISTA\s0" 8
+.IX Item "use Module \s-1LIST\s0"
+.Ip "use Module" 8
+.IX Item "use Module"
+.Ip "use Module \s-1WERSJA\s0 \s-1LISTA\s0" 8
+.IX Item "use Module \s-1VERSION\s0 \s-1LIST\s0"
+.Ip "use \s-1WERSJA\s0" 8
+.IX Item "use \s-1VERSION\s0"
+Importuje semantykę danego modułu do bieżącego pakietu. Ogólnie aliasuje
+określone podprocedury lub nazwy zmiennych do twojego pakietu. Jest to
+dokładnie równoważne
+.Sp
+.Vb 1
+\&    BEGIN { require Module; import Module LIST; }
+.Ve
+poza tym, że Module \fImusi\fR być gołym słowem.
+.Sp
+Jeśli pierwszy argument \f(CWuse\fR jest liczbą, to jest ona traktowana jako
+numer wersji, zamiast nazwa modułu. Jeśli wersja interpretera perla jest
+mniejsza niż \s-1WERSJA\s0, to wyświetlony zostanie komunikat o błędzie, a
+perl natychmiast zakończy działanie. Jest to często przydatne, jeśli chcesz
+sprawdzić wersję perla przed używaniem modułów bibliotecznych, które
+zmieniły się w sposób niekompatybilny od czasu starszych wersji perla.
+(staramy się by tak nie było.)
+.Sp
+Słowo \s-1BEGIN\s0 wymusza by require i import zaszły podczas kompilacji.
+Require zapewnia, że moduł będzie załadowany do pamięci, jeśli wcześniej nie
+był. Import nie jest wbudowany\*(--jest to tylko zwykłe, statyczne
+wywołanie metody pakietu \*(L"Module\*(R" aby powiedzieć modułowi, by
+zaimportował
+listę właściwości do pakietu bieżącego. Moduł może implementować swoją
+metodę import w dowolny sposób, choć większość modułów woli wyprowadzać
+swoją metodę
+poprzez dziedziczenie z klasy Exporter, zdefiniowanej w module Exporter,
+Zobacz podręcznik \fIExporter\fR.
+Jeśli nie ma żadnej metody importującej, to błąd jest cicho ignorowany. Może
+się to w przyszłych wersjach zmienić na błąd krytyczny.
+.Sp
+Jeśli nie chcesz zmieniania swojej przestrzeni nazw, załącz jawnie pustą
+listę:
+.Sp
+.Vb 1
+\&    use Module ();
+.Ve
+Jest to dokładnie równoważne
+.Sp
+.Vb 1
+\&    BEGIN { require Module; }
+.Ve
+Jeśli między Module, a \s-1LISTA\s0 jest obecny argument \s-1WERSJA\s0, to
+\f(CWuse\fR wywoła metodę \s-1VERSION\s0 klasy Module z podaną wersją, jako
+argumentem. Domyślna metoda \s-1VERSION\s0, dziedziczona z klasy Universal,
+zakracze jeśli podana wersja jest większa niż wartość zmiennej
+\f(CW$Module::VERSION\fR. (Zauważ, że nie ma przecinka po \s-1WERSJI\s0!)
+.Sp
+Ponieważ jest to szeroko otwarty interfejs, można tak implementować też
+pragmy (dyrektywy kompilatora). Obecnie zaimplementowane pragmy to:
+.Sp
+.Vb 5
+\&    use integer;
+\&    use diagnostics;
+\&    use sigtrap qw(SEGV BUS);
+\&    use strict  qw(subs vars refs);
+\&    use subs    qw(afunc blurfl);
+.Ve
+Te pseudo moduły importują semantykę do bieżącego zakresu bloku, w
+przeciwieństwie  do zwykłych modułów, które importują symbole do bieżącego
+pakietu.
+.Sp
+Istnieje odpowiadająca komenda \*(L"no\*(R", która de-importuje rzeczy
+zaimportowane przez use, np. wywołuje metodę
+\f(CWunimport Module LISTA\fR zamiast \f(CWimport\fR.
+.Sp
+.Vb 2
+\&    no integer;
+\&    no strict 'refs';
+.Ve
+Jeśli nie ma metody unimport, wywołanie to kończy się błędem krytycznym.
+.Sp
+Dla listy standardowych modułów i pragm, zobacz podręcznik \fIperlmod\fR.
+.Ip "utime \s-1LISTA\s0" 8
+.IX Item "utime \s-1LIST\s0"
+Zmienia czasy dostępu i modyfikacji na każdym pliku z listy. Pierwsze dwa
+elementy listy muszą być numerycznymi czasami dostępu i modyfikacji,
+dokładnie w tej kolejności. Zwraca liczbę plików, na których operacja się
+powiodła. Czas modyfikacji inode jest ustawiany na czas bieżący. Przykład
+komendy \*(L"touch\*(R":
+.Sp
+.Vb 3
+\&    #!/usr/bin/perl
+\&    $now = time;
+\&    utime $now, $now, @ARGV;
+.Ve
+.Ip "values \s-1HASH\s0" 8
+.IX Item "values \s-1HASH\s0"
+Zwraca normalną tablicę, składającą się ze wszystkich wartości wymienionej
+tablicy asocjacyjnej. W kontekście skalarnym, zwracana jest liczba wartości.
+Wartości są zwracane w dość losowej kolejności, lecz jest ona ta sama, co
+zwracana przez funkcje \fIkeys()\fR lub \fIeach()\fR. Jako efekt uboczny,
+funkcja resetuje iterator tablicy asocjacyjnej. Zobacz też
+\fIkeys()\fR, \fIeach()\fR, i \fIsort()\fR.
+.Ip "vec \s-1WYRAŻ\s0,\s-1OFFSET\s0,\s-1BITY\s0" 8
+.IX Item "vec \s-1EXPR\s0,\s-1OFFSET\s0,\s-1BITS\s0"
+Traktuje łańcuch \s-1WYRAŻ\s0 jako wektor całkowitych integerów i zwraca
+wartość pola bitowego, wskazanego przez \s-1OFFSET\s0. \s-1BITY\s0 podają
+liczbę bitów, które są zarezerwowane dla każdego wpisu w wektorze bitowym.
+Musi to być potęga dwójki do 1 do 32. \fIvec\fR może też być przypisany do
+czegoś--w tym wypadku potrzebne są nawiasy, aby nadać wyrażeniu właściwy
+priorytet, jak w
+.Sp
+.Vb 1
+\&    vec($image, $max_x * $x + $y, 8) = 3;
+.Ve
+Wektory utworzone przez \fIvec()\fR mogą też być obsługiwane przez
+operatory logiczne |, & i ^, które założą, że bitowa operacja wektorowa jest
+oczekiwana gdy obydwa operandy są łańcuchami.
+.Sp
+Aby przekształcić wektor bitowy na tablicę łańcuchową zer i jedynek, użyj:
+.Sp
+.Vb 2
+\&    $bits = unpack("b*", $vector);
+\&    @bits = split(//, unpack("b*", $vector));
+.Ve
+Jeśli znasz dokładną długość w bitach, możesz podać ją zamiast *.
+.Ip "wait" 8
+.IX Item "wait"
+Czeka, aż proces potomny się nie zakończy i zwraca pid zamkniętego procesu,
+lub \-1, jeśli go nie było. Status jest zwracany w \f(CW$?\fR.
+.Ip "waitpid \s-1PID\s0,\s-1FLAGI\s0" 8
+.IX Item "waitpid \s-1PID\s0,\s-1FLAGS\s0"
+Czeka, aż proces potomny się zakończy i zwraca pid zamkniętego procesu, lub
+\-1, jeśli nie było takiego procesu. Status jest zwracany w \f(CW$?\fR.
+Jeśli powiesz
+.Sp
+.Vb 3
+\&    use POSIX ":sys_wait_h";
+\&    ...
+\&    waitpid(\-1,&WNOHANG);
+.Ve
+to możesz dokonać nieblokującego oczekiwania na dowolny proces. Nieblokujące
+oczekiwanie jest dostępne na maszynach, obsługujących albo wywołanie
+\fIwaitpid\fR\|(2), albo \fIwait4\fR\|(2). Jednak oczekiwanie na konkretny
+pid z \s-1FLAGAMI\s0 wartości 0 jest zaimplementowane wszędzie. (Perl
+emuluje wywołanie systemowe, pamiętając wartości statusu procesów, które
+zakończyły się, lecz nie były odczytane przez skrypt perla)
+.Ip "wantarray" 8
+.IX Item "wantarray"
+Zwraca \s-1TRUE\s0, jeśli kontekst obecnie wykonywanej podprocedury szuka
+wartości listowej. Zwraca \s-1FALSE\s0, jeśli kontekst szuka skalara.
+Zwraca wartość niezdefiniowaną, jeśli kontekst nie szuka wartości (void).
+.Sp
+.Vb 3
+\&    return unless defined wantarray;    # nie myśl o robieniu więcej
+\&    my @a = complex_calculation();
+\&    return wantarray ? @a : "@a";
+.Ve
+.Ip "warn \s-1LIST\s0" 8
+.IX Item "warn \s-1LIST\s0"
+Produkuje komunikat na \s-1STDERR\s0, podobnie jak \fIdie()\fR, lecz nie
+wychodzi i nie wyrzuca wyjątku.
+.Sp
+Jeśli zainstalowany jest handler \f(CW$SIG{__WARN__)\fR, nie są drukowane
+żadne komunikaty. Od handlera zależy obsługa komunikatu, gdy tak zadecyduje
+(np. przekonwertowanie go na \fIdie()\fR). Większość handlerów musi więc
+wywoływać \fIwarn()\fR ponownie, aby wyświetlić komunikat. Zauważ, że jest
+to bezpieczne i nie spowoduje nieskończonej pętli, gdyż haki
+\f(CW__WARN__\fR nie są wołane z niego samego.
+.Sp
+Zachowanie to jest trochę inne od tego dla \f(CW$SIG{__DIE__}\fR (które nie
+powstrzymywały tekstu komunikatów, lecz mogły wywołać \fIdie()\fR ponownie,
+aby je zmienić).
+.Sp
+Używanie handlerów \f(CW__WARN__\fR daje potężne narzędzie do wyciszania
+wszystkich ostrzeżeń (nawet tak zwanych obowiązkowych). Na przykład:
+.Sp
+.Vb 7
+\&    # wywal wszystkie ostrzeżenia czasu kompilacji
+\&    BEGIN { $SIG{'__WARN__'} = sub { warn $_[0] if $DOWARN } }
+\&    my $foo = 10;
+\&    my $foo = 20;          # bez ostrzegania o zduplikowaniu my $foo
+\&                           # lecz przecież sam się o to prosiłeś!
+\&    # bez ostrzeżeń czasu kompilacji i czasu działania przed tym miejscem
+\&    $DOWARN = 1;
+.Ve
+.Vb 2
+\&    # ostrzeżenia czasu działania są tu włączone
+\&    warn "\e$foo is alive and $foo!";     # pojawia się
+.Ve
+Zobacz stronę \fIperlvar\fR(1) dla szczegółów o ustawianiu wpisów
+\f(CW%SIG\fR i dla przykładów.
+.Ip "write \s-1UCHWYTPLIKU\s0" 8
+.IX Item "write \s-1FILEHANDLE\s0"
+.Ip "write \s-1WYRAŻ\s0" 8
+.IX Item "write \s-1EXPR\s0"
+.Ip "write" 8
+.IX Item "write"
+Zapisuje sformatowany rekord (prawdopodobnie wieloliniowy) do podanego
+pliku, używając formatu związanego z tym plikiem. Domyślnie format dla pliku
+jest tym, który ma tę samą nazwę, co uchwyt pliku, lecz można go zmienić z
+pomocą funkcji \fIselect()\fR, przypisując nazwę formatu zmiennej \f(CW$~\fR.
+.Sp
+Początek przetwarzania formy jest obsługiwany automatycznie: jeśli nie
+ma miejsca na stronie na sformatowany rekord, to strona jest przewijana
+przez wpisanie form feed, następnie używany jest specjalny format
+góry-strony (do formatowania nagłówka nowej strony), a potem wpisany jest
+rekord. Domyślnie, format góry-strony jest nazwą uchwytu pliku z dodanym
+\*(L"_TOP\*(R", lecz można go ustawić dynamicznie, przyznając zmiennej
+\f(CW$^\fR nazwę podczas gdy wybrany (select) jest uchwyt pliku.
+Liczba pozostających linii bieżącej strony znajduje się w zmiennej
+\f(CW$-\fR i może być ustawiona na 0 aby wymusić nową stronę.
+.Sp
+Jeśli \s-1UCHWYTPLIKU\s0 nie jest podany, wyjście idzie do bieżącego
+domyślnego kanału wyjścia, którym jest początkowo \s-1STDOUT\s0, a który
+może być zmieniony operatorem \f(CWselect\fR. Jeśli \s-1UCHWYTPLIKU\s0 jest
+wyrażeniem \s-1WYRAŻ\s0, to jest ono analizowane, a wynikowy łańcuch jest
+używany do podejrzenia nazwy \s-1UCHWYTUPLIKU\s0. Dla dalszych informacji o
+formatach, zobacz stronę \fIperlform\fR(1).
+.Sp
+Zauważ, że zapis \fI\s-1NIE\s0\fR jest odwrotnością odczytu. Niestety.
+.Ip "y///" 8
+.IX Item "y///"
+Operator translacji. To samo co tr///. Zobacz stronę \fIperlop\fR(1).
+
+.rn }` ''

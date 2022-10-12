@@ -1,0 +1,1755 @@
+.TH "libalpm_options" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+libalpm_options \- Options
+.PP
+ \- Libalpm option getters and setters\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Accessors for callbacks"
+
+.in +1c
+.ti -1c
+.RI "\fBalpm_cb_log\fP \fBalpm_option_get_logcb\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the callback used for logging\&. "
+.ti -1c
+.RI "void * \fBalpm_option_get_logcb_ctx\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the callback used for logging\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_logcb\fP (\fBalpm_handle_t\fP *handle, \fBalpm_cb_log\fP cb, void *ctx)"
+.br
+.RI "Sets the callback used for logging\&. "
+.ti -1c
+.RI "\fBalpm_cb_download\fP \fBalpm_option_get_dlcb\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the callback used to report download progress\&. "
+.ti -1c
+.RI "void * \fBalpm_option_get_dlcb_ctx\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the callback used to report download progress\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_dlcb\fP (\fBalpm_handle_t\fP *handle, \fBalpm_cb_download\fP cb, void *ctx)"
+.br
+.RI "Sets the callback used to report download progress\&. "
+.ti -1c
+.RI "\fBalpm_cb_fetch\fP \fBalpm_option_get_fetchcb\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the downloading callback\&. "
+.ti -1c
+.RI "void * \fBalpm_option_get_fetchcb_ctx\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the downloading callback\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_fetchcb\fP (\fBalpm_handle_t\fP *handle, \fBalpm_cb_fetch\fP cb, void *ctx)"
+.br
+.RI "Sets the downloading callback\&. "
+.ti -1c
+.RI "\fBalpm_cb_event\fP \fBalpm_option_get_eventcb\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the callback used for events\&. "
+.ti -1c
+.RI "void * \fBalpm_option_get_eventcb_ctx\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the callback used for events\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_eventcb\fP (\fBalpm_handle_t\fP *handle, \fBalpm_cb_event\fP cb, void *ctx)"
+.br
+.RI "Sets the callback used for events\&. "
+.ti -1c
+.RI "\fBalpm_cb_question\fP \fBalpm_option_get_questioncb\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the callback used for questions\&. "
+.ti -1c
+.RI "void * \fBalpm_option_get_questioncb_ctx\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the callback used for questions\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_questioncb\fP (\fBalpm_handle_t\fP *handle, \fBalpm_cb_question\fP cb, void *ctx)"
+.br
+.RI "Sets the callback used for questions\&. "
+.ti -1c
+.RI "\fBalpm_cb_progress\fP \fBalpm_option_get_progresscb\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the callback used for operation progress\&. "
+.ti -1c
+.RI "void * \fBalpm_option_get_progresscb_ctx\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the callback used for operation progress\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_progresscb\fP (\fBalpm_handle_t\fP *handle, \fBalpm_cb_progress\fP cb, void *ctx)"
+.br
+.RI "Sets the callback used for operation progress\&. "
+.in -1c
+.SS "Accessors to the root directory"
+The root directory is the prefix to which libalpm installs packages to\&.
+.PP
+Hooks and scriptlets will also be run in a chroot to ensure they behave correctly in alternative roots\&. 
+.in +1c
+.ti -1c
+.RI "const char * \fBalpm_option_get_root\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the root path\&. "
+.in -1c
+.SS "Accessors to the database path"
+The dbpath is where libalpm stores the local db and downloads sync databases\&. 
+.in +1c
+.ti -1c
+.RI "const char * \fBalpm_option_get_dbpath\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the path to the database directory\&. "
+.in -1c
+.SS "Accessors to the lockfile"
+The lockfile is used to ensure two instances of libalpm can not write to the database at the same time\&.
+.PP
+The lock file is created when committing a transaction and released when the transaction completes\&. Or when calling \fBalpm_unlock\fP\&. 
+.in +1c
+.ti -1c
+.RI "const char * \fBalpm_option_get_lockfile\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Get the name of the database lock file\&. "
+.in -1c
+.SS "Accessors to the list of package cache directories\&."
+This is where libalpm will store downloaded packages\&. 
+.in +1c
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_option_get_cachedirs\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Gets the currently configured cachedirs,\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_cachedirs\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP *cachedirs)"
+.br
+.RI "Sets the cachedirs\&. "
+.ti -1c
+.RI "int \fBalpm_option_add_cachedir\fP (\fBalpm_handle_t\fP *handle, const char *cachedir)"
+.br
+.RI "Append a cachedir to the configured cachedirs\&. "
+.ti -1c
+.RI "int \fBalpm_option_remove_cachedir\fP (\fBalpm_handle_t\fP *handle, const char *cachedir)"
+.br
+.RI "Remove a cachedir from the configured cachedirs\&. "
+.in -1c
+.SS "Accessors to the list of package hook directories\&."
+libalpm will search these directories for hooks to run\&.
+.PP
+A hook in a later directory will override previous hooks if they have the same name\&. 
+.in +1c
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_option_get_hookdirs\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Gets the currently configured hookdirs,\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_hookdirs\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP *hookdirs)"
+.br
+.RI "Sets the hookdirs\&. "
+.ti -1c
+.RI "int \fBalpm_option_add_hookdir\fP (\fBalpm_handle_t\fP *handle, const char *hookdir)"
+.br
+.RI "Append a hookdir to the configured hookdirs\&. "
+.ti -1c
+.RI "int \fBalpm_option_remove_hookdir\fP (\fBalpm_handle_t\fP *handle, const char *hookdir)"
+.br
+.RI "Remove a hookdir from the configured hookdirs\&. "
+.in -1c
+.SS "Accessors to the list of overwritable files\&."
+Normally libalpm will refuse to install a package that owns files that are already on disk and not owned by that package\&.
+.PP
+If a conflicting file matches a glob in the overwrite_files list, then no conflict will be raised and libalpm will simply overwrite the file\&. 
+.in +1c
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_option_get_overwrite_files\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Gets the currently configured overwritable files,\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_overwrite_files\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP *globs)"
+.br
+.RI "Sets the overwritable files\&. "
+.ti -1c
+.RI "int \fBalpm_option_add_overwrite_file\fP (\fBalpm_handle_t\fP *handle, const char *glob)"
+.br
+.RI "Append an overwritable file to the configured overwritable files\&. "
+.ti -1c
+.RI "int \fBalpm_option_remove_overwrite_file\fP (\fBalpm_handle_t\fP *handle, const char *glob)"
+.br
+.RI "Remove a file glob from the configured overwritable files globs\&. "
+.in -1c
+.SS "Accessors to the log file"
+This controls where libalpm will save log output to\&. 
+.in +1c
+.ti -1c
+.RI "const char * \fBalpm_option_get_logfile\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Gets the filepath to the currently set logfile\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_logfile\fP (\fBalpm_handle_t\fP *handle, const char *logfile)"
+.br
+.RI "Sets the logfile path\&. "
+.in -1c
+.SS "Accessors to the GPG directory"
+This controls where libalpm will store GnuPG's files\&. 
+.in +1c
+.ti -1c
+.RI "const char * \fBalpm_option_get_gpgdir\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the path to libalpm's GnuPG home directory\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_gpgdir\fP (\fBalpm_handle_t\fP *handle, const char *gpgdir)"
+.br
+.RI "Sets the path to libalpm's GnuPG home directory\&. "
+.in -1c
+.SS "Accessors for use syslog"
+This controls whether libalpm will also use the syslog\&.
+.PP
+Even if this option is enabled, libalpm will still try to log to its log file\&. 
+.in +1c
+.ti -1c
+.RI "int \fBalpm_option_get_usesyslog\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns whether to use syslog (0 is FALSE, TRUE otherwise)\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_usesyslog\fP (\fBalpm_handle_t\fP *handle, int usesyslog)"
+.br
+.RI "Sets whether to use syslog (0 is FALSE, TRUE otherwise)\&. "
+.in -1c
+.SS "Accessors to the list of no-upgrade files\&."
+These functions modify the list of files which should not be updated by package installation\&. 
+.in +1c
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_option_get_noupgrades\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Get the list of no-upgrade files\&. "
+.ti -1c
+.RI "int \fBalpm_option_add_noupgrade\fP (\fBalpm_handle_t\fP *handle, const char *path)"
+.br
+.RI "Add a file to the no-upgrade list\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_noupgrades\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP *noupgrade)"
+.br
+.RI "Sets the list of no-upgrade files\&. "
+.ti -1c
+.RI "int \fBalpm_option_remove_noupgrade\fP (\fBalpm_handle_t\fP *handle, const char *path)"
+.br
+.RI "Remove an entry from the no-upgrade list\&. "
+.ti -1c
+.RI "int \fBalpm_option_match_noupgrade\fP (\fBalpm_handle_t\fP *handle, const char *path)"
+.br
+.RI "Test if a path matches any of the globs in the no-upgrade list\&. "
+.in -1c
+.SS "Accessors to the list of no-extract files\&."
+These functions modify the list of filenames which should be skipped packages which should not be upgraded by a sysupgrade operation\&. 
+.in +1c
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_option_get_noextracts\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Get the list of no-extract files\&. "
+.ti -1c
+.RI "int \fBalpm_option_add_noextract\fP (\fBalpm_handle_t\fP *handle, const char *path)"
+.br
+.RI "Add a file to the no-extract list\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_noextracts\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP *noextract)"
+.br
+.RI "Sets the list of no-extract files\&. "
+.ti -1c
+.RI "int \fBalpm_option_remove_noextract\fP (\fBalpm_handle_t\fP *handle, const char *path)"
+.br
+.RI "Remove an entry from the no-extract list\&. "
+.ti -1c
+.RI "int \fBalpm_option_match_noextract\fP (\fBalpm_handle_t\fP *handle, const char *path)"
+.br
+.RI "Test if a path matches any of the globs in the no-extract list\&. "
+.in -1c
+.SS "Accessors to the list of ignored packages\&."
+These functions modify the list of packages that should be ignored by a sysupgrade\&.
+.PP
+Entries in this list may be globs and only match the package's name\&. Providers are not taken into account\&. 
+.in +1c
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_option_get_ignorepkgs\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Get the list of ignored packages\&. "
+.ti -1c
+.RI "int \fBalpm_option_add_ignorepkg\fP (\fBalpm_handle_t\fP *handle, const char *pkg)"
+.br
+.RI "Add a file to the ignored package list\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_ignorepkgs\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP *ignorepkgs)"
+.br
+.RI "Sets the list of packages to ignore\&. "
+.ti -1c
+.RI "int \fBalpm_option_remove_ignorepkg\fP (\fBalpm_handle_t\fP *handle, const char *pkg)"
+.br
+.RI "Remove an entry from the ignorepkg list\&. "
+.in -1c
+.SS "Accessors to the list of ignored groups\&."
+These functions modify the list of groups whose packages should be ignored by a sysupgrade\&.
+.PP
+Entries in this list may be globs\&. 
+.in +1c
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_option_get_ignoregroups\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Get the list of ignored groups\&. "
+.ti -1c
+.RI "int \fBalpm_option_add_ignoregroup\fP (\fBalpm_handle_t\fP *handle, const char *grp)"
+.br
+.RI "Add a file to the ignored group list\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_ignoregroups\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP *ignoregrps)"
+.br
+.RI "Sets the list of groups to ignore\&. "
+.ti -1c
+.RI "int \fBalpm_option_remove_ignoregroup\fP (\fBalpm_handle_t\fP *handle, const char *grp)"
+.br
+.RI "Remove an entry from the ignoregroup list\&. "
+.in -1c
+.SS "Accessors to the list of ignored dependencies\&."
+These functions modify the list of dependencies that should be ignored by a sysupgrade\&.
+.PP
+This is effectively a list of virtual providers that packages can use to satisfy their dependencies\&. 
+.in +1c
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_option_get_assumeinstalled\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Gets the list of dependencies that are assumed to be met\&. "
+.ti -1c
+.RI "int \fBalpm_option_add_assumeinstalled\fP (\fBalpm_handle_t\fP *handle, const \fBalpm_depend_t\fP *dep)"
+.br
+.RI "Add a depend to the assumed installed list\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_assumeinstalled\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP *deps)"
+.br
+.RI "Sets the list of dependencies that are assumed to be met\&. "
+.ti -1c
+.RI "int \fBalpm_option_remove_assumeinstalled\fP (\fBalpm_handle_t\fP *handle, const \fBalpm_depend_t\fP *dep)"
+.br
+.RI "Remove an entry from the assume installed list\&. "
+.in -1c
+.SS "Accessors to the list of allowed architectures\&."
+libalpm will only install packages that match one of the configured architectures\&.
+.PP
+The architectures do not need to match the physical architecture\&. They can just be treated as a label\&. 
+.in +1c
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_option_get_architectures\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the allowed package architecture\&. "
+.ti -1c
+.RI "int \fBalpm_option_add_architecture\fP (\fBalpm_handle_t\fP *handle, const char *arch)"
+.br
+.RI "Adds an allowed package architecture\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_architectures\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP *arches)"
+.br
+.RI "Sets the allowed package architecture\&. "
+.ti -1c
+.RI "int \fBalpm_option_remove_architecture\fP (\fBalpm_handle_t\fP *handle, const char *arch)"
+.br
+.RI "Removes an allowed package architecture\&. "
+.in -1c
+.SS "Accessors for check space\&."
+This controls whether libalpm will check if there is sufficient before installing packages\&. 
+.in +1c
+.ti -1c
+.RI "int \fBalpm_option_get_checkspace\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Get whether or not checking for free space before installing packages is enabled\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_checkspace\fP (\fBalpm_handle_t\fP *handle, int checkspace)"
+.br
+.RI "Enable/disable checking free space before installing packages\&. "
+.in -1c
+.SS "Accessors for the database extension"
+This controls the extension used for sync databases\&.
+.PP
+libalpm will use this extension to both lookup remote databses and as the name used when opening reading them\&.
+.PP
+This is useful for file databases\&. Seems as files can increase the size of a database by quite a lot, a server could hold a database without files under one extension, and another with files under another extension\&.
+.PP
+Which one is downloaded and used then depends on this setting\&. 
+.in +1c
+.ti -1c
+.RI "const char * \fBalpm_option_get_dbext\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Gets the configured database extension\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_dbext\fP (\fBalpm_handle_t\fP *handle, const char *dbext)"
+.br
+.RI "Sets the database extension\&. "
+.in -1c
+.SS "Accessors for the signature levels"
+
+.in +1c
+.ti -1c
+.RI "int \fBalpm_option_get_default_siglevel\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Get the default siglevel\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_default_siglevel\fP (\fBalpm_handle_t\fP *handle, int level)"
+.br
+.RI "Set the default siglevel\&. "
+.ti -1c
+.RI "int \fBalpm_option_get_local_file_siglevel\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Get the configured local file siglevel\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_local_file_siglevel\fP (\fBalpm_handle_t\fP *handle, int level)"
+.br
+.RI "Set the local file siglevel\&. "
+.ti -1c
+.RI "int \fBalpm_option_get_remote_file_siglevel\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Get the configured remote file siglevel\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_remote_file_siglevel\fP (\fBalpm_handle_t\fP *handle, int level)"
+.br
+.RI "Set the remote file siglevel\&. "
+.in -1c
+.SS "Accessors for download timeout"
+By default, libalpm will timeout if a download has been transferring less than 1 byte for 10 seconds\&. 
+.in +1c
+.ti -1c
+.RI "int \fBalpm_option_set_disable_dl_timeout\fP (\fBalpm_handle_t\fP *handle, unsigned short disable_dl_timeout)"
+.br
+.RI "Enables/disables the download timeout\&. "
+.in -1c
+.SS "Accessors for parallel downloads"
+\fBalpm_db_update\fP, \fBalpm_fetch_pkgurl\fP and \fBalpm_trans_commit\fP can all download packages in parallel\&.
+.PP
+This setting configures how many packages can be downloaded in parallel,
+.PP
+By default this value is set to 1, meaning packages are downloading sequentially\&. 
+.in +1c
+.ti -1c
+.RI "int \fBalpm_option_get_parallel_downloads\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Gets the number of parallel streams to download database and package files\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_parallel_downloads\fP (\fBalpm_handle_t\fP *handle, unsigned int num_streams)"
+.br
+.RI "Sets number of parallel streams to download database and package files\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Libalpm option getters and setters\&. 
+
+
+.SH "Function Documentation"
+.PP 
+.SS "int alpm_option_add_architecture (\fBalpm_handle_t\fP * handle, const char * arch)"
+
+.PP
+Adds an allowed package architecture\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIarch\fP the architecture to set 
+.RE
+.PP
+
+.SS "int alpm_option_add_assumeinstalled (\fBalpm_handle_t\fP * handle, const \fBalpm_depend_t\fP * dep)"
+
+.PP
+Add a depend to the assumed installed list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIdep\fP the dependency to add 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_add_cachedir (\fBalpm_handle_t\fP * handle, const char * cachedir)"
+
+.PP
+Append a cachedir to the configured cachedirs\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIcachedir\fP the cachedir to add 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_add_hookdir (\fBalpm_handle_t\fP * handle, const char * hookdir)"
+
+.PP
+Append a hookdir to the configured hookdirs\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIhookdir\fP the hookdir to add 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_add_ignoregroup (\fBalpm_handle_t\fP * handle, const char * grp)"
+
+.PP
+Add a file to the ignored group list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIgrp\fP the group to add 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_add_ignorepkg (\fBalpm_handle_t\fP * handle, const char * pkg)"
+
+.PP
+Add a file to the ignored package list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIpkg\fP the package to add 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_add_noextract (\fBalpm_handle_t\fP * handle, const char * path)"
+
+.PP
+Add a file to the no-extract list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIpath\fP the path to add 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_add_noupgrade (\fBalpm_handle_t\fP * handle, const char * path)"
+
+.PP
+Add a file to the no-upgrade list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIpath\fP the path to add 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_add_overwrite_file (\fBalpm_handle_t\fP * handle, const char * glob)"
+
+.PP
+Append an overwritable file to the configured overwritable files\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIglob\fP the file glob to add 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_option_get_architectures (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the allowed package architecture\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the configured package architectures 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_option_get_assumeinstalled (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Gets the list of dependencies that are assumed to be met\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a list of alpm_depend_t* 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_option_get_cachedirs (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Gets the currently configured cachedirs,\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a char* list of cache directories 
+.RE
+.PP
+
+.SS "int alpm_option_get_checkspace (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Get whether or not checking for free space before installing packages is enabled\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 if disabled, 1 if enabled 
+.RE
+.PP
+
+.SS "const char * alpm_option_get_dbext (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Gets the configured database extension\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the configured database extension 
+.RE
+.PP
+
+.SS "const char * alpm_option_get_dbpath (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the path to the database directory\&. Read-only\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+
+.SS "int alpm_option_get_default_siglevel (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Get the default siglevel\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a \fBalpm_siglevel_t\fP bitfield of the siglevel 
+.RE
+.PP
+
+.SS "\fBalpm_cb_download\fP alpm_option_get_dlcb (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the callback used to report download progress\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the currently set download callback 
+.RE
+.PP
+
+.SS "void * alpm_option_get_dlcb_ctx (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the callback used to report download progress\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the currently set download callback context 
+.RE
+.PP
+
+.SS "\fBalpm_cb_event\fP alpm_option_get_eventcb (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the callback used for events\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the currently set event callback 
+.RE
+.PP
+
+.SS "void * alpm_option_get_eventcb_ctx (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the callback used for events\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the currently set event callback context 
+.RE
+.PP
+
+.SS "\fBalpm_cb_fetch\fP alpm_option_get_fetchcb (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the downloading callback\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the currently set fetch callback 
+.RE
+.PP
+
+.SS "void * alpm_option_get_fetchcb_ctx (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the downloading callback\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the currently set fetch callback context 
+.RE
+.PP
+
+.SS "const char * alpm_option_get_gpgdir (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the path to libalpm's GnuPG home directory\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the path to libalpms's GnuPG home directory 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_option_get_hookdirs (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Gets the currently configured hookdirs,\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a char* list of hook directories 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_option_get_ignoregroups (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Get the list of ignored groups\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the char* list of ignored groups 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_option_get_ignorepkgs (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Get the list of ignored packages\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the char* list of ignored packages 
+.RE
+.PP
+
+.SS "int alpm_option_get_local_file_siglevel (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Get the configured local file siglevel\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a \fBalpm_siglevel_t\fP bitfield of the siglevel 
+.RE
+.PP
+
+.SS "const char * alpm_option_get_lockfile (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Get the name of the database lock file\&. Read-only\&. This is the name that the lockfile would have\&. It does not matter if the lockfile actually exists on disk\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+
+.SS "\fBalpm_cb_log\fP alpm_option_get_logcb (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the callback used for logging\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the currently set log callback 
+.RE
+.PP
+
+.SS "void * alpm_option_get_logcb_ctx (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the callback used for logging\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the currently set log callback context 
+.RE
+.PP
+
+.SS "const char * alpm_option_get_logfile (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Gets the filepath to the currently set logfile\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the path to the logfile 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_option_get_noextracts (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Get the list of no-extract files\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the char* list of no-extract files 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_option_get_noupgrades (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Get the list of no-upgrade files\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the char* list of no-upgrade files 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_option_get_overwrite_files (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Gets the currently configured overwritable files,\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a char* list of overwritable file globs 
+.RE
+.PP
+
+.SS "int alpm_option_get_parallel_downloads (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Gets the number of parallel streams to download database and package files\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the number of parallel streams to download database and package files 
+.RE
+.PP
+
+.SS "\fBalpm_cb_progress\fP alpm_option_get_progresscb (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the callback used for operation progress\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the currently set progress callback 
+.RE
+.PP
+
+.SS "void * alpm_option_get_progresscb_ctx (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the callback used for operation progress\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the currently set progress callback context 
+.RE
+.PP
+
+.SS "\fBalpm_cb_question\fP alpm_option_get_questioncb (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the callback used for questions\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the currently set question callback 
+.RE
+.PP
+
+.SS "void * alpm_option_get_questioncb_ctx (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the callback used for questions\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the currently set question callback context 
+.RE
+.PP
+
+.SS "int alpm_option_get_remote_file_siglevel (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Get the configured remote file siglevel\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a \fBalpm_siglevel_t\fP bitfield of the siglevel 
+.RE
+.PP
+
+.SS "const char * alpm_option_get_root (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the root path\&. Read-only\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+
+.SS "int alpm_option_get_usesyslog (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns whether to use syslog (0 is FALSE, TRUE otherwise)\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_match_noextract (\fBalpm_handle_t\fP * handle, const char * path)"
+
+.PP
+Test if a path matches any of the globs in the no-extract list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIpath\fP the path to test 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 is the path matches a glob, negative if there is no match and positive is the match was inverted 
+.RE
+.PP
+
+.SS "int alpm_option_match_noupgrade (\fBalpm_handle_t\fP * handle, const char * path)"
+
+.PP
+Test if a path matches any of the globs in the no-upgrade list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIpath\fP the path to test 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 is the path matches a glob, negative if there is no match and positive is the match was inverted 
+.RE
+.PP
+
+.SS "int alpm_option_remove_architecture (\fBalpm_handle_t\fP * handle, const char * arch)"
+
+.PP
+Removes an allowed package architecture\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIarch\fP the architecture to remove 
+.RE
+.PP
+
+.SS "int alpm_option_remove_assumeinstalled (\fBalpm_handle_t\fP * handle, const \fBalpm_depend_t\fP * dep)"
+
+.PP
+Remove an entry from the assume installed list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIdep\fP the dep to remove 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_remove_cachedir (\fBalpm_handle_t\fP * handle, const char * cachedir)"
+
+.PP
+Remove a cachedir from the configured cachedirs\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIcachedir\fP the cachedir to remove 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_remove_hookdir (\fBalpm_handle_t\fP * handle, const char * hookdir)"
+
+.PP
+Remove a hookdir from the configured hookdirs\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIhookdir\fP the hookdir to remove 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_remove_ignoregroup (\fBalpm_handle_t\fP * handle, const char * grp)"
+
+.PP
+Remove an entry from the ignoregroup list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIgrp\fP the group to remove 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_remove_ignorepkg (\fBalpm_handle_t\fP * handle, const char * pkg)"
+
+.PP
+Remove an entry from the ignorepkg list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIpkg\fP the package to remove 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_remove_noextract (\fBalpm_handle_t\fP * handle, const char * path)"
+
+.PP
+Remove an entry from the no-extract list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIpath\fP the path to remove 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_remove_noupgrade (\fBalpm_handle_t\fP * handle, const char * path)"
+
+.PP
+Remove an entry from the no-upgrade list\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIpath\fP the path to remove 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_remove_overwrite_file (\fBalpm_handle_t\fP * handle, const char * glob)"
+
+.PP
+Remove a file glob from the configured overwritable files globs\&. 
+.PP
+\fBNote\fP
+.RS 4
+The overwritable file list contains a list of globs\&. The glob to remove must exactly match the entry to remove\&. There is no glob expansion\&. 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIglob\fP the file glob to remove 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_architectures (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP * arches)"
+
+.PP
+Sets the allowed package architecture\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIarches\fP the architecture to set 
+.RE
+.PP
+
+.SS "int alpm_option_set_assumeinstalled (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP * deps)"
+
+.PP
+Sets the list of dependencies that are assumed to be met\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIdeps\fP a list of *alpm_depend_t The list will be duped and the original will still need to be freed by the caller\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_cachedirs (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP * cachedirs)"
+
+.PP
+Sets the cachedirs\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIcachedirs\fP a char* list of cachdirs\&. The list will be duped and the original will still need to be freed by the caller\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_checkspace (\fBalpm_handle_t\fP * handle, int checkspace)"
+
+.PP
+Enable/disable checking free space before installing packages\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIcheckspace\fP 0 for disabled, 1 for enabled 
+.RE
+.PP
+
+.SS "int alpm_option_set_dbext (\fBalpm_handle_t\fP * handle, const char * dbext)"
+
+.PP
+Sets the database extension\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIdbext\fP the database extension to use 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_default_siglevel (\fBalpm_handle_t\fP * handle, int level)"
+
+.PP
+Set the default siglevel\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIlevel\fP a \fBalpm_siglevel_t\fP bitfield of the level to set 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_disable_dl_timeout (\fBalpm_handle_t\fP * handle, unsigned short disable_dl_timeout)"
+
+.PP
+Enables/disables the download timeout\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIdisable_dl_timeout\fP 0 for enabled, 1 for disabled 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_dlcb (\fBalpm_handle_t\fP * handle, \fBalpm_cb_download\fP cb, void * ctx)"
+
+.PP
+Sets the callback used to report download progress\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIcb\fP the cb to use 
+.br
+\fIctx\fP user-provided context to pass to cb 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_eventcb (\fBalpm_handle_t\fP * handle, \fBalpm_cb_event\fP cb, void * ctx)"
+
+.PP
+Sets the callback used for events\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIcb\fP the cb to use 
+.br
+\fIctx\fP user-provided context to pass to cb 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_fetchcb (\fBalpm_handle_t\fP * handle, \fBalpm_cb_fetch\fP cb, void * ctx)"
+
+.PP
+Sets the downloading callback\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIcb\fP the cb to use 
+.br
+\fIctx\fP user-provided context to pass to cb 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_gpgdir (\fBalpm_handle_t\fP * handle, const char * gpgdir)"
+
+.PP
+Sets the path to libalpm's GnuPG home directory\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIgpgdir\fP the gpgdir to set 
+.RE
+.PP
+
+.SS "int alpm_option_set_hookdirs (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP * hookdirs)"
+
+.PP
+Sets the hookdirs\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIhookdirs\fP a char* list of hookdirs\&. The list will be duped and the original will still need to be freed by the caller\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_ignoregroups (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP * ignoregrps)"
+
+.PP
+Sets the list of groups to ignore\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIignoregrps\fP a char* list of groups to ignore The list will be duped and the original will still need to be freed by the caller\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_ignorepkgs (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP * ignorepkgs)"
+
+.PP
+Sets the list of packages to ignore\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIignorepkgs\fP a char* list of packages to ignore The list will be duped and the original will still need to be freed by the caller\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_local_file_siglevel (\fBalpm_handle_t\fP * handle, int level)"
+
+.PP
+Set the local file siglevel\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIlevel\fP a \fBalpm_siglevel_t\fP bitfield of the level to set 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_logcb (\fBalpm_handle_t\fP * handle, \fBalpm_cb_log\fP cb, void * ctx)"
+
+.PP
+Sets the callback used for logging\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIcb\fP the cb to use 
+.br
+\fIctx\fP user-provided context to pass to cb 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_logfile (\fBalpm_handle_t\fP * handle, const char * logfile)"
+
+.PP
+Sets the logfile path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIlogfile\fP path to the new location of the logfile 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_noextracts (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP * noextract)"
+
+.PP
+Sets the list of no-extract files\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fInoextract\fP a char* list of file to not extract\&. The list will be duped and the original will still need to be freed by the caller\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_noupgrades (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP * noupgrade)"
+
+.PP
+Sets the list of no-upgrade files\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fInoupgrade\fP a char* list of file to not upgrade\&. The list will be duped and the original will still need to be freed by the caller\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_overwrite_files (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP * globs)"
+
+.PP
+Sets the overwritable files\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIglobs\fP a char* list of overwritable file globs\&. The list will be duped and the original will still need to be freed by the caller\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_parallel_downloads (\fBalpm_handle_t\fP * handle, unsigned int num_streams)"
+
+.PP
+Sets number of parallel streams to download database and package files\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fInum_streams\fP number of parallel download streams 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error 
+.RE
+.PP
+
+.SS "int alpm_option_set_progresscb (\fBalpm_handle_t\fP * handle, \fBalpm_cb_progress\fP cb, void * ctx)"
+
+.PP
+Sets the callback used for operation progress\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIcb\fP the cb to use 
+.br
+\fIctx\fP user-provided context to pass to cb 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_questioncb (\fBalpm_handle_t\fP * handle, \fBalpm_cb_question\fP cb, void * ctx)"
+
+.PP
+Sets the callback used for questions\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIcb\fP the cb to use 
+.br
+\fIctx\fP user-provided context to pass to cb 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_remote_file_siglevel (\fBalpm_handle_t\fP * handle, int level)"
+
+.PP
+Set the remote file siglevel\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIlevel\fP a \fBalpm_siglevel_t\fP bitfield of the level to set 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_usesyslog (\fBalpm_handle_t\fP * handle, int usesyslog)"
+
+.PP
+Sets whether to use syslog (0 is FALSE, TRUE otherwise)\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIusesyslog\fP whether to use the syslog (0 is FALSE, TRUE otherwise) 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libalpm from the source code\&.

@@ -1,0 +1,327 @@
+.TH "libalpm_sig" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+libalpm_sig \- Signature checking
+.PP
+ \- Functions to check signatures\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBalpm_pgpkey_t\fP"
+.br
+.RI "A PGP key\&. "
+.ti -1c
+.RI "struct \fBalpm_sigresult_t\fP"
+.br
+.RI "Signature result\&. "
+.ti -1c
+.RI "struct \fBalpm_siglist_t\fP"
+.br
+.RI "Signature list\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBalpm_siglevel_t\fP { \fBALPM_SIG_PACKAGE\fP = (1 << 0), \fBALPM_SIG_PACKAGE_OPTIONAL\fP = (1 << 1), \fBALPM_SIG_PACKAGE_MARGINAL_OK\fP = (1 << 2), \fBALPM_SIG_PACKAGE_UNKNOWN_OK\fP = (1 << 3), \fBALPM_SIG_DATABASE\fP = (1 << 10), \fBALPM_SIG_DATABASE_OPTIONAL\fP = (1 << 11), \fBALPM_SIG_DATABASE_MARGINAL_OK\fP = (1 << 12), \fBALPM_SIG_DATABASE_UNKNOWN_OK\fP = (1 << 13), \fBALPM_SIG_USE_DEFAULT\fP = (1 << 30) }"
+.br
+.RI "PGP signature verification options\&. "
+.ti -1c
+.RI "enum \fBalpm_sigstatus_t\fP { \fBALPM_SIGSTATUS_VALID\fP, \fBALPM_SIGSTATUS_KEY_EXPIRED\fP, \fBALPM_SIGSTATUS_SIG_EXPIRED\fP, \fBALPM_SIGSTATUS_KEY_UNKNOWN\fP, \fBALPM_SIGSTATUS_KEY_DISABLED\fP, \fBALPM_SIGSTATUS_INVALID\fP }"
+.br
+.RI "PGP signature verification status return codes\&. "
+.ti -1c
+.RI "enum \fBalpm_sigvalidity_t\fP { \fBALPM_SIGVALIDITY_FULL\fP, \fBALPM_SIGVALIDITY_MARGINAL\fP, \fBALPM_SIGVALIDITY_NEVER\fP, \fBALPM_SIGVALIDITY_UNKNOWN\fP }"
+.br
+.RI "The trust level of a PGP key\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBalpm_pkg_check_pgp_signature\fP (\fBalpm_pkg_t\fP *pkg, \fBalpm_siglist_t\fP *siglist)"
+.br
+.RI "Check the PGP signature for the given package file\&. "
+.ti -1c
+.RI "int \fBalpm_db_check_pgp_signature\fP (\fBalpm_db_t\fP *db, \fBalpm_siglist_t\fP *siglist)"
+.br
+.RI "Check the PGP signature for the given database\&. "
+.ti -1c
+.RI "int \fBalpm_siglist_cleanup\fP (\fBalpm_siglist_t\fP *siglist)"
+.br
+.RI "Clean up and free a signature result list\&. "
+.ti -1c
+.RI "int \fBalpm_decode_signature\fP (const char *base64_data, unsigned char **data, size_t *data_len)"
+.br
+.RI "Decode a loaded signature in base64 form\&. "
+.ti -1c
+.RI "int \fBalpm_extract_keyid\fP (\fBalpm_handle_t\fP *handle, const char *identifier, const unsigned char *sig, const size_t len, \fBalpm_list_t\fP **keys)"
+.br
+.RI "Extract the Issuer Key ID from a signature\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Functions to check signatures\&. 
+
+
+.SH "Data Structure Documentation"
+.PP 
+.SH "struct alpm_pgpkey_t"
+.PP 
+A PGP key\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+\fBalpm_time_t\fP \fIcreated\fP When the key was created\&. 
+.br
+.PP
+void * \fIdata\fP The actual key data\&. 
+.br
+.PP
+char * \fIemail\fP Email of the key's owner\&. 
+.br
+.PP
+\fBalpm_time_t\fP \fIexpires\fP When the key expires\&. 
+.br
+.PP
+char * \fIfingerprint\fP The key's fingerprint\&. 
+.br
+.PP
+unsigned int \fIlength\fP The length of the key\&. 
+.br
+.PP
+char * \fIname\fP Name of the key's owner\&. 
+.br
+.PP
+char \fIpubkey_algo\fP A character representing the encryption algorithm used by the public key\&. 
+.br
+? = unknown R = RSA D = DSA E = EDDSA 
+.br
+.PP
+unsigned int \fIrevoked\fP has the key been revoked 
+.br
+.PP
+char * \fIuid\fP UID of the key\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_sigresult_t"
+.PP 
+Signature result\&. 
+
+Contains the key, status, and validity of a given signature\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+\fBalpm_pgpkey_t\fP \fIkey\fP The key of the signature\&. 
+.br
+.PP
+\fBalpm_sigstatus_t\fP \fIstatus\fP The status of the signature\&. 
+.br
+.PP
+\fBalpm_sigvalidity_t\fP \fIvalidity\fP The validity of the signature\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_siglist_t"
+.PP 
+Signature list\&. 
+
+Contains the number of signatures found and a pointer to an array of results\&. The array is of size count\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+size_t \fIcount\fP The amount of results in the array\&. 
+.br
+.PP
+\fBalpm_sigresult_t\fP * \fIresults\fP An array of sigresults\&. 
+.br
+.PP
+.RE
+.PP
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBalpm_siglevel_t\fP"
+
+.PP
+PGP signature verification options\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIALPM_SIG_PACKAGE \fP\fP
+Packages require a signature\&. 
+.TP
+\fB\fIALPM_SIG_PACKAGE_OPTIONAL \fP\fP
+Packages do not require a signature, but check packages that do have signatures\&. 
+.TP
+\fB\fIALPM_SIG_PACKAGE_UNKNOWN_OK \fP\fP
+Allow packages with signatures that are unknown trust\&. 
+.TP
+\fB\fIALPM_SIG_DATABASE \fP\fP
+Databases require a signature\&. 
+.TP
+\fB\fIALPM_SIG_DATABASE_OPTIONAL \fP\fP
+Databases do not require a signature, but check databases that do have signatures\&. 
+.TP
+\fB\fIALPM_SIG_DATABASE_MARGINAL_OK \fP\fP
+Allow databases with signatures that are marginal trust\&. 
+.TP
+\fB\fIALPM_SIG_DATABASE_UNKNOWN_OK \fP\fP
+Allow databases with signatures that are unknown trust\&. 
+.TP
+\fB\fIALPM_SIG_USE_DEFAULT \fP\fP
+The Default siglevel\&. 
+.SS "enum \fBalpm_sigstatus_t\fP"
+
+.PP
+PGP signature verification status return codes\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIALPM_SIGSTATUS_VALID \fP\fP
+Signature is valid\&. 
+.TP
+\fB\fIALPM_SIGSTATUS_KEY_EXPIRED \fP\fP
+The key has expired\&. 
+.TP
+\fB\fIALPM_SIGSTATUS_SIG_EXPIRED \fP\fP
+The signature has expired\&. 
+.TP
+\fB\fIALPM_SIGSTATUS_KEY_UNKNOWN \fP\fP
+The key is not in the keyring\&. 
+.TP
+\fB\fIALPM_SIGSTATUS_KEY_DISABLED \fP\fP
+The key has been disabled\&. 
+.TP
+\fB\fIALPM_SIGSTATUS_INVALID \fP\fP
+The signature is invalid\&. 
+.SS "enum \fBalpm_sigvalidity_t\fP"
+
+.PP
+The trust level of a PGP key\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIALPM_SIGVALIDITY_FULL \fP\fP
+The signature is fully trusted\&. 
+.TP
+\fB\fIALPM_SIGVALIDITY_MARGINAL \fP\fP
+The signature is marginally trusted\&. 
+.TP
+\fB\fIALPM_SIGVALIDITY_NEVER \fP\fP
+The signature is never trusted\&. 
+.TP
+\fB\fIALPM_SIGVALIDITY_UNKNOWN \fP\fP
+The signature has unknown trust\&. 
+.SH "Function Documentation"
+.PP 
+.SS "int alpm_db_check_pgp_signature (\fBalpm_db_t\fP * db, \fBalpm_siglist_t\fP * siglist)"
+
+.PP
+Check the PGP signature for the given database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdb\fP the database to check 
+.br
+\fIsiglist\fP a pointer to storage for signature results 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a int value : 0 (valid), 1 (invalid), -1 (an error occurred) 
+.RE
+.PP
+
+.SS "int alpm_decode_signature (const char * base64_data, unsigned char ** data, size_t * data_len)"
+
+.PP
+Decode a loaded signature in base64 form\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIbase64_data\fP the signature to attempt to decode 
+.br
+\fIdata\fP the decoded data; must be freed by the caller 
+.br
+\fIdata_len\fP the length of the returned data 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on failure to properly decode 
+.RE
+.PP
+
+.SS "int alpm_extract_keyid (\fBalpm_handle_t\fP * handle, const char * identifier, const unsigned char * sig, const size_t len, \fBalpm_list_t\fP ** keys)"
+
+.PP
+Extract the Issuer Key ID from a signature\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIidentifier\fP the identifier of the key\&. This may be the name of the package or the path to the package\&. 
+.br
+\fIsig\fP PGP signature 
+.br
+\fIlen\fP length of signature 
+.br
+\fIkeys\fP a pointer to storage for key IDs 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error 
+.RE
+.PP
+
+.SS "int alpm_pkg_check_pgp_signature (\fBalpm_pkg_t\fP * pkg, \fBalpm_siglist_t\fP * siglist)"
+
+.PP
+Check the PGP signature for the given package file\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpkg\fP the package to check 
+.br
+\fIsiglist\fP a pointer to storage for signature results 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a int value : 0 (valid), 1 (invalid), -1 (an error occurred) 
+.RE
+.PP
+
+.SS "int alpm_siglist_cleanup (\fBalpm_siglist_t\fP * siglist)"
+
+.PP
+Clean up and free a signature result list\&. Note that this does not free the siglist object itself in case that was allocated on the stack; this is the responsibility of the caller\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsiglist\fP a pointer to storage for signature results 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libalpm from the source code\&.

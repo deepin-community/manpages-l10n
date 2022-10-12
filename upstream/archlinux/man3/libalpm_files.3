@@ -1,0 +1,110 @@
+.TH "libalpm_files" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+libalpm_files \- Files
+.PP
+ \- Functions for package files\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBalpm_file_t\fP"
+.br
+.RI "File in a package\&. "
+.ti -1c
+.RI "struct \fBalpm_filelist_t\fP"
+.br
+.RI "Package filelist container\&. "
+.ti -1c
+.RI "struct \fBalpm_backup_t\fP"
+.br
+.RI "Local package or package file backup entry\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBalpm_file_t\fP * \fBalpm_filelist_contains\fP (\fBalpm_filelist_t\fP *filelist, const char *path)"
+.br
+.RI "Determines whether a package filelist contains a given path\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Functions for package files\&. 
+
+
+.SH "Data Structure Documentation"
+.PP 
+.SH "struct alpm_file_t"
+.PP 
+File in a package\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+mode_t \fImode\fP The file's permissions\&. 
+.br
+.PP
+char * \fIname\fP Name of the file\&. 
+.br
+.PP
+off_t \fIsize\fP Size of the file\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_filelist_t"
+.PP 
+Package filelist container\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+size_t \fIcount\fP Amount of files in the array\&. 
+.br
+.PP
+\fBalpm_file_t\fP * \fIfiles\fP An array of files\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct alpm_backup_t"
+.PP 
+Local package or package file backup entry\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+char * \fIhash\fP Hash of the filename (used internally) 
+.br
+.PP
+char * \fIname\fP Name of the file (without \&.pacsave extension) 
+.br
+.PP
+.RE
+.PP
+.SH "Function Documentation"
+.PP 
+.SS "\fBalpm_file_t\fP * alpm_filelist_contains (\fBalpm_filelist_t\fP * filelist, const char * path)"
+
+.PP
+Determines whether a package filelist contains a given path\&. The provided path should be relative to the install root with no leading slashes, e\&.g\&. 'etc/localtime'\&. When searching for directories, the path must have a trailing slash\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfilelist\fP a pointer to a package filelist 
+.br
+\fIpath\fP the path to search for in the package 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a pointer to the matching file or NULL if not found 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libalpm from the source code\&.

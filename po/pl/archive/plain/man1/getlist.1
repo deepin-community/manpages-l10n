@@ -1,0 +1,84 @@
+.\" {PTM/PB/0.1/20-06-1999/"Pobierz listę z serwera NNTP"}
+.\" $Revision: 1.2 $
+.TH GETLIST 1
+.SH NAZWA
+getlist \- pobierz listę z serwera NNTP
+.SH SKŁADNIA
+.I getlist
+[
+.BI \-h " host"
+]
+[
+.I lista
+[
+.I wzorzec
+[
+.I typy
+]
+]
+]
+.SH OPIS
+Program
+.I getlist
+uzyskuje listę z serwera NNTP i wysyła ją na standardowe wyjście.
+.PP
+Parametr
+.B lista
+może być jednym z
+.IR active ,
+.IR active.times ,
+.IR distributions ,
+lub
+.IR newsgroups .
+Argumenty te żądają odpowiednio plików
+.IR active (5),
+.IR active.times ,
+.\" =()<.IR @<_PATH_NEWSLIB>@/distributions ,>()=
+.IR /etc/news/distributions ,
+lub
+.\" =()<.I @<_PATH_NEWSLIB>@/newsgroups>()=
+.IR /etc/news/newsgroups .
+.PP
+Jeśli użyta zostanie flaga ,,\-h'', program podłącza się do serwera na
+podanym hoście. Domyślnie jest to serwer podany w pliku
+.IR inn.conf (5).
+.PP
+Jeśli parametrem
+.I listy
+jest
+.IR active ,
+to do ograniczania wyjścia mogą zostać użyte parametry
+.I wzorzec
+i
+.I typy .
+Jeśli podano
+.IR wzorzec ,
+wypisywane są tylko te linie grup, które odpowiadają mu według
+.IR wildmat (3).
+Jeśli podano
+.IR typy ,
+to wyświetlane są tylko te linie, których czwarte pole zaczyna się od znaku
+wymienionego w
+.IR typy .
+.PP
+Na przykład następujące polecenie da nam jednolinijkowe opisy wszystkich grup
+dyskusyjnych UUNET-u:
+.RS
+getlist \-h news.uu.net newsgroups
+.RE
+.PP
+Poniższe polecenie wypisuje wszystkie grupy, w których dozwolone jest
+lokalne wysyłanie artykułów, grupy, które są moderowane lub aliasowane
+.RS
+getlist active '*' ym=
+.RE
+.PP
+Zauważ, że listowanie plików innych niż plik active to tylko popularne
+rozszerzenie protokołu NNTP i nie wszędzie musi być dostępne.
+.SH HISTORIA
+Napisane przez Landona Curta Nolla <chongo@toad.com> dla InterNetNews.
+.de R$
+Jest to wersja \\$3, z dnia \\$4.
+..
+.SH "ZOBACZ TAKŻE"
+active(5), nnrpd(8), wildmat(3).

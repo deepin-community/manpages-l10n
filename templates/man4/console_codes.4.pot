@@ -1,0 +1,3568 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-09-10 14:41+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CONSOLE_CODES"
+msgstr ""
+
+#. type: TH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "2021-03-22"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "console_codes - Linux console escape and control sequences"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The Linux console implements a large subset of the VT102 and ECMA-48/ISO "
+"6429/ANSI X3.64 terminal controls, plus certain private-mode sequences for "
+"changing the color palette, character-set mapping, and so on.  In the "
+"tabular descriptions below, the second column gives ECMA-48 or DEC mnemonics "
+"(the latter if prefixed with DEC) for the given function.  Sequences without "
+"a mnemonic are neither ECMA-48 nor VT102."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"After all the normal output processing has been done, and a stream of "
+"characters arrives at the console driver for actual printing, the first "
+"thing that happens is a translation from the code used for processing to the "
+"code used for printing."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"If the console is in UTF-8 mode, then the incoming bytes are first assembled "
+"into 16-bit Unicode codes.  Otherwise, each byte is transformed according to "
+"the current mapping table (which translates it to a Unicode value).  See the "
+"B<Character Sets> section below for discussion."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"In the normal case, the Unicode value is converted to a font index, and this "
+"is stored in video memory, so that the corresponding glyph (as found in "
+"video ROM) appears on the screen.  Note that the use of Unicode (and the "
+"design of the PC hardware)  allows us to use 512 different glyphs "
+"simultaneously."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"If the current Unicode value is a control character, or we are currently "
+"processing an escape sequence, the value will treated specially.  Instead of "
+"being turned into a font index and rendered as a glyph, it may trigger "
+"cursor movement or other control functions.  See the B<Linux Console "
+"Controls> section below for discussion."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"It is generally not good practice to hard-wire terminal controls into "
+"programs.  Linux supports a B<terminfo>(5)  database of terminal "
+"capabilities.  Rather than emitting console escape sequences by hand, you "
+"will almost always want to use a terminfo-aware screen library or utility "
+"such as B<ncurses>(3), B<tput>(1), or B<reset>(1)."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux console controls"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This section describes all the control characters and escape sequences that "
+"invoke special functions (i.e., anything other than writing a glyph at the "
+"current cursor location) on the Linux console."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<Control characters>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"A character is a control character if (before transformation according to "
+"the mapping table) it has one of the 14 codes 00 (NUL), 07 (BEL), 08 (BS), "
+"09 (HT), 0a (LF), 0b (VT), 0c (FF), 0d (CR), 0e (SO), 0f (SI), 18 (CAN), 1a "
+"(SUB), 1b (ESC), 7f (DEL).  One can set a \"display control characters\" "
+"mode (see below), and allow 07, 09, 0b, 18, 1a, 7f to be displayed as "
+"glyphs.  On the other hand, in UTF-8 mode all codes 00\\(en1f are regarded "
+"as control characters, regardless of any \"display control characters\" mode."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"If we have a control character, it is acted upon immediately and then "
+"discarded (even in the middle of an escape sequence)  and the escape "
+"sequence continues with the next character.  (However, ESC starts a new "
+"escape sequence, possibly aborting a previous unfinished one, and CAN and "
+"SUB abort any escape sequence.)  The recognized control characters are BEL, "
+"BS, HT, LF, VT, FF, CR, SO, SI, CAN, SUB, ESC, DEL, CSI.  They do what one "
+"would expect:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "BEL (0x07, B<\\(haG>) beeps;"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"BS (0x08, B<\\(haH>) backspaces one column (but not past the beginning of "
+"the line);"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"HT (0x09, B<\\(haI>) goes to the next tab stop or to the end of the line if "
+"there is no earlier tab stop;"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"LF (0x0A, B<\\(haJ>), VT (0x0B, B<\\(haK>), and FF (0x0C, B<\\(haL>) all "
+"give a linefeed, and if LF/NL (new-line mode) is set also a carriage return;"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "CR (0x0D, B<\\(haM>) gives a carriage return;"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "SO (0x0E, B<\\(haN>) activates the G1 character set;"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "SI (0x0F, B<\\(haO>) activates the G0 character set;"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "CAN (0x18, B<\\(haX>) and SUB (0x1A, B<\\(haZ>) abort escape sequences;"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "ESC (0x1B, B<\\(ha[>) starts an escape sequence;"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "DEL (0x7F) is ignored;"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "CSI (0x9B) is equivalent to ESC [."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<ESC- but not CSI-sequences>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC c"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "RIS"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Reset."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC D"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "IND"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linefeed."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC E"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NEL"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Newline."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC H"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "HTS"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set tab stop at current column."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC M"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "RI"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Reverse linefeed."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC Z"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DECID"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"DEC private identification. The kernel\n"
+"returns the string  ESC [ ? 6 c, claiming\n"
+"that it is a VT102."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC 7"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DECSC"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"Save current state (cursor coordinates,\n"
+"attributes, character sets pointed at by G0, G1)."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC 8"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DECRC"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Restore state most recently saved by ESC 7."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ["
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CSI"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Control sequence introducer"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC %"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Start sequence selecting character set"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC % @"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "\\0\\0\\0Select default (ISO 646 / ISO 8859-1)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC % G"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "\\0\\0\\0Select UTF-8"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC % 8"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "\\0\\0\\0Select UTF-8 (obsolete)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC # 8"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DECALN"
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "DEC screen alignment test - fill screen with E's"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ("
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"Start sequence defining G0 character set\n"
+"(followed by one of B, 0, U, K, as below)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ( B"
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Select default (ISO 8859-1 mapping)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ( 0"
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Select VT100 graphics mapping"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ( U"
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Select null mapping - straight to character ROM"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ( K"
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Select user mapping - the map that is loaded by the utility B<mapscrn>(8)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC )"
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Start sequence defining G1 (followed by one of B, 0, U, K, as above)."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC E<gt>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DECPNM"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set numeric keypad mode"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ="
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DECPAM"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set application keypad mode"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "OSC"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"(Should be: Operating system command)\n"
+"ESC ] P I<nrrggbb>: set palette, with parameter\n"
+"given in 7 hexadecimal digits after the final P :-(.\n"
+"Here I<n> is the color (0\\(en15), and I<rrggbb> indicates\n"
+"the red/green/blue values (0\\(en255).\n"
+"ESC ] R: reset palette"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<ECMA-48 CSI sequences>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"CSI (or ESC [) is followed by a sequence of parameters, at most NPAR (16), "
+"that are decimal numbers separated by semicolons.  An empty or absent "
+"parameter is taken to be 0.  The sequence of parameters may be preceded by a "
+"single question mark."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"However, after CSI [ (or ESC [ [) a single character is read and this entire "
+"sequence is ignored.  (The idea is to ignore an echoed function key.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The action of a CSI sequence is determined by its final character."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "@"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ICH"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Insert the indicated # of blank characters."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "A"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CUU"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Move cursor up the indicated # of rows."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CUD"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Move cursor down the indicated # of rows."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "C"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CUF"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Move cursor right the indicated # of columns."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "D"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CUB"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Move cursor left the indicated # of columns."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "E"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CNL"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Move cursor down the indicated # of rows, to column 1."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "F"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CPL"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Move cursor up the indicated # of rows, to column 1."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "G"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CHA"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Move cursor to indicated column in current row."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "H"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CUP"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Move cursor to the indicated row, column (origin at 1,1)."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "J"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ED"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Erase display (default: from cursor to end of display)."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 1 J: erase from start to cursor."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 2 J: erase whole display."
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"ESC [ 3 J: erase whole display including scroll-back\n"
+"buffer (since Linux 3.0)."
+msgstr ""
+
+#.  ESC [ 3 J: commit f8df13e0a901fe55631fed66562369b4dba40f8b
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "K"
+msgstr ""
+
+#.  ESC [ 3 J: commit f8df13e0a901fe55631fed66562369b4dba40f8b
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "EL"
+msgstr ""
+
+#. #-#-#-#-#  archlinux: console_codes.4.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: tbl table
+#. #-#-#-#-#  debian-bullseye: console_codes.4.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  ESC [ 3 J: commit f8df13e0a901fe55631fed66562369b4dba40f8b
+#. type: tbl table
+#. #-#-#-#-#  debian-unstable: console_codes.4.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  ESC [ 3 J: commit f8df13e0a901fe55631fed66562369b4dba40f8b
+#. type: tbl table
+#. #-#-#-#-#  fedora-rawhide: console_codes.4.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: tbl table
+#. #-#-#-#-#  mageia-cauldron: console_codes.4.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: tbl table
+#. #-#-#-#-#  opensuse-leap-15-3: console_codes.4.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  ESC [ 3 J: commit f8df13e0a901fe55631fed66562369b4dba40f8b
+#. type: tbl table
+#. #-#-#-#-#  opensuse-tumbleweed: console_codes.4.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Erase line (default: from cursor to end of line)."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 1 K: erase from start of line to cursor."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 2 K: erase whole line."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "L"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "IL"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Insert the indicated # of blank lines."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "M"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DL"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Delete the indicated # of lines."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "P"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DCH"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Delete the indicated # of characters on current line."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "X"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ECH"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Erase the indicated # of characters on current line."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "a"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "HPR"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "c"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DA"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Answer ESC [ ? 6 c: \"I am a VT102\"."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "d"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "VPA"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Move cursor to the indicated row, current column."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "e"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "VPR"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "f"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "HVP"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Move cursor to the indicated row, column."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "g"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "TBC"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Without parameter: clear tab stop at current position."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 3 g: delete all tab stops."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "h"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SM"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set Mode (see below)."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "l"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "RM"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Reset Mode (see below)."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "m"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SGR"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set attributes (see below)."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "n"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DSR"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Status report (see below)."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "q"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DECLL"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set keyboard LEDs."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 0 q: clear all LEDs"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 1 q: set Scroll Lock LED"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 2 q: set Num Lock LED"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 3 q: set Caps Lock LED"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "r"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DECSTBM"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set scrolling region; parameters are top and bottom row."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "s"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "?"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Save cursor location."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "u"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Restore cursor location."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "\\`"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "HPA"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "B<ECMA-48 Select Graphic Rendition>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The ECMA-48 SGR sequence ESC [ I<parameters> m sets display attributes.  "
+"Several attributes can be set in the same sequence, separated by "
+"semicolons.  An empty parameter (between semicolons or string initiator or "
+"terminator) is interpreted as a zero."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "param"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "result"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "0"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "reset all attributes to their defaults"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "1"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set bold"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "2"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set half-bright (simulated with color on a color display)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "4"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"set underscore (simulated with color on a color display)\n"
+"(the colors used to simulate dim or underline are set\n"
+"using ESC ] ...)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "5"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set blink"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "7"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set reverse video"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "10"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"reset selected mapping, display control flag,\n"
+"and toggle meta flag (ECMA-48 says \"primary font\")."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "11"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"select null mapping, set display control flag,\n"
+"reset toggle meta flag (ECMA-48 says \"first alternate font\")."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "12"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"select null mapping, set display control flag,\n"
+"set toggle meta flag (ECMA-48 says \"second alternate font\").\n"
+"The toggle meta flag\n"
+"causes the high bit of a byte to be toggled\n"
+"before the mapping table translation is done."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "21"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"set underline; before Linux 4.17, this value\n"
+"set normal intensity (as is done in many other terminals)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "22"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set normal intensity"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "24"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "underline off"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "25"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "blink off"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "27"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "reverse video off"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "30"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set black foreground"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "31"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set red foreground"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "32"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set green foreground"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "33"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set brown foreground"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "34"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set blue foreground"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "35"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set magenta foreground"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "36"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set cyan foreground"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "37"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set white foreground"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "38"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"256/24-bit foreground color follows, shoehorned into 16 basic colors\n"
+"(before Linux 3.16: set underscore on, set default foreground color)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "39"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"set default foreground color\n"
+"(before Linux 3.16: set underscore off, set default foreground color)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "40"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set black background"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "41"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set red background"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "42"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set green background"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "43"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set brown background"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "44"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set blue background"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "45"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set magenta background"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "46"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set cyan background"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "47"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set white background"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "48"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "256/24-bit background color follows, shoehorned into 8 basic colors"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "49"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "set default background color"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "90..97"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "set foreground to bright versions of 30..37"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "100.107"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "set background, same as 40..47 (bright not supported)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Commands 38 and 48 require further arguments:"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ";5;x"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"256 color: values 0..15 are IBGR (black, red, green, ... white),\n"
+"16..231 a 6x6x6 color cube, 232..255 a grayscale ramp"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ";2;r;g;b"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "24-bit color, r/g/b components are in the range 0..255"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<ECMA-48 Mode Switches>"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 3 h"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "DECCRM (default off): Display control chars."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 4 h"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "DECIM (default off): Set insert mode."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 20 h"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"LF/NL (default off): Automatically follow echo of LF, VT, or FF with CR."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<ECMA-48 Status Report Commands>"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 5 n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Device status report (DSR): Answer is ESC [ 0 n (Terminal OK)."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 6 n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Cursor position report (CPR): Answer is ESC [ I<y> ; I<x> R, where I<x,y> is "
+"the cursor location."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<DEC Private Mode (DECSET/DECRST) sequences>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"These are not described in ECMA-48.  We list the Set Mode sequences; the "
+"Reset Mode sequences are obtained by replacing the final \\(aqh\\(aq by "
+"\\(aql\\(aq."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ ? 1 h"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"DECCKM (default off): When set, the cursor keys send an ESC O prefix, rather "
+"than ESC [."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ ? 3 h"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"DECCOLM (default off = 80 columns): 80/132 col mode switch.  The driver "
+"sources note that this alone does not suffice; some user-mode utility such "
+"as B<resizecons>(8)  has to change the hardware registers on the console "
+"video card."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ ? 5 h"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "DECSCNM (default off): Set reverse-video mode."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ ? 6 h"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"DECOM (default off): When set, cursor addressing is relative to the upper "
+"left corner of the scrolling region."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ ? 7 h"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"DECAWM (default on): Set autowrap on.  In this mode, a graphic character "
+"emitted after column 80 (or column 132 of DECCOLM is on)  forces a wrap to "
+"the beginning of the following line first."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ ? 8 h"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "DECARM (default on): Set keyboard autorepeat on."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ ? 9 h"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"X10 Mouse Reporting (default off): Set reporting mode to 1 (or reset to "
+"0)\\(emsee below."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ ? 25 h"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "DECTECM (default on): Make cursor visible."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ ? 1000 h"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"X11 Mouse Reporting (default off): Set reporting mode to 2 (or reset to "
+"0)\\(emsee below."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<Linux Console Private CSI Sequences>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The following sequences are neither ECMA-48 nor native VT102.  They are "
+"native to the Linux console driver.  Colors are in SGR parameters: 0 = "
+"black, 1 = red, 2 = green, 3 = brown, 4 = blue, 5 = magenta, 6 = cyan, 7 = "
+"white; 8\\(en15 = bright versions of 0\\(en7."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 1 ; I<n> ]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "Set color I<n> as the underline color."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 2 ; I<n> ]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "Set color I<n> as the dim color."
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 8 ]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Make the current color pair the default attributes."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 9 ; I<n> ]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set screen blank timeout to I<n> minutes."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 10 ; I<n> ]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set bell frequency in Hz."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 11 ; I<n> ]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set bell duration in msec."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 12 ; I<n> ]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Bring specified console to the front."
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 13 ]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Unblank the screen."
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 14 ; I<n> ]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set the VESA powerdown interval in minutes."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 15 ]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"Bring the previous console to the front\n"
+"(since Linux 2.6.0)."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC [ 16 ; I<n> ]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"Set the cursor blink interval in milliseconds\n"
+"(since Linux 4.2)."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Character sets"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The kernel knows about 4 translations of bytes into console-screen symbols.  "
+"The four tables are: a) Latin1 -E<gt> PC, b) VT100 graphics -E<gt> PC, c) PC "
+"-E<gt> PC, d) user-defined."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"There are two character sets, called G0 and G1, and one of them is the "
+"current character set.  (Initially G0.)  Typing B<\\(haN> causes G1 to "
+"become current, B<\\(haO> causes G0 to become current."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"These variables G0 and G1 point at a translation table, and can be changed "
+"by the user.  Initially they point at tables a) and b), respectively.  The "
+"sequences ESC ( B and ESC ( 0 and ESC ( U and ESC ( K cause G0 to point at "
+"translation table a), b), c), and d), respectively.  The sequences ESC ) B "
+"and ESC ) 0 and ESC ) U and ESC ) K cause G1 to point at translation table "
+"a), b), c), and d), respectively."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The sequence ESC c causes a terminal reset, which is what you want if the "
+"screen is all garbled.  The oft-advised \"echo \\(haV\\(haO\" will make only "
+"G0 current, but there is no guarantee that G0 points at table a).  In some "
+"distributions there is a program B<reset>(1)  that just does \"echo \\(ha[c"
+"\".  If your terminfo entry for the console is correct (and has an entry rs1="
+"\\eEc), then \"tput reset\" will also work."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The user-defined mapping table can be set using B<mapscrn>(8).  The result "
+"of the mapping is that if a symbol c is printed, the symbol s = map[c] is "
+"sent to the video memory.  The bitmap that corresponds to s is found in the "
+"character ROM, and can be changed using B<setfont>(8)."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Mouse tracking"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The mouse tracking facility is intended to return B<xterm>(1)-compatible "
+"mouse status reports.  Because the console driver has no way to know the "
+"device or type of the mouse, these reports are returned in the console input "
+"stream only when the virtual terminal driver receives a mouse update ioctl.  "
+"These ioctls must be generated by a mouse-aware user-mode application such "
+"as the B<gpm>(8)  daemon."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The mouse tracking escape sequences generated by B<xterm>(1) encode numeric "
+"parameters in a single character as I<value>+040.  For example, \\(aq!\\(aq "
+"is 1.  The screen coordinate system is 1-based."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The X10 compatibility mode sends an escape sequence on button press encoding "
+"the location and the mouse button pressed.  It is enabled by sending ESC [ ? "
+"9 h and disabled with ESC [ ? 9 l.  On button press, B<xterm>(1) sends ESC "
+"[ M I<bxy> (6 characters).  Here I<b> is button-1, and I<x> and I<y> are the "
+"x and y coordinates of the mouse when the button was pressed.  This is the "
+"same code the kernel also produces."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Normal tracking mode (not implemented in Linux 2.0.24) sends an escape "
+"sequence on both button press and release.  Modifier information is also "
+"sent.  It is enabled by sending ESC [ ? 1000 h and disabled with ESC [ ? "
+"1000 l.  On button press or release, B<xterm>(1) sends ESC [ M I<bxy>.  The "
+"low two bits of I<b> encode button information: 0=MB1 pressed, 1=MB2 "
+"pressed, 2=MB3 pressed, 3=release.  The upper bits encode what modifiers "
+"were down when the button was pressed and are added together: 4=Shift, "
+"8=Meta, 16=Control.  Again I<x> and I<y> are the x and y coordinates of the "
+"mouse event.  The upper left corner is (1,1)."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Comparisons with other terminals"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Many different terminal types are described, like the Linux console, as "
+"being \"VT100-compatible\".  Here we discuss differences between the Linux "
+"console and the two most important others, the DEC VT102 and B<xterm>(1)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<Control-character handling>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The VT102 also recognized the following control characters:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "NUL (0x00) was ignored;"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "ENQ (0x05) triggered an answerback message;"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "DC1 (0x11, B<\\(haQ>, XON) resumed transmission;"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"DC3 (0x13, B<\\(haS>, XOFF) caused VT100 to ignore (and stop transmitting)  "
+"all codes except XOFF and XON."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "VT100-like DC1/DC3 processing may be enabled by the terminal driver."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The B<xterm>(1)  program (in VT100 mode) recognizes the control characters "
+"BEL, BS, HT, LF, VT, FF, CR, SO, SI, ESC."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<Escape sequences>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "VT100 console sequences not implemented on the Linux console:"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC N"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SS2"
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Single shift 2. (Select G2 character set for the next character only.)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC O"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SS3"
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Single shift 3. (Select G3 character set for the next character only.)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC P"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DCS"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Device control string (ended by ESC \\e)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC X"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SOS"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Start of string."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "ESC \\(ha"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "PM"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Privacy message (ended by ESC \\e)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC \\e"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ST"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "String terminator"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC * ..."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Designate G2 character set"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC + ..."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Designate G3 character set"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The program B<xterm>(1)  (in VT100 mode) recognizes ESC c, ESC # 8, ESC "
+"E<gt>, ESC =, ESC D, ESC E, ESC H, ESC M, ESC N, ESC O, ESC P ... ESC \\e, "
+"ESC Z (it answers ESC [ ? 1 ; 2 c, \"I am a VT100 with advanced video option"
+"\")  and ESC \\(ha ... ESC \\e with the same meanings as indicated above.  "
+"It accepts ESC (, ESC ), ESC *, ESC + followed by 0, A, B for the DEC "
+"special character and line drawing set, UK, and US-ASCII, respectively."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The user can configure B<xterm>(1) to respond to VT220-specific control "
+"sequences, and it will identify itself as a VT52, VT100, and up depending on "
+"the way it is configured and initialized."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"It accepts ESC ] (OSC) for the setting of certain resources.  In addition to "
+"the ECMA-48 string terminator (ST), B<xterm>(1) accepts a BEL to terminate "
+"an OSC string.  These are a few of the OSC control sequences recognized by "
+"B<xterm>(1):"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ] 0 ; I<txt> ST"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set icon name and window title to I<txt>."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ] 1 ; I<txt> ST"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set icon name to I<txt>."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ] 2 ; I<txt> ST"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set window title to I<txt>."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ] 4 ; I<num>; I<txt> ST"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set ANSI color I<num> to I<txt>."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ] 10 ; I<txt> ST"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set dynamic text color to I<txt>."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ] 4 6 ; I<name> ST"
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "Change log file to I<name> (normally disabled by a compile-time option)."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC ] 5 0 ; I<fn> ST"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Set font to I<fn>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"It recognizes the following with slightly modified meaning (saving more "
+"state, behaving closer to VT100/VT220):"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC 7  DECSC"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Save cursor"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC 8  DECRC"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Restore cursor"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "It also recognizes"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC F"
+msgstr ""
+
+#. type: tbl table
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"Cursor to lower left corner of screen (if enabled\n"
+"by B<xterm>(1)'s B<hpLowerleftBugCompat> resource)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC l"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Memory lock (per HP terminals)."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Locks memory above the cursor."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC m"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Memory unlock (per HP terminals)."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC n"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "LS2"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Invoke the G2 character set."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC o"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "LS3"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Invoke the G3 character set."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC |"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "LS3R"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Invoke the G3 character set as GR."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "ESC }"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "LS2R"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Invoke the G2 character set as GR."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "ESC \\(ti"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "LS1R"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Invoke the G1 character set as GR."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"It also recognizes ESC % and provides a more complete UTF-8 implementation "
+"than Linux console."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<CSI Sequences>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Old versions of B<xterm>(1), for example, from X11R5, interpret the blink "
+"SGR as a bold SGR.  Later versions which implemented ANSI colors, for "
+"example, XFree86 3.1.2A in 1995, improved this by allowing the blink "
+"attribute to be displayed as a color.  Modern versions of xterm implement "
+"blink SGR as blinking text and still allow colored text as an alternate "
+"rendering of SGRs.  Stock X11R6 versions did not recognize the color-setting "
+"SGRs until the X11R6.8 release, which incorporated XFree86 xterm.  All "
+"ECMA-48 CSI sequences recognized by Linux are also recognized by I<xterm>, "
+"however B<xterm>(1) implements several ECMA-48 and DEC control sequences not "
+"recognized by Linux."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The B<xterm>(1)  program recognizes all of the DEC Private Mode sequences "
+"listed above, but none of the Linux private-mode sequences.  For discussion "
+"of B<xterm>(1)'s own private-mode sequences, refer to the I<Xterm Control "
+"Sequences> document by Edward Moy, Stephen Gildea, and Thomas E.\\& Dickey "
+"available with the X distribution.  That document, though terse, is much "
+"longer than this manual page.  For a chronological overview,"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "E<.UR http://invisible-island.net\\:/xterm\\:/xterm.log.html> E<.UE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "details changes to xterm."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The I<vttest> program"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "E<.UR http://invisible-island.net\\:/vttest/> E<.UE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"demonstrates many of these control sequences.  The B<xterm>(1) source "
+"distribution also contains sample scripts which exercise other features."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"ESC 8 (DECRC) is not able to restore the character set changed with ESC %."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "BUGS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"In 2.0.23, CSI is broken, and NUL is not ignored inside escape sequences."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Some older kernel versions (after 2.0) interpret 8-bit control sequences.  "
+"These \"C1 controls\" use codes between 128 and 159 to replace ESC [, ESC ] "
+"and similar two-byte control sequence initiators.  There are fragments of "
+"that in modern kernels (either overlooked or broken by changes to support "
+"UTF-8), but the implementation is incomplete and should be regarded as "
+"unreliable."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Linux \"private mode\" sequences do not follow the rules in ECMA-48 for "
+"private mode control sequences.  In particular, those ending with ] do not "
+"use a standard terminating character.  The OSC (set palette) sequence is a "
+"greater problem, since B<xterm>(1) may interpret this as a control sequence "
+"which requires a string terminator (ST).  Unlike the B<setterm>(1) sequences "
+"which will be ignored (since they are invalid control sequences), the "
+"palette sequence will make B<xterm>(1) appear to hang (though pressing the "
+"return-key will fix that).  To accommodate applications which have been "
+"hardcoded to use Linux control sequences, set the B<xterm>(1) resource "
+"B<brokenLinuxOSC> to true."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"An older version of this document implied that Linux recognizes the ECMA-48 "
+"control sequence for invisible text.  It is ignored."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<ioctl_console>(2), B<charsets>(7)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "2020-08-13"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"LF (0x0A, B<\\(haJ>), VT (0x0B, B<\\(haK>) and FF (0x0C, B<\\(haL>) all give "
+"a linefeed, and if LF/NL (new-line mode) is set also a carriage return;"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "DEC screen alignment test - fill screen with E's."
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "Start sequence defining G0 character set"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "\\0\\0\\0Select default (ISO 8859-1 mapping)"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "\\0\\0\\0Select VT100 graphics mapping"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "\\0\\0\\0Select null mapping - straight to character ROM"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "\\0\\0\\0Select user mapping - the map that is loaded by"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "\\0\\0\\0the utility B<mapscrn>(8)."
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "Start sequence defining G1"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "(followed by one of B, 0, U, K, as above)."
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "ESC [ 3 J: erase whole display including scroll-back"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "           buffer (since Linux 3.0)."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid "B<ECMA-48 Set Graphics Rendition>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid "LF/NL (default off): Automatically follow echo of LF, VT or FF with CR."
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "ESC [ 8 ]       "
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "ESC [ 13 ]      "
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "ESC [ 14 ; I<n> ]   "
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"These variables G0 and G1 point at a translation table, and can be changed "
+"by the user.  Initially they point at tables a) and b), respectively.  The "
+"sequences ESC ( B and ESC ( 0 and ESC ( U and ESC ( K cause G0 to point at "
+"translation table a), b), c) and d), respectively.  The sequences ESC ) B "
+"and ESC ) 0 and ESC ) U and ESC ) K cause G1 to point at translation table "
+"a), b), c) and d), respectively."
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "Single shift 2. (Select G2 character set for the next"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "character only.)"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "Single shift 3. (Select G3 character set for the next"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "Change log file to I<name> (normally disabled"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "by a compile-time option)"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "Cursor to lower left corner of screen (if enabled by"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid "B<xterm>(1)'s B<hpLowerleftBugCompat> resource)"
+msgstr ""
+
+#. type: tbl table
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "Has no visible effect in xterm."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2017-09-15"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "BEL (0x07, B<^G>) beeps;"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"BS (0x08, B<^H>) backspaces one column (but not past the beginning of the "
+"line);"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"HT (0x09, B<^I>) goes to the next tab stop or to the end of the line if "
+"there is no earlier tab stop;"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"LF (0x0A, B<^J>), VT (0x0B, B<^K>) and FF (0x0C, B<^L>) all give a linefeed, "
+"and if LF/NL (new-line mode) is set also a carriage return;"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "CR (0x0D, B<^M>) gives a carriage return;"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "SO (0x0E, B<^N>) activates the G1 character set;"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "SI (0x0F, B<^O>) activates the G0 character set;"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "CAN (0x18, B<^X>) and SUB (0x1A, B<^Z>) interrupt escape sequences;"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "ESC (0x1B, B<^[>) starts an escape sequence;"
+msgstr ""
+
+#. type: tbl table
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "set normal intensity (ECMA-48 says \"doubly underlined\")"
+msgstr ""
+
+#. type: tbl table
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "set underscore on, set default foreground color"
+msgstr ""
+
+#. type: tbl table
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "set underscore off, set default foreground color"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"The following sequences are neither ECMA-48 nor native VT102.  They are "
+"native to the Linux console driver.  Colors are in SGR parameters: 0 = "
+"black, 1 = red, 2 = green, 3 = brown, 4 = blue, 5 = magenta, 6 = cyan, 7 = "
+"white."
+msgstr ""
+
+#. type: tbl table
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "Set color I<n> as the underline color"
+msgstr ""
+
+#. type: tbl table
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "Set color I<n> as the dim color"
+msgstr ""
+
+#. type: tbl table
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"Set the cursor blink interval in milliseconds\n"
+"(since Linux 4.2)"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"There are two character sets, called G0 and G1, and one of them is the "
+"current character set.  (Initially G0.)  Typing B<^N> causes G1 to become "
+"current, B<^O> causes G0 to become current."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"The sequence ESC c causes a terminal reset, which is what you want if the "
+"screen is all garbled.  The oft-advised \"echo ^V^O\" will make only G0 "
+"current, but there is no guarantee that G0 points at table a).  In some "
+"distributions there is a program B<reset>(1)  that just does \"echo ^[c\".  "
+"If your terminfo entry for the console is correct (and has an entry rs1="
+"\\eEc), then \"tput reset\" will also work."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "DC1 (0x11, B<^Q>, XON) resumed transmission;"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"DC3 (0x13, B<^S>, XOFF) caused VT100 to ignore (and stop transmitting)  all "
+"codes except XOFF and XON."
+msgstr ""
+
+#. type: tbl table
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "ESC ^"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"The program B<xterm>(1)  (in VT100 mode) recognizes ESC c, ESC # 8, ESC "
+"E<gt>, ESC =, ESC D, ESC E, ESC H, ESC M, ESC N, ESC O, ESC P ... ESC \\e, "
+"ESC Z (it answers ESC [ ? 1 ; 2 c, \"I am a VT100 with advanced video option"
+"\")  and ESC ^ ... ESC \\e with the same meanings as indicated above.  It "
+"accepts ESC (, ESC ), ESC *, ESC + followed by 0, A, B for the DEC special "
+"character and line drawing set, UK, and US-ASCII, respectively."
+msgstr ""
+
+#. type: tbl table
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "ESC ~"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"The B<xterm>(1)  program recognizes all of the DEC Private Mode sequences "
+"listed above, but none of the Linux private-mode sequences.  For discussion "
+"of B<xterm>(1)'s own private-mode sequences, refer to the I<Xterm Control "
+"Sequences> document by Edward Moy, Stephen Gildea, and Thomas E. Dickey "
+"available with the X distribution.  That document, though terse, is much "
+"longer than this manual page.  For a chronological overview,"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

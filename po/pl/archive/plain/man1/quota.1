@@ -1,0 +1,129 @@
+.\" {PTM/WK/2000-II}
+.\" Last update: Andrzej M. Krzysztofowicz <ankry@mif.pg.gda.pl>, Apr 2002
+.\"              quota 3.04
+.\"
+.TH QUOTA 1
+.SH NAZWA
+quota \- wypisanie zużycia i ograniczeń zasobów dyskowych
+.SH SKŁADNIA
+.B quota
+[
+.B -F
+.I nazwa-formatu
+] [
+.BR -guvs \ |
+.B q
+]
+.br
+.B quota
+[
+.B -F
+.I nazwa-formatu
+] [
+.BR -uvs \ |
+.B q
+]
+.I użytkownik
+.br
+.B quota
+[
+.B -F
+.I nazwa-formatu
+] [
+.BR -gvs \ |
+.B q
+]
+.I grupa
+.SH OPIS
+.B quota
+wypisuje zużycie zasobów dyskowych przez użytkowników i przypisane im
+kwoty tych zasobów. Domyślnie wypisywane są tylko kwoty dla użytkownika.
+.PP
+.B quota
+zgłasza kwoty zasobów na wszystkich wymienionych w
+.B /etc/mtab
+systemach plików. Dla systemów plików zamontowanych przez NFS potrzebne
+informacje są otrzymywane w wyniku odwołania do rpc.rquotad na serwerze.
+.SH OPCJE
+.TP
+.B \-F \f2nazwa-formatu\f1
+Wypisanie kwot według podanego formatu (tzn. nie jest wykonywana autodetekcja
+formatu). Dozwolone są następujące nazwy formatów:
+.B vfsold
+(wersja 1 kwot),
+.B vfsv0
+(wersja 2 kwot),
+.B rpc
+(kwoty na NFS),
+.B xfs
+(kwoty na systemie plików XFS)
+.TP
+.B \-g
+Wypisanie kwot dla grup, do których użytkownik należy.
+Opcjonalna opcja
+.TP
+.B \-u
+Opcja ta jest równoważna zachowaniu domyślnemu (tylko kwoty użytkownika).
+.TP
+.B \-v
+Wypisanie również kwot na systemach plików, na których nie zajęto zasobów.
+.TP
+.B \-s
+Opcja ta spowoduje wybranie przez
+.BR quota (1)
+jednostek, w których podawane będą ograniczenia, zużyte miejsce i zużyte
+i-węzły.
+.TP
+.B \-q
+Wypisanie bardziej zwięzłego komunikatu, zawierającego wyłącznie informacje
+o systemach plików, na których zużycie przekracza ograniczenie wynikające
+z przydzielonych kwot.
+.LP
+Podanie zarówno
+.BR \-g ,
+jak i
+.B \-u
+spowoduje wypisanie kwot dla użytkownika oraz dla grup (do których użytkownik
+należy).
+.LP
+Tylko superużytkownik może posługiwać się opcją
+.B \-u
+z opcjonalnym argumentem
+.IR użytkownik ,
+aby obejrzeć ograniczenia dla innych użytkowników.
+Inni użytkownicy mogą posługiwać się opcją
+.B \-g
+z opcjonalnym argumentem
+.IR grupa ,
+aby obejrzeć ograniczenia dla grup, do których należą.
+.LP
+Opcja
+.B \-q
+ma pierwszeństwo przed opcją
+.BR \-v .
+.SH DIAGNOSTYKA
+Jeżeli
+.B quota
+kończy pracę z niezerowym kodem, to na co najmniej jednym systemie plików
+przekroczone jest ograniczenie kwoty.
+.SH PLIKI
+.PD 0
+.TP 20
+.BR aquota.user " i " aquota.group
+pliki kwot dyskowych umieszczone w głównym katalogu systemu plików (wersja 2
+kwot, systemy plików inne niż XFS)
+.TP 20
+.BR quota.user " i " quota.group
+pliki kwot dyskowych umieszczone w głównym katalogu systemu plików (wersja 1
+kwot, systemy plików inne niż XFS)
+.TP
+.B /etc/mtab
+domyślne systemy plików
+.PD
+.SH "ZOBACZ TAKŻE"
+.BR quotactl (2),
+.BR fstab (5),
+.BR edquota (8),
+.BR quotacheck (8),
+.BR quotaon (8),
+.BR repquota (8)

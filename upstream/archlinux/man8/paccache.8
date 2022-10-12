@@ -1,0 +1,161 @@
+'\" t
+.\"     Title: paccache
+.\"    Author: [see the "Authors" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 2021-06-29
+.\"    Manual: Pacman-contrib Manual
+.\"    Source: Pacman-contrib 1.4.0
+.\"  Language: English
+.\"
+.TH "PACCACHE" "8" "2021\-06\-29" "Pacman\-contrib 1\&.4\&.0" "Pacman\-contrib Manual"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+paccache \- flexible pacman cache cleaning utility
+.SH "SYNOPSIS"
+.sp
+\fIpaccache\fR <operation> [options] [targets\&...]
+.SH "DESCRIPTION"
+.sp
+Paccache removes old packages from the pacman cache directory\&. By default the last three versions of a package are kept\&.
+.SH "OPERATIONS"
+.PP
+\fB\-d, \-\-dryrun\fR
+.RS 4
+Perform a dry run, only finding candidate packages\&.
+.RE
+.PP
+\fB\-m, \-\-move <dir>\fR
+.RS 4
+Move candidate packages from the cache directory to
+\fIdir\fR\&.
+.RE
+.PP
+\fB\-r, \-\-remove\fR
+.RS 4
+Remove candidate packages from the cache directory\&.
+.RE
+.SH "OPTIONS"
+.PP
+\fB\-a, \-\-arch <arch>\fR
+.RS 4
+Scan for packages for a specific architecture\&. Default is to scan for all architectures\&.
+.RE
+.PP
+\fB\-\-min\-atime <age>\fR, \fB\-\-min\-mtime <age>\fR
+.RS 4
+Only consider packages for removal with atime respectively mtime older than specified\&. The age can be given as
+\fI10d\fR,
+\fI1m\fR,
+\fI1y\fR,
+\fI1y1m\fR
+etc\&.
+.RE
+.PP
+\fB\-c, \-\-cachedir <dir>\fR
+.RS 4
+Specify a different cache directory\&. This option can be used more than once\&. Default is to use the cache directory configured in
+\fIpacman\&.conf\fR\&.
+.RE
+.PP
+\fB\-f, \-\-force\fR
+.RS 4
+Apply force to
+\fImv\fR
+and
+\fIrm\fR
+operations\&.
+.RE
+.PP
+\fB\-h, \-\-help\fR
+.RS 4
+Display syntax and command line options\&.
+.RE
+.PP
+\fB\-i, \-\-ignore <pkgs>\fR
+.RS 4
+Specify packages to ignore, comma\-separated\&. Alternatively "\-" can be used to read the package names from stdin, newline\-delimited\&.
+.RE
+.PP
+\fB\-k, \-\-keep <num>\fR
+.RS 4
+Specify how many versions of each package are kept in the cache directory, default is 3\&.
+.RE
+.PP
+\fB\-\-nocolor\fR
+.RS 4
+Remove color from the output\&.
+.RE
+.PP
+\fB\-q, \-\-quiet\fR
+.RS 4
+Minimize the output\&.
+.RE
+.PP
+\fB\-u, \-\-uninstalled\fR
+.RS 4
+Target uninstalled packages\&.
+.RE
+.PP
+\fB\-v, \-\-verbose\fR
+.RS 4
+Increase verbosity, can be specified up to 3 times\&.
+.RE
+.PP
+\fB\-z, \-\-null\fR
+.RS 4
+Use null delimiters for candidate names (only with \-v and \-vv)\&.
+.RE
+.SH "SYSTEMD TIMER"
+.sp
+The package cache can be cleaned periodically using the systemd timer \fIpaccache\&.timer\fR\&. If the timer is enabled the cache will be cleaned weekly with paccache\(cqs default options\&.
+.SH "SEE ALSO"
+.sp
+\fBpacman\fR(8), \fBpacman.conf\fR(5), \fBsystemctl\fR(1)
+.SH "BUGS"
+.sp
+Bugs? You must be kidding; there are no bugs in this software\&. But if we happen to be wrong, send us an email with as much detail as possible to pacman\-contrib@lists\&.archlinux\&.org\&.
+.SH "AUTHORS"
+.sp
+Current maintainers:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Johannes Löthberg <johannes@kyriasis\&.com>
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Daniel M\&. Capella <polyzen@archlinux\&.org>
+.RE
+.sp
+For additional contributors, use git shortlog \-s on the pacman\-contrib\&.git repository\&.

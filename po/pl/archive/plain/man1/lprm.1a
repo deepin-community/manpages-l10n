@@ -1,0 +1,142 @@
+.\" {PTM/WK/2000-VI}
+.\" Copyright (c) 1983, 1990, 1993
+.\"	The Regents of the University of California.  All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)lprm.1	8.1 (Berkeley) 6/6/93
+.\"
+.Dd June 6, 1993
+.Dt LPRM 1
+.Os BSD 4.2
+.Sh NAZWA
+.Nm lprm
+.Nd usuwa zadania z kolejki buforowania wydruków
+.Sh SKŁADNIA
+.Nm lprm
+.Op Fl P Ns Ar printer
+.Op Fl
+.Op job # ...
+.Op Ar user ...
+.Sh OPIS
+.Nm Lprm
+usuwa zadanie, lub zadania, z kolejki buforowania drukarki.
+Ponieważ katalog buforowania jest chroniony przed użytkownikami, wykorzystanie
+.Nm lprm
+jest normalnie jedyną metodą, przy pomocy której użytkownik może usunąć
+zadanie. Właściciel zadania określany według nazwy zgłoszeniowej
+użytkownika oraz nazwy hosta dla maszyny, na której wywołano polecenie
+.Xr lpr 1 .
+.Pp
+.Sh OPCJE I ARGUMENTY
+.Bl -tag -width indent
+.It Fl P Ns Ar printer
+Podaje kolejkę związaną z konkretną drukarką
+.Ar printer
+(w przeciwnym razie używana jest domyślna drukarka).
+.It Fl
+Jeśli podano pojedynczy myślnik
+.Sq Fl ,
+to
+.Nm lprm
+usunie wszystkie zadania, jakie posiada użytkownik. Jeżeli flagę tę
+wykorzysta superużytkownik, to kolejka druku zostanie całkowicie opróżniona.
+.It Ar user
+Powoduje, że
+.Nm lprm
+będzie usiłować usunąć wszystkie buforowane zadania należące do zadanego
+użytkownika (lub użytkowników). Ta postać wywoływania
+.Nm lprm
+jest przydatna tylko dla superużytkownika.
+.It Ar job\ \&#
+Użytkownik może odłączyć z kolejki pojedyncze zadanie podając jego numer.
+Numer ten można uzyskać z programu
+.Xr lpq  1 ,
+np.
+.Pp
+.Bd -literal -offset indent
+\&% lpq \-l
+
+1st:ken				[job #013ucbarpa]
+	(standard input)	100 bytes
+% lprm 13
+.Ed
+.El
+.Pp
+Jeżeli nie podano żadnych argumentów ani opcji, to
+.Nm Lprm
+usunie aktualnie aktywne zadanie jeśli należy ono do użytkownika, który
+wywołał
+.Nm lprm  .
+.Pp
+.Nm Lprm
+zapowiada nazwy plików, jakie usuwa i milczy, jeśli w kolejce nie ma żadnych
+zadań pasujących do listy żądań.
+.Pp
+.Nm Lprm ,
+jeśli będzie to konieczne, unicestwi aktywnego demona przed usunięciem
+plików w buforze. Jeżeli demon jest zabity, to automatycznie, po zakończeniu
+usuwania plików, restartowany jest nowy.
+.Sh ŚRODOWISKO
+Jeżeli poniższa zmienna środowiska istnieje, to jest wykorzystywana przez
+.Nm lprm .
+.Bl -tag -width PRINTER
+.It Ev PRINTER
+Jeżeli istnieje zmienna środowiska
+.Ev PRINTER ,
+a nie podano drukarki przy pomocy opcji
+.Fl P ,
+to drukarka domyślna przyjmowana jest z
+.Ev PRINTER .
+.El
+.Sh PLIKI
+.Bl -tag -width /var/spool/*/lock/ -compact
+.It Pa /etc/printcap
+Plik z charakterystykami drukarek.
+.It Pa /var/spool/*
+Katalogi buforowania.
+.It Pa /var/spool/*/lock
+Plik blokujący wykorzystywany do uzyskania PID bieżącego demona i numeru
+aktualnie aktywnego zadania.
+.El
+.Sh ZOBACZ TAKŻE
+.Xr lpr 1a ,
+.Xr lpq 1a ,
+.Xr lpd 8a
+.Sh DIAGNOSTYKA
+.Dq Permission denied
+jeżeli użytkownik próbuje usunąć pliki nie do niego należące.
+.Sh BŁĘDY
+Ponieważ przy aktualizacji pliku blokującego możliwa jest sytuacja wyścigów,
+obecnie aktywne zadanie może być niewłaściwie identyfikowane.
+.Sh HISTORIA
+Polecenie
+.Nm lprm
+pojawiło się w
+.Bx 3.0 .

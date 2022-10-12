@@ -1,0 +1,595 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-09-03 21:25+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "PKEYS"
+msgstr ""
+
+#. type: TH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "2021-03-22"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "pkeys - overview of Memory Protection Keys"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Memory Protection Keys (pkeys) are an extension to existing page-based "
+"memory permissions.  Normal page permissions using page tables require "
+"expensive system calls and TLB invalidations when changing permissions.  "
+"Memory Protection Keys provide a mechanism for changing protections without "
+"requiring modification of the page tables on every permission change."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"To use pkeys, software must first \"tag\" a page in the page tables with a "
+"pkey.  After this tag is in place, an application only has to change the "
+"contents of a register in order to remove write access, or all access to a "
+"tagged page."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Protection keys work in conjunction with the existing B<PROT_READ>/ "
+"B<PROT_WRITE>/ B<PROT_EXEC> permissions passed to system calls such as "
+"B<mprotect>(2)  and B<mmap>(2), but always act to further restrict these "
+"traditional permission mechanisms."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"If a process performs an access that violates pkey restrictions, it receives "
+"a B<SIGSEGV> signal.  See B<sigaction>(2)  for details of the information "
+"available with that signal."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"To use the pkeys feature, the processor must support it, and the kernel must "
+"contain support for the feature on a given processor.  As of early 2016 only "
+"future Intel x86 processors are supported, and this hardware supports 16 "
+"protection keys in each process.  However, pkey 0 is used as the default "
+"key, so a maximum of 15 are available for actual application use.  The "
+"default key is assigned to any memory region for which a pkey has not been "
+"explicitly assigned via B<pkey_mprotect>(2)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Protection keys have the potential to add a layer of security and "
+"reliability to applications.  But they have not been primarily designed as a "
+"security feature.  For instance, WRPKRU is a completely unprivileged "
+"instruction, so pkeys are useless in any case that an attacker controls the "
+"PKRU register or can execute arbitrary instructions."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Applications should be very careful to ensure that they do not \"leak\" "
+"protection keys.  For instance, before calling B<pkey_free>(2), the "
+"application should be sure that no memory has that pkey assigned.  If the "
+"application left the freed pkey assigned, a future user of that pkey might "
+"inadvertently change the permissions of an unrelated data structure, which "
+"could impact security or stability.  The kernel currently allows in-use "
+"pkeys to have B<pkey_free>(2)  called on them because it would have "
+"processor or memory performance implications to perform the additional "
+"checks needed to disallow it.  Implementation of the necessary checks is "
+"left up to applications.  Applications may implement these checks by "
+"searching the I</proc/[pid]/smaps> file for memory regions with the pkey "
+"assigned.  Further details can be found in B<proc>(5)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Any application wanting to use protection keys needs to be able to function "
+"without them.  They might be unavailable because the hardware that the "
+"application runs on does not support them, the kernel code does not contain "
+"support, the kernel support has been disabled, or because the keys have all "
+"been allocated, perhaps by a library the application is using.  It is "
+"recommended that applications wanting to use protection keys should simply "
+"call B<pkey_alloc>(2)  and test whether the call succeeds, instead of "
+"attempting to detect support for the feature in any other way."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Although unnecessary, hardware support for protection keys may be enumerated "
+"with the I<cpuid> instruction.  Details of how to do this can be found in "
+"the Intel Software Developers Manual.  The kernel performs this enumeration "
+"and exposes the information in I</proc/cpuinfo> under the \"flags\" field.  "
+"The string \"pku\" in this field indicates hardware support for protection "
+"keys and the string \"ospke\" indicates that the kernel contains and has "
+"enabled protection keys support."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Applications using threads and protection keys should be especially "
+"careful.  Threads inherit the protection key rights of the parent at the "
+"time of the B<clone>(2), system call.  Applications should either ensure "
+"that their own permissions are appropriate for child threads at the time "
+"when B<clone>(2)  is called, or ensure that each child thread can perform "
+"its own initialization of protection key rights."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Signal Handler Behavior"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Each time a signal handler is invoked (including nested signals), the thread "
+"is temporarily given a new, default set of protection key rights that "
+"override the rights from the interrupted context.  This means that "
+"applications must re-establish their desired protection key rights upon "
+"entering a signal handler if the desired rights differ from the defaults.  "
+"The rights of any interrupted context are restored when the signal handler "
+"returns."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This signal behavior is unusual and is due to the fact that the x86 PKRU "
+"register (which stores protection key access rights) is managed with the "
+"same hardware mechanism (XSAVE) that manages floating-point registers.  The "
+"signal behavior is the same as that of floating-point registers."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Protection Keys system calls"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The Linux kernel implements the following pkey-related system calls: "
+"B<pkey_mprotect>(2), B<pkey_alloc>(2), and B<pkey_free>(2)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The Linux pkey system calls are available only if the kernel was configured "
+"and built with the B<CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS> option."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "EXAMPLES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The program below allocates a page of memory with read and write "
+"permissions.  It then writes some data to the memory and successfully reads "
+"it back.  After that, it attempts to allocate a protection key and disallows "
+"access to the page by using the WRPKRU instruction.  It then tries to access "
+"the page, which we now expect to cause a fatal signal to the application."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$B< ./a.out>\n"
+"buffer contains: 73\n"
+"about to read buffer again...\n"
+"Segmentation fault (core dumped)\n"
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Program source"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"#define _GNU_SOURCE\n"
+"#include E<lt>unistd.hE<gt>\n"
+"#include E<lt>sys/syscall.hE<gt>\n"
+"#include E<lt>stdio.hE<gt>\n"
+"#include E<lt>sys/mman.hE<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"static inline void\n"
+"wrpkru(unsigned int pkru)\n"
+"{\n"
+"    unsigned int eax = pkru;\n"
+"    unsigned int ecx = 0;\n"
+"    unsigned int edx = 0;\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    asm volatile(\".byte 0x0f,0x01,0xef\\en\\et\"\n"
+"                 : : \"a\" (eax), \"c\" (ecx), \"d\" (edx));\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"int\n"
+"pkey_set(int pkey, unsigned long rights, unsigned long flags)\n"
+"{\n"
+"    unsigned int pkru = (rights E<lt>E<lt> (2 * pkey));\n"
+"    return wrpkru(pkru);\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"int\n"
+"pkey_mprotect(void *ptr, size_t size, unsigned long orig_prot,\n"
+"              unsigned long pkey)\n"
+"{\n"
+"    return syscall(SYS_pkey_mprotect, ptr, size, orig_prot, pkey);\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"int\n"
+"pkey_alloc(void)\n"
+"{\n"
+"    return syscall(SYS_pkey_alloc, 0, 0);\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"int\n"
+"pkey_free(unsigned long pkey)\n"
+"{\n"
+"    return syscall(SYS_pkey_free, pkey);\n"
+"}\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"#define errExit(msg)    do { perror(msg); exit(EXIT_FAILURE); \\e\n"
+"                           } while (0)\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"int\n"
+"main(void)\n"
+"{\n"
+"    int status;\n"
+"    int pkey;\n"
+"    int *buffer;\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    /*\n"
+"     * Allocate one page of memory.\n"
+"     */\n"
+"    buffer = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE,\n"
+"                  MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);\n"
+"    if (buffer == MAP_FAILED)\n"
+"        errExit(\"mmap\");\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    /*\n"
+"     * Put some random data into the page (still OK to touch).\n"
+"     */\n"
+"    *buffer = __LINE__;\n"
+"    printf(\"buffer contains: %d\\en\", *buffer);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    /*\n"
+"     * Allocate a protection key:\n"
+"     */\n"
+"    pkey = pkey_alloc();\n"
+"    if (pkey == -1)\n"
+"        errExit(\"pkey_alloc\");\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    /*\n"
+"     * Disable access to any memory with \"pkey\" set,\n"
+"     * even though there is none right now.\n"
+"     */\n"
+"    status = pkey_set(pkey, PKEY_DISABLE_ACCESS, 0);\n"
+"    if (status)\n"
+"        errExit(\"pkey_set\");\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    /*\n"
+"     * Set the protection key on \"buffer\".\n"
+"     * Note that it is still read/write as far as mprotect() is\n"
+"     * concerned and the previous pkey_set() overrides it.\n"
+"     */\n"
+"    status = pkey_mprotect(buffer, getpagesize(),\n"
+"                           PROT_READ | PROT_WRITE, pkey);\n"
+"    if (status == -1)\n"
+"        errExit(\"pkey_mprotect\");\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "    printf(\"about to read buffer again...\\en\");\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    /*\n"
+"     * This will crash, because we have disallowed access.\n"
+"     */\n"
+"    printf(\"buffer contains: %d\\en\", *buffer);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    status = pkey_free(pkey);\n"
+"    if (status == -1)\n"
+"        errExit(\"pkey_free\");\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"    exit(EXIT_SUCCESS);\n"
+"}\n"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "B<pkey_alloc>(2), B<pkey_free>(2), B<pkey_mprotect>(2), B<sigaction>(2)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "2020-06-09"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"    /*\n"
+"     *Allocate one page of memory\n"
+"     */\n"
+"    buffer = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE,\n"
+"                  MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);\n"
+"    if (buffer == MAP_FAILED)\n"
+"        errExit(\"mmap\");\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"    /*\n"
+"     * Put some random data into the page (still OK to touch)\n"
+"     */\n"
+"    *buffer = __LINE__;\n"
+"    printf(\"buffer contains: %d\\en\", *buffer);\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"    /*\n"
+"     * Disable access to any memory with \"pkey\" set,\n"
+"     * even though there is none right now\n"
+"     */\n"
+"    status = pkey_set(pkey, PKEY_DISABLE_ACCESS, 0);\n"
+"    if (status)\n"
+"        errExit(\"pkey_set\");\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"    /*\n"
+"     * This will crash, because we have disallowed access\n"
+"     */\n"
+"    printf(\"buffer contains: %d\\en\", *buffer);\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2017-09-15"
+msgstr ""
+
+#. type: SH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "EXAMPLE"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

@@ -1,0 +1,339 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-08-27 17:43+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "PTHREAD_SPECIFIC"
+msgstr ""
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "LinuxThreads"
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"pthread_key_create, pthread_key_delete, pthread_setspecific, "
+"pthread_getspecific - management of thread-specific data"
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "B<#include E<lt>pthread.hE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<int pthread_key_create(pthread_key_t *>I<key>B<, void "
+"(*>I<destr_function>B<) (void *));>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "B<int pthread_key_delete(pthread_key_t >I<key>B<);>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<int pthread_setspecific(pthread_key_t >I<key>B<, const void "
+"*>I<pointer>B<);>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "B<void * pthread_getspecific(pthread_key_t >I<key>B<);>"
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Programs often need global or static variables that have different values in "
+"different threads. Since threads share one memory space, this cannot be "
+"achieved with regular variables. Thread-specific data is the POSIX threads "
+"answer to this need."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Each thread possesses a private memory block, the thread-specific data area, "
+"or TSD area for short. This area is indexed by TSD keys. The TSD area "
+"associates values of type B<void *> to TSD keys. TSD keys are common to all "
+"threads, but the value associated with a given TSD key can be different in "
+"each thread."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"For concreteness, the TSD areas can be viewed as arrays of B<void *> "
+"pointers, TSD keys as integer indices into these arrays, and the value of a "
+"TSD key as the value of the corresponding array element in the calling "
+"thread."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"When a thread is created, its TSD area initially associates B<NULL> with all "
+"keys."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_key_create> allocates a new TSD key. The key is stored in the "
+"location pointed to by I<key>. There is a limit of B<PTHREAD_KEYS_MAX> on "
+"the number of keys allocated at a given time. The value initially associated "
+"with the returned key is B<NULL> in all currently executing threads."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"The I<destr_function> argument, if not B<NULL>, specifies a destructor "
+"function associated with the key. When a thread terminates via "
+"B<pthread_exit> or by cancellation, I<destr_function> is called with "
+"arguments the value associated with the key in that thread. The "
+"I<destr_function> is not called if that value is B<NULL>. The order in which "
+"destructor functions are called at thread termination time is unspecified."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Before the destructor function is called, the B<NULL> value is associated "
+"with the key in the current thread.  A destructor function might, however, "
+"re-associate non-B<NULL> values to that key or some other key.  To deal with "
+"this, if after all the destructors have been called for all non-B<NULL> "
+"values, there are still some non-B<NULL> values with associated destructors, "
+"then the process is repeated.  The LinuxThreads implementation stops the "
+"process after B<PTHREAD_DESTRUCTOR_ITERATIONS> iterations, even if some non-"
+"B<NULL> values with associated descriptors remain.  Other implementations "
+"may loop indefinitely."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_key_delete> deallocates a TSD key. It does not check whether non-"
+"B<NULL> values are associated with that key in the currently executing "
+"threads, nor call the destructor function associated with the key."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_setspecific> changes the value associated with I<key> in the "
+"calling thread, storing the given I<pointer> instead."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_getspecific> returns the value currently associated with I<key> in "
+"the calling thread."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "RETURN VALUE"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_key_create>, B<pthread_key_delete>, and B<pthread_setspecific> "
+"return 0 on success and a non-zero error code on failure. If successful, "
+"B<pthread_key_create> stores the newly allocated key in the location pointed "
+"to by its I<key> argument."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_getspecific> returns the value associated with I<key> on success, "
+"and B<NULL> on error."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "ERRORS"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "B<pthread_key_create> returns the following error code on error:"
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "B<EAGAIN>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "B<PTHREAD_KEYS_MAX> keys are already allocated"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_key_delete> and B<pthread_setspecific> return the following error "
+"code on error:"
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "B<EINVAL>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "I<key> is not a valid, allocated TSD key"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_getspecific> returns B<NULL> if I<key> is not a valid, allocated "
+"TSD key."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "AUTHOR"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "Xavier Leroy E<lt>Xavier.Leroy@inria.frE<gt>"
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "pthread_create(3), pthread_exit(3), pthread_testcancel(3)."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "EXAMPLE"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"The following code fragment allocates a thread-specific array of 100 "
+"characters, with automatic reclaimation at thread exit:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"B</* Key for the thread-specific buffer */\n"
+"static pthread_key_t buffer_key;>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"B</* Once-only initialisation of the key */\n"
+"static pthread_once_t buffer_key_once = PTHREAD_ONCE_INIT;>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"B</* Allocate the thread-specific buffer */\n"
+"void buffer_alloc(void)\n"
+"{\n"
+"  pthread_once(&buffer_key_once, buffer_key_alloc);\n"
+"  pthread_setspecific(buffer_key, malloc(100));\n"
+"}>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"B</* Return the thread-specific buffer */\n"
+"char * get_buffer(void)\n"
+"{\n"
+"  return (char *) pthread_getspecific(buffer_key);\n"
+"}>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"B</* Allocate the key */\n"
+"static void buffer_key_alloc()\n"
+"{\n"
+"  pthread_key_create(&buffer_key, buffer_destroy);\n"
+"}>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"B</* Free the thread-specific buffer */\n"
+"static void buffer_destroy(void * buf)\n"
+"{\n"
+"  free(buf);\n"
+"}>\n"
+msgstr ""

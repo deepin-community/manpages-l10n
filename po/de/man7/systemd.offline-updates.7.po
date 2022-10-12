@@ -1,0 +1,490 @@
+# German translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Helge Kreutzmann <debian@helgefjell.de>, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-de\n"
+"POT-Creation-Date: 2021-09-10 14:48+0200\n"
+"PO-Revision-Date: 2021-02-05 21:49+0100\n"
+"Last-Translator: Helge Kreutzmann <debian@helgefjell.de>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SYSTEMD\\&.OFFLINE-UPDATES"
+msgstr "SYSTEMD\\&.OFFLINE-UPDATES"
+
+#. type: TH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "systemd 249"
+msgstr "systemd 249"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "systemd.offline-updates"
+msgstr "systemd.offline-updates"
+
+#.  -----------------------------------------------------------------
+#.  * MAIN CONTENT STARTS HERE *
+#.  -----------------------------------------------------------------
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr "BEZEICHNUNG"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "systemd.offline-updates - Implementation of offline updates in systemd"
+msgstr ""
+"systemd.offline-updates - Implementierung von Offline-Aktualisierungen in "
+"Systemd"
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "IMPLEMENTING OFFLINE SYSTEM UPDATES"
+msgstr "OFFLINE SYSTEM-AKTUALISIERUNGEN IMPLEMENTIEREN"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This man page describes how to implement \"offline\" system updates with "
+"systemd\\&. By \"offline\" OS updates we mean package installations and "
+"updates that are run with the system booted into a special system update "
+"mode, in order to avoid problems related to conflicts of libraries and "
+"services that are currently running with those on disk\\&. This document is "
+"inspired by this \\m[blue]B<GNOME design whiteboard>\\m[]\\&\\s-2\\u[1]\\d\\s"
+"+2\\&."
+msgstr ""
+"Diese Handbuchseite beschreibt, wie die »offline« Systemaktualisierungen mit "
+"Systemd realisiert werden\\&. Unter dem Begriff »offline« "
+"Betriebssystemaktualisierungen verstehen wir Paketinstallationen und -"
+"aktualisierungen, die ausgeführt werden, ohne dass das System in einen "
+"besonderen Systemaktualisierungsmodus gestartet wurde, um Probleme in Bezug "
+"auf Konflikte bei Bibliotheken und Diensten, die derzeit laufen, mit denen "
+"auf der Platte zu vermeiden\\&. Dieses Dokument wurde vom \\m[blue]B<GNOME "
+"Design-Whiteboard>\\m[]\\&\\s-2\\u[1]\\d\\s+2 inspiriert\\&."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The logic:"
+msgstr "Die Logik:"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The package manager prepares system updates by downloading all (\\&.rpm or "
+"\\&.deb or whatever) packages to update off-line in a special directory /var/"
+"lib/system-update (or another directory of the package/upgrade manager"
+"\\*(Aqs choice)\\&."
+msgstr ""
+"Der Paketverwalter bereitet Systemaktualisierungen vor, indem er alle "
+"offline zu aktualisierenden (\\&.rpm- oder \\&.deb- oder was auch immer) "
+"Pakete in ein spezielles Verzeichnis /var/lib/system-update (oder ein "
+"anderes Verzeichnis nach Wahl des Paket-/Upgrade-Verwalters) herunterlädt\\&."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"When the user OK\\*(Aqed the update, the symlink /system-update is created "
+"that points to /var/lib/system-update (or wherever the directory with the "
+"upgrade files is located) and the system is rebooted\\&. This symlink is in "
+"the root directory, since we need to check for it very early at boot, at a "
+"time where /var/ is not available yet\\&."
+msgstr ""
+"Wenn der Benutzer die Aktualisierung bestätigt hat, wird der Symlink /system-"
+"update, der auf /var/lib/system-update (oder wo auch immer das Verzeichnis "
+"mit den Upgrade-Dateien sich befindet) zeigt, erstellt, und das System wird "
+"neu gestartet\\&. Dieser Symlink ist im Wurzelverzeichnis, da er sehr früh "
+"im Systemstartprozess geprüft werden muss, zu einem Zeitpunkt, an dem /var/ "
+"noch nicht verfügbar ist\\&."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Very early in the new boot B<systemd-system-update-generator>(8)  checks "
+"whether /system-update exists\\&. If so, it (temporarily and for this boot "
+"only) redirects (i\\&.e\\&. symlinks)  default\\&.target to system-update\\&."
+"target, a special target that pulls in the base system (i\\&.e\\&.  sysinit"
+"\\&.target, so that all file systems are mounted but little else) and the "
+"system update units\\&."
+msgstr ""
+"Sehr früh im Systemstartprozess prüft B<systemd-system-update-generator>(8) "
+"ob /system-update existiert\\&. Falls das der Fall ist, wird (temporär und "
+"nur für diesen Systemstart) default\\&.target auf system-update\\&.target "
+"umgelenkt (d\\&.h\\&. ein Symlink angelegt). Letzteres ist ein besonderes "
+"Ziel, das das Basissystem (d\\&.h\\&. sysinit\\&.target, so dass alle "
+"Dateisysteme eingehängt sind, aber nicht viel mehr) und die "
+"Systemaktualisierungs-Units hereinzieht\\&."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The system now continues to boot into default\\&.target, and thus into "
+"system-update\\&.target\\&. This target pulls in all system update units\\&. "
+"Only one service should perform an update (see the next point), and all the "
+"other ones should exit cleanly with a \"success\" return code and without "
+"doing anything\\&. Update services should be ordered after sysinit\\&.target "
+"so that the update starts after all file systems have been mounted\\&."
+msgstr ""
+"Das System fährt jetzt fort, in default\\&.target und damit in system-update"
+"\\&.target zu starten\\&. Dieses Ziel zieht alle Systemaktualisierungs-Units "
+"herein\\&. Nur ein Dienst sollte Aktualisierungen durchführen (siehe den "
+"nächsten Punkt) und alle anderen sollten sich sauber mit einem Rückgabecode "
+"»success« und ohne etwas weiteres durchzuführen beenden\\&. "
+"Aktualisierungsdienste sollten nach sysinit\\&.target angeordnet sein, so "
+"dass die Aktualisierung beginnt, nachdem alle Dateisysteme eingehängt wurden"
+"\\&."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"As the first step, an update service should check if the /system-update "
+"symlink points to the location used by that update service\\&. In case it "
+"does not exist or points to a different location, the service must exit "
+"without error\\&. It is possible for multiple update services to be "
+"installed, and for multiple update services to be launched in parallel, and "
+"only the one that corresponds to the tool that I<created> the symlink before "
+"reboot should perform any actions\\&. It is unsafe to run multiple updates "
+"in parallel\\&."
+msgstr ""
+"Im ersten Schritt sollte ein Aktualisierungsdienst prüfen, ob der Symlink /"
+"system-update auf dem vom Aktualisierungsdienst verwandten Ort zeigt\\&. "
+"Falls er nicht existiert oder an einen anderen Ort zeigt, muss sich der "
+"Dienst fehlerfrei beenden\\&. Es ist möglich, dass mehrere "
+"Aktualisierungsdienste installiert sind und mehrere Aktualisierungsdienste "
+"parallel gestartet sind und nur derjenige, der dem Werkzeug entspricht, das "
+"den Symlink vor dem Neustart I<erstellte>, sollte irgendwelche Aktionen "
+"durchführen\\&. Es ist nicht sicher, mehrere Aktualisierungen parallel "
+"durchzuführen\\&."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The update service should now do its job\\&. If applicable and possible, it "
+"should create a file system snapshot, then install all packages\\&. After "
+"completion (regardless whether the update succeeded or failed) the machine "
+"must be rebooted, for example by calling B<systemctl reboot>\\&. In "
+"addition, on failure the script should revert to the old file system "
+"snapshot (without the symlink)\\&."
+msgstr ""
+"Der Aktualisierungsdienst sollte jetzt seine Aufgabe erledigen\\&. Falls "
+"zutreffend und möglich, sollte er einen Dateisystemschnappschuss erstellen, "
+"dann alle Pakete installieren\\&. Nach dem Abschluss (unabhängig davon, ob "
+"die Aktualisierung gelungen oder fehlgeschlagen ist) muss die Maschine neu "
+"gestartet werden, beispielsweise durch Aufruf von B<systemctl reboot>\\&. Im "
+"Fehlerfall sollte das Skript zusätzlich auf den alten "
+"Dateisystemschnappschuss (ohne den Symlink) zurückkehren\\&."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The update scripts should exit only after the update is finished\\&. It is "
+"expected that the service which performs the update will cause the machine "
+"to reboot after it is done\\&. If the system-update\\&.target is "
+"successfully reached, i\\&.e\\&. all update services have run, and the /"
+"system-update symlink still exists, it will be removed and the machine "
+"rebooted as a safety measure\\&."
+msgstr ""
+"Das Upgrade-Skript sollte sich nur beenden, wenn die Aktualisierung "
+"abgeschlossen ist\\&. Es wird erwartet, dass der Dienst, der das Upgrade "
+"durchführt, einen Systemneustart auslöst, nachdem er fertig ist\\&. Falls "
+"das system-update\\&.target erfolgreich erreicht wurde, d\\&.h\\&. alle "
+"Aktualisierungsdienste ausgeführt wurden und der Symlink /system-update "
+"immer noch existiert, wird dieser entfernt und als Sicherheitsmaßnahme die "
+"Maschine neu gestartet\\&."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"After a reboot, now that the /system-update symlink is gone, the generator "
+"won\\*(Aqt redirect default\\&.target anymore and the system now boots into "
+"the default target again\\&."
+msgstr ""
+"Nach einem Neustart, nun dass der Symlink /system-update verschwunden ist, "
+"wird der Generator default\\&.target nicht mehr umleiten und das System nun "
+"wieder in das Standardziel starten\\&."
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "RECOMMENDATIONS"
+msgstr "EMPFEHLUNGEN"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"To make things a bit more robust we recommend hooking the update script into "
+"system-update\\&.target via a \\&.wants/ symlink in the distribution "
+"package, rather than depending on B<systemctl enable> in the postinst "
+"scriptlets of your package\\&. More specifically, for your update script "
+"create a \\&.service file, without [Install] section, and then add a symlink "
+"like /usr/lib/systemd/system/system-update\\&.target\\&.wants/foobar\\&."
+"service → \\&.\\&./foobar\\&.service to your package\\&."
+msgstr ""
+"Um für mehr Robustheit zu sorgen, empfehlen wir, das Aktualisierungsskript "
+"mittels eines Symlinks \\&.wants/ in dem Distributionspaket in system-update"
+"\\&.target einzuhängen, statt in Postinst-Skriptstücken im Paket von "
+"B<systemctl enable> abzuhängen\\&. Für Ihre Aktualisierungsskripte sollten "
+"Sie konkreter eine Datei \\&.service ohne Abschnitt »[Install]« erstellen "
+"und dann einen Symlink der Art /usr/lib/systemd/system/system-update\\&."
+"target\\&.wants/foobar\\&.service → \\&.\\&./foobar\\&.service zu Ihrem "
+"Paket hinzufügen\\&."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Make sure to remove the /system-update symlink as early as possible in the "
+"update script to avoid reboot loops in case the update fails\\&."
+msgstr ""
+"Stellen Sie sicher, dass der Symlink /system-update in Ihrem "
+"Aktualisierungsskript so früh wie möglich entfernt wird, um im Fehlerfall "
+"Neustartschleifen zu vermeiden\\&."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Use I<FailureAction=reboot> in the service file for your update script to "
+"ensure that a reboot is automatically triggered if the update fails\\&.  "
+"I<FailureAction=> makes sure that the specified unit is activated if your "
+"script exits uncleanly (by non-zero error code, or signal/coredump)\\&. If "
+"your script succeeds you should trigger the reboot in your own code, for "
+"example by invoking logind\\*(Aqs B<Reboot()> call or calling B<systemctl "
+"reboot>\\&. See B<org.freedesktop.login1>(5)  for details about the logind D-"
+"Bus API\\&."
+msgstr ""
+"Verwenden Sie I<FailureAction=reboot> in der Dienstedatei Ihres "
+"Aktualisierungsskriptes, um sicherzustellen, dass automatisch ein Neustart "
+"ausgelöst wird, falls die Aktualisierung fehlschlägt\\&. I<FailureAction=> "
+"stellt sicher, dass die festgelegte Unit aktiviert ist, falls Ihr Skript "
+"sich unsauber beendet (mit einem von Null verschiedenen Fehler-Code oder "
+"einem Signal/Speicherauszug)\\&. Falls Ihr Skript sich erfolgreich beendet, "
+"sollten Sie den Systemneustart in Ihrem Code auslösen, beispielsweise durch "
+"den Aufruf B<Reboot()> von logind oder dem Aufruf von B<systemctl reboot>"
+"\\&. Siehe B<org.freedesktop.login1>(5) für Details über das Logind-D-Bus-API"
+"\\&."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The update service should declare I<DefaultDependencies=no>, "
+"I<Requires=sysinit\\&.target>, I<After=sysinit\\&.target>, I<After=system-"
+"update-pre\\&.target>, I<Before=system-update\\&.target> and explicitly pull "
+"in any other services it requires\\&."
+msgstr ""
+"Der Aktualisierungsdienst sollte I<DefaultDependencies=no>, "
+"I<Requires=sysinit\\&.target>, I<After=sysinit\\&.target>, I<After=system-"
+"update-pre\\&.target>, I<Before=system-update\\&.target> und explizit alle "
+"benötigten Dienste hereinziehen\\&."
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-leap-15-3
+#: opensuse-tumbleweed
+msgid ""
+"It may be desirable to always run an auxiliary unit when booting into "
+"offline-updates mode, which itself does not install updates\\&. To do this "
+"create a \\&.service file with I<Wants=system-update-pre\\&.target> and "
+"I<Before=system-update-pre\\&.target> and add a symlink to that file under /"
+"usr/lib/systemd/system-update\\&.target\\&.wants \\&."
+msgstr ""
+"Es kann wünschenswert sein, immer eine Hilfs-Unit beim Starten in den "
+"offline-updates-Modus zu betreiben, die selbst keine Aktualisierungen "
+"installiert\\&. Um dies zu erledigen, erstellen Sie eine \\&.service-Datei "
+"mit I<Wants=system-update-pre\\&.target> und I<Before=system-update-pre\\&."
+"target> und fügen Sie einen Symlink auf diese Datei unter /usr/lib/systemd/"
+"system-update\\&.target\\&.wants hinzu.\\&."
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "SIEHE AUCH"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<systemd>(1), B<systemd.generator>(7), B<systemd-system-update-"
+"generator>(8), B<dnf.plugin.system-upgrade>(8)"
+msgstr ""
+"B<systemd>(1), B<systemd.generator>(7), B<systemd-system-update-"
+"generator>(8), B<dnf.plugin.system-upgrade>(8)"
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr "ANMERKUNGEN"
+
+#. type: IP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid " 1."
+msgstr " 1."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "GNOME design whiteboard"
+msgstr "GNOME Design-Whiteboard"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "\\%https://wiki.gnome.org/Design/OS/SoftwareUpdates"
+msgstr "\\%https://wiki.gnome.org/Design/OS/SoftwareUpdates"
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "systemd 247"
+msgstr "systemd 247"
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"To make things a bit more robust we recommend hooking the update script into "
+"system-update\\&.target via a \\&.wants/ symlink in the distribution "
+"package, rather than depending on B<systemctl enable> in the postinst "
+"scriptlets of your package\\&. More specifically, for your update script "
+"create a \\&.service file, without [Install] section, and then add a symlink "
+"like /lib/systemd/system/system-update\\&.target\\&.wants/foobar\\&.service "
+"→ \\&.\\&./foobar\\&.service to your package\\&."
+msgstr ""
+"Um für mehr Robustheit zu sorgen, empfehlen wir, das Aktualisierungsskript "
+"mittels eines Symlinks \\&.wants/ in dem Distributionspaket in system-update"
+"\\&.target einzuhängen, statt in Postinst-Skriptstücken im Paket von "
+"B<systemctl enable> abzuhängen\\&. Für Ihre Aktualisierungsskripte sollten "
+"Sie konkreter eine Datei \\&.service ohne Abschnitt »[Install]« erstellen "
+"und dann einen Symlink der Art /lib/systemd/system/system-update\\&.target"
+"\\&.wants/foobar\\&.service → \\&.\\&./foobar\\&.service zu Ihrem Paket "
+"hinzufügen\\&."
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"It may be desirable to always run an auxiliary unit when booting into "
+"offline-updates mode, which itself does not install updates\\&. To do this "
+"create a \\&.service file with I<Wants=system-update-pre\\&.target> and "
+"I<Before=system-update-pre\\&.target> and add a symlink to that file under /"
+"lib/systemd/system-update\\&.target\\&.wants \\&."
+msgstr ""
+"Es kann wünschenswert sein, immer eine Hilfs-Unit beim Starten in den "
+"offline-updates-Modus zu betreiben, die selbst keine Aktualisierungen "
+"installiert\\&. Um dies zu erledigen, erstellen Sie eine \\&.service-Datei "
+"mit I<Wants=system-update-pre\\&.target> und I<Before=system-update-pre\\&."
+"target> und fügen Sie einen Symlink auf diese Datei unter /lib/systemd/"
+"system-update\\&.target\\&.wants hinzu.\\&."
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "systemd 246"
+msgstr "systemd 246"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"When the user OK\\*(Aqed the update, the symlink /system-update is created "
+"that points to /var/lib/system-update (or wherever the directory with the "
+"upgrade files is located) and the system is rebooted\\&. This symlink is in "
+"the root directory, since we need to check for it very early at boot, at a "
+"time where /var is not available yet\\&."
+msgstr ""
+"Wenn der Benutzer die Aktualisierung bestätigt hat, wird der Symlink /system-"
+"update, der auf /var/lib/system-update (oder wo auch immer das Verzeichnis "
+"mit den Upgrade-Dateien sich befindet) zeigt, erstellt, und das System wird "
+"neu gestartet\\&. Dieser Symlink ist im Wurzelverzeichnis, da er sehr früh "
+"im Systemstartprozess geprüft werden muss, zu einem Zeitpunkt, an dem /var "
+"noch nicht verfügbar ist\\&."
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"To make things a bit more robust we recommend hooking the update script into "
+"system-update\\&.target via a \\&.wants/ symlink in the distribution "
+"package, rather than depending on B<systemctl enable> in the postinst "
+"scriptlets of your package\\&. More specifically, for your update script "
+"create a \\&.service file, without [Install] section, and then add a symlink "
+"like /usr/lib/systemd/system-update\\&.target\\&.wants/foobar\\&.service → "
+"\\&.\\&./foobar\\&.service to your package\\&."
+msgstr ""
+"Um für mehr Robustheit zu sorgen, empfehlen wir, das Aktualisierungsskript "
+"mittels eines Symlinks \\&.wants/ in dem Distributionspaket in system-update"
+"\\&.target einzuhängen, statt in Postinst-Skriptstücken im Paket von "
+"B<systemctl enable> abzuhängen\\&. Für Ihre Aktualisierungsskripte sollten "
+"Sie konkreter eine Datei \\&.service ohne Abschnitt »[Install]« erstellen "
+"und dann einen Symlink der Art /usr/lib/systemd/system-update\\&.target\\&."
+"wants/foobar\\&.service → \\&.\\&./foobar\\&.service zu Ihrem Paket "
+"hinzufügen\\&."
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"Use I<FailureAction=reboot> in the service file for your update script to "
+"ensure that a reboot is automatically triggered if the update fails\\&.  "
+"I<FailureAction=> makes sure that the specified unit is activated if your "
+"script exits uncleanly (by non-zero error code, or signal/coredump)\\&. If "
+"your script succeeds you should trigger the reboot in your own code, for "
+"example by invoking logind\\*(Aqs B<Reboot()> call or calling B<systemctl "
+"reboot>\\&. See \\m[blue]B<logind dbus API>\\m[]\\&\\s-2\\u[2]\\d\\s+2 for "
+"details\\&."
+msgstr ""
+"Verwenden Sie I<FailureAction=reboot> in der Dienstedatei Ihres "
+"Aktualisierungsskriptes, um sicherzustellen, dass automatisch ein Neustart "
+"ausgelöst wird, falls die Aktualisierung fehlschlägt\\&. I<FailureAction=> "
+"stellt sicher, dass die festgelegte Unit aktiviert ist, falls Ihr Skript "
+"sich unsauber beendet (mit einem von Null verschiedenen Fehler-Code oder "
+"einem Signal/Speicherauszug)\\&. Falls Ihr Skript sich erfolgreich beendet, "
+"sollten Sie den Systemneustart in Ihrem Code auslösen, beispielsweise durch "
+"den Aufruf B<Reboot()> von logind oder dem Aufruf von B<systemctl reboot>"
+"\\&. Siehe \\m[blue]B<Logind dbus-API>\\m[]\\&\\s-2\\u[2]\\d\\s+2 für Details"
+"\\&."
+
+#. type: IP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid " 2."
+msgstr " 2."
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "logind dbus API"
+msgstr "Logind dbus-API"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "\\%https://www.freedesktop.org/wiki/Software/systemd/logind"
+msgstr "\\%https://www.freedesktop.org/wiki/Software/systemd/logind"

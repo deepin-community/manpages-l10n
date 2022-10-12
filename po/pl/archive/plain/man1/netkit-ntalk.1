@@ -1,0 +1,105 @@
+.\" {PTM/TW/0.1/20-03-1999/"wymiana pisanej na bieżąco informacji z innym użytkownikiem"}
+.\" talk.1 --
+.\" Copyright (c) 1983, 1990 The Regents of the University of California.
+.\" All rights reserved.
+.\" Translation (c) 1999 Tomasz Wendlandt <juggler@cp.pl>
+.Dd April 22, 1991
+.Dt TALK 1
+.Os BSD 4.2
+.Sh NAZWA
+.Nm talk 
+.Nd wymiana pisanej na bieżąco informacji z innym użytkownikiem
+.Sh SKŁADNIA
+.Nm talk 
+.Ar użytkownik 
+.Op Ar tty
+.Sh OPIS
+.Nm Talk 
+to wizualny program komunikacyjny, który kopiuje linie z
+twojego terminala na terminal innego użytkownika.
+.Pp
+Dostępne opcje:
+.Bl -tag -width ttyname
+.It Ar użytkownik
+Jeżeli życzysz sobie porozmawiać z kimś na twojej
+własnej maszynie, wtedy 
+.Ar użytkownik 
+to po prostu nazwa loginu danego użytkownika, z którym chcesz porozmawiać.
+Jeżeli chcesz porozmawiać z użytkownikiem na innym hoscie, wtedy 
+.Ar użytkownik 
+przyjmuje formę 
+.Ql nazwa_loginu@host .
+.It Ar tty          
+Jeżeli życzysz sobie porozmawiać z kimś kto jest zalogowany więcej niż raz, 
+.Ar tty 
+może być użyty do wskazania właściwego terminala, gdzie 
+.Ar tty 
+wygląda następująco 
+.Ql ttyXX .
+.El
+.Pp
+Kiedy łączysz się z kimś za pomocą 
+.Nm talk, 
+program wysyła wiadomość
+.Bd -literal -offset indent -compact
+Message from TalkDaemon@jego_maszyna...
+talk: connection requested by twój_login@twoja_maszyna.
+talk: respond with: talk twój_login@twoja_maszyna
+.Ed
+.Pp
+do użytkownika z którym chcesz porozmawiać.Z jego punktu widzenia
+odbiorca tej wiadomości powinien odpowiedzieć, pisząc
+.Pp
+.Dl talk twój_login@twoja_maszyna
+.Pp
+Nie ma znaczenia z jakiej maszyny odbiorca odpowiada, tak długo jak
+jego nazwa_loginu jest ta sama.Po nawiązaniu połaczenia użytkownicy
+mogą pisać równocześnie, to co napiszą pojawia się w oddzielnych
+oknach.  Naciśnięcie kontrol(Ctrl)-L
+.Ql ^L
+spowoduje oczyszczenie ekranu z tekstu, który wpisywałeś do tej pory.  W
+celu wyjścia z programu naciśnij znak przerwania;
+.Nm talk 
+przesunie kursor na koniec ostatniego wiersza i odtworzy poprzedni wygląd
+terminala.
+.Pp
+Pozwolenie na rozmowę może być odmówiona lub przyznana przez użycie komendy
+.Xr mesg 1
+Na początku(standardowo) rozmowa nie jest zabroniona.  Niektóre komendy,
+szczególnie
+.Xr nroff 1
+i
+.Xr pr 1 ,
+nie zezwalają na wiadomości w celu uniemożliwienia "zanieczyszczenia" danych
+wyjściowych.
+.Pp
+.Sh PLIKI
+.Bl -tag -width /var/run/utmp -compact
+.It Pa /etc/hosts
+aby odszukać nazwę maszyny odbiorcy
+.It Pa /var/run/utmp
+aby odszukać terminal odbiorcy
+.El
+.Sh ZOBACZ RÓWNIEŻ
+.Xr mail 1 ,
+.Xr mesg 1 ,
+.Xr who 1 ,
+.Xr write 1
+.Sh BŁĘDY
+Wersja
+.Xr talk 1
+udostępniona z
+.Bx 4.3
+używa protokołu, który nie jest kompatybilny z protokołem używanym w wersji
+udostępnionej z
+.Bx 4.2
+(SunOS/Solaris używają tego starego protokołu).
++.PP
+Kolejny problem może mieć miejsce podczas połaczenia przez point-to-point 
+(SLIP/PPP).W celu pozbycia się tego problemu musisz zmienić nazwę hosta na
+odpowiedni dla ciebie adres IP intersejsu SLIP/PPP podczas połączenia.
+.Sh HISTORIA
+Komenda
+.Nm talk
+pojawiła się w
+.Bx 4.2 . 

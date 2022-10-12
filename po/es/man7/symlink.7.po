@@ -1,0 +1,909 @@
+# Spanish translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n 4.10.0\n"
+"POT-Creation-Date: 2021-09-03 20:56+0200\n"
+"PO-Revision-Date: 2021-04-12 20:57+0200\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: Spanish <debian-l10n-spanish@lists.debian.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SYMLINK"
+msgstr ""
+
+#. type: TH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "2021-03-22"
+msgstr "22 Marzo 2021"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr "Linux"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr "Manual del Programador de Linux"
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr "NOMBRE"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "symlink - symbolic link handling"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "DESCRIPCIÓN"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Symbolic links are files that act as pointers to other files.  To understand "
+"their behavior, you must first understand how hard links work."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"A hard link to a file is indistinguishable from the original file because it "
+"is a reference to the object underlying the original filename.  (To be "
+"precise: each of the hard links to a file is a reference to the same I<inode "
+"number>, where an inode number is an index into the inode table, which "
+"contains metadata about all files on a filesystem.  See B<stat>(2).)  "
+"Changes to a file are independent of the name used to reference the file.  "
+"Hard links may not refer to directories (to prevent the possibility of loops "
+"within the filesystem tree, which would confuse many programs)  and may not "
+"refer to files on different filesystems (because inode numbers are not "
+"unique across filesystems)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"A symbolic link is a special type of file whose contents are a string that "
+"is the pathname of another file, the file to which the link refers.  (The "
+"contents of a symbolic link can be read using B<readlink>(2).)  In other "
+"words, a symbolic link is a pointer to another name, and not to an "
+"underlying object.  For this reason, symbolic links may refer to directories "
+"and may cross filesystem boundaries."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"There is no requirement that the pathname referred to by a symbolic link "
+"should exist.  A symbolic link that refers to a pathname that does not exist "
+"is said to be a I<dangling link>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Because a symbolic link and its referenced object coexist in the filesystem "
+"name space, confusion can arise in distinguishing between the link itself "
+"and the referenced object.  On historical systems, commands and system calls "
+"adopted their own link-following conventions in a somewhat ad-hoc fashion.  "
+"Rules for a more uniform approach, as they are implemented on Linux and "
+"other systems, are outlined here.  It is important that site-local "
+"applications also conform to these rules, so that the user interface can be "
+"as consistent as possible."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "Magic links"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"There is a special class of symbolic-link-like objects known as \"magic links"
+"\", which can be found in certain pseudofilesystems such as B<proc>(5)  "
+"(examples include I</proc/[pid]/exe> and I</proc/[pid]/fd/*>).  Unlike "
+"normal symbolic links, magic links are not resolved through pathname-"
+"expansion, but instead act as direct references to the kernel's own "
+"representation of a file handle.  As such, these magic links allow users to "
+"access files which cannot be referenced with normal paths (such as unlinked "
+"files still referenced by a running program )."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Because they can bypass ordinary B<mount_namespaces>(7)-based restrictions, "
+"magic links have been used as attack vectors in various exploits."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Symbolic link ownership, permissions, and timestamps"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The owner and group of an existing symbolic link can be changed using "
+"B<lchown>(2).  The only time that the ownership of a symbolic link matters "
+"is when the link is being removed or renamed in a directory that has the "
+"sticky bit set (see B<stat>(2))."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The last access and last modification timestamps of a symbolic link can be "
+"changed using B<utimensat>(2)  or B<lutimes>(3)."
+msgstr ""
+
+#.  Linux does not currently implement an lchmod(2).
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"On Linux, the permissions of an ordinary symbolic link are not used in any "
+"operations; the permissions are always 0777 (read, write, and execute for "
+"all user categories), and can't be changed."
+msgstr ""
+
+#. #-#-#-#-#  archlinux: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  .PP
+#.  The
+#.  4.4BSD
+#.  system differs from historical
+#.  4BSD
+#.  systems in that the system call
+#.  .BR chown (2)
+#.  has been changed to follow symbolic links.
+#.  The
+#.  .BR lchown (2)
+#.  system call was added later when the limitations of the new
+#.  .BR chown (2)
+#.  became apparent.
+#. type: Plain text
+#. #-#-#-#-#  debian-bullseye: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: Plain text
+#. #-#-#-#-#  debian-unstable: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: Plain text
+#. #-#-#-#-#  fedora-rawhide: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  .PP
+#.  The
+#.  4.4BSD
+#.  system differs from historical
+#.  4BSD
+#.  systems in that the system call
+#.  .BR chown (2)
+#.  has been changed to follow symbolic links.
+#.  The
+#.  .BR lchown (2)
+#.  system call was added later when the limitations of the new
+#.  .BR chown (2)
+#.  became apparent.
+#. type: Plain text
+#. #-#-#-#-#  mageia-cauldron: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  .PP
+#.  The
+#.  4.4BSD
+#.  system differs from historical
+#.  4BSD
+#.  systems in that the system call
+#.  .BR chown (2)
+#.  has been changed to follow symbolic links.
+#.  The
+#.  .BR lchown (2)
+#.  system call was added later when the limitations of the new
+#.  .BR chown (2)
+#.  became apparent.
+#. type: Plain text
+#. #-#-#-#-#  opensuse-tumbleweed: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  .PP
+#.  The
+#.  4.4BSD
+#.  system differs from historical
+#.  4BSD
+#.  systems in that the system call
+#.  .BR chown (2)
+#.  has been changed to follow symbolic links.
+#.  The
+#.  .BR lchown (2)
+#.  system call was added later when the limitations of the new
+#.  .BR chown (2)
+#.  became apparent.
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"However, magic links do not follow this rule.  They can have a non-0777 "
+"mode, though this mode is not currently used in any permission checks."
+msgstr ""
+
+# #-#-#-#-#  debian-unstable: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#
+#. #-#-#-#-#  archlinux: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: SS
+#. #-#-#-#-#  debian-bullseye: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  The
+#.  4.4BSD
+#.  system differs from historical
+#.  4BSD
+#.  systems in that the system call
+#.  .BR chown (2)
+#.  has been changed to follow symbolic links.
+#.  The
+#.  .BR lchown (2)
+#.  system call was added later when the limitations of the new
+#.  .BR chown (2)
+#.  became apparent.
+#. type: SS
+#. #-#-#-#-#  debian-unstable: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  The
+#.  4.4BSD
+#.  system differs from historical
+#.  4BSD
+#.  systems in that the system call
+#.  .BR chown (2)
+#.  has been changed to follow symbolic links.
+#.  The
+#.  .BR lchown (2)
+#.  system call was added later when the limitations of the new
+#.  .BR chown (2)
+#.  became apparent.
+#. type: SS
+#. #-#-#-#-#  fedora-rawhide: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: SS
+#. #-#-#-#-#  mageia-cauldron: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: SS
+#. #-#-#-#-#  opensuse-leap-15-3: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: SS
+#. #-#-#-#-#  opensuse-tumbleweed: symlink.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Obtaining a file descriptor that refers to a symbolic link"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Using the combination of the B<O_PATH> and B<O_NOFOLLOW> flags to "
+"B<open>(2)  yields a file descriptor that can be passed as the I<dirfd> "
+"argument in system calls such as B<fstatat>(2), B<fchownat>(2), "
+"B<fchmodat>(2), B<linkat>(2), and B<readlinkat>(2), in order to operate on "
+"the symbolic link itself (rather than the file to which it refers)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"By default (i.e., if the B<AT_SYMLINK_FOLLOW> flag is not specified), if "
+"B<name_to_handle_at>(2)  is applied to a symbolic link, it yields a handle "
+"for the symbolic link (rather than the file to which it refers).  One can "
+"then obtain a file descriptor for the symbolic link (rather than the file to "
+"which it refers)  by specifying the B<O_PATH> flag in a subsequent call to "
+"B<open_by_handle_at>(2).  Again, that file descriptor can be used in the "
+"aforementioned system calls to operate on the symbolic link itself."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Handling of symbolic links by system calls and commands"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Symbolic links are handled either by operating on the link itself, or by "
+"operating on the object referred to by the link.  In the latter case, an "
+"application or system call is said to I<follow> the link.  Symbolic links "
+"may refer to other symbolic links, in which case the links are dereferenced "
+"until an object that is not a symbolic link is found, a symbolic link that "
+"refers to a file which does not exist is found, or a loop is detected.  "
+"(Loop detection is done by placing an upper limit on the number of links "
+"that may be followed, and an error results if this limit is exceeded.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"There are three separate areas that need to be discussed.  They are as "
+"follows:"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "1."
+msgstr "1."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Symbolic links used as filename arguments for system calls."
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "2."
+msgstr "2."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Symbolic links specified as command-line arguments to utilities that are not "
+"traversing a file tree."
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "3."
+msgstr "3."
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Symbolic links encountered by utilities that are traversing a file tree "
+"(either specified on the command line or encountered as part of the file "
+"hierarchy walk)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Before describing the treatment of symbolic links by system calls and "
+"commands, we require some terminology.  Given a pathname of the form I<a/b/"
+"c>, the part preceding the final slash (i.e., I<a/b>)  is called the "
+"I<dirname> component, and the part following the final slash (i.e., I<c>)  "
+"is called the I<basename> component."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "Treatment of symbolic links in system calls"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The first area is symbolic links used as filename arguments for system calls."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The treatment of symbolic links within a pathname passed to a system call is "
+"as follows:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Within the dirname component of a pathname, symbolic links are always "
+"followed in nearly every system call.  (This is also true for commands.)  "
+"The one exception is B<openat2>(2), which provides flags that can be used to "
+"explicitly prevent following of symbolic links in the dirname component."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Except as noted below, all system calls follow symbolic links in the "
+"basename component of a pathname.  For example, if there were a symbolic "
+"link I<slink> which pointed to a file named I<afile>, the system call "
+"I<open(\"slink\" ...\\&)> would return a file descriptor referring to the "
+"file I<afile>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Various system calls do not follow links in the basename component of a "
+"pathname, and operate on the symbolic link itself.  They are: B<lchown>(2), "
+"B<lgetxattr>(2), B<llistxattr>(2), B<lremovexattr>(2), B<lsetxattr>(2), "
+"B<lstat>(2), B<readlink>(2), B<rename>(2), B<rmdir>(2), and B<unlink>(2)."
+msgstr ""
+
+#.  Maybe one day: .BR fchownat (2)
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Certain other system calls optionally follow symbolic links in the basename "
+"component of a pathname.  They are: B<faccessat>(2), B<fchownat>(2), "
+"B<fstatat>(2), B<linkat>(2), B<name_to_handle_at>(2), B<open>(2), "
+"B<openat>(2), B<open_by_handle_at>(2), and B<utimensat>(2); see their manual "
+"pages for details.  Because B<remove>(3)  is an alias for B<unlink>(2), that "
+"library function also does not follow symbolic links.  When B<rmdir>(2)  is "
+"applied to a symbolic link, it fails with the error B<ENOTDIR>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<link>(2)  warrants special discussion.  POSIX.1-2001 specifies that "
+"B<link>(2)  should dereference I<oldpath> if it is a symbolic link.  "
+"However, Linux does not do this.  (By default, Solaris is the same, but the "
+"POSIX.1-2001 specified behavior can be obtained with suitable compiler "
+"options.)  POSIX.1-2008 changed the specification to allow either behavior "
+"in an implementation."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Commands not traversing a file tree"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The second area is symbolic links, specified as command-line filename "
+"arguments, to commands which are not traversing a file tree."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Except as noted below, commands follow symbolic links named as command-line "
+"arguments.  For example, if there were a symbolic link I<slink> which "
+"pointed to a file named I<afile>, the command I<cat slink> would display the "
+"contents of the file I<afile>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"It is important to realize that this rule includes commands which may "
+"optionally traverse file trees; for example, the command I<chown file> is "
+"included in this rule, while the command I<chown\\ -R file>, which performs "
+"a tree traversal, is not.  (The latter is described in the third area, "
+"below.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"If it is explicitly intended that the command operate on the symbolic link "
+"instead of following the symbolic link\\(emfor example, it is desired that "
+"I<chown slink> change the ownership of the file that I<slink> is, whether it "
+"is a symbolic link or not\\(emthen the I<-h> option should be used.  In the "
+"above example, I<chown root slink> would change the ownership of the file "
+"referred to by I<slink>, while I<chown\\ -h root slink> would change the "
+"ownership of I<slink> itself."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "There are some exceptions to this rule:"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "*"
+msgstr "*"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The B<mv>(1)  and B<rm>(1)  commands do not follow symbolic links named as "
+"arguments, but respectively attempt to rename and delete them.  (Note, if "
+"the symbolic link references a file via a relative path, moving it to "
+"another directory may very well cause it to stop working, since the path may "
+"no longer be correct.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The B<ls>(1)  command is also an exception to this rule.  For compatibility "
+"with historic systems (when B<ls>(1)  is not doing a tree walk\\(emthat is, "
+"I<-R> option is not specified), the B<ls>(1)  command follows symbolic links "
+"named as arguments if the I<-H> or I<-L> option is specified, or if the I<-"
+"F>, I<-d>, or I<-l> options are not specified.  (The B<ls>(1)  command is "
+"the only command where the I<-H> and I<-L> options affect its behavior even "
+"though it is not doing a walk of a file tree.)"
+msgstr ""
+
+#
+#. The 4.4BSD system differs from historical 4BSD systems in that the
+#. .BR chown (1)
+#. and
+#. .BR chgrp (1)
+#. commands follow symbolic links specified on the command line.
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The B<file>(1)  command is also an exception to this rule.  The B<file>(1)  "
+"command does not follow symbolic links named as argument by default.  The "
+"B<file>(1)  command does follow symbolic links named as argument if the I<-"
+"L> option is specified."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Commands traversing a file tree"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The following commands either optionally or always traverse file trees: "
+"B<chgrp>(1), B<chmod>(1), B<chown>(1), B<cp>(1), B<du>(1), B<find>(1), "
+"B<ls>(1), B<pax>(1), B<rm>(1), and B<tar>(1)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"It is important to realize that the following rules apply equally to "
+"symbolic links encountered during the file tree traversal and symbolic links "
+"listed as command-line arguments."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<first rule> applies to symbolic links that reference files other than "
+"directories.  Operations that apply to symbolic links are performed on the "
+"links themselves, but otherwise the links are ignored."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The command I<rm\\ -r slink directory> will remove I<slink>, as well as any "
+"symbolic links encountered in the tree traversal of I<directory>, because "
+"symbolic links may be removed.  In no case will B<rm>(1)  affect the file "
+"referred to by I<slink>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<second rule> applies to symbolic links that refer to directories.  "
+"Symbolic links that refer to directories are never followed by default.  "
+"This is often referred to as a \"physical\" walk, as opposed to a \"logical"
+"\" walk (where symbolic links that refer to directories are followed)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Certain conventions are (should be) followed as consistently as possible by "
+"commands that perform file tree walks:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"A command can be made to follow any symbolic links named on the command "
+"line, regardless of the type of file they reference, by specifying the I<-H> "
+"(for \"half-logical\") flag.  This flag is intended to make the command-line "
+"name space look like the logical name space.  (Note, for commands that do "
+"not always do file tree traversals, the I<-H> flag will be ignored if the I<-"
+"R> flag is not also specified.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"For example, the command I<chown\\ -HR user slink> will traverse the file "
+"hierarchy rooted in the file pointed to by I<slink>.  Note, the I<-H> is not "
+"the same as the previously discussed I<-h> flag.  The I<-H> flag causes "
+"symbolic links specified on the command line to be dereferenced for the "
+"purposes of both the action to be performed and the tree walk, and it is as "
+"if the user had specified the name of the file to which the symbolic link "
+"pointed."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"A command can be made to follow any symbolic links named on the command "
+"line, as well as any symbolic links encountered during the traversal, "
+"regardless of the type of file they reference, by specifying the I<-L> (for "
+"\"logical\") flag.  This flag is intended to make the entire name space look "
+"like the logical name space.  (Note, for commands that do not always do file "
+"tree traversals, the I<-L> flag will be ignored if the I<-R> flag is not "
+"also specified.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"For example, the command I<chown\\ -LR user slink> will change the owner of "
+"the file referred to by I<slink>.  If I<slink> refers to a directory, "
+"B<chown> will traverse the file hierarchy rooted in the directory that it "
+"references.  In addition, if any symbolic links are encountered in any file "
+"tree that B<chown> traverses, they will be treated in the same fashion as "
+"I<slink>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"A command can be made to provide the default behavior by specifying the I<-"
+"P> (for \"physical\") flag.  This flag is intended to make the entire name "
+"space look like the physical name space."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"For commands that do not by default do file tree traversals, the I<-H>, I<-"
+"L>, and I<-P> flags are ignored if the I<-R> flag is not also specified.  In "
+"addition, you may specify the I<-H>, I<-L>, and I<-P> options more than "
+"once; the last one specified determines the command's behavior.  This is "
+"intended to permit you to alias commands to behave one way or the other, and "
+"then override that behavior on the command line."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The B<ls>(1)  and B<rm>(1)  commands have exceptions to these rules:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The B<rm>(1)  command operates on the symbolic link, and not the file it "
+"references, and therefore never follows a symbolic link.  The B<rm>(1)  "
+"command does not support the I<-H>, I<-L>, or I<-P> options."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"To maintain compatibility with historic systems, the B<ls>(1)  command acts "
+"a little differently.  If you do not specify the I<-F>, I<-d>, or I<-l> "
+"options, B<ls>(1)  will follow symbolic links specified on the command "
+"line.  If the I<-L> flag is specified, B<ls>(1)  follows all symbolic links, "
+"regardless of their type, whether specified on the command line or "
+"encountered in the tree walk."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "VÉASE TAMBIÉN"
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<chgrp>(1), B<chmod>(1), B<find>(1), B<ln>(1), B<ls>(1), B<mv>(1), "
+"B<namei>(1), B<rm>(1), B<lchown>(2), B<link>(2), B<lstat>(2), "
+"B<readlink>(2), B<rename>(2), B<symlink>(2), B<unlink>(2), B<utimensat>(2), "
+"B<lutimes>(3), B<path_resolution>(7)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr "COLOFÓN"
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+"Esta página es parte de la versión 5.13 del proyecto Linux I<man-pages>. "
+"Puede encontrar una descripción del proyecto, información sobre cómo "
+"informar errores y la última versión de esta página en \\%https://www.kernel."
+"org/doc/man-pages/."
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "2020-06-09"
+msgstr "9 Junio 2020"
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"To maintain compatibility with historic systems, the B<ls>(1)  command acts "
+"a little differently.  If you do not specify the I<-F>, I<-d> or I<-l> "
+"options, B<ls>(1)  will follow symbolic links specified on the command "
+"line.  If the I<-L> flag is specified, B<ls>(1)  follows all symbolic links, "
+"regardless of their type, whether specified on the command line or "
+"encountered in the tree walk."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+"Esta página es parte de la versión 5.10 del proyecto Linux I<man-pages>. "
+"Puede encontrar una descripción del proyecto, información sobre cómo "
+"informar errores y la última versión de esta página en \\%https://www.kernel."
+"org/doc/man-pages/."
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2016-10-08"
+msgstr "8 Octubre 2016"
+
+#
+#.  Linux does not currently implement an lchmod(2).
+#.  The
+#.  4.4BSD
+#.  system differs from historical
+#.  4BSD
+#.  systems in that the system call
+#.  .BR chown (2)
+#.  has been changed to follow symbolic links.
+#.  The
+#.  .BR lchown (2)
+#.  system call was added later when the limitations of the new
+#.  .BR chown (2)
+#.  became apparent.
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"On Linux, the permissions of a symbolic link are not used in any operations; "
+"the permissions are always 0777 (read, write, and execute for all user "
+"categories), and can't be changed.  (Note that there are some \"magic\" "
+"symbolic links in the I</proc> directory tree\\(emfor example, the I</proc/"
+"[pid]/fd/*> files\\(emthat have different permissions.)"
+msgstr ""
+
+#. type: SS
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "System calls"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"Except as noted below, all system calls follow symbolic links.  For example, "
+"if there were a symbolic link I<slink> which pointed to a file named "
+"I<afile>, the system call I<open(\"slink\" ...\\&)> would return a file "
+"descriptor referring to the file I<afile>."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"Various system calls do not follow links, and operate on the symbolic link "
+"itself.  They are: B<lchown>(2), B<lgetxattr>(2), B<llistxattr>(2), "
+"B<lremovexattr>(2), B<lsetxattr>(2), B<lstat>(2), B<readlink>(2), "
+"B<rename>(2), B<rmdir>(2), and B<unlink>(2)."
+msgstr ""
+
+#.  Maybe one day: .BR fchownat (2)
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"Certain other system calls optionally follow symbolic links.  They are: "
+"B<faccessat>(2), B<fchownat>(2), B<fstatat>(2), B<linkat>(2), "
+"B<name_to_handle_at>(2), B<open>(2), B<openat>(2), B<open_by_handle_at>(2), "
+"and B<utimensat>(2); see their manual pages for details.  Because "
+"B<remove>(3)  is an alias for B<unlink>(2), that library function also does "
+"not follow symbolic links.  When B<rmdir>(2)  is applied to a symbolic link, "
+"it fails with the error B<ENOTDIR>."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"If it is explicitly intended that the command operate on the symbolic link "
+"instead of following the symbolic link\\(emfor example, it is desired that "
+"I<chown slink> change the ownership of the file that I<slink> is, whether it "
+"is a symbolic link or not\\(emthe I<-h> option should be used.  In the above "
+"example, I<chown root slink> would change the ownership of the file referred "
+"to by I<slink>, while I<chown\\ -h root slink> would change the ownership of "
+"I<slink> itself."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+"Esta página es parte de la versión 4.16 del proyecto Linux I<man-pages>. "
+"Puede encontrar una descripción del proyecto, información sobre cómo "
+"informar errores y la última versión de esta página en \\%https://www.kernel."
+"org/doc/man-pages/."

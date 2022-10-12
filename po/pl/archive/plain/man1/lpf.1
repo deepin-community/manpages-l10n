@@ -1,0 +1,134 @@
+.\" {PTM/WK/2000}
+.ds VE LPRng-3.6.13
+.TH LPF 1 \*(VE "LPRng"
+.ig
+Thu Jul 20 07:19:29 PDT 1995 Patrick Powell
+..
+.SH NAZWA
+lpf \- ogólny filtr drukarki
+.SH SKŁADNIA
+.TP 5
+.B lpf
+.BI \-P printer
+.BI \-w width
+.BI \-l length
+.BI \-x width
+.BI \-y length
+.RB [ \-c ]
+.br
+.BI \-K controlfilename
+.BI \-L bnrname
+.RB [ \-i
+.IR indent ]
+.RB [ \-Z
+.IR options ]
+.br
+.RB [ \-C
+.IR class ]
+.RB [ \-J
+.IR job ]
+.RB [ \-R
+.IR accntname ]
+.BI \-n login
+.BI \-h Host
+.br
+.BI \-F format
+.RB [ \-T [ crlf ,\fIendlinechar\fP]
+.B \-D
+.IR level ]
+.RB [ affile ]
+.SH OPIS
+.B Lpf
+jest ogólnym filtrem drukarki. Zwykle jest używany jako filtr w pliku
+\fIprintcap\fP i wywoływany przez lpd.
+Opcja \fB-Tcrlf\fP eliminuje konwersję LF na pary CR/LF.
+
+Poniższe opcje przesyła lpd domyślnie:
+.IP "\fB\-P\fIprinter\fR" 5
+Nazwa drukarki.
+.IP "\fB\-w\fIwidth\fR" 5
+Szerokość strony w znakach, jak podano w polu :pw pliku printcap
+.IP "\fB\-l\fIlength\fR" 5
+Szerokość długość w wierszach, jak podano w polu :pl pliku printcap
+.IP "\fB\-x\fIwidth\fR" 5
+Szerokość strony w pikselach, jak podano w polu :px pliku printcap
+.IP "\fB\-y\fIlength\fR" 5
+Długość strony w pikselach, jak podano w polu :py pliku printcap
+.IP "\fB\-K\fIcontrolfilename\fR" 5
+Nazwa pliku sterującego.
+.IP "\fB\-L\fIbnrname\fR" 5
+Nazwa nagłówka (banner). Ustawiana opcją \-T polecenia lpr.
+.IP "\fB\-n\fIlogin\fR" 5
+Nazwa zgłoszeniowa użytkownika.
+.IP "\fB\-h\fIHost\fR" 5
+Host, z którego zgłoszono zadanie.
+.IP "\fB\-F\fIformat\fR" 5
+Format zadania z opcji \-F polecenia lpr lub innej opcji.
+.PP
+Poniższe opcje mogą być ustawiane przez lpd opcjonalnie:
+.IP "\fB\-Z\fIoptions\fR" 5
+Opcje dodatkowe. Przesyłane są z parametru \fB-Z\fP podanego w wierszu poleceń
+polecenia lpr i mogą być interpretowane przez filtr.
+.PP
+Pozostałe opcje można dodać do wpisu filtru w pliku printcap:
+.IP "\fB\-c\fR" 5
+ignoruje znaki sterujące, ustawiane przez opcje \-b (binary) lub \-l (literal)
+polecenia lpr.
+.IP "\fB\-i\fIindent\fR" 5
+wielkość wcięcia, ustawiana opcją \-i polecenia lpr.
+.IP "\fB\-C\fIclass\fR" 5
+nazwa klasy, ustawiana opcją \-C polecenia lpr.
+.IP "\fB\-J\fIjob\fR" 5
+nazwa zadania, ustawiana opcją \-J polecenia lpr.
+.IP "\fB\-R\fIaccntname\fR" 5
+nazwa pliku rozliczeniowego, z informacji zawartej w printcap.
+.IP "\fB\-D\fIlevel\fR" 5
+Ustawia poziom debugowania. Poziom musi być liczbą całkowitą, wartość niezerowa
+włącza debugowanie.
+.IP "\fB\-Tcrlf\fR" 5
+Włącza konwersję LF na CR/LF.
+.br
+[tłum: w org. _wyłącza_].
+.IP "\fB\-T\fINNN\fR" 5
+NNN jest liczbą całkowitą w formacie używanym w C.
+Odpowiadający jej znak jest dołączany na koniec wiersza (LF, CR lub CR/LF).
+Można użyć do wymuszenia innej postaci konwersji CR/LF.
+.SH PLIKI
+.PP
+Nazwy plików używane przez LPRng ustawiane są wartościami w pliku
+konfiguracyjnym drukarek.
+Poniżej podano powszechnie używany zestaw wartości domyślnych.
+.nf
+.ta \w'/var/spool/lpd/printcap.<hostname>           'u
+/etc/lpd.conf                        plik konfiguracyjny LPRng
+/etc/printcap                        plik opisu drukarek
+/etc/lpd.perms                       uprawnienia drukarek
+/var/spool/printer*                  katalogi buforowania
+/var/spool/printer*/printer          plik blokujący sterowania kolejką
+/var/spool/printer*/control.printer  sterowanie kolejką
+/var/spool/printer*/active.printer   aktywne zadanie
+/var/spool/printer*/log.printer      plik dziennika drukarki
+.fi
+.SH "ZOBACZ TAKŻE"
+.BR lpd.conf (5),
+.BR lpc (8),
+.BR lpd (8),
+.BR lpr (1),
+.BR lpq (1),
+.BR lprm (1),
+.BR printcap (5),
+.BR lpd.perms (5),
+.BR pr (1).
+.SH DIAGNOSTYKA
+Większość komunikatów diagnostycznych jest oczywista. Jeśli dokładny powód
+niepowodzenia pozostaje niejasny, należy włączyć poziom debugowania (\-D5)
+i uruchomić ponownie. Informacja diagnostyczna pomoże uchwycić dokładną
+przyczynę.
+.SH "HISTORIA"
+LPRng jest rozszerzonym systemem buforowania wydruku o funkcjonalności podobnej
+do oprogramowania Berkeley LPR. Listą dyskusyjną o LPRng jest lprng@lprng.com;
+subskrypcja przez wysłanie listu do lprng-request@lprng.com ze słowem
+`subscribe` w treści.
+Oprogramowanie to jest dostępne z ftp://ftp.astart.com/pub/LPRng.
+.SH "AUTOR"
+Patrick Powell <papowell@astart.com>.

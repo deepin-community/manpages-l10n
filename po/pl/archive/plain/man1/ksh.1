@@ -1,0 +1,3680 @@
+'\" t
+.\" $Id: ksh.1,v 1.17 2005/03/20 19:21:37 robert Exp $
+.\"
+.\"{{{}}}
+.\"{{{  Notes about man page
+.\"     - use the pseudo-macros .sh( and .sh) to begin and end sh-specific
+.\"       text and .ksh( and .ksh) for ksh specific text.
+.\"     - put i.e., e.g. and etc. in italics
+.\"}}}
+.\"{{{  To do
+.\" todo: Things not covered that should be:
+.\"	- distinguish (POSIX) special built-in's, (POSIX) regular built-in's,
+.\"	  and sh/ksh weirdo built-in's (put S,R,X superscripts after command
+.\"	  name in built-in commands section?)
+.\"	- need to be consistent about notation for `See section-name', `
+.\"	  See description of foobar command', `See section section-name', etc.
+.\"	- need to use the term `external command' meaning `a command that is
+.\"       executed using execve(2)' (as opposed to a built-in command or
+.\"       function) for more clear description.
+.\"}}}
+.\"{{{  Title
+.TH KSH 1 "22 lutego 1999" "" "Komendy użytkownika"
+.\"}}}
+.\"{{{  Name
+.SH NAZWA
+ksh \- Publiczna implementacja powłoki Korna
+.\"}}}
+.\"{{{  Synopsis
+.SH WYWOŁANIE
+.ad l
+\fBksh\fP
+[\fB+-abCefhikmnprsuvxX\fP] [\fB+-o\fP \fIopcja\fP]
+[ [ \fB\-c\fP \fIłańcuch_komend\fP [\fInazwa_komendy\fP]|\fB\-s\fP|\fIplik\fP ]
+[\fIargument\fP ...] ]
+.ad b
+.\"}}}
+.\"{{{  Description
+.SH OPIS
+\fBksh\fP to interpreter komend zaprojektowany zarówno
+do interakcyjnej pracy z systemem, jak i do wykonywania skryptów.
+Jego język komend jest nadzbiorem (superset) języka powłoki \fIsh\fP(1).
+.\"{{{  Shell Startup
+.SS "Uruchamianie powłoki"
+Następujące opcje mogą być użyte wyłącznie w linii komend:
+.IP "\fB\-c\fP \fIłańcuch_komend\fP"
+powłoka wykonuje komendę(y) zawartą(e) w \fIłańcuchu_komend\fP
+.IP \fB\-i\fP
+tryb interakcyjny \(em patrz poniżej
+.IP \fB\-l\fP
+powłoka zameldowania \(em patrz poniżej
+tryb interakcyjny \(em patrz poniżej
+.IP \fB\-s\fP
+powłoka wczytuje komendy ze standardowego wejścia; wszelkie argumenty
+nie będące opcjami są argumentami pozycyjnymi
+.IP \fB\-r\fP
+tryb ograniczony \(em patrz poniżej
+.PP
+Ponadto wszelkie opcje, opisane w omówieniu wbudowanej
+komendą \fBset\fP, mogą również zostać użyte w linii poleceń.
+.PP
+Jeśli nie została podana ani opcja \fB\-c\fP, ani opcja \fB\-s\fP,
+wówczas pierwszy argument nie będący opcją, określa
+plik, z którego zostaną wczytane komendy. Jeśli brak jest argumentów
+nie będących opcjami, to powłoka wczytuje komendy ze standardowego
+wejścia.
+Nazwa powłoki (tj. zawartość parametru \fB$0\fP)
+jest ustalana jak następuje: jeśli użyto opcji \fB\-c\fP
+i podano argument nie będący opcją, to jest on nazwą;
+jeśli komendy są wczytywane z pliku, wówczas nazwa tego pliku zostaje
+użyta jako nazwa powłoki; w każdym innym przypadku zostaje użyta
+nazwa, pod którą powłoka została wywołana
+(tzn. wartość argv[0]).
+.PP
+Powłoka jest \fBinterakcyjna\fP, jeśli użyto opcji \fB\-i\fP
+lub jeśli zarówno standardowe wejście, jak i standardowe wyjście błędów,
+jest skojarzone z jakimś terminalem.
+W interakcyjnej powłoce kontrola zadań (jeśli takowa jest dostępna
+w danym systemie) jest włączona oraz ignorowane są następujące sygnały:
+INT, QUIT oraz TERM. Ponadto powłoka wyświetla zachętę przed
+odczytywaniem poleceń (patrz parametry \fBPS1\fP i \fBPS2\fP).
+Dla nieinterakcyjnych powłok, uaktywnia się domyślnie opcja \fBtrackall\fP
+(patrz poniżej: komenda \fBset\fP).
+.PP
+Powłoka jest \fBograniczona\fP, jeśli zastosowano opcję \fB\-r\fP lub
+gdy albo główna część nazwy (basename), pod jaką wywołano powłokę, albo parametr
+\fBSHELL\fP, pasują do wzorca *r*sh (na przykład:
+rsh, rksh, rpdksh itp.).
+Po przetworzeniu przez powłokę wszystkich plików profili i \fB$ENV\fR
+włączane są następujące ograniczenia:
+.nr P2 \n(PD
+.nr PD 0
+.IP \ \ \(bu
+niedostępna jest komenda \fBcd\fP
+.IP \ \ \(bu
+nie mogą być zmieniane parametry: \fBSHELL\fP, \fBENV\fP i \fBPATH\fP.
+.IP \ \ \(bu
+nazwy poleceń nie mogą być podawane z użyciem ścieżek bezwzględnych lub
+względnych [tłum.: tj. dostępne są tylko przez nazwę bez ścieżki]
+.IP \ \ \(bu
+niedostępna jest opcja \fB\-p\fP wbudowanego polecenia \fBcommand\fP
+.IP \ \ \(bu
+nie mogą być używane przekierowania tworzące pliki
+(np.: \fB>\fP, \fB>|\fP, \fB>>\fP, \fB<>\fP)
+.nr PD \n(P2
+.PP
+Powłoka jest \fBuprzywilejowana\fP, jeśli zastosowano opcję \fB\-p\fP
+lub jeśli rzeczywisty identyfikator użytkownika lub jego grupy
+nie jest zgodny z efektywnym identyfikatorem użytkownika czy grupy
+(patrz: \fIgetuid\fP(2), \fIgetgid\fP(2)).
+Uprzywilejowana powłoka nie przetwarza ani \fI$HOME/.profile\fR, ani parametru
+\fBENV\fP (patrz poniżej), przetwarza za to plik \fI/etc/suid_profile\fR.
+Wykasowanie opcji uprzywilejowania powoduje, że powłoka ustawia swój
+efektywny identyfikator użytkownika i grupy na wartości faktycznego
+identyfikatora użytkownika (user-id) i jego grupy (group-id).
+.PP
+Jeśli główna część nazwy, pod jaką dana powłoka została wywołana
+(\fItzn.\fP argv[0])
+zaczyna się od \fB\-\fP lub użyto opcji \fB\-l\fP,
+to zakłada się, że powłoka ma być powłoką zgłoszeniową i wczytywana jest
+zawartość plików \fI/etc/profile\fP i \fI$HOME/.profile\fP,
+jeśli takie istnieją i można je odczytać.
+.PP
+Jeżeli parametr \fBENV\fR jest ustawiony podczas uruchamiania powłoki
+(albo w wypadku powłok zgłoszeniowych - po przetworzeniu
+dowolnych plików profilowych), to jego zawartość zostaje
+poddana zastępowaniu.
+Zastępowane są parametry, komendy, wyrażenia arytmetyczne oraz tylda.
+Następnie wynikająca z tej operacji nazwa jest
+interpretowana jako nazwa pliku, podlegającego wczytaniu i wykonaniu.
+Jeśli parametr \fBENV\fP jest pusty (i niezerowy), a pdksh został
+skompilowany ze zdefiniowanym makrem \fBDEFAULT_ENV\fP,
+to po wykonaniu wszelkich już wyżej wymienionych podstawień,
+zostaje wczytany plik określony tym makrem.
+.PP
+Kod wyjścia powłoki wynosi 127, jeśli plik komend
+podany we linii wywołania nie mógł zostać otwarty,
+lub kod wyjścia jest niezerowy, jeśli wystąpił krytyczny błąd składni
+podczas wykonywania tego skryptu.
+W razie braku błędów krytycznych, kod wyjścia jest równy kodowi ostatnio
+wykonanej komendy lub zeru, jeśli nie wykonano żadnej komendy.
+.\"}}}
+.\"{{{  Command Syntax
+.SS "Składnia poleceń"
+.\"{{{  words and tokens
+Powłoka rozpoczyna analizę składniową wejścia od podziału go
+na poszczególne słowa \fIword\fP.
+Słowa, stanowiące ciągi znaków, ograniczane są niecytowanymi
+białymi znakami \fIwhitespace\fP (spacja, tabulator i nowa linia)
+lub \fImetaznakami\fP
+(\fB<\fP, \fB>\fP, \fB|\fP, \fB;\fP, \fB&\fP, \fB(\fP i \fB)\fP).
+Poza ograniczaniem słów spacje i tabulatory są ignorowane.
+Natomiast znaki zmiany linii zwykle rozgraniczają komendy.
+Metaznaki stosowane są do tworzenia następujących symboli:
+\fB<\fP, \fB<&\fP, \fB<<\fP, \fB>\fP, \fB>&\fP, \fB>>\fP, \fIitd.\fP,
+służących do określania przekierowań (patrz: "Przekierowywanie
+wejścia/wyjścia" poniżej);
+\fB|\fP służy do tworzenia potoków;
+\fB|&\fP służy do tworzenia koprocesów (patrz: "Koprocesy" poniżej);
+\fB;\fP służy do oddzielania komend;
+\fB&\fP służy do tworzenia potoków asynchronicznych;
+\fB&&\fP i \fB||\fP służą do określenia wykonania warunkowego;
+\fB;;\fP jest używany w poleceniach \fBcase\fP;
+\fB((\fP .. \fB))\fP są używane w wyrażeniach arytmetycznych;
+i w końcu,
+\fB(\fP .. \fB)\fP służą do tworzenia podpowłok.
+.PP
+Białe znaki lub metaznaki można zacytowywać pojedynczo
+przy użyciu znaku odwrotnego ukośnika (\fB\e\fP) lub grupami w podwójnych
+(\fB"\fP) lub pojedynczych (\fB'\fP) cudzysłowach.
+Zauważ, iż następujące znaki podlegają również
+specjalnej interpretacji przez powłokę i muszą być cytowane,
+jeśli mają być użyte dosłownie:
+\fB\e\fP, \fB"\fP, \fB'\fP, \fB#\fP, \fB$\fP, \fB`\fP, \fB~\fP, \fB{\fP,
+\fB}\fP, \fB*\fP, \fB?\fP i \fB[\fP.
+Pierwsze trzy to wyżej wspomniane symbole cytowania
+(patrz: "Cytowanie" poniżej);
+\fB#\fP, na początku słowa rozpoczyna komentarz \(em wszystko po znaku
+\fB#\fP, aż do końca linii jest ignorowane;
+\fB$\fP służy do wprowadzenia podstawienia parametru, komendy
+lub wyrażenia arytmetycznego (patrz: "Podstawienia" poniżej);
+\fB`\fP rozpoczyna podstawienia komendy w starym stylu
+(patrz: "Podstawienia" poniżej);
+\fB~\fP rozpoczyna rozwinięcie katalogu (patrz: "Rozwijanie tyld" poniżej);
+\fB{\fP i \fB}\fP obejmują alternacje w stylu \fIcsh\fP(1)
+(patrz: "Rozwijanie nawiasów" poniżej);
+i na koniec, \fB*\fP, \fB?\fP oraz \fB[\fP są stosowane przy tworzeniu
+nazw plików (patrz: "Wzorce nazw plików" poniżej).
+.\"}}}
+.\"{{{  simple-command
+.PP
+W trakcie analizy słów i symboli, powłoka tworzy komendy, których
+wyróżnia się dwa rodzaje: \fIkomendy proste\fP, zwykle programy
+do wykonania, oraz \fIkomendy złożone\fP, takie jak dyrektywy \fBfor\fP i
+\fBif\fP, struktury grupujące i definicje funkcji.
+.PP
+Polecenie proste składa się z kombinacji przyporządkowań wartości
+parametrom (patrz: "Parametry"), przekierowań wejścia/wyjścia
+(patrz: "Przekierowania wejścia/wyjścia") i słów komend;
+Jedynym ograniczeniem jest to, że wszelkie podstawienia wartości
+parametrów muszą występować przed słowami komend.
+Słowa komend, jeśli zostały podane, określają polecenie, które
+należy wykonać, wraz z jego argumentami.
+Komenda może być komendą wbudowaną powłoki, funkcją lub
+\fIkomendą zewnętrzną\fP, \fItzn.\fP oddzielnym
+plikiem wykonywalnym, który jest odnajdowany przy użyciu
+wartości parametru \fBPATH\fP (patrz: "Wykonywanie komend" poniżej).
+Trzeba zauważyć, że wszystkie komendy mają swój
+\fIkod zakończenia\fP: dla poleceń zewnętrznych jest on
+powiązany z kodem zwracanym przez \fIwait\fP(2) (jeśli
+komenda nie została odnaleziona, wówczas kod wynosi 127,
+natomiast jeśli nie można było jej wykonać, to kod wynosi 126).
+Kody zwracane przez inne polecenia (komendy wbudowane,
+funkcje, potoki, listy, itp.) są precyzyjnie określone,
+a ich opis towarzyszy opisowi danego konstruktu.
+Kod wyjścia komendy zawierającej jedynie przyporządkowania
+wartości parametrom, odpowiada kodowi ostatniego wykonanego podczas tego
+podstawienia lub zeru, jeśli żadne podstawienia nie miały
+miejsca.
+.\"}}}
+.\"{{{  pipeline
+.PP
+Przy pomocy symbolu \fB|\fP komendy mogą zostać powiązane w \fIpotoki\fP.
+W potokach standardowe wyjście wszystkich komend poza ostatnim, zostaje
+wyprowadzone (patrz \fIpipe\fP(2)) na standardowe wejście następnej komendy.
+Kod wyjścia potoku jest równy kodowi zwróconemu przez ostatnią komendę
+potoku.
+Potok może zostać poprzedzony zarezerwowanym słowem \fB!\fP,
+powodującym zmianę kodu wyjścia na jego logiczne przeciwieństwo.
+Tzn. jeśli pierwotnie kod wyjścia wynosił 0, to będzie on miał wartość 1,
+natomiast jeśli pierwotną wartością nie było 0, to kodem przeciwstawnym
+jest 0.
+.\"}}}
+.\"{{{  lists
+.PP
+\fIListę\fP komend tworzymy rozdzielając potoki jednym z następujących symboli:
+\fB&&\fP, \fB||\fP, \fB&\fP, \fB|&\fP i \fB;\fP.
+Pierwsze dwa oznaczają warunkowe wykonanie: \fIcmd1\fP \fB&&\fP \fIcmd2\fP
+wykonuje \fIcmd2\fP tylko wtedy, jeżeli kod wyjścia \fIcmd1\fP był zerowy.
+Natomiast \fB||\fP zachowuje się dokładnie odwrotnie. \(em \fIcmd2\fP
+zostaje wykonane jedynie, jeśli kod wyjścia \fIcmd1\fP był
+różny od zera.
+\fB&&\fP i \fB||\fP wiążą równoważnie, a zarazem mocniej niż
+\fB&\fP, \fB|&\fP i \fB;\fP, które z kolei również posiadają tę samą siłę
+wiązania.
+Symbol \fB&\fP powoduje, że poprzedzająca go komenda zostanie wykonana
+asynchronicznie, tzn. powłoka uruchamia daną komendę, jednak nie czeka na jej
+zakończenie (powłoka śledzi dokładnie wszystkie asynchroniczne
+komendy \(em patrz: "Kontrola zadań" poniżej).
+Jeśli komenda asynchroniczna jest uruchomiona przy wyłączonej
+kontroli zadań (tj. w większości skryptów),
+wówczas jest ona uruchamiana z wyłączonymi sygnałami INT
+i QUIT oraz przekierowanym wejściem do /dev/null
+(aczkolwiek przekierowania, ustalone w samej komendzie asynchronicznej
+mają tu pierwszeństwo).
+Operator \fB|&\fP rozpoczyna \fIkoproces\fP, stanowiący specjalnego
+rodzaju komendę asynchroniczną (patrz: "Koprocesy" poniżej).
+Zauważ, że po operatorach \fB&&\fP i \fB||\fP
+musi występować komenda, podczas gdy nie jest to konieczne
+po \fB&\fP, \fB|&\fP i \fB;\fP.
+Kodem wyjścia listy komend jest kod ostatniego wykonanego w niej polecenia,
+z wyjątkiem list asynchronicznych, dla których kod wynosi 0.
+.\"}}}
+.\"{{{  compound-commands
+.PP
+Komendy złożone tworzymy przy pomocy następujących słów zarezerwowanych
+\(em słowa te są rozpoznane tylko wtedy, gdy nie są zacytowane
+i występują jako pierwsze wyrazy w komendzie (tj. nie są poprzedzone
+żadnymi przyporządkowywaniami wartości parametrom czy przekierowaniami):
+.TS
+center;
+lfB lfB lfB lfB lfB .
+case	else	function	then	!
+do	esac	if	time	[[
+done	fi	in	until	{
+elif	for	select	while	}
+.TE
+\fBUwaga:\fP Niektóre powłoki (lecz nie nasza) wykonują polecenia sterujące
+w podpowłoce, gdy przekierowano jeden lub więcej z ich deskryptorów plików,
+tak więc wszelkiego rodzaju zmiany otoczenia w nich mogą nie działać.
+Aby zachować przenośność należy stosować polecenie \fBexec\fP do
+przekierowań deskryptorów plików przed poleceniem sterującym.
+.PP
+W poniższym opisie poleceń złożonych, listy komend (zaznaczone przez
+\fIlista\fP), po których następuje słowo zarezerwowane, muszą kończyć się średnikiem,
+przełamaniem wiersza lub (poprawnym gramatycznie) słowem zarezerwowanym.
+Przykładowo,
+.RS
+\fB{ echo foo; echo bar; }\fP
+.br
+\fB{ echo foo; echo bar<newline>}\fP
+.br
+\fB{ { echo foo; echo bar; } }\fP
+.RE
+są poprawne, natomiast
+.RS
+\fB{ echo foo; echo bar }\fP
+.RE
+nie.
+.\"{{{  ( list )
+.IP "\fB(\fP \fIlista\fP \fB)\fP"
+Wykonaj \fIlistę\fP w podpowłoce. Nie ma bezpośredniej możliwości
+przekazania wartości parametrów podpowłoki z powrotem do jej
+powłoki macierzystej.
+.\"}}}
+.\"{{{  { list }
+.IP "\fB{\fP \fIlista\fP \fB}\fP"
+Konstrukcja złożona; \fIlista\fP zostaje wykonana, lecz nie w podpowłoce.
+Zauważ, że \fB{\fP i \fB}\fP to zarezerwowane słowa, a nie
+metaznaki.
+.\"}}}
+.\"{{{  case word in [ [ ( ] pattern [ | pattern ] ... ) list ;; ] ... esac
+.IP "\fBcase\fP \fIsłowo\fP \fBin\fP [ [\fB(\fP] \fIwzorzec\fP [\fB|\fP \fIwzorzec\fP] ... \fB)\fP \fIlista\fP \fB;;\fP ] ... \fBesac\fP"
+Wyrażenie \fBcase\fP stara się dopasować \fIsłowo\fP do jednego
+z danych \fIwzorców\fP; wykonywana jest \fIlista\fP powiązana z pierwszym
+poprawnie dopasowanym wzorcem.
+Wzorce stosowane w wyrażeniach \fBcase\fP odpowiadają wzorcom
+stosowanym do specyfikacji nazw plików z wyjątkiem tego, że
+nie obowiązują ograniczenia związane z \fB\&.\fP i \fB/\fP.
+Proszę zwrócić uwagę na to, że wszelkie niecytowane białe
+znaki przed wzorcem i po nim zostają usunięte; wszelkie spacje we wzorcu
+muszą być cytowane.  Zarówno słowa, jak i wzorce podlegają podstawieniom
+parametrów, rozwinięciom arytmetycznym oraz podstawieniu tyldy.
+Ze względów historycznych, możemy zastosować nawiasy otwierający i
+zamykający zamiast \fBin\fP i \fBesac\fP
+(w szczególności więc, \fBcase $foo { *) echo bar; }\fP).
+Kodem wyjścia wyrażenia \fBcase\fP jest kod wykonanej
+\fIlisty\fP; jeśli nie została wykonana żadna \fIlista\fP,
+wówczas kod wyjścia wynosi zero.
+.\"}}}
+.\"{{{  for name [ in word ... term ] do list done
+.IP "\fBfor\fP \fInazwa\fP [ \fBin\fP \fIsłowo\fP ... \fIzakończenie\fP ] \fBdo\fP \fIlista\fP \fBdone\fP"
+gdzie \fIzakończenie\fP jest albo znakiem końca linii, albo \fB;\fP.
+Dla każdego \fIsłowa\fP w podanej liście słów, parametr \fInazwa\fP zostaje
+ustawiony na to słowo i \fIlista\fP zostaje wykonana. Jeżeli nie będzie użyte \fBin\fP
+do specyfikacji listy słów, to zamiast tego zostaną użyte parametry
+pozycyjne (\fB"$1"\fP, \fB"$2"\fP, \fIitp.\fP).
+Ze względów historycznych, możemy zastosować nawiasy otwierający i
+zamykający zamiast \fBdo\fP i \fBdone\fP
+(\fIw szczególności\fP, \fBfor i; { echo $i; }\fP).
+Kodem wyjścia wyrażenia \fBfor\fP jest ostatni kod wyjścia
+danej \fIlisty\fP; jeśli \fIlista\fP nie została w ogóle
+wykonana, wówczas kod wynosi zero.
+.\"}}}
+.\"{{{  if list then list [ elif list then list ] ... [ else list ] fi
+.IP "\fBif\fP \fIlista\fP \fBthen\fP \fIlista\fP [\fBelif\fP \fIlista\fP \fBthen\fP \fIlista\fP] ... [\fBelse\fP \fIlista\fP] \fBfi\fP"
+Jeśli kod wyjścia pierwszej \fIlisty\fP jest zerowy,
+to zostaje wykonana druga \fIlista\fP; w przeciwnym razie, jeśli mamy takową,
+zostaje wykonana \fIlista\fP po \fBelif\fP, z podobnymi
+konsekwencjami. Jeśli wszystkie listy po \fBif\fP
+i \fBelif\fP wykażą błąd (\fItzn.\fP zwrócą niezerowy kod), to zostanie wykonana
+\fIlista\fP po \fBelse\fP.
+Kodem wyjścia wyrażenia \fBif\fP jest kod wykonanej \fIlisty\fP,
+niestanowiącej warunku. Jeśli żadna nieokreślająca warunku
+\fIlista\fP nie zostanie wykonana, wówczas kod wyjścia wynosi zero.
+.\"}}}
+.\"{{{  select name [ in word ... ] do list done
+.IP "\fBselect\fP \fInazwa\fP [ \fBin\fP \fIsłowo\fP ... \fIzakończenie\fP ] \fBdo\fP \fIlista\fP \fBdone\fP"
+gdzie \fIzakończenie\fP jest albo przełamaniem wiersza, albo \fB;\fP.
+Wyrażenie \fBselect\fP umożliwia automatyczną prezentację użytkownikowi
+menu, wraz z możliwością wyboru z niego.
+Przeliczona lista wykazanych \fIsłów\fP zostaje wypisana na
+standardowym wyjściu błędów, po czym zostaje
+wyświetlony symbol zachęty (\fBPS3\fP, czyli domyślnie `\fB#? \fP').
+Następnie zostaje wczytana liczba odpowiadająca danemu punktowi
+menu ze standardowego wejścia, po czym \fInazwie\fP
+zostaje przyporządkowane w ten sposób wybrane słowo (lub wartość
+pusta, jeżeli wybór był niewłaściwy), zmiennej \fBREPLY\fP
+zostaje przyporządkowane to, co zostało wczytane
+(po usunięciu początkowych i końcowych białych znaków),
+i \fIlista\fP zostaje wykonana.
+Jeśli wprowadzono pustą linię (dokładniej: zero lub więcej
+znaczków \fBIFS\fP), wówczas menu zostaje ponownie wyświetlone, bez
+wykonywania \fIlisty\fP.
+Gdy wykonanie \fIlisty\fP zostaje zakończone,
+wówczas przeliczona lista wyborów zostaje wyświetlona ponownie, jeśli
+\fBREPLY\fP jest zerowe, ponownie wyświetlany jest symbol zachęty i tak dalej.
+Proces ten się powtarza, aż do wczytania znaku końca pliku,
+otrzymania sygnału przerwania lub wykonania polecenia przerwania (break)
+w środku pętli.
+Jeśli opuszczono \fBin\fP \fIsłowo\fP \fB\&...\fP, wówczas
+użyte zostają parametry pozycyjne (\fItzn.\fP, \fB"$1"\fP, \fB"$2"\fP,
+\fIitp.\fP).
+Ze względów historycznych, możemy zastosować nawiasy otwierający i
+zamykający zamiast \fBdo\fP i \fBdone\fP (\fIw szczególności\fP,
+\fBselect i; { echo $i; }\fP).
+Kodem wyjścia wyrażenia \fBselect\fP jest zero, jeśli
+użyto polecenia przerwania do wyjścia z pętli albo
+niezero w przeciwnym wypadku.
+.\"}}}
+.\"{{{  until list do list done
+.IP "\fBuntil\fP \fIlista\fP \fBdo\fP \fIlista\fP \fBdone\fP"
+Działa dokładnie jak \fBwhile\fP, z wyjątkiem tego, że zawartość
+pętli jest wykonywana jedynie wtedy, gdy kod wyjścia pierwszej
+\fIlisty\fP jest niezerowy.
+.\"}}}
+.\"{{{  while list do list done
+.IP "\fBwhile\fP \fIlista\fP \fBdo\fP \fIlista\fP \fBdone\fP"
+Wyrażenie \fBwhile\fP określa pętlę o warunku sprawdzanym przed
+wykonaniem. Zawartość pętli jest wykonywana dopóki,
+dopóty kod wyjścia pierwszej \fIlisty\fP jest zerowy.
+Kodem wyjścia wyrażenia \fBwhile\fP jest ostatni
+kod wyjścia \fIlisty\fP w zawartości tej pętli;
+gdy zawartość nie zostanie w ogóle wykonana, wówczas kod wynosi zero.
+.\"}}}
+.\"{{{  function name { list }
+.IP "\fBfunction\fP \fInazwa\fP \fB{\fP \fIlista\fP \fB}\fP"
+Definiuje funkcję o nazwie \fInazwa\fP.
+Patrz: "Funkcje" poniżej.
+Proszę zwrócić uwagę, że przekierowania tuż po definicji
+funkcji zostają zastosowane podczas wykonywania jej zawartości,
+a nie podczas przetwarzania jej definicji.
+.\"}}}
+.\"{{{  name () command
+.IP "\fInazwa\fP \fB()\fP \fIpolecenie\fP"
+Niemal dokładnie to samo co w \fBfunction\fP.
+Patrz: "Funkcje" poniżej.
+.\"}}}
+.\"{{{  (( expression ))
+.IP "\fB((\fP \fIwyrażenie\fP \fB))\fP"
+Wartość wyrażenia arytmetycznego \fIwyrażenie\fP zostaje przeliczona;
+równoważne do \fBlet "\fP\fIwyrażenie\fP\fB"\fP.
+patrz: "Wyrażenia arytmetyczne" i opis polecenia \fBlet\fP poniżej..
+.\"}}}
+.\"{{{  [[ expression ]]
+.IP "\fB[[\fP \fIexpression\fP \fB]]\fP"
+Podobne do komend \fBtest\fP i \fB[\fP \&... \fB]\fP (które opisujemy
+później), z następującymi różnicami:
+.RS
+.nr P2 \n(PD
+.nr PD 0
+.IP \ \ \(bu
+Rozdzielanie pól i generacja nazw plików nie są wykonywane na
+argumentach.
+.IP \ \ \(bu
+Operatory \fB\-a\fP (i) oraz \fB\-o\fP (lub) zostają zastąpione
+odpowiednio przez \fB&&\fP i \fB||\fP.
+.IP \ \ \(bu
+Operatory (\fIdokładniej\fP: \fB\-f\fP, \fB=\fP, \fB!\fP, \fIitp.\fP)
+nie mogą być cytowane.
+.IP \ \ \(bu
+Drugi operand dla \fB!=\fP i \fB=\fP
+jest traktowany jako wzorzec (\fIw szczególności\fP, porównanie
+.ce
+\fB[[ foobar = f*r ]]\fP
+jest sukcesem).
+.IP \ \ \(bu
+Mamy do dyspozycji dwa dodatkowe operatory binarne: \fB<\fP i \fB>\fP,
+które zwracają prawdę, gdy pierwszy łańcuchowy operand jest odpowiednio
+mniejszy lub większy od drugiego operandu łańcuchowego.
+.IP \ \ \(bu
+Jednoargumentowa postać operacji \fBtest\fP,
+która sprawdza, czy jedyny operand jest długości zerowej, jest
+niedozwolona
+- operatory zawsze muszę być wykazywane jawnie, \fIw szczególności\fP,
+zamiast
+.ce
+\fB[\fP \fIciąg\fP \fB]\fP
+należy użyć
+.ce
+\fB[[ \-n \fP\fIciąg\fP\fB ]]\fP
+.IP \ \ \(bu
+Podstawienia parametrów, komend i arytmetyczne zostają wykonane
+w trakcie wyliczania wyrażenia. Do operatorów
+\fB&&\fP i \fB||\fP stosowana jest metoda uproszczonego określania
+ich wartości.
+To znaczy, że w wyrażeniu
+.ce
+\fB[[ \-r foo && $(< foo) = b*r ]]\fP
+wartość \fB$(< foo)\fP zostaje wyliczona wtedy i tylko wtedy, gdy
+plik o nazwie \fBfoo\fP istnieje i jest czytelny.
+.nr PD \n(P2
+.RE
+.\"}}}
+.\"}}}
+.\"}}}
+.\"{{{  Quoting
+.SS Cytowanie
+Cytowanie stosuje się do zapobiegania traktowaniu przez powłokę pewnych
+znaków czy słów w specjalny sposób.
+Istnieją trzy metody cytowania: Po pierwsze, \fB\e\fP cytuje
+następny znak, chyba że mieści się on na końcu wiersza, wówczas
+zarówno \fB\e\fP jak i znak nowej linii zostają usunięte.
+Po drugie pojedynczy cudzysłów (\fB'\fP) wycytowywuje wszystko,
+aż po następny pojedynczy cudzysłów (wraz ze zmianami linii włącznie).
+Po trzecie, podwójny cudzysłów (\fB"\fP) wycytowywuje wszystkie znaki,
+poza \fB$\fP, \fB`\fP i \fB\e\fP, aż po następny niecytowany podwójny
+cudzysłów.
+\fB$\fP i \fB`\fP wewnątrz podwójnych cudzysłowów zachowują zwykłe
+znaczenie (tzn.
+oznaczają podstawienie wartości parametru, komendy lub wyrażenia arytmetycznego),
+jeśli tylko nie zostanie wykonany jakikolwiek podział pól na
+wyniku podwójnymi cudzysłowami wycytowanych podstawień.
+Jeśli po \fB\e\fP, wewnątrz ciągu znaków cytowanego podwójnymi cudzysłowami
+następuje \fB\e\fP, \fB$\fP,
+\fB`\fP lub \fB"\fP, to zostaje on zastąpiony drugim z tych znaków.
+Jeśli po nim następuje znak nowej linii, wówczas zarówno \fB\e\fP,
+jak i znak zmiany linii zostają usunięte;
+w przeciwnym razie zarówno znak \fB\e\fP, jak i następujący po nim znak
+nie podlegają żadnej zamianie.
+.PP
+Uwaga: patrz "Tryb POSIX" poniżej pod względem szczególnych reguł
+obowiązujących sekwencje znaków postaci
+\fB"\fP...\fB`\fP...\fB\e"\fP...\fB`\fP..\fB"\fP.
+.\"}}}
+.\"{{{  Aliases
+.SS "Aliasy"
+Istnieją dwa rodzaje aliasów: normalne aliasy komend i
+aliasy śledzone. Aliasy komend stosowane są zwykle jako
+skróty dla długich a często stosowanych komend.
+Powłoka rozwija aliasy komend (\fItzn.\fP
+podstawia pod nazwę aliasu jego zawartość), gdy wczytuje
+pierwsze słowo komendy.
+Rozwinięty alias zostaje ponownie przetworzony, aby uwzględnić
+ewentualne występowanie dalszych aliasów.
+Jeśli alias komendy kończy się spacją lub tabulatorem, to wówczas
+następne słowo zostaje również sprawdzone pod względem rozwinięcia
+aliasów. Proces rozwijania aliasów kończy się przy napotkaniu
+słowa, które nie jest aliasem, gdy napotka się wycytowane słowo,
+lub gdy napotka się alias, który jest właśnie eksportowany.
+.PP
+Następujące aliasy są definiowane domyślnie przez powłokę:
+.ft B
+.RS
+autoload='typeset \-fu'
+.br
+functions='typeset \-f'
+.br
+hash='alias \-t'
+.br
+history='fc \-l'
+.br
+integer='typeset \-i'
+.br
+local='typeset'
+.br
+login='exec login'
+.br
+newgrp='exec newgrp'
+.br
+nohup='nohup '
+.br
+r='fc \-e \-'
+.br
+stop='kill \-STOP'
+.br
+suspend='kill \-STOP $$'
+.br
+type='whence \-v'
+.RE
+.ft P
+.PP
+Śledzone aliasy pozwalają powłoce na zapamiętanie, gdzie
+odnalazła ona konkretną komendę.
+Gdy powłoka po raz pierwszy szuka w ścieżce pocenia oznaczonego jako alias
+śledzony, to zapamiętuje sobie pełną ścieżkę tej komendy.
+Gdy powłoka następnie wykonuje daną komendę po raz drugi,
+wówczas sprawdza, czy ta ścieżka jest nadal aktualna i jeśli
+tak jest, to nie przegląda już więcej pełnej ścieżki w poszukiwaniu
+danej komendy.
+Śledzone aliasy można wyświetlić lub stworzyć stosując \fBalias
+\-t\fP. Zauważ, że zmieniając wartość parametru \fBPATH\fP
+czyścimy również ścieżki dla wszelkich śledzonych aliasów.
+Jeśli została włączona opcja \fBtrackall\fP (\fItzn.\fP,
+\fBset \-o trackall\fP lub \fBset \-h\fP),
+wówczas powłoka śledzi wszelkie komendy.
+Ta opcja zostaje włączona domyślnie dla wszelkich
+nieinterakcyjnych powłok.
+Dla powłok interakcyjnych jedynie następujące komendy są
+śledzone domyślnie: \fBcat\fP, \fBcc\fP, \fBchmod\fP, \fBcp\fP,
+\fBdate\fP, \fBed\fP,
+\fBemacs\fP, \fBgrep\fP, \fBls\fP, \fBmail\fP, \fBmake\fP, \fBmv\fP,
+\fBpr\fP, \fBrm\fP, \fBsed\fP, \fBsh\fP, \fBvi\fP i \fBwho\fP.
+.\"}}}
+.\"{{{  Substitution
+.SS "Podstawienia"
+Pierwszym krokiem, jaki wykonuje powłoka podczas wykonywania
+prostej komendy, jest przeprowadzenia podstawień na słowach tej
+komendy.
+Istnieją trzy rodzaje podstawień: parametrów, komend i arytmetyczne.
+Podstawienia parametrów, które dokładniej opiszemy w następnej sekcji,
+mają postać \fB$name\fP lub \fB${\fP...\fB}\fP;
+podstawienia komend mają postać \fB$(\fP\fIcommand\fP\fB)\fP lub
+\fB`\fP\fIcommand\fP\fB`\fP;
+a podstawienia arytmetyczne: \fB$((\fP\fIexpression\fP\fB))\fP.
+.PP
+Jeśli podstawienie występuje poza podwójnymi cudzysłowami, wówczas
+wynik tego podstawienia podlega zwykle podziałowi słów lub pól, w zależności
+od bieżącej wartości parametru \fBIFS\fP.
+Parametr \fBIFS\fP określa listę znaków, służących jako separatory
+w podziale łańcuchów znakowych na pojedyncze wyrazy.
+Wszelkie znaki z tego zestawu oraz tabulator, spacja i
+nowa linia włącznie, nazywane są \fIbiałymi znakami IFS\fP.
+Ciągi jednego lub wielu białych znaków z IFS w powiązaniu
+z zerem oraz jednym lub więcej białych znaków nie wymienionych w IFS,
+rozgraniczają pola.
+Wyjątkowo początkowe i końcowe białe znaki IFS są usuwane
+(tzn. nie są przez nie tworzone żadne początkowe czy końcowe
+puste pola); natomiast początkowe lub końcowe białe znaki spoza IFS
+tworzą puste pola.
+Przykładowo: jeśli \fBIFS\fP zawiera `<spacja>:', to ciąg
+znaków `<spacja>A<spacja>:<spacja><spacja>B::D' zawiera
+cztery pola: `A', `B', `' i `D'.
+Proszę zauważyć, że jeśli parametr \fBIFS\fP
+jest ustawiony na pusty ciąg znaków, to wówczas żaden podział pól
+nie ma miejsca; gdy parametr ten nie jest ustawiony w ogóle,
+wówczas stosuje się domyślnie jako rozgraniczniki
+spacji, tabulatora i nowej linii.
+.PP
+Jeśli nie podajemy inaczej, to wynik podstawienia
+podlega również rozwijaniu nawiasów i nazw plików (patrz odpowiednie
+akapity poniżej).
+.PP
+Podstawienie komendy zostaje zastąpione wyjściem, wygenerowanym
+podczas wykonania danej komendy przez podpowłokę.
+Dla podstawienia \fB$(\fP\fIkomenda\fP\fB)\fP zachodzą normalne
+reguły cytowania podczas analizy \fIkomendy\fP,
+choć jednak dla postaci \fB`\fP\fIkomenda\fP\fB`\fP, znak
+\fB\e\fP z jednym z
+\fB$\fP, \fB`\fP lub \fB\e\fP tuż po nim, zostaje usunięty
+(znak \fB\e\fP z następstwem jakiegokolwiek innego znaku
+zostaje niezmieniony).
+Jako przypadek wyjątkowy podczas podstawiania komend, komenda postaci
+\fB<\fP \fIplik\fP  zostaje zinterpretowana, jako
+oznaczająca podstawienie zawartości pliku \fIplik\fP
+($(< foo) ma więc ten sam efekt co $(cat foo), jest jednak bardziej
+efektywne albowiem nie zostaje odpalony żaden dodatkowy proces).
+.br
+.\"todo: fix this( $(..) parenthesis counting).
+UWAGA: Wyrażenia \fB$(\fP\fIkomenda\fP\fB)\fP są analizowane
+obecnie poprzez odnajdywanie zaległego nawiasu, niezależnie od
+wycytowań. Miejmy nadzieję, że zostanie to możliwie szybko poprawione.
+.PP
+Podstawienia arytmetyczne zostają zastąpione wartością wyniku
+danego wyrażenia.
+Przykładowo więc, komenda \fBecho $((2+3*4))\fP wyświetla 14.
+Patrz: "Wyrażenia arytmetyczne", aby odnaleźć opis \fIwyrażeń\fP.
+.\"}}}
+.\"{{{  Parameters
+.SS "Parametry"
+Parametry to zmienne w powłoce; można im przyporządkowywać
+wartości oraz wyczytywać je przez podstawienia parametrów.
+Nazwa parametru jest albo jednym ze znaków
+interpunkcyjnych o specjalnym znaczeniu lub cyfrą, jakie opisujemy
+poniżej, lub literą z następstwem jednej lub więcej liter albo cyfr
+(`_' zalicza się to liter).
+Podstawienia parametrów mają postać \fB$\fP\fInazwa\fP lub
+\fB${\fP\fInazwa\fP\fB}\fP, gdzie \fInazwa\fP jest nazwą
+danego parametru.
+Gdy podstawienie zostanie wykonane na parametrze, który nie został
+ustalony, wówczas zerowy ciąg znaków jest jego wynikiem, chyba że
+została włączona opcja \fBnounset\fP (\fBset \-o nounset\fP
+lub \fBset \-u\fP), co oznacza, że występuje wówczas błąd.
+.PP
+.\"{{{  parameter assignment
+Wartości można przyporządkowywać parametrom na wiele różnych sposobów.
+Po pierwsze, powłoka domyślnie ustala pewne parametry, takie jak
+\fB#\fP, \fBPWD\fP, itp.; to jedyny sposób, w jaki są ustawiane
+specjalnymi parametry o długości jednego znaku. Po drugie, parametry zostają
+importowane z otocznia powłoki podczas jej uruchamiania. Po trzecie,
+parametrom można przypisać wartości w wierszu poleceń, tak jak np.
+`\fBFOO=bar\fP' przypisuje parametrowi FOO wartość bar;
+wielokrotne przypisania wartości są możliwe w jednym wierszu komendy
+i może po nich występować prosta komenda, co powoduje, że
+przypisania te są wówczas jedynie aktualne podczas
+wykonywania danej komendy (tego rodzaju przypisania
+zostają również wyeksportowane, patrz poniżej, co do tego konsekwencji).
+Proszę zwrócić uwagę, iż aby powłoka rozpoznała je jako
+przypisanie wartości parametrowi, zarówno nazwa parametru jak i \fB=\fP
+nie mogą być cytowane.
+Czwartym sposobem ustawiania parametrów jest zastosowanie jednej
+z komend: \fBexport\fP, \fBreadonly\fP lub \fBtypeset\fP;
+patrz ich opisy w rozdziale "Wykonywanie komend".
+Po czwarte, pętle \fBfor\fP i \fBselect\fP ustawiają parametry,
+tak jak i również komendy \fBgetopts\fP, \fBread\fP i \fBset \-A\fP.
+Na zakończenie, parametrom można przyporządkowywać wartości stosując
+operatory nadania wartości wewnątrz wyrażeń arytmetycznych
+(patrz: "Wyrażenia arytmetyczne" poniżej) lub
+stosując postać \fB${\fP\fInazwa\fP\fB=\fP\fIwartość\fP\fB}\fP
+podstawienia parametru (patrz poniżej).
+.\"}}}
+.PP
+.\"{{{  environment
+Parametry opatrzone atrybutem eksportowania
+(ustawianego przy pomocy komendy \fBexport\fP lub
+\fBtypeset \-x\fP albo przez przyporządkowanie wartości
+parametru z następującą prostą komendą)
+zostają umieszczone w otoczeniu (patrz \fIenviron\fP(5)) poleceń
+wykonywanych przez powłokę jako pary \fInazwa\fP\fB=\fP\fIwartość\fP.
+Kolejność, w jakiej parametry występują w otoczeniu komendy jest
+bliżej nieustalona.
+Podczas uruchamiania powłoka pozyskuje parametry ze swojego
+otoczenia
+i automatycznie ustawia na tych parametrach atrybut eksportowania.
+.\"}}}
+.\"{{{  ${name[:][-+=?]word}
+.PP
+Można stosować modyfikatory do postaci \fB${\fP\fInazwa\fP\fB}\fP
+podstawienia parametru:
+.IP \fB${\fP\fInazwa\fP\fB:-\fP\fIsłowo\fP\fB}\fP
+jeżeli parametr\fInazwa\fP jest ustawiony i niezerowy, wówczas zostaje
+podstawiona jego własna
+wartość, w przeciwnym razie zostaje podstawione \fIsłowo\fP.
+.IP \fB${\fP\fInazwa\fP\fB:+\fP\fIsłowo\fP\fB}\fP
+jeśli parametr \fInazwa\fP jest ustawiony i niezerowy, wówczas zostaje podstawione
+\fIsłowo\fP, inaczej nic nie zostaje podstawione.
+.IP \fB${\fP\fInazwa\fP\fB:=\fP\fIsłowo\fP\fB}\fP
+jeśli parametr \fInazwa\fP jest ustawiony i niezerowy, wówczas zostaje podstawiony
+on sam, w przeciwnym razie zostaje mu przyporządkowana wartość
+\fIsłowo\fP i wartość wynikająca ze \fIsłowa\fP zostaje podstawiona.
+.IP \fB${\fP\fInazwa\fP\fB:?\fP\fIsłowo\fP\fB}\fP
+jeżeli parametr \fInazwa\fP jest ustawiony i niezerowy, wówczas zostaje
+podstawiona jego własna wartość, w przeciwnym razie \fIsłowo\fP
+zostaje wyświetlone na standardowym wyjściu błędów (tuż po \fInazwa\fP:)
+i zachodzi błąd
+(powodujący normalnie zakończenie całego skryptu powłoki, funkcji lub \&.-skryptu).
+Jeśli słowo zostało pominięte, wówczas zamiast niego zostaje użyty łańcuch
+`parameter null or not set'.
+.PP
+W powyższych modyfikatorach możemy ominąć \fB:\fP, czego skutkiem
+będzie, że warunki będą jedynie wymagać, aby
+\fInazwa\fP był ustawiony lub nie (a nie żeby był ustawiony i niezerowy).
+Jeśli potrzebna jest wartość \fIsłowo\fP, wówczas zostają na nim wykonane
+podstawienia parametrów, komend, arytmetyczne i tyldy;
+natomiast, jeśli \fIsłowo\fP okaże się niepotrzebne, wówczas jego
+wartość nie zostanie obliczana.
+.\"}}}
+.PP
+Można stosować, również podstawienia parametrów o następującej postaci:
+.\"{{{  ${#name}
+.IP \fB${#\fP\fInazwa\fP\fB}\fP
+Liczba parametrów pozycyjnych, jeśli \fInazwą\fP jest \fB*\fP, \fB@\fP lub nie jest podana
+albo długość ciągu będącego wartością parametru \fInazwa\fP.
+.\"}}}
+.\"{{{  ${#name[*]}, ${#name[@]}
+.IP "\fB${#\fP\fInazwa\fP\fB[*]}\fP, \fB${#\fP\fInazwa\fP\fB[@]}\fP"
+Liczba elementów w tablicy \fInazwa\fP.
+.\"}}}
+.\"{{{  ${name#pattern}, ${name##pattern}
+.IP "\fB${\fP\fInazwa\fP\fB#\fP\fIwzorzec\fP\fB}\fP, \fB${\fP\fInazwa\fP\fB##\fP\fIwzorzec\fP\fB}\fP"
+Gdy \fIwzorzec\fP nakłada się na początek wartości parametru \fInazwa\fP,
+wówczas pasujący tekst zostaje pominięty w wynikającym z tego podstawieniu.
+Pojedynczy \fB#\fP oznacza najkrótsze możliwe dopasowanie do wzorca, a
+dwa \fB#\fP oznaczają jak najdłuższe dopasowanie.
+.\"}}}
+.\"{{{  ${name%pattern}, ${name%%pattern}
+.IP "\fB${\fP\fInazwa\fP\fB%\fP\fIwzorzec\fP\fB}\fP, \fB${\fP\fInazwa\fP\fB%%\fP\fIwzorzec\fP\fB}\fP"
+Podobnie jak w podstawieniu \fB${\fP..\fB#\fP..\fB}\fP, tylko że dotyczy
+końca wartości.
+.\"}}}
+.\"{{{  special shell parameters
+.PP
+Następujące specjalne parametry zostają ustawione domyślnie przez powłokę
+i nie można przyporządkowywać jawnie wartości nadanych:
+.\"{{{  !
+.IP \fB!\fP
+Id ostatniego uruchomionego w tle procesu. Jeśli nie ma aktualnie procesów
+uruchomionych w tle, wówczas parametr ten jest nieustawiony.
+.\"}}}
+.\"{{{  #
+.IP \fB#\fP
+Liczba parametrów pozycyjnych (\fItzn.\fP, \fB$1\fP, \fB$2\fP,
+\fIitp.\fP).
+.\"}}}
+.\"{{{  $
+.IP \fB$\fP
+ID procesu odpowiadającego danej powłoce lub PID pierwotnej powłoki,
+jeśli mamy do czynienia z podpowłoką.
+.\"}}}
+.\"{{{  -
+.IP \fB\-\fP
+Konkatenacja bieżących opcji jednoliterowych
+(patrz komenda \fBset\fP poniżej, aby poznać dostępne opcje).
+.\"}}}
+.\"{{{  ?
+.IP \fB?\fP
+Kod wyjścia ostatniej wykonanej komendy nieasynchronicznej.
+Jeśli ostatnia komenda została zabita sygnałem, wówczas \fB$?\fP
+przyjmuje wartość 128 plus numer danego sygnału.
+.\"}}}
+.\"{{{  0
+.IP "\fB0\fP"
+Nazwa, pod jaką dana powłoka została wywołana (\fItzn.\fP, \fBargv[0]\fP), lub
+\fBnazwa komendy\fP, która została wywołana przy użyciu opcji \fB\-c\fP
+i \fBnazwa komendy\fP została podana, lub argument \fIplik\fP,
+jeśli taki został podany.
+Jeśli opcja \fBposix\fP nie jest ustawiona, to \fB$0\fP zawiera
+nazwę bieżącej funkcji lub skryptu.
+.\"}}}
+.\"{{{  1-9
+.IP "\fB1\fP ... \fB9\fP"
+Pierwszych dziewięć parametrów pozycyjnych podanych powłoce czy
+funkcji lub \fB.\fP-skryptowi.
+Dostęp do dalszych parametrów pozycyjnych odbywa się przy pomocy
+\fB${\fP\fIliczba\fP\fB}\fP.
+.\"}}}
+.\"{{{  *
+.IP \fB*\fP
+Wszystkie parametry pozycyjne (z wyjątkiem parametru 0),
+\fItzn.\fP, \fB$1 $2 $3\fP....
+Gdy użyte poza podwójnymi cudzysłowami, wówczas parametry zostają
+rozgraniczone w pojedyncze słowa
+(podlegające rozgraniczaniu słów); jeśli użyte pomiędzy
+podwójnymi cudzysłowami, wówczas parametry zostają rozgraniczone
+pierwszym znakiem podanym przez parametr \fBIFS\fP
+(albo pustymi ciągami znaków, jeśli \fBIFS\fP jest zerowy).
+.\"}}}
+.\"{{{  @
+.IP \fB@\fP
+Tak jak \fB$*\fP, z wyjątkiem zastosowania w podwójnych cudzysłowach,
+gdzie oddzielne słowo zostaje wygenerowane dla każdego parametru
+pozycyjnego z osobna \- jeśli brak parametrów pozycyjnych,
+wówczas nie generowane jest żadne słowo
+("$@" może być użyte aby otrzymać dostęp bezpośredni do argumentów
+bez utraty argumentów zerowych lub rozgraniczania ich przerwami).
+.\"}}}
+.\"}}}
+.\"{{{  general shell parameters
+.PP
+Następujące parametry są ustawiane przez powłokę:
+.\"{{{  _
+.IP "\fB_\fP \fI(podkreślenie)\fP"
+Gdy jakaś komenda zostaje wykonywana przez powłokę, ten parametr przyjmuje
+w otoczeniu odpowiedniego nowego procesu wartość ścieżki tej komendy.
+W interakcyjnym trybie pracy, ten parametr przyjmuje w pierwotnej powłoce
+ponadto wartość ostatniego słowa poprzedniej komendy
+Podczas wartościowania wiadomości typu \fBMAILPATH\fP,
+parametr ten zawiera więc nazwę pliku, który się zmienił
+(patrz parametr \fBMAILPATH\fP poniżej).
+.\"}}}
+.\"{{{  CDPATH
+.IP \fBCDPATH\fP
+Ścieżka przeszukiwania dla wbudowanej komendy \fBcd\fP.
+Działa tak samo jak
+\fBPATH\fP dla katalogów nierozpoczynających się od \fB/\fP
+w komendach \fBcd\fP.
+Proszę zwrócić uwagę, że jeśli CDPATH jest ustawiony i nie zawiera ani
+\fB.\fP ani ścieżki pustej, to wówczas katalog bieżący nie jest przeszukiwany.
+.\"}}}
+.\"{{{  COLUMNS
+.IP \fBCOLUMNS\fP
+Liczba kolumn terminala lub okienka.
+Obecnie ustawiany wartością \fBcols\fP zwracaną przez komendę
+\fIstty\fP(1), jeśli ta wartość nie jest równa zeru.
+Parametr ten ma znaczenie w interakcyjnym trybie edycji wiersza komendy
+i dla komend \fBselect\fP, \fBset \-o\fP oraz \fBkill \-l\fP, w celu
+właściwego formatowania zwracanych informacji.
+.\"}}}
+.\"{{{  EDITOR
+.IP \fBEDITOR\fP
+Jeśli nie został ustawiony parametr \fBVISUAL\fP, wówczas kontroluje on
+tryb edycji wiersza komendy w powłokach interakcyjnych.
+Patrz parametr \fBVISUAL\fP poniżej, aby się dowiedzieć, jak to działa.
+.\"}}}
+.\"{{{  ENV
+.IP \fBENV\fP
+Jeśli parametr ten okaże się być ustawionym po przetworzeniu
+wszelkich plików profilowych, wówczas jego rozwinięta wartość zostaje
+wykorzystana jako nazwa pliku zawierającego dalsze komendy inicjujące
+powłoki. Zwykle zawiera definicje funkcji i aliasów.
+.\"}}}
+.\"{{{  ERRNO
+.IP \fBERRNO\fP
+Całkowita wartość odpowiadająca zmiennej errno powłoki
+\(em wskazuje przyczynę wystąpienia błędu, gdy ostatnie wywołanie
+systemowe nie powiodło się.
+.\" todo: ERRNO variable
+.sp
+Jak dotychczas niezaimplementowane.
+.\"}}}
+.\"{{{  EXECSHELL
+.IP \fBEXECSHELL\fP
+Jeśli ustawiono, to wówczas zawiera powłokę, jakiej należy użyć
+do wykonywania komend, których nie zdołał wykonać \fIexecve\fP(2),
+a które nie zaczynają się od ciągu `\fB#!\fP \fIpowłoka\fP'.
+.\"}}}
+.\"{{{  FCEDIT
+.IP \fBFCEDIT\fP
+Edytor używany przez komendę \fBfc\fP (patrz poniżej).
+.\"}}}
+.\"{{{  FPATH
+.IP \fBFPATH\fP
+Podobnie jak \fBPATH\fP, jeśli powłoka natrafi na niezdefiniowaną
+funkcję podczas pracy, stosowane do lokalizacji pliku zawierającego definicję
+tej funkcji.
+Również przeszukiwane, gdy komenda nie została odnaleziona przy
+użyciu \fBPATH\fP.
+Patrz "Funkcje" poniżej co do dalszych informacji.
+.\"}}}
+.\"{{{  HISTFILE
+.IP \fBHISTFILE\fP
+Nazwa pliku używanego do zapisu historii komend.
+Jeśli wartość została ustalona, wówczas historia zostaje załadowana
+z danego pliku.
+Podobnie wielokrotne wcielenia powłoki będą korzystały z jednej
+historii, jeśli dla nich wartości parametru
+\fBHISTFILE\fP wskazuje na jeden i ten sam plik.
+.br
+UWAGA: jeśli HISTFILE nie zostało ustawione, wówczas żaden plik historii
+nie zostaje użyty. W oryginalnej wersji powłoki
+Korna natomiast, przyjmuje się domyślnie \fB$HOME/.sh_history\fP;
+w przyszłości może pdksh, będzie również stosował domyślny
+plik historii.
+.\"}}}
+.\"{{{  HISTSIZE
+.IP \fBHISTSIZE\fP
+Liczba komend zapamiętywana w historii, domyślnie 128.
+.\"}}}
+.\"{{{  HOME
+.IP \fBHOME\fP
+Domyślna wartość dla komendy \fBcd\fP oraz podstawiana pod
+niewycytowane \fB~\fP (patrz: "Rozwijanie tyldy" poniżej).
+.\"}}}
+.\"{{{  IFS
+.IP \fBIFS\fP
+Wewnętrzny separator pól, stosowany podczas podstawień
+i wykonywania komendy \fBread\fP, do rozdzielania
+wartości na oddzielne argumenty; domyślnie spacja, tabulator i
+przełamanie wiersza. Szczegóły zostały opisane w punkcie "Podstawienia"
+powyżej.
+.br
+\fBUwaga:\fP ten parametr nie jest importowany z otoczenia,
+podczas uruchamiania powłoki.
+.\"}}}
+.\"{{{  KSH_VERSION
+.IP \fBKSH_VERSION\fP
+Wersja i data kompilacji powłoki (tylko do odczytu).
+Patrz również na komendy wersji w 
+"Interakcyjnej edycji wiersza poleceń w trybie emacs" i
+"Edycji wiersza poleceń vi" poniżej.
+.\"}}}
+.\"{{{  SH_VERSION
+.\"}}}
+.\"{{{  LINENO
+.IP \fBLINENO\fP
+Numer wiersza w funkcji lub aktualnie wykonywanym skrypcie.
+.\"}}}
+.\"{{{  LINES
+.IP \fBLINES\fP
+Ilość wierszy terminala lub okienka pracy.
+.\"Currently set to the \fBrows\fP value as reported by \fIstty\fP(1) if that
+.\"value is non-zero.
+.\" todo: LINES variable
+.sp
+Jeszcze niezaimplementowane.
+.\"}}}
+.\"{{{  MAIL
+.IP \fBMAIL\fP
+Jeśli ustawiony, to użytkownik jest informowany o nadejściu nowej poczty
+do wymienionego w tej opcji pliku docelowego.
+Ten parametr jest ignorowany, jeśli został ustawiony parametr
+\fBMAILPATH\fP.
+.\"}}}
+.\"{{{  MAILCHECK
+.IP \fBMAILCHECK\fP
+Jak często powłoka ma sprawdzać, czy pojawiła się nowa poczta
+w plikach podanych przez \fBMAIL\fP lub \fBMAILPATH\fP.
+Jeśli 0, to powłoka sprawdza przed każdą nową zachętą.
+Wartością domyślną jest 600 (10 minut).
+.\"}}}
+.\"{{{  MAILPATH
+.IP \fBMAILPATH\fP
+Lista plików sprawdzanych w poszukiwaniu nowej poczty. Lista ta rozdzielana
+jest dwukropkami, ponadto po nazwie każdego z plików można podać
+\fB?\fP i wiadomość, która ma być wyświetlona, jeśli nadeszła nowa poczta.
+Dla danej wiadomości zostaną wykonane podstawienia komend, parametrów
+i arytmetyczne. Podczas podstawień parametr \fB$_\fP zawiera nazwę
+tego pliku.
+Domyślnym zawiadomieniem o nowej poczcie jest \fByou have mail in $_\fP
+(\fBmasz pocztę w $_\fP).
+.\"}}}
+.\"{{{  OLDPWD
+.IP \fBOLDPWD\fP
+Poprzedni katalog roboczy.
+Nieustalony, jeśli \fBcd\fP nie zmieniło z powodzeniem
+katalogu od czasu uruchomienia powłoki lub jeśli powłoka nie wie, gdzie
+się aktualnie znajduje.
+.\"}}}
+.\"{{{  OPTARG
+.IP \fBOPTARG\fP
+Podczas używania \fBgetopts\fP zawiera argument dla aktualnie
+rozpoznawanej opcji, jeśli jest on oczekiwany.
+.\"}}}
+.\"{{{  OPTIND
+.IP \fBOPTIND\fP
+Indeks ostatniego przetworzonego argumentu podczas używania \fBgetopts\fP.
+Przyporządkowanie 1 temu parametrowi spowoduje, że ponownie wywołane
+\fBgetopts\fP przetworzy argumenty od początku.
+.\"}}}
+.\"{{{  PATH
+.IP \fBPATH\fP
+Lista rozdzielonych dwukropkiem katalogów, które są przeszukiwane
+podczas odnajdywania jakiejś komendy lub plików typu \fB.\fP. Pusty łańcuch
+wynikający z początkowego lub końcowego dwukropka, albo dwóch sąsiednich
+dwukropków jest traktowany jako `.', czyli katalog bieżący.
+.\"}}}
+.\"{{{  POSIXLY_CORRECT
+.IP \fBPOSIXLY_CORRECT\fP
+Ustawienie tego parametru powoduje włączenie opcji \fBposix\fP.
+Patrz: "Tryb POSIX" poniżej.
+.\"}}}
+.\"{{{  PPID
+.IP \fBPPID\fP
+Identyfikator ID procesu rodzicielskiego powłoki (tylko do odczytu).
+.\"}}}
+.\"{{{  PS1
+.IP \fBPS1\fP
+\fBPS1\fP to podstawowy symbol zachęty dla powłok interakcyjnych.
+Podlega podstawieniom parametrów, komend i arytmetycznym, ponadto
+\fB!\fP zostaje zastąpione kolejnym numerem polecenia
+(patrz komenda \fBfc\fP
+poniżej). Sam znak ! może zostać umieszczony w zachęcie używając
+!! w PS1.
+Zauważ, że ponieważ edytory wiersza komendy starają się obliczyć,
+jak długi jest symbol zachęty (aby móc ustalić, ile miejsca pozostaje
+wolnego do prawego brzegu ekranu), sekwencje wyjściowe w zachęcie
+zwykle wprowadzają pewien bałagan.
+Istnieje możliwość podpowiedzenia powłoce, żeby nie uwzględniała
+pewnych ciągów znaków (takich jak kody wyjścia) przez podanie
+przedrostka na początku symbolu zachęty będącego niewyświetlalnym znakiem
+(takim jak np. control-A) z następstwem przełamania wiersza
+oraz odgraniczając następnie kody wyjścia przy pomocy tego
+niewyświetlalnego znaku.
+Gdy brak niewyświetlalnych znaków, to nie ma żadnej rady...
+Nawiasem mówiąc, nie ja jestem odpowiedzialny za ten hack. To pochodzi
+z oryginalnego ksh.
+Domyślną wartością jest `\fB$\ \fP' dla nieuprzywilejowanych
+użytkowników, a `\fB#\ \fP' dla roota..
+.\"}}}
+.\"{{{  PS2
+.IP \fBPS2\fP
+Drugorzędna zachęta, o domyślnej wartości `\fB>\fP ', która
+jest stosowana, gdy wymagane są dalsze wprowadzenia w celu
+dokończenia komendy.
+.\"}}}
+.\"{{{  PS3
+.IP \fBPS3\fP
+Zachęta stosowana przez wyrażenie
+\fBselect\fP podczas wczytywania wyboru z menu.
+Domyślnie `\fB#?\ \fP'.
+.\"}}}
+.\"{{{  PS4
+.IP \fBPS4\fP
+Stosowany jako przedrostek komend, które zostają wyświetlone podczas
+śledzenia toku pracy
+(patrz polecenie \fBset \-x\fP poniżej).
+Domyślnie `\fB+\ \fP'.
+.\"}}}
+.\"{{{  PWD
+.IP \fBPWD\fP
+Obecny katalog roboczy. Może być nieustawiony lub zerowy, jeśli
+powłoka nie wie, gdzie się znajduje.
+.\"}}}
+.\"{{{  RANDOM
+.IP \fBRANDOM\fP
+Prosty generator liczb pseudolosowych. Za każdym razem, gdy
+odnosimy się do \fBRANDOM\fP, jego wartości zostaje przyporządkowana
+następna liczba z przypadkowego ciągu liczb.
+Miejsce w danym ciągu może zostać ustawione nadając
+wartość \fBRANDOM\fP (patrz \fIrand\fP(3)).
+.\"}}}
+.\"{{{  REPLY
+.IP \fBREPLY\fP
+Domyślny parametr komendy
+\fBread\fP, jeśli nie pozostaną podane jej żadne nazwy.
+Stosowany również w pętlach \fBselect\fP do zapisu wartości
+wczytywanej ze standardowego wejścia.
+.\"}}}
+.\"{{{  SECONDS
+.IP \fBSECONDS\fP
+Liczba sekund, które upłynęły od czasu uruchomienia powłoki lub jeśli
+parametrowi została nadana wartość całkowita, liczba sekund od czasu
+nadania tej wartości plus ta wartość.
+.\"}}}
+.\"{{{  TMOUT
+.IP \fBTMOUT\fP
+Gdy ustawiony na pozytywną wartość całkowitą, większą od zera,
+wówczas ustala w interakcyjnej powłoce czas w sekundach, przez jaki
+będzie ona czekała na wprowadzenie jakiegoś polecenia po wyświetleniu podstawowego symbolu
+zachęty (\fBPS1\fP). Po przekroczeniu tego czasu powłoka zakończy swoje działanie.
+.\"}}}
+.\"{{{  TMPDIR
+.IP \fBTMPDIR\fP
+Katalog, w którym umieszczane są tymczasowe pliki powłoki.
+Jeśli parametr ten nie jest ustawiony lub gdy nie zawiera
+pełnej ścieżki do zapisywalnego katalogu, wówczas domyślnie tymczasowe
+pliki mieszczą się w \fB/tmp\fP.
+.\"}}}
+.\"{{{  VISUAL
+.IP \fBVISUAL\fP
+Jeśli został ustawiony, ustala tryb edycji wiersza komend w powłokach
+interakcyjnych. Jeśli ostatni element ścieżki podanej w tym
+parametrze zawiera ciąg znaków \fBvi\fP, \fBemacs\fP lub \fBgmacs\fP,
+to odpowiednio zostaje uaktywniony tryb edycji: vi, emacs lub gmacs
+(Gosling emacs).
+.\"}}}
+.\"}}}
+.\"}}}
+.\"{{{  Tilde Expansion
+.SS "Rozwijanie tyldy"
+Rozwijanie znaków tyldy, które ma miejsce równolegle do podstawień parametrów,
+zostaje wykonane na słowach rozpoczynających się niecytowanym
+\fB~\fP. Znaki po tyldzie do pierwszego
+\fB/\fP, jeśli taki występuje, są domyślnie traktowane jako
+nazwa użytkownika.  Jeśli nazwa użytkownika jest pusta lub ma wartość \fB+\fP albo \fB\-\fP,
+to zostaje podstawiona wartość parametrów odpowiednio\fBHOME\fP, \fBPWD\fP lub \fBOLDPWD\fP.
+W przeciwnym razie zostaje
+przeszukany plik haseł (plik passwd) w celu odnalezienia danej nazwy
+użytkownika i w miejscu wystąpienia tyldy zostaje
+podstawiony katalog domowy danego użytkownika.
+Jeśli nazwa użytkownika nie zostanie odnaleziona w pliku haseł
+lub gdy w nazwie użytkownika występuje jakiekolwiek cytowanie albo podstawienie
+parametru, wówczas nie zostaje wykonane żadne
+podstawienie.
+.PP
+W ustawieniach parametrów
+(tych poprzedzających proste komendy lub tych występujących w argumentach
+dla \fBalias\fP, \fBexport\fP, \fBreadonly\fP,
+i \fBtypeset\fP), rozwijanie znaków tyld zostaje wykonywane po
+jakimkolwiek niewycytowanym (\fB:\fP) i nazwy użytkowników zostają ujęte
+w dwukropki.
+.PP
+Katalogi domowe poprzednio rozwiniętych nazw użytkowników zostają
+umieszczone w pamięci podręcznej i przy ponownym użyciu zostają stamtąd
+pobierane. Komenda \fBalias \-d\fP może być użyta do wylistowania,
+zmiany i dodania do tej pamięci podręcznej
+(\fIw szczególności\fP, `alias \-d fac=/usr/local/facilities; cd
+~fac/bin').
+.\"}}}
+.\"{{{  Brace Expansion
+.SS "Rozwijanie nawiasów (przemiany)"
+Rozwinięcia nawiasów przyjmujące postać
+.RS
+\fIprefiks\fP\fB{\fP\fIciąg\fP1\fB,\fP...\fB,\fP\fIciąg\fPN\fB}\fP\fIsufiks\fP
+.RE
+zostają rozwinięte w N wyrazów, z których każdy zawiera konkatenację
+\fIprefiks\fP, \fIciąg\fPn i \fIsufiks\fP
+(\fIw szczególności.\fP, `a{c,b{X,Y},d}e' zostaje rozwinięte do czterech wyrazów:
+ace, abXe, abYe i ade).
+Jak już wyżej wspomniano, rozwinięcia nawiasów mogą być nakładane na siebie,
+a wynikające słowa nie są sortowane.
+Wyrażenia nawiasowe muszą zawierać niecytowany przecinek
+(\fB,\fP), aby nastąpiło rozwijanie
+(\fItak więc\fP \fB{}\fP i \fB{foo}\fP nie zostają rozwinięte).
+Rozwinięcie nawiasów następuje po podstawieniach parametrów i przed
+generowaniem nazw plików.
+.\"}}}
+.\"{{{  File Name Patterns
+.SS "Wzorce nazw plików"
+.PP
+Wzorcem nazwy pliku jest słowo zwierające jeden lub więcej z
+niecytowanych symboli \fB?\fP lub
+\fB*\fP lub sekwencji \fB[\fP..\fB]\fP.
+Po wykonaniu rozwinięcia nawiasów, powłoka zamienia wzorce nazw plików
+na uporządkowane nazwy plików, które pasują do tego wzorca
+(jeśli żadne pliki nie pasują, wówczas dane słowo zostaje pozostawione
+bez zmian). Elementy wzorców mają następujące znaczenia:
+.IP \fB?\fP
+oznacza dowolny pojedynczy znak.
+.IP \fB*\fP
+oznacza dowolną sekwencję znaków.
+.IP \fB[\fP..\fB]\fP
+oznacza każdy ze znaków pomiędzy klamrami. Można podać zakresy znaków
+używając \fB\-\fP pomiędzy dwoma ograniczającymi zakres znakami, tzn.
+\fB[a0\-9]\fP oznacza literę \fBa\fP lub dowolną cyfrę.
+Aby przedstawić sam znak
+\fB\-\fP należy go albo zacytować albo musi być to pierwszy lub ostatni znak
+w liście znaków. Podobnie \fB]\fP musi albo być wycytowywane, albo być pierwszym
+lub ostatnim znakiem w liście, jeśli ma oznaczać samego siebie, a nie zakończenie
+listy. Również \fB!\fP występujący na początku listy ma specjalne
+znaczenie (patrz poniżej), tak więc aby reprezentował samego siebie
+musi zostać wycytowany lub występować dalej w liście.
+.IP \fB[!\fP..\fB]\fP
+podobnie jak \fB[\fP..\fB]\fP, tylko że oznacza dowolny znak
+niewystępujący pomiędzy klamrami.
+.IP "\fB*(\fP\fIwzorzec\fP\fB|\fP ... \fP|\fP\fIwzorzec\fP\fB)\fP"
+oznacza każdy ciąg zawierający zero lub więcej wystąpień podanych wzorców.
+Przykładowo: wzorzec \fB*(foo|bar)\fP obejmuje ciągi
+`', `foo', `bar', `foobarfoo', \fIitp.\fP.
+.IP "\fB+(\fP\fIwzorzec\fP\fB|\fP ... \fP|\fP\fIwzorzec\fP\fB)\fP"
+obejmuje każdy ciąg znaków obejmujący jedno lub więcej wystąpień danych
+wzorców.
+Przykładowo: wzorzec \fB+(foo|bar)\fP obejmuje ciągi
+`foo', `bar', `foobarfoo', \fIitp.\fP.
+.IP "\fB?(\fP\fIwzorzec\fP\fB|\fP ... \fP|\fP\fIwzorzec\fP\fB)\fP"
+oznacza ciąg pusty lub ciąg obejmujący jeden z danych wzorców.
+Przykładowo: wzorzec \fB?(foo|bar)\fP obejmuje jedynie ciągi
+`', `foo' i `bar'.
+.IP "\fB@(\fP\fIwzorzec\fP\fB|\fP ... \fP|\fP\fIwzorzec\fP\fB)\fP"
+obejmuje ciąg obejmujący jeden z podanych wzorców.
+Przykładowo: wzorzec \fB@(foo|bar)\fP obejmuje wyłącznie ciągi
+`foo' i `bar'.
+.IP "\fB!(\fP\fIwzorzec\fP\fB|\fP ... \fP|\fP\fIwzorzec\fP\fB)\fP"
+obejmuje dowolny ciąg nie obejmujący żadnego z danych wzorców.
+Przykładowo: wzorzec \fB!(foo|bar)\fP obejmuje wszystkie ciągi poza
+`foo' i `bar'; wzorzec \fB!(*)\fP nie obejmuje żadnego ciągu;
+wzorzec \fB!(?)*\fP obejmuje wszystkie ciągi (proszę się nad tym zastanowić).
+.PP
+Proszę zauważyć, że wzorce w pdksh obecnie nigdy nie obejmują \fB.\fP i
+\fB..\fP, w przeciwieństwie do oryginalnej powłoki
+ksh, Bourne'a sh i basha, tak więc to będzie musiało się ewentualnie
+zmienić (na złe).
+.PP
+Proszę zauważyć, że powyższe elementy wzorców nigdy nie obejmują kropki
+(\fB.\fP) na początku nazwy pliku ani ukośnika (\fB/\fP),
+nawet gdy zostały one podane jawnie w sekwencji
+\fB[\fP..\fB]\fP; ponadto nazwy \fB.\fP i \fB..\fP
+nigdy nie są obejmowane, nawet poprzez wzorzec \fB.*\fP.
+.PP
+Jeśli została ustawiona opcja \fBmarkdirs\fP, wówczas,
+wszelkie katalogi wynikające z generacji nazw plików
+zostają oznaczone kończącym \fB/\fP.
+.PP
+.\" todo: implement this ([[:alpha:]], \fIetc.\fP)
+POSIX-owe klasy znaków (\fItzn.\fP,
+\fB[:\fP\fInazwa_klasy\fP\fB:]\fP wewnątrz wyrażenia typu \fB[\fP..\fB]\fP)
+jak na razie nie zostały zaimplementowane.
+.\"}}}
+.\"{{{  Input/Output Redirection
+.SS "Przekierowanie wejścia/wyjścia"
+Podczas wykonywania komendy, jej standardowe wejście, standardowe wyjście
+i standardowe wyjście błędów (odpowiednio deskryptory plików 0, 1 i 2)
+są zwykle dziedziczone po powłoce.
+Trzema wyjątkami od tej reguły są komendy w potokach, dla których
+standardowe wejście i/lub standardowe wyjście odpowiadają tym, ustalonym przez
+potok, komendy asychroniczne, tworzone jeśli kontrola prac została
+wyłączona, których standardowe wejście zostaje ustawione na
+\fB/dev/null\fP, oraz komendy, dla których zostało ustawione jedno lub
+kilka z następujących przekierowań:
+.IP "\fB>\fP \fIplik\fP"
+Standardowe wyjście zostaje przekierowane do \fIplik\fP-u.
+Jeśli \fIplik\fP nie istnieje, wówczas zostaje utworzony;
+jeśli istnieje i jest to regularny plik oraz została ustawiona
+opcja \fBnoclobber\fP, wówczas występuje błąd, w przeciwnym razie
+dany plik zostaje ucięty do początku.
+Proszę zwrócić uwagę, iż oznacza to, że komenda \fIjakaś_komenda < foo > foo\fP
+otworzy plik \fIfoo\fP do odczytu, a następnie
+skasuje jego zawartość, gdy otworzy go do zapisu,
+zanim \fIjakaś_komenda\fP otrzyma szansę przeczytania czegokolwiek z \fIfoo\fP.
+.IP "\fB>|\fP \fIplik\fP"
+tak jak dla \fB>\fP, tylko że zawartość pliku zostanie skasowana
+niezależnie od ustawienia opcji \fBnoclobber\fP.
+.IP "\fB>>\fP \fIplik\fP"
+tak jak dla \fB>\fP, tylko że jeśli dany plik już istnieje, to
+nowe dane będą dopisywane do niego, zamiast kasowania poprzedniej jego zawartości.
+Ponadto plik ten zostaje otwarty w trybie dopisywania, tak więc
+wszelkiego rodzaju operacje zapisu na nim dotyczą jego aktualnego końca.
+(patrz \fIopen\fP(2)).
+.IP "\fB<\fP \fIplik\fP"
+standardowe wejście zostaje przekierowane do \fIplik\fPu,
+który jest otwierany w trybie do odczytu.
+.IP "\fB<>\fP \fIplik\fP"
+tak jak dla \fB<\fP, tylko że plik zostaje otworzony w trybie
+zapisu i czytania.
+.IP "\fB<<\fP \fIznacznik\fP"
+po wczytaniu wiersza komendy zawierającego tego rodzaju przekierowanie
+(zwane tu-dokumentem), powłoka kopiuje wiersze z komendy
+do tymczasowego pliku, aż do natrafienia na wiersz
+odpowiadający \fIznacznik\fPowi.
+Podczas wykonywania polecenia jego standardowe wejście jest przekierowane
+do pewnego pliku tymczasowego.
+Jeśli \fIznacznik\fP nie zawiera wycytowanych znaków, zawartość danego
+pliku tymczasowego zostaje przetworzona tak, jakby zawierała się w
+podwójnych cudzysłowach za każdym razem, gdy dana komenda jest wykonywana.
+Tak więc zostaną na nim wykonane podstawienia parametrów,
+komend i arytmetyczne wraz z interpretacją odwrotnego ukośnika
+(\fB\e\fP) i znaków wyjść dla \fB$\fP, \fB`\fP, \fB\e\fP i \fB\enowa_linia\fP.
+Jeśli wiele tu-dokumentów zostanie zastosowanych w jednym i tym samym
+wierszy komendy, to są one zachowane w podanej kolejności.
+.IP "\fB<<-\fP \fIznacznik\fP"
+tak jak dla \fB<<\fP, tylko że początkowe tabulatory
+zostają usunięte z tu-dokumentu.
+.IP "\fB<&\fP \fIfd\fP"
+standardowe wejście zostaje powielone z deskryptora pliku \fIfd\fP.
+\fIfd\fP może być pojedynczą cyfrą, wskazującą na numer
+istniejącego deskryptora pliku, literą  \fBp\fP, wskazującą na plik
+powiązany w wyjściem obecnego koprocesu, lub
+znakiem \fB\-\fP, wskazującym, że standardowe wejście powinno zostać
+zamknięte.
+.IP "\fB>&\fP \fIfd\fP"
+tak jak dla \fB<&\fP, tylko że operacja dotyczy standardowego wyjścia.
+.PP
+W każdym z powyższych przekierowań, można podać jawnie deskryptor
+pliku, którego ma ono dotyczyć, (\fItzn.\fP standardowego wejścia
+lub standardowego wyjścia) przez poprzedzającą odpowiednią pojedynczą cyfrę.
+Podstawienia parametrów komend, arytmetyczne, tyld, tak jak i
+(gdy powłoka jest interakcyjna) generacje nazw plików -
+zostaną wykonane na argumentach przekierowań \fIplik\fP, \fIznacznik\fP
+i \fIfd\fP.
+Trzeba jednak zauważyć, że wyniki wszelkiego rodzaju generowania nazw
+plików zostaną użyte tylko wtedy, gdy określają nazwę jednego pliku;
+jeśli natomiast obejmują one wiele plików, wówczas zostaje zastosowane
+dane słowo bez rozwinięć wynikających z generacji nazw plików.
+Proszę zwrócić uwagę, że w powłokach ograniczonych,
+przekierowania tworzące nowe pliki nie mogą być stosowane.
+.PP
+Dla prostych poleceń, przekierowania mogą występować w dowolnym miejscu
+komendy, w komendach złożonych (wyrażeniach \fBif\fP, \fIitp.\fP),
+wszelkie przekierowania muszą znajdować się na końcu.
+Przekierowania są przetwarzane po tworzeniu potoków i w kolejności,
+w jakiej zostały podane, tak więc
+.RS
+\fBcat /foo/bar 2>&1 > /dev/null | cat \-n\fP
+.RE
+wyświetli błąd z numerem linii wiersza poprzedzającym go.
+.\"}}}
+.\"{{{  Arithmetic Expressions
+.SS "Wyrażenia arytmetyczne"
+Całkowite wyrażenia arytmetyczne mogą być stosowane przy pomocy
+komendy \fBlet\fP, wewnątrz wyrażeń \fB$((\fP..\fB))\fP,
+wewnątrz odwołań do tablic (\fIw szczególności\fP,
+\fInazwa\fP\fB[\fP\fIwyrażenie\fP\fB]\fP),
+jako numeryczne argumenty komendy \fBtest\fP,
+i jako wartości w przyporządkowywaniach do całkowitych parametrów.
+.PP
+Wyrażenia mogą zawierać alfanumeryczne identyfikatory parametrów,
+odwołania do tablic i całkowite stałe. Mogą zostać również
+połączone następującymi operatorami języka C:
+(wymienione i zgrupowane w kolejności rosnącego
+priorytetu).
+.TP
+Operatory unarne:
+\fB+ \- ! ~ ++ --\fP
+.TP
+Operatory binarne:
+\fB,\fP
+.br
+\fB= *= /= %= += \-= <<= >>= &= ^= |=\fP
+.br
+\fB||\fP
+.br
+\fB&&\fP
+.br
+\fB|\fP
+.br
+\fB^\fP
+.br
+\fB&\fP
+.br
+\fB== !=\fP
+.br
+\fB< <= >= >\fP
+.br
+\fB<< >>\fP
+.br
+\fB+ \-\fP
+.br
+\fB* / %\fP
+.TP
+Operator trinarny:
+\fB?:\fP (priorytet jest bezpośrednio wyższy od przyporządkowania)
+.TP
+Operatory grupujące:
+\fB( )\fP
+.PP
+Stałe całkowite mogą być podane w dowolnej bazie, stosując notację
+\fIbaza\fP\fB#\fP\fIliczba\fP, gdzie \fIbaza\fP jest dziesiętną liczbą
+całkowitą specyfikującą bazę, a \fIliczba\fP jest liczbą
+zapisaną w danej bazie.
+.LP
+Operatory są wyliczane w następujący sposób:
+.RS
+.IP "unarny \fB+\fP"
+wynikiem jest argument (podane wyłącznie dla pełności opisu).
+.IP "unary \fB\-\fP"
+negacja.
+.IP "\fB!\fP"
+logiczna negacja; wynikiem jest 1 jeśli argument jest zerowy, a 0 jeśli nie.
+.IP "\fB~\fP"
+arytmetyczna negacja (bit-w-bit).
+.IP "\fB++\fP"
+inkrement; musi być zastosowanym do parametru (a nie literału lub
+innego wyrażenia) - parametr zostaje powiększony o 1.
+Jeśli został zastosowany jako operator przedrostkowy, wówczas wynikiem jest
+inkrementowana wartość parametru, a jeśli został zastosowany jako
+operator przyrostkowy, to wynikiem jest pierwotna wartość parametru.
+.IP "\fB--\fP"
+podobnie do \fB++\fP, tylko że wynikiem jest zmniejszenie parametru o 1.
+.IP "\fB,\fP"
+Rozdziela dwa wyrażenia arytmetyczne; lewa strona zostaje wyliczona
+jako pierwsza, a następnie prawa strona. Wynikiem jest wartość
+wyrażenia po prawej stronie.
+.IP "\fB=\fP"
+przyporządkowanie; zmiennej po lewej zostaje nadana wartość po prawej.
+.IP "\fB*= /= %= += \-= <<= >>= &= ^= |=\fP"
+operatory przyporządkowania; \fI<var> <op>\fP\fB=\fP \fI<expr>\fP
+jest tym samym co
+\fI<var>\fP \fB=\fP \fI<var> <op>\fP \fB(\fP \fI<expr>\fP \fB)\fP.
+.IP "\fB||\fP"
+logiczna alternatywa; wynikiem jest 1 jeśli przynajmniej jeden
+z argumentów jest niezerowy, 0 gdy nie.
+Argument po prawej zostaje wyliczony jedynie, gdy argument po lewej
+jest zerowy.
+.IP "\fB&&\fP"
+logiczna koniunkcja; wynikiem jest 1 jeśli obydwa argumenty są niezerowe,
+0 gdy nie.
+Prawy argument zostaje wyliczony jedynie, gdy lewy jest niezerowy.
+.IP "\fB|\fP"
+arytmetyczna alternatywa (bit-w-bit).
+.IP "\fB^\fP"
+arytmetyczne albo (bit-w-bit).
+.IP "\fB&\fP"
+arytmetyczna koniunkcja (bit-w-bit).
+.IP "\fB==\fP"
+równość; wynikiem jest 1, jeśli obydwa argumenty są sobie równe, 0 gdy nie.
+.IP "\fB!=\fP"
+nierówność; wynikiem jest 0, jeśli obydwa argumenty są sobie równe, 1 gdy nie.
+.IP "\fB<\fP"
+mniejsze od; wynikiem jest 1, jeśli lewy argument jest mniejszy od prawego,
+0 gdy nie.
+.IP "\fB<= >= >\fP"
+mniejsze lub równe, większe lub równe, większe od. Patrz <.
+.IP "\fB<< >>\fP"
+przesuń w lewo (prawo); wynikiem jest lewy argument z bitami przesuniętymi
+na lewo (prawo) o liczbę pól podaną w prawym argumencie.
+.IP "\fB+ - * /\fP"
+suma, różnica, iloczyn i iloraz.
+.IP "\fB%\fP"
+reszta; wynikiem jest reszta z dzielenia lewego argumentu przez prawy.
+Znak wyniku jest nieustalony, jeśli któryś z argumentów jest ujemny.
+.IP "\fI<arg1>\fP \fB?\fP \fI<arg2>\fP \fB:\fP \fI<arg3>\fP"
+jeśli \fI<arg1>\fP jest niezerowy, to wynikiem jest \fI<arg2>\fP,
+w przeciwnym razie \fI<arg3>\fP.
+.RE
+.\"}}}
+.\"{{{  Co-Processes
+.SS "Koprocesy"
+Koproces to potok stworzony poprzez operator \fB|&\fP,
+który jest procesem asynchronicznym, do którego powłoka może
+zarówno pisać (używając \fBprint \-p\fP), jak i czytać (używając \fBread \-p\fP).
+Wejściem i wyjściem koprocesu można również manipulować
+przy pomocy przekierowań \fB>&p\fP i odpowiednio \fB<&p\fP.
+Po uruchomieniu koprocesu, następne nie mogą być uruchomione dopóki
+dany koproces nie zakończy pracy lub dopóki wejście koprocesu
+nie zostanie przekierowane przez \fBexec \fP\fIn\fP\fB>&p\fP.
+Jeśli wejście koprocesu zostanie przekierowane w ten sposób, to
+następny w kolejce do uruchomienia koproces będzie
+współdzielił wyjście z pierwszym koprocesem, chyba że wyjście pierwszego
+koprocesu zostało przekierowane przy pomocy
+\fBexec \fP\fIn\fP\fB<&p\fP.
+.PP
+Pewne uwagi dotyczące koprocesów:
+.nr P2 \n(PD
+.nr PD 0
+.IP \ \ \(bu
+jedyną możliwością zamknięcia wejścia koprocesu
+(tak aby koproces wczytał zakończenie pliku) jest przekierowanie
+wejścia na numerowany deskryptor pliku, a następnie zamknięcie tego
+deskryptora (w szczególności, \fBexec 3>&p;exec 3>&-\fP).
+.IP \ \ \(bu
+aby koprocesy mogły współdzielić jedno wyjście, powłoka musi
+zachować otwartą część wpisową danego potoku wyjściowego.
+Oznacza to, że zakończenie pliku nie zostanie wykryte do czasu, aż
+wszystkie koprocesy współdzielące wyjście  zostaną zakończone
+(gdy zostaną one zakończone, wówczas  powłoka zamyka swoją kopię
+potoku).
+Można temu zapobiec przekierowując wyjście na numerowany
+deskryptor pliku
+(ponieważ powoduje to również zamknięcie przez powłokę swojej kopii).
+Proszę zwrócić uwagę, iż to zachowanie  jest nieco odmienne od oryginalnej
+powłoki Korna, która zamyka część zapisową swojej kopii wyjścia
+koprocesu, gdy ostatnio uruchomiony koproces
+(zamiast gdy wszystkie współdzielące koprocesy) zostanie zakończony.
+.IP \ \ \(bu
+\fBprint \-p\fP ignoruje sygnał SIGPIPE podczas zapisu, jeśli
+dany sygnał nie został przechwycony lub zignorowany; nie zachodzi to jednak,
+gdy wejście koprocesu zostało powielone na inny deskryptor pliku
+i stosowane jest \fBprint \-u\fP\fIn\fP.
+.nr PD \n(P2
+.\"}}}
+.\"{{{  Functions
+.SS "Funkcje"
+Funkcje definiuje się albo przy pomocy syntaktyki powłoki
+Korna \fBfunction\fP \fIname\fP,
+albo syntaktyki powłoki Bourne'a/POSIX-owej: \fIname\fP\fB()\fP
+(patrz poniżej, co do różnic zachodzących pomiędzy tymi dwiema formami).
+Funkcje, tak jak i \fB.\fP-skrypty, są wykonywane w bieżącym
+otoczeniu, aczkolwiek, w przeciwieństwie do \fB.\fP-skryptów,
+argumenty powłoki
+(\fItzn.\fP argumenty pozycyjne, \fB$1\fP, \fIitd.\fP) nigdy nie są
+widoczne wewnątrz nich.
+Podczas ustalania położenia komendy, funkcje są przeszukiwane po przeszukaniu
+specjalnych komend wbudowanych, zaś przed regularnymi oraz nieregularnymi
+komendami wbudowanymi i przed przeszukaniem \fBPATH\fP.
+.PP
+Istniejąca funkcja może zostać usunięta poprzez
+\fBunset \-f\fP \fInazwa-funkcji\fP.
+Listę funkcji można otrzymać poprzez \fBtypeset +f\fP, a definicje
+funkcji można otrzymać poprzez \fBtypeset \-f\fP.
+\fBautoload\fP (co jest aliasem dla \fBtypeset \-fu\fP) może zostać
+użyte do tworzenia niezdefiniowanych funkcji.
+Jeśli ma być wykonana niezdefiniowana funkcja, wówczas powłoka
+przeszukuje ścieżkę podaną w parametrze \fBFPATH\fP szukając pliku
+o nazwie identycznej z nazwą danej funkcji. Jeśli plik taki zostanie
+odnaleziony, to będzie wczytany i wykonany.
+Jeśli po wykonaniu tego pliku dana funkcja będzie zdefiniowana, wówczas
+zostanie ona wykonana, w przeciwnym razie zostanie wykonane zwykłe
+odnajdywanie komend
+(\fItzn.\fP, powłoka przeszukuje tablicę zwykłych komend wbudowanych
+i \fBPATH\fP).
+Proszę zwrócić uwagę, że jeśli komenda nie zostanie odnaleziona
+na podstawie \fBPATH\fP, wówczas zostaje podjęta próba odnalezienia
+funkcji przez \fBFPATH\fP (jest to nieudokumentowanym zachowaniem
+się oryginalnej powłoki Korna).
+.PP
+Funkcje mogą mieć dwa atrybuty - śledzenia i eksportowania, które
+mogą być ustawiane przez \fBtypeset \-ft\fP i odpowiednio
+\fBtypeset \-fx\fP.
+Podczas wykonywania funkcji śledzonej, opcja \fBxtrace\fP powłoki
+zostaje włączona na czas danej funkcji, w przeciwnym razie
+opcja \fBxtrace\fP pozostaje wyłączona.
+Atrybut eksportowania nie jest obecnie używany.  W oryginalnej
+powłoce Korna, wyeksportowane funkcje są widoczne dla skryptów powłoki,
+gdy są one wykonywane.
+.PP
+Ponieważ funkcje są wykonywane w obecnym kontekście powłoki,
+przyporządkowania parametrów wykonane wewnątrz funkcji pozostają
+widoczne po zakończeniu danej funkcji.
+Jeśli jest to niepożądane, wówczas komenda \fBtypeset\fP może
+być zastosowana wewnątrz funkcji do tworzenia lokalnych parametrów.
+Proszę zwrócić uwagę, iż w żaden sposób nie można ograniczyć widoczności
+parametrów specjalnych (tzn. \fB$$\fP, \fB$!\fP).
+.PP
+Kodem wyjścia funkcji jest kod wyjścia ostatniej wykonanej w niej komendy.
+Funkcję można przerwać bezpośrednio przy pomocy komendy \fBreturn\fP;
+można to również zastosować do jawnego określenia kodu wyjścia.
+.PP
+Funkcje zdefiniowane przy pomocy zarezerwowanego słowa \fBfunction\fP, są
+traktowane odmiennie w następujących punktach od funkcji zdefiniowanych
+poprzez notację \fB()\fP:
+.nr P2 \n(PD
+.nr PD 0
+.IP \ \ \(bu
+parametr \fB$0\fP zostaje ustawiony na nazwę funkcji
+(funkcje w stylu Bourne'a nie dotykają \fB$0\fP).
+.IP \ \ \(bu
+przyporządkowania wartości parametrom poprzedzające wywołanie
+funkcji nie zostają zachowane w bieżącym kontekście powłoki
+(wykonywanie funkcji w stylu Bourne'a zachowuje te
+przyporządkowania).
+.IP \ \ \(bu
+\fBOPTIND\fP zostanie zachowany i skasowany
+na początku oraz następnie odtworzony na zakończenie funkcji, tak więc
+\fBgetopts\fP może być poprawnie stosowane zarówno wewnątrz funkcji, jak i poza
+nimi
+(funkcje w stylu Bourne'a nie dotykają \fBOPTIND\fP, tak więc
+stosowanie \fBgetopts\fP wewnątrz funkcji jest niezgodne ze stosowaniem
+\fBgetopts\fP poza funkcjami).
+.br
+.nr PD \n(P2
+W przyszłości zostaną dodane również następujące różnice:
+.nr P2 \n(PD
+.nr PD 0
+.IP \ \ \(bu
+Podczas wykonywania funkcji będzie stosowany oddzielny kontekst
+śledzenia/sygnałów.
+Tak więc śledzenia ustawione wewnątrz funkcji nie będą miały wpływu
+na śledzenia i sygnały powłoki, nieignorowane przez nią (które mogą
+być przechwytywane), i będą miały domyślne ich znaczenie wewnątrz funkcji.
+.IP \ \ \(bu
+Śledzenie EXIT-a, jeśli zostanie ustawione wewnątrz funkcji,
+zostanie wykonane po zakończeniu funkcji.
+.nr PD \n(P2
+.\"}}}
+.\"{{{  POSIX mode
+.SS "Tryb POSIX-owy"
+Dana powłoka ma być w zasadzie zgodna ze standardem POSIX,
+jednak, w niektórych przypadkach, zachowanie zgodne ze
+standardem POSIX jest albo sprzeczne z zachowaniem oryginalnej
+powłoki Korna, albo z wygodą użytkownika.
+To, jak powłoka zachowuje się w takich wypadkach, jest ustalane
+stanem opcji posix (\fBset \-o posix\fP) \(em jeśli jest ona
+włączona, to zachowuje się zgodnie z POSIX-em, a w przeciwnym
+razie - nie.
+Opcja \fBposix\fP zostaje automatycznie ustawiona, jeśli powłoka startuje
+w otoczeniu zawierającym ustawiony parametr \fBPOSIXLY_CORRECT\fP.
+(Powłokę można również skompilować tak, aby zachowanie zgodne z
+POSIX-em było domyślnie ustawione, ale jest to zwykle
+niepożądane).
+.PP
+A oto lista wpływów ustawienia opcji \fBposix\fP:
+.nr P2 \n(PD
+.nr PD 0
+.IP \ \ \(bu
+\fB\e"\fP wewnątrz cytowanych podwójnymi cudzysłowami \fB`\fP..\fB`\fP
+podstawień komend:
+w trybie POSIX-owym, \fB\e"\fP jest interpretowany podczas interpretacji
+komendy;
+w trybie nie-POSIX-owym, odwrotny ukośnik zostaje usunięty przed
+interpretacją podstawienia komendy.
+Na przykład\fBecho "`echo \e"hi\e"`"\fP produkuje `"hi"' w
+trybie POSIX-owym, `hi' a w trybie nie-POSIX-owym.
+W celu uniknięcia problemów, proszę stosować postać \fB$(...\fP)
+podstawienia komend.
+.IP \ \ \(bu
+wyjście \fBkill \-l\fP: w trybie POSIX-owym nazwy sygnałów
+są wymieniane wiersz po wierszu;
+w nie-POSIX-owym trybie numery sygnałów, ich nazwy i opis zostają wymienione
+w kolumnach.
+W przyszłości zostanie dodana nowa opcja (zapewne \fB\-v\fP) w celu
+rozróżnienia tych dwóch zachowań.
+.IP \ \ \(bu
+kod wyjścia \fBfg\fP: w trybie POSIX-owym, kod wyjścia wynosi
+0, jeśli nie wystąpiły żadne błędy;
+w trybie nie-POSIX-owym, kod wyjścia odpowiada kodowi ostatniego zadania
+wykonywanego w pierwszym planie.
+.IP \ \ \(bu
+kod wyjścia polecenia\fBeval\fP: jeżeli argumentem eval będzie puste polecenie
+(\fInp.\fP: \fBeval "`false`"\fP), to jego kodem wyjścia w trybie POSIX-owym będzie 0.
+W trybie nie-POSIX-owym, kodem wyjścia będzie kod wyjścia ostatniego podstawienia
+komendy, które zostało dokonane podczas przetwarzania argumentów polecenia eval
+(lub 0, jeśli nie było podstawień komend).
+.IP \ \ \(bu
+\fBgetopts\fP: w trybie POSIX-owym, opcje muszą zaczynać się od \fB\-\fP;
+w trybie nie-POSIX-owym, opcje mogą się zaczynać albo od \fB\-\fP, albo od \fB+\fP.
+.IP \ \ \(bu
+rozwijanie nawiasów (zwane również przemianą): w trybie POSIX-owym
+rozwijanie nawiasów jest wyłączone; w trybie nie-POSIX-owym
+rozwijanie nawiasów jest włączone.
+Proszę zauważyć, że \fBset \-o posix\fP (lub ustawienie
+parametru \fBPOSIXLY_CORRECT\fP)
+automatycznie wyłącza opcję \fBbraceexpand\fP, może ona być jednak jawnie
+włączona później.
+.IP \ \ \(bu
+\fBset \-\fP: w trybie POSIX-owym, nie wyłącza to ani opcji \fBverbose\fP, ani
+\fBxtrace\fP; w trybie nie-POSIX-owym, wyłącza.
+.IP \ \ \(bu
+kod wyjścia \fBset\fP: w trybie POSIX-owym,
+kod wyjścia wynosi 0, jeśli nie wystąpiły żadne błędy;
+w trybie nie-POSIX-owym, kod wyjścia odpowiada kodowi
+wszelkich podstawień komend wykonywanych podczas generacji komendy set.
+Przykładowo, `\fBset \-\- `false`; echo $?\fP' wypisuje 0 w trybie POSIX-owym,
+a 1 w trybie nie-POSIX-owym.  Taka konstrukcja stosowana jest w większości
+skryptów powłoki stosujących stary wariant komendy \fIgetopt\fP(1).
+.IP \ \ \(bu
+rozwijanie argumentów komend \fBalias\fP, \fBexport\fP, \fBreadonly\fP i
+\fBtypeset\fP: w trybie POSIX-owym, następuje normalne rozwijanie argumentów;
+w trybie nie-POSIX-owym, rozdzielanie pól, dopasowywanie nazw plików,
+rozwijanie nawiasów i (zwykłe) rozwijanie tyld są wyłączone, ale
+rozwijanie tyld w przyporządkowaniach pozostaje włączone.
+.IP \ \ \(bu
+specyfikacja sygnałów: w trybie POSIX-owym, sygnały mogą być
+podawane jedynie cyframi, jeśli numery sygnałów są zgodne z
+wartościami z POSIX-a (\fItzn.\fP HUP=1, INT=2, QUIT=3, ABRT=6,
+KILL=9, ALRM=14 i TERM=15); w trybie nie-POSIX-owym,
+sygnały  zawsze mogą być podane cyframi.
+.IP \ \ \(bu
+rozwijanie aliasów: w trybie POSIX-owym, rozwijanie aliasów
+zostaje jedynie wykonywane, podczas wczytywania słów komend; w trybie
+nie-POSIX-owym, rozwijanie aliasów zostaje wykonane również na
+każdym słowie po jakimś aliasie, które kończy się białą przerwą.
+Na przykład następująca pętla for
+.RS
+.ft B
+alias a='for ' i='j'
+.br
+a i in 1 2; do echo i=$i j=$j; done
+.ft P
+.RE
+używa parametru \fBi\fP w trybie POSIX-owym, natomiast \fBj\fP w
+trybie nie-POSIX-owym.
+.IP \ \ \(bu
+test: w trybie POSIX-owym, wyrażenie "\fB-t\fP" (poprzedzone pewną
+liczbą argumentów "\fB!\fP") zawsze jest prawdziwe, gdyż jest
+ciągiem o długości niezerowej; w nie-POSIX-owym trybie, sprawdza czy
+deskryptor pliku 1 jest jakimś tty (\fItzn.\fP,
+argument \fIfd\fP do testu \fB-t\fP może zostać pominięty i jest
+domyślnie równy 1).
+.nr PD \n(P2
+.\"}}}
+.\"{{{  Command Execution (built-in commands)
+.SS "Wykonywanie komend"
+Po wyliczeniu argumentów wiersza komendy, wykonaniu przekierowań
+i przyporządkowań parametrów, zostaje ustalony typ komendy:
+specjalna wbudowana, funkcja, regularna wbudowana
+lub nazwa pliku, który należy wykonać, znajdowanego przy pomocy parametru
+\fBPATH\fP.
+Testy te zostają wykonane w wyżej podanym porządku.
+Specjalne wbudowane komendy różnią się tym od innych komend,
+że do ich odnalezienia nie jest używany parametr \fBPATH\fP, błąd
+podczas ich wykonywania może spowodować zakończenie powłoki nieinterakcyjnej
+i przyporządkowania wartości parametrów poprzedzające
+komendę zostają zachowane po jej wykonaniu.
+Aby tylko wprowadzić zamieszanie, jeśli opcja
+posix została włączona (patrz komenda \fBset\fP
+poniżej), to pewne specjale komendy stają się bardzo specjalne, gdyż
+nie jest wykonywane rozdzielanie pól, rozwijanie nazw plików,
+rozwijanie nawiasów, ani rozwijanie tyld na argumentach,
+które wyglądają jak przyporządkowania.
+Zwykłe wbudowane komendy wyróżniają się jedynie tym, że
+do ich odnalezienia nie jest stosowany parametr \fBPATH\fP.
+.PP
+Oryginalny ksh i POSIX różnią się nieco w tym, jakie
+komendy są traktowane jako specjalne, a jakie jako zwykłe:
+.IP "Specjalne polecenia w POSIX"
+.TS
+lw(8m)fB lw(8m)fB lw(8m)fB lw(8m)fB lw(8m)fB .
+\&.	continue	exit	return	trap
+:	eval	export	set	unset
+break	exec	readonly	shift
+.TE
+.IP "Dodatkowe specjalne komendy w ksh"
+.TS
+lw(8m)fB lw(8m)fB lw(8m)fB lw(8m)fB lw(8m)fB .
+builtin	times	typeset		
+.TE
+.IP "Bardzo specjalne komendy (tryb nie-POSIX-owy)"
+.TS
+lw(8m)fB lw(8m)fB lw(8m)fB lw(8m)fB lw(8m)fB .
+alias	readonly	set	typeset	
+.TE
+.IP "Regularne komendy w POSIX"
+.TS
+lw(8m)fB lw(8m)fB lw(8m)fB lw(8m)fB lw(8m)fB .
+alias	command	fg	kill	umask
+bg	false	getopts	read	unalias
+cd	fc	jobs	true	wait
+.TE
+.IP "Dodatkowe regularne komendy ksh"
+.TS
+lw(8m)fB lw(8m)fB lw(8m)fB lw(8m)fB lw(8m)fB .
+[	let	pwd	ulimit	
+echo	print	test	whence	
+.TE
+.PP
+W przyszłości dodatkowe specjalne komendy oraz regularne komendy ksh
+mogą być traktowane odmiennie od specjalnych i regularnych komand
+POSIX.
+.PP
+Po ustaleniu typu komendy, wszelkie przyporządkowania wartości parametrów
+zostają wykonane i wyeksportowane na czas trwania komendy.
+.PP
+Poniżej opisujemy specjalne i regularne polecenia wbudowane:
+.\"{{{  . plik [ arg1 ... ]
+.IP "\fB\&.\fP \fIplik\fP [\fIarg1\fP ...]"
+Wykonaj komendy z \fIplik\fPu w bieżącym otoczeniu.
+Plik zostaje odszukiwany przy użyciu katalogów z \fBPATH\fP.
+Jeśli zostały podane argumenty, to parametry pozycyjne mogą być
+używane w celu uzyskania dostępu do nich podczas wykonywania \fIplik\fPu.
+Jeżeli nie zostały podane żadne argumenty, to argumenty pozycyjne
+odpowiadają tym z bieżącego otoczenia, w którym dana komenda została
+użyta.
+.\"}}}
+.\"{{{  : [ ... ]
+.IP "\fB:\fP [ ... ]"
+Komenda zerowa. Kodem wyjścia jest zero.
+.\"}}}
+.\"{{{  alias [ -d | +-t [ -r ] ] [+-px] [+-] [nazwa1[=wartość1] ...]
+.IP "\fBalias\fP [ \fB\-d\fP | \fB+-t\fP [\fB\-r\fP] ] [\fB+-px\fP] [\fB+-\fP] [\fIname1\fP[\fB=\fP\fIvalue1\fP] ...]"
+Bez argumentów, \fBalias\fP wyświetla wszystkie obecne aliasy.
+Dla każdej nazwy bez podanej wartości zostaje wyświetlony istniejący
+odpowiedni alias.
+Każda nazwa z podaną wartością definiuje alias (patrz: "Aliasy" powyżej).
+.sp
+Do wyświetlania aliasów używany jest jeden z dwóch formatów:
+zwykle aliasy są wyświetlane jako \fInazwa\fP\fB=\fP\fIwartość\fP, przy czym
+\fIwartość\fP jest cytowana; jeśli opcje miały przedrostek \fB+\fP
+lub samo \fB+\fP zostało podane we wierszu komendy, tylko \fInazwa\fP
+zostaje wyświetlona.
+Ponadto, jeśli została zastosowana opcja \fB\-p\fP, to dodatkowo każdy wiersz
+zaczyna się od ciągu "\fBalias\fP\ ".
+.sp
+Opcja \fB\-x\fP ustawia (a \fB+x\fP kasuje) atrybut eksportu dla aliasu,
+lub jeśli nie podano żadnych nazw, wyświetla aliasy wraz z ich atrybutem
+eksportu (eksportowanie aliasu nie ma ma żadnego efektu).
+.sp
+Opcja \fB\-t\fP wskazuje, że śledzone aliasy mają być wyświetlone/ustawione
+(wartości podane w wierszu komendy zostają zignorowane dla śledzonych
+aliasów).
+Opcja \fB\-r\fP wskazuje, że wszystkie śledzone aliasy
+mają zostać usunięte.
+.sp
+Opcja \fB\-d\fP nakazuje wyświetlenie lub ustawienie aliasów katalogów,
+które są stosowane w rozwinięciach tyld
+(patrz: "Rozwinięcia tyld" powyżej).
+.\"}}}
+.\"{{{  bg [job ...]
+.IP "\fBbg\fP [\fIjob\fP ...]"
+Podejmij ponownie wymienione zatrzymane zadanie(\-a) w tle.
+Jeśli nie podano żadnego zadania, to przyjmuje się domyślnie \fB%+\fP.
+Ta komenda jest dostępna jedynie w systemach obsługujących kontrolę zadań.
+Dalsze informacje można znaleźć poniżej w rozdziale "Kontrola zadań".
+.\"}}}
+.\"{{{  bind [-l] [-m] [key[=editing-command] ...]
+.IP "\fBbind\fP [\fB\-m\fP] [\fIklawisz\fP[\fB=\fP\fIkomenda-edycji\fP] ...]"
+Ustawienie lub wyliczenie obecnych przyporządkowań klawiszy/makr w
+emacsowym trybie edycji komend.
+Patrz "Interakcyjna edycja wiersza poleceń w trybie emacs" w celu pełnego opisu.
+.\"}}}
+.\"{{{  break [level]
+.IP "\fBbreak\fP [\fIpoziom\fP]"
+\fBbreak\fP przerywa \fIpoziom\fP zagnieżdżenia w pętlach
+for, select, until lub while.
+Domyślnie \fIpoziom\fP wynosi 1.
+.\"}}}
+.\"{{{  builtin command [arg1 ...]
+.IP "\fBbuiltin\fP \fIkomenda\fP [\fIarg1\fP ...]"
+Wykonuje wbudowaną komendę \fIkomenda\fP.
+.\"}}}
+.\"{{{  cd [-LP] [dir]
+.IP "\fBcd\fP [\fB\-LP\fP] [\fIkatalog\fP]"
+Ustawia aktualny katalog roboczy na \fIkatalog\fP.
+Jeśli został ustawiony parametr \fBCDPATH\fP, to wypisuje
+listę katalogów, w których będzie szukać \fIkatalog\fPu.
+Pusta zawartość w \fBCDPATH\fP oznacza katalog bieżący.
+Jeśli zostanie użyty niepusty katalog z \fBCDPATH\fP,
+to na standardowym wyjściu będzie wyświetlona jego pełna ścieżka.
+Jeśli nie podano \fIkatalog\fPu, to
+zostanie użyty katalog domowy \fB$HOME\fP.  Jeśli \fIkatalog\fPiem jest
+\fB\-\fP, to zostanie zastosowany poprzedni katalog roboczy (patrz
+parametr OLDPWD).
+Jeśli użyto opcji \fB\-L\fP (ścieżka logiczna) lub jeśli
+nie została ustawiona opcja \fBphysical\fP
+(patrz komenda \fBset\fP poniżej), wówczas odniesienia do \fB..\fP w
+\fIkatalogu\fP są względne wobec ścieżki zastosowanej do dojścia do danego
+katalogu.
+Jeśli podano opcję \fB\-P\fP (fizyczna ścieżka) lub gdy została ustawiona
+opcja \fBphysical\fP, to \fB..\fP jest względne wobec drzewa katalogów
+systemu plików.
+Parametry \fBPWD\fP i \fBOLDPWD\fP zostają uaktualnione tak, aby odpowiednio
+zawierały bieżący i poprzedni katalog roboczy.
+.\"}}}
+.\"{{{  cd [-LP] old new
+.IP "\fBcd\fP [\fB\-LP\fP] \fIstary nowy\fP"
+Ciąg \fInowy\fP zostaje podstawiony w zamian za \fIstary\fP w bieżącym
+katalogu i powłoka próbuje przejść do nowego katalogu.
+.\"}}}
+.\"{{{  command [ -pvV ] cmd [arg1 ...]
+.IP "\fBcommand\fP [\fB\-pvV\fP] \fIkomenda\fP [\fIarg1\fP ...]"
+Jeśli nie została podana opcja \fB\-v\fP ani opcja \fB\-V\fP, to
+\fIkomenda\fP
+zostaje wykonana dokładnie tak, jakby nie podano \fBcommand\fP,
+z dwoma wyjątkami: po pierwsze, \fIkomenda\fP nie może być funkcją w powłoce,
+oraz po drugie, specjalne wbudowane komendy tracą swoją specjalność (tzn.
+przekierowania i błędy w użyciu nie powodują, że powłoka zostaje zakończona, a
+przyporządkowania parametrów nie zostają wykonane).
+Jeśli podano opcję \fB\-p\fP, zostaje zastosowana pewna domyślna ścieżka
+zamiast obecnej wartości \fBPATH\fP (wartość domyślna ścieżki jest zależna
+od systemu, w jakim pracujemy: w systemach POSIX-owych jest to
+wartość zwracana przez
+.ce
+\fBgetconf CS_PATH\fP
+).
+.sp
+Jeśli podano opcję \fB\-v\fP, to zamiast wykonania polecenia \fIkomenda\fP,
+zostaje podana informacja, co by zostało wykonane (i to samo dotyczy
+również \fIarg1\fP ...):
+dla specjalnych i zwykłych wbudowanych komend i funkcji,
+zostają po prostu wyświetlone ich nazwy,
+dla aliasów, zostaje wyświetlona komenda definiująca dany alias,
+oraz dla komend odnajdowanych przez przeszukiwanie zawartości
+parametru \fBPATH\fP, zostaje wyświetlona pełna ścieżka danej komendy.
+Jeśli komenda nie zostanie odnaleziona, (tzn. przeszukiwanie ścieżki
+nie powiedzie się), nic nie zostaje wyświetlone i \fBcommand\fP zostaje
+zakończone z niezerowym kodem wyjścia.
+Opcja \fB\-V\fP jest podobna do opcji \fB\-v\fP, tylko że bardziej
+gadatliwa.
+.\"}}}
+.\"{{{  continue [levels]
+.IP "\fBcontinue\fP [\fIpoziom\fP]"
+\fBcontinue\fP skacze na początek \fIpoziom\fPu z najgłębiej
+zagnieżdżonej pętli for,
+select, until lub while.
+\fIlevel\fP domyślnie 1.
+.\"}}}
+.\"{{{  echo [-neE] [arg ...]
+.IP "\fBecho\fP [\fB\-neE\fP] [\fIarg\fP ...]"
+Wyświetla na standardowym wyjściu swoje argumenty (rozdzielone spacjami),
+zakończone przełamaniem wiersza.
+Przełamanie wiersza nie następuje, jeśli którykolwiek z parametrów
+zawiera sekwencję odwrotnego ukośnika \fB\ec\fP.
+Patrz komenda \fBprint\fP poniżej, co do listy innych rozpoznawanych
+sekwencji odwrotnych ukośników.
+.sp
+Następujące opcje zostały dodane dla zachowania zgodności ze
+skryptami z systemów BSD:
+\fB\-n\fP wyłącza końcowe przełamanie wiersza, \fB\-e\fP włącza
+interpretację odwrotnych ukośników (operacja zerowa, albowiem ma to
+domyślnie miejsce) oraz \fB\-E\fP wyłączające interpretację
+odwrotnych ukośników.
+.\"}}}
+.\"{{{  eval command ...
+.IP "\fBeval\fP \fIkomenda ...\fP"
+Argumenty zostają powiązane (z przerwami pomiędzy nimi) do jednego
+ciągu, który następnie powłoka rozpoznaje i wykonuje w obecnym
+otoczeniu.
+.\"}}}
+.\"{{{  exec [command [arg ...]]
+.IP "\fBexec\fP [\fIkomenda\fP [\fIarg\fP ...]]"
+Komenda zostaje wykonana bez rozwidlania (fork), zastępując proces powłoki.
+.sp
+Jeśli nie podano żadnych argumentów wszelkie przekierowania wejścia/wyjścia
+są dozwolone i powłoka nie zostaje zastąpiona.
+Wszelkie deskryptory plików większe niż 2 otwarte lub z\fIdup\fP(2)-owane
+w ten sposób nie są dostępne dla innych wykonywanych komend
+(\fItzn.\fP, komend nie wbudowanych w powłokę).
+Zauważ, że powłoka Bourne'a różni się w tym:
+przekazuje bowiem deskryptory plików.
+.\"}}}
+.\"{{{  exit [kod]
+.IP "\fBexit\fP [\fIkod\fP]"
+Powłoka zostaje zakończona z podanym kodem wyjścia.
+Jeśli \fIkod\fP nie został podany, wówczas kod wyjścia
+przyjmuje bieżącą wartość parametru \fB?\fP.
+.\"}}}
+.\"{{{  export [-p] [parameter[=value] ...]
+.IP "\fBexport\fP [\fB\-p\fP] [\fIparametr\fP[\fB=\fP\fIwartość\fP]] ..."
+Ustawia atrybut eksportu danego parametru.
+Eksportowane parametry zostają przekazywane w otoczeniu do wykonywanych
+komend.
+Jeśli podano wartości, to zostają one również przyporządkowane
+danym parametrom.
+.sp
+Jeśli nie podano żadnych parametrów, wówczas nazwy wszystkich parametrów
+z atrybutem eksportu zostają wyświetlone wiersz po wierszu, chyba że użyto
+opcji \fB\-p\fP, wtedy zostają wyświetlone komendy
+\fBexport\fP definiujące wszystkie eksportowane parametry wraz z ich
+wartościami.
+.\"}}}
+.\"{{{  false
+.IP "\fBfalse\fP"
+Komenda kończąca się z niezerowym kodem powrotu.
+.\"}}}
+.\"{{{  fc [-e editor | -l [-n]] [-r] [first [ last ]]
+.IP "\fBfc\fP [\fB\-e\fP \fIedytor\fP | \fB\-l\fP [\fB\-n\fP]] [\fB\-r\fP] [\fIpierwszy\fP [\fIostatni\fP]]"
+\fIpierwszy\fP i \fIostatni\fP wybierają komendy z historii.
+Komendy możemy wybierać przy pomocy ich numeru w historii
+lub podając ciąg znaków określający ostatnio użytą komendę rozpoczynającą
+się od tegoż ciągu.
+Opcja \fB\-l\fP wyświetla daną komendę na stdout,
+a \fB\-n\fP wyłącza domyślne numery komend.  Opcja \fB\-r\fP
+odwraca kolejność komend w liście historii.  Bez \fB\-l\fP, wybrane
+komendy podlegają edycji przez edytor podany poprzez opcję
+\fB\-e\fP, albo jeśli nie podano \fB\-e\fP, przez edytor
+podany w parametrze \fBFCEDIT\fP (jeśli nie został ustawiony ten
+parametr, wówczas stosuje się \fB/bin/ed\fP),
+i następnie wykonana przez powłokę.
+.\" -(rl)- 
+.\"}}}
+.\"{{{  fc [-e - | -s] [-g] [old=new] [prefix]
+.IP "\fBfc\fP [\fB\-e \-\fP | \fB\-s\fP] [\fB\-g\fP] [\fIstare\fP\fB=\fP\fInowe\fP] [\fIprefiks\fP]"
+Wykonuje ponownie wybraną komendę (domyślnie poprzednią komendę) po
+wykonaniu opcjonalnej zamiany \fIstare\fP na \fInowe\fP.  Jeśli
+podano \fB\-g\fP, wówczas wszelkie wystąpienia \fIstare\fP zostają
+zastąpione przez \fInowe\fP. Z tej komendy korzysta się zwykle
+przy pomocy zdefiniowanego domyślnie aliasu \fBr='fc \-e \-'\fP.
+.\"}}}
+.\"{{{  fg [job ...]
+.IP "\fBfg\fP [\fIzadanie\fP ...]"
+Przywraca na pierwszy plan zadanie(\-nia).
+Jeśli nie podano jawnie żadnego zadania, wówczas odnosi się to
+domyślnie do \fB%+\fP.
+Ta komenda jest jedynie dostępna na systemach wspomagających
+kontrolę zadań.
+Patrz "Kontrola zadań" dla dalszych informacji.
+.\"}}}
+.\"{{{  getopts optstring name [arg ...]
+.IP "\fBgetopts\fP \fIciągopt\fP \fInazwa\fP [\fIarg\fP ...]"
+\fBgetopts\fP jest stosowany przez procedury powłoki
+do rozpoznawania podanych argumentów
+(lub parametrów pozycyjnych, jeśli nie podano żadnych argumentów)
+i do sprawdzenia zasadności opcji.
+\fIciągopt\fP zawiera litery opcji, które
+\fBgetopts\fP ma rozpoznawać. Jeśli po literze występuje przecinek,
+wówczas oczekuje się, że opcja ma argument.
+Opcje niemające argumentów mogą być grupowane w jeden argument.
+Jeśli opcja oczekuje argumentu i znak opcji nie jest ostatnim znakiem
+argumentu, w którym się znajduje, wówczas reszta argumentu
+zostaje potraktowana jako argument danej opcji. W przeciwnym razie
+następny argument jest argumentem opcji.
+.sp
+Za każdym razem, gdy zostaje wywołane \fBgetopts\fP,
+umieszcza się następną opcję w parametrze powłoki
+\fInazwa\fP i indeks następnego argumentu pod obróbkę
+w parametrze powłoki \fBOPTIND\fP.
+Jeśli opcja została podana z \fB+\fP, to opcja zostaje umieszczana
+w \fInazwa\fP z przedrostkiem \fB+\fP.
+Jeśli opcja wymaga argumentu, to \fBgetopts\fP umieszcza go
+w parametrze powłoki \fBOPTARG\fP.
+Jeśli natrafi się na niedopuszczalną opcję lub brakuje
+argumentu opcji, wówczas w \fInazwa\fP zostaje umieszczony znak zapytania
+albo dwukropek
+(wskazując na nielegalną opcję, albo odpowiednio brak argumentu)
+i \fBOPTARG\fP zostaje ustawiony na znak, który był przyczyną tego problemu.
+Ponadto zostaje wówczas wyświetlony komunikat o błędzie na standardowym
+wyjściu błędów, jeśli \fIciągopt\fP nie zaczyna się od dwukropka.
+.sp
+Gdy napotkamy na koniec opcji, \fBgetopts\fP przerywa pracę
+niezerowym kodem wyjścia.
+Opcje kończą się na pierwszym (nie podlegającym opcji) argumencie,
+który nie rozpoczyna się od \-, albo jeśli natrafimy na argument \fB\-\-\fP.
+.sp
+Rozpoznawanie opcji może zostać ponowione ustawiając \fBOPTIND\fP na 1
+(co następuje automatycznie za każdym razem, gdy powłoka lub
+funkcja w powłoce zostaje wywołana).
+.sp
+Ostrzeżenie: Zmiana wartości parametru powłoki \fBOPTIND\fP na
+wartość większą niż 1, lub rozpoznawanie odmiennych zestawów
+parametrów bez ponowienia \fBOPTIND\fP może doprowadzić do nieoczekiwanych
+wyników.
+.\"}}}
+.\"{{{  hash [-r] [name ...]
+.IP "\fBhash\fP [\fB\-r\fP] [\fInazwa ...\fP]"
+Jeśli brak argumentów, wówczas wszystkie ścieżki
+wykonywalnych komend z kluczem są wymieniane.
+Opcja \fB\-r\fP nakazuje wyrzucenia wszelkim komend z kluczem z tablicy
+kluczy.
+Każda \fInazwa\fP zostaje odszukiwana tak, jak by to była nazwa komendy
+i dodana do tablicy kluczy jeśli jest to wykonywalna komenda.
+.\"}}}
+.\"{{{  jobs [-lpn] [job ...]
+.IP "\fBjobs\fP [\fB\-lpn\fP] [\fIzadanie\fP ...]"
+Wyświetl informacje o danych zadaniach; gdy nie podano żadnych
+zadań wszystkie zadania zostają wyświetlone.
+Jeśli podano opcję \fB\-n\fP, wówczas informacje zostają wyświetlone
+jedynie o zadaniach, których stan zmienił się od czasu ostatniego
+powiadomienia.
+Zastosowanie opcji \fB\-l\fP powoduje dodatkowo
+wykazanie identyfikatora każdego
+procesu w zadaniach.
+Opcja \fB\-p\fP powoduje, że zostaje wyświetlona jedynie
+jedynie grupa procesowa każdego zadania.
+patrz "Kontrola zadań" dla informacji o formie parametru
+\fIzdanie\fP i formacie, w którym zostają wykazywane zadania.
+.\"}}}
+.\"{{{  kill [-s signame | -signum | -signame] { job | pid | -pgrp } ...
+.IP "\fBkill\fP [\fB\-s\fP \fInazsyg\fP | \fB\-numsyg\fP | \fB\-nazsyg\fP ] { \fIjob\fP | \fIpid\fP | \fB\-\fP\fIpgrp\fP } ..."
+Wyślij dany sygnał do danych zadań, procesów z danym id, lub grup
+procesów.
+Jeśli nie podano jawnie żadnego sygnału, wówczas domyślnie zostaje wysłany
+sygnał TERM.
+Jeśli podano zadanie, wówczas sygnał zostaje wysłany do grupy
+procesów danego zadania.
+Patrz poniżej "Kontrola zadań" dla informacji o formacie \fIzadania\fP.
+.IP "\fBkill \-l\fP [\fIkod_wyjścia\fP ...]"
+Wypisz nazwę sygnału, który zabił procesy, które zakończyły się
+danym \fIkodem_wyjścia\fP.
+Jeśli brak argumentów, wówczas zostaje wyświetlona lista
+wszelkich sygnałów i ich numerów, wraz z krótkim ich opisem.
+.\"}}}
+.\"{{{  let [expression ...]
+.IP "\fBlet\fP [\fIwyrażenie\fP ...]"
+Każde wyrażenie zostaje wyliczone, patrz "Wyrażenia arytmetyczne" powyżej.
+Jeśli wszelkie wyrażenia zostały poprawnie wyliczone, kodem wyjścia
+jest 0 (1), jeśli wartością ostatniego wyrażenia
+ nie było zero (zero).
+Jeśli wystąpi błąd podczas rozpoznawania lub wyliczania wyrażenia,
+kod wyjścia jest większy od 1.
+Ponieważ może zajść konieczność wycytowania wyrażeń, więc
+\fB((\fP \fIwyr.\fP \fB))\fP jest syntaktycznie słodszym wariantem \fBlet
+"\fP\fIwyr\fP\fB"\fP.
+.\"}}}
+.\"{{{  print [-nprsun | -R [-en]] [argument ...]
+.IP "\fBprint\fP [\fB\-nprsu\fP\fIn\fP | \fB\-R\fP [\fB\-en\fP]] [\fIargument ...\fP]"
+\fBPrint\fP wyświetla swe argumenty na standardowym wyjściu, rozdzielone
+przerwami i zakończone przełamaniem wiersza. Opcja
+\fB\-n\fP zapobiega domyślnemu przełamaniu wiersza.
+Domyślnie pewne wyprowadzenia z C zostają odpowiednio przetłumaczone.
+Wśród nich mamy \eb, \ef, \en, \er, \et, \ev, i \e0###
+(# oznacza cyfrę w systemie ósemkowym, tzn. od 0 po 3).
+\ec jest równoważne z zastosowaniem opcji \fB\-n\fP.  \e wyrażeniom
+można zapobiec przy pomocy opcji \fB\-r\fP.
+Opcja \fB\-s\fP powoduje wypis do pliku historii zamiast
+standardowego wyjścia, a opcja
+\fB\-u\fP powoduje wypis do deskryptora pliku \fIn\fP (\fIn\fP
+wynosi domyślnie 1 przy pominięciu),
+natomiast opcja \fB\-p\fP pisze do do koprocesu
+(patrz "Koprocesy" powyżej).
+.sp
+Opcja \fB\-R\fP jest stosowana do emulacji, w pewnym stopniu, komendy
+echo w wydaniu BSD, która nie przetwarza sekwencji \e bez podania opcji
+\fB\-e\fP.
+Jak powyżej opcja \fB\-n\fP zapobiega końcowemu przełamaniu wiersza.
+.\"}}}
+.\"{{{  pwd [-LP]
+.IP "\fBpwd\fP [\fB\-LP\fP]"
+Wypisz bieżący katalog roboczy.
+Przy zastosowaniu opcji \fB\-L\fP lub gdy nie została ustawiona opcja
+\fBphysical\fP
+(patrz komenda \fBset\fP poniżej), zostaje wyświetlona ścieżka
+logiczna (tzn. ścieżka konieczna aby wykonać \fBcd\fP do bieżącego katalogu).
+Przy zastosowaniu opcji \fB\-P\fP (ścieżka fizyczna) lub gdy
+została ustawiona opcja \fBphysical\fP, zostaje wyświetlona ścieżka
+ustalona przez system plików (śledząc katalogi \fB..\fP aż po katalog główny).
+.\"}}}
+.\"{{{  read [-prsun] [parameter ...]
+.IP "\fBread\fP [\fB\-prsu\fP\fIn\fP] [\fIparametr ...\fP]"
+Wczytuje wiersz wprowadzenia ze standardowego wejścia, rozdziela ten
+wiersz na pola przy uwzględnieniu parametru \fBIFS\fP (
+patrz "Podstawienia" powyżej) i przyporządkowuje pola odpowiednio danym
+parametrom.
+Jeśli mamy więcej parametrów niż pól, wówczas dodatkowe parametry zostają
+ustawione na zero, a natomiast jeśli jest więcej pól niż paramterów to
+ostatni parametr otrzymuje jako wartość wszystkie dodatkowe pola (wraz ze
+wszelkimi rozdzielającymi przerwami).
+Jeśli nie podano żadnych parametrów, wówczas zostaje zastosowany
+parametr \fBREPLY\fP.
+Jeśli wiersz wprowadzania kończy się odwrotnym ukośnikiem
+i nie podano opcji \fB\-r\fP, to odwrotny ukośnik i przełamanie
+wiersza zostają usunięte i zostaje wczytana dalsza część danych.
+Gdy nie zostanie wczytane żadne wprowadzenie, \fBread\fP kończy się
+niezerowym kodem wyjścia.
+.sp
+Pierwszy parametr może mieć dołączony znak zapytania i ciąg, co oznacza, że
+dany ciąg zostanie zastosowany jako zachęta do wprowadzenia
+(wyświetlana na standardowym wyjściu błędów zanim
+zostanie wczytane jakiekolwiek wprowadzenie) jeśli wejście jest terminalem
+(\fIe.g.\fP, \fBread ncoś?'ile cośków: '\fP).
+.sp
+Opcje \fB\-u\fP\fIn\fP i \fB\-p\fPpowodują, że wprowadzenia zostanie
+wczytywane z deskryptora pliku \fIn\fP albo odpowiednio bieżącego koprocesu
+(patrz komentarze na ten temat w "Koprocesy" powyżej).
+Jeśli zastosowano opcję \fB\-s\fP, wówczas wprowadzenie zostaje zachowane
+w pliku historii.
+.\"}}}
+.\"{{{  readonly [-p] [parameter[=value] ...]
+.IP "\fBreadonly\fP [\fB\-p\fP] [\fIparametr\fP[\fB=\fP\fIwartość\fP]] ..."
+Patrz parametr wyłącznego odczytu nazwanych parametrów.
+Jeśli zostały podane wartości wówczas zostają one nadane parametrom przed
+ustawieniem danego atrybutu.
+Po nadaniu cechy wyłącznego odczytu parametrowi, nie ma więcej możliwości
+wykasowania go lub zmiany jego wartości.
+.sp
+Jeśli nie podano żadnych parametrów, wówczas zostają wypisane nazwy
+wszystkich parametrów w cechą wyłącznego odczytu wiersz po wierszu, chyba
+że zastosowano opcję \fB\-p\fP, co powoduje wypisanie pełnych komend
+\fBreadonly\fP definiujących parametry wyłącznego odczytu wraz z ich
+wartościami.
+.\"}}}
+.\"{{{  return [kod]
+.IP "\fBreturn\fP [\fIkod\fP]"
+Powrót z funkcji lub \fB.\fP skryptu, z kodem wyjścia \fIkod\fP.
+Jeśli nie podano wartości \fIkod\fP, wówczas zostaje domyślnie
+zastosowany kod wyjścia ostatnio wykonanej komendy.
+Przy zastosowaniu poza funkcją lub \fB.\fP skryptem, komenda ta ma ten
+sam efekt co \fBexit\fP.
+Proszę zwrócić uwagę, iż pdksh traktuje zarówno profile jak i pliki z
+\fB$ENV\fP jako \fB.\fP skrypty, podczas gdy
+oryginalny Korn shell jedynie profile traktuje jako \fB.\fP skrypty.
+.\"}}}
+.\"{{{  set [+-abCefhkmnpsuvxX] [+-o [option]] [+-A name] [--] [arg ...]
+.IP "\fBset\fP [\fB+-abCefhkmnpsuvxX\fP] [\fB+-o\fP [\fIopcja\fP]] [\fB+-A\fP \fInazwa\fP] [\fB\-\-\fP] [\fIarg\fP ...]"
+Komenda set służy do ustawiania (\fB\-\fP) albo kasowania (\fB+\fP)
+opcji powłoki, ustawiania parametrów pozycyjnych lub
+ustawiania parametru ciągowego.
+Opcje mogą być zmienione przy pomocy syntaktyki \fB+-o\fP \fIopcja\fP,
+gdzie \fIopcja\fP jest pełną nazwą pewnej opcji lub stosując postać
+\fB+-\fP\fIlitera\fP, gdzie \fIlitera\fP oznacza jednoliterową
+nazwę danej opcji (niewszystkie opcje posiadają jednoliterową nazwę).
+Następująca tablica wylicza zarówno litery opcji (gdy mamy takowe), jak i
+pełne ich nazwy wraz z opisem wpływów danej opcji.
+.sp
+.TS
+expand;
+afB lfB lw(3i).
+\-A		T{
+Ustawia elementy parametru ciągowego \fInazwa\fP na \fIarg\fP ...;
+Jeśli zastosowano \fB\-A\fP, ciąg zostaje uprzednio ponowiony (\fItzn.\fP, wyczyszczony);
+Jeśli zastosowano \fB+A\fP, zastają ustawione pierwsze N elementów (gdzie N
+jest ilością \fIarg\fPsów), reszta pozostaje niezmieniona.
+T}
+\-a	allexport	T{
+wszystkie nowe parametry zostają tworzone z cechą eksportowania
+T}
+\-b	notify	T{
+Wypisuj komunikaty o zadaniach asynchronicznie, zamiast tuż przed zachętą.
+Ma tylko znaczenia jeśli została włączona kontrola zadań (\fB\-m\fP).
+T}
+\-C	noclobber	T{
+Zapobiegaj przepisywaniu istniejących już plików poprzez przekierowania
+\fB>\fP (do wymuszenia przepisania musi zostać zastosowane \fB>|\fP).
+T}
+\-e	errexit	T{
+Wyjdź (po wykonaniu komendy pułapki \fBERR\fP) tuż po wystąpieniu
+błędu lub niepomyślnym wykonaniu jakiejś komendy
+(\fItzn.\fP, jeśli została ona zakończona niezerowym kodem wyjścia).
+Nie dotyczy to komend, których kod wyjścia zostaje jawnie przetestowany
+konstruktem powłoki takim jak wyrażenia \fBif\fP, \fBuntil\fP,
+\fBwhile\fP, \fB&&\fP lub
+\fB||\fP.
+T}
+\-f	noglob	T{
+Nie rozwijaj wzorców nazw plików.
+T}
+\-h	trackall	T{
+Twórz śledzone aliasy dla wszystkich wykonywanych komend (patrz "Aliasy"
+powyżej).
+Domyślnie włączone dla nieinterakcyjnych powłok.
+T}
+\-i	interactive	T{
+Włącz tryb interakcyjny \- może zostać
+włączone/wyłączone jedynie podczas odpalania powłoki.
+T}
+\-k	keyword	T{
+Przyporządkowania wartości parametrom zostają rozpoznawane
+gdziekolwiek w komendzie.
+T}
+\-l	login	T{
+Powłoka ma być powłoką zameldowania \- może zostać
+włączone/wyłączone jedynie podczas odpalania powłoki
+(patrz "Uruchamianie powłoki" powyżej).
+T}
+\-m	monitor	T{
+Włącz kontrolę zadań (domyślne dla powłok interakcyjnych).
+T}
+\-n	noexec	T{
+Nie wykonuj jakichkolwiek komend \- przydatne do sprawdzania
+syntaktyki skryptów (ignorowane dla interakcyjnych powłok).
+T}
+\-p	privileged	T{
+Ustawiane automatycznie, jeśli gdy powłoka zostaje odpalona i rzeczywiste
+uid lub gid nie jest identyczne z odpowiednio efektywnym uid lub gid.
+Patrz "Uruchamianie powłoki" powyżej dla opisu, co to znaczy.
+T}
+\-r	restricted	T{
+Ustaw tryb ograniczony \(em ta opcja może zostać jedynie
+zastosowana podczas odpalania powłoki.  Patrz "Uruchamianie powłoki"
+dla opisu, co to znaczy.
+T}
+\-s	stdin	T{
+Gdy zostanie zastosowane podczas odpalania powłoki, wówczas komendy
+zostają wczytywane ze standardowego wejścia.
+Ustawione automatycznie, jeśli powłoka została odpalona bez jakichkolwiek
+argumentów.
+.sp
+Jeśli \fB\-s\fP zostaje zastosowane w komendzie \fBset\fP, wówczas
+podane argumenty zostają uporządkowane zanim zostaną one przydzielone
+parametrom pozycyjnym
+(lub ciągowi \fInazwa\fP, jeśli \fB\-A\fP zostało zastosowane).
+T}
+\-u	nounset	T{
+Odniesienie do nieustawionego parametru zostaje traktowane jako błąd,
+chyba że został zastosowany jeden z modyfikatorów \fB\-\fP, \fB+\fP
+lub \fB=\fP.
+T}
+\-v	verbose	T{
+Wypisuj wprowadzenia powłoki na standardowym wyjściu błędów podczas
+ich wczytywania.
+T}
+\-x	xtrace	T{
+Wypisuj komendy i przyporządkowania parametrów podczas ich wykonywania
+poprzedzone wartością \fBPS4\fP.
+T}
+\-X	markdirs	T{
+Podczas generowania nazw plików oznaczaj katalogi kończącym \fB/\fP.
+T}
+	bgnice	T{
+Zadania w tle zostają wykonywane z niższym priorytetem.
+T}
+	braceexpand	T{
+Włącz rozwijanie nawiasów (aka, alternacja).
+T}
+	emacs	T{
+Włącz edycję wiersza komendy  w stylu BRL emacsa (dotyczy wyłącznie
+powłok interakcyjnych);
+patrz "Interakcyjna edycja wiersza poleceń w trybie emacs".
+T}
+	gmacs	T{
+Włącz edycję wiersza komendy w stylu gmacsa (Gosling emacs)
+(dotyczy wyłącznie powłok interakcyjnych);
+obecnie identyczne z trybem edycji emacs z wyjątkiem tego, że przemiana (^T)
+zachowuje się nieco inaczej.
+T}
+	ignoreeof	T{
+Powłoka nie zostanie zakończona jeśli zostanie wczytany znak zakończenia
+pliku. Należy użyć jawnie \fBexit\fP.
+T}
+	nohup	T{
+Nie zabijaj bieżących zadań sygnałem \fBHUP\fP gdy powłoka zameldowania
+zostaje zakończona.
+Obecnie ustawione domyślnie, co się jednak zmieni w przyszłości w celu
+poprawienia kompatybilności z oryginalnym Korn shell (który nie posiada
+tej opcji, aczkolwiek wysyła sygnał \fBHUP\fP).
+T}
+	nolog	T{
+Bez znaczenia \- w oryginalnej powłoce Korn. Zapobiega sortowaniu definicji
+funkcji w pliku historii.
+T}
+	physical	T{
+Powoduje, że komendy \fBcd\fP oraz \fBpwd\fP stosują `fizyczne'
+(tzn. pochodzące od systemu plików) \fB..\fP katalogi zamiast `logicznych'
+katalogów (tzn., że powłoka interpretuje \fB..\fP, co pozwala
+użytkownikowi nie troszczyć się o dowiązania symboliczne do katalogów).
+Domyślnie wykasowane.  Proszę zwrócić uwagę, iż ustawianie tej opcji
+nie wpływa na bieżącą wartość parametru \fBPWD\fP;
+jedynie komenda \fBcd\fP zmienia \fBPWD\fP.
+Patrz komendy \fBcd\fP i \fBpwd\fP powyżej dla dalszych szczegółów.
+T}
+	posix	T{
+Włącz tryb POSIX-owy.  Patrz: "Tryb POSIX" powyżej.
+T}
+	vi	T{
+Włącz edycję wiersza komendy  w stylu vi (dotyczy tylko powłok
+interakcyjnych).
+T}
+	viraw	T{
+Bez znaczenia \- w oryginalnej powłoce Korna, dopóki nie zostało
+ustawione viraw, tryb wiersza komendy vi
+pozostawiał pracę napędowi tty aż do wprowadzenia ESC (^[).
+pdksh jest zawsze w trybie viraw.
+T}
+	vi-esccomplete	T{
+W trybie edycji wiersza komendy vi wykonuj rozwijania komend / plików
+gdy zostanie wprowadzone escape (^[) w trybie komendy.
+T}
+	vi-show8	T{
+Dodaj przedrostek `M-' dla znaków z ustawionym ósmym bitem.
+Jeśli nie zostanie ustawiona ta opcja, wówczas, znaki z zakresu
+128-160 zostają wypisane bez zmian, co może być przyczyną problemów.
+T}
+	vi-tabcomplete	T{
+W trybie edycji wiersza komendy vi wykonuj rozwijania komend/ plików
+jeśli tab (^I) zostanie wprowadzone w trybie wprowadzania.
+T}
+.TE
+.sp
+Tych opcji można użyć również podczas odpalania powłoki.
+Obecny zestaw opcji (z jednoliterowymi nazwami) znajduje się w
+parametrze \fB\-\fP.
+\fBset \-o\fP bez podania nazwy opcji wyświetla
+wszystkie opcja i informację o ich ustawieniu lub nie;
+\fBset +o\fP wypisuje pełne nazwy opcji obecnie włączonych.
+.sp
+Pozostałe argumenty, jeśli podano takowe, są traktowane jako parametry
+pozycyjne i zostają przyporządkowane, przy zachowaniu kolejności,
+parametrom pozycyjnym (\fItzn.\fP, \fB1\fP, \fB2\fP, \fIitd.\fP).
+Jeśli opcje kończą się \fB\-\-\fP i brak dalszych argumentów,
+wówczas wszystkie parametry pozycyjne zostają wyczyszczone.
+Jeśli nie podano żadnych opcji lub argumentów, wówczas zostają wyświetlone
+wartości wszystkich nazw.
+Z nieznanych historycznych powodów, samotna opcja \fB\-\fP
+zostaje traktowana specjalnie:
+kasuje zarówno opcję \fB\-x\fP, jak i \fB\-v\fP.
+.\"}}}
+.\"{{{  shift [number]
+.IP "\fBshift\fP [\fIliczba\fP]"
+Parametry pozycyjne \fIliczba\fP+1, \fIliczba\fP+2 \fIitd.\fP\& zostają
+przeniesione pod \fB1\fP, \fB2\fP, \fIitd.\fP
+\fIliczba\fP wynosi domyślnie 1.
+.\"}}}
+.\"{{{  test expression, [ expression ]
+.IP "\fBtest\fP \fIwyrażenie\fP"
+.IP "\fB[\fP \fIwyrażenie\fP \fB]\fP"
+\fBtest\fP wylicza \fIwyrażenia\fP i zwraca kod wyjścia zero jeśli
+prawda, i kod 1 jeden jeśli fałsz, a więcej niż 1 jeśli wystąpił błąd.
+Zostaje zwykle zastosowane jako komenda warunkowa wyrażeń \fBif\fP i
+\fBwhile\fP.
+Mamy do dyspozycji następujące podstawowe wyrażenia:
+.sp
+.TS
+afB ltw(2.8i).
+\fIciąg\fP	T{
+\fIciąg\fP ma niezerową długość.  Proszę zwrócić uwagę, iż mogą wystąpić
+trudności jeśli \fIciąg\fP okaże się być operatorem
+(\fIdokładniej\fP, \fB-r\fP) - ogólnie lepiej jest zamiast tego stosować
+test postaci
+.RS
+\fB[ X"\fP\fIciag\fP\fB" != X ]\fP
+.RE
+(podwójne wycytowania zostają zastosowane jeśli
+\fIciąg\fP zawiera przerwy lub znaki rozwijania plików).
+T}
+\-r \fIplik\fP	T{
+\fIplik\fP istnieje i jest czytelny
+T}
+\-w \fIplik\fP	T{
+\fIplik\fP istnieje i jest zapisywalny
+T}
+\-x \fIplik\fP	T{
+\fIplik\fP istnieje i jest wykonywalny
+T}
+\-a \fIplik\fP	T{
+\fIplik\fP istnieje
+T}
+\-e \fIplik\fP	T{
+\fIplik\fP istnieje
+T}
+\-f \fIplik\fP	T{
+\fIplik\fP jest zwykłym plikiem
+T}
+\-d \fIplik\fP	T{
+\fIplik\fP jest katalogiem
+T}
+\-c \fIplik\fP	T{
+\fIplik\fP jest specjalnym plikiem napędu ciągowego
+T}
+\-b \fIplik\fP	T{
+\fIplik\fP jest specjalnym plikiem napędu blokowego
+T}
+\-p \fIplik\fP	T{
+\fIplik\fP jest potokiem nazwanym
+T}
+\-u \fIplik\fP	T{
+\fIplik\fP o ustawionym bicie setuid
+T}
+\-g \fIplik\fP	T{
+\fIplik\fP' o ustawionym bicie setgid
+T}
+\-k \fIplik\fP	T{
+\fIplik\fP o ustawionym bicie lepkości
+T}
+\-s \fIplik\fP	T{
+\fIplik\fP nie jest pusty
+T}
+\-O \fIplik\fP	T{
+właściciel \fIpliku\fP zgadza się z efektywnym user-id powłoki
+T}
+\-G \fIplik\fP	T{
+grupa \fIpliku\fP  zgadza się z efektywną group-id powłoki
+T}
+\-h \fIplik\fP	T{
+\fIplik\fP jest symbolicznym [WK: twardym?] dowiązaniem
+T}
+\-H \fIplik\fP	T{
+\fIplik\fP jest zależnym od kontekstu katalogiem (tylko sensowne pod HP-UX)
+T}
+\-L \fIplik\fP	T{
+\fIplik\fP jest symbolicznym dowiązaniem
+T}
+\-S \fIplik\fP	T{
+\fIplik\fP jest gniazdem
+T}
+\-o \fIopcja\fP	T{
+\fIOpcja\fP powłoki jest ustawiona (patrz komenda \fBset\fP powyżej
+dla listy możliwych opcji).
+Jako niestandardowe rozszerzenie, jeśli opcja zaczyna się od
+\fB!\fP, to wynik testu zostaje negowany; test wypada zawsze negatywnie
+gdy dana opcja nie istnieje (tak więc
+.RS
+\fB[ \-o \fP\fIcoś\fP \fB\-o \-o !\fP\fIcoś\fP \fB]\fP
+.RE
+zwraca prawdę tylko i tylko wtedy, gdy opcja \fIcoś\fP istnieje).
+T}
+\fIplik\fP \-nt \fIplik\fP	T{
+pierwszy \fIplik\fP jest nowszy od następnego \fIpliku\fP
+T}
+\fIplik\fP \-ot \fIplik\fP	T{
+pierwszy \fIplik\fP jest starszy od następnego \fIpliku\fP
+T}
+\fIplik\fP \-ef \fIplik\fP	T{
+pierwszy \fIplik\fP jest tożsamy z drugim \fIplikiem\fP
+T}
+\-t\ [\fIfd\fP]	T{
+Deskryptor pliku jest przyrządem tty.
+Jeśli nie została ustawiona opcja posix (\fBset \-o posix\fP,
+patrz "Tryb POSIX" powyżej), wówczas \fIfd\fP może zostać pominięty,
+co oznacza przyjęcie domyślnej wartości 1
+(zachowanie się jest wówczas odmienne z powodu specjalnych reguł
+POSIX-a opisywanych powyżej).
+T}
+\fIciąg\fP	T{
+\fIciąg\fP jest niepusty
+T}
+\-z\ \fIciąg\fP	T{
+\fIciąg\fP jest pusty
+T}
+\-n\ \fIciąg\fP	T{
+\fIciąg\fP jest niepusty
+T}
+\fIciąg\fP\ =\ \fIciąg\fP	T{
+ciągi są sobie równe
+T}
+\fIciąg\fP\ ==\ \fIciąg\fP	T{
+ciągi są sobie równe
+T}
+\fIciąg\fP\ !=\ \fIciąg\fP	T{
+ciągi się różnią
+T}
+\fIliczba\fP\ \-eq\ \fIliczba\fP	T{
+liczby są równe
+T}
+\fIliczba\fP\ \-ne\ \fIliczba\fP	T{
+liczby różnią się
+T}
+\fIliczba\fP\ \-ge\ \fIliczba\fP	T{
+liczba jest większa lub równa od drugiej
+T}
+\fIliczba\fP\ \-gt\ \fIliczba\fP	T{
+liczba jest większa od drugiej
+T}
+\fIliczba\fP\ \-le\ \fIliczba\fP	T{
+liczba jest mniejsza lub równa od drugiej
+T}
+\fIliczba\fP\ \-lt\ \fIliczba\fP	T{
+liczba jest mniejsza od drugiej
+T}
+.TE
+.sp
+Powyższe podstawowe wyrażenie, w których unarne operatory mają
+pierwszeństwo przed operatorami binarnymi, mogą być stosowane w połączeniu
+z następującymi operatorami
+(wymienionymi w kolejności odpowiadającej ich pierwszeństwu):
+.sp
+.TS
+afB l.
+\fIwyrażenie\fP \-o \fIwyrażenie\fP	logiczne lub
+\fIwyrażenie\fP \-a \fIwyrażenie\fP	logiczne i
+! \fIwyrażenie\fP	logiczna negacja
+( \fIwyrażenie\fP )	grupowanie
+.TE
+.sp
+W systemie operacyjny niewspomagający napędów \fB/dev/fd/\fP\fIn\fP
+(gdzie \fIn\fP jest numerem deskryptora pliku),
+komenda \fBtest\fP stara się je emulować dla wszystkich testów
+operujących na plikach (z wyjątkiem testu \fB-e\fP).
+W szczególności., \fB[ \-w /dev/fd/2 ]\fP sprawdza czy jest dostępny zapis na
+deskryptor pliku 2.
+.sp
+Proszę zwrócić uwagę, że zachodzą specjalne reguły
+(zawdzięczane ), jeśli liczba argumentów
+do \fBtest\fP lub \fB[\fP \&... \fB]\fP jest mniejsza od pięciu:
+jeśli pierwsze argumenty \fB!\fP mogą zostać pominięte, tak że pozostaje tylko
+jeden argument, wówczas zostaje przeprowadzony test długości ciągu
+(ponownie, nawet jeśli dany argument jest unarnym operatorem);
+jeśli pierwsze argumenty \fB!\fP mogą zostać pominięte tak, że pozostają trzy
+argumenty i drugi argument jest operatorem binarnym, wówczas zostaje
+wykonana dana binarna operacja (nawet jeśli pierwszy argument
+jest unarnym operatorem operator, wraz z nieusuniętym \fB!\fP).
+.sp
+\fBUwaga:\fP Częstym błędem jest stosowanie \fBif [ $coś = tam ]\fP, co
+daje wynik negatywny jeśli parametr \fBcoś\fP jest zerowy lub
+nieustawiony, zawiera przerwy
+(\fItzn.\fP, znaki z \fBIFS\fP), lub gdy jest operatorem jednoargumentowym,
+takim jak \fB!\fP lub \fB\-n\fP.  Proszę zamiast tego stosować testy typu
+\fBif [ "X$coś" = Xtam ]\fP.
+.\"}}}
+.\"{{{  times
+.IP \fBtimes\fP
+Wyświetla zgromadzony czas w przestrzeni użytkownika oraz systemu,
+który potrzebowała powłoka i w niej wystartowane
+procesy, które się zakończyły.
+.\"}}}
+.\"{{{  trap [handler signal ...]
+.IP "\fBtrap\fP [\fIobrabiacz\fP \fIsygnał ...\fP]"
+Ustawia obrabiacz, który należy wykonać w razie odebrania danego sygnału.
+\fBObrabiacz\fP może być albo zerowym ciągiem, wskazującym na zamiar
+ignorowania sygnałów danego typu, albo minusem (\fB\-\fP),
+wskazującym, że ma zostać podjęta akcja domyślna dla danego sygnału
+(patrz signal(2 lub 3)), albo ciągiem zawierającym komendy powłoki
+które mają zostać wyliczone i wykonane przy pierwszej okazji
+(\fItzn.\fP po zakończeniu bieżącej komendy lub przed
+wypisaniem następnego symboli zachęty \fBPS1\fP) po odebraniu
+jednego z danych sygnałów.
+\fBSignal\fP jest nazwą danego sygnału (\fItak jak np.\fP, PIPE lub ALRM)
+lub jego numerem (patrz komenda \fBkill \-l\fP powyżej).
+Istnieją dwa specjalne sygnały: \fBEXIT\fP (również znany jako \fB0\fP),
+który zostaje wykonany tuż przed zakończeniem powłoki, i
+\fBERR\fP który zostaje wykonany po wystąpieniu błędu
+(błędem jest coś, co powodowałoby zakończenie powłoki
+jeśli zostały ustawione opcje \fB\-e\fP lub \fBerrexit\fP \(em
+patrz komendy \fBset\fP powyżej).
+Obrabiacze \fBEXIT\fP zostają wykonane w otoczeniu
+ostatniej wykonywanej komendy.
+Proszę zwrócić uwagę, że dla powłok nieinterakcyjnych obrabiacz wykroczeń
+nie może zostać zmieniony dla sygnałów, które były ignorowane podczas
+startu danej powłoki.
+.sp
+Bez argumentów, \fBtrap\fP wylicza, jako seria komend \fBtrap\fP,
+obecny status wykroczeń, które zostały ustawione od czasu startu powłoki.
+.sp
+.\" todo: add these features (trap DEBUG, trap ERR/EXIT in function)
+Traktowanie sygnałów \fBDEBUG\fP oraz \fBERR\fP i
+\fBEXIT\fP i oryginalnej powłoki Korna w funkcjach nie zostało jak do tej
+pory jeszcze zrealizowane.
+.\"}}}
+.\"{{{  true
+.IP \fBtrue\fP
+Komenda kończąca się zerową wartością kodu wyjścia.
+.\"}}}
+.\"{{{  typeset [[+-Ulprtux] [-L[n]] [-R[n]] [-Z[n]] [-i[n]] | -f [-tux]] [name[=value] ...]
+.IP "\fBtypeset\fP [[+-Ulprtux] [\fB\-L\fP[\fIn\fP]] [\fB\-R\fP[\fIn\fP]] [\fB\-Z\fP[\fIn\fP]] [\fB\-i\fP[\fIn\fP]] | \fB\-f\fP [\fB\-tux\fP]] [\fInazwa\fP[\fB=\fP\fIwartość\fP] ...]"
+Wyświetlaj lub ustawiaj wartości atrybutów parametrów.
+Bez argumentów \fInazwa\fP, zostają wyświetlone atrybuty parametrów:
+jeśli brak argumentów będących opcjami, zostają wyświetlone atrybuty
+wszystkich parametrów jako komendy typeset; jeśli podano opcję
+(lub \fB\-\fP bez litery opcji)
+wszystkie parametry i ich wartości posiadające dany atrybut zostają
+wyświetlone;
+jeśli opcje zaczynają się od \fB+\fP, to nie zostają wyświetlone wartości
+parametrów.
+.sp
+Jeśli podano argumenty If \fInazwa\fP, zostają ustawione atrybuty
+danych parametrów (\fB\-\fP) lub odpowiednio wykasowane (\fB+\fP).
+Wartości parametrów mogą zostać ewentualnie podane.
+Jeśli typeset zostanie zastosowane wewnątrz funkcji,
+wszystkie nowotworzone parametry pozostają lokalne dla danej funkcji.
+.sp
+Jeśli zastosowano \fB\-f\fP, wówczas typeset operuje na atrybutach funkcji.
+Tak jak dla parametrów, jeśli brak \fInazw\fPs, zostają wymienione funkcje
+wraz z ich wartościami (\fItzn.\fP, definicjami), chyba że podano
+opcje zaczynające się od \fB+\fP, w którym wypadku
+zostają wymienione tylko nazwy funkcji.
+.sp
+.TS
+expand;
+afB lw(4.5i).
+\-L\fIn\fP	T{
+Atrybut przyrównania do lewego brzegu: \fIn\fP oznacza szerokość pola.
+Jeśli brak \fIn\fP, to zostaje zastosowana bieżąca szerokość parametru
+(lub szerokość pierwszej przyporządkowywanej wartości).
+Prowadzące białe przerwy (tak jak i zera, jeśli
+ustawiono opcję \fB\-Z\fP) zostają wykasowane.
+Jeśli trzeba, wartości zostają albo obcięte lub dodane przerwy
+do osiągnięcia wymaganej szerokości.
+T}
+\-R\fIn\fP	T{
+Atrybut przyrównania do prawego brzegu: \fIn\fP oznacza szerokość pola.
+Jeśli brak \fIn\fP, to zostaje zastosowana bieżąca szerokość parametru
+(lub szerokość pierwszej przyporządkowywanej wartości).
+Białe przerwy na końcu zostają usunięte.
+Jeśli trzeba, wartości zostają albo pozbawione prowadzących znaków
+albo przerwy zostają dodane do osiągnięcia wymaganej szerokości.
+T}
+\-Z\fIn\fP	T{
+Atrybut wypełniania zerami: jeśli nie skombinowany z \fB\-L\fP, to oznacza to
+samo co \fB\-R\fP, tylko, że do rozszerzania zostaje zastosowane zero
+zamiast przerw.
+T}
+\-i\fIn\fP	T{
+Atrybut całkowitości:
+\fIn\fP podaje bazę do zastosowania podczas
+wypisywania danej wartości całkowitej
+(jeśli nie podano, to baza zostaje zaczerpnięta z
+bazy zastosowanej w pierwszym przyporządkowaniu wartości).
+Parametrom z tym atrybutem mogą być przyporządkowywane wartości
+zawierające wyrażenia arytmetyczne.
+T}
+\-U	T{
+Atrybut dodatniej całkowitości: liczby całkowite zostają wyświetlone
+jako wartości bez znaku
+(stosowne jedynie w powiązaniu z opcją \fB\-i\fP).
+Tej opcji brak w oryginalnej powłoce Korna.
+T}
+\-f	T{
+Tryb funkcji: wyświetlaj lub ustawiaj funkcje i ich atrybuty, zamiast
+parametrów.
+T}
+\-l	T{
+Atrybut małej litery: wszystkie znaki z dużej litery zostają
+w wartości zamienione na małe litery.
+(W oryginalnej powłoce Korna, parametr ten oznaczał `długi całkowity'
+gdy był stosowany w połączeniu z opcją \fB\-i\fP).
+T}
+\-p	T{
+Wypisuj pełne komendy typeset, które można następnie zastosować do
+odtworzenia danych atrybutów (lecz nie wartości) parametrów.
+To jest wynikiem domyślnym (opcja ta istnieje w celu zachowania
+kompatybilności z ksh93).
+T}
+\-r	T{
+Atrybut wyłącznego odczytu: parametry z danym atrybutem
+nie przyjmują nowych wartości i nie mogą zostać wykasowane.
+Po ustawieniu tego atrybutu nie można go już więcej odaktywnić.
+T}
+\-t	T{
+Atrybut zaznaczenia: bez znaczenia dla powłoki; istnieje jedynie do
+zastosowania w aplikacjach.
+.sp
+Dla funkcji \fB\-t\fP, to atrybut śledzenia.
+Jeśli zostają wykonywane funkcje z atrybutem śledzenia, to
+opcja powłoki \fBxtrace\fP (\fB\-x\fP) zostaje tymczasowo włączona.
+T}
+\-u	T{
+Atrybut dużej litery: wszystkie znaki z małej litery w wartościach zostają
+przestawione na duże litery.
+(W oryginalnej powłoce Korna, ten parametr oznaczał `całkowity bez znaku' jeśli
+został zastosowany w połączeniu z opcją \fB\-i\fP, oznaczało to, że
+nie można było stosować dużych liter dla baz większych niż 10.
+patrz opcja \fB\-U\fP).
+.sp
+Dla funkcji, \fB\-u\fP to atrybut niezdefiniowania.  Patrz "Funkcje" powyżej
+dla implikacji tego.
+T}
+\-x	T{
+Atrybut eksportowania: parametry (lub funkcje) zostają umieszczone
+w otoczenia wszelkich wykonywanych komend.
+Eksportowanie funkcji nie zostało jeszcze do tej pory zrealizowane.
+T}
+.TE
+.\"}}}
+.\"{{{  ulimit [-acdfHlmnpsStvw] [value]
+.IP "\fBulimit\fP [\fB\-acdfHlmnpsStvw\fP] [\fIwartość\fP]"
+Wyświetl lub ustaw ograniczenia dla procesów.
+Jeśli brak opcji, to ograniczenie ilości plików (\fB\-f\fP) zostaje
+przyjęte jako domyśle.
+\fBwartość\fP, jeśli podana, może być albo wyrażeniem arytmetycznym
+lub słowem \fBunlimited\fP (nieograniczone).
+Ograniczenia dotyczą powłoki i wszelkich procesów przez nią tworzonych
+po nadaniu ograniczenia.
+Proszę zwrócić uwagę, iż niektóre systemy mogą zabraniać podnoszenia
+wartości ograniczeń po ich nadaniu.
+Ponadto proszę zwrócić uwagę, że rodzaje dostępnych ograniczeń zależą od
+danego systemu \- niektóre systemy posiadają jedynie możliwość
+ograniczania \fB\-f\fP.
+.RS
+.IP \fB\-a\fP
+Wyświetla wszystkie ograniczenia; jeśli nie podano \fB\-H\fP,
+to zostają wyświetlone ograniczenia miękkie.
+.IP \fB\-H\fP
+Ustaw jedynie ograniczenie twarde (domyślnie zostają ustawione zarówno
+ograniczenie twarde jak też i miękkie).
+.IP \fB\-S\fP
+Ustaw jedynie ograniczenie miękkie (domyślnie zostają ustawione zarówno
+ograniczenie twarde jak też i miękkie).
+.IP \fB\-c\fP
+Ogranicz wielkości plików zrzutów core do \fIn\fP bloków.
+.IP \fB\-d\fP
+Ogranicz wielkość obszaru danych do \fIn\fP kilobajtów.
+.IP \fB\-f\fP
+Ogranicz wielkość plików zapisywanych przez powłokę i jej programy pochodne
+do \fIn\fP bloków (pliki dowolnej wielkości mogą być wczytywane).
+.IP \fB\-l\fP
+Ogranicz do \fIn\fP kilobajtów ilość podkluczonej (podpiętej) fizycznej pamięci.
+.IP \fB\-m\fP
+Ogranicz do \fIn\fP kilobajtów ilość używanej fizycznej pamięci.
+.IP \fB\-n\fP
+Ogranicz do \fIn\fP liczbę jednocześnie otwartych deskryptorów plików.
+.IP \fB\-p\fP
+Ogranicz do \fIn\fP liczbę jednocześnie wykonywanych procesów danego
+użytkownika.
+.IP \fB\-s\fP
+Ogranicz do \fIn\fP kilobajtów rozmiar obszaru stosu.
+.IP \fB\-t\fP
+Ogranicz do \fIn\fP sekund czas zużywany przez pojedyncze procesy.
+.IP \fB\-v\fP
+Ogranicz do \fIn\fP kilobajtów ilość używanej wirtualnej pamięci;
+pod niektórymi systemami jest to maksymalny stosowany wirtualny adres
+(w bajtach, a nie w kilobajtach).
+.IP \fB\-w\fP
+Ogranicz do \fIn\fP kilobajtów ilość stosowanego obszaru odkładania.
+.PP
+Dla \fBulimit\fP blok to zawsze 512 bajtów.
+.RE
+.\"}}}
+.\"{{{  umask [-S] [mask]
+.IP "\fBumask\fP [\fB\-S\fP] [\fImaska\fP]"
+.RS
+Wyświetl lub ustaw maskę zezwoleń w tworzeniu plików, lub umask
+(patrz \fIumask\fP(2)).
+Jeśli zastosowano opcję \fB\-S\fP, maska jest wyświetlana lub podawana
+symbolicznie, w przeciwnym razie jako liczba ósemkowa.
+.sp
+Symboliczne maski są podobne do tych stosowanych przez \fIchmod\fP(1):
+.RS
+[\fBugoa\fP]{{\fB=+-\fP}{\fBrwx\fP}*}+[\fB,\fP...]
+.RE
+gdzie pierwsza grupa znaków jest częścią \fIkto\fP, a druga grupa częścią
+\fIop\fP, i ostatnio grupa częścią \fIperm\fP.
+Część \fIkto\fP określa, która część umaski ma zostać zmodyfikowana.
+Litery oznaczają:
+.RS
+.IP \fBu\fP
+prawa użytkownika
+.IP \fBg\fP
+prawa grupy
+.IP \fBo\fP
+prawa pozostałych (nieużytkownika, niegrupy)
+.IP \fBa\fP
+wszelkie prawa naraz (użytkownika, grupy i pozostałych)
+.RE
+.sp
+Część \fIop\fP wskazuję jak prawa \fIkto\fP mają być zmienione:
+.RS
+.IP \fB=\fP
+nadaj
+.IP \fB+\fP
+dodaj do
+.IP \fB\-\fP
+usuń z
+.RE
+.sp
+Część \fIperm\fP wskazuje które prawa mają zostać nadane, dodane lub usunięte:
+.RS
+.IP \fBr\fP
+prawo czytania
+.IP \fBw\fP
+prawo zapisu
+.IP \fBx\fP
+prawo wykonywania
+.RE
+.sp
+Gdy stosuje się maski symboliczne, to opisują one, które prawa mogą zostać
+udostępnione (w przeciwieństwie do masek ósemkowych, w których ustawienie
+bitu oznacza, że ma on zostać wykasowany).
+Przykład: `ug=rwx,o=' ustawia maskę tak, że pliki nie będą odczytywalne,
+zapisywalne i wykonywalne przez `innych'. Jest ono równoważne
+(w większości systemów) oktalnej masce `07'.
+.RE
+.\"}}}
+.\"{{{  unalias [-adt] name ...
+.IP "\fBunalias\fP [\fB\-adt\fP] [\fInazwa1\fP ...]"
+Aliasy dla danej nazwy zostają usunięte.
+Gdy zastosowano opcję \fB\-a\fP, to wszelkie aliasy zostają usunięte.
+Gdy zastosowano opcję \fB\-t\fP lub \fB\-d\fP, to wymienione operacje
+zostają wykonane jedynie na śledzonych lub odpowiednio
+aliasach katalogów.
+.\"}}}
+.\"{{{  unset [-fv] parameter ...
+.IP "\fBunset\fP [\fB\-fv\fP] \fIparametr\fP ..."
+Kasuj wymienione parametry (\fB\-v\fP, oznacza domyślne) lub funkcje
+(\fB\-f\fP).
+Status zakończenia jest niezerowy jeśli któryś z danych parametrów był
+już wykasowany, a zero z przeciwnym razie.
+.\"}}}
+.\"{{{  wait [job]
+.IP "\fBwait\fP [\fIzadanie\fP]"
+Czekaj na zakończenie danego zadania/zadań.
+Kodem wyjścia wait jest kod ostatniego podanego zadania:
+jeśli dane zadanie zostało zabite sygnałem, kod wyjścia wynosi
+128 + numer danego sygnału (patrz \fBkill \-l\fP \fIkod_wyjścia\fP
+powyżej); jeśli ostatnie dane zadanie nie może zostać odnalezione
+(bo nigdy nie istniało lub już zostało zakończone), to kod
+zakończenia wait wynosi 127.
+Patrz "Kontrola zadań" poniżej w celu informacji o
+formacie \fIzadanie\fP.
+\fBWait\fP zostaje zakończone jeśli zajdzie sygnał, na który został
+ustawiony obrabiacz, lub gdy zostanie odebrany sygnał HUP, INT lub
+QUIT.
+.sp
+Jeśli nie podano zadań, \fBwait\fP wait czeka na zakończenie
+wszelkich obecnych zadań (jeśli istnieją takowe) i kończy się
+zerowym kodem wyjścia.
+Jeśli kontrola zadań została włączona, to zostaje wyświetlony
+kod wyjścia zadań
+(to nie ma miejsca, jeśli zadania zostały jawnie podane).
+.\"}}}
+.\"{{{  whence [-pv] [name ...]
+.IP "\fBwhence\fP [\fB\-pv\fP] [nazwa ...]"
+Dla każdej nazwy zostaje wymieniony odpowiednio typ komendy
+(reserved word, built-in, alias,
+function, tracked alias lub executable).
+Jeśli podano opcję \fB\-p\fP, to zostaje odszukana ścieżka
+dla \fInazw\fP, będących zarezerwowanymi słowami, aliasami, itp.
+Bez opcji \fB\-v\fP \fBwhence\fP działa podobnie do \fBcommand \-v\fP,
+poza tym, że \fBwhence\fP odszukuje zarezerwowane słowa i nie wypisuje
+aliasów jako komendy alias;
+z opcją \fB\-v\fP, \fBwhence\fP to to samo co \fBcommand \-V\fP.
+Zauważ, że dla \fBwhence\fP, opcja \fB\-p\fP nie ma wpływu
+na przeszukiwaną ścieżkę, tak jak dla \fBcommand\fP.
+Jeśli typ jednej lub więcej spośród nazw nie mógł zostać ustalony
+to kod wyjścia jest niezerowy.
+.\"}}}
+.\"}}}
+.\"{{{  job control (and its built-in commands)
+.SS "Kontrola zadań"
+Kontrola zadań oznacza zdolność powłoki to monitorowania i kontrolowania
+wykonywanych \fBzadań\fP,
+które są procesami lub grupami procesów tworzonych przez komendy lub
+potoki.
+Powłoka przynajmniej śledzi status obecnych zadań w tle
+(\fItzn.\fP, asynchronicznych); tę informację można otrzymać
+wykonując komendę \fBjobs\fP.
+Jeśli została uaktywniona pełna kontrola zadań
+(stosując \fBset \-m\fP lub
+\fBset \-o monitor\fP), tak jak w powłokach interakcyjnych,
+to procesy pewnego zadania zostają umieszczane we własnej grupie
+procesów, pierwszoplanowe zadnia mogą zostać zatrzymane przy pomocy
+klawisza wstrzymania z terminalu (zwykle ^Z),
+zadania mogą zostać ponownie podjęte albo na pierwszym planie albo
+w tle, stosując odpowiednio komendy \fBfg\fP i \fBbg\fP,
+i status terminala zostaje zachowany a następnie odtworzony, jeśli
+zadanie na pierwszym planie zostaje zatrzymane lub odpowiednio
+wznowione.
+.sp
+Proszę zwrócić uwagę, że tylko komendy tworzące procesy
+(\fItzn.\fP,
+komendy asynchroniczne, komendy podpowłok i niewbudowane komendy
+nie będące funkcjami) mogą zostać wstrzymane; takie komendy
+jak \fBread\fP nie mogą tego.
+.sp
+Gdy zostaje stworzone zadanie, to przyporządkowuje mu się numer zadania.
+Dla interakcyjnych powłok, numer ten zostaje wyświetlony w \fB[\fP..\fB]\fP,
+i w następstwie identyfikatory procesów w zadaniu, jeśli zostaje
+wykonywane asynchroniczne zadanie.
+Do zadania możemy odnosić się w komendach \fBbg\fP, \fBfg\fP, \fBjobs\fP,
+\fBkill\fP i
+\fBwait\fP albo poprzez id ostatniego procesu w potoku komend
+(tak jak jest on zapisywany w parametrze \fB$!\fP) lub poprzedzając
+numer zadania znakiem procentu (\fB%\fP).
+Również następujące sekwencję z procentem mogą być stosowane do
+odnoszenia się do zadań:
+.sp
+.TS
+expand;
+afB lw(4.5i).
+%+	T{
+Ostatnio zatrzymane zadanie lub, gdy brak zatrzymanych zadań, najstarsze
+wykonywane zadanie.
+T}
+%%\fR, \fP%	T{
+To samo co \fB%+\fP.
+T}
+%\-	T{
+Zadanie, które byłoby pod \fB%+\fP gdyby nie zostało zakończone.
+T}
+%\fIn\fP	T{
+Zadanie z numerem zadania \fIn\fP.
+T}
+%?\fIciąg\fP	T{
+Zadanie zawierające ciąg \fIciąg\fP (występuje błąd, gdy odpowiada mu
+kilka zadań).
+T}
+%\fIciąg\fP	T{
+Zadanie zaczynające się ciągiem \fIciąg\fP (występuje błąd, gdy odpowiada
+mu kilka zadań).
+T}
+.TE
+.sp
+Jeśli zadanie zmienia status (\fItzn.\fP, gdy zadanie w tle
+zostaje zakończone lub zadanie na pierwszym planie zostaje wstrzymane),
+powłoka wyświetla następujące informacje o statusie:
+.RS
+\fB[\fP\fInumer\fP\fB]\fP \fIflaga status komenda\fP
+.RE
+gdzie
+.IP "\ \fInumer\fP"
+to numer danego zadania.
+.IP "\ \fIflaga\fP"
+jest \fB+\fP lub \fB-\fP jeśli zadaniem jest odpowiednio zadanie z
+\fB%+\fP lub \fB%-\fP, lub przerwa jeśli nie jest ani jednym ani drugim.
+.IP "\ \fIstatus\fP"
+Wskazuje obecny stan danego zadania
+i może to być
+.RS
+.IP "\fBRunning\fP"
+Zadanie nie jest ani wstrzymane ani zakończone (proszę zwrócić uwagę, iż
+przebieg nie koniecznie musi oznaczać spotrzebowywanie
+czasu CPU \(em proces może być zablokowany, czekając na pewne zajście).
+.IP "\fBDone\fP [\fB(\fP\fInumer\fP\fB)\fP]"
+zadanie zakończone. \fInumer\fP to kod wyjścia danego zadania,
+który zostaje pominięty, jeśli wynosi on zero.
+.IP "\fBStopped\fP [\fB(\fP\fIsygnał\fP\fB)\fP]"
+zadanie zostało wstrzymane danym sygnałem \fIsygnał\fP (gdy brak sygnału,
+to zadanie zostało zatrzymane przez SIGTSTP).
+.IP "\fIopis-sygnału\fP [\fB(core dumped)\fP]"
+zadanie zostało zabite sygnałem (\fItzn.\fP, Memory\ fault,
+Hangup, \fIitp.\fP \(em zastosuj
+\fBkill \-l\fP dla otrzymania listy opisów sygnałów).
+Wiadomość \fB(core\ dumped)\fP wskazuje, że proces stworzył plik zrzutu core.
+.RE
+.IP "\ \fIcommand\fP"
+to komenda, która stworzyła dany proces.
+Jeśli dane zadanie zawiera kilka procesów, to każdy proces zostanie wyświetlony
+w osobnym wierszy pokazującym jego \fIcommand\fP i ewentualnie jego
+\fIstatus\fP, jeśli jest on odmienny od statusu poprzedniego procesu.
+.PP
+Jeśli próbuje się zakończyć powłokę, podczas gdy istnieją zadania w
+stanie zatrzymania, to powłoka ostrzega użytkownika, że są zadania w stanie
+zatrzymania i nie kończy pracy.
+Gdy tuż potem zostanie podjęta ponowna próba zakończenia powłoki, to
+zatrzymane zadania otrzymują sygnał \fBHUP\fP i powłoka kończy pracę.
+podobnie, jeśli nie została ustawiona opcja \fBnohup\fP,
+i są zadania w pracy, gdy zostanie podjęta próba zakończenia powłoki
+zameldowania, powłoka ostrzega użytkownika i nie kończy pracy.
+Gdy tuż potem zostanie ponownie podjęta próba zakończenia pracy powłoki,
+to bieżące procesy otrzymują sygnał \fBHUP\fP i powłoka kończy pracę.
+.\"}}}
+.\"{{{  Emacs Interactive Input Line Editing
+.SS "Interakcyjna edycja wiersza poleceń w trybie emacs"
+Jeśli została ustawiona opcja \fBemacs\fP,jest włączona interakcyjna
+edycja wiersza wprowadzeń.  \fBOstrzeżenie\fP: Ten tryb zachowuje się
+nieco inaczej niż tryb emacsa w oryginalnej powłoce Korna
+i 8-my bit zostaje wykasowany w trybie emacsa.
+W trybie tym różne komendy edycji (zazwyczaj podłączone pod jeden lub więcej
+znaków sterujących) powodują natychmiastowe akcje bez odczekiwania
+następnego przełamania wiersza.  Wiele komend edycji jest związywanych z
+pewnymi znakami sterującymi podczas odpalania powłoki; te związki mogą zostać
+zmienione przy pomocy następujących komend:
+.\"{{{  bind
+.IP \fBbind\fP
+Obecne związki zostają wyliczone.
+.\"}}}
+.\"{{{  bind string=[editing-command]
+.IP "\fBbind\fP \fIciąg\fP\fB=\fP[\fIkomenda-edycji\fP]"
+Dana komenda edycji zostaje podwiązana pod dany \fBciąg\fP, który
+powinien składać się ze znaku sterującego (zapisanego przy pomocy
+strzałki w górę \fB^\fP\fIX\fP), poprzedzonego ewentualnie
+jednym z dwóch znaków przedsionkownych.  Wprowadzenie danego
+\fIciągu\fP będzie wówczas powodowało bezpośrednie wywołanie danej
+komendy edycji.  Proszę zwrócić uwagę, że choć tylko
+dwa znaki przedsionkowe (zwykle ESC i ^X) są wspomagane, to
+mogą również zostać podane niektóre ciągi wieloznakowe.
+Następujące podłącza klawisze terminala ANSI lub xterm
+(które są w domyślnych podwiązaniach).  Oczywiście niektóre
+sekwencje wyprowadzenia nie chcą działać tak gładko:
+.sp
+.RS
+\fBbind '^[['=prefix\-2
+.br
+bind '^XA'=up\-history
+.br
+bind '^XB'=down\-history
+.br
+bind '^XC'=forward\-char
+.br
+bind '^XD'=backward\-char\fP
+.RE
+.\"}}}
+.\"{{{  bind -l
+.IP "\fBbind \-l\fP"
+Wymień nazwy funkcji, do których można podłączyć klawisze.
+.\"}}}
+.\"{{{  bind -m string=[substitute]
+.IP "\fBbind \-m\fP \fIciąg\fP\fB=\fP[\fIpodstawienie\fP]"
+Dany ciąg wprowadzenia \fIciąg\fP zostanie zamieniony bezpośrednio na
+dane \fIpodstawienie\fP, które może zawierać komendy edycji.
+.\"}}}
+.PP
+Następuje lista dostępnych komend edycji.
+Każdy z poszczególnych opisów zaczyna się nazwą komendy,
+literą \fIn\fP, jeśli komenda może zostać poprzedzona licznikiem,
+i wszelkimi klawiszami, do których dana komenda jest podłączona
+domyślnie (w zapisie stosującym notację strzałkową, \fItzn.\fP,
+znak ASCII ESC jest pisany jako ^[).
+Licznik poprzedzający komendę wprowadzamy stosując ciąg
+\fB^[\fP\fIn\fP, gdzie \fIn\fP to ciąg składający się z jednej
+lub więcej cyfr;
+chyba że podano inaczej licznik, jeśli został pominięty, wynosi
+domyślnie 1.
+Proszę zwrócić uwagę, że nazwy komend edycji stosowane są jedynie
+w komendzie \fBbind\fP.  Ponadto, wiele komend edycji jest przydatnych
+na terminalach z widocznym kursorem.  Domyślne podwiązania zostały wybrane
+tak, aby były zgodne z odpowiednimi podwiązaniami Emacsa.
+Znaki użytkownika tty (\fIw szczególności\fP, ERASE) zostały
+podłączenia do stosownych podstawień i kasują domyślne
+podłączenia.
+.\"{{{  abort ^G
+.IP "\fBabort ^G\fP"
+Przydatne w odpowiedzi na zapytanie o wzorzec \fBprzeszukiwania_historii\fP
+do przerwania tego szukania.
+.\"}}}
+.\"{{{  auto-insert n
+.IP "\fBauto-insert\fP \fIn\fP"
+Powoduje po prostu wyświetlenie znaku jako bezpośrednie wprowadzenie.
+Większość zwykłych znaków jest pod to podłączona.
+.\"}}}
+.\"{{{  backward-char	n ^B
+.IP "\fBbackward-char\fP  \fIn\fP \fB^B\fP"
+Przesuwa kursor \fIn\fP znaków wstecz.
+.\"}}}
+.\"{{{  backward-word  n ^[B
+.IP "\fBbackward-word\fP  \fIn\fP \fB^[B\fP"
+Przesuwa kursor wstecz na początek słowa; słowa składają się ze
+znaków alfanumerycznych, podkreślenia (_) i dolara ($).
+.\"}}}
+.\"{{{  beginning-of-history ^[<
+.IP "\fBbeginning-of-history ^[<\fP"
+Przesuwa na początek historii.
+.\"}}}
+.\"{{{  beginning-of-line ^A
+.IP "\fBbeginning-of-line ^A\fP"
+Przesuwa kursor na początek edytowanego wiersza wprowadzenia.
+.\"}}}
+.\"{{{  capitalize-word n ^[c, ^[C
+.IP "\fBcapitalize-word\fP \fIn\fP \fB^[c\fP, \fB^[C\fP"
+Przemienia pierwszy znak w następnych \fIn\fP słowach na dużą literę,
+pozostawiając kursor za końcem ostatniego słowa.
+.\"}}}
+.\"{{{  comment ^[#
+Jeśli bieżący wiersz nie zaczyna się od znaku komentarza, zostaje on
+dodany na początku wiersza i wiersz zostaje wprowadzony (tak jakby
+naciśnięto przełamanie wiersza), w przeciwnym razie istniejące znaki
+komentarza zostają usunięte i kursor zostaje umieszczony na początku
+wiersza.
+.\"}}}
+.\"{{{  complete ^[^[
+.IP "\fBcomplete ^[^[\fP"
+Automatycznie dopełnia tyle ile jest jednoznaczne w nazwie komendy
+lub nazwie pliku zawierającej kursor.  Jeśli cała pozostała część
+komendy lub nazwy pliku jest jednoznaczna to przerwa zostaje wyświetlona
+po wypełnieniu, chyba że jest to nazwa katalogu, w którym to razie zostaje
+dołączone \fB/\fP.  Jeśli nie ma komendy lub nazwy pliku zaczynającej
+się od takiej części słowa, to zostaje wyprowadzony znak dzwonka
+(zwykle powodujacy słyszalne zabuczenie).
+.\"}}}
+.\"{{{  complete-command ^X^[
+.IP "\fBcomplete-command ^X^[\fP"
+Automatycznie dopełnia tyle ile jest jednoznaczne z nazwy komendy
+zawierającej częściowe słowo przed kursorem, tak jak w komendzie
+\fBcomplete\fP opisanej powyżej.
+.\"}}}
+.\"{{{  complete-file ^[^X
+.IP "\fBcomplete-file ^[^X\fP"
+Automatycznie dopełnia tyle ile jest jednoznaczne z nazwy pliku
+zawierającego częściowe słowo przed kursorem, tak jak w komendzie
+\fBcomplete\fP opisanej powyżej.
+.\"}}}
+.\"{{{  complete-list ^[=
+.IP "\fBcomplete-list ^[=\fP"
+Wymień możliwe dopełnienia bieżącego słowa.
+.\"}}}
+.\"{{{  delete-char-backward n ERASE, ^?, ^H
+.IP "\fBdelete-char-backward\fP \fIn\fP \fBERASE\fP, \fB^?\fP, \fB^H\fP"
+Skasuj \fIn\fP znaków przed kursorem.
+.\"}}}
+.\"{{{  delete-char-forward n
+.IP "\fBdelete-char-forward\fP \fIn\fP"
+Skasuj \fIn\fP znaków po kursorze.
+.\"}}}
+.\"{{{  delete-word-backward n ^[ERASE, ^[^?, ^[^H, ^[h
+.IP "\fBdelete-word-backward\fP \fIn\fP \fB^[ERASE\fP, \fB^[^?\fP, \fB^[^H\fP, \fB^[h\fP"
+Skasuj \fIn\fP słów przed kursorem.
+.\"}}}
+.\"{{{  delete-word-forward n ^[d
+.IP "\fBdelete-word-forward\fP \fIn\fP \fB^[d\fP"
+Kasuje znaki po kursorze, aż do końca \fIn\fP słów.
+.\"}}}
+.\"{{{  down-history n ^N
+.IP "\fBdown-history\fP \fIn\fP \fB^N\fP"
+Przewija bufor historii w przód \fIn\fP wierszy (później).
+Każdy wiersz wprowadzenia zaczyna się oryginalnie tuż po ostatnim
+miejscu w buforze historii, tak więc
+\fBdown-history\fP nie jest przydatny dopóki nie wykonano
+\fBsearch-history\fP lub \fBup-history\fP.
+.\"}}}
+.\"{{{  downcase-word n ^[L, ^[l
+.IP "\fBdowncase-word\fP \fIn\fP \fB^[L\fP, \fB^[l\fP"
+Zamień na małe litery następnych \fIn\fP słów.
+.\"}}}
+.\"{{{  end-of-history ^[>
+.IP "\fBend-of-history ^[>\fP"
+Porusza do końca historii.
+.\"}}}
+.\"{{{  end-of-line ^E
+.IP "\fBend-of-line ^E\fP"
+Przesuwa kursor na koniec wiersza wprowadzenia.
+.\"}}}
+.\"{{{  eot ^_
+.IP "\fBeot ^_\fP"
+Działa jako koniec pliku; Jest to przydatne, albowiem tryb edycji
+wprowadzenia wyłącza normalną regularyzację wprowadzenia terminala.
+.\"}}}
+.\"{{{  eot-or-delete n ^D
+.IP "\fBeot-or-delete\fP \fIn\fP \fB^D\fP"
+Działa jako eot jeśli jest samotne na wierszu; w przeciwnym razie
+działa jako delete-char-forward.
+.\"}}}
+.\"{{{  error
+.IP "\fBerror\fP"
+Error (ring the bell).
+.\"}}}
+.\"{{{  exchange-point-and-mark ^X^X
+.IP "\fBexchange-point-and-mark ^X^X\fP"
+Umieść kursor na znaczniku i ustaw znacznik na miejsce, w którym był
+kursor.
+.\"}}}
+.\"{{{  expand-file ^[*
+.IP "\fBexpand-file ^[*\fP"
+Dodaje * do bieżącego słowa i zastępuje dane słowo wynikiem
+rozwinięcia nazwy pliku na danym słowie.
+Gdy nie pasują żadne pliki, zadzwoń.
+.\"}}}
+.\"{{{  forward-char n ^F
+.IP "\fBforward-char\fP \fIn\fP \fB^F\fP"
+Przesuwa kursor naprzód o \fIn\fP znaków.
+.\"}}}
+.\"{{{  forward-word n ^[f
+.IP "\fBforward-word\fP \fIn\fP \fB^[f\fP"
+Przesuwa kursor naprzód na zakończenie \fIn\fP-tego słowa.
+.\"}}}
+.\"{{{  goto-history n ^[g
+.IP "\fBgoto-history\fP \fIn\fP \fB^[g\fP"
+Przemieszcza do historii numer \fIn\fP.
+.\"}}}
+.\"{{{  kill-line KILL
+.IP "\fBkill-line KILL\fP"
+Kasuje cały wiersz wprowadzenia.
+.\"}}}
+.\"{{{  kill-region ^W
+.IP "\fBkill-region ^W\fP"
+Kasuje wprowadzenie pomiędzy kursorem a znacznikiem.
+.\"}}}
+.\"{{{  kill-to-eol n ^K
+.IP "\fBkill-to-eol\fP \fIn\fP \fB^K\fP"
+Jeśli ominięto \fIn\fP, to kasuje wprowadzenia od kursora do końca wiersza,
+w przeciwnym razie kasuje znaki pomiędzy kursorem a \fIn\fP-tą kolumną.
+.\"}}}
+.\"{{{  list ^[?
+.IP "\fBlist ^[?\fP"
+Wyświetla sortowaną, skolumnowaną listę nazw komend lub nazw plików
+(jeśli są takowe), które mogłyby dopełnić częściowe słowo zawierające kursor.
+Do nazw katalogów zostaje dołączone \fB/\fP.
+.\"}}}
+.\"{{{  list-command ^X?
+.IP "\fBlist-command ^X?\fP"
+Wyświetla sortowaną, skolumnowaną listę nazw komend
+(jeśli są takowe), które mogłyby dopełnić częściowe słowo zawierające kursor.
+.\"}}}
+.\"{{{  list-file ^X^Y
+.IP "\fBlist-file ^X^Y\fP"
+Wyświetla sortowaną, skolumnowaną listę nazw plików
+(jeśli są takowe), które mogłyby dopełnić częściowe słowo zawierające kursor.
+Specyfikatory rodzaju plików zostają dołączone tak jak powyżej opisano
+pod \fBlist\fP.
+.\"}}}
+.\"{{{  newline ^J and ^M
+.IP "\fBnewline ^J\fP, \fB^M\fP"
+Powoduje przetworzenie bieżącego wiersza wprowadzeń przez powłokę.
+Kursor może znajdować się aktualnie gdziekolwiek w wierszu.
+.\"}}}
+.\"{{{  newline-and-next ^O
+.IP "\fBnewline-and-next ^O\fP"
+Powoduje przetworzenie bieżącego wiersza wprowadzeń przez powłokę,
+po czym następny wiersz z historii staje się wierszem bieżącym.
+Ma to tylko sens po poprzednim up-history lub search-history.
+.\"}}}
+.\"{{{  no-op QUIT
+.IP "\fBno-op QUIT\fP"
+Nie robi nic.
+.\"}}}
+.\"{{{  prefix-1 ^[
+.IP "\fBprefix-1 ^[\fP"
+Przedsionek 1-znakowej sekwencji komendy.
+.\"}}}
+.\"{{{  prefix-2 ^X and ^[[
+.IP "\fBprefix-2 ^X\fP"
+.IP "\fBprefix-2 ^[[\fP"
+Przedsionek 2-znakowej sekwencji komendy.
+.\"}}}
+.\"{{{  prev-hist-word ^[. ^[_
+.IP "\fBprev-hist-word\fP \fIn\fP \fB^[.\fP, \fB^[_\fP"
+Ostatnie (\fIn\fP-te) słowo poprzedniej komendy zostaje wprowadzone
+na miejscu kursora.
+.\"}}}
+.\"{{{  quote ^^
+.IP "\fBquote ^^\fP"
+Następny znak zostaje wzięty dosłownie zamiast jako komenda edycji.
+.\"}}}
+.\"{{{  redraw ^L
+.IP "\fBredraw ^L\fP"
+Przerysuj ponownie zachętę i bieżący wiersz wprowadzenia.
+.\"}}}
+.\"{{{  search-character-backward n ^[^]
+.IP "\fBsearch-character-backward\fP \fIn\fP \fB^[^]\fP"
+Szukaj w tył w bieżącym wierszu \fIn\fP-tego wystąpienia
+następnego wprowadzonego znaku.
+.\"}}}
+.\"{{{  search-character-forward n ^]
+.IP "\fBsearch-character-forward\fP \fIn\fP \fB^]\fP"
+Szukaj w przód w bieżącym wierszu \fIn\fP-tego wystąpienia
+następnego wprowadzonego znaku.
+.\"}}}
+.\"{{{  search-history ^R
+.IP "\fBsearch-history ^R\fP"
+Wejdź w kroczący tryb szukania.  Wewnętrzna lista historii zostaje
+przeszukiwana wstecz za komendami odpowiadającymi wprowadzeniu.
+początkowe \fB^\fP w szukanym ciągu zakotwicza szukanie.  Klawisz przerwania
+powoduje opuszczenie trybu szukania.
+Inne komendy zostaną wykonywane po opuszczeniu trybu szukania.
+Ponowne komendy \fBsearch-history\fP kontynuują szukanie wstecz
+do następnego poprzedniego wystąpienia wzorca.  Bufor historii
+zawiera tylko skończoną ilość wierszy; dla potrzeby najstarsze zostają
+wyrzucone.
+.\"}}}
+.\"{{{  set-mark-command ^[<space>
+.IP "\fBset-mark-command ^[\fP<space>"
+Postaw znacznik na bieżącej pozycji kursora.
+.\"}}}
+.\"{{{  stuff
+.IP "\fBstuff\fP"
+Pod systemami to wspomagającymi, wypycha podłączony znak  z powrotem
+do wejścia terminala, gdzie może on zostać specjalnie przetworzony przez
+terminal.  Jest to przydatne np. dla opcji BRL \fB^T\fP minisystata.
+.\"}}}
+.\"{{{  stuff-reset
+.IP "\fBstuff-reset\fP"
+Działa tak jak \fBstuff\fP, a potem przerywa wprowadzenie tak jak
+przerwanie.
+.\"}}}
+.\"{{{  transport-chars ^T
+.IP "\fBtranspose-chars ^T\fP"
+Na końcu wiersza lub jeśli włączono opcję \fBgmacs\fP,
+zamienia dwa poprzedzające znaki; w przeciwnym razie zamienia
+poprzedni i bieżący znak, po czym przesuwa kursor jeden znak na prawo.
+.\"}}}
+.\"{{{  up-history n ^P
+.IP "\fBup-history\fP \fIn\fP \fB^P\fP"
+Przewija bufor historii \fIn\fP wierszy wstecz (wcześniej).
+.\"}}}
+.\"{{{  upcase-word n ^[U, ^[u
+.IP "\fBupcase-word\fP \fIn\fP \fB^[U\fP, \fB^[u\fP"
+Zamienia następnych \fIn\fP słów w duże litery.
+.\"}}}
+.\"{{{  version ^V
+.IP "\fBversion ^V\fP"
+Wypisuje wersję ksh.  Obecny bufor edycji zostaje odtworzony
+gdy tylko zostanie naciśnięty jakikolwiek klawisz
+(po czym ten klawisz zostaje przetworzony, chyba że
+ jest to przerwa).
+.\"}}}
+.\"{{{  yank ^Y
+.IP "\fByank ^Y\fP"
+Wprowadź ostatnio skasowany ciąg tekstu na bieżącą pozycję kursora.
+.\"}}}
+.\"{{{  yank-pop ^[y
+.IP "\fByank-pop ^[y\fP"
+bezpośrednio po \fByank\fP, zamienia wprowadzony tekst na
+następny poprzednio skasowany ciąg tekstu.
+.\"}}}
+.\"}}}
+.\"{{{  Vi Interactive Input Line Editing
+.\"{{{  introduction
+.SS "Interkacyjny tryb edycji wiersza poleceń vi"
+Edytor vi wiersza komendy w ksh obsługuje w zasadzie te same komendy co
+edytor vi (patrz \fIvi\fP(1)), poza następującymi wyjątkami:
+.nr P2 \n(PD
+.IP \ \ \(bu
+zaczyna w trybie wprowadzania,
+.IP \ \ \(bu
+ma komendy uzupełniania nazw plików i komend
+(\fB=\fP, \fB\e\fP, \fB*\fP, \fB^X\fP, \fB^E\fP, \fB^F\fP i,
+opcjonalnie, \fB<tab>\fP),
+.IP \ \ \(bu
+komenda \fB_\fP działa odmiennie (w ksh jest to komenda ostatniego argumentu,
+a w vi przechodzenie do początku bieżącego wiersza),
+.IP \ \ \(bu
+komendy \fB/\fP i \fBG\fP poruszają się w kierunkach odwrotnych do komendy
+\fBj\fP
+.IP \ \ \(bu
+brak jest komend, które nie mają znaczenia w edytorze obsługującym jeden
+wiersz (\fIw szczególności\fP, przewijanie ekranu, komendy ex \fB:\fP,
+\fIitp.\fP).
+.nr PD \n(P2
+.LP
+Proszę zwrócić uwagę, że \fB^X\fP oznacza control-X; oraz \fB<esc>\fP,
+\fB<space>\fP i \fB<tab>\fP stosowane są za escape, space i tab,
+odpowiednio (bez żartów).
+.\"}}}
+.\"{{{  modes
+.PP
+Tak jak w vi, są dwa tryby: tryb wprowadzania i tryb komend.
+W trybie wprowadzania, większość znaków zostaje po prostu umieszczona
+w buforze na bieżącym miejscu kursora w kolejności ich wpisywania,
+chociaż niektóre znaki zostają traktowane specjalnie.
+W szczególności następujące znaki odpowiadają obecnym ustawieniom tty
+(patrz \fIstty\fP(1)) i zachowują ich normalne znaczenia
+(normalne wartości są podane w nawiasach):
+skasuj (\fB^U\fP), wymaż (\fB^?\fP), wymaż słowo (\fB^W\fP), eof (\fB^D\fP),
+przerwij (\fB^C\fP) i zakończ (\fB^\e\fP).
+Poza powyższymi dodatkowo również następujące znaki zostają traktowane
+specjalnie w trybie wprowadzania:
+.TS
+expand;
+afB lw(4.5i).
+^H	T{
+kasuje poprzedni znak
+T}
+^V	T{
+bezpośrednio następny: następny naciśnięty znak nie zostaje traktowany
+specjalnie (można tego użyć do wprowadzenia opisywanych tu znaków)
+T}
+^J ^M	T{
+koniec wiersza: bieżący wiersz zostaje wczytany, rozpoznany i wykonany
+przez powłokę
+T}
+<esc>	T{
+wprowadza edytor w tryb komend (patrz poniżej)
+T}
+^E	T{
+wyliczanie komend i nazw plików (patrz poniżej)
+T}
+^F	T{
+dopełnianie nazw plików (patrz poniżej).
+Jeśli zostanie użyte dwukrotnie, to wówczas wyświetla listę możliwych
+dopełnień;
+jeśli zostanie użyte trzykrotnie, to kasuje dopełnienie.
+T}
+^X	T{
+rozwijanie nazw komend i plików (patrz poniżej)
+T}
+<tab>	T{
+opcjonalnie dopełnianie nazw plików i komend (patrz \fB^F\fP powyżej),
+włączane przez \fBset \-o vi-tabcomplete\fP
+T}
+.TE
+.\"}}}
+.\"{{{  display
+.PP
+Jeśli jakiś wiersz jest dłuższy od szerokości ekranu
+(patrz parametr \fBCOLUMNS\fP),
+to zostaje wyświetlony znak \fB>\fP, \fB+\fP lub \fB<\fP
+w ostatniej kolumnie, wskazujący odpowiednio na więcej znaków po, przed i po, oraz
+przed obecną pozycją.
+Wiersz jest przewijany poziomo w razie potrzeby.
+.\"}}}
+.\"{{{  command mode
+.PP
+W trybie komend, każdy znak zostaje interpretowany jako komenda.
+Znaki którym nie odpowiada żadna komenda, które są niedopuszczalną
+komendą lub są komendami nie do wykonania, wszystkie wyzwalają dzwonek.
+W następujących opisach komend, \fIn\fP wskazuje, że komendę można
+poprzedzić numerem (\fItzn.\fP, \fB10l\fP przesuwa w prawo o 10
+znaków); gdy brak przedrostka numerowego, to zakłada się, że \fIn\fP
+jest równe 1, chyba że powiemy inaczej.
+Zwrot `bieżąca pozycja' odnosi się do pozycji pomiędzy kursorem
+a znakiem przed nim.
+`Słowo' to ciąg liter, cyfr lub podkreśleń
+albo ciąg nie nieliter, niecyfr, niepodkreśleń, niebiałych-znaków
+(\fItak więc\fP, ab2*&^ zawiera dwa słowa), oraz `duże słowo' jest ciągiem
+niebiałych znaków.
+.\"{{{  Special ksh vi commands
+.IP "Specjalne ksh komendy vi"
+Następujących komend brak lub są one odmienne od tych w normalnym
+edytorze plików vi:
+.RS
+.IP "\fIn\fP\fB_\fP"
+wprowadź przerwę z następstwem \fIn\fP-tego dużego słowa
+z ostatniej komendy w historii na bieżącej pozycji i wejdź w tryb
+wprowadzania; jeśli nie podano \fIn\fP to domyślnie zostaje wprowadzone
+ostatnie słowo.
+.IP "\fB#\fP"
+wprowadź znak komentarza (\fB#\fP) na początku bieżącego wiersza
+i przekaż ten wiersz do powłoki ( tak samo jak \fBI#^J\fP).
+.IP "\fIn\fP\fBg\fP"
+tak jak \fBG\fP, z tym że, jeśli nie podano \fIn\fP
+to dotyczy to ostatnio zapamiętanego wiersza.
+.IP "\fIn\fP\fBv\fP"
+edytuj wiersze \fIn\fP stosując edytor vi;
+jeśli nie podano \fIn\fP, to edytuje bieżący wiersz.
+Właściwą wykonywaną komendą jest
+`\fBfc \-e ${VISUAL:-${EDITOR:-vi}}\fP \fIn\fP'.
+.IP "\fB*\fP i \fB^X\fP"
+dopełnianie komendy lub nazwy pliku zostaje zastosowane do obecnego dużego
+słowa (po dodaniu *, jeśli to słowo nie zawiera żadnych znaków dopełniania
+nazw plików) - duże słowo zostaje zastąpione słowami wynikowymi.
+Jeśli bieżące duże słowo jest pierwszym w wierszu (lub występuje po
+jednym z następujących znaków: \fB;\fP, \fB|\fP, \fB&\fP, \fB(\fP, \fB)\fP)
+i nie zawiera ukośnika (\fB/\fP) to rozwijanie komendy zostaje wykonane,
+w przeciwnym razie zostaje wykonane rozwijanie nazwy plików.
+Rozwijanie komend podpasowuje duże słowo pod wszelkie aliasy, funkcje
+i wbudowane komendy jak i również wszelkie wykonywalne pliki odnajdywane
+przeszukując katalogi wymienione w parametrze \fBPATH\fP.
+Rozwijanie nazw plików dopasowuje duże słowo do nazw plików w bieżącym
+katalogu.
+Po rozwinięciu, kursor zostaje umieszczony tuż po
+ostatnim słowie na końcu i edytor jest w trybie wprowadzania.
+.IP "\fIn\fP\fB\e\fP, \fIn\fP\fB^F\fP, \fIn\fP\fB<tab>\fP i \fIn\fP\fB<esc>\fP"
+dopełnianie nazw komend/plików:
+zastępuje bieżące duże słowo najdłuższym, jednoznacznym
+dopasowaniem otrzymanym przez rozwinięcie nazwy komendy/pliku.
+\fB<tab>\fP zostaje jedynie rozpoznane jeśli została włączona opcja
+\fBvi-tabcomplete\fP, podczas gdy \fB<esc>\fP zostaje jedynie rozpoznane
+jeśli została włączona opcja \fBvi-esccomplete\fP (patrz \fBset \-o\fP).
+Jeśli podano \fIn\fP to zostaje użyte \fIn\fP-te możliwe
+dopełnienie (z tych zwracanych przez komendę wyliczania dopełnień nazw
+komend/plików).
+.IP "\fB=\fP i \fB^E\fP"
+wyliczanie nazw komend/plików: wymień wszystkie komendy lub pliki
+pasujące pod obecne duże słowo.
+.IP "\fB^V\fP"
+wyświetl wersję pdksh; jest ona wyświetlana do następnego naciśnięcia
+klawisza (ten klawisz zostaje zignorowany).
+.IP "\fB@\fP\fIc\fP"
+rozwinięcie makro: wykonaj komendy znajdujące się w aliasie _\fIc\fP.
+.RE
+.\"}}}
+.\"{{{  Intra-line movement commands
+.IP "Komendy przemieszczania w wierszu"
+.RS
+.IP "\fIn\fP\fBh\fP i \fIn\fP\fB^H\fP"
+przesuń się na lewo \fIn\fP znaków.
+.IP "\fIn\fP\fBl\fP i \fIn\fP\fB<space>\fP"
+przesuń się w prawo \fIn\fP znaków.
+.IP "\fB0\fP"
+przesuń się do kolumny 0.
+.IP "\fB^\fP"
+przesuń się do pierwszego niebiałego znaku.
+.IP "\fIn\fP\fB|\fP"
+przesuń się do kolumny \fIn\fP.
+.IP "\fB$\fP"
+przesuń się do ostatniego znaku.
+.IP "\fIn\fP\fBb\fP"
+przesuń się wstecz \fIn\fP słów.
+.IP "\fIn\fP\fBB\fP"
+przesuń się wstecz \fIn\fP dużych słów.
+.IP "\fIn\fP\fBe\fP"
+przesuń się na przód do końca słowo \fIn\fP razy.
+.IP "\fIn\fP\fBE\fP"
+przesuń się na przód do końca dużego słowa \fIn\fP razy.
+.IP "\fIn\fP\fBw\fP"
+przesuń się na przód o \fIn\fP słów.
+.IP "\fIn\fP\fBW\fP"
+przesuń się na przód o \fIn\fP dużych słów.
+.IP "\fB%\fP"
+odnajdź wzór: edytor szuka do przodu najbliższego nawiasu
+zamykającego (okrągłego, prostokątnego lub klamrowego),
+a następnie przesuwa się między nim a odpowiadającym mu
+nawiasem otwierającym.
+.IP "\fIn\fP\fBf\fP\fIc\fP"
+przesuń się w przód do \fIn\fP-tego wystąpienia znaku \fIc\fP.
+.IP "\fIn\fP\fBF\fP\fIc\fP"
+przesuń się w tył do \fIn\fP-tego wystąpienia znaku \fIc\fP.
+.IP "\fIn\fP\fBt\fP\fIc\fP"
+przesuń się w przód tuż przed \fIn\fP-te wystąpienie znaku \fIc\fP.
+.IP "\fIn\fP\fBT\fP\fIc\fP"
+przesuń się w tył tuż przed \fIn\fP-te wystąpienie znaku \fIc\fP.
+.IP "\fIn\fP\fB;\fP"
+powtarza ostatnią komendę \fBf\fP, \fBF\fP, \fBt\fP lub \fBT\fP.
+.IP "\fIn\fP\fB,\fP"
+powtarza ostatnią komendę \fBf\fP, \fBF\fP, \fBt\fP lub \fBT\fP,
+lecz porusza się w przeciwnym kierunku.
+.RE
+.\"}}}
+.\"{{{  Inter-line movement commands
+.IP "Komendy przemieszczania między wierszami"
+.RS
+.IP "\fIn\fP\fBj\fP, \fIn\fP\fB+\fP i \fIn\fP\fB^N\fP"
+przejdź do \fIn\fP-tego następnego wiersza w historii.
+.IP "\fIn\fP\fBk\fP, \fIn\fP\fB-\fP i \fIn\fP\fB^P\fP"
+przejdź do \fIn\fP-tego poprzedniego wiersza w historii.
+.IP "\fIn\fP\fBG\fP"
+przejdź do wiersza \fIn\fP w historii; jeśli brak \fIn\fP, to przenosi
+się do pierwszego zapamiętanego wiersza w historii.
+.IP "\fIn\fP\fBg\fP"
+tak jak \fBG\fP, tylko, że jeśli nie podano \fIn\fP to idzie do
+ostatnio zapamiętanego wiersza.
+.IP "\fIn\fP\fB/\fP\fIciąg\fP"
+szukaj wstecz w historii \fIn\fP-tego wiersza zawierającego
+\fIciąg\fP; jeśli \fIciąg\fP zaczyna się od \fB^\fP, to reszta ciągu
+musi występować na samym początku wiersza historii aby pasowała.
+.IP "\fIn\fP\fB?\fP\fIstring\fP"
+tak jak \fB/\fP, tylko, że szuka do przodu w historii.
+.IP "\fIn\fP\fBn\fP"
+szukaj \fIn\fP-tego wystąpienia ostatnio szukanego ciągu; kierunek jest
+ten sam co kierunek ostatniego szukania.
+.IP "\fIn\fP\fBN\fP"
+szukaj \fIn\fP-tego wystąpienia ostatnio szukanego ciągu; kierunek jest
+przeciwny do kierunku ostatniego szukania.
+.RE
+.\"}}}
+.\"{{{  Edit commands
+.IP "Komendy edycji"
+.RS
+.IP "\fIn\fP\fBa\fP"
+dodaj tekst \fIn\fP-krotnie: przechodzi w tryb wprowadzania tuż po
+bieżącej pozycji.
+Dodanie zostaje jedynie wykonane, jeśli zostanie ponownie uruchomiony
+tryb komendy (\fItzn.\fP, jeśli <esc> zostanie użyte).
+.IP "\fIn\fP\fBA\fP"
+tak jak \fBa\fP, z tą różnicą, że dodaje do końca wiersza.
+.IP "\fIn\fP\fBi\fP"
+dodaj tekst \fIn\fP-krotnie: przechodzi w tryb wprowadzania na bieżącej
+pozycji.
+Dodanie zostaje jedynie wykonane, jeśli zostanie ponownie uruchomiony
+tryb komendy (\fItzn.\fP, jeśli <esc> zostanie użyte).
+.IP "\fIn\fP\fBI\fP"
+tak jak \fBi\fP, z tą różnicą, że dodaje do tuż przed pierwszym niebiałym
+znakiem.
+.IP "\fIn\fP\fBs\fP"
+zamień następnych \fIn\fP znaków (\fItzn.\fP, skasuj te znaki i przejdź
+do trybu wprowadzania).
+.IP "\fBS\fP"
+zastąp cały wiersz: wszystkie znaki od pierwszego niebiałego znaku
+do końca wiersza zostają skasowane i zostaje uruchomiony tryb
+wprowadzania.
+.IP "\fIn\fP\fBc\fP\fIkomenda-przemieszczenia\fP"
+przejdź z bieżącej pozycji do pozycji wynikającej z \fIn\fP
+\fIkomenda-przemieszczenia\fPs (\fItj.\fP, skasuj wskazany region i wejdź w tryb
+wprowadzania);
+jeśli \fIkomendą-przemieszczenia\fP jest \fBc\fP, to wiersz
+zostaje zmieniony od pierwszego niebiałego znaku począwszy.
+.IP "\fBC\fP"
+zmień od obecnej pozycji do końca wiersza (\fItzn.\fP skasuj do końca
+wiersza i przejdź do trybu wprowadzania).
+.IP "\fIn\fP\fBx\fP"
+skasuj następnych \fIn\fP znaków.
+.IP "\fIn\fP\fBX\fP"
+skasuj poprzednich \fIn\fP znaków.
+.IP "\fBD\fP"
+skasuj do końca wiersza.
+.IP "\fIn\fP\fBd\fP\fImove-cmd\fP"
+skasuj od obecnej pozycji do pozycji wynikającej z \fIn\fP krotnego
+\fImove-cmd\fP;
+\fImove-cmd\fP może być komendą przemieszczania (patrz powyżej) lub \fBd\fP,
+co powoduje skasowanie bieżącego wiersza.
+.IP "\fIn\fP\fBr\fP\fIc\fP"
+zamień następnych \fIn\fP znaków na znak \fIc\fP.
+.IP "\fIn\fP\fBR\fP"
+zamień: wejdź w tryb wprowadzania lecz przepisuj istniejące znaki
+zamiast wprowadzania przed istniejącymi znakami.  Zamiana zostaje wykonana
+\fIn\fP krotnie.
+.IP "\fIn\fP\fB~\fP"
+zmień wielkość następnych \fIn\fP znaków.
+.IP "\fIn\fP\fBy\fP\fImove-cmd\fP"
+wytnij od obecnej pozycji po pozycję wynikającą z \fIn\fP krotnego
+\fImove-cmd\fP do bufora wycinania; jeśli \fImove-cmd\fP jest \fBy\fP, to
+cały wiersz zostaje wycięty.
+.IP "\fBY\fP"
+wytnij od obecnej pozycji do końca wiersza.
+.IP "\fIn\fP\fBp\fP"
+wklej zawartość bufora wycinania tuż po bieżącej pozycji,
+\fIn\fP krotnie.
+.IP "\fIn\fP\fBP\fP"
+tak jak \fBp\fP, tylko że bufor zostaje wklejony na bieżącej pozycji.
+.RE
+.\"}}}
+.\"{{{  Miscellaneous vi commands
+.IP "Różne komendy vi"
+.RS
+.IP "\fB^J\fP i \fB^M\fP"
+bieżący wiersz zostaje wczytany, rozpoznany i wykonany przez powłokę.
+.IP "\fB^L\fP i \fB^R\fP"
+odrysuj bieżący wiersz.
+.IP "\fIn\fP\fB.\fP"
+wykonaj ponownie ostatnią komendę edycji \fIn\fP razy.
+.IP "\fBu\fP"
+odwróć ostatnią komendę edycji.
+.IP "\fBU\fP"
+odwróć wszelkie zmiany dokonane w danym wierszu.
+.IP "\fIintr\fP i \fIquit\fP"
+znaki terminala przerwy i zakończenia powodują skasowania bieżącego
+wiersza i wyświetlenie nowej zachęty.
+.RE
+.\"Has all vi commands except:
+.\"    movement: { } [[ ]] ^E ^Y ^U ^D ^F ^B H L M ()
+.\"    tag commands: ^T ^]
+.\"    mark commands: m ` '
+.\"    named-buffer commands: " @
+.\"    file/shell/ex-commands: Q ZZ ^^ : ! &
+.\"    multi-line change commands: o O J
+.\"    shift commands: << >>
+.\"    status command: ^G
+.\"}}}
+.\"}}}
+.\"}}}
+.\"}}}
+.\"{{{  Files
+.SH PLIKI
+~/.profile
+.br
+/etc/profile
+.br
+/etc/suid_profile
+.\"}}}
+.\"{{{  Bugs
+.SH BŁĘDY
+Wszelkie błędy w pdksh należy zgłaszać pod adresem pdksh@cs.mun.ca.
+Proszę podać wersję pdksh (echo $KSH_VERSION), maszynę,
+system operacyjny i stosowany kompilator oraz opis jak powtórzyć dany błąd
+(najlepiej mały skrypt powłoki demonstrujący dany błąd).
+Następujące może być również pomocne, jeśli ma znaczenie
+(jeśli nie jesteś pewny to podaj to również):
+stosowane opcje (zarówno z opcje options.h jak i ustawione
+\-o opcje) i twoja kopia config.h (plik generowany przez skrypt
+configure).  Nowe wersje pdksh można otrzymać z
+ftp://ftp.cs.mun.ca/pub/pdksh/.
+.\"}}}
+.\"{{{  Authors
+.SH AUTORZY
+Ta powłoka powstała z publicznego klonu siódmego wydania powłoki
+Bourne'a wykonanego przez Charlesa Forsytha i z części powłoki
+BRL autorstwa Doug A.\& Gwyna, Douga Kingstona,
+Rona Natalie;a, Arnolda Robbinsa, Lou Salkinda i innych.  Pierwsze wydanie
+pdksh stworzył Eric Gisin, a następnie troszczyli się nią kolejno
+John R.\& MacMillan (chance!john@sq.sq.com), i
+Simon J.\& Gerraty (sjg@zen.void.oz.au).  Obecnym opiekunem jest
+Michael Rendell (michael@cs.mun.ca).
+Plik CONTRIBUTORS w dystrybucji źródeł zawiera bardziej kompletną
+listę ludzi i ich wkładu do rozwoju tej powłoki.
+.PP
+Tłumaczenie tego podręcznika na język polski wykonał Marcin Dalecki
+<dalecki@cs.net.pl>.
+.\"}}}
+.\"{{{  See also
+.SH "ZOBACZ TAKŻE"
+awk(1),
+sh(1),
+csh(1), ed(1), getconf(1), getopt(1), sed(1), stty(1), vi(1),
+dup(2), execve(2), getgid(2), getuid(2), open(2), pipe(2), wait(2),
+getopt(3), rand(3), signal(3), system(3),
+environ(5)
+.PP
+.IR "The KornShell Command and Programming Language" ,
+Morris Bolsky i David Korn, 1989, ISBN 0-13-516972-0.
+.PP
+.\" XXX ISBN missing
+.IR "UNIX Shell Programming" ,
+Stephen G.\& Kochan, Patrick H.\& Wood, Hayden.
+.PP
+.IR "IEEE Standard for information Technology \- Portable Operating System Interface (POSIX) \- Part 2: Shell and Utilities" ,
+IEEE Inc, 1993, ISBN 1-55937-255-9.

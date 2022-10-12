@@ -1,0 +1,836 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-09-03 21:25+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "MQ_OVERVIEW"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "2020-06-09"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "mq_overview - overview of POSIX message queues"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"POSIX message queues allow processes to exchange data in the form of "
+"messages.  This API is distinct from that provided by System V message "
+"queues (B<msgget>(2), B<msgsnd>(2), B<msgrcv>(2), etc.), but provides "
+"similar functionality."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Message queues are created and opened using B<mq_open>(3); this function "
+"returns a I<message queue descriptor> (I<mqd_t>), which is used to refer to "
+"the open message queue in later calls.  Each message queue is identified by "
+"a name of the form I</somename>; that is, a null-terminated string of up to "
+"B<NAME_MAX> (i.e., 255) characters consisting of an initial slash, followed "
+"by one or more characters, none of which are slashes.  Two processes can "
+"operate on the same queue by passing the same name to B<mq_open>(3)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Messages are transferred to and from a queue using B<mq_send>(3)  and "
+"B<mq_receive>(3).  When a process has finished using the queue, it closes it "
+"using B<mq_close>(3), and when the queue is no longer required, it can be "
+"deleted using B<mq_unlink>(3).  Queue attributes can be retrieved and (in "
+"some cases) modified using B<mq_getattr>(3)  and B<mq_setattr>(3).  A "
+"process can request asynchronous notification of the arrival of a message on "
+"a previously empty queue using B<mq_notify>(3)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"A message queue descriptor is a reference to an I<open message queue "
+"description> (see B<open>(2)).  After a B<fork>(2), a child inherits copies "
+"of its parent's message queue descriptors, and these descriptors refer to "
+"the same open message queue descriptions as the corresponding message queue "
+"descriptors in the parent.  Corresponding message queue descriptors in the "
+"two processes share the flags (I<mq_flags>)  that are associated with the "
+"open message queue description."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Each message has an associated I<priority>, and messages are always "
+"delivered to the receiving process highest priority first.  Message "
+"priorities range from 0 (low) to I<sysconf(_SC_MQ_PRIO_MAX)\\ -\\ 1> "
+"(high).  On Linux, I<sysconf(_SC_MQ_PRIO_MAX)> returns 32768, but POSIX.1 "
+"requires only that an implementation support at least priorities in the "
+"range 0 to 31; some implementations provide only this range."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The remainder of this section describes some specific details of the Linux "
+"implementation of POSIX message queues."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Library interfaces and system calls"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"In most cases the B<mq_*>()  library interfaces listed above are implemented "
+"on top of underlying system calls of the same name.  Deviations from this "
+"scheme are indicated in the following table:"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Library interface"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "System call"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_close(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "close(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_getattr(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_getsetattr(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_notify(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_notify(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_open(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_open(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_receive(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_timedreceive(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_send(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_timedsend(2)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_setattr(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_timedreceive(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_timedsend(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_unlink(3)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "mq_unlink(2)"
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Versions"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"POSIX message queues have been supported on Linux since kernel 2.6.6.  Glibc "
+"support has been provided since version 2.3.4."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Kernel configuration"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Support for POSIX message queues is configurable via the "
+"B<CONFIG_POSIX_MQUEUE> kernel configuration option.  This option is enabled "
+"by default."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Persistence"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"POSIX message queues have kernel persistence: if not removed by "
+"B<mq_unlink>(3), a message queue will exist until the system is shut down."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linking"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Programs using the POSIX message queue API must be compiled with I<cc -lrt> "
+"to link against the real-time library, I<librt>."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "/proc interfaces"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The following interfaces can be used to limit the amount of kernel memory "
+"consumed by POSIX message queues and to set the default attributes for new "
+"message queues:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "I</proc/sys/fs/mqueue/msg_default> (since Linux 3.5)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This file defines the value used for a new queue's I<mq_maxmsg> setting when "
+"the queue is created with a call to B<mq_open>(3)  where I<attr> is "
+"specified as NULL.  The default value for this file is 10.  The minimum and "
+"maximum are as for I</proc/sys/fs/mqueue/msg_max>.  A new queue's default "
+"I<mq_maxmsg> value will be the smaller of I<msg_default> and I<msg_max>.  Up "
+"until Linux 2.6.28, the default I<mq_maxmsg> was 10; from Linux 2.6.28 to "
+"Linux 3.4, the default was the value defined for the I<msg_max> limit."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "I</proc/sys/fs/mqueue/msg_max>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This file can be used to view and change the ceiling value for the maximum "
+"number of messages in a queue.  This value acts as a ceiling on the I<attr-"
+"E<gt>mq_maxmsg> argument given to B<mq_open>(3).  The default value for "
+"I<msg_max> is 10.  The minimum value is 1 (10 in kernels before 2.6.28).  "
+"The upper limit is B<HARD_MSGMAX>.  The I<msg_max> limit is ignored for "
+"privileged processes (B<CAP_SYS_RESOURCE>), but the B<HARD_MSGMAX> ceiling "
+"is nevertheless imposed."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The definition of B<HARD_MSGMAX> has changed across kernel versions:"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "*"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Up to Linux 2.6.32: I<131072\\ /\\ sizeof(void\\ *)>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Linux 2.6.33 to 3.4: I<(32768\\ *\\ sizeof(void\\ *) / 4)>"
+msgstr ""
+
+#.  commit 5b5c4d1a1440e94994c73dddbad7be0676cd8b9a
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Since Linux 3.5: 65,536"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "I</proc/sys/fs/mqueue/msgsize_default> (since Linux 3.5)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This file defines the value used for a new queue's I<mq_msgsize> setting "
+"when the queue is created with a call to B<mq_open>(3)  where I<attr> is "
+"specified as NULL.  The default value for this file is 8192 (bytes).  The "
+"minimum and maximum are as for I</proc/sys/fs/mqueue/msgsize_max>.  If "
+"I<msgsize_default> exceeds I<msgsize_max>, a new queue's default "
+"I<mq_msgsize> value is capped to the I<msgsize_max> limit.  Up until Linux "
+"2.6.28, the default I<mq_msgsize> was 8192; from Linux 2.6.28 to Linux 3.4, "
+"the default was the value defined for the I<msgsize_max> limit."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "I</proc/sys/fs/mqueue/msgsize_max>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This file can be used to view and change the ceiling on the maximum message "
+"size.  This value acts as a ceiling on the I<attr-E<gt>mq_msgsize> argument "
+"given to B<mq_open>(3).  The default value for I<msgsize_max> is 8192 "
+"bytes.  The minimum value is 128 (8192 in kernels before 2.6.28).  The upper "
+"limit for I<msgsize_max> has varied across kernel versions:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Before Linux 2.6.28, the upper limit is B<INT_MAX>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "From Linux 2.6.28 to 3.4, the limit is 1,048,576."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Since Linux 3.5, the limit is 16,777,216 (B<HARD_MSGSIZEMAX>)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<msgsize_max> limit is ignored for privileged process "
+"(B<CAP_SYS_RESOURCE>), but, since Linux 3.5, the B<HARD_MSGSIZEMAX> ceiling "
+"is enforced for privileged processes."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "I</proc/sys/fs/mqueue/queues_max>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This file can be used to view and change the system-wide limit on the number "
+"of message queues that can be created.  The default value for I<queues_max> "
+"is 256.  No ceiling is imposed on the I<queues_max> limit; privileged "
+"processes (B<CAP_SYS_RESOURCE>)  can exceed the limit (but see BUGS)."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Resource limit"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The B<RLIMIT_MSGQUEUE> resource limit, which places a limit on the amount of "
+"space that can be consumed by all of the message queues belonging to a "
+"process's real user ID, is described in B<getrlimit>(2)."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Mounting the message queue filesystem"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"On Linux, message queues are created in a virtual filesystem.  (Other "
+"implementations may also provide such a feature, but the details are likely "
+"to differ.)  This filesystem can be mounted (by the superuser) using the "
+"following commands:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"#B< mkdir /dev/mqueue>\n"
+"#B< mount -t mqueue none /dev/mqueue>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "The sticky bit is automatically enabled on the mount directory."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"After the filesystem has been mounted, the message queues on the system can "
+"be viewed and manipulated using the commands usually used for files (e.g., "
+"B<ls>(1)  and B<rm>(1))."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The contents of each file in the directory consist of a single line "
+"containing information about the queue:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$B< cat /dev/mqueue/mymq>\n"
+"QSIZE:129     NOTIFY:2    SIGNO:0    NOTIFY_PID:8260\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "These fields are as follows:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<QSIZE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Number of bytes of data in all messages in the queue (but see BUGS)."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<NOTIFY_PID>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"If this is nonzero, then the process with this PID has used B<mq_notify>(3)  "
+"to register for asynchronous message notification, and the remaining fields "
+"describe how notification occurs."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<NOTIFY>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Notification method: 0 is B<SIGEV_SIGNAL>; 1 is B<SIGEV_NONE>; and 2 is "
+"B<SIGEV_THREAD>."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<SIGNO>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Signal number to be used for B<SIGEV_SIGNAL>."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux implementation of message queue descriptors"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"On Linux, a message queue descriptor is actually a file descriptor.  (POSIX "
+"does not require such an implementation.)  This means that a message queue "
+"descriptor can be monitored using B<select>(2), B<poll>(2), or B<epoll>(7).  "
+"This is not portable."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The close-on-exec flag (see B<open>(2))  is automatically set on the file "
+"descriptor returned by B<mq_open>(2)."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "IPC namespaces"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"For a discussion of the interaction of POSIX message queue objects and IPC "
+"namespaces, see B<ipc_namespaces>(7)."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"System V message queues (B<msgget>(2), B<msgsnd>(2), B<msgrcv>(2), etc.) are "
+"an older API for exchanging messages between processes.  POSIX message "
+"queues provide a better designed interface than System V message queues; on "
+"the other hand POSIX message queues are less widely available (especially on "
+"older systems) than System V message queues."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Linux does not currently (2.6.26) support the use of access control lists "
+"(ACLs) for POSIX message queues."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "BUGS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"In Linux versions 3.5 to 3.14, the kernel imposed a ceiling of 1024 "
+"(B<HARD_QUEUESMAX>)  on the value to which the I<queues_max> limit could be "
+"raised, and the ceiling was enforced even for privileged processes.  This "
+"ceiling value was removed in Linux 3.14, and patches to stable kernels 3.5.x "
+"to 3.13.x also removed the ceiling."
+msgstr ""
+
+#.  commit d6629859b36d
+#.  commit de54b9ac253787c366bbfb28d901a31954eb3511
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"As originally implemented (and documented), the QSIZE field displayed the "
+"total number of (user-supplied)  bytes in all messages in the message "
+"queue.  Some changes in Linux 3.5 inadvertently changed the behavior, so "
+"that this field also included a count of kernel overhead bytes used to store "
+"the messages in the queue.  This behavioral regression was rectified in "
+"Linux 4.2 (and earlier stable kernel series), so that the count once more "
+"included just the bytes of user data in messages in the queue."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "EXAMPLES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"An example of the use of various message queue functions is shown in "
+"B<mq_notify>(3)."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<getrlimit>(2), B<mq_getsetattr>(2), B<poll>(2), B<select>(2), "
+"B<mq_close>(3), B<mq_getattr>(3), B<mq_notify>(3), B<mq_open>(3), "
+"B<mq_receive>(3), B<mq_send>(3), B<mq_unlink>(3), B<epoll>(7), "
+"B<namespaces>(7)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2017-09-15"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"For a discussion of the interaction of System V IPC objects and IPC "
+"namespaces, see B<namespaces>(7)."
+msgstr ""
+
+#. type: SH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "EXAMPLE"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

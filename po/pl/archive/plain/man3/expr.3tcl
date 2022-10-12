@@ -1,0 +1,535 @@
+.\"t
+.\" 1999 PTM Przemek Borys
+'\"
+'\" Copyright (c) 1993 The Regents of the University of California.
+'\" Copyright (c) 1994-1997 Sun Microsystems, Inc.
+'\"
+'\" See the file "license.terms" for information on usage and redistribution
+'\" of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+'\" 
+'\" RCS: @(#) $Id: expr.n,v 1.1 2000/02/21 15:11:35 pborys Exp $
+'\" 
+'\" The definitions below are for supplemental macros used in Tcl/Tk
+'\" manual entries.
+'\"
+'\" .AP type name in/out ?indent?
+'\"	Start paragraph describing an argument to a library procedure.
+'\"	type is type of argument (int, etc.), in/out is either "in", "out",
+'\"	or "in/out" to describe whether procedure reads or modifies arg,
+'\"	and indent is equivalent to second arg of .IP (shouldn't ever be
+'\"	needed;  use .AS below instead)
+'\"
+'\" .AS ?type? ?name?
+'\"	Give maximum sizes of arguments for setting tab stops.  Type and
+'\"	name are examples of largest possible arguments that will be passed
+'\"	to .AP later.  If args are omitted, default tab stops are used.
+'\"
+'\" .BS
+'\"	Start box enclosure.  From here until next .BE, everything will be
+'\"	enclosed in one large box.
+'\"
+'\" .BE
+'\"	End of box enclosure.
+'\"
+'\" .CS
+'\"	Begin code excerpt.
+'\"
+'\" .CE
+'\"	End code excerpt.
+'\"
+'\" .VS ?version? ?br?
+'\"	Begin vertical sidebar, for use in marking newly-changed parts
+'\"	of man pages.  The first argument is ignored and used for recording
+'\"	the version when the .VS was added, so that the sidebars can be
+'\"	found and removed when they reach a certain age.  If another argument
+'\"	is present, then a line break is forced before starting the sidebar.
+'\"
+'\" .VE
+'\"	End of vertical sidebar.
+'\"
+'\" .DS
+'\"	Begin an indented unfilled display.
+'\"
+'\" .DE
+'\"	End of indented unfilled display.
+'\"
+'\" .SO
+'\"	Start of list of standard options for a Tk widget.  The
+'\"	options follow on successive lines, in four columns separated
+'\"	by tabs.
+'\"
+'\" .SE
+'\"	End of list of standard options for a Tk widget.
+'\"
+'\" .OP cmdName dbName dbClass
+'\"	Start of description of a specific option.  cmdName gives the
+'\"	option's name as specified in the class command, dbName gives
+'\"	the option's name in the option database, and dbClass gives
+'\"	the option's class in the option database.
+'\"
+'\" .UL arg1 arg2
+'\"	Print arg1 underlined, then print arg2 normally.
+'\"
+'\" RCS: @(#) $Id: expr.n,v 1.1 2000/02/21 15:11:35 pborys Exp $
+'\"
+'\"	# Set up traps and other miscellaneous stuff for Tcl/Tk man pages.
+.if t .wh -1.3i ^B
+.nr ^l \n(.l
+.ad b
+'\"	# Start an argument description
+.de AP
+.ie !"\\$4"" .TP \\$4
+.el \{\
+.   ie !"\\$2"" .TP \\n()Cu
+.   el          .TP 15
+.\}
+.ie !"\\$3"" \{\
+.ta \\n()Au \\n()Bu
+\&\\$1	\\fI\\$2\\fP	(\\$3)
+.\".b
+.\}
+.el \{\
+.br
+.ie !"\\$2"" \{\
+\&\\$1	\\fI\\$2\\fP
+.\}
+.el \{\
+\&\\fI\\$1\\fP
+.\}
+.\}
+..
+'\"	# define tabbing values for .AP
+.de AS
+.nr )A 10n
+.if !"\\$1"" .nr )A \\w'\\$1'u+3n
+.nr )B \\n()Au+15n
+.\"
+.if !"\\$2"" .nr )B \\w'\\$2'u+\\n()Au+3n
+.nr )C \\n()Bu+\\w'(in/out)'u+2n
+..
+.AS Tcl_Interp Tcl_CreateInterp in/out
+'\"	# BS - start boxed text
+'\"	# ^y = starting y location
+'\"	# ^b = 1
+.de BS
+.br
+.mk ^y
+.nr ^b 1u
+.if n .nf
+.if n .ti 0
+.if n \l'\\n(.lu\(ul'
+.if n .fi
+..
+'\"	# BE - end boxed text (draw box now)
+.de BE
+.nf
+.ti 0
+.mk ^t
+.ie n \l'\\n(^lu\(ul'
+.el \{\
+.\"	Draw four-sided box normally, but don't draw top of
+.\"	box if the box started on an earlier page.
+.ie !\\n(^b-1 \{\
+\h'-1.5n'\L'|\\n(^yu-1v'\l'\\n(^lu+3n\(ul'\L'\\n(^tu+1v-\\n(^yu'\l'|0u-1.5n\(ul'
+.\}
+.el \}\
+\h'-1.5n'\L'|\\n(^yu-1v'\h'\\n(^lu+3n'\L'\\n(^tu+1v-\\n(^yu'\l'|0u-1.5n\(ul'
+.\}
+.\}
+.fi
+.br
+.nr ^b 0
+..
+'\"	# VS - start vertical sidebar
+'\"	# ^Y = starting y location
+'\"	# ^v = 1 (for troff;  for nroff this doesn't matter)
+.de VS
+.if !"\\$2"" .br
+.mk ^Y
+.ie n 'mc \s12\(br\s0
+.el .nr ^v 1u
+..
+'\"	# VE - end of vertical sidebar
+.de VE
+.ie n 'mc
+.el \{\
+.ev 2
+.nf
+.ti 0
+.mk ^t
+\h'|\\n(^lu+3n'\L'|\\n(^Yu-1v\(bv'\v'\\n(^tu+1v-\\n(^Yu'\h'-|\\n(^lu+3n'
+.sp -1
+.fi
+.ev
+.\}
+.nr ^v 0
+..
+'\"	# Special macro to handle page bottom:  finish off current
+'\"	# box/sidebar if in box/sidebar mode, then invoked standard
+'\"	# page bottom macro.
+.de ^B
+.ev 2
+'ti 0
+'nf
+.mk ^t
+.if \\n(^b \{\
+.\"	Draw three-sided box if this is the box's first page,
+.\"	draw two sides but no top otherwise.
+.ie !\\n(^b-1 \h'-1.5n'\L'|\\n(^yu-1v'\l'\\n(^lu+3n\(ul'\L'\\n(^tu+1v-\\n(^yu'\h'|0u'\c
+.el \h'-1.5n'\L'|\\n(^yu-1v'\h'\\n(^lu+3n'\L'\\n(^tu+1v-\\n(^yu'\h'|0u'\c
+.\}
+.if \\n(^v \{\
+.nr ^x \\n(^tu+1v-\\n(^Yu
+\kx\h'-\\nxu'\h'|\\n(^lu+3n'\ky\L'-\\n(^xu'\v'\\n(^xu'\h'|0u'\c
+.\}
+.bp
+'fi
+.ev
+.if \\n(^b \{\
+.mk ^y
+.nr ^b 2
+.\}
+.if \\n(^v \{\
+.mk ^Y
+.\}
+..
+'\"	# DS - begin display
+.de DS
+.RS
+.nf
+.sp
+..
+'\"	# DE - end display
+.de DE
+.fi
+.RE
+.sp
+..
+'\"	# SO - start of list of standard options
+.de SO
+.SH "OPCJE STANDARDOWE"
+.LP
+.nf
+.ta 4c 8c 12c
+.ft B
+..
+'\"	# SE - end of list of standard options
+.de SE
+.fi
+.ft R
+.LP
+Zobacz dla szczegółów podręcznik \\fBoptions\\fR(n).
+..
+'\"	# OP - start of full description for a single option
+.de OP
+.LP
+.nf
+.ta 4c
+Nazwa linii poleceń:	\\fB\\$1\\fR
+Nazwa bazy danych:	\\fB\\$2\\fR
+Klasa bazy danych:	\\fB\\$3\\fR
+.fi
+.IP
+..
+'\"	# CS - begin code excerpt
+.de CS
+.RS
+.nf
+.ta .25i .5i .75i 1i
+..
+'\"	# CE - end code excerpt
+.de CE
+.fi
+.RE
+..
+.de UL
+\\$1\l'|0\(ul'\\$2
+..
+.TH expr 3tcl 8.0 Tcl "Wbudowane komendy Tcl"
+.BS
+'\" Note:  do not modify the .SH NAME line immediately below!
+.SH NAZWA
+expr \- Oblicz wyrażenie
+.SH SKŁADNIA
+\fBexpr \fIarg \fR?\fIarg arg ...\fR?
+.BE
+
+.SH OPIS
+.PP
+Łączy kolejne parametry \fIarg\fR (dodając między nimi spacje) i analizuje
+wynik jako wyrażenie Tcl, zwracając wartość. Dozwolone wyrażenia Tcl są
+podzbiorem operatorów dozwolonych w wyrażeniach C i mają takie samo
+znaczenie i pierwszeństwo, jak odpowiadające im operatory C.
+Wyrażenia dają prawie zawsze wyniki numeryczne (całkowite, lub
+zmiennoprzecinkowe). Np. wyrażenie
+.CS
+\fBexpr 8.2 + 6\fR
+.CE
+przechodzi w 14.2.
+Wyrażenia Tcl różnią się od wyrażeń C tym, że operandy są podawane w inny
+sposób. Poza tym, wyrażenia Tcl obsługują operandy nienumeryczne oraz
+porównania łańcuchów.
+.SH OPERANDY
+.PP
+Wyrażenie Tcl składa się z kombinacji operandów, operatorów i nawiasów.
+Między operandami i operatorami można używać białych spacji; są one
+ignorowane. Tam gdzie mozliwe, operandy są interpretowane jako wartości
+całkowite. Wartości całkowite można podawać dziesiętnie (normalny wypadek),
+ósemkowo (jeśli pierwszym znakiem operandu jest \fB0\fR) lub szesnastkowo
+(jeśli pierwszymi znakami operandu są \fB0x\fR).
+Jeśli operand nie jest w żadnym z powyszszych formatów całkowitych, to o ile
+jest to możliwe, jest traktowany jako liczba zmiennoprzecinkowa. Zmienne
+zmiennoprzecinkowe mogą być podawane w dowolny ze sposobów, obsługiwanych
+przez zgodny z ANSI kompilator C (poza tym, że przyrostki
+\fBf\fR, \fBF\fR, \fBl\fR i \fBL\fR w większości instalacji nie będą
+dozwolone).
+Na przykład, wszystkie następujące liczby są poprawnymi liczbami
+zmiennoprzecinkowymi: 2.1, 3., 6e4, 7.91e+16.
+Jesli nie jest możliwa interpretacja numeryczna, to operand jest
+pozostawiany jako łańcuch (wtedy jednak można stosować tylko ograniczony
+zestaw operatorów).
+.PP
+Operandy mogą być podawane w następujące sposoby:
+.IP [1]
+Jako wartość numeryczną, całkowitą albo zmiennoprzecinkową.
+.IP [2]
+Jako zmienną Tcl, przy użyciu standardowej notacji \fB$\fR.
+Wartość zmiennej zostanie wykorzystana jako operand.
+.IP [3]
+Jako łańcuch ujęty w podwójne cudzysłowy.
+Przetwarzanie wyrażenia będzie wrażliwe na podstawienia ukośnikowe,
+zmiennych i komend, i użyje wyniku jako operandu.
+.IP [4]
+Jako łańcuch ujęty w nawiasy klamrowe. Znaki między klamrą otwierającą i
+zamykającą zostaną użyte jako operand bez żadnego podstawiania.
+.IP [5]
+Jako komenda Tcl w naiwasach kwadratowych. Komenda zostanie wykonana, a jej
+wynik użyty jako operand.
+.IP [6]
+Jako funkcja matematyczna, której argumenty mają dowolną z powyższych
+postaci, taka jak \fBsin($x)\fR. Zobacz niżej dla listy zdefiniowanych
+funkcji.
+.LP
+Tam gdzie zachodzą podstawienia, są one dokonywane przez instrukcje
+wyrażenia.
+Jednak mógł też zostać już wykonany inny poziom podstawiania, dokonywany
+przez przetwarzacza poleceń przed wywołaniem przetwarzacza wyrażeń.
+Jak pokazuje poniższa dyskusja, zwykle najlepiej jest ujmować wyrażenia w
+klamry, co zapobiega by przetwarzacz dokonał podstawień zawartości.
+.PP
+Dla pewnych przykładów prostych wyrażeń, załóżmy że zmienna
+\fBa\fR ma wartość 3, a
+zmienna \fBb\fR wartość 6.
+Następnie, komenda po lewej stronie każdej z linii da wynik, widoczny po
+prawej stronie.
+.CS
+.ta 6c
+\fBexpr 3.1 + $a	6.1
+expr 2 + "$a.$b"	5.6
+expr 4*[llength "6 2"]	8
+expr {{word one} < "word $a"}	0\fR
+.CE
+.SH OPERATORY
+.PP
+Poniżej wymienione są prawidłowe operatory; są one zgrupowane według
+malejącego priorytetu:
+.TP 20
+\fB\-\0\0+\0\0~\0\0!\fR
+Jednoargumentowy minus, jednoargumentowy plis, bitowy NOT i logiczny NOT.
+Żaden z tych operatorów nie może być stosowany do operandów łańcuchowych, a
+bitowy NOT może być stosowany tylko do liczb całkowitych.
+.TP 20
+\fB*\0\0/\0\0%\fR
+Mnożenie, dzielenie, reszta. Żaden z tych operatorów nie może być stosowany
+do operandów łańcuchowych, a reszta może być stosowana tylko do liczb
+całkowitych.
+Reszta ma zawsze znak dzielnika i jej wartość absolutna jest zawsze mnijesza
+niż wartość dzielnika.
+.TP 20
+\fB+\0\0\-\fR
+Dodawanie i odejmowanie. Prawidłowe dla dowolnych operandów numerycznych.
+.TP 20
+\fB<<\0\0>>\fR
+Przesuwanie w lewo i w prawo. Prawidłowe tylko dla operandów całkowitych.
+Przesuwanie w prawo propaguje bit znaku.
+.TP 20
+\fB<\0\0>\0\0<=\0\0>=\fR
+Logiczny mniejszy, większy, mniejszy lub równy, większy lub równy.
+Każdy operator daje 1 jeśli warunek jest spełniony lub 0 w przeciwnym
+wypadku. Operandami mogą być zarówno wartości numeryczne, jak i łańcuchowe,
+w którym wypadku dokonywane jest porównywanie łańcuchów.
+.TP 20
+\fB==\0\0!=\fR
+Logiczna równość i nierówność. Każdy operator daje wynik zero/jeden.
+Prawidłowe dla wszelkich operandów.
+.TP 20
+\fB&\fR
+Bitowy AND. Prawidłowy tylko dla operandów całkowitych.
+.TP 20
+\fB^\fR
+Bitowy XOR. Prawidłowy tylko dla operandów całkowitych.
+.TP 20
+\fB|\fR
+Bitowy OR. Prawidłowy tylko dla operandów całkowitych.
+.TP 20
+\fB&&\fR
+Logiczny AND. Daje 1 jeśli obydwa operandy są niezerowe, lub 0 w przeciwnym
+wypadku.
+Prawidłowe dla operandów logicznych i numerycznych.
+.TP 20
+\fB||\fR
+Logiczny OR. Daje 0 jeśli obydwa operandy są zerowe lub 1 w przeciwnym
+wypadku. Prawidłowe dla operandów logicznych i numerycznych.
+.TP 20
+\fIx\fB?\fIy\fB:\fIz\fR
+Jeżeli-to-inaczej, jak w C. Jeśli \fIx\fR rozwija się na wartość niezerową,
+to wynikiem jest wartość \fIy\fR. W przeciwnym wypadku wartością wynikową
+jest \fIz\fR.
+Operand \fIx\fR musi mieć wartość numeryczną.
+.LP
+Zobacz podręcznik C dla dalszych szczegółów o wynikach, dawanych przez
+operatory. Wszystkie operatory binarne grupują się od lewej do prawej w tym
+samym priorytecie. Np. komenda
+.CS
+\fBexpr 4*2 < 7\fR
+.CE
+daje 0.
+.PP
+Operatory \fB&&\fR, \fB||\fR i \fB?:\fR mają ``leniwą
+analizę'', zupełnie jak w C, co znaczy, że operandy nie są analizowane jeśli
+nie ma takiej potrzeby do określenia wyniku. Np. w komendzie
+.CS
+\fBexpr {$v ? [a] : [b]}\fR
+.CE
+analizowane będzie tylko jedno z \fB[a]\fR lub \fB[b]\fR, zależnie od
+wartości \fB$v\fR. Zauważ jednak, że jest to prawdziwe tylko jeśli całe
+wyrażenie jest ujęte w nawiasy klamrowe; w przeciwnym wypadku przetwarzacz
+Tcl przemieli zarówno \fB[a]\fR jak i \fB[b]\fR jeszcze przed wywołaniem
+komendy \fBexpr\fR.
+.SH "FUNKCJE MATEMATYCZNE"
+.PP
+Tcl obsługuje następujące funkcje matematyczne wyrażeń:
+.TS
+l l l l.
+\fBacos\fR	\fBcos\fR	\fBhypot\fR	\fBsinh\fR
+\fBasin\fR	\fBcosh\fR	\fBlog\fR	\fBsqrt\fR
+\fBatan\fR	\fBexp\fR	\fBlog10\fR	\fBtan\fR
+\fBatan2\fR	\fBfloor\fR	\fBpow\fR	\fBtanh\fR
+\fBceil\fR	\fBfmod\fR	\fBsin\fR
+.TE
+
+Każda z tych funkcji woła funkcję biblioteki matematycznej o tej samej
+nazwie. Tcl ponadto implemntuje następujące funkcje dla konwersji między
+liczbami całkowitymi, zmiennoprzecinkowymi i losowania liczb losowych:
+.TP
+\fBabs(\fIarg\fB)\fR
+Zwraca wartość modułu \fIarg\fR. \fIArg\fR może być liczbą całkowitą, lub
+zmiennoprzecinkową; wynik jest zwracany w tej samej postaci.
+.TP
+\fBdouble(\fIarg\fB)\fR
+Jeśli \fIarg\fR jest liczbą zmiennoprzecinkową, zwracane jest \fIarg\fR. W
+przeciwnym wypadku \fIarg\fR jest konwertowany na postać zmiennoprzecinkową
+i zwracany w tej postaci.
+.TP
+\fBint(\fIarg\fB)\fR
+Jak wyżej, ale zamiana na liczbę całkowitą.
+.TP
+\fBrand()\fR
+Zwraca liczbę zmiennoprzecinkową w zakresie od zera do 1. Nasienie pochodzi
+z wewnętrznego zegara maszyny, lub może być ustawiane ręcznie funkcją srand.
+.TP
+\fBround(\fIarg\fB)\fR
+Jeśli \fIarg\fR jest całkowite, zwracane jest \fIarg\fR. W przeciwnym
+wypadku \fIarg\fR jest konwertowane na postać całkowitą poprzez
+zaokrąglanie.
+.TP
+\fBsrand(\fIarg\fB)\fR
+Parametr \fIarg\fR, który musi być liczbą całkowitą, służy do resetowania
+nasienia generatora liczb losowych. Zwraca pierwszą liczbę losową dla tego
+nasienia. Każdy interpreter ma swoje własne nasienie.
+.PP
+W dodatku do tych predefiniowanych funkcji, aplikacje mogą definiować inne
+funkcje, korzystając z \fBTcl_CreateMathFunc\fR().
+.SH "TYPY, PRZEPEŁNIENIE I PRECYZJA"
+.PP
+Wszystkie obliczenia wewnętrzne na liczbach całkowitych są dokonywane w
+typie \fIlong\fR z C, a wszystkie obliczenia zmiennoprzecinkowe na typie
+\fIdouble\fR.
+Podczas konwersji łańcucha na liczbę zmiennoprzecinkową, wykrywane jest
+przepełnienie eksponentne, co powoduje błąd Tcl.
+Dla konwersji łańcucha na liczbę całkowitą, wykrywanie przepełnienia zależy
+od zachowania pewnych funkcji biblioteki C, więc raczej nie można na tym
+polegać.
+.PP
+Konwersja między reprezentacjami całkowitymi, zmiennoprzecinkowymi i
+łańcuchowymi operandów jest wykonywana automatycznie tam gdzie potrzeba.
+Dla obliczeń arytmetycznych zmienne całkowite są używane tak długo, aż nie
+pojawi się liczba zmiennoprzecinkowa i wtedy zaczyna się używanie liczb
+zmiennoprzecinkowych.
+Na przykład,
+.CS
+\fBexpr 5 / 4\fR
+.CE
+zwraca 1, podczas gdy
+.CS
+\fBexpr 5 / 4.0\fR
+\fBexpr 5 / ( [string length "abcd"] + 0.0 )\fR
+.CE
+zwraca 1.25.
+Wartości zmiennoprzecinkowe są zawsze zwracane z ``\fB.\fR'' lub \fBe\fR,
+więc nie wyglądają jak liczby całkowite. Na przykład,
+.CS
+\fBexpr 20.0/5.0\fR
+.CE
+zwraca \fB4.0\fR, nie \fB4\fR.
+
+.SH "OPERACJE ŁAŃCUCHOWE"
+.PP
+Jeśli jeden z operandów porównania jest łańcuchem, a drugi ma wartość
+numeryczną, to operand numeryczny jest konwertowany z użyciem formatu
+\fB%d\fR lub \fB%g\fR funkcji \fIsprintf\fR(3) języka C z powrotem na łańcuch. 
+Na przykład komendy
+.CS
+\fBexpr {"0x03" > "2"}\fR
+\fBexpr {"0y" < "0x12"}\fR
+.CE
+zwracają 1. Pierwsze porównanie jest dokonywane w porównaniu całkowitym, a
+drugie w porównaniu łańcuchowym, po przekonwertowaniu drugiego operandu na
+łańcuch \fB18\fR.
+Ponieważ Tcl ma tendencje do traktowania wartości tam gdzie możliwe jako
+liczby, to używanie operatorów \fB==\fR i podobnych nie jest dobrym
+pomysłem, jeśli naprawdę chcesz porównania łańcuchowego; lepiej użyć komendy
+\fBstring compare\fR.
+
+.SH "ROZWAŻANIA O WYDAJNOŚCI"
+.VS
+.PP
+Jeśli chcesz jak największej szybkości i najmniejszego zajmowania pamięci,
+ujmuj wyrażenia w klamry. Umożliwia to kompilatorowi kodu bitowego
+Tcl wygenerowanie jak najlepszego kodu.
+.PP
+Jak wspomniano wyżej, w wyrażeniach dokonuje się dwóch podstawień:
+raz przez przetwarzacz Tcl, raz przez komendę \fBexpr\fR.
+Na przykład, komendy
+.CS
+\fBset a 3\fR
+\fBset b {$a + 2}\fR
+\fBexpr $b*4\fR
+.CE
+zwracają 11, a nie wielokrotność 4.
+Jest tak dlatego, że przetwarzacz Tcl najpierw podstawia za \fB$a + 2\fR
+zmienną \fBb\fR, a następnie komenda \fBexpr\fR przetwarza wyrażanie
+\fB$a + 2*4\fR.
+.PP
+Większość wyrażeń nie wymaga drugiej kolejki podstawień. Są one albo
+ujmowane w klamry, albo ich proces podstawiania zmiennych i komend daje
+liczby i łańcuchy, nie wymagające podstawień jako takich. Jednak z uwagi na
+to, że nieuklamrowione wyrażenia wymagają dwóch rund podstawień, kompilator
+kodu bitowego musi emitować dodatkowe instrukcje obsługi takiej sytuacji.
+Najkosztowniejszy kod generowany jest dla nieuklamrowionych wyrażeń, które
+zawierają podstawienia komend. Wyrażenia te muszą być implementowane przez
+generowanie nowego kodu za każdym wykonaniem wyrażenia.
+.VE
+
+.SH SŁOWA KLUCZOWE
+arytmetyka, logiczny, porównanie, wyrażenie, porównanie rozmyte

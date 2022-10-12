@@ -1,0 +1,250 @@
+.\" Copyright (c) 1997 Wolfgang Helbig
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\" $FreeBSD: head/usr.bin/ncal/ncal.1 267773 2014-06-23 08:23:05Z bapt $
+.\"
+.Dd March 14, 2009
+.Dt CAL 1
+.Os
+.Sh NAME
+.Nm cal ,
+.Nm ncal
+.Nd displays a calendar and the date of Easter
+.Sh SYNOPSIS
+.Nm
+.Op Fl 31jy
+.Op Fl A Ar number
+.Op Fl B Ar number
+.Op Fl d Ar yyyy-mm
+.Oo
+.Op Ar month
+.Ar year
+.Oc
+.Nm
+.Op Fl 31j
+.Op Fl A Ar number
+.Op Fl B Ar number
+.Op Fl d Ar yyyy-mm
+.Fl m Ar month
+.Op Ar year
+.Nm ncal
+.Op Fl C
+.Op Fl 31jy
+.Op Fl A Ar number
+.Op Fl B Ar number
+.Op Fl d Ar yyyy-mm
+.Oo
+.Op Ar month
+.Ar year
+.Oc
+.Nm ncal
+.Op Fl C
+.Op Fl 31j
+.Op Fl A Ar number
+.Op Fl B Ar number
+.Op Fl d Ar yyyy-mm
+.Fl m Ar month
+.Op Ar year
+.Nm ncal
+.Op Fl 31bhjJpwySM
+.Op Fl A Ar number
+.Op Fl B Ar number
+.Op Fl H Ar yyyy-mm-dd
+.Op Fl d Ar yyyy-mm
+.Op Fl s Ar country_code
+.Oo
+.Op Ar month
+.Ar year
+.Oc
+.Nm ncal
+.Op Fl 31bhJeoSM
+.Op Fl A Ar number
+.Op Fl B Ar number
+.Op Fl d Ar yyyy-mm
+.Op Ar year
+.Sh DESCRIPTION
+The
+.Nm
+utility displays a simple calendar in traditional format and
+.Nm ncal
+offers an alternative layout, more options and the date of Easter.
+The new format is a little cramped but it makes a year fit
+on a 25x80 terminal.
+If arguments are not specified,
+the current month is displayed.
+.Pp
+The options are as follows:
+.Bl -tag -width indent
+.It Fl h
+Turns off highlighting of today.
+.It Fl J
+Display Julian Calendar, if combined with the
+.Fl o
+option, display date of Orthodox Easter according to the Julian Calendar.
+.It Fl e
+Display date of Easter (for western churches).
+.It Fl j
+Display Julian days (days one-based, numbered from January 1).
+.It Fl m Ar month
+Display the specified
+.Ar month .
+If
+.Ar month
+is specified as a decimal number, appending
+.Ql f
+or
+.Ql p
+displays the same month of the following or previous year respectively.
+.It Fl o
+Display date of Orthodox Easter (Greek and Russian
+Orthodox Churches).
+.It Fl p
+Print the country codes and switching days from Julian to Gregorian
+Calendar as they are assumed by
+.Nm ncal .
+The country code as determined from the local environment is marked
+with an asterisk.
+.It Fl s Ar country_code
+Assume the switch from Julian to Gregorian Calendar at the date
+associated with the
+.Ar country_code .
+If not specified,
+.Nm ncal
+tries to guess the switch date from the local environment or
+falls back to September 2, 1752.
+This was when Great
+Britain and her colonies switched to the Gregorian Calendar.
+.It Fl w
+Print the number of the week below each week column.
+.It Fl y
+Display a calendar for the specified year. This option is implied when
+a year but no month are specified on the command line.
+.It Fl 3
+Display the previous, current and next month surrounding today.
+.It Fl 1
+Display only the current month. This is the default. 
+.It Fl A Ar number
+Months to add after. The specified number of months is added to the
+end of the display. This is in addition to any date range selected by the
+.Fl y ,
+.Fl 3 ,
+or
+.Fl 1
+options. For example,
+.Dq Li cal -y -B2 -A2
+shows everything from November of the previous year to
+February of the following year. Negative numbers are allowed, in which
+case the specified number of months is subtracted. For example, 
+.Dq Li cal -y -B-6 
+shows July to December. And 
+.Dq Li cal -A11
+simply shows the next 12 months.
+.It Fl B Ar number
+Months to add before. The specified number of months is added to the 
+beginning of the display. See
+.Fl A
+for examples.
+.It Fl C
+Completely switch to
+.Nm cal
+mode. For
+.Nm cal
+like output only, use
+.Fl b
+instead.
+.It Fl N
+Switch to
+.Nm ncal
+mode.
+.It Fl d Ar yyyy-mm
+Use
+.Ar yyyy-mm
+as the current date (for debugging of date selection).
+.It Fl H Ar yyyy-mm-dd
+Use
+.Ar yyyy-mm-dd
+as the current date (for debugging of highlighting).
+.It Fl M
+Weeks start on Monday.
+.It Fl S
+Weeks start on Sunday.
+.It Fl b
+Use oldstyle format for ncal output.
+.El
+.Pp
+A single parameter specifies the year (1\(en9999) to be displayed;
+note the year must be fully specified:
+.Dq Li cal 89
+will
+.Em not
+display a calendar for 1989.  Two parameters denote the month and
+year; the month is either a number between 1 and 12, or a full or
+abbreviated name as specified by the current locale.  Month and
+year default to those of the current system clock and time zone (so
+.Dq Li cal -m 8
+will display a calendar for the month of August in the current
+year).
+.Pp
+Not all options can be used together. For example, the options 
+.Fl y , 3 , 
+and 
+.Fl 1 
+are mutually exclusive. If inconsistent options are given, the later
+ones take precedence over the earlier ones.
+.Pp
+A year starts on January 1.
+.Pp
+Highlighting of dates is disabled if stdout is not a tty.
+.Sh SEE ALSO
+.Xr calendar 3 ,
+.Xr strftime 3
+.Sh HISTORY
+A
+.Nm
+command appeared in
+.At v5 .
+The
+.Nm ncal
+command appeared in
+.Fx 2.2.6 .
+The output of the
+.Nm cal
+command is supposed to be bit for bit compatible to the original Unix
+.Nm cal
+command, because its output is processed by other programs like CGI scripts,
+that should not be broken. Therefore it will always output 8 lines, even if
+only 7 contain data. This extra blank line also appears with the original
+.Nm cal
+command, at least on Solaris 8
+.Sh AUTHORS
+The
+.Nm ncal
+command and manual were written by
+.An Wolfgang Helbig Aq Mt helbig@FreeBSD.org .
+.Sh BUGS
+The assignment of Julian\(enGregorian switching dates to country
+codes is historically naive for many countries.
+.Pp
+Not all options are compatible and using them in different orders
+will give varying results.

@@ -1,0 +1,503 @@
+.\" {PTM/PB/0.1/02-04-1999/"pobierz/ustaw informacje o porcie szeregowym"}
+.\" Translation 1999,2000 Przemek Borys <pborys@dione.ids.pl>
+.\" Buu... Znowu trudny tekst :(
+.\" Copyright 1992, 1993 Rickard E. Faith (faith@cs.unc.edu)
+.\" May be distributed under the GNU General Public License
+.\" Portions of this text are from the README in setserial-2.01.tar.z,
+.\" but I can't figure out who wrote that document.  If anyone knows,
+.\" please tell me
+.\"
+.\" [tytso:19940519.2239EDT]  I did... - Ted Ts'o (tytso@mit.edu)
+.\" Sat Aug 27 17:08:38 1994 Changes from Kai Petzke
+.\" (wpp@marie.physik.tu-berlin.de) were applied by Rik Faith
+.\" (faith@cs.unc.edu)
+.\" "
+.TH SETSERIAL 8 "Styczeń 2000" "Setserial 2.17" "Podręcznik programisty linuksowego"
+.SH NAZWA
+setserial \- pobierz/ustaw informacje o porcie szeregowym
+.SH SKŁADNIA
+.B setserial
+.B "[ \-abqvVWz ]"
+device
+.BR "[ " parameter1 " [ " arg " ] ] ..."
+
+.B "setserial -g"
+.B "[ \-abGv ]"
+device1 ...
+.SH OPIS
+.B setserial
+jest programem przeznaczonym do ustawiania i/lub raportowania danych
+konfiguracyjnych związanych z portem szeregowym. Dane te zawierają
+port I/O, numer IRQ, to czy klawisz break powinien być interpretowany jako
+Secure Attention Key, itd.
+
+Podczas normalnego bootowania, inicjalizowane są jedynie porty COM 1-4;
+używane są przy tym domyślne wartości portów I/O i IRQ. Aby zainicjalizować
+dodatkowe porty szeregowe, lub aby zmienić konfiguracje portów 1-4, musisz
+użyć programu
+.BR setserial .
+Zazwyczaj jest on wołany ze skryptu
+.IR rc.serial ,
+który z kolei jest normalnie uruchamiany z
+.IR /etc/rc.local .
+
+Argument(y)
+.I device
+określa, które urządzenie szeregowe ma być skonfigurowane lub odpytane.
+Zazwyczaj przyjmuje postać
+.BR /dev/cua[0-3] .
+
+Bez parametrów,
+.B setserial
+drukuje rodzaj portu np. 8250, 16450, 16550, 16550A), sprzętowy port I/O,
+sprzętową linię IRQ, szybkość i niektóre flagi operacyjne.
+
+Przy podanej opcji
+.BR \-g ,
+argumenty setserial są interpretowane jako lista urządzeń, dla których
+należy wydrukować charakterystykę.
+
+Bez opcji
+.BR \-g ,
+pierwszy argument jest interpretowany jako urządzenie do
+zmodyfikowania lub do wydrukowania charakterystyki, a dodatkowe argumenty
+interpretowane są jako parametry, które powinny być zaaplikowane do tego
+urządzenia.
+
+W większości wypadków wymagane są uprawnienia superużytkownika. Jednak kilka
+opcji portów mogą ustawiać zwykli użytkownicy i opcje te zostaną zaznaczone
+jako wyjątki w tym podręczniku.
+
+.SH OPCJE
+.B Setserial
+przyjmuje następujące opcje:
+
+.TP
+.B \-a
+Podczas raportowania konfiguracji urządzenia szeregowego, drukuj wszelkie
+dostępne informacje.
+.TP
+.B \-b
+Podczas raportowania konfiguracji urządzenia szeregowego, drukuj
+zestawienie konfiguracji urządzenia, które może być wystarczające do
+wypisania podczas procesu bootowania w skrypcie /etc/rc.
+.TP
+.B \-G
+Wydrukuj informację o konfiguracji portu szeregowego w postaci, która może
+zostać zassana do setseriala jako argumenty linii poleceń.
+.TP
+.B \-q
+Bądź cicho.
+.B Setserial
+wydrukuje wtedy mniej linii na wyjściu.
+.TP
+.B \-v
+Bądź gadatliwy.
+.B Setserial
+wydrukuje wtedy dodatkowy status na wyjściu.
+.TP
+.B \-V
+Wyświetl wersję i zakończ.
+.TP
+.B \-W
+Dokonaj dzikiej inicjalizacji przerwań i zakończ. Opcja ta nie jest istotna
+w jądrach po wersji 2.1.
+.TP
+.B \-z
+Zeruj flagi szeregowe przed rozpoczęciem ich ustawiania. Jest to związane z
+automatycznym zachowywaniem flag szeregowych z flagą \-G.
+
+.SH PARAMETRY
+Portowi szeregowemu można przyznać niżej wymienione parametry.
+
+Wszystkie wartości argumentów są wartościami dziesiętnymi, chyba że
+poprzedzone są "0x".
+
+.TP
+.BR port " port_number"
+Opcja
+.B port
+ustawia port I/O, jak opisano wyżej.
+.TP
+.BR irq " irq_number"
+Opcja
+.B irq
+ustawia sprzętowe IRQ, jak opisano wyżej.
+.TP
+.BR uart " uart_type"
+Opcja ta jest używana do ustawienia typu UART-a. Dozwolone typy to
+.BR none ,
+8250, 16450, 16550, 16550A, 16650, 16650V2, 16654, 16750, 16850, 16950,
+i 16954.
+Użycie typu UART
+.B none
+wyłączy port.
+
+Niektóre modemy wewnętrzne są oznaczone jako mające "UART 16550A z buforem 1K"
+Jest to kłamstwo. Nie mają w rzeczywistości UART-a kompatybilnego z 16550A;
+zamiast niego mają UART kompatybilny z 16450 z 1K buforem odbiorczym dla
+zapobiegania spustoszeniom u odbiorcy. Jest to istotne, ponieważ nie mają
+one transmitującego FIFO. Dlatego nie są kompatybilne z UART-em 16550A i
+proces autokonfiguracji zidentyfikuje je prawidłowo jako 16450. Jeśli
+spróbujesz obejść to, używając parametru
+.BR uart ,
+pojawią się porzucone znaki podczas transmisji plików. UART-y te mają zwykle
+inne problemy: parametr
+.B skip_test
+powinien być również często podawany.
+.TP
+.B autoconfig
+Gdy podano ten parametr,
+.B setserial
+poprosi jądro o próbę automatycznego skonfigurowania portu szeregowego. Port
+I/O musi być ustawiony prawidłowo; jądro spróbuje określić typ UART, a
+dodatkowo jeśli podano parametr
+.BR auto_irq ,
+Linux spróbuje też automatycznie określić IRQ.
+Parametr
+.B autoconfig
+powinien być podawany po parametrach
+.BR port , auto_irq ", i " skip_test .
+.TP
+.B auto_irq
+Spróbuj podczas autokonfiguracji określić IRQ. Właściwość ta nie zawsze musi
+dać prawidłowy wynik; niektóre konfiguracje sprzętowe mogą ogłupić jądro.
+Ogólnie, bezpieczniej jest nie używać właściwości
+.BR auto_irq ,
+lecz raczej samemu podawać wartość IRQ, używając parametru
+.BR irq .
+.TP
+.B ^auto_irq
+.I Nie
+próbuj określić IRQ podczas autokonfiguracji.
+.TP
+.B skip_test
+Pomiń test UART podczas autokonfiguracji. Niektóre modemy wewnętrzne nie
+mają UART-ów kompatybilnych z National Semiconductor, lecz zamiast nich
+tanie imitacje. Niektóre z nich nie wspierają w pełni trybu detekcji
+loopback, którego używa jądro do upewnienia się, czy pod podanym adresem
+jest rzeczywiście UART. Dlatego dla niektórych modemów będzie trzeba podać
+ten parametr aby można było zainicjalizować UART prawidłowo.
+.TP
+.B ^skip_test
+.I Nie
+pomijaj testu UART podczas autokonfiguracji.
+.TP
+.BR baud_base " baud_base"
+Opcja ta ustawia podstawową prędkość (baud rate), która jest częstotliwością
+zegara podzieloną przez 16. Normalnie jest to 115200, co jest zarazem największą
+prędkością wspieraną przez UART.
+.TP
+.B
+spd_hi
+Gdy aplikacja żąda 38.4kb, używaj 57.6kb. Parametr ten może być ustawiany
+przez nieuprzywilejowanego użytkownika.
+.TP
+.B spd_vhi
+Gdy aplikacja żąda 38.4kb, używaj 115kb. Parametr ten może być ustawiany
+przez nieuprzywilejowanego użytkownika.
+.TP
+.B spd_shi
+Użyj 230kb gdy aplikacja żąda 38.4kb. Parametr ten może być podawany przez
+użytkownika nieuprzywilejowanego.
+.TP
+.B spd_warp
+Użyj 460kb gdy aplikacja żąda 38.4kb. Parametr ten może być podawany przez
+użytkownika nieuprzywilejowanego.
+.TP
+.B spd_cust
+Gdy aplikacja żąda 38.4kb, użyj ustawionego dzielnika do ustawienia
+szybkości. W tym wypadku, prędkość jest określona przez
+.B baud_base
+podzielone przez
+.BR divisor (dzielnik).
+Parametr ten może być podawany przez nieuprzywilejowanego użytkownika.
+.TP
+.B spd_normal
+Gdy aplikacja żąda 38.4kb, używaj 38.4kb. Parametr ten może być ustawiany
+przez nieuprzywilejowanego użytkownika.
+.TP
+.BR divisor " divisor"
+Opcja ta ustawia konfigurowalny dzielnik. Dzielnik będzie używany gdy
+wybrana zostanie opcja
+.BR spd_cust ,
+a port szeregowy będzie ustawiony przez aplikację na 38.4kb.
+Parametr ten może być podawany przez nieuprzywilejowanego użytkownika.
+.TP
+.B sak
+Ustaw klawisz break na Secure Attention Key.
+.TP
+.B ^sak
+wyłącz Secure Attention Key.
+.TP
+.B fourport
+Skonfiguruj port jako kartę AST Fourport.
+.TP
+.B ^fourport
+Wyłącz konfigurację AST Fourport.
+.TP
+.BR close_delay " delay"
+Podaj ilość czasu w setnych sekundy, podczas których DTR powinien zostać w
+stanie obniżonym na linii szeregowej po tym, jak urządzenie wydzwaniające
+(callout device) jest zamykane, zanim blokowane urządzenie wdzwaniające się
+(dialin device) znów podniesie DTR. Domyślną wartością tej opcji jest 50 lub
+pół sekundy.
+.TP
+.BR closing_wait " opóźnienie"
+Podaj ilość czasu w setnych sekundy, podczas której jądro powinno czekać na
+dane nadawane z portu szeregowego podczas jego zamykania. Jeśli podane
+zostanie "none", nie będzie oczekiwania. Jeśli podane zostanie "infinite",
+jądro będzie czekać w nieokreślenie długo na przybycie buforowanych danych.
+Domyślnym ustawieniem jest 3000 lub 30 sekund opóźnienia. Ta wartość
+domyślna jest wskazana dla większości urządzeń. Jeśli wybrane zostanie
+długie opóźnienie, to port szeregowy może się zawiesić na długi czas podczas
+zamykania. Jeśli wybrany będzie zbyt krótki czas, to istnieje ryzyko utraty
+danych. Jeśli urządzenie jest bardzo wolne, jak w ploterze, to można wybrać
+większe wartości.
+.TP
+.B session_lockout
+Blokuj dostęp do portu wydzwaniającego (/dev/cuaXX) na przestrzeni różnych
+sesji. To znaczy, że gdy proces otworzy port, to żaden inny proces nie może
+go już otworzyć, dopóki pierwszy proces go nie zamknie.
+.TP
+.B ^session_lockout
+Nie blokuj portu wydzwaniającego na przestrzeni sesji.
+.TP
+.B pgrp_lockout
+Blokuj port wydzwaniający (/dev/cuaXX) na przestrzeni różnych grup procesów.
+To znaczy, że gdy proces otworzył port, to żaden inny proces z innej grupy
+procesów nie może go otworzyć, dopóki ten proces go nie zamknie.
+.TP
+.B ^pgrp_lockout
+Nie blokuj portu wydzwaniającego na przestrzeni różnych grup procesów.
+.TP
+.B hup_notify
+Poinformuj proces blokowany na otwieraniu linii wdzwaniającej, gdy
+proces skończy używać linii wydzwaniającej (zarówno przez zamknięcie jej,
+lub przez zawieszenie jej) przez zwrócenie (funkcji?) open EAGAIN.
+
+Zastosowanie tego parametru odnosi się do getty, które są blokowane na
+liniach wdzwaniających portów szeregowych. Umożliwia to getty zresetowanie
+modemu (który może mieć dzięki aplikacji używającej urządzenia wydzwaniającego
+zmienioną konfigurację) przed ponownym blokowaniem.
+.TP
+.B ^hup_notify
+Nie informuj procesu blokowanego na otwieraniu linii wdzwaniającej, gdy
+urządzenie wydzwaniające jest odwieszone.
+.TP
+.B split_termios
+Traktuj ustawienia termios używane przez urządzenie wydzwaniające i
+ustawienia urządzenia wdzwaniającego osobno.
+.TP
+.B ^split_termios
+Używaj tej samej struktury termios do przechowywania ustawień urządzenia
+wdzwaniającego i wydzwaniającego.
+.TP
+.B callout_nohup
+Jeśli dany port szeregowy jest otworzony jako urządzenie wydzwaniające, nie
+odwieszaj tty gdy porzucony zostanie CD.
+.TP
+.B ^callout_nohup
+Nie pomijaj odwieszania tty gdy port szeregowy jest otworzony jako
+urządzenie wydzwaniające. Oczywiście musi być włączona flaga HUPCL termios,
+jeśli odwieszenie ma się pojawić.
+.TP
+.B low_latency
+Minimalizuj opóźnienia odbioru z urządzenia szeregowego kosztem 
+większego zaangażowania CPU. (Normalnie jest 5-10ms opóźnienie nim znaki
+zostaną przekazane dyscyplinie linii.) Jest to domyślnie wyłączone, lecz
+niektóre aplikacje czasu rzeczywistego mogą tego potrzebować.
+.TP
+.B ^low_latency
+Optymalizuj efektywne przetwarzanie przez CPU znaków szeregowych kosztem
+płacenia średniego opóźnienia 5-10ms nim znaki zostaną przetworzone. Jest to
+domyślne.
+
+.SH ROZWAŻANIA O KONFIGUROWANIU PORTÓW SZEREGOWYCH
+Ważnym jest, by zauważyć iż setserial zwyczajnie mówi jądru Linuksa, gdzie
+powinien spodziewać się znaleźć port I/O i linie IRQ określonego portu
+szeregowego. Nie konfiguruje on sprzętu! Aby to uczynić, musisz fizycznie
+zaprogramować kartę szeregową, zazwyczaj przez przestawienie zworek, lub
+przełączenie przełączników DIP.
+
+Sekcja ta udostępni pewne wskazówki pomocne w decydowaniu jak skonfigurować
+porty szeregowe.
+
+"Standardowe powiązania MS-DOS" zostały pokazane niżej:
+
+.nf
+.RS
+/dev/ttyS0 (COM1), port 0x3f8, irq 4
+/dev/ttyS1 (COM2), port 0x2f8, irq 3
+/dev/ttyS2 (COM3), port 0x3e8, irq 4
+/dev/ttyS3 (COM4), port 0x2e8, irq 3
+.RE
+.fi
+
+Z powodu ograniczeń w projekcie architektury szyn AT/ISA, normalnie linia
+IRQ nie może być dzielona między dwoma lub więcej portami szeregowymi. Jeśli
+spróbujesz tak zrobić, jeden lub obydwa z tych portów staną się niedostępne,
+gdy spróbujesz używać ich naraz. Ograniczenie to można obejść przez specjalne
+wieloportowe karty szeregowe, które są skonstruowane do dzielenia wielu
+portów szeregowych na jednej linii IRQ. Karty wspierane przez Linuksa
+zawierają AST FourPort, Accent Async, Usenet Serial II, Bocaboard BB-1004,
+BB-1008, i BB-2016, oraz HUB-6.
+
+Wybór alternatywnej linii IRQ jest trudny, gdyż prawie wszystkie z nich są
+już w użytku. Następująca tabela zawiera wykaz "standardowych przydziałów
+MS-DOS" dla linii IRQ:
+
+.nf
+.RS
+IRQ 3: COM2
+IRQ 4: COM1
+IRQ 5: LPT2
+IRQ 7: LPT1
+.RE
+.fi
+
+Wiele osób uważa, że IRQ 5 jest dobrym wyborem, zakładając że w komputerze
+aktywny jest tylko jeden port równoległy. Innym dobrym wyborem jest IRQ 2
+(aka IRQ 9); chociaż to IRQ jest czasem używane przez karty sieciowe i
+bardzo rzadko przez karty VGA (dla przerwania vertical retrace). Jeśli twoja
+karta VGA jest tak skonfigurowana, spróbuj to wyłączyć, tak być mógł
+wykorzystać to IRQ dla innej karty. Nie jest to niezbędne pod GNU/Linuksem i
+większością innych systemów operacyjnych.
+
+Jedynymi innymi dostępnymi liniami IRQ są 3, 4 i 7, a są one prawdopodobnie
+używane przez inne porty szeregowe i równoległe. (Jeśli twoja karta
+szeregowa ma 16-bitowy edge connector i wspiera wyższe numery IRQ, to
+dostępne sa też IRQ 10, 11, 12 i 15.)
+
+W maszynach klasy AT, IRQ 2 jest widziane jako IRQ 9 i Linux interpretuje je
+w ten sposób.
+
+Przerwania inne niż 2 (9), 3, 4, 5, 7, 10, 11, 12, i 15,
+.I nie
+powinny być używane, gdyż są przyznane innym elementom sprzętowym i ogólnie
+nie mogą być zmieniane. Oto "standardowe" przyznania:
+
+.nf
+.RS
+IRQ  0      Kanał timera 0
+IRQ  1      Klawiatura
+IRQ  2      Kaskada kontrolera 2
+IRQ  3      Port szeregowy 2
+IRQ  4      Port szeregowy 1
+IRQ  5      Port równoległy 2 (Zarezerwowane w PS/2)
+IRQ  6      Stacja dysków
+IRQ  7      Port równoległy 1
+IRQ  8      Zegar czasu rzeczywistego
+IRQ  9      Przekierowane na IRQ2
+IRQ 10      Zarezerwowane
+IRQ 11      Zarezerwowane
+IRQ 12      Zarezerwowane (Pomocnicze urządzenie w PS/2)
+IRQ 13      Koprocesor matematyczny
+IRQ 14      Kontroler dysku twardego
+IRQ 15      Zarezerwowane
+.RE
+.fi
+
+
+.SH KONFIGURACJA WIELOPORTOWA
+
+Niektóre wieloportowe układy szeregowe, dzielące wiele portów na jednym IRQ
+używają jednego lub więcej portów do określania czy są tam aktywne porty,
+które należy obsłużyć. Jeśli twój układ wieloportowy obsługuje te porty, to
+powinieneś z nich skorzystać aby zapobiec potencjalnym zablokowaniom, gdy
+zginie przerwanie.
+
+Aby ustawić te porty, musisz przekazać
+.B set_multiport
+jako parametr i wypisać za nim parametry wieloportowe. Parametry
+wieloportowe przybierają postać podania sprawdzanego
+.IR portu ,
+.IR maski ,
+wskazującej, które bity rejestru są znaczące oraz, ostatecznie parametru
+.IR dopasowania ,
+(match), określającego, które bity znaczące tego rejestru muszą pasować, gdy
+nie ma już niczego do zrobienia.
+
+Można podać do czterech takich kombinacji. Pierwsze kombinacje powinny być
+podawane przez ustawianie parametrów
+.BR port1 ,
+.BR mask1 
+i
+.BR match1 .
+Następne przez ustawianie
+.BR port2 ,
+.BR mask2 
+i
+.BR match2 ,
+itd. Aby wyłączyć sprawdzanie wieloportowe, ustaw
+.B port1
+na zero.
+
+Aby obejrzeć bieżące ustawienia wieloportowe, podaj w linii poleceń parametr
+.BR get_multiport .
+
+Oto pewne ustawienia wieloportowe dla popularnych układów szeregowych:
+
+.nf
+.RS
+AST FourPort    port1 0x1BF mask1 0xf match1 0xf
+
+Boca BB-1004/8  port1 0x107 mask1 0xff match1 0
+
+Boca BB-2016    port1 0x107 mask1 0xff match1 0
+                port2 0x147 mask2 0xff match2 0
+.RE
+.fi
+
+.SH Konfiguracja ESP Hayesa
+.B Setserial
+może być również używany do konfigurowania portów na układzie ESP Hayesa.
+.PP
+Można do tego używać następujących parametrów:
+.TP
+.B rx_trigger
+Jest to poziom wyzwalania (w bajtach) FIFO odbiorczego. Większe wartości
+powodują mniej przerwań i lepszą wydajność; jednak zbyt duże wartości
+powodują utratę danych. Dostępne wartości to 1 do 1023.
+.TP
+.B tx_trigger
+Jest to poziom wyzwalania (w bajtach) FIFO nadawczego. Większe wartości mogą
+powodować mniej przerwań i lepszą wydajność; jednak zbyt duże wartości
+powodują zdegradowaną wydajność nadawania. Dostępne wartości to 1 do 1023.
+.TP
+.B flow_off
+Jest to poziom (w bajtach) przy którym port ESP zrobi "flow off" dla
+zdalnego nadajnika (tj. powie mu by przestał nadawać więcej
+bajtów). Dostępne wartości to 1 do 1023. Wartość ta powinna być większa od
+poziomu wyzwalania odbiorczego i poziomu flow on.
+.TP
+.B flow_on
+Jest to poziom (w bajtach) przy którym port ESP zrobi "flow on" dla zdalnego
+nadajnika (tzn. powie mu by wznowił nadawanie bajtów) po "flow off".
+Dostępne wartości to 1 do 1023. Wartość ta powinna być mniejsza niż poziom
+"flow off", lecz większa niż poziom wyzwalania odbiorczego.
+.TP
+.B rx_timeout
+Jest to ilość czasu, przez którą port ESP powinien czekać po odebraniu
+ostatniego znaku przed sygnalizowaniem przerwania. Prawidłowe wartości to 0
+do 255. Zbyt duża wartość zwiększy opóźnienia, a zbyt mała spowoduje
+niepotrzebne przerwania.
+
+.SH UWAGA
+UWAGA: Skonfigurowanie portu szeregowego tak, by używał nieprawidłowego
+portu I/O może zablokować twoją maszynę.
+.SH PLIKI
+.BR /etc/rc.local
+.BR /etc/rc.serial
+.SH "ZOBACZ TAKŻE"
+.BR tty (4),
+.BR ttys (4),
+kernel/chr_drv/serial.c
+.SH AUTOR
+Oryginalna wersja setserial została napisana przez Ricka Sladkeya
+(jrs@world.std.com) i została zmodyfikowana przez Michaela K. Johnsona
+(johnsonm@stolaf.edu).
+
+Ta wersja została od tej pory napisana ponownie od zera przez Theodore Ts'o
+(tytso@mit.edu) 1/1/93. Wszelkie błędy i problemy są wyłącznie jego
+odpowiedzialnością.

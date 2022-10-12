@@ -1,0 +1,1525 @@
+.rn '' }`
+.\" $RCSfile: perlop.1,v $$Revision: 1.7 $$Date: 2000/10/22 16:15:28 $
+.\"
+.\" $Log: perlop.1,v $
+.\" Revision 1.7  2000/10/22 16:15:28  wojtek2
+.\" wiodące (spacje, zera etc.)->początkowe
+.\" kontrolne (znaki, sekwencje)->sterujące
+.\" także "klawisze kontrolne" (Ctrl+klaw.)->klawisze sterujące
+.\"
+.\" Revision 1.6  1999/08/06 10:51:05  wojtek2
+.\" Pokuta: napis->łańcuch
+.\" rekursja->rekurencja
+.\" inne drobne
+.\"
+.\" Revision 1.5  1999/08/03 11:07:22  wojtek2
+.\" bistable->dwustanowy
+.\" przeważniei " xx rather than yy" -> "xx zamiast yy"
+.\"
+.\" Revision 1.4  1999/08/02 12:08:52  pborys
+.\" string->napis
+.\" shell->powłoka
+.\" kernel->jądro
+.\"
+.\" Revision 1.3  1999/07/31 19:18:55  pborys
+.\" zmiana slashy na ukośniki
+.\"
+.\" Revision 1.2  1999/07/31 15:27:30  pborys
+.\" korekszkenz
+.\"
+.\" Revision 1.1  1999/07/31 12:04:58  pborys
+.\" slownik -- słownik, narazie niech będzie w PTM, ew. później zrobi się
+.\" osobne repozytorium. Poddaję pod ew. dyskusję jego format itp. (póki jest
+.\" mały :)
+.\" perlop.1 -- wersja beta, narazie skończyłem tłumaczyć, ale jeszcze nie
+.\" przeglądałem, a od błędów pewnie się tam roi :(
+.\"
+.\"
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+.\"
+.\"
+.\"     Set up \*(-- to give an unbreakable dash;
+.\"     string Tr holds user defined translation string.
+.\"     Bell System Logo is used as a dummy character.
+.\"
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+.\"   \*(M", \*(S", \*(N" and \*(T" are the equivalent of
+.\"   \*(L" and \*(R", except that they are used on ".xx" lines,
+.\"   such as .IP and .SH, which do another additional levels of
+.\"   double-quote interpretation
+.ds M" """
+.ds S" """
+.ds N" """""
+.ds T" """""
+.ds L' '
+.ds R' '
+.ds M' '
+.ds S' '
+.ds N' '
+.ds T' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds M" ``
+.ds S" ''
+.ds N" ``
+.ds T" ''
+.ds L' `
+.ds R' '
+.ds M' `
+.ds S' '
+.ds N' `
+.ds T' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH PERLOP 1 "perl 5.004, patch 01" "7/Jun/97" "Podręcznik programisty perla"
+.IX Title "PERLOP 1"
+.UC
+.IX Name "perlop - Perl operators and precedence"
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH "NAZWA"
+.IX Header "NAME"
+perlop \- operatory perla i priorytety
+.SH "STRESZCZENIE"
+.IX Header "SYNOPSIS"
+Operatory perla mają następujące związki i priorytety, wymienione od
+najwyższych do najniższych. Zauważ, że wszystkie operatory pożyczone z C
+zachowują tamtejsze związki, choć te konwencje są trochę skopane.
+(Ułatwia to naukę perla programistom C.) Poza paroma wyjątkami, wszystkie
+one operują na wartościach skalarnych, nie tablicowych.
+.PP
+.Vb 24
+\&    lewe        wyrażenia i lewostronne operatory list
+\&    lewe        ->
+\&    niezwiązane ++ --
+\&    prawe       **
+\&    prawe       ! ~ \e and jednoargumentowy + and -
+\&    lewe        =~ !~
+\&    lewe        * / % x
+\&    lewe        + - .
+\&    lewe        << >>
+\&    niezwiązane nazwane operatory jednoargumentowe
+\&    niezwiązane < > <= >= lt gt le ge
+\&    niezwiązane == != <=> eq ne cmp
+\&    lewe        &
+\&    lewe        | ^
+\&    lewe        &&
+\&    lewe        ||
+\&    niezwiązane ..  ...
+\&    prawe       ?:
+\&    prawe       = += -= *= etc.
+\&    lewe        , =>
+\&    niezwiązane prawostronne operatory list
+\&    prawe       not
+\&    lewe        and
+\&    lewe        or xor
+.Ve
+W następujących sekcjach, operatory te są opisane w kolejności
+priorytetowej.
+.SH "OPIS"
+.IX Header "DESCRIPTION"
+.Sh "Wyrażenia i lewostronne operatory list"
+.IX Subsection "Terms and List Operators (Leftward)"
+Wyrażenie ma w perlu najwyższy priorytet. Są to zmienne, cytaty,
+operatory w rodzaju cytatów, dowolne wyrażenie w nawiasach, i dowolna
+funkcja, której argumenty są umieszczone w nawiasach. W rzeczywistości, w
+perlu nie ma tak naprawdę funkcji w ogólnym sensie, są tylko operatory
+listowe i operatory jednoargumentowe, zachowujące się jak funkcje, bo
+ustawiasz wokół nich nawiasy. Są one opisane w podręczniku
+\fIperlfunc\fR(1).
+.PP
+Jeśli dowolny operator listowy (\fIprint()\fR itp.), lub dowolny operator
+jednoargumentowy (\fIchdir()\fR) ma za sobą lewy nawias, to operator i
+argumenty z nawiasów są brane w najwyższym priorytecie, tak jak przy
+normalnym wywołaniu funkcji.
+.PP
+Gdy nawiasy nie są podane, priorytet operatorów listowych w rodzaju
+\f(CWprint\fR, \f(CWsort\fR, lub \f(CWchmod\fR 
+jest albo bardzo wysoki, albo bardzo niski, zależnie od tego czy patrzysz na
+lewą stronę, czy na prawą stronę operatora.
+Na przykład w
+.PP
+.Vb 2
+\&    @ary = (1, 3, sort 4, 2);
+\&    print @ary;         # drukuje 1324
+.Ve
+przecinki po prawej stronie sort-a są analizowane przed sortowaniem, lecz
+przecinki po lewej są analizowane później. Innymi słowy, operatory listowe
+pożerają wszystkie argumenty, które za nimi następują, a potem zachowują się
+jak proste wyrażenie, szanujące wyrażenie poprzedzające.
+Zauważ, że musisz być ostrożny z nawiasami:
+.PP
+.Vb 3
+\&    # Wykonują exit przed drukowaniem:
+\&    print($foo, exit);  # raczej nie to, czego chcesz
+\&    print $foo, exit;   # ani to
+.Ve
+.Vb 4
+\&    # Te drukują przed wykonaniem exit
+\&    (print $foo), exit; # To jest to czego chcesz
+\&    print($foo), exit;  # to też
+\&    print ($foo), exit; # nawet to
+.Ve
+Zauważ też, że
+.PP
+.Vb 1
+\&    print ($foo & 255) + 1, "\en";
+.Ve
+Prawdopodobnie nie robi tego, co oczekujesz. Zobacz sekcję o nazwanych
+operatorach jednoargumentowych.
+.PP
+Ponadto, jako wyrażenia przetwarzane są też konstrukcje \f(CWdo {}\fR i
+\f(CWeval {}\fR, a także wywołania podprocedur i metod, oraz anonimowe
+konstruktory \f(CW[]\fR i \f(CW{}\fR.
+.PP
+Zobacz też sekcję o operatorach cytowania, a także sekcję o operatorach I/O.
+.Sh "Operator strzałki"
+.IX Subsection "The Arrow Operator"
+Podobnie jak w C i \*(C+, \*(L"\f(CW->\fR\*(R" jest operatorem dereferencji.
+Jeśli prawa strona to element \f(CW[...]\fR lub \f(CW{...}\fR, to lewa
+strona musi być twardą, lub symboliczną referencją do tablicy, lub tablicy
+asocjacyjnej (lub miejsca, które jest w stanie przechowywać twardą
+referencję, jeśli jest to lwartość (przypisywalna)). Zobacz stronę
+\fIperlref\fR(1).
+.PP
+W przeciwnym wypadku, prawa strona jest nazwą metody, lub prostą zmienną
+skalarną, zawierającą nazwę metody, a lewa strona musi być albo obiektem
+(pobłogosławioną przez bless referencją), lub nazwą klasy (tj. nazwą
+pakietu).
+Zobacz stronę \fIperlobj\fR(1).
+.Sh "Auto-inkrementacja i Auto-dekrementacja"
+.IX Subsection "Auto-increment and Auto-decrement"
+\*(L"++\*(R" i \*(L"--\*(R" działają jak w C. To znaczy, jeśli są
+umieszczone przed zmienną, to inkrementują lub dekrementują zmienną przed
+zwróceniem wartości, a jeśli są umieszczone za zmienną, to powodują
+inkrementację lub dekrementację po zwróceniu wartości.
+.PP
+Operator auto-inkrementacji ma wbudowanych parę dodatkowych rzeczy. Jeśli
+inkrementujesz zmienną, która jest numeryczna, lub która była kiedykolwiek
+użyta w kontekście numerycznym, to uzyskasz normalną inkrementację. Jednak
+jeśli zmienna była używana tylko w kontekstach łańcuchowych, a jej wartość
+nie jest nullem i odpowiada wzorcowi
+\f(CW/^[a-zA-Z]*[0-9]*$/\fR, 
+to inkrementacja jest dokonywana jak na łańcuchu, zachowując każdy znak w
+zakresie, z przeniesieniem:
+.PP
+.Vb 4
+\&    print ++($foo = '99');      # drukuje '100'
+\&    print ++($foo = 'a0');      # drukuje 'a1'
+\&    print ++($foo = 'Az');      # drukuje 'Ba'
+\&    print ++($foo = 'zz');      # drukuje 'aaa'
+.Ve
+Operator autodekrementacji nie ma tych właściwości.
+.Sh "Potęga"
+.IX Subsection "Exponentiation"
+Binarny \*(L"**\*(R" jest operatorem potęgowania. Zauważ, że łączy mocniej
+niż jednoargumentowy minus, więc \-2**4 to \-(2**4), a nie (\-2)**4. 
+(Jest to zaimplementowane przy użyciu funkcji
+\fIpow\fR\|(3) z C, która w rzeczywistości działa na liczbach typu podwójnej
+precyzji.)
+.Sh "Symboliczne operatory jednoargumentowe"
+.IX Subsection "Symbolic Unary Operators"
+Jednoargumentowy \*(L"!\*(R" 
+wykonuje negację logiczną, czyli \*(L"not\*(R".  
+Zobacz też \f(CWnot\fR dla wersji o niższym priorytecie.
+.PP
+Jednoargumentowy \*(L"\-\*(R" dokonuje arytmetycznej negacji na numerycznym
+operandzie. Jeśli operand jest identyfikatorem, zwracany jest łańcuch
+składający się ze znaku minus i z identyfikatora.
+W przeciwnym wypadku, jeśli łańcuch rozpoczyna się
+znakiem plus lub minus, zwracany jest łańcuch z przeciwnym znakiem. Jednym z
+efektów tego działania jest to, że \f(CW-bareword\fR jest równoważne
+\f(CW"\-bareword"\fR.
+.PP
+Jednoargumentowy \*(L"~\*(R" dokonuje negacji bitowej.
+(Zobacz też sekcję o arytmetyce całkowitej.)
+.PP
+Jednoargumentowy \*(L"+\*(R" 
+nie daje żadnego efektu, nawet na łańcuchach. Jest przydatny do rozdzielania
+nazwy funkcji od otoczonego nawiasami wyrażenia, które w przeciwnym wypadku
+byłoby interpretowane jako całkowita lista argumentów funkcji. (Zobacz
+przykłady w sekcji o wyrażeniach i lewostronnych operatorach listowych.)
+.PP
+Jednoargumentowy \*(L"\e\*(R" tworzy referencję do tego, co po nim
+następuje. Zobacz podręcznik \fIperlref\fR(1).
+Nie myl tego zachowania z zachowaniem w łańcuchu odwrotnego ukośnika, choć obie
+postacie mają tę samą właściwość chronienia następnej rzeczy od
+interpretacji.
+.Sh "Operatory łączenia"
+.IX Subsection "Binding Operators"
+Binarny \*(L"=~\*(R" łączy wyrażenie skalarne z obsługą wyrażenia
+regularnego. 
+Pewne operacje domyślnie szukają lub zmieniają łańcuch \f(CW$_\fR.
+Operator ten powoduje, że taka operacja działa na innym łańcuchu. Prawy
+argument jest wzorcem przeszukiwania, podstawienia lub translacji. Lewy
+argument jest przeszukiwanym łańcuchem, zamiast domyślnego \f(CW$_\fR.
+Wartość zwracana określa sukces operacji. (Jeśli prawy argument jest raczej
+wyrażeniem niż wzorcem przeszukiwania, podstawiania lub translacji, to jest
+interpretowany jako wzorzec przeszukiwania czasu działania. Może to być
+mniej efektywne niż jawne szukanie, gdyż wzorzec musi być za każdym razem
+kompilowany. 
+.PP
+[Przyp. tłum: Na przykład "$lancuch="bla"; $lancuch=~s/l/q/; print $lancuch" da w
+wyniku łańcuch "bqa".]
+.PP
+Binarny \*(L"!~\*(R" jest podobny do \*(L"=~\*(R" lecz wartość zwracana jest
+logicznie negowana.
+.Sh "Operatory mnożenia"
+.IX Subsection "Multiplicative Operators"
+Binarny \*(L"*\*(R" mnoży dwie liczby.
+.PP
+Binarny \*(L"/\*(R" dzieli dwie liczby.
+.PP
+Binarny \*(L"%\*(R" oblicza resztę (modulo) z dwóch liczb. Z całkowitymi
+operandami \f(CW$a\fR i \f(CW$b\fR: jeśli \f(CW$b\fR jest dodatnie, to
+\f(CW$a % $b\fR to \f(CW$a\fR minus największa wielokrotność \f(CW$b\fR,
+która nie jest większa od
+\f(CW$a\fR.  Jeśli \f(CW$b\fR jest ujemne, to \f(CW$a % $b\fR to \f(CW$a\fR 
+minus najmniejsza wielokrotność \f(CW$b\fR, która nie jest mniejsza niż
+\f(CW$a\fR (np. wynik będzie mniejszy lub równy od zera).
+.PP
+Binarny \*(L"x\*(R" jest operatorem powtórzenia.
+W kontekście skalarnym, zwraca łańcuch składający się z lewego operanda,
+powtórzonego tyle razy, ile podano w prawym. W kontekście listowym, jeśli
+lewy operand jest listą w nawiasach, powtarzana jest lista.
+.PP
+.Vb 1
+\&    print '-' x 80;             # wydrukuj wiersz kresek
+.Ve
+.Vb 1
+\&    print "\et" x ($tab/8), ' ' x ($tab%8);      # tabuluj poprzez
+.Ve
+.Vb 2
+\&    @ones = (1) x 80;           # lista 80 jedynek
+\&    @ones = (5) x @ones;        # ustaw wszystkie elementy na 5
+.Ve
+.Sh "Operatory dodawania"
+.IX Subsection "Additive Operators"
+Binarny \*(L"+\*(R" zwraca sumę dwóch liczb.
+.PP
+Binarny \*(L"\-\*(R" zwraca różnicę dwóch liczb.
+.PP
+Binarny \*(L".\*(R" łączy (konkatenuje) łańcuchy.
+.Sh "Operatory przesuwania"
+.IX Subsection "Shift Operators"
+Binanry \*(L"<<\*(R" zwraca wartość swojego lewego argumentu, przesuniętego
+w lewo o ilość bitów, podaną w prawym argumencie. Argumenty powinny być
+liczbami całkowitymi. (Zobacz też sekcję o arytmetyce całkowitej.)
+.PP
+Binarny \*(L">>\*(R" zwraca wartość swojego lewego argumentu, przesuniętego
+w prawo o ilość bitów, podaną w prawym argumencie. Argumenty powinny być
+liczbami całkowitymi.
+.Sh "Nazwane operatory jednoargumentowe"
+.IX Subsection "Named Unary Operators"
+Różne nazwane operatory jednoargumentowe są traktowane jak jednoargumentowe
+funkcje, z opcjonalnymi nawiasami. Są to m.in testy plikowe, itp. Zobacz
+podręcznik \fIperlfunc\fR(1).
+.PP
+Jeśli za dowolnym operatorem listowym (\fIprint()\fR itp.), lub operatorem
+jednoargumentowym (\fIchdir()\fR itp.) następuje lewy nawias, to operator i
+argumenty w nawiasach są brane z najwyższym priorytetem, tak jak przy
+wywołaniu funkcji. Przykłady:
+.PP
+.Vb 4
+\&    chdir $foo    || die;       # (chdir $foo) || die
+\&    chdir($foo)   || die;       # (chdir $foo) || die
+\&    chdir ($foo)  || die;       # (chdir $foo) || die
+\&    chdir +($foo) || die;       # (chdir $foo) || die
+.Ve
+lecz ponieważ * ma wyższy priorytet niż ||:
+.PP
+.Vb 4
+\&    chdir $foo * 20;    # chdir ($foo * 20)
+\&    chdir($foo) * 20;   # (chdir $foo) * 20
+\&    chdir ($foo) * 20;  # (chdir $foo) * 20
+\&    chdir +($foo) * 20; # chdir ($foo * 20)
+.Ve
+.Vb 4
+\&    rand 10 * 20;       # rand (10 * 20)
+\&    rand(10) * 20;      # (rand 10) * 20
+\&    rand (10) * 20;     # (rand 10) * 20
+\&    rand +(10) * 20;    # rand (10 * 20)
+.Ve
+Zobacz też sekcję o wyrażeniach i lewostronnych operatorach listowych.
+.Sh "Operatory relacji"
+.IX Subsection "Relational Operators"
+Binarny \*(L"<\*(R" zwraca prawdę, jeśli lewy argument jest numerycznie
+mniejszy niż prawy.
+.PP
+Binarny \*(L">\*(R" zwraca prawdę, jeśli lewy argument jest numerycznie
+większy niż prawy.
+.PP
+Binarny \*(L"<=\*(R" zwraca prawdę, jeśli lewy argument jest numerycznie
+mniejszy lub równy prawemu.
+.PP
+Binarny \*(L">=\*(R" zwraca prawdę, jeśli lewy argument jest numerycznie
+większy lub równy prawemu.
+.PP
+Binarny \*(L"lt\*(R" zwraca prawdę, jeśli lewy argument jest łańcuchowo
+mniejszy od prawego.
+.PP
+Binarny \*(L"gt\*(R" zwraca prawdę, jeśli lewy argument jest łańcuchowo
+większy od prawego.
+.PP
+Binarny \*(L"le\*(R" zwraca prawdę, jeśli lewy argument jest łańcuchowo
+mniejszy lub równy prawemu.
+.PP
+Binarny \*(L"ge\*(R" zwraca prawdę, jeśli lewy argument jest łańcuchowo
+większy lub równy prawemu.
+.Sh "Operatory równości"
+.IX Subsection "Equality Operators"
+Binarny \*(L"==\*(R" zwraca prawdę, jeśli lewy argument jest numerycznie
+równy prawemu.
+.PP
+Binarny \*(L"!=\*(R" zwraca prawdę, jeśli lewy argument nie jest numerycznie
+równy prawemu.
+.PP
+Binarny \*(L"<=>\*(R" zwraca \-1, 0, lub 1, zależnie od tego czy lewy
+argument jest numerycznie mniejszy, równy, lub większy od prawego.
+.PP
+Binarny \*(L"eq\*(R" zwraca prawdę, jeśli lewy argument jest łańcuchowo równy
+prawemu.
+.PP
+Binarny \*(L"ne\*(R" zwraca prawdę, jeśli lewy argument nie jest łańcuchowo
+równy prawemu.
+.PP
+Binarny \*(L"cmp\*(R" zwraca \-1, 0, lub 1, zależnie od tego, czy lewy
+argument jest łańcuchowo mniejszy, równy, lub większy od prawego.
+.PP
+\*(L"lt\*(R", \*(L"le\*(R", \*(L"ge\*(R", \*(L"gt\*(R" i \*(L"cmp\*(R" 
+mogą używać kolejności sortowania, określonej przez bieżące locale (gdy
+użyte jest \f(CWuse locale\fR). Zobacz podręcznik \fIperllocale\fR(1).
+.Sh "Bitowy And"
+.IX Subsection "Bitwise And"
+Binarny \*(L"&\*(R" zwraca jego operatory, połączone bitowo operacją logiczną 
+AND.
+(Zobacz też sekcję o arytmetyce całkowitej.)
+.Sh "Bitowy Or i Xor (eXclusive Or)"
+.IX Subsection "Bitwise Or and Exclusive Or"
+Binarny \*(L"|\*(R" zwraca swoje operatory, połączone bitowo operacją
+logiczną OR. (Zobacz też sekcję o arytmetyce całkowitej).
+.PP
+Binarny \*(L"^\*(R" zwraca swoje operatory, połączone bitowo operacją XOR.
+(Zobacz też sekcję o arytmetyce całkowitej.)
+.Sh "Logiczny And w stylu C"
+.IX Subsection "C\-style Logical And"
+Binarny \*(L"&&\*(R" dokonuje logicznej operacji AND. Jeśli lewy operand
+jest fałszywy (false), to prawy nie jest nawet analizowany. Kontekst
+skalarny, lub listowy propaguje do prawego operatora, jeśli jest on
+analizowany.
+.Sh "Logiczny Or w stylu C"
+.IX Subsection "C\-style Logical Or"
+Binarny \*(L"||\*(R" dokonuje logicznej operacji OR. To znaczy, że jeśli
+lewy operand jest prawdziwy (true), to prawy nie jest nawet analizowany.
+Kontekst skalarny, lub listowy propaguje do prawego operatora, jeśli jest on
+analizowany.
+.PP
+Operatory \f(CW||\fR i \f(CW&&\fR różnią się od C tym, że zwracają ostatnią
+analizowaną wartość zamiast 0 czy 1. Tak więc przenośnym sposobem
+znalezienia katalogu domowego (zakładając, że nie jest \*(L"0"), może być:
+.PP
+.Vb 2
+\&    $home = $ENV{'HOME'} || $ENV{'LOGDIR'} ||
+\&        (getpwuid($<))[7] || die "You're homeless!\en";
+.Ve
+Jako czytelniejsze alternatywy \f(CW&&\fR i \f(CW||\fR, 
+perl udostępnia operatory \*(L"and\*(R" i \*(L"or\*(R" (patrz niżej).
+Zachowanie jest identyczne. Jednak ich priorytet jest niższy, więc możesz
+ich bezpiecznie używać po operatorze listowym, bez konieczności używania
+nawiasów:
+.PP
+.Vb 2
+\&    unlink "alpha", "beta", "gamma"
+\&            or gripe(), next LINE;
+.Ve
+Z użyciem operatorów w stylu C, trzeba by było to zapisać jako:
+.PP
+.Vb 2
+\&    unlink("alpha", "beta", "gamma")
+\&            || (gripe(), next LINE);
+.Ve
+.Sh "Operator zakresu"
+.IX Subsection "Range Operator"
+Binarny \*(L"..\*(R" jest operatorem zakresu, który jest w rzeczywistości
+dwoma innymi operatorami, zależnymi od kontekstu. W kontekście listowym,
+zwraca tablicę wartości, liczoną (po jednym) od wartości lewej do prawej.
+Jest to przydatne do zapisywania pętli \f(CWfor (1..10)\fR 
+i robienia operacji wycinania (slice) na tablicach.
+Bądź świadom, że w bieżącej implementacji tworzona jest tymczasowa tablica,
+więc potrzeba na to trochę pamięci, jeśli zapiszesz coś takiego:
+.PP
+.Vb 3
+\&    for (1 .. 1_000_000) {
+\&        # kod
+\&    }
+.Ve
+W kontekście skalarnym, \*(L"..\*(R" zwraca wartość logiczną. Operator jest
+dwustanowy, jak flip-flop i emuluje operator zakresu liniowego (przecinek) z
+\fBsed\fR(1), \fBawk\fR(1) i różnych edytorów. Każdy operator \*(L"..\*(R"
+obsługuje swój własny stan logiczny. Jest on fałszywy tak długo, jak długo
+lewy operand jest fałszywy. Gdy lewy operand stanie się prawdziwy, operator
+zakresu pozostaje prawdziwy dopóki prawy argument jest prawdą, PO czym,
+operator zakresu przyjmuje wartość fałszu. (Nie staje się fałszywym do
+czasu następnej jego analizy. Może testować prawy operand i stać się
+fałszywym w tej samej analizie, kiedy stał się prawdziwym (jak w
+\fBawk\fR(1)), lecz wciąż będzie raz zwracał prawdę. Jeśli nie chcesz by
+testował prawy operand przed następną analizą (jak w \fBsed\fR(1)), użyj
+trzech kropek (\*(R"...") zamiast dwóch.) Prawy operand nie jest analizowany
+podczas gdy operator jest w stanie fałszu, a lewy operand nie jest
+analizowany gdy operator jest w stanie prawdy. Priorytet jest trochę niższy
+niż || i &&. Zwracana wartość jest albo łańcuchem null dla fałszu, lub
+liczbą sekwencyjną (zaczynającą się od 1) dla prawdy. Liczba sekwencyjna
+jest resetowana dla każdego napotkanego zakresu. Końcowa liczba
+sekwencyjna w zakresie ma doklejony łańcuch \*(L"E0\*R", który nie ma jednak
+wpływu na wartość numeryczną, a za to daje coś, czego możesz oczekiwać na
+końcu. Możesz wyłączyć punkt początkowy przez oczekiwanie aż liczba
+sekwencyjna stanie się większa niż jeden. Jeśli któryś z operandów
+skalarnego \*(L"..\*(R" jest literałem numerycznym, operand jest niejawnie
+porównywany ze zmienną \f(CW$.\fR, bieżącym numerem linii.
+Przykłady
+.PP
+Jako operator skalarny:
+.PP
+.Vb 3
+\&    if (101 .. 200) { print; }  # wydrukuj drugą setkę linii
+\&    next line if (1 .. /^$/);   # pomiń linie nagłówka [pocztowego]
+\&    s/^/> / if (/^$/ .. eof()); # Cytuj ciało
+.Ve
+Jako operator listowy:
+.PP
+.Vb 3
+\&    for (101 .. 200) { print; } # drukuj 100 razy $_ 100
+\&    @foo = @foo[0 .. $#foo];    # kosztowny no-op
+\&    @foo = @foo[$#foo-4 .. $#foo];      # wytnij ostatnich 5 elementów
+.Ve
+Operator zakresu (w kontekście listowym) używa w wypadku gdy operandy są
+łańcuchami magicznego algorytmu autoinkrementacji. Możesz powiedzieć
+.PP
+.Vb 1
+\&    @alphabet = ('A' .. 'Z');
+.Ve
+i uzyskać tak wszystkie litery alfabetu, lub
+.PP
+.Vb 1
+\&    $hexdigit = (0 .. 9, 'a' .. 'f')[$num & 15];
+.Ve
+by uzyskać liczby szesnastkowe, lub
+.PP
+.Vb 1
+\&    @z2 = ('01' .. '31');  print $z2[$mday];
+.Ve
+by uzyskać daty z początkowymi zerami. Jeśli ostatnia podana wartość nie
+jest w sekwencji, którą daje magiczna inkrementacja, to sekwencja idzie tak
+daleko, aż następna wartość nie będzie dłuższa niż podana ostatnia wartość.
+.Sh "Operator warunkowy"
+.IX Subsection "Conditional Operator"
+\*(L"?:\*(R" jest operatorem warunkowym, zupełnie jak w C. Działa podobnie
+do konstrukcji if-then-else. Jeśli argument przed ? jest prawdziwy, to
+zwracany jest argument przed :. W przeciwnym wypadku, zwracany jest argument
+po :. Na przykład:
+.PP
+.Vb 2
+\&    printf "Mam %d ps%s.\en", $n,
+\&            ($n == 1) ? "a" : "y";
+.Ve
+Kontekst skalarny, lub listowy propaguje do 2-giego lub 3-ciego argumentu,
+zależnie od wyboru.
+.PP
+.Vb 3
+\&    $a = $ok ? $b : $c;  # weź skalar
+\&    @a = $ok ? @b : @c;  # weź tablicę
+\&    $a = $ok ? @b : @c;  # oops, to tylko licznik!
+.Ve
+Operator może być przypisany jeśli obydwa argumenty -- 2-gi i 3-ci są
+legalnymi lwartościami (co znaczy że można do nich przypisać):
+.PP
+.Vb 1
+\&    ($a_or_b ? $a : $b) = $c;
+.Ve
+Niekoniecznie musi to jednak poprawić czytelność twojego programu.
+.Sh "Operatory przypisania"
+.IX Subsection "Assignment Operators"
+\*(L"=\*(R" jest zwykłym operatorem przypisania.
+.PP
+Operator przypisania działa jak w C. Tzn,
+.PP
+.Vb 1
+\&    $a += 2;
+.Ve
+jest równoważne
+.PP
+.Vb 1
+\&    $a = $a + 2;
+.Ve
+choć bez powielania efektów ubocznych, które może pociągać za sobą
+dereferencja lwartości, tak jak dla \fItie()\fR. Inne operatory
+przypisania działają podobnie. Rozpoznawane są następujące:
+.PP
+.Vb 4
+\&    **=    +=    *=    &=    <<=    &&=
+\&           -=    /=    |=    >>=    ||=
+\&           .=    %=    ^=
+\&                 x=
+.Ve
+Zauważ, że podczas gdy są one zgrupowane w rodziny, mają jednakowy priorytet
+przypisania.
+.PP
+W przeciwieństwie do C, operator przypisania daje prawidłową lwartość.
+Modyfikowanie przypisania jest równoważne do robienia przypisania, a potem
+zmieniania przypisanej zmiennej. jest to przydatne do modyfikowania kopii
+czegoś, np:
+.PP
+.Vb 1
+\&    ($tmp = $global) =~ tr [A-Z] [a-z];
+.Ve
+Podobnie,
+.PP
+.Vb 1
+\&    ($a += 2) *= 3;
+.Ve
+jest równoważne
+.PP
+.Vb 2
+\&    $a += 2;
+\&    $a *= 3;
+.Ve
+.Sh "Operator przecinka"
+.IX Subsection "Comma Operator"
+Binarny \*(L",\*(R" jest operatorem przecinka. W kontekście skalarnym
+analizuje swój lewy argument, wyrzuca jego wartość i następnie analizuje
+prawy argument, zwracając jego wartość. Jest to takie samo, jak operator
+przecinka z C.
+.PP
+W kontekście listowym, jest to po prostu separator listy i wstawia obydwa
+argumenty do listy.
+.PP
+Znak => jest często synonimem operatora przecinka. Przydatny jest
+do dokumentowania argumentów, które są w parach. Od wersji 5.001 wymusza to
+też interpretację każdego słowa z lewej jako łańcucha.
+.Sh "Operatory listowe (w prawo)"
+.IX Subsection "List Operators (Rightward)"
+Po prawej stronie operatora listowego, jest niski priorytet, taki że 
+kontroluje on wszystkie znalezione tam elementy, oddzielone przecinkami.
+Jedyne operatory o niższym priorytecie to operatory logiczne
+\*(L"and\*(R", \*(L"or\*(R", i \*(L"not\*(R", które mogą być używane do
+analizowania wywołań do operatorów listowych, bez potrzeby dodatkowych
+nawiasów:
+.PP
+.Vb 2
+\&    open HANDLE, "filename"
+\&        or die "Can't open: $!\en";
+.Ve
+Zobacz też dyskusję operatorów listowych w sekcji o wyrażeniach i
+operatorach listowych lewostronnych.
+.Sh "Logiczny Not"
+.IX Subsection "Logical Not"
+Jednoargumentowy \*(L"not\*(R" zwraca logiczną negację prawego argumentu.
+Jest równoważny \*(L"!\*(R", lecz ma niższy priorytet.
+.Sh "Logiczny And"
+.IX Subsection "Logical And"
+Binarny \*(L"and\*(R" zwraca logiczną koniunkcję otaczających wyrażeń. Jest
+równoważny &&, lecz ma niższy priorytet. Znaczy to, że prawe wyrażenie jest
+analizowane tylko jeśli lewe jest prawdziwe.
+.Sh "Logiczny or i xor"
+.IX Subsection "Logical or and Exclusive Or"
+Binarny \*(L"or\*(R" zwraca logiczną dyzjunkcję otaczających wyrażeń. Jest
+równoważny ||, lecz ma niższy priorytet. Znaczy to, że prawe wyrażenie jest
+wykonywane tylko jeśli lewe jest fałszywe.
+.PP
+Binarny \*(L"xor\*(R" zwraca \s-1XOR\s0 otaczających wyrażeń.
+Nie może być oczywiście używany z zawężeniem, jak or.
+.Sh "Operatory C, których brakuje w perlu"
+.IX Subsection "C Operators Missing From Perl"
+Oto operatory C, których perl nie posiada:
+.Ip "jednoargumentowy &" 8
+.IX Item "unary &"
+Operator adresu. (Lecz zobacz opis operatora \*(L"\e\*(R".)
+.Ip "jednoargumentowy *" 8
+.IX Item "unary *"
+Operator dereferencji (wyłuskania) adresu. (Perlowe przedrostkowe operatory
+dereferencji to: $, @, %, &.)
+.Ip "(\s-1TYP\s0)" 8
+.IX Item "(\s-1TYPE\s0)"
+Operator konwersji typów.
+.Sh "Operatory cytatów i cytatopodobne"
+.IX Subsection "Quote and Quote-like Operators"
+Podczas gdy normalnie myślimy o cytatach jak o literalnych wartościach,
+w perlu mają one funkcję operatorów, dając różne właściwości interpolowania i
+porównywania wzorców.
+Perl daje dla tych zachowań tradycyjne znaki cytowania, lecz również sposób
+na wybieranie znaku cytowania. W następującej tablicy, \f(CW{}\fR 
+oznacza parę ograniczników, które wybierzesz. Ograniczniki nienawiasowe używają
+tego samego znaku na początek i koniec, ale 4 rodzaje nawiasów mogą się
+zagnieżdżać.
+.PP
+.Vb 8
+\&    Zwyczajowy Standardowy Znaczenie    Interpoluje
+\&        ''       q{}       Literał         nie
+\&        ""      qq{}       Literał         tak
+\&        ``      qx{}       Komenda         tak
+\&                qw{}      Lista słów       nie
+\&        //       m{} Porównanie ze wzorcem tak
+\&                 s{}{}   Podstawienie      tak
+\&                tr{}{}   Translacja        nie
+.Ve
+Dla konstrukcji, wykonujących interpolację, zmienne zaczynające się od \*(L"\f(CW$\fR\*(R" 
+lub \*(L"\f(CW@\fR\*(R" są interpolowane jako następujące sekwencje:
+.PP
+.Vb 16
+\&    \et          tab             (HT, TAB)
+\&    \en          nowalinia       (LF, NL)
+\&    \er          return          (CR)
+\&    \ef          form feed       (FF)
+\&    \eb          backspace       (BS)
+\&    \ea          alarm (dzwonek) (BEL)
+\&    \ee          escape          (ESC)
+\&    \e033        znak ósemkowy
+\&    \ex1b        znak szesnastkowy
+\&    \ec[         znak sterujący
+\&    \el          zmień następny znak na małą literę
+\&    \eu          zmień następny znak na dużą literę
+\&    \eL          zmień na małą literę aż do \eE
+\&    \eU          zmień na dużą literę aż do \eE
+\&    \eE          koniec modyfikacji rozmiaru
+\&    \eQ          cytuj metaznaki regexp aż do \eE
+.Ve
+Jeśli używane jest \f(CWuse locale\fR, mapa rozmiarów liter odpowiada
+lokalnej sytuacji. Zobacz podręcznik \fIperllocale\fR(1).
+.PP
+Wzorce są podstawą do innego poziomu interpretacji -- jako wyrażenia
+regularne. Jest to robione jako drugi przebieg, po interpolacji zmiennych,
+tak że wyrażenia regularne mogą być włączane do wzorca ze zmiennych. Jeśli
+tego nie chcesz, użyj \f(CW\eQ\fR.
+.PP
+Poza powyższym, nie ma wielokrotnych poziomów interpolacji. W
+rzeczywistości, w przeciwieństwie do oczekiwań programistów powłokowych,
+odwrotne cudzysłowy nie interpolują w podwójnych cudzysłowach, a pojedyncze
+otoczone w podwójnych cudzysłowach nie utrudniają analizy zmiennych w nich 
+zawartych.
+.Sh "Operatory cytatopodobne Regexp"
+.IX Subsection "Regexp Quote-Like Operators"
+Oto cytatopodobne operatory, które dotyczą się działań związanych z
+porównywaniem wzorców.
+.Ip "?\s-1WZORZEC\s0?" 8
+.IX Item "?\s-1PATTERN\s0?"
+Jest to coś w rodzaju przeszukiwania \f(CW/wzorzec/\fR,
+lecz między wywołaniami operatora \fIreset()\fR, trafienie jest jednokrotne.
+Jest to przydatna optymalizacja, jeśli np. chcesz zobaczyć tylko pierwsze
+pojawienie się czegoś w pliku, lub zbiorze.
+Resetowane są tylko wzorce \f(CW??\fR, lokalne dla bieżącego pakietu.
+.Sp
+To użycie jest niezalecane i może być usunięte w przyszłych wersjach perla.
+.Ip "m/\s-1WZORZEC/\s0gimosx" 8
+.IX Item "m/\s-1PATTERN/\s0gimosx"
+.Ip "/\s-1WZORZEC/\s0gimosx" 8
+.IX Item "/\s-1PATTERN/\s0gimosx"
+Przeszukuje wzorzec dla trafienia i w kontekście skalarnym wzraca prawdę (1), 
+lub fałsz (''). Jeśli nie podano żadnego łańcucha poprzez operator \f(CW=~\fR,
+lub \f(CW!~\fR, przeszukiwany jest łańcuch \f(CW$_\fR.  
+(Łańcuch podany przez
+\f(CW=~\fR nie musi być lwartością \*(-- może być wynikiem analizy wyrażenia,
+lecz pamiętaj, że \f(CW=~\fR wiąże dość mocno.) Zobacz też podręcznik
+\fIperlre\fR(1).
+Zobacz podręcznik \fIperllocale\fR(1) dla dyskusji o dodatkowych sprawach,
+związanych z użyciem \f(CWuse locale\fR.
+.Sp
+Opcje to:
+.Sp
+.Vb 6
+\&    g   Porównuj globalnie, na wszystkich pojawieniach
+\&    i   Porównuj bez zwracania uwagi na wielkość liter
+\&    m   Traktuj łańcuch jako wielokrotne linie
+\&    o   Kompiluj wzorzec tylko raz
+\&    s   Traktuj łańcuch jako pojedynczą linię
+\&    x   Użyj rozszerzonych wyrażeń regularnych
+.Ve
+Jeśli ogranicznikiem jest \*(L"/\*(R", to początkowe \f(CWm\fR jest opcjonalne.  
+Używając \f(CWm\fR, możesz wykorzystać jako ograniczniki dowolną parę
+nialfanumerycznych, niebiałospacjowych znaków. Jest to przydatne do
+porównywania unixowych nazw ścieżek, które mogą zawierać \*(L"/\*(R".
+Zapobiega to \s-1LTS\s0 (syndrom wąskiej wykałaczki).  Jeśli \*(L"?\*(R" 
+jest ogranicznikiem, to stosowana jest reguła trafienia-tylko-raz instrukcji
+\f(CW?WZORZEC?\fR.
+.Sp
+\s-1WZORZEC\s0 może zawierać zmienne, które będą interpolowane (a wzorzec
+rekompilowany) za każdą analizą. (Zauważ, że \f(CW$)\fR i \f(CW$|\fR 
+mogą nie być interpolowane, gdyż wyglądają jak testy końca łańcucha.)
+Jeśli chcesz, by takie wzorce były kompilowane tylko raz, dodaj do
+ostatniego ogranicznika znak \f(CW/o\fR. Zapobiega to kosztownej kompilacji
+czasu działania i jest przydatne, gdy wartość, z której korzystasz nie
+zmienia się w czasie życia skryptu. Jednak pamiętaj, że opcja
+\f(CW/o\fR daje obietnicę, iż nie zmienisz zmiennych ze wzorca.
+Jeśli je zmienisz, perl tego nie zauważy.
+.Sp
+Jeśli \s-1WZORZEC\s0 zostanie zanalizowany jako łańcuch null, to użyte
+zostanie ostatnie wykonane wyrażenie regularne.
+.Sp
+W kontekście, wymagającym wartości listowej, porównanie wzorca zwraca listę,
+składającą się z listy podwyrażeń, trafionych przez nawiasy z wzorca, np.
+(\f(CW$1\fR, \f(CW$2\fR, \f(CW$3\fR...).  
+(Zauważ, że ustawione tu są również \f(CW$1\fR itp. i że różni się to od
+zachowania perla 4.) Jeśli porównanie się nie powiedzie, zwracana jest
+tablica null. Jeśli porównanie się powiedzie, lecz nie będzie nawiasów,
+zwracana zostanie wartość listowa (1).
+.Sp
+Przykłady:
+.Sp
+.Vb 2
+\&    open(TTY, '/dev/tty');
+\&    <TTY> =~ /^y/i && foo();    # zrób foo, jeśli trzeba
+.Ve
+.Vb 1
+\&    if (/Version: *([0-9.]*)/) { $version = $1; }
+.Ve
+.Vb 1
+\&    next if m#^/usr/spool/uucp#;
+.Ve
+.Vb 5
+\&    # grep biedaka
+\&    $arg = shift;
+\&    while (<>) {
+\&        print if /$arg/o;       # kompiluj tylko raz
+\&    }
+.Ve
+.Vb 1
+\&    if (($F1, $F2, $Etc) = ($foo =~ /^(\eS+)\es+(\eS+)\es*(.*)/))
+.Ve
+Ostatni przykład dzieli \f(CW$foo\fR na pierwsze dwa słowa i resztę linii.
+Przypisuje te trzy pola do \f(CW$F1\fR, \f(CW$F2\fR i \f(CW$Etc\fR.  
+Warunek jest prawdziwy, jeśli przypisane zostały wartości którejkolwiek ze
+zmiennych, czyli jeśli wzorzec został trafiony.
+.Sp
+Modyfikator \f(CW/g\fR określa globalne porównywanie wzorców \*(-- tj. takie,
+gdzie trafień jest tyle ile się da w danym łańcuchu. Zachowanie tego zależy
+od kontektu -- w listowym zwracana jest lista wszystkich podłańcuchów,
+trafionych przez wszystkie nawaisy wyrażenia regularnego.
+Jeśli nie było nawiasów, zwracana jest lista trafionych łańcuchów, tak jakby
+były nawiasy wokół całego wzorca.
+.Sp
+W kontekście skalarnym, \f(CW,//g\fR iteruje poprzez łańcuch, zwracając
+\s-1TRUE\s0 za każdym trafieniem i \s-1FALSE\s0 przy braku trafienia.
+(Innymi słowy, zapamiętuje ostatnią pozycję i restartuje od tego miejsca.
+Możesz znaleźć bieżącą pozycję trafienia przy użyciu funkcji \fIpos()\fR;
+zobacz jej opis w podręczniku \fIperlfunc\fR(1).)
+Brak trafienia normalnie resetuje pozycję przeszukiwania na początek
+łańcucha, lecz możesz temu zapobiec, dodając modyfikator \*(L"c\*(R"
+(np. \f(CWm//gc\fR).  Modyfikowanie łańcucha docelowego również resetuje
+pozycję przeszukiwania.
+.Sp
+Możesz mieszać porównania \f(CWm//g\fR z \f(CWm/\eG.../g\fR, 
+gdzie \f(CW\eG\fR jest zapewnieniem zerowej szerokości, które trafia w
+dokładnie tę samą pozycję, gdzie skończył ewentualny poprzedni
+\f(CWm//g\fR.
+Zapewnienie \f(CW\eG\fR nie jest obsługiwane bez modyfikatora \f(CW/g\fR;
+obecnie bez \f(CW/g\fR, \f(CW\eG\fR, zachowuje się zupełnie jak
+\f(CW\eA\fR, lecz jest to przypadkowe i może się w przyszłości zmienić.
+.Sp
+Przykłady:
+.Sp
+.Vb 2
+\&    # kontekst listowy
+\&    ($one,$five,$fifteen) = (`uptime` =~ /(\ed+\e.\ed+)/g);
+.Ve
+.Vb 8
+\&    # kontekst skalarny
+\&    $/ = ""; $* = 1;  # $*, niezalecany w nowoczesnych perlach
+\&    while (defined($paragraph = <>)) {
+\&        while ($paragraph =~ /[a-z]['")]*[.!?]+['")]*\es/g) {
+\&            $sentences++;
+\&        }
+\&    }
+\&    print "$sentences\en";
+.Ve
+.Vb 10
+\&    # używanie m//gc z \eG
+\&    $_ = "ppooqppqq";
+\&    while ($i++ < 2) {
+\&        print "1: '";
+\&        print $1 while /(o)/gc; print "', pos=", pos, "\en";
+\&        print "2: '";
+\&        print $1 if /\eG(q)/gc;  print "', pos=", pos, "\en";
+\&        print "3: '";
+\&        print $1 while /(p)/gc; print "', pos=", pos, "\en";
+\&    }
+.Ve
+Ostatni przykład powinien dać:
+.Sp
+.Vb 6
+\&    1: 'oo', pos=4
+\&    2: 'q', pos=5
+\&    3: 'pp', pos=7
+\&    1: '', pos=7
+\&    2: 'q', pos=8
+\&    3: '', pos=8
+.Ve
+Przydatnym idiomem dla skanerów w rodzaju \f(CWlex\fR jest
+\f(CW/\eG.../gc\fR. Możesz tak łączyć różne rodzaje wyrażeń regularnych,
+mając tak możliwość przetwarzania łańcucha kawałek po kawałku, dokonując
+różnych akcji, zależnie od tego, które wyrażenie zostało trafione. Każde
+wyrażenie próbuje trafić tam, gdzie poprzednie zakończyło.
+.Sp
+.Vb 14
+\& $_ = <<'EOL';
+\&      $url = new URI::URL "http://www/";   die if $url eq "xXx";
+\& EOL
+\& LOOP:
+\&    {
+\&      print(" digits"),         redo LOOP if /\eG\ed+\eb[,.;]?\es*/gc;
+\&      print(" lowercase"),      redo LOOP if /\eG[a-z]+\eb[,.;]?\es*/gc;
+\&      print(" UPPERCASE"),      redo LOOP if /\eG[A-Z]+\eb[,.;]?\es*/gc;
+\&      print(" Capitalized"),    redo LOOP if /\eG[A-Z][a-z]+\eb[,.;]?\es*/gc;
+\&      print(" MiXeD"),          redo LOOP if /\eG[A-Za-z]+\eb[,.;]?\es*/gc;
+\&      print(" alphanumeric"),   redo LOOP if /\eG[A-Za-z0-9]+\eb[,.;]?\es*/gc;
+\&      print(" line-noise"),     redo LOOP if /\eG[^A-Za-z0-9]+/gc;
+\&      print ". That's all!\en";
+\&    }
+.Ve
+Oto wyjście (podzielone na kilka linii):
+.Sp
+.Vb 4
+\& line-noise lowercase line-noise lowercase UPPERCASE line-noise
+\& UPPERCASE line-noise lowercase line-noise lowercase line-noise
+\& lowercase lowercase line-noise lowercase lowercase line-noise
+\& MiXeD line-noise. That's all!
+.Ve
+.Ip "q/\s-1ŁAŃCUCH\s0/" 8
+.IX Item "q/\s-1ŁAŃCUCH\s0/"
+.Ip "\f(CW'ŁAŃCUCH'\fR" 8
+.IX Item "\f(CW'ŁAŃCUCH'\fR"
+Pojedynczo zacytowany łańcuch literalny. Odwrotny ukośnik oznacza odwrotny
+ukośnik, chyba
+że znajduje się za nim ogranicznik lub inny odwrotny ukośnik -- w tym wypadku
+odwrotny ukośnik, lub ogranicznik jest interpolowany.
+.Sp
+.Vb 3
+\&    $foo = q!I said, "You said, 'She said it.'"!;
+\&    $bar = q('This is it.');
+\&    $baz = '\en';                # łańcuch dwuznakowy
+.Ve
+.Ip "qq/\s-1ŁAŃCUCH\s0/" 8
+.IX Item "qq/\s-1ŁAŃCUCH\s0/"
+.Ip "\*(N"\s-1ŁAŃCUCH\s0\*(T"" 8
+.IX Item "\*(N"\s-1ŁAŃCUCH\s0\*(T""
+Łańcuch w podwójnych cudzysłowach, interpolowany.
+.Sp
+.Vb 4
+\&    $_ .= qq
+\&     (*** The previous line contains the naughty word "$1".\en)
+\&                if /(tcl|rexx|python)/;      # :-)
+\&    $baz = "\en";                # łańcuch jednoznakowy
+.Ve
+.Ip "qx/\s-1ŁAŃCUCH\s0/" 8
+.IX Item "qx/\s-1ŁAŃCUCH\s0/"
+.Ip "`\s-1ŁAŃCUCH\s0`" 8
+.IX Item "`\s-1ŁAŃCUCH\s0`"
+Łańcuch, który jest interpolowany, a następnie uruchamainay jako komenda
+systemowa. Zebrane standardowe wyjście komendy jest zwracane. W kontekście
+skalarnym, pojawia się jako pojedynczy, wieloliniowy łańcuch.
+W kontekście listowym, jest rozdzielony na listę linii (jakkolwiek
+zdefiniowałeś linie $/ lub \f(CW$INPUT_RECORD_SEPARATOR\fR).
+.Sp
+.Vb 1
+\&    $today = qx{ date };
+.Ve
+Zobacz sekcję o operatorach I/O.
+.Ip "qw/\s-1ŁAŃCUCH\s0/" 8
+.IX Item "qw/\s-1ŁAŃCUCH\s0/"
+Zwraca listę słów, wyciągniętych z łańcucha przy użyciu osadzonych białych
+spacji, jako ograniczników słów. Jest to równoważne
+.Sp
+.Vb 1
+\&    split(' ', q/ŁAŃCUCH/);
+.Ve
+Pewne często używane przykłady:
+.Sp
+.Vb 2
+\&    use POSIX qw( setlocale localeconv )
+\&    @EXPORT = qw( foo bar baz );
+.Ve
+Częstym błędem jest próba rozdzielania słów przecinkiem, lub wstwianie do
+wieloliniowych łańcuchów qw komentarzy. W tej sytuacji, przełącznik
+\f(CW-w\fR daje ostrzeżenia jeśli łańcuch zawiera znaki \*(L"#\*(R".
+.Ip "s/\s-1WZORZEC/ZAMIANA/\s0egimosx" 8
+.IX Item "s/\s-1PATTERN/REPLACEMENT/\s0egimosx"
+Szuka w łańcuchu wzorca, a jeśli go znajdzie, to zamienia go tekstem zamiany
+i zwraca liczbę zamian. W przeciwnym wypadku zwraca fałsz (specyficznie
+pusty łańcuch).
+.Sp
+Jeśli przez operator \f(CW=~\fR lub \f(CW!~\fR nie podano łańcucha, używana
+jest zmienna \f(CW$_\fR. (Łańcuch podany przez \f(CW=~\fR musi
+być zmienną skalarną, elementem tablicy, tablicy asocjacyjnej, lub 
+przypisaniem do jednego z nich, czyli lwartością.)
+.Sp
+Jeśli wybrany ogranicznik jest pojedynczym cudzysłowem, nie dokonywana jest
+interpolacja ani zmiennych \s-1WZORCA\s0, ani \s-1ZAMIANY\s0. W przeciwnym
+wypadku, jeśli
+\s-1WZORZEC\s0 zawiera $, który wygląda bardziej jak zmienna, niż test końca
+łańcucha, zmienna będzie interpolowana w czasie działania.
+Jeśli chcesz, by wzorzec był kompilowany tylko raz, za pierwszą interpolacją
+zmiennej, użyj opcji \f(CW/o\fR. Jeśli wzorzec jest analizowany jako łańcuch
+null, uzywane jest zamiast tego ostatnie normalne wyrażenie regularne.
+Zobacz jeszcze podręcznik \fIperlre\fR(1).
+Zobacz też \fIperllocale\fR(1), aby dowiedzieć się o wpływie \f(CWuse
+locale\fR.
+.Sp
+Opcje to:
+.Sp
+.Vb 7
+\&    e   Analizuj prawą stronę jako wyrażenie
+\&    g   Zamieniaj globalnie
+\&    i   Nie zwracaj uwagi na wielkość liter
+\&    m   Traktuj łańcuch jak wiele linii
+\&    o   Kompiluj wzorzec tylko raz
+\&    s   Traktuj łańcuch jako pojedynczą linię
+\&    x   Użyj rozszerzonych wyrażeń regularnych
+.Ve
+Ukośniki mogą być zamienione przez dowolny, niealfanumeryczny i
+niebiałospacjowy ogranicznik. Jeśli użyte są pojedyncze cudzysłowy, nie
+dokonywana jest interpretacja łańcucha zamiany (modyfikator \f(CW/e\fR
+przeciąża to zachowanie). W przeciwnieństwie do perla 4, perl 5 traktuje
+odwrotne cudzysłowy jako normalne ograniczniki; tekst zamiany nie jest 
+wykonywany jako komenda.
+Jeśli \s-1WZORZEC\s0 jest rozdzielany cytatami nawiasowymi, \s-1ZAMIANA\s0
+ma swoją własną parę cytatów, która może, lub nie, być cytatami nawiasowymi, np.
+\f(CWs(foo)(bar)\fR lub \f(CWs<foo>/bar/\fR.  \f(CW/e\fR spowoduje, że
+porcja zamiany zostanie zinterpretowana jako pełne perlowe wyrażenie i
+z\fIeval()\fRowana zaraz potem. Jego składnia jest jednak sprawdzania
+podczas kompilacji.
+.Sp
+Przykłady:
+.Sp
+.Vb 1
+\&    s/\ebgreen\eb/mauve/g;                # nie zmieniaj wintergreen
+.Ve
+.Vb 1
+\&    $path =~ s|/usr/bin|/usr/local/bin|;
+.Ve
+.Vb 1
+\&    s/Login: $foo/Login: $bar/; # wzorzec czasu działania
+.Ve
+.Vb 1
+\&    ($foo = $bar) =~ s/this/that/;
+.Ve
+.Vb 1
+\&    $count = ($paragraph =~ s/Mister\eb/Mr./g);
+.Ve
+.Vb 4
+\&    $_ = 'abc123xyz';
+\&    s/\ed+/$&*2/e;               # daje 'abc246xyz'
+\&    s/\ed+/sprintf("%5d",$&)/e;  # daje 'abc  246xyz'
+\&    s/\ew/$& x 2/eg;             # daje 'aabbcc  224466xxyyzz'
+.Ve
+.Vb 3
+\&    s/%(.)/$percent{$1}/g;      # zmień eskejpy procentowe; bez /e
+\&    s/%(.)/$percent{$1} || $&/ge;       # teraz z wyrażenim, z /e
+\&    s/^=(\ew+)/&pod($1)/ge;      # użyj wywołania funkcji
+.Ve
+.Vb 3
+\&    # /e mogą się zagnieżdżać; to rozwinie
+\&    # proste zmienne osadzone w $_
+\&    s/(\e$\ew+)/$1/eeg;
+.Ve
+.Vb 6
+\&    # Usuń komentarze C
+\&    $program =~ s {
+\&        /\e*     # Traf na rozdzielacz otwierający.
+\&        .*?     # Traf w minimalną liczbę znaków.
+\&        \e*/     # Traf w rozdzielacz zamykający.
+\&    } []gsx;
+.Ve
+.Vb 1
+\&    s/^\es*(.*?)\es*$/$1/;        # odetnij białą spację
+.Ve
+.Vb 1
+\&    s/([^ ]*) *([^ ]*)/$2 $1/;  # zamień 1-sze 2 pola
+.Ve
+Zauważ, że w ostatnim przykładzie zamiast $ użyto \e. W przeciwieństwie do
+\fBsed\fR(1)a, używamy postaci \e<\fIcyfra\fR> tylko po lewej stronie.
+Wszędzie indziej, jest to $<\fIcyfra\fR>.
+.Sp
+Czasami nie można użyć po prostu \f(CW/g\fR, aby zaszły wszystkie zmiany.
+Oto dwa popularne przypadki:
+.Sp
+.Vb 3
+\&    # wstaw przecinki we właściwych miejscach integera
+\&    1 while s/(.*\ed)(\ed\ed\ed)/$1,$2/g;      # perl4
+\&    1 while s/(\ed)(\ed\ed\ed)(?!\ed)/$1,$2/g;  # perl5
+.Ve
+.Vb 2
+\&    # rozwiń tabulacje na 8-kolumnowe spacje
+\&    1 while s/\et+/' ' x (length($&)*8 - length($`)%8)/e;
+.Ve
+.Ip "tr/\s-1LISTASZUKANIA/LISTAZAMIANY/\s0cds" 8
+.IX Item "tr/\s-1SEARCHLIST/REPLACEMENTLIST/\s0cds"
+.Ip "y/\s-1LISTASZUKANIA/LISTAZAMIANY/\s0cds"
+.IX Item "y/\s-1SEARCHLIST/REPLACEMENTLIST/\s0cds" 8
+Tłumaczy wszystkie pojawienia się znaków, znalezione w liście szukania, na
+odpowiadające znaki z listy zamiany. Zwraca liczbę zamienionych, lub
+skasowanych znaków. Jeśli nie podano łańcucha w operatorze =~ lub !~, używane
+jest \f(CW$_\fR. (Łańcuch określony przez =~ musi być zmienną skalarną,
+elementem tablicy, elementem tablicy asocjacyjnej, lub przypisaniem do
+jednego z nich, czyli lwartością).
+Dla miłośników edytora \fBsed\fR(1), udostępniono synonim \f(CWtr\fR pod
+nazwą \f(CWy\fR. Jeśli \s-1LISTASZUKANIA\s0 jest rozdzielona
+nawiasami, to \s-1LISTAZAMIANY\s0 nie musi ich mieć, np.
+\f(CWtr[A-Z][a-z]\fR lub \f(CWtr(+-*/)/ABCD/\fR.
+.Sp
+Opcje:
+.Sp
+.Vb 3
+\&    c   Dopełnij LISTĘSZUKANIA
+\&    d   Kasuj znalezione, lecz niezamienione znaki
+\&    s   Zmiażdż zduplikowane zamienione znaki
+.Ve
+Jeśli podany jest modyfikator \f(CW/c\fR, zbiór znaków z
+\s-1LISTYSZUKANIA\s0 jest dopełniany. Jeśli podany jest modyfikator
+\f(CW/d\fR, wszelkie znaki, podane w \s-1LIŚCIESZUKANIA\s0, a nie znalezione
+w \s-1LIŚCIEZAMIANY\s0 są kasowane.
+Jeśli podany jest modyfikator \f(CW/s\fR, to sekwencje, które zostały
+przetłumaczone do tego samego znaku są miażdżone do pojedynczej instancji
+tego znaku.
+.Sp
+Jeśli użyty jest modyfikator \f(CW/d\fR, \s-1LISTAZAMIANY\s0 jest zawsze
+interpretowana tak, jak jest podana. W przeciwnym wypadku, gdy
+\s-1LISTAZAMIANY\s0 jest krótsza niż \s-1LISTASZUKANIA\s0, ostatni jej znak 
+jest replikowany tak długo, aż wypełni brakujące miejsca. Jeśli
+\s-1LISTAZAMIANY\s0 jest null, to replikowana jest \s-1LISTASZUKANIA\s0.
+Jest to przydatne do zliczania znaków w klasie, lub dla miażdżenia sekwencji
+znakowych klasy.
+.Sp
+Przykłady:
+.Sp
+.Vb 1
+\&    $ARGV[1] =~ tr/A-Z/a-z/;    # zmień na małe litery
+.Ve
+.Vb 1
+\&    $cnt = tr/*/*/;             # zlicz gwiazdy w $_
+.Ve
+.Vb 1
+\&    $cnt = $sky =~ tr/*/*/;     # zlicz gniazdy w $sky
+.Ve
+.Vb 1
+\&    $cnt = tr/0-9//;            # zlicz cyfry w $_
+.Ve
+.Vb 1
+\&    tr/a-zA-Z//s;               # bookkeeper -> bokeper
+.Ve
+.Vb 1
+\&    ($HOST = $host) =~ tr/a-z/A-Z/;
+.Ve
+.Vb 1
+\&    tr/a-zA-Z/ /cs;             # zmień niealfabetyczne na spacje
+.Ve
+.Vb 2
+\&    tr [\e200-\e377]
+\&       [\e000-\e177];             # skasuj 8-my bit
+.Ve
+Jeśli dla znaku podano wiele translacji, używana jest tylko pierwsza:
+.Sp
+.Vb 1
+\&    tr/AAA/XYZ/
+.Ve
+przetłumaczy A na X.
+.Sp
+Zauważ, że z uwagi na to, że tablica translacji jest budowana w czasie
+kompilacji, ani \s-1LISTASZUKANIA\s0, ani \s-1LISTAZAMIANY\s0 nie podlegają
+interpolacji cudzysłowowej. Znaczy to, że jeśli chcesz używać zmiennych,
+musisz użyć \fIeval()\fR:
+.Sp
+.Vb 2
+\&    eval "tr/$oldlist/$newlist/";
+\&    die $@ if $@;
+.Ve
+.Vb 1
+\&    eval "tr/$oldlist/$newlist/, 1" or die $@;
+.Ve
+.Sh "Operatory I/O"
+.IX Subsection "I/O Operators"
+Istnieje wiele operatorów I/O (wejścia/wyjścia), o których powinieneś
+wiedzieć.
+Łańcuch ujęty w odwrotne cudzysłowy podlega najpierw podstawieniu zmiennych,
+podobnie jak łańcuch ujęty w podwójne cudzysłowy. Następnie jest
+interpretowany jako komenda, a jej wyjście jest wartością pseudoliterału,
+jak w powłoce. W kontekście skalarnym, zwracany jest pojedynczy łańcuch,
+skłądający się z całego wyjścia. W kontekście listowym, zwracana jest lista
+wartości dla każdej linii wyjścia. (Można ustawić \f(CW$/\fR, co przeciąży
+domyślny terminator linii.)
+Komenda jest wykonywana przy każdej analizie pseudoliterału. Status komendy
+jest zwracany do \f(CW$?\fR (zobacz podręcznik \fIperlvar\fR(1)).
+W przeciwieństwie do \fBcsh\fR(1), nie jest na danych
+zwracanych dokonywana translacja \*(-- nowe linie pozostają nowymi liniami. W
+przeciwieństwie do wszelkich innych powłok, pojedyncze cudzysłowyu nie
+ukrywają nazw zmiennych w komendzie od interpretacji. Aby przekazać $ dalej,
+należy go wycytować odwrotnym ukośnikiem.
+Ogólną postacią odwrotnych cudzysłowów jest \f(CWqx//\fR. (Ponieważ podlegają
+one zawsze również rozwinięciu przez powłokę, zobacz podręcznik
+\fIperlsec\fR(1), który opisuje problemy bezpieczeństwa.)
+.PP
+Analiza uchwytu pliku, który jest w nawiasach trójkątnych, wyciąga z pliku
+następną linię, lub \f(CWundef\fR na jego końcu.
+Normalnie, musisz zmiennej przypisać wartość, lecz jest sytuacja, w której
+następuje automatyczne przypisanie. \fIJeśli i \s-1TYLKO\s0 jeśli\fR symbol
+wejścia jest jedyną rzeczą wewnątrz warunku pętli \f(CWwhile\fR lub
+\f(CWfor(;;)\fR, to wartość jest przypisywana automatycznie zmiennej
+\f(CW$_\fR. Przypisana wartość jest potem sprawdzana, by zobaczyć czy jest
+zdefiniowane (Może się to wydawać trochę dziwne, lecz będziesz używać tej
+konstrukcji w prawie każdym swoim skrypcie perlowym.) Następujące linijki są
+sobie równoważne:
+.PP
+.Vb 5
+\&    while (defined($_ = <STDIN>)) { print; }
+\&    while (<STDIN>) { print; }
+\&    for (;<STDIN>;) { print; }
+\&    print while defined($_ = <STDIN>);
+\&    print while <STDIN>;
+.Ve
+Uchwyty plików \s-1STDIN\s0, \s-1STDOUT\s0 i \s-1STDERR\s0 to uchwyty
+predefiniowane. Uchwyty \f(CWstdin\fR, \f(CWstdout\fR i
+\f(CWstderr\fR też będą działać, lecz nie w pakietach, w których są
+interpretowane jako lokalne identyfikatory nie zaś jako globalne.)
+Dodatkowe uchwyty plików można tworzyć funkcją \fIopen()\fR. Zobacz jej opis
+w podręczniku \fIperlfunc\fR(1).
+.PP
+Jeśli <\s-1UCHWYTPLIKU\s0 jest używany w kontekście, oczekującym listy,
+zwracana jest lista, składająca się ze wszystkich linii wejściowych, jedna
+linia na element listy. Łatwo jest zająć tak duży obszar danych, więc używaj
+tego ostrożnie.
+.PP
+Zerowy uchwyt pliku <> jest specjalny i może być używany do emulacji
+zachowania edytora \fBsed\fR(1), lub \fBawk\fR(1). Wejście z <> może
+nadchodzić zarówno ze standardowego wejścia, lub z każdego pliku,
+wymienionego w linii komend. Oto jak to działa: za pierwszą analizą <>,
+sprawdzana jest tablica \f(CW@ARGV\fR i jeśli jest zerowa,
+\f(CW$ARGV[0]\fR jest ustawiane na \*(L"\-\*(R", co oznacza po otwarciu 
+standardowe wejście. Tablica \f(CW@ARGV\fR jest następnie przetwarzana jako
+lista nazw plików.
+Pętla
+.PP
+.Vb 3
+\&    while (<>) {
+\&        ...                     # kod dla każdej linii
+\&    }
+.Ve
+jest równoważna następującemu pseudokodowi:
+.PP
+.Vb 7
+\&    unshift(@ARGV, '-') unless @ARGV;
+\&    while ($ARGV = shift) {
+\&        open(ARGV, $ARGV);
+\&        while (<ARGV>) {
+\&            ...         # kod dla każdej linii
+\&        }
+\&    }
+.Ve
+poza tym, że jest trochę ładniejsza i działa. Naprawdę przesuwa tablicę
+\f(CW@ARGV\fR i wstawia bieżącą nazwę pliku do zmiennej \f(CW$ARGV\fR.
+Używa też wewnętrznie uchwytu \fI\s-1ARGV\s0\fR--<> jest po prostu synonimem
+<\s-1ARGV\s0>, który jest magiczny. (Powyższy pseudokod nie działa, gdyż
+traktuje \s-1ARGV\s0 amagicznie.)
+.PP
+Przed pierwszym <> możesz modyfikować \f(CW@ARGV\fR, o ile tablica będzie
+zawierała listę plików, których oczekujesz. Numey linii (\f(CW$.\fR) są
+liczone tak, jakby wejście było tylko jednym, szczęśliwym plikiem. (Lecz
+zobacz przykład z \fIeof()\fR, aby zobaczyć jak zresetować numery linii.)
+.PP
+Jeśli chcesz ustawić \f(CW@ARGC\fR na swoją własną listę plików, to nie ma
+sprawy. Jeśli chcesz przekazać do swojego skryptu przełączniki, możesz użyć
+jednego z modułów Getopts, lub wstawić na początku podobną pętlę:
+.PP
+.Vb 10
+\&    while ($_ = $ARGV[0], /^-/) {
+\&        shift;
+\&        last if /^--$/;
+\&        if (/^-D(.*)/) { $debug = $1 }
+\&        if (/^-v/)     { $verbose++  }
+\&        ...             # inne przełączniki
+\&    }
+\&    while (<>) {
+\&        ...             # kod dla każdej linii
+\&    }
+.Ve
+Symbol <> zwraca \s-1FALSE\s0 tylko raz. Jesli wywołasz go po tym, założy,
+że przetwarzasz nową listę \f(CW@ARGV\fR i jeśli jej nie ustawiłeś, pobierze
+wejście ze \s-1STDIN\s0.
+.PP
+Jeśli łańcuch wewnątrz nawiasów trójkątnych jest wskazaniem do zmiennej 
+skalarnej (np. <$foo>), to zmienna ta przechowuje nazwę uchwytu, z którego
+pobierane jest wejście. Np:
+.PP
+.Vb 2
+\&    $fh = \e*STDIN;
+\&    $line = <$fh>;
+.Ve
+Łańcuch w nawiasach trójkątnych nie jest uchwytem pliku, to jest
+interpretowany jako wzorzec nazwy pliku do glob()owania i zwracana jest albo
+lista nazw pliku lub następna nazwa pliku (zależnie od kontekstu).
+Najpierw dokonywany jest jeden poziom interpretacji $, lecz nie można
+powiedzieć \f(CW<$foo>\fR, gdyż jest to niebezpośredni uchwyt pliku,
+opisany w poprzednim paragrafie. (W starszych wersjach perla, programiści
+mogli wstawiać nawiasy do wymuszania interpretacji jako nazwy pliku do
+globowania: \f(CW<${foo}>\fR. Dziś jednak, za czystsze uważa się
+bezpośrednie wołanie funkcji wewnętrznej -- \f(CWglob($foo)\fR. Przykład:
+.PP
+.Vb 3
+\&    while (<*.c>) {
+\&        chmod 0644, $_;
+\&    }
+.Ve
+jest równoważny
+.PP
+.Vb 5
+\&    open(FOO, "echo *.c | tr \-s ' \et\er\ef' '\e\e012\e\e012\e\e012\e\e012'|");
+\&    while (<FOO>) {
+\&        chop;
+\&        chmod 0644, $_;
+\&    }
+.Ve
+W rzeczywistości, obecnie jest to właśnie tak zaimplementowane. (Co znaczy,
+że nie będzie działać na nazwach plików ze spacjami, chyba że masz u siebie
+\fIcsh\fR(1).) Oczywiście najkrótszym sposobem dokonania powyższego jest:
+.PP
+.Vb 1
+\&    chmod 0644, <*.c>;
+.Ve
+Ponieważ globowanie używa powłoki, często szybciej jest wywołać samodzielnie
+\fIreaddir()\fR i dokonać \fIgrep()\fRa na nazwach plików. Co więcej, z
+powodu obecnej implementacji, wywołanie \fIglob()\fR może
+napotkać błędy w rodzaju \*(L"Arg list too
+long\*(R" (chyba że zainstalowałeś \fItcsh\fR\|(1L) jako \fI/bin/csh\fR).
+.PP
+Glob analizuje swój (osadzony) argument tylko jeśli rozpoczyna nową listę.
+Wszystkie wartości muszą być odczytane zanim znów rozpocznie. W kontekście
+listowym nie jest to istotne, gdyż autmatycznie odczytujesz wszystkie.
+Jednak w kontekście skalarnym, operator zwraca następną wartość za każdym
+wywołaniem, lub \s-1FALSE\s0 na końcu. Znowu, \s-1FALSE\s0 jest zwracane
+tylko raz. Jeśli więc oczekujesz od globa pojedynczej wartości, to lepiej
+powiedzieć
+.PP
+.Vb 1
+\&    ($file) = <blurch*>;
+.Ve
+a nie
+.PP
+.Vb 1
+\&    $file = <blurch*>;
+.Ve
+gdyż to drugie będzie rozróżniać zwrócenie nazwy plików i zwrócenie
+\s-1FALSE\s0.
+.PP
+Jeśli próbujesz dokonać interpolacji zmiennych, to zdecydowanie lepiej jest
+użyć funkcji \fIglob()\fR, gdyż starsza notacja może spowodować zakłopotanie
+u niektórych osób.
+.PP
+.Vb 2
+\&    @files = glob("$dir/*.[ch]");
+\&    @files = glob($files[$i]);
+.Ve
+.Sh "Zawijanie stałych"
+.IX Subsection "Constant Folding"
+Podobnie jak C, perl posiada pewien zestaw analiz wyrażeń, wykonywanych
+podczas kompilacji -- dzieje się to jeśli zauważy, że wszystkie argumenty
+operatora  są statyczne i nie mają efektów ubocznych. W szczególności, np.
+konkatenacja literałów bez podstawień zmiennych jest dokonywana podczas 
+kompilacji. Interpretacja odwrotnych ukośników następuje również podczas 
+kompilacji. Możesz powiedzieć
+.PP
+.Vb 2
+\&    'Now is the time for all' . "\en" .
+\&        'good men to come to.'
+.Ve
+a wszystko to wewnętrznie zredukuje się do jednego łańcucha. Podobnie, jeśli
+powiesz
+.PP
+.Vb 3
+\&    foreach $file (@filenames) {
+\&        if (\-s $file > 5 + 100 * 2**16) { ... }
+\&    }
+.Ve
+to kompilator przeliczy liczby, które reprezentuje wyrażenie.
+.Sh "Arytmetyka całkowita"
+.IX Subsection "Integer Arithmetic"
+Domyślnie, perl wykonuje wszystkie obliczenia zmiennoprzecinkowo. Jednak
+powiedzenie
+.PP
+.Vb 1
+\&    use integer;
+.Ve
+mówi kompilatorowi, że może używać odtąd, do końca bloku operacji
+całkowitych. Wewnętrzne bloki mogą temu zaprzeczyć, mówiąc
+.PP
+.Vb 1
+\&    no integer;
+.Ve
+co wystarcza do końca ich bloku.
+.PP
+Operatory bitowe ("&\*(R", \*(L"|\*(R", \*(L"^\*(R", \*(L"~\*(R", \*(L"<<\*(R",
+i \*(L">>") zawsze dają wyniki całkowite. Jednak \f(CWuse integer\fR ma
+wciąż dla nich znaczenie. Domyślnie ich wyniki są interpretowane jako liczby
+całkowite bez znaku. Po włączeniu tej opcji, sa interpretowane ze znakiem.
+Np. \f(CW~0\fR normalnie jest analizowane do wielkiej wartości całkowitej.
+Po \f(CWuse integer; ~0\fR staje się \-1.
+.Sh "Arytmetyka zmiennoprzecinkowa"
+.IX Subsection "Floating-point Arithmetic"
+Podczas gdy \f(CWuse integer\fR daje arytmetykę całkowitą, nie ma podobnej
+instrukcji dla dawania zaokrągleń, lub odcięć w konkretnych miejscach
+dziesiętnych. Dla zaokrągleń do określonej ilości cyfr, najlepiej użyć
+\fIsprintf()\fR lub \fIprintf()\fR.
+.PP
+Moduł \s-1POSIX\s0 (część standardowej dystrybucji perla) 
+implementuje funkcje \fIceil()\fR, \fIfloor()\fR i kilka
+innych funkcji matematycznych i trygonometrycznych. Moduł Math::Complex
+(również standardowy) definiuje sporo funkcji matematycznych, które mogą
+działać również na liczbach rzeczywistych. Moduł Math::Complex nie jest tak
+wydajny jak \s-1POSIX\s0, lecz \s-1POSIX\s0 nie może działać na liczbach
+zespolonych.
+.PP
+Zaokrąglanie w aplikacjach finansowych może mieć poważne konsekwencje i
+używana metoda powinna być podawana dokładnie. W tych wypadkach, lepiej nie
+ufać temu, który system zaokrąglania jest używany przez perla, lecz
+zaimplementować taką funkcję samodzielnie.
+
+.rn }` ''

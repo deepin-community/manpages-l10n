@@ -1,0 +1,172 @@
+.\" Man page generated from reStructuredText.
+.
+.TH "YUM-VERSIONLOCK" "8" "Mar 15, 2021" "4.0.19" "dnf-plugins-core"
+.SH NAME
+yum-versionlock \- redirecting to DNF versionlock Plugin
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.SH DESCRIPTION
+.sp
+\fIversionlock\fP is a plugin that takes a set of names and versions for packages and
+excludes all other versions of those packages. This allows you to protect
+packages from being updated by newer versions. Alternately, it accepts a specific
+package version to exclude from updates, e.g. for when it\(aqs necessary to skip a
+specific release of a package that has known issues.
+.sp
+The plugin provides a command \fIversionlock\fP which allows you to view and edit the
+list of locked packages easily.
+.sp
+The plugin will walk each line of the versionlock file, and parse out the name and
+version of the package. It will then exclude any package by that name that
+doesn\(aqt match one of the versions listed within the file. This is basically
+the same as using \fIdnf \-\-exclude\fP for the package name itself (as you cannot exclude
+installed packages), but dnf will still see the versions you have
+installed/versionlocked as available so that \fIdnf reinstall\fP will still
+work, etc.
+.sp
+It can also work in the opposite way, like a fast exclude, by prefixing a \(aq!\(aq
+character to the version recorded in the lock list file. This specifically
+excludes a package that matches the version exactly.
+.sp
+Note the versionlock plugin does not apply any excludes in non\-transactional
+operations like \fIrepoquery\fP, \fIlist\fP, \fIinfo\fP, etc.
+.SH SYNOPSIS
+.sp
+\fBdnf versionlock [options] [add|exclude|list|delete|clear] [<package\-name\-spec>]\fP
+.SH ARGUMENTS
+.INDENT 0.0
+.TP
+.B \fB<package\-name\-spec>\fP
+Package spec to lock or exclude.
+.UNINDENT
+.SH SUBCOMMANDS
+.INDENT 0.0
+.TP
+.B \fBdnf versionlock add <package\-name\-spec>\fP
+Add a versionlock for all available packages matching the spec. It means that only versions of
+packages represented by \fB<package\-name\-spec>\fP will be available for transaction operations.
+Each \fB<package\-name\-spec>\fP is converted to concrete NEVRAs which are used for locking. The NEVRAs to lock to are first searched among installed packages and then (if none is found) in all currently available packages.
+.sp
+Examples:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+Locking a package to the version installed:
+
+    $ dnf repoquery \-\-installed bash
+    bash\-0:5.0.7\-1.fc30.x86_64
+
+    $ dnf repoquery bash
+    bash\-0:5.0.2\-1.fc30.i686
+    bash\-0:5.0.2\-1.fc30.x86_64
+    bash\-0:5.0.7\-1.fc30.i686
+    bash\-0:5.0.7\-1.fc30.x86_64
+
+    $ dnf versionlock add bash
+    Adding versionlock on: bash\-0:5.0.7\-1.fc30.*
+
+Locking not installed package to any of available versions:
+
+    $ dnf repoquery \-\-installed mutt
+
+    $ dnf repoquery mutt
+    mutt\-5:1.11.4\-1.fc30.x86_64
+    mutt\-5:1.12.1\-3.fc30.x86_64
+
+    $ dnf versionlock add mutt
+    Adding versionlock on: mutt\-5:1.11.4\-1.fc30.*
+    Adding versionlock on: mutt\-5:1.12.1\-3.fc30.*
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.TP
+.B \fBdnf versionlock exclude <package\-name\-spec>\fP
+Add an exclude (within  versionlock) for the available packages matching the spec. It means that
+packages represented by \fB<package\-name\-spec>\fP will be excluded from transaction operations.
+.TP
+.B \fBdnf versionlock list\fP or \fBdnf versionlock\fP
+List the current versionlock entries.
+.TP
+.B \fBdnf versionlock delete <package\-name\-spec>\fP
+Remove any matching versionlock entries.
+.TP
+.B \fBdnf versionlock clear\fP
+Remove all versionlock entries.
+.UNINDENT
+.SH OPTIONS
+.sp
+All general DNF options are accepted, see \fIOptions\fP in \fBdnf(8)\fP for details.
+.INDENT 0.0
+.TP
+.B \fB\-\-raw\fP
+Do not resolve \fB<package\-name\-spec>\fP to NEVRAs to find specific version to lock to. Instead \fB<package\-name\-spec>\fP are used as they are. This enables locking to not yet available versions of the package.
+For example you may want to keep the \fIbash\fP package on major version 5 and consume any future updates as far as they keep the major version:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+$ dnf versionlock add \-\-raw \(aqbash\-5.*\(aq
+Adding versionlock on: bash\-5.*
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SH CONFIGURATION
+.sp
+\fB/etc/dnf/plugins/versionlock.conf\fP
+.sp
+The minimal content of conf file should contain \fBmain\fP sections with \fBenabled\fP and
+\fBlocklist\fP parameters.
+.INDENT 0.0
+.TP
+.B \fBlocklist\fP
+This option is a string that points to the file which has the versionlock
+information in it. Note that the file has to exist (or the versionlock plugin
+will make dnf exit). However, it can be empty.
+.sp
+The file takes entries in the format of \fB<package\-name\-spec>\fP (optionally prefixed with \(aq!\(aq for
+excludes).
+See \fISpecifying packages\fP in \fBdnf(8)\fP for details.
+.UNINDENT
+.SH NOTES
+.sp
+A specified package does not have to exist within the available cache of repository data
+to be considered valid for locking or exclusion. This is by design, to accommodate use
+cases such as a presently disabled repository. However, a package must exist in the
+repository cache when the \fBadd\fP or \fBexclude\fP subcommands are invoked for it.
+.SH AUTHOR
+See AUTHORS in your Core DNF Plugins distribution
+.SH COPYRIGHT
+2014, Red Hat, Licensed under GPLv2+
+.\" Generated by docutils manpage writer.
+.

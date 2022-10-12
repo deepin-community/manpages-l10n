@@ -1,0 +1,66 @@
+This script is intended to ease reporting found errors to the upstream
+projects.
+
+USE CAREFUL, THE SCRIPT MAY STILL CONTAIN UNEXPECTED BUGS
+
+Before using, read "LOCAL CONFIGURATION" and set it up accordingly. In
+case the script shows errors during processing, read "UPSTREAM CONFIGURATION"
+and update the upstream config files if needed.
+
+reportupstream does not expect any parameters. It will scan for all possible
+FIXMEs, sort out those which are comming from upstream (might not work
+100%) and gives you a menu with the choice of packages where bugs can be
+reported.
+
+In the choice you will see also the last reporting date.
+
+Choose one entry and the script will prepare an e-mail or a text file
+ready for copying into the browser (the right URL will be opened).
+You will need to review each FIXME and write clear and consise what
+needs to be changed; the FIXME alone will not be sufficient! Please
+be aware that upstream is not using our format (po), so explain that
+the proposed change is not a real diff, upstream will have to locate
+the exact file and source position.
+
+
+LOCAL CONFIGURATION
+Please create $HOME/.config/reportupstreamrc and add fill in the following
+variables:
+# The location of the git tree with the man pages
+DCSBASE=/scr/build/src/DCS/manpages-l10n/
+# If you have the CONFIG stored somewhere else (usually not needed)
+CONFIGBASE=$DCSBASE/upstreambug/CONFIG
+# If you need a different dialog programm (e.g. for X)
+DIALOG=$(which dialog)
+# Your e-mail programm, must be mutt(1) compatible in the calling syntax
+SSF_MAILER=/usr/bin/mutt
+# Your browser
+SSF_BROWSER=/usr/bin/firefox
+# The temporary directory for quite a few files, will be created if it does not exist
+SSF_TMP=/tmp/ssf
+
+Actually the configuration can contain any command allowed in bash(1), so
+if you need to determine something, you can.
+
+
+UPSTREAM CONFIGURATION
+For each upstream project a file in $CONFIGBASE should exist. Since these
+files are not created automatically, they might be missing and need manual
+creation.
+
+Each config file contains a few header lines (see below) and then the name of
+each manual page one by one, each on a single line.
+
+The following header lines are currently supported:
+Homepage: https://...
+This is the URL of the upstream project (general page)
+
+Note: Text
+Some information about reporting bugs taken from upstream (e.g. written on
+their web page)
+
+Bugtype: TYPE ADDRESS
+How to report bugs.
+TYPE is either either "email", "web" or "reportbug"
+ADDRESS is either the appropraite e-mail-address or the web page of the bug
+tracker.

@@ -1,0 +1,2140 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-08-27 17:48+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "LILO.CONF"
+msgstr ""
+
+#. type: TH
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "June 2013"
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "lilo.conf - configuration file for lilo"
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This file, by default I</etc/lilo.conf>, is read by the boot loader "
+"installer 'lilo' (see lilo(8))."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "It might look as follows:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid ""
+"# /etc/lilo.conf\n"
+"#\n"
+"#  global options:\n"
+"boot=/dev/hda\n"
+"prompt\n"
+"timeout=150\n"
+"lba32\n"
+"compact\n"
+"vga=normal\n"
+"root=/dev/hda1\n"
+"read-only\n"
+"menu-title=\" John's Computer \"\n"
+"#\n"
+"### bootable kernel images ###\n"
+"image=/boot/vmlinuz-2.6.29-1-i386\n"
+"     label=try\n"
+"     initrd=/boot/initrd.img-2.6.29-1-i386\n"
+"image=/boot/vmlinuz-2.4.33-1-i386\n"
+"     label=2.4.33\n"
+"image=/tamu/vmlinuz\n"
+"     label=tamu\n"
+"     initrd=/tamu/initrd.img\n"
+"     root=/dev/hdb2\n"
+"     vga=ask\n"
+"#\n"
+"### other operating systems ###\n"
+"other=/dev/hda3\n"
+"     label=PCDOS\n"
+"     boot-as=0x80    # must be C:\n"
+"other=/dev/hdb1\n"
+"     label=WinXP\n"
+"     boot-as=0x80    # must be C:\n"
+"other=/dev/hdb5\n"
+"     label=oldDOS\n"
+"     loader=chain\n"
+"     table=/dev/hdb5\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This configuration file specifies that lilo uses the Master Boot Record on /"
+"dev/hda. (For a discussion of the various ways to use lilo, and the "
+"interaction with other operating systems, see html/user_21-5.html inside the "
+"old documentation.)"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"When booting, the boot loader will issue its I<boot:> prompt and wait for "
+"you to enter the label of the kernel (and any options) which you wish to "
+"boot. At any time you may hit [Tab] to see a list of kernel/other labels.  "
+"Alternately, if the B<menu> boot loader is installed, a menu of boot options "
+"will be presented for your selection.  The title of this menu is overridden "
+"with the menu title specification in this configuration file.  If you enter "
+"nothing, then the default kernel image, the first mentioned, (in the "
+"example /boot/vmlinuz-2.6.29-1-i386) will be booted after a timeout of 15 "
+"seconds (150 deciseconds). There may be at least 16 images mentioned in lilo."
+"conf. (The exact number depends upon compilation options.)"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"As can be seen above, a configuration file starts with a number of global "
+"options (the top 9 lines in the example), followed by descriptions of the "
+"options for the various images.  An option in an image description will "
+"override a global option."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "Comment lines may appear anywhere, and begin with the \"#\" character."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "GLOBAL OPTIONS"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"There are many possible keywords. The description below is almost literally "
+"from html/user_21-5.html inside the old documentation (just slightly "
+"abbreviated)."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<backup=>I<E<lt>backup-fileE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Specifies the location where a copy of any modified boot sector will be "
+"saved in a file. 'backup=' may specify this location in one of three ways: a "
+"directory where the default backup file 'boot.NNNN' will be created; a file "
+"pathname template to which the '.NNNN' suffix will be added; or the full "
+"file pathname, which must include the correct '.NNNN' suffix.  All RAID "
+"installations should use only the first two alternatives, as multiple "
+"backups may be created.  The '.NNNN' suffix is the hexadecimal "
+"representation of the major and minor device numbers of the device or "
+"partition. If this option is not specified, the default name of boot sector "
+"backups is '/boot/boot.NNNN'. If a backup already exists, it will be "
+"preserved, rather than overwritten.  C.f., B<force-backup=> below."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<bios-passes-dl=>I<E<lt>optionE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"The option is indicated as I<yes>, I<no>, or I<unknown>.  If not specified, "
+"a value of \"unknown\" is assumed, unless additional information is "
+"available to the boot installer. When \"no\" is specified, it indicates that "
+"the BIOS is known not to pass the current boot device code to the boot "
+"loader in the DL register.  Its only function at this point is experimental, "
+"as certain RAID installations may benefit from knowing that the BIOS is 100% "
+"reliable.  Its use should be considered experimental."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This option may be specified on the command line with the '-Z' switch: "
+"yes=1, no=0."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<bitmap=>I<E<lt>bitmap-fileE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Specifies use of a 640x480x16 (VGA BIOS) or 640x480x256 (VGA/VESA BIOS)  "
+"bitmap file as the background on which a boot menu is displayed.  May not be "
+"used if 'message=' is specified.  Use of this option will select a bitmap-"
+"capable boot loader, unless overridden with \"install=\" (see below)."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"When a bitmap file is specified as a background screen during the boot "
+"process, the color selection and layout of the text which overlays the "
+"graphic image must be specified in one of two ways."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"One way is the use of header information in the bitmap image (*.bmp) file: "
+"From a text file with all the information about 'bmp-colors', 'bmp-table' "
+"and 'bmp-timer' options together with the 'bitmap' option are stored in the "
+"special LILO header of the bitmap image file by the B<lilo -E> command. "
+"Another way works without these special header information: All the "
+"information about 'bmp-colors', 'bmp-table' and 'bmp-timer' options together "
+"with the 'bitmap' option are stored in the configuration file.  Any use of "
+"the 'bmp-' options within the configuration file overrides the options "
+"stored in the bitmap file header. If lilo cannot find any of the 'bmp-' "
+"options, then default values are used."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<bmp-colors=>I<E<lt>fgE<gt>,E<lt>bgE<gt>,E<lt>shE<gt>,E<lt>hfgE<gt>,E<lt>hbgE<gt>,E<lt>hshE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Specifies the decimal values of the colors to be used for the menu display "
+"on a 'bitmap=' background.  The list consists of 6 entries, 3 for normal "
+"text followed by 3 for highlighted text.  The order of each triple is: "
+"foreground color, background color, shadow color.  If background color is "
+"not specified, \"transparent\" is assumed.  If shadow color is not "
+"specified, then \"none\" is assumed.  The list entries are separated by "
+"commas, with no spaces."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<bmp-retain>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Option applies to all 'image=' and 'other=' sections.  (See COMMON OPTIONS, "
+"below.)"
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<bmp-table=>I<E<lt>xE<gt>,E<lt>yE<gt>,E<lt>ncolE<gt>,E<lt>nrowE<gt>,E<lt>xsepE<gt>,E<lt>spillE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Specifies the location and layout of the menu table.  E<lt>xE<gt>,"
+"E<lt>yE<gt> specify the starting x- and y-position of the upper left corner "
+"of the table in character coordinates: x in [1..80], y in [1..30]. "
+"E<lt>ncolE<gt> is the number of columns in the menu (1..5); and "
+"E<lt>nrowE<gt> is the number of rows (entries)  in each column.  If more "
+"than one column is specified, then E<lt>xsepE<gt> is the number of character "
+"columns between the leftmost characters in each column: (18..40), and "
+"E<lt>spillE<gt> is the number of entries in one column which must be filled "
+"before entries spill into the next column. E<lt>spillE<gt> must be .le. "
+"E<lt>nrowE<gt>. If pixel addressing is used, instead of character "
+"addressing, then any of E<lt>xE<gt>, E<lt>yE<gt>, or E<lt>xsepE<gt> may be "
+"specified with a 'p' suffix on the decimal value."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<bmp-timer=>I<E<lt>xE<gt>,E<lt>yE<gt>,E<lt>fgE<gt>,E<lt>bgE<gt>,E<lt>shE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Optional specification of the 'timeout=' countdown timer.  E<lt>xE<gt>,"
+"E<lt>yE<gt> specifies the character (or pixel) coordinate of the location of "
+"the timer the same as 'bmp-table=' above; and the color triple specifies the "
+"character color attributes the same as 'bmp-colors=' above, with the "
+"exception that the background color I<must> be specified.  If used to "
+"override the timer specification in a bitmap file, then the form 'bmp-timer "
+"= none' is acceptable.  This will disable the timer display entirely."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<boot=>I<E<lt>boot-deviceE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Sets the name of the device (e.g. hard disk or partition) that contains the "
+"boot sector and where the new boot sector should be written to. Notice: The "
+"boot-device should be the device with the currently mounted root partition."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"A raid installation is initiated by specifying a RAID1 device as the boot "
+"device; e.g., \"boot=/dev/md0\"."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"On newer systems you need an unique ID for the boot device. If the boot "
+"sector should write to a partition you can use its UUID in the same manner "
+"is for the root options."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"If your boot device is a hard disk you need a special ID, which is supported "
+"by udev. You find the right ID in the directory /dev/disks/by-id, i. e.:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "    boot = /dev/disk/by-id/ata-SAMSUNG_SV1604N_S01FJ10X999999\n"
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<change-rules>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "Defines boot-time changes to partition type numbers (`hiding')."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid ""
+"change-rules\n"
+"   reset\n"
+"   type=DOS12\n"
+"      normal=1\n"
+"      hidden=0x11\n"
+"   type=DOS16_small\n"
+"      normal=4\n"
+"      hidden=0x14\n"
+"   type=DOS16_big\n"
+"      normal=0x06\n"
+"      hidden=0x16\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"The above excerpt from a configuration file specifies that all default "
+"I<change-rules> are removed (\"reset\"), and the change-rules for three "
+"partition types are specified.  Without the I<reset>, the three types "
+"specified would have been added to the existing default change-rules.  "
+"Normally, the default rules are sufficient.  The strings which define the "
+"partition types are used in a I<change> section (see below), with the "
+"suffixes \"_normal\" or \"_hidden\" appended.  See section \"Partition type "
+"change rules\" of html/user_21-5.html inside the old documentation for more "
+"details."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<compact>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Tries to merge read requests for adjacent sectors into a single read "
+"request. This drastically reduces load time and keeps the map file smaller. "
+"Using `compact' is especially recommended when booting using a map file on a "
+"floppy disk."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<default=>I<E<lt>nameE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Uses the specified image as the default boot image. If `default' is omitted, "
+"the image appearing first in the configuration file is used. See also, "
+"I<vmdefault> below."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<delay=>I<E<lt>tsecsE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"Specifies the number of tenths of a second the boot loader should wait "
+"before automatically booting a locked command line, a command line pre-"
+"stored by \"lilo -R\", or the default `image=' or `other='.  When `delay' is "
+"non-zero, the boot loader will wait for an interrupt for the specified "
+"interval. If an interrupt is received, or is already waiting, the B<boot:> "
+"prompt will be be issued, and no automatic boot will take place. The setting "
+"of CAPS LOCK or SCROLL LOCK, or any of the keys ALT, CTRL, or SHIFT, when "
+"held down, are taken as interrupts."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "This action is modified by specifying `prompt' (see below)."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<disk=>I<E<lt>device-nameE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Defines non-standard parameters for the specified disk. See section \"Disk "
+"geometry\" of html/user_21-5.html inside the old documentation for details.  "
+"For versions of LILO prior to 22.5, the `bios=' parameter is quite useful "
+"for specifying how the BIOS has assigned device codes to your disks.  For "
+"example,"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid ""
+"       disk=/dev/sda\n"
+"            bios=0x80\n"
+"       disk=/dev/hda\n"
+"            bios=0x81\n"
+"       disk=/dev/sdb\n"
+"            inaccessible\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"would say that your SCSI disk is the first BIOS disk (0x80), that your "
+"(primary master) IDE disk is the second BIOS disk (0x81), and that your "
+"second SCSI disk (perhaps a USB device) receives no device code, and is "
+"therefore inaccessible at boot time."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"NOTE: Use of the 'bios=' option is largely obsolete beginning with LILO "
+"version 22.5, as the boot loader now identifies disks by 32-bit Volume-ID, "
+"and defers BIOS device code determination until boot time."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "Other options include the specification of disk geometry; e.g.,"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid ""
+"       disk=/dev/fd0\n"
+"            sectors=18\n"
+"            heads=2\n"
+"            cylinders=80\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"probably only useful for floppy disks and loopback devices, because for hard "
+"disks the B<lba32> disk addressing option ignores disk geometry."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Developers who have implemented a disk driver for a new block storage device "
+"will have to indicate to LILO the maximum number of partitions on the "
+"device.  This is in addition to making all of the necessary entries for the "
+"device in the \"/dev\" directory (with 'mknod').  The maximum number of "
+"partitions must be one of 63 (like an IDE disk), 31 (uncommon), 15 (like "
+"SCSI disks -- most common value), or 7 (like one array controller). An "
+"example specification would be:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid ""
+"     disk=/dev/userd0\n"
+"          max-partitions=15\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"In cases where there is no kernel partition information available, such as "
+"on loopback devices, the 'disk=' specification may include paritition start "
+"information; viz.,"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+#, no-wrap
+msgid ""
+"       disk=/dev/loop0\n"
+"            bios=0x80\t\t\t# use this BIOS code\n"
+"            max-partitions=7\t\t# declare partitionable\n"
+"            paritition=/dev/loop1\n"
+"                 start=63\t\t# offset from sector 0\n"
+"            paritition=/dev/loop2\n"
+"                 start=102400\t\t# offset from sector 0\n"
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<disktab=>I<E<lt>disktab-fileE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Specifies the name of the disk parameter table.  The map installer looks for "
+"I</etc/disktab> if `disktab' is omitted. The use of disktabs is discouraged."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<el-torito-bootable-CD>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Flag second stage loader to terminate disk emulation when booting from an El "
+"Torito Bootable CD. This option is used by the B<mkrescue> utility when the "
+"\"--iso\" switch is specified."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<fix-table>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This allows lilo to adjust 3D addresses in partition tables. Each partition "
+"entry contains a 3D (cylinder/head/sector) and a linear address of the first "
+"and the last sector of the partition. If a partition is not track-aligned "
+"and if certain other operating systems (e.g. PC/MS-DOS) are using the same "
+"disk, they may change the 3D address. lilo can store its boot sector only on "
+"partitions where both address types correspond. lilo re-adjusts incorrect 3D "
+"start addresses if `fix-table' is set."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"WARNING: This does not guarantee that other operating systems may not "
+"attempt to reset the address later. It is also possible that this change has "
+"other, unexpected side-effects. The correct fix is to re-partition the drive "
+"with a program that does align partitions to tracks. Also, with some disks "
+"(e.g. some large EIDE disks with address translation enabled), under some "
+"circumstances, it may even be unavoidable to have conflicting partition "
+"table entries."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<force-backup=>I<E<lt>backup-fileE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Operation is identical to B<backup=> above, except an existing backup file "
+"is unconditionally overwritten if it exists."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<geometric>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Force disk addressing which is compatible with older versions of LILO.  "
+"Geometric addressing uses cylinder/head/sector addresses, and is limited to "
+"disk cylinders up to 1023.  If inaccessible cylinders are referenced, "
+"diagnostics will be issued at boot-install time, rather than boot-time.  "
+"With a newer BIOS, use of 'lba32' is recommended."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<ignore-table>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "tells lilo to ignore corrupt partition tables."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<install=>I<E<lt>user-interfaceE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Selects the user interface which will be seen at boot time.  One of the "
+"following three options may be specified: B<text>, B<menu>, or B<bmp>. The "
+"traditional LILO interface is `text'; but `menu' is now the default, unless "
+"the configuration file contains the `bitmap=' specification.  The I<text> "
+"interface is strictly a command-line interface as though the console were a "
+"dumb terminal.  The I<menu> interface is a text-based screen of the boot "
+"choices, with the option to enter additional command line parameters.  And "
+"the I<bmp> interface is a menu presented against a graphic screen, specified "
+"as a 640x480 BitMaP file of 16 or 256 colors.  (See the 'lilo -E' switch for "
+"editing options)."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"(Prior to LILO version 22.3, `install=' specified the user interface as a "
+"file in the `/boot' directory.)"
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<large-memory>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"Normally any initial ramdisk (initrd) loaded with a kernel is loaded as high "
+"in memory as possible, but never above 15Mb.  This is due to a BIOS "
+"limitation on older systems.  On newer systems, this option enables using "
+"memory above 15Mb (up to a kernel imposed limit, around 768Mb) for passing "
+"the initrd to the kernel.  The presence of this option merely indicates that "
+"your system does not have the old BIOS limitation."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This switch (or its absence) is not passed to the kernel, and does not in "
+"any way affect the amount of physical memory which it will use.  (See the "
+"kernel documentation for the kernel command line parameter \"mem=\" for "
+"limiting the memory used by the kernel.)"
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<lba32>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Generate 32-bit Logical Block Addresses instead of cylinder/head/sector "
+"addresses. If the BIOS supports packet addressing, then packet calls will be "
+"used to access the disk. This allows booting from any partition on disks "
+"with more than 1024 cylinders.  If the BIOS does not support packet "
+"addressing, then 'lba32' addresses are translated to cylinder/head/sector "
+"('geometric'), just as for 'linear'.  All floppy disk references are "
+"retained in C:H:S form.  Use of 'lba32' is recommended on all post-1998 "
+"systems.  Beginning with LILO version 22, 'lba32' is the default disk "
+"addressing scheme."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<linear>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Generate 24-bit linear sector addresses instead of cylinder/head/sector "
+"(geometric) addresses. Linear addresses are translated at run time to "
+"geometric addresses, and are limited to cylinders E<lt>= 1023. When using "
+"`linear' with large disks, I</sbin/lilo> may generate references to "
+"inaccessible disk cylinders. 'lba32' avoids many of these pitfalls with its "
+"use of packet addressing, but requires a recent BIOS (post-1998).  The "
+"'linear' option is considered obsolete, and its use is strongly discouraged."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<lock>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Enables automatic recording of boot command lines as the defaults for the "
+"following boots. This way, lilo \"locks\" on a choice until it is manually "
+"overridden."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<mandatory>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"The per-image password option `mandatory' (see below) applies to all images."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<map=>I<E<lt>map-fileE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Specifies the location of the map file. If `map' is omitted, the file I</"
+"boot/map> is used."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"On machines with a pre-1998 BIOS, the EDD bios extensions which are required "
+"to support \"lba32\" disk sector addressing may not be present. In this "
+"case, the boot-loader will fall back automatically to \"geometric\" "
+"addressing; this fall back situation, or the specific use of \"geometric\" "
+"or \"linear\" addressing, will require the map file to be located within the "
+"first 1024 cylinders of the disk drive. This BIOS limitation is not present "
+"on post-1998 systems, most of which support the newer EDD disk BIOS calls."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<menu-title=>I<E<lt>title-stringE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"Specifies the title line (up to 37 characters) for the boot menu. This title "
+"replaces the default \"LILO Boot Menu\" title string. If I<menu> is not "
+"installed as the boot loader (see I<install=> option), then this line has no "
+"effect."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<menu-scheme=>I<E<lt>color-schemeE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"The default color scheme of the boot menu may be overridden on VGA displays "
+"using this option. (The color scheme of MDA displays is fixed.)  The general "
+"I<color-scheme> string is of the form:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "     E<lt>textE<gt>:E<lt>highlightE<gt>:E<lt>borderE<gt>:E<lt>titleE<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"where each entry is two characters which specify a foreground color and a "
+"background color. Only the first entry is required. The default highlight is "
+"the reverse of the text color; and the default border and title colors are "
+"the text color.  Colors are specified using the characters B<kbgcrmyw>, for "
+"blacB<K>, B<B>lue, B<G>reen, B<C>yan, B<R>ed, B<M>agenta, B<Y>ellow, and "
+"B<W>hite: upper case for intense (fg only), lower case for dim.  Legal color-"
+"scheme strings would be"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid ""
+"    menu-scheme=Wm     intense white on magenta\n"
+"    menu-scheme=wr:bw:wr:Yr    the LILO default\n"
+"    menu-scheme=Yk:kw    bright yellow on black\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"If I<menu> is not installed as the boot loader, then this line has no effect."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<message=>I<E<lt>message-fileE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"specifies a file containing a message that is displayed before the boot "
+"prompt. No message is displayed while waiting for a shifting key after "
+"printing \"LILO \". In the message, the FF character ([Ctrl L]) clears the "
+"local screen. This is undesirable when the I<menu> boot loader is "
+"installed.  The size of the message file is limited to 65535 bytes. The map "
+"file has to be rebuilt if the message file is changed or moved.  'message=' "
+"and 'bitmap=' are mutually exclusive."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<nodevcache>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"(22.8)  Disables pre-loading of the internal device cache. May be needed for "
+"Linux distributions which use non-standard device naming conventions; e.g., "
+"when the first IDE disk is not `/dev/hda'."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<nokbdefault=>I<E<lt>nameE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"(22.7.2)  The named descriptor is taken to be the default boot image if no "
+"IBM-PC keyboard is present. If no serial interface (\"serial=\") is in use, "
+"then any \"prompt\" keyword and \"timeout\" value are bypassed, and default "
+"booting occurs as specified by \"delay=\".  The keyboard detection codes "
+"cannot detect the presence or absence of a newer USB keyboard."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<noraid>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Disables the automatic marking of disk volumes which are components of RAID "
+"arrays as B<inaccessible>.  This allows the user to edit the B<disk=> / "
+"B<inaccessible> declarations into the configuration file himself.  Without "
+"such declarations, duplicate Volume IDs will be overwritten, leading to "
+"confusing situations at boot-time, and possible failure to boot.  The use of "
+"this keyword is generally not necessary."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<nowarn>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "Disables warnings about possible future dangers."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<optional>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "The per-image option `optional' (see below) applies to all images."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<password=>I<E<lt>passwordE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"The per-image option `password=...' (see below) applies to all images. This "
+"option may prevent unattended booting, if the default image is `password=' "
+"protected at the default level `mandatory', which is a level higher than "
+"`restricted'."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<prompt>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Automatic booting (see `delay' above) will not take place unless a locked or "
+"pre-stored (\"lilo -R\") command line is present. Instead, the boot loader "
+"will issue the I<boot:> prompt and wait for user input before proceeding "
+"(see I<timeout> below).  Unattended default image reboots are impossible if "
+"`prompt' is set and `timeout' is not, or the default image is password "
+"protected at a higher level than `restricted'."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<raid-extra-boot=>I<E<lt>optionE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This option only has meaning for RAID1 installations.  The E<lt>optionE<gt> "
+"may be specified as I<none>, I<auto>, I<mbr>, I<mbr-only>, or a comma-"
+"separated list of devices; e.g., \"/dev/hda,/dev/hdc6\".  Starting with LILO "
+"version 22.0, the boot record is normally written to the first sector of the "
+"RAID1 partition.  On PARALLEL raid sets, no other boot records are needed.  "
+"The default action is I<auto>, meaning, automatically generate auxiliary "
+"boot records as needed on SKEWED raid sets.  I<none> means suppress "
+"generation of all auxiliary boot records.  I<mbr-only> suppresses generation "
+"of a boot record on the raid device, and forces compatibility with versions "
+"of LILO earlier than version 22.0 by writing boot records to all Master Boot "
+"Records (MBRs) of all disks which have partitions in the raid set. I<mbr> is "
+"like I<mbr-only> except the boot record on the RAID partition is not "
+"suppressed.  Use of an explicit list of devices, forces writing of auxiliary "
+"boot records only on those devices enumerated, in addition to the boot "
+"record on the RAID1 device. Since the version 22 RAID1 codes will never "
+"automatically write a boot record on the MBR of device 0x80, if such a boot "
+"record is desired, this is one way to have it written. Use of I<mbr> is the "
+"other way to force writing to the MBR of device 0x80."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<restricted>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"The per-image password option `restricted' (see below) applies to all images."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<serial=>I<E<lt>parametersE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"enables control from a serial line. The specified serial port is initialized "
+"and the boot loader is accepting input from it and from the PC's keyboard. "
+"Sending a break on the serial line corresponds to pressing a shift key on "
+"the console in order to get the boot loader's attention.  All boot images "
+"should be password-protected if the serial access is less secure than access "
+"to the console, e.g. if the line is connected to a modem. The parameter "
+"string has the following syntax:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "    E<lt>portE<gt>[,E<lt>bpsE<gt>[E<lt>parityE<gt>[E<lt>bitsE<gt>]]]\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"E<lt>portE<gt>: the number of the serial port, zero-based. 0 corresponds to "
+"COM1 alias /dev/ttyS0, etc. All four ports can be used (if present)."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"E<lt>bpsE<gt>: the baud rate of the serial port. The following baud rates "
+"are supported: 110, 150, 300, 600, 1200, 2400(default), 4800, 9600, plus the "
+"extended rates 19200, 38400, and 57600(56000).  115200 is allowed, but may "
+"not work with all COMx port hardware."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"E<lt>parityE<gt>: the parity used on the serial line. The boot loader "
+"ignores input parity and strips the 8th bit. The following (upper or lower "
+"case)  characters are used to describe the parity: \"n\" for no parity, \"e"
+"\" for even parity and \"o\" for odd parity."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"E<lt>bitsE<gt>: the number of bits in a character. Only 7 and 8 bits are "
+"supported. Default is 8 if parity is \"none\", 7 if parity is \"even\" or "
+"\"odd\"."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "If `serial' is set, the value of `delay' is automatically raised to 20."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Example: \"serial=0,2400n8\" initializes COM1 with the default parameters."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<single-key>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This option specifies that boot images or 'other's are to be selected and "
+"launched with a single keystroke.  Selection is based upon the first "
+"character of each name, which must be unique.  This option should not be "
+"used with the menu or bitmap user interface (\"install=\")."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<static-BIOS-codes>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Causes the operation of the boot installer and boot loader to bypass the use "
+"of Volume-ID information, and to revert to a mode of operation of versions "
+"of LILO from 22.4 backward.  With Volume-ID booting (22.5 and later), the "
+"BIOS codes of disks are determined at boot time, not install time; hence "
+"they may be switched around, either by adding or removing disk(s) from the "
+"hardware configuration, or by using a BIOS menu to select the boot device."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"With the use of this option, BIOS codes of disks MUST be correctly specified "
+"at install time; either guessed correctly by LILO (which often fails on "
+"mixed IDE/SCSI systems), or explicitly specified with 'disk=/dev/XXX "
+"bios=0xYY' statements.  The use of this option precludes any activity which "
+"may switch around the BIOS codes assigned to particular disk devices, as "
+"noted above."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"In general, this option should never be used, except as a bug workaround."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<suppress-boot-time-BIOS-data>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This global option suppresses the boot-time real mode collection of BIOS "
+"data on systems which hang on certain BIOS calls.  It is equivalent to using "
+"the boot-time switch 'nobd'."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This option defeats the disk volume recognition and BIOS device code "
+"detection features of LILO on systems with more than one disk. Thus the use "
+"of this option will produce a strong cautionary message, which cannot be "
+"suppressed."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<timeout=>I<E<lt>tsecsE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"sets a timeout (in tenths of a second) for keyboard input at the I<boot:> "
+"prompt.  \"timeout\" only has meaning if \"prompt\" is mentioned.  If no key "
+"is pressed for the specified time, the default image is automatically "
+"booted. The default timeout is infinite."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<unattended>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"(22.6) Alters the operation of the \"timeout\" parameter in a manner which "
+"is useful on noisy serial lines.  Each typed (or noise) character restarts "
+"the \"timeout\" timer and a timeout will always boot the default descriptor, "
+"even if noise characters have appeared on the input line."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<verbose=>I<E<lt>numberE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"Turns on lots of progress reporting. Higher numbers give more verbose "
+"output. If -v is additionally specified on the lilo command line, the level "
+"is increased accordingly. The maximum verbosity level is 5."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<vmdefault=>I<E<lt>nameE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"The named boot image is used as the default boot if booting in \"virtual\" "
+"mode with a virtual monitor, such as VMware(tm).  Thus a real mode boot and "
+"a virtual mode boot can be made to have different default boot images."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Additionally, the kernel configuration parameters B<append>, B<ramdisk>, "
+"B<read-only>, B<read-write>, B<root> and B<vga> can be set in the global "
+"options section. They are used as defaults if they aren't specified in the "
+"configuration sections of the respective kernel images."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "PER-IMAGE SECTION"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "A per-image section starts with either a line"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "    B<image=>I<E<lt>pathnameE<gt>>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"to indicate a file or device containing the boot image of a Linux kernel, or "
+"a line"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "    B<other=>I<E<lt>deviceE<gt>>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "to indicate an arbitrary system to boot."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"In the former case, if an B<image> line specifies booting from a device, "
+"then one has to indicate the range of sectors to be mapped using"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid ""
+"    B<range=>I<E<lt>startE<gt>-E<lt>endE<gt>>\n"
+"    B<range=>I<E<lt>startE<gt>+E<lt>nsecE<gt>>\n"
+"    B<range=>I<E<lt>sectorE<gt>>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "In the third case, 'nsec=1' is assumed."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "KERNEL OPTIONS (image=)"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"If the booted image is a Linux kernel, then one may pass command line "
+"parameters to this kernel."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<addappend=>I<E<lt>stringE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"The kernel parameters of this string are concatenated to the parameter(s) "
+"from an B<append=> option (see below).  The string of addappend must be "
+"enclosed within double quotes.  Usually, the previous B<append=> will set "
+"parameters common to all kernels by appearing in the global section of the "
+"configuration file and B<addappend=> will be used to add local parameter(s) "
+"to an individual image.  The addappend option may be used only once per "
+"\"image=\" section."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"If the string is a very long line, this line can be divided in more lines "
+"using \"\\e\" as last character of a line, e.g."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid ""
+"    addappend=\"noapic acpi=off pci=usepirqmask \\e\n"
+"            pnpbios=off pnpacpi=off noisapnp\"\n"
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<append=>I<E<lt>stringE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Appends the options specified to the parameter line passed to the kernel.  "
+"This is typically used to specify hardware parameters that can't be entirely "
+"auto-detected or for which probing may be dangerous. Multiple kernel "
+"parameters are separated by a blank space, and the string must be enclosed "
+"in double quotes.  A local append= appearing within an image= section "
+"overrides any global append= appearing in the global section of the "
+"configuration file.  The append option may be used only once per \"image=\" "
+"section. To concatenate parameter strings, use \"addappend=\". Example:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "     append=\"mem=96M hd=576,64,32 console=ttyS1,9600\"\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"If the string is a very long line, this line can be divided in more lines "
+"using \"\\e\" as last character of a line. See example of addappend option."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<initrd=>I<E<lt>nameE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"Specifies the initial ramdisk image to be loaded with the kernel.  The image "
+"will contain modules needed at boot time, such as network and scsi drivers. "
+"See man pages for I<mkinitrd(8)>."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<literal=>I<E<lt>stringE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Like `append', but removes all other options (e.g. setting of the root "
+"device). 'literal' overrides all 'append' and 'addappend' options.  Because "
+"vital options can be removed unintentionally with `literal', this option "
+"cannot be set in the global options section."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<ramdisk=>I<E<lt>sizeE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"This specifies the size (e.g., \"4096k\") of the optional RAM disk. A value "
+"of zero indicates that no RAM disk should be created. If this variable is "
+"omitted, the RAM disk size configured into the boot image is used."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<read-only>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This specifies that the root file system should be mounted read-only.  It "
+"may be specified as a global option.  Typically, the system startup "
+"procedure re-mounts the root file system read-write later (e.g. after "
+"fsck'ing it)."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<read-write>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This specifies that the root file system should be mounted read-write.  It "
+"may be specified as a global option."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<root=>I<E<lt>root-deviceE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"This specifies the device that should be mounted as root.  It may be "
+"specified as a global option.  If the special name B<current> is used, the "
+"root device is set to the device on which the root file system is currently "
+"mounted. If the root has been changed with -r , the respective device is "
+"used. If the variable `root' is omitted, the root device setting contained "
+"in the running kernel image is used.  Warning: This can induce to an "
+"unbootable system!"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"The root filesystem may also be specified by a B<LABEL=> or B<UUID=> "
+"directive, as in '/etc/fstab'.  In this case, the argument to I<root=> must "
+"be enclosed in quotation marks, to avoid a syntax error on the second equal "
+"sign, e.g.:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid ""
+"     root=\"LABEL=MyDisk\"\n"
+"     root=\"UUID=5472fd8e-9089-4256-bcaa-ceab4f01a439\"\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Note: The command line I<root=> parameter passed to the kernel will be: "
+"'root=LABEL=MyDisk'; i.e., without the quotation marks. If the I<root=> "
+"parameter is passed from the boot time B<boot:> prompt, no quotes are used.  "
+"The quotes are only there to satisfy the requirements of the boot-installer "
+"parser, which treats an equal sign as an operator.  The kernel command line "
+"parser is very much simpler, and must not see any quotation marks.  Simply "
+"stated, only use the quotation marks within I</etc/lilo.conf>."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<vga=>I<E<lt>modeE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This specifies the VGA text mode that should be selected when booting.  It "
+"may be specified as a global option.  The following values are recognized "
+"(case is ignored):"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "B<normal>: select normal 80x25 text mode."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "B<extended> (or B<ext>): select 80x50 text mode."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "B<ask>: stop and ask for user input (at boot time)."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"E<lt>numberE<gt>: use the corresponding text mode (can specify the number in "
+"decimal or in hex with the usual '0x' convention).  A list of available "
+"modes can be obtained by booting with I<vga=ask> and pressing [Enter]."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"If this variable is omitted, the VGA mode setting contained in the kernel "
+"image is used. (And that is set at compile time using the SVGA_MODE variable "
+"in the kernel Makefile, and can later be changed with the rdev(8) program.)"
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "ALTERNATE SYSTEM (other=)"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Used to load systems other than Linux. The `other = E<lt>deviceE<gt>' "
+"specifies the boot sector of an alternate system contained on a device or "
+"disk partition; e.g., DOS on, say, `/dev/hda2', or a floppy on `/dev/fd0'.  "
+"In the case of booting another system there are these options:"
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<loader=>I<E<lt>chain-loaderE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This specifies the chain loader that should be used.  It may also be "
+"specified as a global option.  By default I<chain> is used.  This chain "
+"loader passes partition and drive information in the boot sector it loads "
+"only to DOS on FAT12 or FAT16, Windows on FAT16 or FAT32. (see also "
+"I<table=E<lt>letterE<gt>> below)."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<table=>I<E<lt>deviceE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This specifies the device that contains the partition table.  The boot "
+"loader will pass default partition information to the booted operating "
+"system if this variable is omitted. (Some operating systems have other means "
+"to determine from which partition they have been booted.  E.g., MS-DOS "
+"usually stores the geometry of the boot disk or partition in its boot "
+"sector.)  Note that /sbin/lilo must be re-run if a partition table mapped "
+"referenced with `table' is modified."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<change>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"This keyword starts a section which describes how primary partition IDs are "
+"changed, and how primary partitions are activated and deactivated.  If "
+"B<change> is omitted, change rules are generated as though the I<automatic> "
+"keyword were specified. The keyword B<change> alone, without any rules "
+"following, will suppress automatic change-rules.  For example,"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid ""
+"   other=/dev/hda2\n"
+"      label=dos\n"
+"      table=/dev/hda\n"
+"      change\n"
+"        automatic\n"
+"        partition=/dev/hda1\n"
+"           set=DOS12_hidden\n"
+"           deactivate\n"
+"        partition=/dev/hda2\n"
+"           set=DOS16_big_normal\n"
+"           activate\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"specifies that when primary partition /dev/hda2 is booted, automatic change-"
+"rules will be in effect; plus, partition 1, a DOS12 partition, will be set "
+"hidden, and deactivated.  In addition, partition 2, will be set normal, and "
+"activated.  Activation sets the boot-flag in the partition table.  The "
+"I<automatic> keyword may conflict with default change rules, so the I<set=> "
+"lines above may be redundant."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<boot-as=>I<E<lt>biosE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This option (LILO version 22.5.1) indicates the BIOS device code which must "
+"be assigned to the specified drive in order for the \"other=\" operating "
+"system to boot.  If the chain loader detects that another BIOS device code "
+"is assigned to this disk, then it will dynamically swap the assigned device "
+"code with the specified device code."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This option is easier to specify than \"map-drive=\" and more general than "
+"\"master-boot\" in that any device code may be specified.  Unlike \"map-"
+"drive=\", the determination whether to swap device codes is made at boot "
+"time, not install time.  This is advantageous on systems where the BIOS "
+"presents a boot menu of devices, and will map disks to devices in different "
+"ways, depending upon the BIOS boot selection."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This option may be specified as a global option, in which case it applies to "
+"all \"other=\" sections unless overridden with a specific \"master-boot\" "
+"option.  If one of \"boot-as=\" or \"master-boot\" is specified as a global "
+"option, it is better to specify \"master-boot\" as the global option, as it "
+"will not interfere with floppy disk BIOS device codes; \"boot-as=\" is then "
+"used as a local option to override \"master-boot\" as necessary."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<master-boot>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This flag (LILO version 22.5) indicates a DOS/Windows or other system which "
+"will only boot from BIOS device 0x80, the \"C:\" drive, or BIOS device 0, "
+"the A: drive. When this flag is specified, if this drive is not assigned "
+"device code 0x80 or 0 by the BIOS, then the chain loader will dynamically "
+"swap the device code actually assigned with device code 0x80 or 0 to make "
+"this drive appear to be the first hard or floppy drive, \"C:\" or \"A:\"."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This flag is easier to use than \"map-drive=\" (see below), and is "
+"preferred, if simple forcing of device code 0x80 is all that is required. It "
+"is also more general, in that the necessity to swap BIOS device codes is "
+"determined dynamically at boot-time, not at boot install-time, as with \"map-"
+"drive=\".  It is slightly more powerful than \"boot-as=\", in that the "
+"device code which is assigned, 0 or 0x80, is determined dynamically."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This option may be specified as a global option, in which case it applies to "
+"all \"other=\" sections unless overridden with a specific \"boot-as=\" "
+"option."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<map-drive=>I<E<lt>numE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Maps BIOS calls for the specified drive to the device code specified on the "
+"next line as B<to=>E<lt>numE<gt>.  This mapping is useful for booting "
+"operating systems, such as DOS, from the second hard drive.  The following, "
+"swaps the C: and D: drives,"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid ""
+"   map-drive=0x80\n"
+"      to=0x81\n"
+"   map-drive=0x81\n"
+"      to=0x80\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"This option is largely rendered obsolete by \"boot-as=\", introduced with "
+"LILO version 22.5."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<unsafe>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Do not access the boot sector at map creation time. This disables some "
+"sanity checks, including a partition table check. If the boot sector is on a "
+"fixed-format floppy disk device, using UNSAFE avoids the need to put a "
+"readable disk into the drive when running the map installer. If the boot "
+"sector is on a hard drive, the BIOS device code of the drive will have to be "
+"specified explicitly with \"disk=/dev/XXXX bios=0x8X inaccessible\" in the "
+"configuration file.  `unsafe' and `table' (explicit or implicit) are "
+"mutually incompatible."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "COMMON DESCRIPTOR OPTIONS (image= & other=)"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "In both the B<image=> and B<other=> cases, the following options apply."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<bypass>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"No password is required to boot this image. Used to indicate that the global "
+"password does not apply to this `image=' or `other='.  See 'password=' below."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<label=>I<E<lt>nameE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"The boot loader uses the main file name (without its path)  of each image "
+"specification to identify that image.  A different name can be used by "
+"setting the variable `label'."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<alias=>I<E<lt>nameE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "A second name for the same entry can be used by specifying an alias."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"The bitmap graphic (install=bmp) is retained when control is passed to the "
+"loaded kernel image, or other= bootloader; i.e., the screen is not blanked "
+"to alphanumeric mode before starting the kernel.  This feature is considered "
+"EXPERIMENTAL, for those users working with startup splash screens."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<fallback=>I<E<lt>command-lineE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"Specifies a string that is stored as the default command line if the current "
+"image is booted. This is useful when experimenting with kernels which may "
+"crash before allowing interaction with the system. If using the B<fallback> "
+"option, the next reboot (e.g.  triggered by a manual reset or by a watchdog "
+"timer) will load a different (supposedly stable) kernel. The command line "
+"stored by the fallback mechanism is cleared by removing or changing the "
+"default command line with the I<-R> option, which should be a part of the "
+"boot startup scripts."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid "(See above.)"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Omit the image if it is not available at map creation time.  It may be "
+"specified as a global option.  This is useful to specify test kernels that "
+"are not always present."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"Protect the `image=' or `other=' with a password (or passphrase).  It may be "
+"specified as a global option.  The interpretation of the `password=' setting "
+"is modified by the words `mandatory', `restricted', and `bypass' (see below)."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"The password may be specified in the config-file (less secure) or entered at "
+"the time the boot loader is installed. To request interactive entry of the "
+"password, it should be specified: B<password=\"\">.  Passwords entered "
+"interactively are not required to be entered again if the boot installer is "
+"re-run. They are cached, in hashed form, in a companion file to the config-"
+"file, default name: B</etc/lilo.conf.crc>. If the config-file is updated, a "
+"warning message will be issued telling you to re-run I<lilo -p> to force re-"
+"creation of the password cache file."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"A password is required to boot this image. This is the default. May be used "
+"on a single `image=' or `other=' to override a different global setting."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<nokbdisable>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"(22.7.2)  The specified descriptor is not bootable if the IBM-PC keyboard is "
+"not present.  This option is really only useful if the \"serial=\" boot "
+"terminal is in use.  With no keyboard (and no serial terminal) attached, "
+"selecting a boot descriptor other than the default is impossible.  See "
+"I<nokbdefault> above."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid ""
+"A password is only required to boot the image if kernel parameters are "
+"specified on the command line (e.g. 'single').  May be used on a single "
+"`image=' or `other=' to override a different global setting."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<vmwarn>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"If booting under a virtual monitor such as VMware(tm), the image with this "
+"label will cause a cautionary warning to be issued at boot time, and user "
+"intervention will be required to continue or to abort the boot process."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "B<vmdisable>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable mageia-cauldron
+msgid ""
+"If booting under a virtual monitor, the image with this label will not be "
+"displayed as a boot option.  The image is only bootable in real mode.  See "
+"I<vmdefault> above."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable mageia-cauldron
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye mageia-cauldron
+msgid "lilo(8), mkinitrd(8), mknod(1), mkrescue(8), rdev(8)."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"When booting, the boot loader will issue its B<boot:> prompt and wait for "
+"you to enter the label of the kernel (and any options) which you wish to "
+"boot. At any time you may hit [Tab] to see a list of kernel/other labels.  "
+"Alternately, if the B<menu> boot loader is installed, a menu of boot options "
+"will be presented for your selection.  The title of this menu is overridden "
+"with the menu title specification in this configuration file.  If you enter "
+"nothing, then the default kernel image, the first mentioned, (in the "
+"example /boot/vmlinuz-2.6.29-1-i386) will be booted after a timeout of 15 "
+"seconds (150 deciseconds). There may be at least 16 images mentioned in lilo."
+"conf. (The exact number depends upon compilation options.)"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"If your boot device is a hard disk you need a special ID, which is supported "
+"by udev. You find the right ID in the directory /dev/disk/by-id, i.e.:"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"Specifies the number of tenths of a second the boot loader should wait "
+"before automatically booting a locked command line, a command line pre-"
+"stored by \"lilo -R\", or the default `image=' or `other='.  When `delay' is "
+"non-zero, the boot loader will wait for an interrupt for the specified "
+"interval. If an interrupt is received, or is already waiting, the B<boot:> "
+"prompt will be issued, and no automatic boot will take place. The setting of "
+"CAPS LOCK or SCROLL LOCK, or any of the keys ALT, CTRL, or SHIFT, when held "
+"down, are taken as interrupts."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"In cases where there is no kernel partition information available, such as "
+"on loopback devices, the 'disk=' specification may include partition start "
+"information; viz.,"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+#, no-wrap
+msgid ""
+"       disk=/dev/loop0\n"
+"            bios=0x80\t\t\t# use this BIOS code\n"
+"            max-partitions=7\t\t# declare partitionable\n"
+"            partition=/dev/loop1\n"
+"                 start=63\t\t# offset from sector 0\n"
+"            partition=/dev/loop2\n"
+"                 start=102400\t\t# offset from sector 0\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"Normally any initial ramdisk (initrd) loaded with a kernel is loaded as high "
+"in memory as possible, but never above 15\\~MB.  This is due to a BIOS "
+"limitation on older systems.  On newer systems, this option enables using "
+"memory above 15\\~MB (up to a kernel imposed limit, around 768\\~MB) for "
+"passing the initrd to the kernel.  The presence of this option merely "
+"indicates that your system does not have the old BIOS limitation."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"Specifies the title line (up to 37 characters) for the boot menu. This title "
+"replaces the default \"LILO Boot Menu\" title string. If I<menu> is not "
+"installed as the boot loader (see B<install=> option), then this line has no "
+"effect."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"where each entry is two characters which specify a foreground color and a "
+"background color. Only the first entry is required. The default highlight is "
+"the reverse of the text color; and the default border and title colors are "
+"the text color.  Colors are specified using the characters B<kbgcrmyw>, for "
+"blacB<K>, B<B>lue, B<G>reen, B<C>yan, B<R>ed, B<M>agenta, B<Y>ellow, and "
+"B<W>hite: upper case for intense (fg only), lower case for dim.  Valid color-"
+"scheme strings would be"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"If B<menu> is not installed as the boot loader, then this line has no effect."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"The per-image option `password=.\\|.\\|.\\&' (see below) applies to all "
+"images.  This option may prevent unattended booting, if the default image is "
+"`password=' protected at the default level `mandatory', which is a level "
+"higher than `restricted'."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"E<lt>portE<gt>: the number of the serial port, zero-based. Zero (0) "
+"corresponds to COM1 alias /dev/ttyS0, etc. All four ports can be used (if "
+"present)."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"E<lt>bpsE<gt>: the baud rate of the serial port. The following baud rates "
+"are supported: 110, 150, 300, 600, 1200, 2400 (default), 4800, 9600, plus "
+"the extended rates 19200, 38400, and 57600 (56000).  The rate 115200 is "
+"allowed, but may not work with all COMx port hardware."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"Turns on lots of progress reporting. Higher numbers give more verbose "
+"output.  If B<-v> is additionally specified on the lilo command line, the "
+"level is increased accordingly. The maximum verbosity level is 5."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"If the string is a very long line, this line can be divided in more lines "
+"using \"\\e\" as last character of a line, e.g.,"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"Specifies the initial ramdisk image to be loaded with the kernel.  The image "
+"will contain modules needed at boot time, such as network and scsi drivers. "
+"See man pages for B<mkinitrd>(8)."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"This specifies the size (e.g. \"4096k\") of the optional RAM disk. A value "
+"of zero indicates that no RAM disk should be created. If this variable is "
+"omitted, the RAM disk size configured into the boot image is used."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"This specifies the device that should be mounted as root.  It may be "
+"specified as a global option.  If the special name B<current> is used, the "
+"root device is set to the device on which the root file system is currently "
+"mounted. If the root has been changed with B<-r>, the respective device is "
+"used. If the variable `root' is omitted, the root device setting contained "
+"in the running kernel image is used.  Warning: This can induce to an "
+"unbootable system!"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"If this variable is omitted, the VGA mode setting contained in the kernel "
+"image is used. (And that is set at compile time using the SVGA_MODE variable "
+"in the kernel Makefile, and can later be changed with the B<rdev>(8)  "
+"program.)"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"This keyword starts a section which describes how primary partition IDs are "
+"changed, and how primary partitions are activated and deactivated.  If "
+"B<change> is omitted, change rules are generated as though the B<automatic> "
+"keyword were specified. The keyword B<change> alone, without any rules "
+"following, will suppress automatic change-rules.  For example,"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"Specifies a string that is stored as the default command line if the current "
+"image is booted. This is useful when experimenting with kernels which may "
+"crash before allowing interaction with the system. If using the B<fallback> "
+"option, the next reboot (e.g.  triggered by a manual reset or by a watchdog "
+"timer) will load a different (supposedly stable) kernel. The command line "
+"stored by the fallback mechanism is cleared by removing or changing the "
+"default command line with the B<-R> option, which should be a part of the "
+"boot startup scripts."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"A password is only required to boot the image if kernel parameters are "
+"specified on the command line (e.g.\\& 'single').  May be used on a single "
+"`image=' or `other=' to override a different global setting."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid "B<lilo>(8), B<mkinitrd>(8), B<mknod>(1), B<mkrescue>(8), B<rdev>(8)."
+msgstr ""
+
+#. type: Plain text
+#: mageia-cauldron
+msgid ""
+"Appends the options specified to the parameter line passed to the kernel.  "
+"This is typically used to specify hardware parameters that can't be entirely "
+"auto-detected or for which probing may be dangerous. Multiple kernel "
+"parameters are separated by a blank space, and the string must be enclosed "
+"in double quotes.  A local append= appearing withing an image= section "
+"overrides any global append= appearing in the global section of the "
+"configuration file.  The append option may be used only once per \"image=\" "
+"section. To concatenate parameter strings, use \"addappend=\". Example:"
+msgstr ""

@@ -1,0 +1,170 @@
+'\" t
+.TH "SYSTEMD\-COREDUMP" "8" "" "systemd 247" "systemd-coredump"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-coredump, systemd-coredump.socket, systemd-coredump@.service \- Acquire, save and process core dumps
+.SH "SYNOPSIS"
+.PP
+/lib/systemd/systemd\-coredump
+.PP
+/lib/systemd/systemd\-coredump
+\fB\-\-backtrace\fR
+.PP
+systemd\-coredump@\&.service
+.PP
+systemd\-coredump\&.socket
+.SH "DESCRIPTION"
+.PP
+systemd\-coredump@\&.service
+is a system service that can acquire core dumps from the kernel and handle them in various ways\&. The
+\fBsystemd\-coredump\fR
+executable does the actual work\&. It is invoked twice: once as the handler by the kernel, and the second time in the
+systemd\-coredump@\&.service
+to actually write the data to the journal\&.
+.PP
+When the kernel invokes
+\fBsystemd\-coredump\fR
+to handle a core dump, it runs in privileged mode, and will connect to the socket created by the
+systemd\-coredump\&.socket
+unit, which in turn will spawn an unprivileged
+systemd\-coredump@\&.service
+instance to process the core dump\&. Hence
+systemd\-coredump\&.socket
+and
+systemd\-coredump@\&.service
+are helper units which do the actual processing of core dumps and are subject to normal service management\&.
+.PP
+Core dumps can be written to the journal or saved as a file\&. Once saved they can be retrieved for further processing, for example in
+\fBgdb\fR(1)\&.
+.PP
+By default,
+\fBsystemd\-coredump\fR
+will log the core dump including a backtrace if possible to the journal and store the core dump itself in an external file in
+/var/lib/systemd/coredump\&.
+.PP
+The behavior of a specific program upon reception of a signal is governed by a few factors which are described in detail in
+\fBcore\fR(5)\&. In particular, the core dump will only be processed when the related resource limits are sufficient\&.
+.PP
+It is also possible to invoke
+\fBsystemd\-coredump\fR
+with
+\fB\-\-backtrace\fR
+option\&. In this case,
+\fBsystemd\-coredump\fR
+expects a journal entry in the journal
+\m[blue]\fBJournal Export Format\fR\m[]\&\s-2\u[1]\d\s+2
+on standard input\&. The entry should contain a
+\fIMESSAGE=\fR
+field and any additional metadata fields the caller deems reasonable\&.
+\fBsystemd\-coredump\fR
+will append additional metadata fields in the same way it does for core dumps received from the kernel\&. In this mode, no core dump is stored in the journal\&.
+.SH "CONFIGURATION"
+.PP
+For programs started by
+\fBsystemd\fR, process resource limits can be set by directive
+\fILimitCORE=\fR, see
+\fBsystemd.exec\fR(5)\&.
+.PP
+In order to be used by the kernel to handle core dumps,
+\fBsystemd\-coredump\fR
+must be configured in
+\fBsysctl\fR(8)
+parameter
+\fIkernel\&.core_pattern\fR\&. The syntax of this parameter is explained in
+\fBcore\fR(5)\&. systemd installs the file
+/usr/lib/sysctl\&.d/50\-coredump\&.conf
+which configures
+\fIkernel\&.core_pattern\fR
+accordingly\&. This file may be masked or overridden to use a different setting following normal
+\fBsysctl.d\fR(5)
+rules\&. If the sysctl configuration is modified, it must be updated in the kernel before it takes effect, see
+\fBsysctl\fR(8)
+and
+\fBsystemd-sysctl\fR(8)\&.
+.PP
+In order to be used in the
+\fB\-\-backtrace\fR
+mode, an appropriate backtrace handler must be installed on the sender side\&. For example, in case of
+\fBpython\fR(1), this means a
+\fIsys\&.excepthook\fR
+must be installed, see
+\m[blue]\fBsystemd\-coredump\-python\fR\m[]\&\s-2\u[2]\d\s+2\&.
+.PP
+The behavior of
+\fBsystemd\-coredump\fR
+itself is configured through the configuration file
+/etc/systemd/coredump\&.conf
+and corresponding snippets
+/etc/systemd/coredump\&.conf\&.d/*\&.conf, see
+\fBcoredump.conf\fR(5)\&. A new instance of
+\fBsystemd\-coredump\fR
+is invoked upon receiving every core dump\&. Therefore, changes in these files will take effect the next time a core dump is received\&.
+.PP
+Resources used by core dump files are restricted in two ways\&. Parameters like maximum size of acquired core dumps and files can be set in files
+/etc/systemd/coredump\&.conf
+and snippets mentioned above\&. In addition the storage time of core dump files is restricted by
+\fBsystemd\-tmpfiles\fR, corresponding settings are by default in
+/usr/lib/tmpfiles\&.d/systemd\&.conf\&.
+.SS "Disabling coredump processing"
+.PP
+To disable potentially resource\-intensive processing by
+\fBsystemd\-coredump\fR, set
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Storage=none
+ProcessSizeMax=0
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+in
+\fBcoredump.conf\fR(5)\&.
+.SH "USAGE"
+.PP
+Data stored in the journal can be viewed with
+\fBjournalctl\fR(1)
+as usual\&.
+\fBcoredumpctl\fR(1)
+can be used to retrieve saved core dumps independent of their location, to display information and to process them e\&.g\&. by passing to the GNU debugger (gdb)\&.
+.SH "SEE ALSO"
+.PP
+\fBcoredump.conf\fR(5),
+\fBcoredumpctl\fR(1),
+\fBsystemd-journald.service\fR(8),
+\fBsystemd-tmpfiles\fR(8),
+\fBcore\fR(5),
+\fBsysctl.d\fR(5),
+\fBsystemd-sysctl.service\fR(8)\&.
+.SH "NOTES"
+.IP " 1." 4
+Journal Export Format
+.RS 4
+\%https://www.freedesktop.org/wiki/Software/systemd/export
+.RE
+.IP " 2." 4
+systemd-coredump-python
+.RS 4
+\%https://github.com/keszybz/systemd-coredump-python
+.RE

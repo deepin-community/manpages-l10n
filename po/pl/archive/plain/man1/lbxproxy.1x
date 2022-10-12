@@ -1,0 +1,210 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.\" $XConsortium: lbxproxy.man /main/9 1996/12/02 15:47:09 swick $
+.\" Copyright (c) 1996  X Consortium
+.\" 
+.\" Permission is hereby granted, free of charge, to any person obtaining
+.\" a copy of this software and associated documentation files (the
+.\" "Software"), to deal in the Software without restriction, including
+.\" without limitation the rights to use, copy, modify, merge, publish,
+.\" distribute, sublicense, and sell copies of the Software, and to
+.\" permit persons to whom the Software is furnished to do so, subject to
+.\" the following conditions:
+.\" 
+.\" The above copyright notice and this permission notice shall be included
+.\" in all copies or substantial portions of the Software.
+.\" 
+.\" THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+.\" OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+.\" MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+.\" IN NO EVENT SHALL THE X CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR
+.\" OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+.\" ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+.\" OTHER DEALINGS IN THE SOFTWARE.
+.\" 
+.\" Except as contained in this notice, the name of the X Consortium shall
+.\" not be used in advertising or otherwise to promote the sale, use or
+.\" other dealings in this Software without prior written authorization
+.\" from the X Consortium.
+.\" 
+.TH LBXPROXY 1x "Wydanie 6.3" "X Werjsa 11"
+.SH NAZWA
+lbxproxy - Wąskopasmowe proxy X (Low BandWidth X proxy)
+.SH SKŁADNIA
+.B lbxproxy [:<wyświetlacz>] [opcja]
+.SH OPIS
+Aplikacje, które chcą wykorzystywać rozszerzenie wąskiego pasma X (LBX)
+muszą łączyć się z lbxproxy. Aplikacje te nie muszą wiedzieć nic o LBX, po
+prostu muszą się połączyć do lbxproxy jak do normalnego serwera. Lbxproxy
+przyjmuje połączenia klientów i powiela je na jednym połączeniu do serwera
+X, dokonując różnych optymalizacji protokołu X, przyspieszając połączenia
+wąskopasmowe.
+.PP
+Mając na uwadze uwierzytelnianie i autoryzację, lbxproxy zwyczajnie
+przekazuje serwerowi przedstawione przez użytkownika dokumenty
+uwierzytelniające. Poniważ do lbxproxy łączą się klienci X, ważnym jest by
+plik .Xauthority użytkownika zawierał wpisy z prawidłowymi kluczami
+związanymi z ID sieciowym proxy. lbxproxy nie jest odpowiedzialny za
+dodawanie tych wpisów do pliku .Xauthority. Odpowiedzialnym za
+skonfigurowanie tego jest użytkownik.
+.PP
+Program lbxproxy ma różne opcje, z których wszystkie są opcjonalne.
+.PP
+Jeśli poadny jest
+.BR :<wyświetlacz> ,
+proxy użyje podanego portu wyświetlacza podczas nasłuchiwania połączeń. Port
+wyświetlacza jest offsetem od portu 6000, zupełnie podobnie do sposobu
+podawania normalnych wyświetlaczy X. Jeśli nie podano żadnego portu,
+lbxproxy użyje domyślnego portu, 63. Jeśli port ten jest zajęty, proxy
+zgłosi komunikat o błędzie.
+.PP
+Innymi opcjami linii poleceń są:
+.PP
+.TP 8
+.B \-help
+Drukuje krótką informację o użyciu i opcjach linii poleceń.
+.TP 8
+.B \-display \fIdpy\fP
+Podaje adres serwera X, obsługującego rozszerzenie LBX. Jeśli opcja ta nie
+jest podana, wyświetlacz jest wyszukiwany według zmiennej środowiskowej
+DISPLAY.
+.TP 8
+.B \-motion \fIliczba\fP
+W danym momencie dozwolona jest ograniczona liczba ruchów myszy, naraz
+transferowanych między serwerem a proxy. Domyślna liczba to 8.
+.TP 8
+.B \-[terminate|reset]
+Domyślnym zachowanie lbxproxy po zakończeniu działań ostatniego klienta jest
+dalsze działanie. Opcja
+.B \-terminate
+powoduje, że lbxproxy kończy działanie po zakończeniu obsługi ostatniego
+klienta. Opcja
+.B \-reset
+powoduje, że po zakończeniu obsługi ostatniego klienta lbxproxy się
+zresetuje. Resetowanie powoduje czyszczenie stanu i repodłączenie się do
+serwera.
+.TP 8
+.B \-reconnect
+Domyślne zachowanie lbxproxy to kończenie pracy gdy połączenie zostaje
+zerwane. Opcja
+.B \-reconnect
+powoduje, że lbxproxy zamiast tego się resetuje (zobacz wyżej
+.BR \-reset )
+i próbuje podłączyć na nowo do serwera.
+.TP 8
+.B \-I
+Powoduje ignorowanie wszystkich pozostałych argumentów.
+.TP 8
+.B \-nolbx
+Wyłącza optymalizacje LBX.
+.TP 8
+.B \-nocomp
+Wyłącza kompresję łańcuchów.
+.TP 8
+.B \-nodelta
+Wyłącza podstawienia żądań delta.
+.TP 8
+.B \-notags
+Wyłącza używanie tagów.
+.TP 8
+.B \-nogfx
+Wyłącza rekodowanie żądań graficznych (nie licząc żądań związanych z
+obrazami).
+.TP 8
+.B \-noimage
+Wyłącza kompresję obrazów.
+.TP 8
+.B \-nosquish
+Wyłącza [squishing] zdarzeń X.
+.TP 8
+.B \-nointernsc
+Wyłącza zwieranie (short circuiting) żądań InternAtom.
+.TP 8
+.B \-noatomsfile
+Wyłącza odczytywanie pliku kontroli atomów. Zobacz sekcję o "Kontroli Atomów".
+.TP 8
+.B \-atomsfile \fIfile\fP
+Przeciąża domyślny plik KontroliAtomów. Zobacz sekcję o "Kontroli Atomów".
+.TP 8
+.B \-nowinattr
+Disables GetWindowAttributes/GetGeometry grouping into one round trip.
+.TP 8
+.B \-nograbcmap
+Wyłącza zbieranie (grabbing) map kolorowych (colormaps).
+.TP 8
+.B \-norgbfile
+Wyłącza przekształcanie nazwy koloru na RGB w proxy.
+.TP 8
+.B \-rgbfile \fIścieżka\fP
+Podaje alternatywną bazę RGB do przekształceń nazw kolorów na RGB.
+.TP 8
+.B \-tagcachesize
+Ustawia rozmiar bufora podręcznego tagu proxy (w bajtach).
+.TP 8
+.B \-zlevel \fIpoziom\fP
+Ustaw poziom kompresji Zlib (używane do kompresji strumienia).
+.br
+domyślnie jest to 9
+.br
+1 = najgorsza, najszybsza kompresja
+.br
+9 = najlepsza, najwolniejsza kompresja
+.TP 8
+.B \-compstats
+Za każdym razem gdy proxy się resetuje, lub odbiera sygnał SIGHUP, raportuj
+statystyki kompresji strumienia.
+.TP 8
+.B \-nozeropad
+Nie zeruj nieużywanych bajtów wypełniania w żądaniach, odpowiedziach i
+zdarzeniach X.
+.TP 8
+.B \-cheaterrors
+Zezwala  oszukiwanie protokołu X w celu polepszenia wydajności. Protokół X
+gwarantuje, że wszelkie odpowiedzi, zdarzenia lub błędy, wygenerowane
+poprzednim żądaniem będą wysyłane przed wygenerowaniem odpowiedzi dla
+kolejnego żądania. Nakłada to ograniczenia gdy lbxproxy może zewrzeć
+(short circuit) żądanie. Opcja \-cheaterrors umożliwia lbxproxy pogwałcenie
+reguł protokołu X względem błędów. Używaj na własne ryzyko.
+.TP 8
+.B \-cheatevents
+Podobne do poprzedniej opcji, lecz zezwala na pogwałcanie reguł X protokołu
+względem tak zdarzeń, jak i błędów. Używaj na własne ryzyko.
+.PP
+.SH KONTROLA ATOMÓW
+.PP
+Podczas uruchamiania, lbxproxy "preinstancjonuje" konfigurowalną listę
+atomów. Umożliwia to lbxproxy internowanie grupy atomów w pojedynczym
+przebiegu (round trip) i natychmiastowe zachowanie wyników w buforze
+podręcznym.
+.PP
+Podczas pracy lbxproxy używa heurystyk wspomagających decyzję, kiedy opóźnić
+wysyłanie danych o właściwościach okna do serwera. Heurystyka zależy od
+rozmiaru danych, nazwy właściwości i tego czy poprzez lbxproxy działa
+menedżer okien.
+.PP
+Kontrola atomów jest określana w pliku "KontroliAtomów", konfigurowanym
+podczas instalacji lbxproxy. Jest ona przeciążana dyrektywami linii poleceń.
+.PP
+Plik ten jest zwyczajnym plikiem tekstowym. Istnieją trzy postaci linii:
+komentarze, kontrola długości i kontrola nazw. Linie rozpoczynające się od
+znaku '!' to komentarze. Linie postaci
+.sp
+.in +4
+.nf
+z \fIdługość\fP
+.fi
+.in -4
+.sp
+określają maksymalną długość w bajtach nim dane właściwości zostaną
+opóźnione. Linia postaci
+.sp
+.in +4
+.nf
+\fIopcje\fP \fInazwaatomu\fP
+.fi
+.in -4
+.sp
+kontroluje podany atom, gdzie \fIopcje\fP są dowolną kombinacją znaków: 'i',
+oznaczającego, że atom powinien być pre-internowany; 'n', oznaczającego, że
+dane właściwości o tej nazwie nigdy nie powinny być opóźniane; 'w'
+oznaczającego, że dane tej właściwości powinny być opóźniane tylko jeśli
+menedżer okien działa również poprzez to samo lbxproxy.

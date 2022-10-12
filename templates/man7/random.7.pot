@@ -1,0 +1,444 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-09-03 21:25+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "RANDOM"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "2017-03-13"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "random - overview of interfaces for obtaining randomness"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The kernel random-number generator relies on entropy gathered from device "
+"drivers and other sources of environmental noise to seed a cryptographically "
+"secure pseudorandom number generator (CSPRNG).  It is designed for security, "
+"rather than speed."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The following interfaces provide access to output from the kernel CSPRNG:"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "*"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I</dev/urandom> and I</dev/random> devices, both described in "
+"B<random>(4).  These devices have been present on Linux since early times, "
+"and are also available on many other systems."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The Linux-specific B<getrandom>(2)  system call, available since Linux "
+"3.17.  This system call provides access either to the same source as I</dev/"
+"urandom> (called the I<urandom> source in this page)  or to the same source "
+"as I</dev/random> (called the I<random> source in this page).  The default "
+"is the I<urandom> source; the I<random> source is selected by specifying the "
+"B<GRND_RANDOM> flag to the system call.  (The B<getentropy>(3)  function "
+"provides a slightly more portable interface on top of B<getrandom>(2).)"
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Initialization of the entropy pool"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The kernel collects bits of entropy from the environment.  When a sufficient "
+"number of random bits has been collected, the entropy pool is considered to "
+"be initialized."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Choice of random source"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Unless you are doing long-term key generation (and most likely not even "
+"then), you probably shouldn't be reading from the I</dev/random> device or "
+"employing B<getrandom>(2)  with the B<GRND_RANDOM> flag.  Instead, either "
+"read from the I</dev/urandom> device or employ B<getrandom>(2)  without the "
+"B<GRND_RANDOM> flag.  The cryptographic algorithms used for the I<urandom> "
+"source are quite conservative, and so should be sufficient for all purposes."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The disadvantage of B<GRND_RANDOM> and reads from I</dev/random> is that the "
+"operation can block for an indefinite period of time.  Furthermore, dealing "
+"with the partially fulfilled requests that can occur when using "
+"B<GRND_RANDOM> or when reading from I</dev/random> increases code complexity."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Monte Carlo and other probabilistic sampling applications"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Using these interfaces to provide large quantities of data for Monte Carlo "
+"simulations or other programs/algorithms which are doing probabilistic "
+"sampling will be slow.  Furthermore, it is unnecessary, because such "
+"applications do not need cryptographically secure random numbers.  Instead, "
+"use the interfaces described in this page to obtain a small amount of data "
+"to seed a user-space pseudorandom number generator for use by such "
+"applications."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Comparison between getrandom, /dev/urandom, and /dev/random"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The following table summarizes the behavior of the various interfaces that "
+"can be used to obtain randomness.  B<GRND_NONBLOCK> is a flag that can be "
+"used to control the blocking behavior of B<getrandom>(2).  The final column "
+"of the table considers the case that can occur in early boot time when the "
+"entropy pool is not yet initialized."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Interface"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Pool"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"Blocking\n"
+"\\%behavior"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Behavior when pool is not yet ready"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "I</dev/random>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Blocking pool"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "If entropy too low, blocks until there is enough entropy again"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Blocks until enough entropy gathered"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "I</dev/urandom>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CSPRNG output"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Never blocks"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Returns output from uninitialized CSPRNG (may be low entropy and unsuitable for cryptography)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getrandom>()"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"Same as\n"
+"I</dev/urandom>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Does not block once is pool ready"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Blocks until pool ready"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<getrandom>()\n"
+"B<GRND_RANDOM>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"Same as\n"
+"I</dev/random>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<getrandom>()\n"
+"B<GRND_NONBLOCK>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EAGAIN>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<getrandom>()\n"
+"B<GRND_RANDOM>\n"
+"+\n"
+"B<GRND_NONBLOCK>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<EAGAIN>\n"
+"if not enough entropy available"
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Generating cryptographic keys"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The amount of seed material required to generate a cryptographic key equals "
+"the effective key size of the key.  For example, a 3072-bit RSA or Diffie-"
+"Hellman private key has an effective key size of 128 bits (it requires about "
+"2^128 operations to break) so a key generator needs only 128 bits (16 bytes) "
+"of seed material from I</dev/random>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"While some safety margin above that minimum is reasonable, as a guard "
+"against flaws in the CSPRNG algorithm, no cryptographic primitive available "
+"today can hope to promise more than 256 bits of security, so if any program "
+"reads more than 256 bits (32 bytes) from the kernel random pool per "
+"invocation, or per reasonable reseed interval (not less than one minute), "
+"that should be taken as a sign that its cryptography is I<not> skillfully "
+"implemented."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"B<getrandom>(2), B<getauxval>(3), B<getentropy>(3), B<random>(4), "
+"B<urandom>(4), B<signal>(7)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

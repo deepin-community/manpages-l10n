@@ -1,0 +1,231 @@
+.\" Man page generated from reStructuredText.
+.
+.TH INVOKE-RC.D 8 "" "1 March 2001" "Debian GNU/Linux"
+.SH NAME
+invoke-rc.d \- executes System-V style init script actions
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.SH SYNOPSIS
+.sp
+\fBinvoke\-rc.d\fP [\fI\-\-quiet\fP] [\fI\-\-force\fP] [\fI\-\-try\-anyway\fP] [\fI\-\-disclose\-deny\fP]
+[\fI\-\-query\fP] [\fI\-\-no\-fallback\fP] \fIname\fP \fIaction\fP [\fIinit script parameters...\fP]
+.sp
+\fBinvoke\-rc.d\fP [\fI\-\-help\fP]
+.SH DESCRIPTION
+.sp
+\fBinvoke\-rc.d\fP
+is a generic interface to execute System V style init script
+\fB/etc/init.d/\fP\fIname\fP
+actions, obeying runlevel constraints as well as any local
+policies set by the system administrator.
+.sp
+All access to the init scripts by Debian packages\(aq maintainer
+scripts should be done through
+\fBinvoke\-rc.d\fP\&.
+.sp
+This manpage documents only the usage and behavior of
+\fBinvoke\-rc.d\fP\&.
+For a discussion of the System V style init script arrangements please
+see \fBinit\fP(8).
+More information on invoke\-rc.d can be found in the section on
+runlevels and init.d scripts of the
+\fIDebian Policy Manual\fP\&.
+.SH INIT SCRIPT ACTIONS
+.sp
+The standard actions are:
+\fIstart\fP, \fIstop\fP, \fIforce\-stop\fP, \fIrestart\fP, \fItry\-restart\fP, \fIreload\fP,
+\fIforce\-reload\fP, and \fIstatus\fP\&.
+Other actions are accepted, but they can cause problems to
+\fBpolicy\-rc.d\fP (see the \fBINIT SCRIPT POLICY\fP section), so
+warnings are generated if the policy layer is active.
+.sp
+Please note that not all init scripts will implement all
+the actions listed above, and that the policy layer may
+override an action to another action(s), or even deny it.
+.sp
+Any extra parameters will be passed to the init script(s) being
+executed.
+.sp
+If an action must be carried out regardless of any local
+policies, use the \fI\-\-force\fP switch.
+.SH OPTIONS
+.INDENT 0.0
+.TP
+.B \fI\-\-help\fP
+Display usage help.
+.TP
+.B \fI\-\-quiet\fP
+Quiet mode, no error messages are generated.
+.TP
+.B \fI\-\-force\fP
+Tries to run the init script regardless of policy and
+init script subsystem errors.
+\fBUse of this option in Debian maintainer scripts is severely discouraged.\fP
+.TP
+.B \fI\-\-try\-anyway\fP
+Tries to run the init script if a non\-fatal error is
+detected.
+.TP
+.B \fI\-\-disclose\-deny\fP
+Return status code 101 instead of status code 0 if
+the init script action is denied by the policy layer.
+.TP
+.B \fI\-\-query\fP
+Returns one of the status codes 100\-106. Does not
+run the init script, and implies \fI\-\-disclose\-deny\fP
+and \fI\-\-no\-fallback\fP\&.
+.TP
+.B \fI\-\-no\-fallback\fP
+Ignores any fallback action requests by the policy
+layer.
+\fBWarning:\fP
+this is usually a very bad idea for any actions other
+than start.
+.TP
+.B \fI\-\-skip\-systemd\-native\fP
+Exits before doing anything if a systemd environment is detected
+and the requested service is a native systemd unit.
+This is useful for maintainer scripts that want to defer systemd
+actions to \fBdeb\-systemd\-invoke\fP(1p)
+.UNINDENT
+.SH STATUS CODES
+.sp
+Should an init script be executed, \fBinvoke\-rc.d\fP
+always returns the status code
+returned by the init script. Init scripts should not return status codes in
+the 100+ range (which is reserved in Debian and by the LSB). The status codes
+returned by invoke\-rc.d proper are:
+.INDENT 0.0
+.TP
+.B 0
+\fISuccess\fP\&.
+Either the init script was run and returned exit status 0 (note
+that a fallback action may have been run instead of the one given in the
+command line), or it was not run because of runlevel/local policy constrains
+and \fB\-\-disclose\-deny\fP is not in effect.
+.TP
+.B 1 \- 99
+Reserved for init.d script, usually indicates a failure.
+.TP
+.B 100
+\fBInit script ID (\fP\fIname\fP\fB) unknown.\fP
+This means the init script was not registered successfully through
+\fBupdate\-rc.d\fP or that the init script does not exist.
+.TP
+.B 101
+\fBAction not allowed\fP\&.
+The requested action will not be performed because of runlevel or local
+policy constraints.
+.TP
+.B 102
+\fBSubsystem error\fP\&.
+Init script (or policy layer) subsystem malfunction. Also, forced
+init script execution due to \fI\-\-try\-anyway\fP or \fI\-\-force\fP
+failed.
+.TP
+.B 103
+\fISyntax error.\fP
+.TP
+.B 104
+\fIAction allowed\fP\&.
+Init script would be run, but \fB\-\-query\fP is in effect.
+.TP
+.B 105
+\fIBehavior uncertain\fP\&.
+It cannot be determined if action should be carried out or not, and
+\fB\-\-query\fP
+is in effect.
+.TP
+.B 106
+\fIFallback action requested\fP\&.
+The policy layer denied the requested action, and
+supplied an allowed fallback action to be used instead.
+.UNINDENT
+.SH INIT SCRIPT POLICY
+.sp
+\fBinvoke\-rc.d\fP
+introduces the concept of a policy layer which is used to verify if
+an init script should be run or not, or if something else should be
+done instead.  This layer has various uses, the most immediate ones
+being avoiding that package upgrades start daemons out\-of\-runlevel,
+and that a package starts or stops daemons while inside a chroot
+jail.
+.sp
+The policy layer has the following abilities: deny or approve the
+execution of an action; request that another action (called a
+\fIfallback\fP)
+is to be taken, instead of the action requested in invoke\-rc.d\(aqs
+command line; or request multiple actions to be tried in order, until
+one of them succeeds (a multiple \fIfallback\fP).
+.sp
+\fBinvoke\-rc.d\fP
+itself only pays attention to the current runlevel; it will block
+any attempts to start a service in a runlevel in which the service is
+disabled.  Other policies are implemented with the use of the
+\fBpolicy\-rc.d\fP
+helper, and are only available if
+\fB/usr/sbin/policy\-rc.d\fP
+is installed in the system.
+.SH FILES
+.INDENT 0.0
+.TP
+.B /etc/init.d/*
+System V init scripts.
+.TP
+.B /usr/sbin/policy\-rc.d
+Init script policy layer helper (not required).
+.TP
+.B /etc/rc?.d/*
+System V runlevel configuration.
+.UNINDENT
+.SH NOTES
+.sp
+\fBinvoke\-rc.d\fP special cases the \fIstatus\fP
+action, and returns exit status 4 instead of exit status 0 when
+it is denied.
+.SH BUGS
+.sp
+See \fI\%http://bugs.debian.org/sysv\-rc\fP and
+\fI\%http://bugs.debian.org/init\-system\-helpers\fP\&.
+.SH SEE ALSO
+.nf
+\fIDebian Policy manual\fP,
+\fB/etc/init.d/skeleton\fP,
+\fBupdate\-rc.d\fP(8),
+\fBinit\fP(8),
+\fB/usr/share/doc/init\-system\-helpers/README.policy\-rc.d.gz\fP
+.fi
+.sp
+.SH AUTHOR
+Henrique de Moraes Holschuh
+
+Licence: GNU Public Licence v2 or Later (GPLv2+)
+.SH COPYRIGHT
+2001 Henrique de Moraes Holschuh
+.\" Generated by docutils manpage writer.
+.

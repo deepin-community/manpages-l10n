@@ -1,0 +1,166 @@
+.\" {PTM/WK/1999-11-11}
+.TH pico 1 "Version 3.5"
+.SH NAZWA
+pico - prosty edytor tekstu w stylu Pine
+.SH SKŁADNIA
+.B pico
+[
+.I opcje
+] [
+.I plik
+]
+.SH OPIS
+\fIPico\fR jest prostym, zorientowanym ekranowo edytorem tekstowym opartym
+o program obsługi wiadomości pocztowych Pine. Tak jak w Pine, polecenia
+wyświetlane są u dołu ekranu. Zapewniona jest też pomoc kontekstowa.
+Wszystkie znaki bezpośrednio po wpisaniu są wstawiane w tekst.
+.PP
+Polecenia edycyjne wprowadzane są przy pomocy kombinacji klawiszy
+sterujących [Ctrl+znak]. Jako obejście programów komunikacyjnych połykających
+niektóre znaki strujące możesz emulować znak sterujące naciskając dwukrotnie
+ESCAPE, a następnie żądany znak sterujący, np. "ESC ESC c" jest równoważne
+wprowadzeniu Ctrl-c. Edytor posiada pięć podstawowych funkcji: wyrównywanie
+akapitów, wyszukiwanie, wycinanie/wstawianie bloków, sprawdzanie pisowni
+i przeglądarkę plików.
+.PP
+Wyrównywanie (lub wypełnianie) akapitu działa na akapicie zawierającym kursor
+lub, jeśli kursor znajduje się pomiędzy wierszami, bezpośrednio poniższym.
+Akapity rozdzielane są pustymi wierszami lub wierszami rozpoczynającymi się
+spacją bądź tabulatorem. Cofnięcie wyrównywania możliwe jest przy pomocy
+kombinacji klawiszy control-U użytej bezpośrednio po przeprowadzonym
+wyrównywaniu.
+.PP
+Wyszukiwanie łańcuchów znakowych nie rozróżnia małych i dużych liter
+[tłum:łacińskich; niestety polskie nie są rozpoznawane]. Wyszukiwanie
+rozpoczyna się od bieżącej pozycji kursora i po dojściu do końca tekstu jest
+kontynuowane od jego początku. Przy kolejnych wyszukiwaniach proponowany jest
+jako domyślny ostatnio szukany łańcuch.
+.PP
+Bloki tekstu mogą być przenoszone, kopiowane lub kasowane przez twórcze
+zastosowanie poleceń zaznaczania (ctrl-^), kasowania (ctrl-k) i
+cofnięcia operacji (ctrl-u). Polecenie kasowania usuwa tekst pomiędzy
+"znacznikiem" a bieżącą pozycją kursora i umieszcza go w buforze
+"wycinania". Polecenie cofnięcia operacji spowoduje "wstawienie" zawartości
+bufora w bieżącym położeniu kursora.
+.PP
+Kontroler pisowni sprawdza wszystkie wyrazy tekstu. Następnie, podświetlając
+błędnie napisane słowa proponuje ich poprawienie. Sprawdzanie pisowni może
+zostać anulowane w dowolnym momencie. Alternatywnie \fIpico\fR zastąpi
+domyślną procedurę sprawdzania pisowni procedurą zdefiniowaną przez zmienną
+środowiskową SPELL. Procedura zastępcza powinna czytać ze standardowego
+wejścia i zapisywać na standardowe wyjście.
+.PP
+Przeglądarka plików proponowana jest jako opcja przy poleceniach "Read File"
+(czytaj plik) i "Write Out" (zapisz). Jej zadaniem jest pomoc w poszukiwaniu
+konkretnych plików i nawigacji w drzewie katalogów. Do wybrania przedstawiane
+są nazwy plików z rozmiarami i nazwy podkatalogów z bieżącego katalogu.
+Bieżący katalog roboczy wyświetlany jest w górnym wierszu, zaś lista
+dostępnych poleceń zajmuje dwa dolne. Obsługiwane jest kilka podstawowych
+operacji: zmiana nazw plików, kopiowanie i usuwanie.
+.PP
+Bardziej szczegółowa pomoc zawarta jest w pomocy wbudowanej \fIpico\fR.
+.SH OPCJE
+.IP \fB+\fIn\fB\fR
+Powoduje, że \fIpico\fR wystartuje z kursorem umieszczonym w \fIn\fR-tym
+wierszu pliku. (Zauważ: bez odstępu między znakiem "+" a liczbą)
+.IP \fB-b\fR
+Włącz opcję zastępowania tekstu (Replace) dopasowaniami znalezionymi przy
+pomocy polecenia "Where is".
+.\" Enable the option to Replace text matches found using the
+.\" "Where is" command.
+.IP \fB-d\fR
+Przypisz klawisz "delete" do wymazywania znaku w miejscu kursora zamiast
+znaku przed kursorem.
+.IP \fB-e\fR
+Włącz uzupełnianie nazw plików.
+.IP \fB-f\fR
+Użyj klawiszy funkcyjnych dla poleceń. Opcja ta jest obsługiwana wyłącznie
+w połączeniu z UW Enhanced NCSA telnet.
+.IP \fB-h\fR
+Podaje dostępne opcje wiersza poleceń.
+.IP \fB-j\fR
+Włącz polecenie "Goto" w przeglądarce plików. Pozwala to poleceniu na jawne
+wskazanie \fIpilot\fRowi, który katalog odwiedzić.
+.IP \fB-g\fR
+Włącz tryb "Show Cursor" (pokazywania kursora) w przeglądarce plików.
+Powoduje, że kursor ustawiany jest przed bieżącym wyborem a nie w dolnym
+lewym rogu ekranu.
+.IP \fB-k\fR
+Powoduje, że polecenie "Cut Text" (wytnij tekst) usuwa znaki od pozycji
+kursora do końca wiersza zamiast usuwania całego  wiersza.
+.IP \fB-m\fR
+Włącza obsługę myszką. Działa tylko wtedy, gdy \fIpico\fR uruchomiony jest
+w oknie "xterm" systemu X Window.
+.IP \fB-n\fIn\fB\fR
+Opcja \-n\fIn\fR włącza powiadamianie o nowej korespondencji. Argument \fIn\fR
+jest opcjonalny i podaje jak często, w sekundach, będzie sprawdzana twoja
+skrzynka pocztowa. Na przykład, \-n60 powoduje, że \fIpico\fR będzie
+co minutę sprawdzać, czy nadeszła nowa przesyłka pocztowa. Domyślnym
+odstępem jest 180 sekund, dozwolonym minimum zaś 30. (Uwaga: bez spacji
+między "n" i liczbą)
+.IP \fB-o\ \fIkatalog\fB\fR
+Ustawia katalog pracy. Dostępne będą wyłącznie pliki z tego katalogu.
+Podobnie, przeglądarka plików ograniczona jest do poddrzewa podanego
+katalogu.
+.IP \fB-r\fIn\fB\fR
+Ustawia kolumnę używaną jako prawy margines w poleceniu wyrównywania akapitu
+("Justify").
+.IP \fB-s\ \fIspeller\fR
+Określa alternatywny program sprawdzania pisowni.
+.IP \fB-t\fR
+włącza "tryb narzędzia" ("tool mode"). Przeznaczony do sytuacji, gdy
+\fIpico\fR używany jest jako edytor wewnątrz innych narzędzi (np. Elm,
+Pnews). \fIPico\fR nie będzie monitował o zapisanie przy kończeniu pracy
+i nie będzie zmieniał nazwy bufora przy operacji zapisu (polecenie "Write
+Out").
+.IP \fB-v\fR
+Tylko przeglądanie pliku, wyłączenie edycji.
+.IP \fB-w\fR
+Wyłączenie zawijania wyrazów [przenoszenia do następnego wiersza]. Pozwala
+więc na edycję długich wierszy.
+.IP \fB-x\fR
+Wyłącz menu klawiszy na dole ekranu.
+.IP \fB-z\fR
+Włącza możliwość zawieszania pracy \fIpico\fR przez ^Z.
+.IP \fB-q\fR
+Definicje sekwencji specjalnych z termcap czy terminfo będą mieć
+pierwszeństwo nad domyślnie zdefiniowanymi sekwencjami. Opcja ta jest
+dostępna tylko wtedy, gdy \fIpico\fR został skompilowany z włączoną
+dyrektywą define TERMCAP_WINS.
+.PP
+Na koniec, kiedy uruchomiony \fIpico\fR zostanie rozłączony (tj. otrzyma
+SIGHUP), to w razie potrzeby zapisze on przed zakończeniem bieżącą pracę.
+Zapisywana jest ona do pliku o nazwie edytowanego z dodaną końcówką ".save".
+Jeśli aktualna praca nie była nazwana, to zachowywana jest w pliku o nazwie
+"pico.save".
+.PP
+.SH BŁĘDY
+Sposób, w jaki obsługiwane są wiersze dłuższe niż szerokość wyświetlania,
+nie jest od razu oczywisty. Wiersze mające kontynuację poza granicą ekranu
+wskazywane są znakiem '$' na ich końcu. Długie wiersze przewijane są poziomo
+podczas przesuwania kursora.
+.SH PLIKI
+.ta 1.75i
+.nf
+pico.save	Zachowuje przerwaną pracę nad nie nazwanym plikiem.
+*.save	Zachowuje pracę nad nazwanym plikiem.
+.fi
+.SH AUTORZY
+Michael Seibel <mikes@cac.washington.edu>
+.br
+Laurence Lundblade <lgl@cac.washington.edu>
+.br
+Pico powstał pierwotnie na podstawie MicroEmacs 3.6, napisanego przez
+Dave'a G. Conroy.
+.br
+Pico jest znakiem handlowym University of Washington. 
+.br
+Copyright 1989-1999 by the University of Washington.
+.SH ZOBACZ TAKŻE
+.BR pine (1).
+.PP
+Dystrybucja ze źródłami (część Pine Message System):
+.br
+   ftp://ftp.cac.washington.edu/mail/pine.tar.Z
+.nf
+.\" $Date: 2000/10/22 16:15:29 $

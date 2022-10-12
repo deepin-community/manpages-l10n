@@ -1,0 +1,934 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-08-27 17:54+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "rpc.gssd"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "20 Feb 2013"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "rpc.gssd - RPCSEC_GSS daemon"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"B<rpc.gssd> [B<-DfMnlvrHC>] [B<-k> I<keytab>] [B<-p> I<pipefsdir>] [B<-d> "
+"I<ccachedir>] [B<-t> I<timeout>] [B<-T> I<timeout>] [B<-U> I<timeout>] [B<-"
+"R> I<realm>]"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "INTRODUCTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The RPCSEC_GSS protocol, defined in RFC 5403, is used to provide strong "
+"security for RPC-based protocols such as NFS."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Before exchanging RPC requests using RPCSEC_GSS, an RPC client must "
+"establish a GSS I<security context>.  A security context is shared state on "
+"each end of a network transport that enables GSS-API security services."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Security contexts are established using I<security credentials>.  A "
+"credential grants temporary access to a secure network service, much as a "
+"railway ticket grants temporary access to use a rail service."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"A user typically obtains a credential by providing a password to the "
+"B<kinit>(1)  command, or via a PAM library at login time.  A credential "
+"acquired with a I<user principal> is known as a I<user credential> (see "
+"B<kerberos>(1)  for more on principals)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Certain operations require a credential that represents no particular user "
+"or represents the host itself.  This kind of credential is called a "
+"I<machine credential>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"A host establishes its machine credential using a I<service principal> whose "
+"encrypted password is stored in a local file known as a I<keytab>.  A "
+"machine credential remains effective without user intervention as long as "
+"the host can renew it."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Once obtained, credentials are typically stored in local temporary files "
+"with well-known pathnames."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"To establish GSS security contexts using these credential files, the Linux "
+"kernel RPC client depends on a userspace daemon called B<rpc.gssd>.  The "
+"B<rpc.gssd> daemon uses the rpc_pipefs filesystem to communicate with the "
+"kernel."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "User Credentials"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"When a user authenticates using a command such as B<kinit>(1), the resulting "
+"credential is stored in a file with a well-known name constructed using the "
+"user's UID."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"To interact with an NFS server on behalf of a particular Kerberos-"
+"authenticated user, the Linux kernel RPC client requests that B<rpc.gssd> "
+"initialize a security context with the credential in that user's credential "
+"file."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Typically, credential files are placed in I</tmp>.  However, B<rpc.gssd> can "
+"search for credential files in more than one directory.  See the description "
+"of the B<-d> option for details."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "Machine Credentials"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"B<rpc.gssd> searches the default keytab, I</etc/krb5.keytab>, in the "
+"following order for a principal and password to use when establishing the "
+"machine credential.  For the search, rpc.gssd replaces E<lt>hostnameE<gt> "
+"and E<lt>REALME<gt> with the local system's hostname and Kerberos realm."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "   E<lt>HOSTNAMEE<gt>$@E<lt>REALME<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "   root/E<lt>hostnameE<gt>@E<lt>REALME<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "   nfs/E<lt>hostnameE<gt>@E<lt>REALME<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "   host/E<lt>hostnameE<gt>@E<lt>REALME<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "   root/E<lt>anynameE<gt>@E<lt>REALME<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "   nfs/E<lt>anynameE<gt>@E<lt>REALME<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "   host/E<lt>anynameE<gt>@E<lt>REALME<gt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"rpc.gssd selects one of the E<lt>anynameE<gt> entries if it does not find a "
+"service principal matching the local hostname, e.g. if DHCP assigns the "
+"local hostname dynamically.  The E<lt>anynameE<gt> facility enables the use "
+"of the same keytab on multiple systems.  However, using the same service "
+"principal to establish a machine credential on multiple hosts can create "
+"unwanted security exposures and is therefore not recommended."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Note that E<lt>HOSTNAMEE<gt>$@E<lt>REALME<gt> is a user principal that "
+"enables Kerberized NFS when the local system is joined to an Active "
+"Directory domain using Samba.  The keytab provides the password for this "
+"principal."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"You can specify a different keytab by using the B<-k> option if I</etc/krb5."
+"keytab> does not exist or does not provide one of these principals."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "Credentials for UID 0"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"UID 0 is a special case.  By default B<rpc.gssd> uses the system's machine "
+"credentials for UID 0 accesses that require GSS authentication.  This limits "
+"the privileges of the root user when accessing network resources that "
+"require authentication."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Specify the B<-n> option when starting B<rpc.gssd> if you'd like to force "
+"the root user to obtain a user credential rather than use the local system's "
+"machine credential."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"When B<-n> is specified, the kernel continues to request a GSS context "
+"established with a machine credential for NFSv4 operations, such as "
+"SETCLIENTID or RENEW, that manage state.  If B<rpc.gssd> cannot obtain a "
+"machine credential (say, the local system has no keytab), NFSv4 operations "
+"that require machine credentials will fail."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "Encryption types"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"A realm administrator can choose to add keys encoded in a number of "
+"different encryption types to the local system's keytab.  For instance, a "
+"host/ principal might have keys for the B<aes256-cts-hmac-sha1-96>, B<aes128-"
+"cts-hmac-sha1-96>, B<des3-cbc-sha1>, and B<arcfour-hmac> encryption types.  "
+"This permits B<rpc.gssd> to choose an appropriate encryption type that the "
+"target NFS server supports."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"These encryption types are stronger than legacy single-DES encryption "
+"types.  To interoperate in environments where servers support only weak "
+"encryption types, you can restrict your client to use only single-DES "
+"encryption types by specifying the B<-l> option when starting B<rpc.gssd>."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "OPTIONS"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-D>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The server name passed to GSSAPI for authentication is normally the name "
+"exactly as requested.  e.g. for NFS it is the server name in the "
+"\"servername:/path\" mount request.  Only if this servername appears to be "
+"an IP address (IPv4 or IPv6) or an unqualified name (no dots) will a reverse "
+"DNS lookup will be performed to get the canoncial server name."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"If B<-D> is present, a reverse DNS lookup will I<always> be used, even if "
+"the server name looks like a canonical name.  So it is needed if partially "
+"qualified, or non canonical names are regularly used."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Using B<-D> can introduce a security vulnerability, so it is recommended "
+"that B<-D> not be used, and that canonical names always be used when "
+"requesting services."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-f>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Runs B<rpc.gssd> in the foreground and sends output to stderr (as opposed to "
+"syslogd)"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-n>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"When specified, UID 0 is forced to obtain user credentials which are used "
+"instead of the local system's machine credentials."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-k >I<keytab>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Tells B<rpc.gssd> to use the keys found in I<keytab> to obtain machine "
+"credentials.  The default value is I</etc/krb5.keytab>."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-l>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"When specified, restricts B<rpc.gssd> to sessions to weak encryption types "
+"such as B<des-cbc-crc>.  This option is available only when the local "
+"system's Kerberos library supports settable encryption types."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-p >I<path>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Tells B<rpc.gssd> where to look for the rpc_pipefs filesystem.  The default "
+"value is I</var/lib/nfs/rpc_pipefs>."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-d >I<search-path>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This option specifies a colon separated list of directories that B<rpc.gssd> "
+"searches for credential files.  The default value is I</tmp:/run/user/%U>.  "
+"The literal sequence \"%U\" can be specified to substitue the UID of the "
+"user for whom credentials are being searched."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-M>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"By default, machine credentials are stored in files in the first directory "
+"in the credential directory search path (see the B<-d> option).  When B<-M> "
+"is set, B<rpc.gssd> stores machine credentials in memory instead."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-v>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Increases the verbosity of the output (can be specified multiple times)."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-r>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"If the RPCSEC_GSS library supports setting debug level, increases the "
+"verbosity of the output (can be specified multiple times)."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-R >I<realm>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Kerberos tickets from this I<realm> will be preferred when scanning "
+"available credentials cache files to be used to create a context.  By "
+"default, the default realm, as configured in the Kerberos configuration "
+"file, is preferred."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-t >I<timeout>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Timeout, in seconds, for kernel GSS contexts. This option allows you to "
+"force new kernel contexts to be negotiated after I<timeout> seconds, which "
+"allows changing Kerberos tickets and identities frequently.  The default is "
+"no explicit timeout, which means the kernel context will live the lifetime "
+"of the Kerberos service ticket used in its creation."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<-T >I<timeout>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Timeout, in seconds, to create an RPC connection with a server while "
+"establishing an authenticated gss context for a user.  The default timeout "
+"is set to 5 seconds.  If you get messages like \"WARNING: can't create tcp "
+"rpc_clnt to server %servername% for user with uid %uid%: RPC: Remote system "
+"error - Connection timed out\", you should consider an increase of this "
+"timeout."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<-U >I<timeout>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Timeout, in seconds, for upcall threads.  Threads executing longer than "
+"I<timeout> seconds will cause an error message to be logged.  The default "
+"I<timeout> is 30 seconds.  The minimum is 5 seconds.  The maximum is 600 "
+"seconds."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<-C>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"In addition to logging an error message for threads that have timed out, the "
+"thread will be canceled and an error of -ETIMEDOUT will be reported to the "
+"kernel."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<-H>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Avoids setting $HOME to \"/\". This allows rpc.gssd to read per user "
+"k5identity files versus trying to read /.k5identity for each user."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"If B<-H> is not set, rpc.gssd will use the first match found in /var/"
+"kerberos/krb5/user/$EUID/client.keytab and will not use a principal based on "
+"host and/or service parameters listed in $HOME/.k5identity."
+msgstr ""
+
+#. type: SH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "CONFIGURATION FILE"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Many of the options that can be set on the command line can also be "
+"controlled through values set in the B<[gssd]> section of the I</etc/nfs."
+"conf> configuration file.  Values recognized include:"
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<verbosity>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Value which is equivalent to the number of B<-v>."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<rpc-verbosity>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Value which is equivalent to the number of B<-r>."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<use-memcache>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "A Boolean flag equivalent to B<-M>."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<use-machine-creds>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"A Boolean flag. Setting to B<false> is equivalent to giving the B<-n> flag."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<avoid-dns>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Setting to B<false> is equivalent to providing the B<-D> flag."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<limit-to-legacy-enctypes>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Equivalent to B<-l>."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<context-timeout>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Equivalent to B<-t>."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<rpc-timeout>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Equivalent to B<-T>."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<keytab-file>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Equivalent to B<-k>."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<cred-cache-directory>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Equivalent to B<-d>."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<preferred-realm>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Equivalent to B<-R>."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<upcall-timeout>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Equivalent to B<-U>."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<cancel-timed-out-upcalls>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Setting to B<true> is equivalent to providing the B<-C> flag."
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<set-home>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Setting to B<false> is equivalent to providing the B<-H> flag."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"In addtion, the following value is recognized from the B<[general]> section:"
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<pipefs-directory>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Equivalent to B<-p>."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<rpc.svcgssd>(8), B<kerberos>(1), B<kinit>(1), B<krb5.conf>(5)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "AUTHORS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Dug Song E<lt>dugsong@umich.eduE<gt>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Andy Adamson E<lt>andros@umich.eduE<gt>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Marius Aamodt Eriksen E<lt>marius@umich.eduE<gt>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "J. Bruce Fields E<lt>bfields@umich.eduE<gt>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<rpc.gssd> [B<-DfMnlvr>] [B<-k> I<keytab>] [B<-p> I<pipefsdir>] [B<-d> "
+"I<ccachedir>] [B<-t> I<timeout>] [B<-R> I<realm>]"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"For certain operations, a credential is required which represents no user, "
+"is otherwise unprivileged, and is always available.  This is referred to as "
+"a I<machine credential>."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Machine credentials are typically established using a I<service principal>, "
+"whose encrypted password, called its I<key>, is stored in a file, called a "
+"I<keytab>, to avoid requiring a user prompt.  A machine credential "
+"effectively does not expire because the system can renew it as needed "
+"without user intervention."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"A user credential is established by a user and is then shared with the "
+"kernel and B<rpc.gssd>.  A machine credential is established by B<rpc.gssd> "
+"for the kernel when there is no user.  Therefore B<rpc.gssd> must already "
+"have the materials on hand to establish this credential without requiring "
+"user intervention."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<rpc.gssd> searches the local system's keytab for a principal and key to "
+"use to establish the machine credential.  By default, B<rpc.gssd> assumes "
+"the file I</etc/krb5.keytab> contains principals and keys that can be used "
+"to obtain machine credentials."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<rpc.gssd> searches in the following order for a principal to use.  The "
+"first matching credential is used.  For the search, E<lt>hostnameE<gt> and "
+"E<lt>REALME<gt> are replaced with the local system's hostname and Kerberos "
+"realm."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"The E<lt>anynameE<gt> entries match on the service name and realm, but "
+"ignore the hostname.  These can be used if a principal matching the local "
+"host's name is not found."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Note that the first principal in the search order is a user principal that "
+"enables Kerberized NFS when the local system is joined to an Active "
+"Directory domain using Samba.  A password for this principal must be "
+"provided in the local system's keytab."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"You can specify another keytab by using the B<-k> option if I</etc/krb5."
+"keytab> does not exist or does not provide one of these principals."
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "B<-T timeout>"
+msgstr ""

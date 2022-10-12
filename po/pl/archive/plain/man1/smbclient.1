@@ -1,0 +1,732 @@
+.\" 1999 PTM Leszek "Leafnode" Krupiński
+.TH SMBCLIENT 1 "30 Lis 1999" "smbclient 2.0.3"
+.PP 
+.SH "NAZWA" 
+smbclient \- klient zasobów SMB/CIFS podobny do ftp
+.PP 
+.SH "SKŁADNIA" 
+.PP 
+\fBsmbclient\fP nazwausługi [hasło] [\-s smb\&.conf] [\-B adres IP] [\-O opcje
+gniazd] [\-R porządek sprawdzania nazw] [\-M nazwa NetBIOS] [\-i zasięg] [\-N]
+[\-n nazwa NetBIOS] [\-d poziom debugowania] [\-P] [\-p port] [\-l podstawa nazwy
+logów] [\-h] [\-I adres IP] [\-E] [\-U nazwa użytkownika] [\-L nazwa NetBIOS]
+[\-t kod terminala] [\-m maksymalny poziom protokołu] [\-W grupa robocza]
+[\-T<c|x>IXFqgbNan] [\-D katalog] [\-c lista komend]
+.PP 
+.SH "OPIS" 
+.PP 
+Ten program jest częścią pakietu \fBSamba\fP\&.
+.PP 
+\fBsmbclient\fP jest klientem, który potrafi \'rozmawiać\' z serwerem
+SMB/CIFS\&. Oferuje on interfejs podobny do tego z programu ftp (zobacz
+\fBftp (1)\fP)\&. Umożliwia on rzeczy takie jak pobieranie plików z serwera
+na lokalny komputer, umieszczanie plików z lokalnego komputera na serwer,
+pobieranie informacji o katalogach z serwera itp\&.
+.PP 
+.SH "OPCJE"
+.PP 
+.IP 
+.IP "\fBnazwa usługi\fP" 
+nazwa usługi jest nazwą usługi na serwerze, z której chcesz skorzystać\&.
+Nazwa usługi na postać \f(CW//serwer/usługa\fP, gdzie \fIserwer\fP 
+jest nazwą NetBIOS serwera SMB/CIFS oferującego pożądaną usługę, a 
+\fIusługa\fP jest nazwą pożądanej usługi. Aby w taki sposób połączyć się z
+usługą \fIdrukarka\fP na serwerze SMB/CIFS \fIserwersmb\fP, 
+powinieneś użyć nazwy usługi
+.IP 
+\f(CW//serwersmb/drukarka\fP
+.IP 
+Zauważ, że nazwą serwera nie musi być nazwą IP (DNS) hosta tego serwera\&.
+Wymaganą nazwą jest nazwa NetBIOS serwera, która nie musi być taka sama jak
+adres IP (DNS) serwera\&.
+.IP
+Nazwa serwera jest sprawdzana zgodnie z parametrem \fB-R\fP 
+\fBsmbclient\fPa lub używając parametru \fBname resolve order\fP
+z pliku smb\&.conf, pozwalającego administratorowi na zmianę porządku i metod
+znajdywania nazw\&.
+.IP 
+.IP "\fBhasło\fP" 
+parametr hasło jest hasłem wymaganym do uzyskania dostępu do określonej
+usługi na określonym serwerze\&. Jeśli ten parametr jest podany, opcja 
+\fB-N\fP (pomiń zapytanie o hasło) jest brana pod uwagę\&.
+.IP 
+Nie ma domyślnego hasła\&. Jeśli nie podano hasła przy wywołaniu programu
+(używając tego parametru lub dodając hasło do opcji \fB-U\fP (zobacz niżej))
+i nie została podana opcja \fB-N\fP klient zapyta się o hasło, nawet jeśli
+pożądana usługa nie wymaga takowego\&. (Jeśli hasło nie jest potrzebne,
+po prostu wciśnij ENTER aby podać zerowe hasło\&.)
+.IP 
+Uwaga: Niektóre serwery (włączając w to OS/2 i Windows for Workgroups)
+wymagają hasła pisanego dużymi literami\&. Hasła pisane małymi literami lub
+mieszane mogą być odrzucone przez te serwery\&.
+.IP 
+Bądź ostrożny w dodawaniu haseł do skryptów\&.
+.IP 
+.IP "\fB-s smb\&.conf\fP" 
+Ten parametr określa ścieżkę do pliku konfiguracyjnego pakietu Samba, 
+smb\&.conf\&. Ten plik kontroluje wszystkie aspekty konfiguracji Samby na
+komputerze. Smbclient także musi przeczytać ten plik\&.
+.IP 
+.IP "\fB-B adres IP\fP" 
+Adres IP używany przy wysyłaniu pakietu rozgłoszeniowego\&.
+.IP 
+.IP "\fB-O opcje gniazd\fP" 
+Opcje gniazd TCP do ustawienia przez klienta. Zobacz parametr \fBopcje
+gniazd\fP na stronie podręcznika systemowego \fBsmb\&.conf (5)\fP aby 
+sprawdzić listę poprawnych opcji\&.
+.IP 
+.IP "\fB-R porządek sprawdzania nazw\fP" 
+Ta opcja pozwala użytkownikowi programu smbclient na ustalenie, jakie usługi
+sprawdzania nazw zostaną użyte do sprawdzenia nazwy NetBIOS hosta, z którym
+chcesz się połączyć\&.
+.IP 
+Opcjami są:
+.IP 
+.IP 
+.IP o 
+\fBlmhosts\fP : Sprawdzanie adresów IP w pliku lmhosts Samby\&.
+Plik lmhosts jest przechowywany w tym samym katalogu, co plik \fBsmb\&.conf\fP\&.
+.IP 
+.IP o 
+\fBhost\fP : Przeprowadź standardową zamianę nazwy hosta na adres IP
+korzystając z pliku systemowego /etc/hosts, służącego do przeszukiwań
+NIS i DNS\&. Ta
+metoda sprawdzania nazw jest zależna od systemu operacyjnego\&.
+.IP 
+.IP o 
+\fBwins\fP : zapytaj o nazwę komputer z adresem IP podanym w parametrze 
+\fBwins server\fP z pliku smb\&.conf\&. Jeśli nie podano żadnego serwera WINS
+ta metoda jest pomijana\&.
+.IP 
+.IP o 
+\fBbcast\fP : Rozgłoś zapytanie na każdym ze znanych lokalnych interfejsów
+sieciowych wymienionych w parametrze \fBinterfaces\fP z pliku smb\&.conf\&.
+Jest to najmniej wiarygodna metoda sprawdzania nazw, ponieważ zależy ona od
+tego, czy docelowy host jest aktualnie podłączony do podsieci\&. Aby podać
+konkretny adres rozgłoszeniowy można użyć opcji \fB-B\fP\&.
+.IP 
+.IP 
+Jeśli ten parametr nie jest ustawiony, użyta zostanie opcja \fBname resolve
+order\fP z pliku \fBsmb\&.conf\fP\&.
+.IP
+Domyślną kolejnością jest lmhosts, host, wins, bcast. Bez parametru \fB-R\fP
+lub bez żadnego wpisu w parametrze \fB"name resolve order"\fP z pliku
+\fBsmb\&.conf\fP metody sprawdzania nazw będą używane w tej kolejności\&.
+.IP 
+.IP "\fB-M nazwa NetBIOS\fP" 
+Ta opcja umożliwia ci wysłanie wiadomości na inny komputer przy użyciu protokołu
+"WinPopup"\&. Po ustanowieniu połączenia wpisz swoją wiadomość. Aby zakończyć
+wpisywanie wciśnij ^D (control-D)\&.
+.IP 
+Jeśli na komputerze docelowym jest uruchomiony WinPopup, użytkownik otrzyma
+wpisaną wiadomość i prawdopodobnie usłyszy sygnał dźwiękowy\&. Jeśli
+WinPopup nie jest uruchomiony, wiadomość nie zostanie doręczona a żadna
+wiadomość o błędzie się nie pojawi\&.
+.IP 
+Wiadomość zostanie obcięta, jeśli jej rozmiar przekracza 1600 bajtów\&.
+Jest to ograniczenie protokołu\&.
+.IP 
+Przydatną sztuczką jest wysłanie wiadomości na standardowe wejście programu 
+\fBsmbclient\fP\&. Na przykład
+.IP 
+\f(CWcat mojawiadomość\&.txt | smbclient \-M JANEK\fP
+.IP 
+wyśle wiadomość z pliku \fBmojawiadomość\&.txt\fP na komputer JANEK\&.
+.IP 
+Mogą się też przydać opcje \fB-U\fP i \fB-I\fP, które kontrolują części OD i
+DO wiadomości\&.
+.IP 
+Zobacz opcję \fBmessage command\fP z pliku \fBsmb\&.conf (5)\fP opisującą
+zachowanie się Samby w przypadku otrzymania wiadomości WinPopup\&.
+.IP 
+Uwaga: skopiuj skrót do programu WinPopup do grupy autostart systemu Windows,
+jeśli chcesz zawsze mieć możliwość odbierania wiadomości\&.
+.IP 
+.IP "\fB-i zasięg\fP" 
+Ta opcja określa zasięg NetBIOS, który smbclient będzie używał do
+komunikowania się przy generowaniu nazw NetBIOS\&. Szczegółowe informacje
+dotyczące zasięgów NetBIOS możesz znaleźć w rfc1001\&.txt i rfc1002\&.txt\&.
+Zasięgi NetBIOS są \fIbardzo\fP rzadko używane. Zmieniaj te ustawienia tylko
+jeśli jesteś administratorem wszystkich systemów NetBIOS, z którymi chcesz
+się komunikować\&.
+.IP 
+.IP "\fB-N\fP" 
+Jeśli ta opcja jest ustawiona, pomijane jest normalne zapytanie klienta o
+hasło użytkownika\&. Ta opcja jest przydatna przy łączeniu się z usługą,
+która nie wymaga hasła\&.
+.IP 
+Normalnie klient pyta o hasło, chyba że hasło podane jest w linii poleceń
+lub posłużono się tym parametrem\&.
+.IP 
+.IP "\fB-n nazwa NetBIOS\fP"
+Domyślnie klient użyje nazwy lokalnego hosta (dużymi literami) jako swojej
+nazwy NetBIOS\&. Ten parametr pozwala na ustalenie dowolnej nazwy NetBIOS\&.
+.IP 
+.IP "\fB-d poziom debugowania\fP" 
+poziom debugowania jest liczbą od 0 do 10, lub literą \'A\'\&.
+.IP 
+Jeśli ten parametr nie jest podany, domyślną wartością jest zero\&.
+.IP 
+Im wyższa jest ta wartość, tym więcej szczegółów będą zawierały logi\&.
+Przy poziomie 0 raportowane będą tylko krytyczne błędy i poważne ostrzeżenia\&.
+Poziom 1 jest sensowny dla normalnej pracy - generuje małą, ale wystarczającą
+ilość informacji o przeprowadzanych operacjach\&.
+.IP 
+Poziomy powyżej 1 wygenerują znaczną ilość danych i powinny być używane tylko
+przy poszukiwaniu przyczyn problemów\&. Poziomy powyżej 3 są zaprojektowane
+tylko dla deweloperów i generują OGROMNĄ ilość danych, przy czym większość
+jest nieczytelna\&. Jeśli poziom debugowania będzie ustawiony na \'A\', 
+zostaną zapisane \fIwszystkie\fP informacje\&. Ta opcja jest tylko dla
+deweloperów, i to tylko takich, którzy \fInaprawdę\fP chcą wiedzieć, jak
+działa kod\&.
+.IP 
+Ten parametr unieważni opcję \fBlog level\fP z pliku \fBsmb\&.conf (5)\fP\&.
+.IP 
+.IP "\fB-P\fP" 
+Ta opcja nie jest już używana\&. Kod programu Samba2\&.0 pozwala serwerowi na
+decydowanie o typie urządzenie, więc nie jest potrzebna flaga drukarki\&.
+.IP 
+.IP "\fB-p port\fP" 
+To jest numer portu TCP, który zostanie użyty przy ustanawianiu połączenia z
+serwerem\&. Standardowy ("dobrze znany" - well-known) numer portu TCP dla
+serwera SMB/CIFS to 139; jest on ustawieniem domyślnym.
+.IP 
+.IP "\fB-l podstawa nazwy logów\fP"
+Jeśli ten parametr jest ustawiony, decyduje on o podstawie nazwy pliku,
+do którego będą zapisywane informacje o działaniach klienta\&.
+.IP 
+Domyślna podstawa nazwy jest określana przy kompilacji\&.
+.IP 
+Podstawa nazwy jest używana do utworzenia ostatecznej nazwy pliku\&. Na
+przykład jeśli podaną podstawą jest "log", ostateczną nazwą pliku będzie
+\f(CWlog\&.client\fP\&.
+.IP 
+Utworzony plik dziennika (logu) nigdy nie jest usuwany przez klienta\&.
+.IP 
+.IP "\fB-h\fP" 
+Wyświetl informacje o użytkowaniu klienta\&.
+.IP 
+.IP "\fB-I adres IP\fP" 
+Jest to adres IP serwera, do którego chcesz się podłączyć\&. Powinna to być
+standardowa notacja "a\&.b\&.c\&.d"\&.
+.IP 
+Normalnie klient próbuje zlokalizować serwer SMB/CIFS przez mechanizm
+sprawdzania nazw NetBIOS opisany powyżej w parametrze \fBname resolve order\fP
+Użycie tego parametru wymusza na kliencie użycie podanego adresu IP i podana
+nazwa NetBIOS będzie zignorowana\&.
+.IP 
+Nie ma domyślnej wartości dla tego parametru\&. Jeśli ta wartość nie zostanie
+podana, będzie ona ustalona automatycznie przez klienta w sposób opisany
+powyżej\&.
+.IP 
+.IP "\fB-E\fP" 
+Ten parametr wywołuje zapisywanie wiadomości przez klienta do standardowego
+strumienia błędów (stderr). 
+.IP
+Normalnie te wiadomości są wysyłane do standardowego strumienia wyjścia -
+zazwyczaj konsola użytkownika\&.
+.IP 
+.IP "\fB-U nazwa użytkownika\fP" 
+Ten parametr określa nazwę użytkownika, która zostanie użyta przy
+nawiązywaniu połączenia, zakładając że twój serwer nie używa wersji protokołu,
+który łączy hasła z udziałami, ale z nazwami użytkowników\&. 
+.IP 
+Niektóre serwery są wybredne co do wielkości znaków tej nazwy, a niektóre
+wymagają, aby była to ważna nazwa NetBIOS\&.
+.IP 
+Jeśli nie podano żadnej nazwy użytkownika, użyta zostanie wersja pisana dużymi
+literami zmiennej środowiskowej \f(CWUSER\fP lub \f(CWLOGNAME\fP (w takiej
+kolejności)\&. Jeśli nie podano żadnej nazwy użytkownika i żadna ze zmiennych
+środowiskowych nie istnieje, to użyta zostanie nazwa użytkownika "GUEST"\&.
+.IP 
+Jeśli zmienna środowiskowa \f(CWUSER\fP zawiera znak \'%\', wszystko po tym
+znaku będzie traktowane jako hasło\&. To pozwala na ustawienie zmiennej
+środowiskowej na \f(CWUSER=użytkownik%hasło\fP, w związku z czym hasło nie
+jest podawane w linii poleceń, gdzie może być podejrzane przez komendę ps\&.
+.IP 
+Jeśli usługa, do której chcesz się podłączyć wymaga hasła, może ono być
+podane przy pomocy opcji \fB-U\fP, przez dodanie symbolu procentu ("%") i hasła
+do nazwy użytkownika\&. Na przykład, aby podłączyć się do usługi jako
+użytkownik \f(CW"janek"\fP z hasłem \f(CW"sekret"\fP, możesz użyć opcji
+.br 
+.IP 
+\f(CW-U janek%sekret\fP 
+.br 
+.IP 
+w linii poleceń\&. Zauważ, że nie ma spacji wokół symbolu procentu\&.
+.IP 
+Jeśli podasz hasło jako część nazwy użytkownika, to ustawiana jest
+opcja \fB-N\fP (pomiń zapytanie o hasło)\&.
+.IP 
+Jeśli podasz hasło jako parametr \fIi\fP jako część nazwy użytkownika, to
+pierwszeństwo ma hasło podane jako część nazwy użytkownika\&. Nie podanie
+niczego przed lub po znaku procentu spowoduje użycie odpowiednio pustej nazwy
+użytkownika lub pustego hasła\&.
+.IP 
+Hasło może też być podane przez ustawienie zmiennej środowiskowej
+\f(CWPASSWORD\fP, która zawiera hasło użytkownika\&. Zauważ, że może to być
+bardzo niebezpieczne na niektórych systemach, ale na innych umożliwia to
+użytkownikom skryptowanie komend smbclienta bez możliwości podejrzenia hasła 
+na liście procesów w przypadku podania go w linii poleceń\&.
+.IP 
+Uwaga: Niektóre serwery (włączając w to OS/2 i Windows for Workgroups)
+wymagają hasła pisanego dużymi literami\&. Hasła pisane małymi literami lub
+mieszane mogą być odrzucone przez te serwery\&.
+.IP 
+Bądź ostrożny przy dopisywaniu haseł do skryptów lub przy ustawianiu zmiennej
+środowiskowej \f(CWPASSWORD\fP\&. Na wielu systemach linia poleceń
+działającego procesu może być podejrzana przy pomocy polecenia \f(CWps\fP\&.
+Aby mieć pewność bezpieczeństwa pozwalaj programowi smbclient na pytanie
+o hasło i wpisuj je bezpośrednio\&.
+.IP 
+.IP "\fB-L\fP" 
+Ta opcja pozwala na obejrzenie usług dostępnych na serwerze\&. Lista
+pojawi się po użyciu w taki sposób: \f(CW"smbclient \-L host"\fP\&.
+Opcja \fB-I\fP może być przydatna jeśli twoje nazwy NetBIOS nie są takie same
+jak nazwy DNS hostów TCP/IP lub jeśli próbujesz połączyć się z hostem z innej
+sieci\&.
+.IP 
+.IP "\fB-t kod terminala\fP" 
+Ta opcja mówi programowi smbclient jak interpretować nazwy plików pochodzące
+ze zdalnego serwera\&. Zazwyczaj azjatyckojęzyczne wielobajtowe
+implementacje Uniksów używają innych zestawów znaków niż serwery SMB/CIFS (na
+przykład \fIEUC\fP zamiast \fISJIS\fP)\&. Prawidłowe ustawienie tego
+parametru programowi smbclient na prawidłową konwersję między nazwami plików
+Uniksowymi a tymi pochodzącymi z serwerów SMB\&. Ta opcja nie została
+porządnie sprawdzona i mogą być z nią problemy\&.
+.IP 
+Do kodów terminali należą: \f(CWsjis\fP, \f(CWeuc\fP, \f(CWjis7\fP, \f(CWjis8\fP,
+\f(CWjunet\fP, \f(CWhex\fP, \f(CWcap\fP\&. To nie jest pełna lista. Pełna
+lista znajduje się w kodzie źródłowym pakietu Samba\&.
+.IP 
+.IP "\fB-m maksymalny poziom protokołu\fP" 
+Wraz z nowym kodem w pakiecie Samba2\&.0 
+\fBsmbclient\fP zawsze próbuje nawiązać połączenie 
+z najwyższym poziomem protokołu jaki serwer obsługuje\&.
+Ten parametr jest zachowany dla wstecznej kompatybilności, 
+ale dowolny ciąg, który znajduje się po opcji \fB-m\fP 
+zostanie zignorowany\&.
+.IP 
+.IP "\fB-W grupa robocza\fP" 
+Unieważnia domyślną grupę roboczą określoną w parametrze
+\fBworkgroup\fP z pliku \fBsmb\&.conf\fP dla tego połączenia\&. 
+Ta opcja może być niezbędna do połączenia się z niektórymi 
+serwerami\&.
+.IP 
+.IP "\fB-T opcje programu tar\fP" 
+smbclient może być użyty do stworzenia kopii zapasowej wszystkich plików
+znajdujących się na udziale SMB/CIFS, kompatybilnego z formatem 
+\fBtar (1)\fP\&. Drugorzędne flagi tar, które mogą być podane to:
+.IP 
+.IP 
+.IP "\fBc\fP" 
+Stwórz plik tar na Uniksie\&. Po tej opcji musi znajdować się nazwa pliku,
+pliku urządzenia streamera lub \f(CW"-"\fP dla standardowego wyjścia\&.
+Jeśli użyjesz standardowego wyjścia musisz użyć najniższej wartości poziomu
+debugowania \f(CW-d0\fP, aby uniknąć uszkodzenia pliku tar\&. Ta flaga nie
+może być podana razem z flagą \fBx\fP\&.
+.IP 
+.IP "\fBx\fP" 
+Rozpakuj lokalny plik tar z powrotem na udział\&. Jeśli opcja \fB-D\fP nie
+została podana, struktura plików i katalogów pliku tar zostanie odtworzona od
+głównego katalogu udziału\&. Po tej opcji musi znajdować się nazwa pliku tar,
+urządzenia lub \fB-D\fP dla standardowego wejścia\&. Flaga ta nie może być
+łączona z flagą \fBc\fP\&. Odtworzonym plikom zostanie nadana taka data
+stworzenia (modyfikacji), jaka została zapisana w pliku tar\&. Nie zostaje
+natomiast przywrócona data katalogom\&.
+.IP 
+.IP "\fBI\fP" 
+Włącz pliki i katalogi\&. Jest to domyślne zachowanie, kiedy pliki są
+wymienione powyżej\&. Powoduje to branie pod uwagę plików tar przy
+rozpakowywaniu lub tworzeniu (a zatem wszystko inne zostaje wyłączone z tych
+działań)\&. Zobacz przykład poniżej\&. 
+.IP 
+.IP "\fBX\fP" 
+Wyłącz pliki i katalogi\&. Powoduje to wyłączenie pliku tar z działań
+rozpakowywania lub tworzenia\&. Zobacz przykład poniżej\&.
+.IP 
+.IP "\fBb\fP" 
+Rozmiar bloku\&. Po nim musi następować dozwolona (większa niż zero)
+wielkość bloku\&. Powoduje zapisanie pliku tar na rozmiar_bloku*TBLOCK
+(TBLOCK wynosi zazwyczaj 512) blokach\&.
+.IP 
+.IP "\fBg\fP" 
+Przyrostowe\&. Archiwizuj tylko te pliki, które mają ustawiony bit
+"archive"\&. Przydatne tylko z flagą \fBc\fP\&.
+.IP 
+.IP "\fBq\fP" 
+Ciche\&. Powstrzymuje tara przed wypisywaniem informacji
+diagnostycznych podczas pracy\&. Ten sam efekt daje
+tarmode quiet\&.
+.IP 
+.IP "\fBr\fP" 
+Włączanie lub wyłączanie oparte na wyrażeniach regularnych\&.
+Używa wyrażeń regularnych aby sprawdzić, czy dany plik należy włączyć
+lub wyłączyć z działań\&. Działa to jedynie jeśli Samba została
+skompilowana z HAVE_REGEX_H\&. Jednakże ten tryb może być bardzo wolny\&.
+Jeśli Samba nie została skompilowana z HAVE_REGEX_H, wykonywane jest
+porównywanie oparte na maskach (użycie znaków * i ?)\&.
+.IP 
+.IP "\fBN\fP"
+Nowszy niż\&. Po tej opcji musi być nazwa pliku, którego data będzie
+porównywana z plikami znalezionymi w udziale podczas tworzenia archiwum\&.
+Tylko pliki nowsze niż podany plik zostaną zarchiwizowane do pliku tar\&.
+Przydatne tylko z flagą \fBc\fP\&.
+.IP 
+.IP "\fBa\fP" 
+Ustaw bit "archive"\&. Powoduje usunięcie bitu "archive" podczas 
+archiwizowania pliku\&. Przydatne z flagami \fBg\fP i \fBc\fP\&.
+.IP 
+.IP 
+\fIDługie nazwy w plikach tar\fP
+.IP 
+Tar smbclienta obsługuje obecnie długie nazwy plików zarówno przy
+archiwizowaniu jak i rozpakowywaniu\&. Jednakże pełna ścieżka razem z nazwą
+pliku musi mieć mniej niż 1024 bajty\&. Kiedy smbclient tworzy archiwum 
+tar zapisywane są ścieżki względne, nie absolutne\&.
+.IP 
+\fINazwy plików w archiwach tar\fP
+.IP 
+Wszystkie nazwy plików mogą być podane jako ścieżki DOS'owe (z \f(CW\e\fP
+jako separatorem) lub jako ścieżki Unixowe (z \f(CW/\fP jako separatorem)
+.IP 
+\fIPrzykłady\fP
+.IP 
+.IP 
+.IP o 
+Odtworzenie pliku tar backup\&.tar do mójudział na mójpc (bez hasła)\&.
+.IP 
+\f(CWsmbclient //mójpc/mójudział "" \-N \-Tx backup\&.tar\fP
+.IP 
+.IP o
+Odtwórz wszystko oprócz users/docs
+.IP 
+\f(CWsmbclient //mójpc/mójudział "" \-N \-TXx backup\&.tar users/docs\fP
+.IP 
+.IP o
+Stwórz plik tar złożony z plików poniżej users/docs\&.
+.IP 
+\f(CWsmbclient //mójpc/mójudział "" \-N \-Tc backup\&.tar users/docs\fP
+.IP 
+.IP o 
+Stwórz taki sam plik tar jak powyżej, ale używając ścieżki DOS\&.
+.IP 
+\f(CWsmbclient //mójpc/mójudział "" \-N \-tc backup\&.tar users\eedocs\fP
+.IP 
+.IP o
+Stwórz plik tar złożony ze wszystkich plików i katalogów z udziału\&.
+.IP 
+\f(CWsmbclient //mójpc/mójudział "" \-N \-Tc backup\&.tar *\fP
+.IP 
+.IP 
+.IP "\fB-D początkowy katalog\fP" 
+Zmień początkowy katalog przed uruchomieniem\&. Prawdopodobnie jedynym
+wykorzystaniem jest opcja tar \fB-T\fP\&.
+.IP 
+.IP "\fB-c lista komend\fP" 
+Lista komend jest to ciąg komend oddzielony średnikami, które mają być
+wykonane zamiast oczekiwania na podawanie komend przez standardowe wejście\&.
+\fB-N\fP jest wymuszana przez \fB-c\fP\&.
+.IP 
+Ta opcja jest przydatna przy skryptowaniu i przekazywaniu standardowego
+wejścia do serwera, np\&. \f(CW-c \'print -\'\fP\&.
+.IP 
+.PP 
+.SH "OPERACJE" 
+.PP 
+Jeśli klient już działa, użytkownikowi powinien pokazać się znak zachęty:
+.PP 
+\f(CWsmb:\e>\fP
+.PP 
+Symbol odwrotnego ukośnika ("\e") wskazuje bieżący katalog roboczy
+na serwerze, który 
+zmieni się, jeśli zostanie zmieniony bieżący katalog roboczy\&.
+.PP 
+Znak zachęty wskazuje na to, że klient jest gotowy i czeka na polecenia\&.
+Każda komenda jest pojedynczym słowem, opcjonalnie po nim mogą nastąpić
+parametry specyficzne dla danej komendy\&. Komendy i parametry są rozdzielone
+spacjami, chyba że opis konkretnej komendy stanowi inaczej\&. Wszystkie
+komendy są niewrażliwe na wielkość znaków\&. To, czy istotna jest wielkość
+znaków parametrów przekazywanych do komend zależy od konkretnych komend\&.
+.PP 
+Parametry pokazane w nawiasach kwadratowych (np\&. "[parametr]") są
+opcjonalne\&. Jeśli nie zaznaczono inaczej, do komendy stosują się zasady
+ogólne\&. Parametry podane w nawiasach kątowych (np\&. "<parametr>") są
+obowiązkowe\&.
+.PP 
+Zauważ, że wszystkie komendy wykonywane na serwerze są wykonywane przez
+przekazanie żądania do serwera\&. Tak więc zachowanie jest zależne od
+tego, jak serwer został zaimplementowany\&.
+.PP 
+Komendy podane są w porządku alfabetycznym\&.
+.PP 
+.IP 
+.IP "\fB? [komenda]\fP" 
+Jeśli "komenda" jest określona, to komenda \fB?\fP wyświetli krótką
+informację dotyczącą podanej komendy\&. Jeśli pominięty zostanie parametr
+"komenda", wyświetlona zostanie lista dostępnych komend\&.
+.IP 
+.IP "\fB! [komenda powłoki]\fP" 
+Jeśli podana jest "komenda powłoki", komenda \fB!\fP uruchomi lokalnie
+powłokę i wykona zadaną komendę\&. Jeśli nie zostanie podana żadna komenda
+powłoki, uruchomiona zostanie lokalna powłoka\&.
+.IP 
+.IP "\fBcd [nazwa katalogu]\fP" 
+Jeśli zostanie podana "nazwa katalogu", to bieżący katalog roboczy na serwerze
+zostanie zmieniony na zadany\&. Ta operacja nie powiedzie się, jeśli z
+jakiegokolwiek powodu do katalogu nie ma dostępu\&.
+.IP 
+Jeśli nie zostanie podana żadna nazwa katalogu, wyświetlona zostanie
+nazwa bieżącego katalogu roboczego na serwerze\&.
+.IP 
+.IP "\fBdel <maska>\fP" 
+Klient zażąda od serwera próby usunięcia wszystkich plików pasujących 
+do maski z bieżącego katalogu roboczego na serwerze\&.
+.IP 
+.IP "\fBdir <maska>\fP" 
+Wyświetla listę plików pasujących do maski w bieżącym katalogu roboczym na
+serwerze\&.
+.IP 
+.IP "\fBexit\fP" 
+Przerwij połączenie z serwerem i wyjdź z programu\&.
+.IP 
+.IP "\fBget <nazwa pliku zdalnego> [nazwa pliku lokalnego]\fP" 
+Skopiuj z serwera plik o nazwie "nazwa pliku zdalnego" na lokalny komputer\&.
+Jeśli drugi parametr jest podany, to plik zostanie skopiowany do lokalnego
+pliku o nazwie "nazwa pliku lokalnego"\&. Zauważ, że wszystkie transfery są
+binarne\&. Zobacz też komendę \fBlowercase\fP\&.
+.IP 
+.IP "\fBhelp [komenda]\fP" 
+Zobacz komendę \fB?\fP powyżej\&.
+.IP 
+.IP "\fBlcd [nazwa katalogu]\fP" 
+Jeśli "nazwa katalogu" jest podana, to bieżący roboczy na komputerze lokalnym
+zostanie zmieniony na zadany\&. Ta operacja nie
+powiedzie się, jeśli z jakiegokolwiek powodu do katalogu nie ma dostępu\&.
+.IP 
+Jeśli nie zostanie podana nazwa katalogu, wyświetlona zostanie nazwa
+bieżącego katalogu roboczego na lokalnym komputerze\&.
+.IP 
+.IP "\fBlowercase\fP" 
+Włącza wyświetlanie nazw plików małymi literami dla komend \fBget\fP i
+\fBmget\fP\&.
+.IP 
+Kiedy wyświetlanie nazw plików małymi literami jest włączone, przy używaniu
+komend \fBget\fP i \fBmget\fP lokalne nazwy plików będą konwertowane do
+małych liter\&. Jest to często przydatne przy kopiowaniu plików MSDOS z
+serwera, ponieważ małe litery w nazwach plików są standardem w systemach
+Uniksowych\&.
+.IP 
+.IP "\fBls <maska>\fP" 
+Zobacz komendę \fBdir\fP powyżej\&.
+.IP 
+.IP "\fBmask <maska>\fP" 
+Ta komenda pozwala użytkownikowi na ustawienie maski, która będzie używana
+podczas wykonywania operacji rekurencyjnych przez komendy \fBget\fP i
+\fBmget\fP\&.
+.IP 
+Kiedy rekurencja jest włączona, maski przekazane do komend \fBget\fP i \fBmget\fP
+działają jak filtry do plików, nie do katalogów\&.
+.IP 
+Maska określona komendą \fBmask\fP jest niezbędna do filtrowania plików
+zawartych w tych katalogach\&. Na przykład, jeśli maską podaną komendzie
+\fBmget\fP jest "source*" a maską podaną komendzie \fBmask\fP jest "*\&.c" a
+rekurencja jest włączona, komenda \fBmget\fP pobierze wszystkie pliki
+pasujące do maski "*&\.c" we wszystkich katalogach poniżej 
+pasujących do maski "source*" w bieżącym katalogu roboczym\&.
+.IP 
+Zauważ, że domyślna wartość dla maski jest pusta (jej równoważnością jest
+"*") i pozostaje taka dopóki nie zostanie użyta komenda \fBmask\fP do jej
+zmiany\&. Najczęściej maska pozostaje niezdefiniowana\&. Aby uniknąć
+nieoczekiwanych rezultatów dobrze jest przywrócić wartość maski na "*" po
+użyciu komendy \fBmget\fP lub \fBmput\fP\&.
+.IP 
+.IP "\fBmd <nazwa katalogu>\fP" 
+Zobacz komendę \fBmkdir\fP\&.
+.IP 
+.IP "\fBmget <maska>\fP" 
+Skopiuj wszystkie pliki pasujące do maski na komputer, 
+na którym uruchomiony jest klient\&.
+.IP 
+Zauważ, że maska jest interpretowana inaczej przy 
+operacjach rekurencyjnych i nierekurencyjnych - zobacz komendy 
+\fBrecurse\fP i \fBmask\fP aby zdobyć więcej informacji\&.
+.IP 
+.IP "\fBmkdir <nazwa katalogu>\fP" 
+Tworzy nowy katalog na serwerze (jeśli pozwalają na to uprawnienia)
+z podaną nazwą\&.
+.IP 
+.IP "\fBmput <maska>\fP"
+Skopiuj wszystkie pliki pasujące do maski z bieżącego katalogu roboczego
+komputera lokalnego do bieżącego katalogu roboczego na serwerze\&.
+.IP 
+Zauważ, że maska jest interpretowana inaczej przy
+operacjach rekurencyjnych i nierekurencyjnych - zobacz komendy
+\fBrecurse\fP i \fBmask\fP aby zdobyć więcej informacji\&.
+.IP 
+.IP "\fBprint <nazwa pliku>\fP" 
+Wydrukuj podany plik z lokalnego komputera używając drukarki podłączonej do
+serwera\&.
+.IP 
+Zobacz też komendę \fBprintmode\fP\&.
+.IP 
+.IP "\fBprintmode <graphics lub text>\fP" 
+Ustawia tryb drukowania tak, aby obsługiwać dane binarne (takie jak grafika)
+albo tekst\&. Późniejsze komendy drukowania będą używały trybu ustawionego
+przez to polecenie\&.
+.IP 
+.IP "\fBprompt\fP" 
+Przełącza pytanie o nazwy plików podczas
+działania komend \fBmget\fP i \fBmput\fP\&.
+.IP 
+Kiedy jest włączone, użytkownik będzie proszony o potwierdzenie transferu
+każdego z plików podczas działania tych komend\&. Kiedy jest wyłączone,
+wszystkie pliki zostaną przesłane bez zapytania o potwierdzenie\&.
+.IP 
+.IP "\fBput <nazwa pliku lokalnego> [nazwa pliku zdalnego]\fP" 
+Skopiuj plik o nazwie "nazwa pliku lokalnego" z komputera lokalnego na
+serwer\&. Jeśli zostanie podany drugi parametr, plik na serwerze zostanie
+nazwany "nazwa pliku zdalnego"\&. Zauważ, że wszystkie transfery są
+binarne\&. Zobacz też komendę \fBlowercase\fP\&.
+.IP 
+.IP "\fBqueue\fP" 
+Wyświetla kolejkę drukowania, pokazując identyfikator
+zadania, nazwę, rozmiar i aktualny stan\&.
+.IP 
+.IP "\fBquit\fP" 
+Zobacz komendę \fBexit\fP\&.
+.IP 
+.IP "\fBrd <nazwa katalogu>\fP" 
+Zobacz komendę \fBrmdir\fP\&.
+.IP 
+.IP "\fBrecurse\fP" 
+Przełącza stosowanie rekurencji dla
+komend \fBmget\fP i \fBmput\fP\&.
+.IP 
+Kiedy jest włączona, te komendy będą przetwarzały wszystkie katalogi
+znajdujące się w katalogu początkowym i będą przeglądały ich zawartość jeśli
+nazwa danego katalogu pasuje do maski podanej komendzie\&. Pobrane będą tylko
+pliki pasujące do maski ustalonej za pomocą polecenia \fBmask\fP\&. Zobacz
+także polecenie \fBmask\fP\&.
+.IP 
+Jeśli rekurencja jest wyłączona, kopiowane będą tylko pliki znajdujące się 
+w bieżącym katalogu roboczym na komputerze źródłowym pasujące do maski
+podanej jako parametr polecenia \fBmget\fP lub \fBmput\fP, a maska ustalona
+za pomocą polecenia \fBmask\fP będzie zignorowana\&.
+.IP 
+.IP "\fBrm <maska>\fP" 
+Usuwa z bieżącego katalogu roboczego serwera 
+wszystkie pliki pasujące do maski\&.
+.IP 
+.IP "\fBrmdir <nazwa katalogu>\fP" 
+Usuwa podany katalog (jeśli pozwalają na to prawa dostępu) z serwera\&.
+.IP 
+.IP "\fBtar <c|x>[IXbgNa]\fP" 
+Przeprowadza operację tar - zobacz 
+opcję \fB-T\fP powyżej\&. Na zachowanie 
+może wpływać komenda \fBtarmode\fP (zobacz 
+poniżej)\&. Użycie g (przyrostowe) i N (nowsze niż)
+wpłynie na ustawienia tarmode\&. Zauważ, że użycie opcji
+"-" z opcją x może nie działać - zamiast tego użyj linii
+poleceń\&.
+.IP 
+.IP "\fBblocksize <rozmiar bloku>\fP" 
+Rozmiar bloku\&. Po nim musi następować dopuszczalna (większa niż zero)
+wielkość bloku\&. Powoduje zapisanie pliku tar na rozmiar_bloku*TBLOCK
+(TBLOCK wynosi zazwyczaj 512) blokach\&.
+.IP 
+.IP "\fBtarmode <full|inc|reset|noreset>\fP" 
+Zmienia zachowanie polecenia tar względem bitu "archive"\&. W trybie
+"full" polecenia tar zarchiwizuje wszystko nie zwracając uwagi na ustawienie
+bitu "archive" (jest to tryb domyślny)\&. W trybie "inc" (incremental -
+przyrostowy) tar zarchiwizuje tylko pliki z ustawionym bitem "archive"\&. W
+trybie "reset" tar usunie bit "archive" ze wszystkich plików, które
+archiwizuje (wymaga możliwości zapisywania w udziale)\&.
+.IP 
+.IP "\fBsetmode <nazwa pliku> <perm=[+|\e-]rsha>\fP" 
+Wersja DOSowej komendy attribm służącej do ustawiania atrybutów pliku\&. Na
+przykład:
+.IP 
+\f(CWsetmode mójplik +r\fP
+.IP 
+sprawi, że plik "mójplik" będzie tylko do odczytu\&.
+.IP 
+.PP 
+.SH "UWAGI" 
+.PP
+Niektóre serwery są wybredne, co do wielkości znaków podanej nazwy
+użytkownika, hasła, nazwy udziału (nazywanego także nazwą usługi) i nazw 
+serwerów\&. Jeśli nie możesz się połączyć z serwerem spróbuj podać wszystkie
+parametry dużymi literami\&.
+.PP 
+Często niezbędne jest użycie opcji \fB-n\fP przy łączeniu się z niektórymi
+typami serwerów\&. Na przykład LanManager OS/2 wymaga użycia prawidłowej
+nazwy NetBIOS, więc musisz podać prawidłową nazwę, która może być znana
+serwerowi\&.
+.PP 
+smbclient obsługuje długie nazwy plików, jeśli serwer obsługuje protokół
+LANMAN2 lub nowszy\&.
+.PP 
+.SH "ZMIENNE ŚRODOWISKOWE" 
+.PP 
+Zmienna \fBUSER\fP może zawierać nazwę użytkownika osoby używającej
+klienta\&. Ta informacja jest użyta tylko wtedy, gdy poziom protokołu jest
+na tyle wysoki, że obsługuje hasła na poziomie sesji\&.
+.PP 
+Zmienna \fBPASSWORD\fP może zawierać hasło osoby używającej klienta\&. 
+Ta informacja jest użyta tylko jeśli poziom protokołu jest na tyle
+wysoki, że obsługuje hasła na poziomie sesji\&.
+.PP 
+.SH "INSTALACJA" 
+.PP
+Lokalizacja programu klienta jest indywidualną kwestią administratora
+systemu\&. Dalej znajdują się tylko sugestie\&.
+.PP 
+Zaleca się, aby oprogramowanie smbclienta było zainstalowane w katalogu
+/usr/local/samba/bin lub /usr/samba/bin\&. Ten katalog może być czytany przez
+wszystkich a zapisywany tylko przez roota\&. Każdy powinien mieć możliwość
+uruchomienia klienta\&. Klient nie powinien mieć ustawionych uprawnień setuid
+czy setgid!
+.PP
+Pliki z dziennikami pracy (logami) klienta powinny być umieszczane w 
+katalogu, którego zawartość może być odczytywana i
+zapisywana tylko przez danego użytkownika\&.
+.PP 
+Aby przetestować klienta, będziesz potrzebował nazwy serwera SMB/CIFS\&.
+Istnieje możliwość uruchomienia \fBsmbd (8)\fP jako zwykły użytkownik -
+uruchomienie serwera jako demona na porcie dostępnym dla użytkownika
+(zazwyczaj dowolny port powyżej 1024) dostarczy serwera, na którym będzie
+można przeprowadzać testy\&.
+.PP 
+.SH "DIAGNOSTYKA" 
+.PP
+Większość informacji diagnostycznych wysyłanych przez klienta 
+jest rejestrowana w odpowiednim pliku\&. Nazwa tego pliku jest 
+ustalana podczas kompilacji, ale może być zmieniona przez parametr
+podany z linii poleceń\&.
+.PP 
+Liczba i źródło informacji diagnostycznych zależy od poziomu debugowania
+ustalonego przez klienta\&. Jeśli masz problemy, ustaw poziom debugowania na
+3 i przejrzyj pliki z logami\&.
+.PP 
+.SH "WERSJA"
+.PP 
+Ta strona podręcznika systemowego obowiązuje dla wersji 2\&.0 pakietu
+Samba\&.
+.PP 
+.SH "AUTOR" 
+.PP 
+Oryginalne oprogramowanie Samba i związane z nim narzędzia zostały stworzone
+przez Andrew Tridgella \fIsamba-bugs@samba\&.org\fP\&. Samba jest teraz
+rozwijana przez Samba Team jako projekt typu Open Source, podobny do sposobu
+rozwijania jądra Linuksa\&.
+.PP 
+Oryginalne strony podręcznika systemowego pakietu Samba zostały napisane przez
+Karla Auera\&. Strony podręcznika systemowego zostały skonwertowane do
+formatu YODL (kolejne wspaniałe oprogramowanie Open Source, dostępne pod
+adresem  \fBftp://ftp\&.icce\&.rug\&.nl/pub/unix/\fP) i odświeżone dla wersji
+2\&.0 pakietu Samba przez Jeremy'ego  Allisona\&.
+\fIsamba-bugs@samba\&.org\fP\&.
+.PP
+Zobacz \fBsamba (7)\fP\&. Znajdziesz tam pełną listę współpracowników i 
+informacje jak wysłać informacje o błędach, komentarze itp\&.

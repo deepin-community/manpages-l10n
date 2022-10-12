@@ -1,0 +1,353 @@
+.TH "libalpm_trans" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+libalpm_trans \- Transaction
+.PP
+ \- Functions to manipulate libalpm transactions\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct __alpm_trans_t \fBalpm_trans_t\fP"
+.br
+.RI "Transaction structure used internally by libalpm\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBalpm_transflag_t\fP { \fBALPM_TRANS_FLAG_NODEPS\fP = 1, \fBALPM_TRANS_FLAG_NOSAVE\fP = (1 << 2), \fBALPM_TRANS_FLAG_NODEPVERSION\fP = (1 << 3), \fBALPM_TRANS_FLAG_CASCADE\fP = (1 << 4), \fBALPM_TRANS_FLAG_RECURSE\fP = (1 << 5), \fBALPM_TRANS_FLAG_DBONLY\fP = (1 << 6), \fBALPM_TRANS_FLAG_ALLDEPS\fP = (1 << 8), \fBALPM_TRANS_FLAG_DOWNLOADONLY\fP = (1 << 9), \fBALPM_TRANS_FLAG_NOSCRIPTLET\fP = (1 << 10), \fBALPM_TRANS_FLAG_NOCONFLICTS\fP = (1 << 11), \fBALPM_TRANS_FLAG_NEEDED\fP = (1 << 13), \fBALPM_TRANS_FLAG_ALLEXPLICIT\fP = (1 << 14), \fBALPM_TRANS_FLAG_UNNEEDED\fP = (1 << 15), \fBALPM_TRANS_FLAG_RECURSEALL\fP = (1 << 16), \fBALPM_TRANS_FLAG_NOLOCK\fP = (1 << 17) }"
+.br
+.RI "Transaction flags\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBalpm_trans_get_flags\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the bitfield of flags for the current transaction\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_trans_get_add\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns a list of packages added by the transaction\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_trans_get_remove\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the list of packages removed by the transaction\&. "
+.ti -1c
+.RI "int \fBalpm_trans_init\fP (\fBalpm_handle_t\fP *handle, int flags)"
+.br
+.RI "Initialize the transaction\&. "
+.ti -1c
+.RI "int \fBalpm_trans_prepare\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP **data)"
+.br
+.RI "Prepare a transaction\&. "
+.ti -1c
+.RI "int \fBalpm_trans_commit\fP (\fBalpm_handle_t\fP *handle, \fBalpm_list_t\fP **data)"
+.br
+.RI "Commit a transaction\&. "
+.ti -1c
+.RI "int \fBalpm_trans_interrupt\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Interrupt a transaction\&. "
+.ti -1c
+.RI "int \fBalpm_trans_release\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Release a transaction\&. "
+.in -1c
+.SS "Add/Remove packages"
+These functions remove/add packages to the transactions 
+.in +1c
+.ti -1c
+.RI "int \fBalpm_sync_sysupgrade\fP (\fBalpm_handle_t\fP *handle, int enable_downgrade)"
+.br
+.RI "Search for packages to upgrade and add them to the transaction\&. "
+.ti -1c
+.RI "int \fBalpm_add_pkg\fP (\fBalpm_handle_t\fP *handle, \fBalpm_pkg_t\fP *pkg)"
+.br
+.RI "Add a package to the transaction\&. "
+.ti -1c
+.RI "int \fBalpm_remove_pkg\fP (\fBalpm_handle_t\fP *handle, \fBalpm_pkg_t\fP *pkg)"
+.br
+.RI "Add a package removal to the transaction\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Functions to manipulate libalpm transactions\&. 
+
+Transactions are the way to add/remove packages to/from the system\&. Only one transaction can exist at a time\&.
+.PP
+The basic workflow of a transaction is to:
+.PP
+.IP "\(bu" 2
+Initialize with \fBalpm_trans_init\fP
+.IP "\(bu" 2
+Choose which packages to add with \fBalpm_add_pkg\fP and \fBalpm_remove_pkg\fP
+.IP "\(bu" 2
+Prepare the transaction with \fBalpm_trans_prepare\fP
+.IP "\(bu" 2
+Commit the transaction with \fBalpm_trans_commit\fP
+.IP "\(bu" 2
+Release the transaction with \fBalpm_trans_release\fP
+.PP
+.PP
+A transaction can be released at any time\&. A transaction does not have to be committed\&. 
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef struct __alpm_trans_t \fBalpm_trans_t\fP"
+
+.PP
+Transaction structure used internally by libalpm\&. 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBalpm_transflag_t\fP"
+
+.PP
+Transaction flags\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIALPM_TRANS_FLAG_NODEPS \fP\fP
+Ignore dependency checks\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_NOSAVE \fP\fP
+Delete files even if they are tagged as backup\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_NODEPVERSION \fP\fP
+Ignore version numbers when checking dependencies\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_CASCADE \fP\fP
+Remove also any packages depending on a package being removed\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_RECURSE \fP\fP
+Remove packages and their unneeded deps (not explicitly installed)\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_DBONLY \fP\fP
+Modify database but do not commit changes to the filesystem\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_ALLDEPS \fP\fP
+Use ALPM_PKG_REASON_DEPEND when installing packages\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_DOWNLOADONLY \fP\fP
+Only download packages and do not actually install\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_NOSCRIPTLET \fP\fP
+Do not execute install scriptlets after installing\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_NOCONFLICTS \fP\fP
+Ignore dependency conflicts\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_NEEDED \fP\fP
+Do not install a package if it is already installed and up to date\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_ALLEXPLICIT \fP\fP
+Use ALPM_PKG_REASON_EXPLICIT when installing packages\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_UNNEEDED \fP\fP
+Do not remove a package if it is needed by another one\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_RECURSEALL \fP\fP
+Remove also explicitly installed unneeded deps (use with ALPM_TRANS_FLAG_RECURSE)\&. 
+.TP
+\fB\fIALPM_TRANS_FLAG_NOLOCK \fP\fP
+Do not lock the database during the operation\&. 
+.SH "Function Documentation"
+.PP 
+.SS "int alpm_add_pkg (\fBalpm_handle_t\fP * handle, \fBalpm_pkg_t\fP * pkg)"
+
+.PP
+Add a package to the transaction\&. If the package was loaded by \fBalpm_pkg_load()\fP, it will be freed upon \fBalpm_trans_release\fP invocation\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIpkg\fP the package to add 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_remove_pkg (\fBalpm_handle_t\fP * handle, \fBalpm_pkg_t\fP * pkg)"
+
+.PP
+Add a package removal to the transaction\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIpkg\fP the package to uninstall 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_sync_sysupgrade (\fBalpm_handle_t\fP * handle, int enable_downgrade)"
+
+.PP
+Search for packages to upgrade and add them to the transaction\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIenable_downgrade\fP allow downgrading of packages if the remote version is lower 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_trans_commit (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP ** data)"
+
+.PP
+Commit a transaction\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIdata\fP the address of an alpm_list where detailed description of an error can be dumped (i\&.e\&. list of conflicting files) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_trans_get_add (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns a list of packages added by the transaction\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a list of alpm_pkg_t structures 
+.RE
+.PP
+
+.SS "int alpm_trans_get_flags (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the bitfield of flags for the current transaction\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the bitfield of transaction flags 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_trans_get_remove (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the list of packages removed by the transaction\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a list of alpm_pkg_t structures 
+.RE
+.PP
+
+.SS "int alpm_trans_init (\fBalpm_handle_t\fP * handle, int flags)"
+
+.PP
+Initialize the transaction\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIflags\fP flags of the transaction (like nodeps, etc; see alpm_transflag_t) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_trans_interrupt (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Interrupt a transaction\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_trans_prepare (\fBalpm_handle_t\fP * handle, \fBalpm_list_t\fP ** data)"
+
+.PP
+Prepare a transaction\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIdata\fP the address of an alpm_list where a list of \fBalpm_depmissing_t\fP objects is dumped (conflicting packages) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_trans_release (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Release a transaction\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libalpm from the source code\&.

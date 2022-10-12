@@ -1,0 +1,489 @@
+'\" t
+.\"     Title: crypttab
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 2021-08-19
+.\"    Manual: cryptsetup manual
+.\"    Source: cryptsetup 2:2.4.0-1
+.\"  Language: English
+.\"
+.TH "CRYPTTAB" "5" "2021\-08\-19" "cryptsetup 2:2\&.4\&.0\-1" "cryptsetup manual"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+crypttab \- static information about encrypted filesystems
+.SH "DESCRIPTION"
+.sp
+The file /etc/crypttab contains descriptive information about encrypted filesystems\&. crypttab is only read by programs (e\&.g\&. \fBcryptdisks_start\fR and \fBcryptdisks_stop\fR), and not written; it is the duty of the system administrator to properly create and maintain this file\&. Each filesystem is described on a separate line; fields on each line are separated by tabs or spaces\&. Lines starting with \(lq#\(rq are comments, empty lines are ignored\&. The order of records in crypttab is important because the init scripts sequentially iterate through crypttab doing their thing\&.
+.sp
+The first field, \fItarget\fR, describes the mapped device name\&. It must be a plain filename without any directory components\&. A mapped device which encrypts/decrypts data to/from the \fIsource device\fR will be created at /dev/mapper/target by \fBcryptsetup\fR\&.
+.sp
+The second field, \fIsource device\fR, describes either the block special device or file that contains the encrypted data\&. Instead of giving the \fIsource device\fR explicitly, the UUID (resp\&. LABEL, PARTUUID and PARTLABEL) is supported as well, using \(lqUUID=<uuid>\(rq (resp\&. \(lqLABEL=<label>\(rq, \(lqPARTUUID=<partuuid>\(rq and \(lqPARTLABEL=<partlabel>\(rq)\&.
+.sp
+The third field, \fIkey file\fR, describes the file to use as a key for decrypting the data of the \fIsource device\fR\&. In case of a \fIkeyscript\fR, the value of this field is given as argument to the keyscript\&. Values with spaces and special characters need to be escaped using octal sequences, like for \fBfstab\fR(5)\&. Note that the \fIentire\fR key file will be used as the passphrase; the passphrase must \fInot\fR be followed by a newline character\&.
+.sp
+It can also be a device name (e\&.g\&. /dev/urandom), note however that LUKS requires a persistent key and therefore does \fInot\fR support random data keys\&.
+.sp
+If the \fIkey file\fR is the string \fInone\fR, a passphrase will be read interactively from the console\&. In this case, the options check, checkargs and tries may be useful\&.
+.sp
+The fourth field, \fIoptions\fR, is an optional comma\-separated list of options and/or flags describing the device type (\fIluks\fR, \fItcrypt\fR, \fIbitlk\fR, or \fIplain\fR which is also the default) and cryptsetup options associated with the encryption process\&. The supported options are described below\&. For plain dm\-crypt devices the \fIcipher\fR, \fIhash\fR and \fIsize\fR options are required\&. Some options can be changed on active mappings using \fBcryptsetup refresh [<options>] <name>\fR\&. Furthermore some options can be permanently written into metadata of LUKS2 headers using cryptsetup\*(Aqs \fI\-\-persistent\fR flag\&.
+.sp
+Note that the first three fields are required and that a missing field will lead to unspecified behaviour\&.
+.SH "ON DIFFERENT CRYPTTAB FORMATS"
+.sp
+Please note that there are several independent cryptsetup wrappers with their own \fIcrypttab\fR format\&. This manpage covers Debian\*(Aqs implementation for \fIinitramfs\fR scripts and \fISysVinit\fR init scripts\&. \fIsystemd\fR brings its own \fIcrypttab\fR implementation\&. We try to cover the differences between the \fIsystemd\fR and our implementation in this manpage, but if in doubt, better check the \fIsystemd\fR \fBcrypttab\fR(5) manpage, e\&.g\&. online at \m[blue]\fB\%https://www.freedesktop.org/software/systemd/man/crypttab.html\fR\m[]\&.
+.SH "OPTIONS"
+.PP
+\fIcipher\fR=<cipher>
+.RS 4
+Encryption algorithm (ignored for LUKS and TCRYPT devices)\&. See
+\fBcryptsetup \-c\fR\&.
+.RE
+.PP
+\fIsize\fR=<size>
+.RS 4
+Encryption key size (ignored for LUKS and TCRYPT devices)\&. See
+\fBcryptsetup \-s\fR\&.
+.RE
+.PP
+\fIsector\-size\fR=<bytes>
+.RS 4
+Sector size\&. See
+\fBcryptsetup\fR(8)
+for possible values and the default value of this option\&.
+.RE
+.PP
+\fIhash\fR=<hash>
+.RS 4
+Hash algorithm (ignored for LUKS and TCRYPT devices)\&. See
+\fBcryptsetup \-h\fR\&.
+.RE
+.PP
+\fIoffset\fR=<offset>
+.RS 4
+Start offset (ignored for LUKS and TCRYPT devices)\&. Uses
+\fBcryptsetup \-o\fR\&.
+.RE
+.PP
+\fIskip\fR=<skip>
+.RS 4
+Skip sectors at the beginning (ignored for LUKS and TCRYPT devices)\&. Uses
+\fBcryptsetup \-p\fR\&.
+.RE
+.PP
+\fIkeyfile\-offset\fR=<keyfile\-offset>
+.RS 4
+Specifies the number of bytes to skip at the start of the key file\&.
+.RE
+.PP
+\fIkeyfile\-size\fR=<keyfile\-size>
+.RS 4
+Specifies the maximum number of bytes to read from the key file\&. The default is to read the whole file up to the compiled\-in maximum, that can be queried with
+\fBcryptsetup \-\-help\fR\&. This option is ignored for plain dm\-crypt devices, as the key file size is then given by the encryption key size (option
+\fIsize\fR)\&.
+.RE
+.PP
+\fIkeyslot\fR=<slot>, \fIkey\-slot\fR=<slot>
+.RS 4
+Key slot (ignored for non\-LUKS devices)\&. See
+\fBcryptsetup \-S\fR\&.
+.RE
+.PP
+\fIheader\fR=<path>
+.RS 4
+Detached header file (ignored for plain dm\-crypt devices)\&. See
+\fBcryptsetup \-\-header\fR\&.
+.RE
+.PP
+\fIverify\fR
+.RS 4
+Verify password\&. Uses
+\fBcryptsetup \-y\fR\&.
+.RE
+.PP
+\fIreadonly\fR, \fIread\-only\fR
+.RS 4
+Set up a read\-only mapping\&.
+.RE
+.PP
+\fItries\fR=<num>
+.RS 4
+Try to unlock the device <num> before failing\&. It\*(Aqs particularly useful when using a passphrase or a
+\fIkeyscript\fR
+that asks for interactive input\&. If you want to disable retries, pass
+\(lqtries=1\(rq\&. Default is
+\(lq3\(rq\&. Setting
+\(lqtries=0\(rq
+means infinitive retries\&.
+.RE
+.PP
+\fIdiscard\fR
+.RS 4
+Allow using of discards (TRIM) requests for device\&.
+.sp
+Starting with Debian 10 (Buster), this option is added per default to new dm\-crypt devices by the Debian Installer\&. If you don\*(Aqt care about leaking access patterns (filesystem type, used space) and don\*(Aqt have hidden truecrypt volumes inside this volume, then it should be safe to enable this option\&. See the following warning for further information\&.
+.sp
+\fBWARNING\fR: Assess the specific security risks carefully before enabling this option\&. For example, allowing discards on encrypted devices may lead to the leak of information about the ciphertext device (filesystem type, used space etc\&.) if the discarded blocks can be located easily on the device later\&.
+.RE
+.PP
+\fIluks\fR
+.RS 4
+Force LUKS mode\&. When this mode is used, the following options are ignored since they are provided by the LUKS header on the device:
+\fIcipher=\fR,
+\fIhash=\fR,
+\fIsize=\fR
+.RE
+.PP
+\fIplain\fR
+.RS 4
+Force plain encryption mode\&.
+.RE
+.PP
+\fIbitlk\fR
+.RS 4
+Force BITLK (Windows BitLocker\-compatible) mode\&. WARNING:
+\fIcrypttab\fR
+support is currently experimental\&.
+.RE
+.PP
+\fItcrypt\fR
+.RS 4
+Use TrueCrypt encryption mode\&. When this mode is used, the following options are ignored since they are provided by the TrueCrypt header on the device or do not apply:
+\fIcipher=\fR,
+\fIhash=\fR,
+\fIkeyfile\-offset=\fR,
+\fIkeyfile\-size=\fR,
+\fIsize=\fR
+.RE
+.PP
+\fIveracrypt\fR, \fItcrypt\-veracrypt\fR
+.RS 4
+Use VeraCrypt extension to TrueCrypt device\&. Only useful in conjunction with
+\fItcrypt\fR
+option (ignored for non\-TrueCrypt devices)\&.
+.RE
+.PP
+\fItcrypthidden\fR, \fItcrypt\-hidden\fR
+.RS 4
+Use hidden TCRYPT header (ignored for non\-TCRYPT devices)\&.
+.RE
+.PP
+\fIsame\-cpu\-crypt\fR
+.RS 4
+Perform encryption using the same cpu that IO was submitted on\&.
+.RE
+.PP
+\fIsubmit\-from\-crypt\-cpus\fR
+.RS 4
+Disable offloading writes to a separate thread after encryption\&.
+.RE
+.PP
+\fIno\-read\-workqueue\fR, \fIno\-write\-workqueue\fR
+.RS 4
+Bypass dm\-crypt internal workqueue and process read or write requests synchronously\&.
+.RE
+.PP
+\fIswap\fR
+.RS 4
+Run
+\fBmkswap\fR
+on the created device\&.
+.sp
+This option is ignored for
+\fIinitramfs\fR
+devices\&.
+.RE
+.PP
+\fItmp\fR=<tmpfs>
+.RS 4
+Run
+\fBmkfs\fR
+with filesystem type <tmpfs> on the created device\&. Default is ext4\&.
+.sp
+This option is ignored for
+\fIinitramfs\fR
+devices\&.
+.RE
+.PP
+\fIcheck\fR=<check>
+.RS 4
+Check the content of the target device by a suitable program; if the check fails, the device is removed\&. If a program is provided as an argument, it is run, giving the decrypted volume (target device) as first argument, and the value of the checkargs option as second argument\&. Cryptdisks/cryptroot searches for the given program in
+/lib/cryptsetup/checks/
+first, but full path to program is supported as well\&.
+.sp
+Default is set in
+/etc/default/cryptdisks
+(blkid)\&.
+.sp
+This option is specific to the Debian
+\fIcrypttab\fR
+format\&. It\*(Aqs not supported by
+\fIsystemd\fR\&.
+.RE
+.PP
+\fIcheckargs\fR=<arguments>
+.RS 4
+Give <arguments> as the second argument to the check script\&. See the CHECKSCRIPTS section for more information\&.
+.sp
+This option is specific to the Debian \fIcrypttab\fR format\&. It\*(Aqs not supported by \fIsystemd\fR\&.
+.RE
+.PP
+\fIinitramfs\fR
+.RS 4
+The initramfs hook processes the root device, any resume devices and any devices with the
+\fIinitramfs\fR
+option set\&. These devices are processed within the initramfs stage of boot\&. As an example, that allows the use of remote unlocking using dropbear\&.
+.sp
+This option is specific to the Debian
+\fIcrypttab\fR
+format\&. It\*(Aqs not supported by
+\fIsystemd\fR\&.
+.RE
+.PP
+\fInoearly\fR
+.RS 4
+The cryptsetup init scripts are invoked twice during the boot process \- once before lvm, raid, etc\&. are started and once again after that\&. Sometimes you need to start your encrypted disks in a special order\&. With this option the device is ignored during the first invocation of the cryptsetup init scripts\&.
+.sp
+This option is ignored for
+\fIinitramfs\fR
+devices and specific to the Debian
+\fIcrypttab\fR
+format\&. It\*(Aqs not supported by
+\fIsystemd\fR\&.
+.RE
+.PP
+\fInoauto\fR
+.RS 4
+Entirely ignore the device at the boot process\&. It\*(Aqs still possible to map the device manually using cryptdisks_start\&.
+.sp
+This option is ignored for
+\fIinitramfs\fR
+devices and specific to the Debian
+\fIcrypttab\fR
+format\&. It\*(Aqs not supported by
+\fIsystemd\fR\&.
+.RE
+.PP
+\fIloud\fR
+.RS 4
+Be loud\&. Print warnings if a device does not exist\&. This option overwrites the option
+\fIloud\fR\&.
+.sp
+This option is ignored for
+\fIinitramfs\fR
+devices and specific to the Debian
+\fIcrypttab\fR
+format\&. It\*(Aqs not supported by
+\fIsystemd\fR\&.
+.RE
+.PP
+\fIquiet\fR
+.RS 4
+Be quiet\&. Don\*(Aqt print warnings if a device does not exist\&. This option overwrites the option
+\fIloud\fR\&.
+.sp
+This option is ignored for
+\fIinitramfs\fR
+devices and specific to the Debian
+\fIcrypttab\fR
+format\&. It\*(Aqs not supported by
+\fIsystemd\fR\&.
+.RE
+.PP
+\fIkeyscript\fR=<path>
+.RS 4
+The executable at the indicated path is executed with the value of the
+\fIthird field\fR
+as only argument\&. The keyscript output is passed to cryptsetup as decyption key\&. When used in initramfs, the executable either needs to be self\-contained (i\&.e\&. does\*(Aqnt rely on any external program which is not present in the initramfs environment) or the dependencies have to added to the initramfs image by other means\&.
+.sp
+LIMITATIONS: All binaries and files on which the keyscript depends must be available at the time of execution\&. Special care needs to be taken for encrypted filesystems like /usr or /var\&. As an example, unlocking encrypted /usr must not depend on binaries from /usr/(s)bin\&.
+.sp
+This option is specific to the Debian
+\fIcrypttab\fR
+format\&. It\*(Aqs not supported by
+\fIsystemd\fR\&.
+.sp
+WARNING: With systemd as init system, this option might be ignored\&. At the time this is written (December 2016), the systemd cryptsetup helper doesn\*(Aqt support the keyscript option to /etc/crypttab\&. For the time being, the only option to use keyscripts along with systemd is to force processing of the corresponding crypto devices in the initramfs\&. See the \*(Aqinitramfs\*(Aq option for further information\&.
+.sp
+All fields of the appropriate crypttab entry are available to the keyscript as exported environment variables:
+.PP
+CRYPTTAB_NAME
+.RS 4
+The target name
+.RE
+.PP
+CRYPTTAB_SOURCE
+.RS 4
+The source device
+.RE
+.PP
+CRYPTTAB_KEY
+.RS 4
+The key file
+.RE
+.PP
+CRYPTTAB_OPTIONS
+.RS 4
+A list of exported crypttab options
+.RE
+.PP
+CRYPTTAB_OPTION_<option>
+.RS 4
+The value of the appropriate crypttab option, with value set to \*(Aqyes\*(Aq in case the option is merely a flag\&. For option aliases, such as \*(Aqreadonly\*(Aq and \*(Aqread\-only\*(Aq, the variable name refers to the first alternative listed (thus \*(AqCRYPTTAB_OPTION_readonly\*(Aq in that case)\&. If the crypttab option name contains \*(Aq\-\*(Aq characters, then they are replaced with \*(Aq_\*(Aq in the exported variable name\&. For instance, the value of the \*(AqCRYPTTAB_OPTION_keyfile_offset\*(Aq environment variable is set to the value of the \*(Aqkeyfile\-offset\*(Aq crypttab option\&.
+.RE
+.PP
+CRYPTTAB_TRIED
+.RS 4
+Number of previous tries since start of cryptdisks (counts until maximum number of tries is reached)\&.
+.RE
+.sp
+.RE
+.SH "CHECKSCRIPTS"
+.PP
+\fIblkid\fR
+.RS 4
+Checks for any known filesystem\&. Supports a filesystem type as argument via <checkargs>:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+no checkargs \- succeeds if any valid filesystem is found on the device\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+"none" \- succeeds if no valid filesystem is found on the device\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+"ext4" [or another filesystem type like xfs, swap, crypto_LUKS, \&.\&.\&.] \- succeeds if ext4 filesystem is found on the device\&.
+.RE
+.RE
+.PP
+\fIun_blkid\fR
+.RS 4
+Checks for no known filesystem\&. Supports a filesystem type as argument via <checkargs>:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+no checkargs \- succeeds if no valid filesystem is found on the device\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+"ext4" [or another filesystem type like xfs, swap, crypto_LUKS, \&.\&.\&.] \- succeeds if no ext4 filesystem is found on the device\&.
+.RE
+.RE
+.SH "EXAMPLES"
+.PP
+.if n \{\
+.RS 4
+.\}
+.nf
+# Encrypted swap device
+cswap /dev/sda6 /dev/urandom cipher=aes\-xts\-plain64,size=256,hash=sha1,swap
+
+# Encrypted LUKS disk with interactive password, identified by its UUID, discard enabled
+cdisk0 UUID=12345678\-9abc\-def012345\-6789abcdef01 none luks,discard
+
+# Encrypted TCRYPT disk with interactive password, discard enabled
+tdisk0 /dev/sr0 none tcrypt,discard
+
+# Encrypted ext4 disk with interactive password, discard enabled
+# \- retry 5 times if the check fails
+cdisk1 /dev/sda2 none discard,cipher=aes\-xts\-plain64,size=256,hash=sha1,checkargs=ext4,tries=5
+
+# Encrypted disk with interactive password, discard enabled
+# \- use a nondefault check script
+# \- no retries
+cdisk2 /dev/sdc1 none discard,cipher=aes\-xts\-plain64,size=256,hash=sha1,check=customscript,tries=1
+
+# Encrypted disk with interactive password, discard enabled
+# \- Twofish as the cipher, RIPEMD\-160 as the hash
+cdisk3 /dev/sda3 none dscard,cipher=twofish,size=256,hash=ripemd160
+   
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.SH "ENVIRONMENT"
+.PP
+\fICRYPTDISKS_ENABLE\fR
+.RS 4
+Set to
+\fIyes\fR
+to run cryptdisks initscripts at startup\&. Set to
+\fIno\fR
+to disable cryptdisks initscripts\&. Default is
+\fIyes\fR\&.
+.RE
+.PP
+\fICRYPTDISKS_MOUNT\fR
+.RS 4
+Specifies the mountpoints that are mounted before cryptdisks is invoked\&. Takes mountpoints configured in /etc/fstab as arguments\&. Separate mountpoints by space\&. This is useful for keys on removable devices, such as cdrom, usbstick, flashcard, etc\&. Default is unset\&.
+.RE
+.PP
+\fICRYPTDISKS_CHECK\fR
+.RS 4
+Specifies the default checkscript to be run against the target device, after cryptdisks has been invoked\&. The target device is passed as the first and only argument to the checkscript\&. Takes effect if the
+\fIcheck\fR
+option is given in crypttab with no value\&. See documentation for
+\fIcheck\fR
+option above for more information\&.
+.RE
+.SH "KNOWN UPGRADE ISSUES"
+.sp
+The upstream defaults for encryption cipher, hash and keysize have changed several times in the past, and they\*(Aqre expected to change again in future, for example if security issues arise\&. On LUKS devices, the used settings are stored in the LUKS header, and thus don\*(Aqt need to be configured in /etc/crypttab\&. For plain dm\-crypt devices, no information about used cipher, hash and keysize are available at all\&. Therefore we strongly suggest to configure the cipher, hash and keysize in /etc/crypttab for plain dm\-crypt devices, even if they match the current default\&.
+.SH "SEE ALSO"
+\fBcryptsetup\fR(8), \fBcryptdisks_start\fR(8), \fBcryptdisks_stop\fR(8), /usr/share/doc/cryptsetup\-initramfs/README\&.initramfs\&.gz
+.SH "AUTHOR"
+.sp
+This manual page was originally written by Bastian Kleineidam <calvin@debian\&.org> for the Debian distribution of cryptsetup\&. It has been further improved by Michael Gebetsroither <michael\&.geb@gmx\&.at>, David Härdeman <david@hardeman\&.nu> and Jonas Meurer <jonas@freesources\&.org>\&.

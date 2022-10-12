@@ -1,0 +1,99 @@
+.\"						Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH fsck.reiser4 8 "05 February, 2004" reiser4progs "reiser4progs manual"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+fsck.reiser4 \- the program for checking and repairing reiser4 filesystem.
+.SH SYNOPSIS
+.B fsck.reiser4
+[ options ] FILE
+.SH DESCRIPTION
+.B fsck.reiser4
+is reiser4 filesystem check and repair program.
+.SH CHECK OPTIONS
+.TP
+.B --check
+the default action checks the consistency and reports, but does not repair any corruption that it finds. 
+This option may be used on a read-only file system mount.
+.TP
+.B --fix
+fixes minor corruptions that do not require rebuilding;
+sets up correct values of bytes unsupported by kernel in the case of transparent compression.
+.TP
+.B --build-sb
+fixes all severe corruptions in super blocks, rebuilds super blocks from scratch if needed.
+.TP
+.B --build-fs
+fixes all severe fs corruptions, except super block ones; rebuilds reiser4 filesystem from the scratch if needed.
+.TP
+.B -L, --logfile
+forces fsck to report any corruption it finds to the specified logfile rather then on stderr.
+.TP
+.B -n, --no-log
+prevents fsck from reporting any kind of corruption.
+.TP
+.B -a, --auto
+automatically checks the file system without any questions.
+.TP
+.B -q, --quiet
+supresses gauges.
+.TP
+.B -r
+ignored.
+.SH PLUGIN OPTIONS
+.TP
+.B --print-profile
+prints the plugin profile. This is the set of default plugins used for all
+parts of a filesystem -- format, nodes, files, directories, hashes, etc. If
+--override is specified, then prints modified plugins.
+.TP
+.B -l, --print-plugins
+prints all plugins libreiser4 know about.
+.TP
+.B -o, --override TYPE=PLUGIN, ...
+overrides the default plugin of the type "TYPE" by the plugin "PLUGIN"
+in the plugin profile.
+.SH COMMON OPTIONS
+.TP
+.B -V, --version
+prints program version
+.TP
+.B -?, -h, --help
+prints program help
+.TP
+.B -q, --quiet
+suppress messages.
+.TP
+.B -y, --yes
+assumes an answer 'yes' to all questions.
+.TP
+.B -f, --force
+forces fsck to use whole disk, not block device or mounted partition.
+.TP
+.B -p, --preen
+automatically repair minor corruptions on the filesystem.
+.TP
+.B -c, --cache N
+tunes number of nodes in the libreiser4 tree buffer cache
+.RS
+.SH REPORTING BUGS
+Report bugs to <reiserfs-devel@vger.kernel.org>
+.SH SEE ALSO
+.BR debugfs.reiser4(8),
+.BR mkfs.reiser4(8),
+.BR measurefs.reiser4(8)
+.SH AUTHOR
+This manual page was written by Vitaly Fertman <vitaly@namesys.com>

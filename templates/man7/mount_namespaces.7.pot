@@ -1,0 +1,2562 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-09-10 15:39+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "MOUNT_NAMESPACES"
+msgstr ""
+
+#. type: TH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "2021-08-27"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "mount_namespaces - overview of Linux mount namespaces"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "For an overview of namespaces, see B<namespaces>(7)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Mount namespaces provide isolation of the list of mounts seen by the "
+"processes in each namespace instance.  Thus, the processes in each of the "
+"mount namespace instances will see distinct single-directory hierarchies."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The views provided by the I</proc/[pid]/mounts>, I</proc/[pid]/mountinfo>, "
+"and I</proc/[pid]/mountstats> files (all described in B<proc>(5))  "
+"correspond to the mount namespace in which the process with the PID I<[pid]> "
+"resides.  (All of the processes that reside in the same mount namespace will "
+"see the same view in these files.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"A new mount namespace is created using either B<clone>(2)  or B<unshare>(2)  "
+"with the B<CLONE_NEWNS> flag.  When a new mount namespace is created, its "
+"mount list is initialized as follows:"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "*"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"If the namespace is created using B<clone>(2), the mount list of the child's "
+"namespace is a copy of the mount list in the parent process's mount "
+"namespace."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"If the namespace is created using B<unshare>(2), the mount list of the new "
+"namespace is a copy of the mount list in the caller's previous mount "
+"namespace."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Subsequent modifications to the mount list (B<mount>(2)  and B<umount>(2))  "
+"in either mount namespace will not (by default) affect the mount list seen "
+"in the other namespace (but see the following discussion of shared subtrees)."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SHARED SUBTREES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"After the implementation of mount namespaces was completed, experience "
+"showed that the isolation that they provided was, in some cases, too great.  "
+"For example, in order to make a newly loaded optical disk available in all "
+"mount namespaces, a mount operation was required in each namespace.  For "
+"this use case, and others, the shared subtree feature was introduced in "
+"Linux 2.6.15.  This feature allows for automatic, controlled propagation of "
+"mount and unmount I<events> between namespaces (or, more precisely, between "
+"the mounts that are members of a I<peer group> that are propagating events "
+"to one another)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Each mount is marked (via B<mount>(2))  as having one of the following "
+"I<propagation types>:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<MS_SHARED>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"This mount shares events with members of a peer group.  Mount and unmount "
+"events immediately under this mount will propagate to the other mounts that "
+"are members of the peer group.  I<Propagation> here means that the same "
+"mount or unmount will automatically occur under all of the other mounts in "
+"the peer group.  Conversely, mount and unmount events that take place under "
+"peer mounts will propagate to this mount."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<MS_PRIVATE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"This mount is private; it does not have a peer group.  Mount and unmount "
+"events do not propagate into or out of this mount."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<MS_SLAVE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Mount and unmount events propagate into this mount from a (master) shared "
+"peer group.  Mount and unmount events under this mount do not propagate to "
+"any peer."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Note that a mount can be the slave of another peer group while at the same "
+"time sharing mount and unmount events with a peer group of which it is a "
+"member.  (More precisely, one peer group can be the slave of another peer "
+"group.)"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "B<MS_UNBINDABLE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This is like a private mount, and in addition this mount can't be bind "
+"mounted.  Attempts to bind mount this mount (B<mount>(2)  with the "
+"B<MS_BIND> flag) will fail."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"When a recursive bind mount (B<mount>(2)  with the B<MS_BIND> and B<MS_REC> "
+"flags) is performed on a directory subtree, any bind mounts within the "
+"subtree are automatically pruned (i.e., not replicated)  when replicating "
+"that subtree to produce the target subtree."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"For a discussion of the propagation type assigned to a new mount, see NOTES."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"The propagation type is a per-mount-point setting; some mounts may be marked "
+"as shared (with each shared mount being a member of a distinct peer group), "
+"while others are private (or slaved or unbindable)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Note that a mount's propagation type determines whether mounts and unmounts "
+"of mounts I<immediately under> the mount are propagated.  Thus, the "
+"propagation type does not affect propagation of events for grandchildren and "
+"further removed descendant mounts.  What happens if the mount itself is "
+"unmounted is determined by the propagation type that is in effect for the "
+"I<parent> of the mount."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Members are added to a I<peer group> when a mount is marked as shared and "
+"either:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"the mount is replicated during the creation of a new mount namespace; or"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "a new bind mount is created from the mount."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"In both of these cases, the new mount joins the peer group of which the "
+"existing mount is a member."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"A new peer group is also created when a child mount is created under an "
+"existing mount that is marked as shared.  In this case, the new child mount "
+"is also marked as shared and the resulting peer group consists of all the "
+"mounts that are replicated under the peers of parent mounts."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"A mount ceases to be a member of a peer group when either the mount is "
+"explicitly unmounted, or when the mount is implicitly unmounted because a "
+"mount namespace is removed (because it has no more member processes)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"The propagation type of the mounts in a mount namespace can be discovered "
+"via the \"optional fields\" exposed in I</proc/[pid]/mountinfo>.  (See "
+"B<proc>(5)  for details of this file.)  The following tags can appear in the "
+"optional fields for a record in that file:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "I<shared:X>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"This mount is shared in peer group I<X>.  Each peer group has a unique ID "
+"that is automatically generated by the kernel, and all mounts in the same "
+"peer group will show the same ID.  (These IDs are assigned starting from the "
+"value 1, and may be recycled when a peer group ceases to have any members.)"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "I<master:X>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "This mount is a slave to shared peer group I<X>."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "I<propagate_from:X> (since Linux 2.6.26)"
+msgstr ""
+
+#.  commit 97e7e0f71d6d948c25f11f0a33878d9356d9579e
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"This mount is a slave and receives propagation from shared peer group I<X>.  "
+"This tag will always appear in conjunction with a I<master:X> tag.  Here, "
+"I<X> is the closest dominant peer group under the process's root directory.  "
+"If I<X> is the immediate master of the mount, or if there is no dominant "
+"peer group under the same root, then only the I<master:X> field is present "
+"and not the I<propagate_from:X> field.  For further details, see below."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "I<unbindable>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "This is an unbindable mount."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "If none of the above tags is present, then this is a private mount."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "MS_SHARED and MS_PRIVATE example"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Suppose that on a terminal in the initial mount namespace, we mark one mount "
+"as shared and another as private, and then view the mounts in I</proc/self/"
+"mountinfo>:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"sh1# B<mount --make-shared /mntS>\n"
+"sh1# B<mount --make-private /mntP>\n"
+"sh1# B<cat /proc/self/mountinfo | grep \\(aq/mnt\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"77 61 8:17 / /mntS rw,relatime shared:1\n"
+"83 61 8:15 / /mntP rw,relatime\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"From the I</proc/self/mountinfo> output, we see that I</mntS> is a shared "
+"mount in peer group 1, and that I</mntP> has no optional tags, indicating "
+"that it is a private mount.  The first two fields in each record in this "
+"file are the unique ID for this mount, and the mount ID of the parent "
+"mount.  We can further inspect this file to see that the parent mount of I</"
+"mntS> and I</mntP> is the root directory, I</>, which is mounted as private:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"sh1# B<cat /proc/self/mountinfo | awk \\(aq$1 == 61\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"61 0 8:2 / / rw,relatime\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"On a second terminal, we create a new mount namespace where we run a second "
+"shell and inspect the mounts:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<PS1=\\(aqsh2# \\(aq sudo unshare -m --propagation unchanged sh>\n"
+"sh2# B<cat /proc/self/mountinfo | grep \\(aq/mnt\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"222 145 8:17 / /mntS rw,relatime shared:1\n"
+"225 145 8:15 / /mntP rw,relatime\n"
+msgstr ""
+
+#.  Since util-linux 2.27
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"The new mount namespace received a copy of the initial mount namespace's "
+"mounts.  These new mounts maintain the same propagation types, but have "
+"unique mount IDs.  (The I<--propagation\\ unchanged> option prevents "
+"B<unshare>(1)  from marking all mounts as private when creating a new mount "
+"namespace, which it does by default.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"In the second terminal, we then create submounts under each of I</mntS> and "
+"I</mntP> and inspect the set-up:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"sh2# B<mkdir /mntS/a>\n"
+"sh2# B<mount /dev/sdb6 /mntS/a>\n"
+"sh2# B<mkdir /mntP/b>\n"
+"sh2# B<mount /dev/sdb7 /mntP/b>\n"
+"sh2# B<cat /proc/self/mountinfo | grep \\(aq/mnt\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"222 145 8:17 / /mntS rw,relatime shared:1\n"
+"225 145 8:15 / /mntP rw,relatime\n"
+"178 222 8:22 / /mntS/a rw,relatime shared:2\n"
+"230 225 8:23 / /mntP/b rw,relatime\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"From the above, it can be seen that I</mntS/a> was created as shared "
+"(inheriting this setting from its parent mount) and I</mntP/b> was created "
+"as a private mount."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Returning to the first terminal and inspecting the set-up, we see that the "
+"new mount created under the shared mount I</mntS> propagated to its peer "
+"mount (in the initial mount namespace), but the new mount created under the "
+"private mount I</mntP> did not propagate:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"sh1# B<cat /proc/self/mountinfo | grep \\(aq/mnt\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"77 61 8:17 / /mntS rw,relatime shared:1\n"
+"83 61 8:15 / /mntP rw,relatime\n"
+"179 77 8:22 / /mntS/a rw,relatime shared:2\n"
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "MS_SLAVE example"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Making a mount a slave allows it to receive propagated mount and unmount "
+"events from a master shared peer group, while preventing it from propagating "
+"events to that master.  This is useful if we want to (say) receive a mount "
+"event when an optical disk is mounted in the master shared peer group (in "
+"another mount namespace), but want to prevent mount and unmount events under "
+"the slave mount from having side effects in other namespaces."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"We can demonstrate the effect of slaving by first marking two mounts as "
+"shared in the initial mount namespace:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"sh1# B<mount --make-shared /mntX>\n"
+"sh1# B<mount --make-shared /mntY>\n"
+"sh1# B<cat /proc/self/mountinfo | grep \\(aq/mnt\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"132 83 8:23 / /mntX rw,relatime shared:1\n"
+"133 83 8:22 / /mntY rw,relatime shared:2\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"On a second terminal, we create a new mount namespace and inspect the mounts:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"sh2# B<unshare -m --propagation unchanged sh>\n"
+"sh2# B<cat /proc/self/mountinfo | grep \\(aq/mnt\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"168 167 8:23 / /mntX rw,relatime shared:1\n"
+"169 167 8:22 / /mntY rw,relatime shared:2\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "In the new mount namespace, we then mark one of the mounts as a slave:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"sh2# B<mount --make-slave /mntY>\n"
+"sh2# B<cat /proc/self/mountinfo | grep \\(aq/mnt\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"168 167 8:23 / /mntX rw,relatime shared:1\n"
+"169 167 8:22 / /mntY rw,relatime master:2\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"From the above output, we see that I</mntY> is now a slave mount that is "
+"receiving propagation events from the shared peer group with the ID 2."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Continuing in the new namespace, we create submounts under each of I</mntX> "
+"and I</mntY>:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"sh2# B<mkdir /mntX/a>\n"
+"sh2# B<mount /dev/sda3 /mntX/a>\n"
+"sh2# B<mkdir /mntY/b>\n"
+"sh2# B<mount /dev/sda5 /mntY/b>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"When we inspect the state of the mounts in the new mount namespace, we see "
+"that I</mntX/a> was created as a new shared mount (inheriting the \"shared\" "
+"setting from its parent mount) and I</mntY/b> was created as a private mount:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"sh2# B<cat /proc/self/mountinfo | grep \\(aq/mnt\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"168 167 8:23 / /mntX rw,relatime shared:1\n"
+"169 167 8:22 / /mntY rw,relatime master:2\n"
+"173 168 8:3 / /mntX/a rw,relatime shared:3\n"
+"175 169 8:5 / /mntY/b rw,relatime\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Returning to the first terminal (in the initial mount namespace), we see "
+"that the mount I</mntX/a> propagated to the peer (the shared I</mntX>), but "
+"the mount I</mntY/b> was not propagated:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"sh1# B<cat /proc/self/mountinfo | grep \\(aq/mnt\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"132 83 8:23 / /mntX rw,relatime shared:1\n"
+"133 83 8:22 / /mntY rw,relatime shared:2\n"
+"174 132 8:3 / /mntX/a rw,relatime shared:3\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Now we create a new mount under I</mntY> in the first shell:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"sh1# B<mkdir /mntY/c>\n"
+"sh1# B<mount /dev/sda1 /mntY/c>\n"
+"sh1# B<cat /proc/self/mountinfo | grep \\(aq/mnt\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"132 83 8:23 / /mntX rw,relatime shared:1\n"
+"133 83 8:22 / /mntY rw,relatime shared:2\n"
+"174 132 8:3 / /mntX/a rw,relatime shared:3\n"
+"178 133 8:1 / /mntY/c rw,relatime shared:4\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"When we examine the mounts in the second mount namespace, we see that in "
+"this case the new mount has been propagated to the slave mount, and that the "
+"new mount is itself a slave mount (to peer group 4):"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"sh2# B<cat /proc/self/mountinfo | grep \\(aq/mnt\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"168 167 8:23 / /mntX rw,relatime shared:1\n"
+"169 167 8:22 / /mntY rw,relatime master:2\n"
+"173 168 8:3 / /mntX/a rw,relatime shared:3\n"
+"175 169 8:5 / /mntY/b rw,relatime\n"
+"179 169 8:1 / /mntY/c rw,relatime master:4\n"
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "MS_UNBINDABLE example"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"One of the primary purposes of unbindable mounts is to avoid the \"mount "
+"explosion\" problem when repeatedly performing bind mounts of a higher-level "
+"subtree at a lower-level mount.  The problem is illustrated by the following "
+"shell session."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Suppose we have a system with the following mounts:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<mount | awk \\(aq{print $1, $2, $3}\\(aq>\n"
+"/dev/sda1 on /\n"
+"/dev/sdb6 on /mntX\n"
+"/dev/sdb7 on /mntY\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Suppose furthermore that we wish to recursively bind mount the root "
+"directory under several users' home directories.  We do this for the first "
+"user, and inspect the mounts:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<mount --rbind / /home/cecilia/>\n"
+"# B<mount | awk \\(aq{print $1, $2, $3}\\(aq>\n"
+"/dev/sda1 on /\n"
+"/dev/sdb6 on /mntX\n"
+"/dev/sdb7 on /mntY\n"
+"/dev/sda1 on /home/cecilia\n"
+"/dev/sdb6 on /home/cecilia/mntX\n"
+"/dev/sdb7 on /home/cecilia/mntY\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"When we repeat this operation for the second user, we start to see the "
+"explosion problem:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<mount --rbind / /home/henry>\n"
+"# B<mount | awk \\(aq{print $1, $2, $3}\\(aq>\n"
+"/dev/sda1 on /\n"
+"/dev/sdb6 on /mntX\n"
+"/dev/sdb7 on /mntY\n"
+"/dev/sda1 on /home/cecilia\n"
+"/dev/sdb6 on /home/cecilia/mntX\n"
+"/dev/sdb7 on /home/cecilia/mntY\n"
+"/dev/sda1 on /home/henry\n"
+"/dev/sdb6 on /home/henry/mntX\n"
+"/dev/sdb7 on /home/henry/mntY\n"
+"/dev/sda1 on /home/henry/home/cecilia\n"
+"/dev/sdb6 on /home/henry/home/cecilia/mntX\n"
+"/dev/sdb7 on /home/henry/home/cecilia/mntY\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Under I</home/henry>, we have not only recursively added the I</mntX> and I</"
+"mntY> mounts, but also the recursive mounts of those directories under I</"
+"home/cecilia> that were created in the previous step.  Upon repeating the "
+"step for a third user, it becomes obvious that the explosion is exponential "
+"in nature:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<mount --rbind / /home/otto>\n"
+"# B<mount | awk \\(aq{print $1, $2, $3}\\(aq>\n"
+"/dev/sda1 on /\n"
+"/dev/sdb6 on /mntX\n"
+"/dev/sdb7 on /mntY\n"
+"/dev/sda1 on /home/cecilia\n"
+"/dev/sdb6 on /home/cecilia/mntX\n"
+"/dev/sdb7 on /home/cecilia/mntY\n"
+"/dev/sda1 on /home/henry\n"
+"/dev/sdb6 on /home/henry/mntX\n"
+"/dev/sdb7 on /home/henry/mntY\n"
+"/dev/sda1 on /home/henry/home/cecilia\n"
+"/dev/sdb6 on /home/henry/home/cecilia/mntX\n"
+"/dev/sdb7 on /home/henry/home/cecilia/mntY\n"
+"/dev/sda1 on /home/otto\n"
+"/dev/sdb6 on /home/otto/mntX\n"
+"/dev/sdb7 on /home/otto/mntY\n"
+"/dev/sda1 on /home/otto/home/cecilia\n"
+"/dev/sdb6 on /home/otto/home/cecilia/mntX\n"
+"/dev/sdb7 on /home/otto/home/cecilia/mntY\n"
+"/dev/sda1 on /home/otto/home/henry\n"
+"/dev/sdb6 on /home/otto/home/henry/mntX\n"
+"/dev/sdb7 on /home/otto/home/henry/mntY\n"
+"/dev/sda1 on /home/otto/home/henry/home/cecilia\n"
+"/dev/sdb6 on /home/otto/home/henry/home/cecilia/mntX\n"
+"/dev/sdb7 on /home/otto/home/henry/home/cecilia/mntY\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The mount explosion problem in the above scenario can be avoided by making "
+"each of the new mounts unbindable.  The effect of doing this is that "
+"recursive mounts of the root directory will not replicate the unbindable "
+"mounts.  We make such a mount for the first user:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "# B<mount --rbind --make-unbindable / /home/cecilia>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Before going further, we show that unbindable mounts are indeed unbindable:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<mkdir /mntZ>\n"
+"# B<mount --bind /home/cecilia /mntZ>\n"
+"mount: wrong fs type, bad option, bad superblock on /home/cecilia,\n"
+"       missing codepage or helper program, or other error\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"       In some cases useful info is found in syslog - try\n"
+"       dmesg | tail or so.\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Now we create unbindable recursive bind mounts for the other two users:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<mount --rbind --make-unbindable / /home/henry>\n"
+"# B<mount --rbind --make-unbindable / /home/otto>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Upon examining the list of mounts, we see there has been no explosion of "
+"mounts, because the unbindable mounts were not replicated under each user's "
+"directory:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<mount | awk \\(aq{print $1, $2, $3}\\(aq>\n"
+"/dev/sda1 on /\n"
+"/dev/sdb6 on /mntX\n"
+"/dev/sdb7 on /mntY\n"
+"/dev/sda1 on /home/cecilia\n"
+"/dev/sdb6 on /home/cecilia/mntX\n"
+"/dev/sdb7 on /home/cecilia/mntY\n"
+"/dev/sda1 on /home/henry\n"
+"/dev/sdb6 on /home/henry/mntX\n"
+"/dev/sdb7 on /home/henry/mntY\n"
+"/dev/sda1 on /home/otto\n"
+"/dev/sdb6 on /home/otto/mntX\n"
+"/dev/sdb7 on /home/otto/mntY\n"
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Propagation type transitions"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"The following table shows the effect that applying a new propagation type (i."
+"e., I<mount --make-xxxx>)  has on the existing propagation type of a mount.  "
+"The rows correspond to existing propagation types, and the columns are the "
+"new propagation settings.  For reasons of space, \"private\" is abbreviated "
+"as \"priv\" and \"unbindable\" as \"unbind\"."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "make-shared"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "make-slave"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "make-priv"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "make-unbind"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "_"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "shared"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "slave/priv [1]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "priv"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "unbind"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "slave"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "slave+shared"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "slave [2]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "private"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "priv [2]"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "unbindable"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "unbind [2]"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Note the following details to the table:"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "[1]"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"If a shared mount is the only mount in its peer group, making it a slave "
+"automatically makes it private."
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "[2]"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Slaving a nonshared mount has no effect on the mount."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Bind (MS_BIND) semantics"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Suppose that the following command is performed:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "mount --bind A/a B/b\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Here, I<A> is the source mount, I<B> is the destination mount, I<a> is a "
+"subdirectory path under the mount point I<A>, and I<b> is a subdirectory "
+"path under the mount point I<B>.  The propagation type of the resulting "
+"mount, I<B/b>, depends on the propagation types of the mounts I<A> and I<B>, "
+"and is summarized in the following table."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "source(A)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "dest(B)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "invalid"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "nonshared"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Note that a recursive bind of a subtree follows the same semantics as for a "
+"bind operation on each mount in the subtree.  (Unbindable mounts are "
+"automatically pruned at the target mount point.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"For further details, see I<Documentation/filesystems/sharedsubtree.txt> in "
+"the kernel source tree."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Move (MS_MOVE) semantics"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "mount --move A B/b\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Here, I<A> is the source mount, I<B> is the destination mount, and I<b> is a "
+"subdirectory path under the mount point I<B>.  The propagation type of the "
+"resulting mount, I<B/b>, depends on the propagation types of the mounts I<A> "
+"and I<B>, and is summarized in the following table."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Note: moving a mount that resides under a shared mount is invalid."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Mount semantics"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Suppose that we use the following command to create a mount:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "mount device B/b\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Here, I<B> is the destination mount, and I<b> is a subdirectory path under "
+"the mount point I<B>.  The propagation type of the resulting mount, I<B/b>, "
+"follows the same rules as for a bind mount, where the propagation type of "
+"the source mount is considered always to be private."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Unmount semantics"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "Suppose that we use the following command to tear down a mount:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "unmount A\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Here, I<A> is a mount on I<B/b>, where I<B> is the parent mount and I<b> is "
+"a subdirectory path under the mount point I<B>.  If B<B> is shared, then all "
+"most-recently-mounted mounts at I<b> on mounts that receive propagation from "
+"mount I<B> and do not have submounts under them are unmounted."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "The /proc/[pid]/mountinfo propagate_from tag"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The I<propagate_from:X> tag is shown in the optional fields of a I</proc/"
+"[pid]/mountinfo> record in cases where a process can't see a slave's "
+"immediate master (i.e., the pathname of the master is not reachable from the "
+"filesystem root directory)  and so cannot determine the chain of propagation "
+"between the mounts it can see."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"In the following example, we first create a two-link master-slave chain "
+"between the mounts I</mnt>, I</tmp/etc>, and I</mnt/tmp/etc>.  Then the "
+"B<chroot>(1)  command is used to make the I</tmp/etc> mount point "
+"unreachable from the root directory, creating a situation where the master "
+"of I</mnt/tmp/etc> is not reachable from the (new) root directory of the "
+"process."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"First, we bind mount the root directory onto I</mnt> and then bind mount I</"
+"proc> at I</mnt/proc> so that after the later B<chroot>(1)  the B<proc>(5)  "
+"filesystem remains visible at the correct location in the chroot-ed "
+"environment."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<mkdir -p /mnt/proc>\n"
+"# B<mount --bind / /mnt>\n"
+"# B<mount --bind /proc /mnt/proc>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Next, we ensure that the I</mnt> mount is a shared mount in a new peer group "
+"(with no peers):"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<mount --make-private /mnt>  # Isolate from any previous peer group\n"
+"# B<mount --make-shared /mnt>\n"
+"# B<cat /proc/self/mountinfo | grep \\(aq/mnt\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"239 61 8:2 / /mnt ... shared:102\n"
+"248 239 0:4 / /mnt/proc ... shared:5\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Next, we bind mount I</mnt/etc> onto I</tmp/etc>:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<mkdir -p /tmp/etc>\n"
+"# B<mount --bind /mnt/etc /tmp/etc>\n"
+"# B<cat /proc/self/mountinfo | egrep \\(aq/mnt|/tmp/\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"239 61 8:2 / /mnt ... shared:102\n"
+"248 239 0:4 / /mnt/proc ... shared:5\n"
+"267 40 8:2 /etc /tmp/etc ... shared:102\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Initially, these two mounts are in the same peer group, but we then make the "
+"I</tmp/etc> a slave of I</mnt/etc>, and then make I</tmp/etc> shared as "
+"well, so that it can propagate events to the next slave in the chain:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<mount --make-slave /tmp/etc>\n"
+"# B<mount --make-shared /tmp/etc>\n"
+"# B<cat /proc/self/mountinfo | egrep \\(aq/mnt|/tmp/\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"239 61 8:2 / /mnt ... shared:102\n"
+"248 239 0:4 / /mnt/proc ... shared:5\n"
+"267 40 8:2 /etc /tmp/etc ... shared:105 master:102\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Then we bind mount I</tmp/etc> onto I</mnt/tmp/etc>.  Again, the two mounts "
+"are initially in the same peer group, but we then make I</mnt/tmp/etc> a "
+"slave of I</tmp/etc>:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<mkdir -p /mnt/tmp/etc>\n"
+"# B<mount --bind /tmp/etc /mnt/tmp/etc>\n"
+"# B<mount --make-slave /mnt/tmp/etc>\n"
+"# B<cat /proc/self/mountinfo | egrep \\(aq/mnt|/tmp/\\(aq | sed \\(aqs/ - .*//\\(aq>\n"
+"239 61 8:2 / /mnt ... shared:102\n"
+"248 239 0:4 / /mnt/proc ... shared:5\n"
+"267 40 8:2 /etc /tmp/etc ... shared:105 master:102\n"
+"273 239 8:2 /etc /mnt/tmp/etc ... master:105\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"From the above, we see that I</mnt> is the master of the slave I</tmp/etc>, "
+"which in turn is the master of the slave I</mnt/tmp/etc>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"We then B<chroot>(1)  to the I</mnt> directory, which renders the mount with "
+"ID 267 unreachable from the (new) root directory:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "# B<chroot /mnt>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"When we examine the state of the mounts inside the chroot-ed environment, we "
+"see the following:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<cat /proc/self/mountinfo | sed \\(aqs/ - .*//\\(aq>\n"
+"239 61 8:2 / / ... shared:102\n"
+"248 239 0:4 / /proc ... shared:5\n"
+"273 239 8:2 /etc /tmp/etc ... master:105 propagate_from:102\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"Above, we see that the mount with ID 273 is a slave whose master is the peer "
+"group 105.  The mount point for that master is unreachable, and so a "
+"I<propagate_from> tag is displayed, indicating that the closest dominant "
+"peer group (i.e., the nearest reachable mount in the slave chain)  is the "
+"peer group with the ID 102 (corresponding to the I</mnt> mount point before "
+"the B<chroot>(1)  was performed."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "VERSIONS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Mount namespaces first appeared in Linux 2.4.19."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "CONFORMING TO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Namespaces are a Linux-specific feature."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"The propagation type assigned to a new mount depends on the propagation type "
+"of the parent mount.  If the mount has a parent (i.e., it is a non-root "
+"mount point) and the propagation type of the parent is B<MS_SHARED>, then "
+"the propagation type of the new mount is also B<MS_SHARED>.  Otherwise, the "
+"propagation type of the new mount is B<MS_PRIVATE>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Notwithstanding the fact that the default propagation type for new mount is "
+"in many cases B<MS_PRIVATE>, B<MS_SHARED> is typically more useful.  For "
+"this reason, B<systemd>(1)  automatically remounts all mounts as "
+"B<MS_SHARED> on system startup.  Thus, on most modern systems, the default "
+"propagation type is in practice B<MS_SHARED>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Since, when one uses B<unshare>(1)  to create a mount namespace, the goal is "
+"commonly to provide full isolation of the mounts in the new namespace, "
+"B<unshare>(1)  (since I<util-linux> version 2.27) in turn reverses the step "
+"performed by B<systemd>(1), by making all mounts private in the new "
+"namespace.  That is, B<unshare>(1)  performs the equivalent of the following "
+"in the new mount namespace:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "mount --make-rprivate /\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"To prevent this, one can use the I<--propagation\\ unchanged> option to "
+"B<unshare>(1)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"An application that creates a new mount namespace directly using "
+"B<clone>(2)  or B<unshare>(2)  may desire to prevent propagation of mount "
+"events to other mount namespaces (as is done by B<unshare>(1)).  This can be "
+"done by changing the propagation type of mounts in the new namespace to "
+"either B<MS_SLAVE> or B<MS_PRIVATE>, using a call such as the following:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "mount(NULL, \"/\", MS_SLAVE | MS_REC, NULL);\n"
+msgstr ""
+
+# #-#-#-#-#  archlinux: mount_namespaces.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#
+# #-#-#-#-#  fedora-rawhide: mount_namespaces.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#
+# #-#-#-#-#  mageia-cauldron: mount_namespaces.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#
+# #-#-#-#-#  opensuse-tumbleweed: mount_namespaces.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#
+#. #-#-#-#-#  archlinux: mount_namespaces.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  ============================================================
+#. type: Plain text
+#. #-#-#-#-#  debian-bullseye: mount_namespaces.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: Plain text
+#. #-#-#-#-#  debian-unstable: mount_namespaces.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: Plain text
+#. #-#-#-#-#  fedora-rawhide: mount_namespaces.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  ============================================================
+#. type: Plain text
+#. #-#-#-#-#  mageia-cauldron: mount_namespaces.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  ============================================================
+#. type: Plain text
+#. #-#-#-#-#  opensuse-leap-15-3: mount_namespaces.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#. type: Plain text
+#. #-#-#-#-#  opensuse-tumbleweed: mount_namespaces.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  ============================================================
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"For a discussion of propagation types when moving mounts (B<MS_MOVE>)  and "
+"creating bind mounts (B<MS_BIND>), see I<Documentation/filesystems/"
+"sharedsubtree.txt>."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "Restrictions on mount namespaces"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid "Note the following points with respect to mount namespaces:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Each mount namespace has an owner user namespace.  As explained above, when "
+"a new mount namespace is created, its mount list is initialized as a copy of "
+"the mount list of another mount namespace.  If the new namespace and the "
+"namespace from which the mount list was copied are owned by different user "
+"namespaces, then the new mount namespace is considered I<less privileged>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"When creating a less privileged mount namespace, shared mounts are reduced "
+"to slave mounts.  This ensures that mappings performed in less privileged "
+"mount namespaces will not propagate to more privileged mount namespaces."
+msgstr ""
+
+#. type: IP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "[3]"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Mounts that come as a single unit from a more privileged mount namespace are "
+"locked together and may not be separated in a less privileged mount "
+"namespace.  (The B<unshare>(2)  B<CLONE_NEWNS> operation brings across all "
+"of the mounts from the original mount namespace as a single unit, and "
+"recursive mounts that propagate between mount namespaces propagate as a "
+"single unit.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"In this context, \"may not be separated\" means that the mounts are locked "
+"so that they may not be individually unmounted.  Consider the following "
+"example:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<sudo sh>\n"
+"# B<mount --bind /dev/null /etc/shadow>\n"
+"# B<cat /etc/shadow>       # Produces no output\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"The above steps, performed in a more privileged mount namespace, have "
+"created a bind mount that obscures the contents of the shadow password file, "
+"I</etc/shadow>.  For security reasons, it should not be possible to unmount "
+"that mount in a less privileged mount namespace, since that would reveal the "
+"contents of I</etc/shadow>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Suppose we now create a new mount namespace owned by a new user namespace.  "
+"The new mount namespace will inherit copies of all of the mounts from the "
+"previous mount namespace.  However, those mounts will be locked because the "
+"new mount namespace is less privileged.  Consequently, an attempt to unmount "
+"the mount fails as show in the following step:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<unshare --user --map-root-user --mount \\e>\n"
+"               B<strace -o /tmp/log \\e>\n"
+"               B<umount /mnt/dir>\n"
+"umount: /etc/shadow: not mounted.\n"
+"# B<grep \\(aq^umount\\(aq /tmp/log>\n"
+"umount2(\"/etc/shadow\", 0)     = -1 EINVAL (Invalid argument)\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"The error message from B<mount>(8)  is a little confusing, but the "
+"B<strace>(1)  output reveals that the underlying B<umount2>(2)  system call "
+"failed with the error B<EINVAL>, which is the error that the kernel returns "
+"to indicate that the mount is locked."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Note, however, that it is possible to stack (and unstack) a mount on top of "
+"one of the inherited locked mounts in a less privileged mount namespace:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"# B<echo \\(aqaaaaa\\(aq E<gt> /tmp/a>    # File to mount onto /etc/shadow\n"
+"# B<unshare --user --map-root-user --mount \\e>\n"
+"    B<sh -c \\(aqmount --bind /tmp/a /etc/shadow; cat /etc/shadow\\(aq>\n"
+"aaaaa\n"
+"# B<umount /etc/shadow>\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"The final B<umount>(8)  command above, which is performed in the initial "
+"mount namespace, makes the original I</etc/shadow> file once more visible in "
+"that namespace."
+msgstr ""
+
+#. type: IP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "[4]"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Following on from point [3], note that it is possible to unmount an entire "
+"subtree of mounts that propagated as a unit into a less privileged mount "
+"namespace, as illustrated in the following example."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"First, we create new user and mount namespaces using B<unshare>(1).  In the "
+"new mount namespace, the propagation type of all mounts is set to private.  "
+"We then create a shared bind mount at I</mnt>, and a small hierarchy of "
+"mounts underneath that mount."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<PS1=\\(aqns1# \\(aq sudo unshare --user --map-root-user \\e>\n"
+"                       B<--mount --propagation private bash>\n"
+"ns1# B<echo $$>        # We need the PID of this shell later\n"
+"778501\n"
+"ns1# B<mount --make-shared --bind /mnt /mnt>\n"
+"ns1# B<mkdir /mnt/x>\n"
+"ns1# B<mount --make-private -t tmpfs none /mnt/x>\n"
+"ns1# B<mkdir /mnt/x/y>\n"
+"ns1# B<mount --make-private -t tmpfs none /mnt/x/y>\n"
+"ns1# B<grep /mnt /proc/self/mountinfo | sed \\(aqs/ - .*//\\(aq>\n"
+"986 83 8:5 /mnt /mnt rw,relatime shared:344\n"
+"989 986 0:56 / /mnt/x rw,relatime\n"
+"990 989 0:57 / /mnt/x/y rw,relatime\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Continuing in the same shell session, we then create a second shell in a new "
+"user namespace and a new (less privileged) mount namespace and check the "
+"state of the propagated mounts rooted at I</mnt>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"ns1# B<PS1=\\(aqns2# \\(aq unshare --user --map-root-user \\e>\n"
+"                       B<--mount --propagation unchanged bash>\n"
+"ns2# B<grep /mnt /proc/self/mountinfo | sed \\(aqs/ - .*//\\(aq>\n"
+"1239 1204 8:5 /mnt /mnt rw,relatime master:344\n"
+"1240 1239 0:56 / /mnt/x rw,relatime\n"
+"1241 1240 0:57 / /mnt/x/y rw,relatime\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Of note in the above output is that the propagation type of the mount I</"
+"mnt> has been reduced to slave, as explained in point [2].  This means that "
+"submount events will propagate from the master I</mnt> in \"ns1\", but "
+"propagation will not occur in the opposite direction."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"From a separate terminal window, we then use B<nsenter>(1)  to enter the "
+"mount and user namespaces corresponding to \"ns1\".  In that terminal "
+"window, we then recursively bind mount I</mnt/x> at the location I</mnt/ppp>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<PS1=\\(aqns3# \\(aq sudo nsenter -t 778501 --user --mount>\n"
+"ns3# B<mount --rbind --make-private /mnt/x /mnt/ppp>\n"
+"ns3# B<grep /mnt /proc/self/mountinfo | sed \\(aqs/ - .*//\\(aq>\n"
+"986 83 8:5 /mnt /mnt rw,relatime shared:344\n"
+"989 986 0:56 / /mnt/x rw,relatime\n"
+"990 989 0:57 / /mnt/x/y rw,relatime\n"
+"1242 986 0:56 / /mnt/ppp rw,relatime\n"
+"1243 1242 0:57 / /mnt/ppp/y rw,relatime shared:518\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Because the propagation type of the parent mount, I</mnt>, was shared, the "
+"recursive bind mount propagated a small subtree of mounts under the slave "
+"mount I</mnt> into \"ns2\", as can be verified by executing the following "
+"command in that shell session:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"ns2# B<grep /mnt /proc/self/mountinfo | sed \\(aqs/ - .*//\\(aq>\n"
+"1239 1204 8:5 /mnt /mnt rw,relatime master:344\n"
+"1240 1239 0:56 / /mnt/x rw,relatime\n"
+"1241 1240 0:57 / /mnt/x/y rw,relatime\n"
+"1244 1239 0:56 / /mnt/ppp rw,relatime\n"
+"1245 1244 0:57 / /mnt/ppp/y rw,relatime master:518\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"While it is not possible to unmount a part of the propagated subtree (I</mnt/"
+"ppp/y>)  in \"ns2\", it is possible to unmount the entire subtree, as shown "
+"by the following commands:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"ns2# B<umount /mnt/ppp/y>\n"
+"umount: /mnt/ppp/y: not mounted.\n"
+"ns2# B<umount -l /mnt/ppp | sed \\(aqs/ - .*//\\(aq>      # Succeeds...\n"
+"ns2# B<grep /mnt /proc/self/mountinfo>\n"
+"1239 1204 8:5 /mnt /mnt rw,relatime master:344\n"
+"1240 1239 0:56 / /mnt/x rw,relatime\n"
+"1241 1240 0:57 / /mnt/x/y rw,relatime\n"
+msgstr ""
+
+#. type: IP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "[5]"
+msgstr ""
+
+#
+#.  commit 9566d6742852c527bf5af38af5cbb878dad75705
+#.  Author: Eric W. Biederman <ebiederm@xmission.com>
+#.  Date:   Mon Jul 28 17:26:07 2014 -0700
+#.       mnt: Correct permission checks in do_remount
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"The B<mount>(2)  flags B<MS_RDONLY>, B<MS_NOSUID>, B<MS_NOEXEC>, and the "
+"\"atime\" flags (B<MS_NOATIME>, B<MS_NODIRATIME>, B<MS_RELATIME>)  settings "
+"become locked when propagated from a more privileged to a less privileged "
+"mount namespace, and may not be changed in the less privileged mount "
+"namespace."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"This point is illustrated in the following example where, in a more "
+"privileged mount namespace, we create a bind mount that is marked as read-"
+"only.  For security reasons, it should not be possible to make the mount "
+"writable in a less privileged mount namespace, and indeed the kernel "
+"prevents this:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<sudo mkdir /mnt/dir>\n"
+"$ B<sudo mount --bind -o ro /some/path /mnt/dir>\n"
+"$ B<sudo unshare --user --map-root-user --mount \\e>\n"
+"               B<mount -o remount,rw /mnt/dir>\n"
+"mount: /mnt/dir: permission denied.\n"
+msgstr ""
+
+#. type: IP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "[6]"
+msgstr ""
+
+#.  (As of 3.18-rc1 (in Al Viro's 2014-08-30 vfs.git#for-next tree))
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"A file or directory that is a mount point in one namespace that is not a "
+"mount point in another namespace, may be renamed, unlinked, or removed "
+"(B<rmdir>(2))  in the mount namespace in which it is not a mount point "
+"(subject to the usual permission checks).  Consequently, the mount point is "
+"removed in the mount namespace where it was a mount point."
+msgstr ""
+
+#
+#.  mtk: The change was in Linux 3.18, I think, with this commit:
+#.      commit 8ed936b5671bfb33d89bc60bdcc7cf0470ba52fe
+#.      Author: Eric W. Biederman <ebiederman@twitter.com>
+#.      Date:   Tue Oct 1 18:33:48 2013 -0700
+#.          vfs: Lazily remove mounts on unlinked files and directories.
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Previously (before Linux 3.18), attempting to unlink, rename, or remove a "
+"file or directory that was a mount point in another mount namespace would "
+"result in the error B<EBUSY>.  That behavior had technical problems of "
+"enforcement (e.g., for NFS)  and permitted denial-of-service attacks against "
+"more privileged users (i.e., preventing individual files from being updated "
+"by bind mounting on top of them)."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "EXAMPLES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "See B<pivot_root>(2)."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"B<unshare>(1), B<clone>(2), B<mount>(2), B<mount_setattr>(2), "
+"B<pivot_root>(2), B<setns>(2), B<umount>(2), B<unshare>(2), B<proc>(5), "
+"B<namespaces>(7), B<user_namespaces>(7), B<findmnt>(8), B<mount>(8), "
+"B<pam_namespace>(8), B<pivot_root>(8), B<umount>(8)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3 opensuse-tumbleweed
+msgid ""
+"I<Documentation/filesystems/sharedsubtree.txt> in the kernel source tree."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron
+msgid ""
+"This page is part of release 5.13 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "2020-11-01"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Mount namespaces provide isolation of the list of mount points seen by the "
+"processes in each namespace instance.  Thus, the processes in each of the "
+"mount namespace instances will see distinct single-directory hierarchies."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"A new mount namespace is created using either B<clone>(2)  or B<unshare>(2)  "
+"with the B<CLONE_NEWNS> flag.  When a new mount namespace is created, its "
+"mount point list is initialized as follows:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"If the namespace is created using B<clone>(2), the mount point list of the "
+"child's namespace is a copy of the mount point list in the parent's "
+"namespace."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"If the namespace is created using B<unshare>(2), the mount point list of the "
+"new namespace is a copy of the mount point list in the caller's previous "
+"mount namespace."
+msgstr ""
+
+#
+#.  ============================================================
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Subsequent modifications to the mount point list (B<mount>(2)  and "
+"B<umount>(2))  in either mount namespace will not (by default) affect the "
+"mount point list seen in the other namespace (but see the following "
+"discussion of shared subtrees)."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Each mount namespace has an owner user namespace.  As explained above, when "
+"a new mount namespace is created, its mount point list is initialized as a "
+"copy of the mount point list of another mount namespace.  If the new "
+"namespace and the namespace from which the mount point list was copied are "
+"owned by different user namespaces, then the new mount namespace is "
+"considered I<less privileged>."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"When creating a less privileged mount namespace, shared mounts are reduced "
+"to slave mounts.  (Shared and slave mounts are discussed below.)  This "
+"ensures that mappings performed in less privileged mount namespaces will not "
+"propagate to more privileged mount namespaces."
+msgstr ""
+
+#
+#.  mtk: The change was in Linux 3.18, I think, with this commit:
+#.      commit 8ed936b5671bfb33d89bc60bdcc7cf0470ba52fe
+#.      Author: Eric W. Biederman <ebiederman@twitter.com>
+#.      Date:   Tue Oct 1 18:33:48 2013 -0700
+#.          vfs: Lazily remove mounts on unlinked files and directories.
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Previously (before Linux 3.18), attempting to unlink, rename, or remove a "
+"file or directory that was a mount point in another mount namespace would "
+"result in the error B<EBUSY>.  That behavior had technical problems of "
+"enforcement (e.g., for NFS)  and permitted denial-of-service attacks against "
+"more privileged users.  (i.e., preventing individual files from being "
+"updated by bind mounting on top of them)."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"After the implementation of mount namespaces was completed, experience "
+"showed that the isolation that they provided was, in some cases, too great.  "
+"For example, in order to make a newly loaded optical disk available in all "
+"mount namespaces, a mount operation was required in each namespace.  For "
+"this use case, and others, the shared subtree feature was introduced in "
+"Linux 2.6.15.  This feature allows for automatic, controlled propagation of "
+"mount and unmount I<events> between namespaces (or, more precisely, between "
+"the members of a I<peer group> that are propagating events to one another)."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Each mount point is marked (via B<mount>(2))  as having one of the following "
+"I<propagation types>:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"This mount point shares events with members of a peer group.  Mount and "
+"unmount events immediately under this mount point will propagate to the "
+"other mount points that are members of the peer group.  I<Propagation> here "
+"means that the same mount or unmount will automatically occur under all of "
+"the other mount points in the peer group.  Conversely, mount and unmount "
+"events that take place under peer mount points will propagate to this mount "
+"point."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"This mount point is private; it does not have a peer group.  Mount and "
+"unmount events do not propagate into or out of this mount point."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Mount and unmount events propagate into this mount point from a (master) "
+"shared peer group.  Mount and unmount events under this mount point do not "
+"propagate to any peer."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Note that a mount point can be the slave of another peer group while at the "
+"same time sharing mount and unmount events with a peer group of which it is "
+"a member.  (More precisely, one peer group can be the slave of another peer "
+"group.)"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"The propagation type is a per-mount-point setting; some mount points may be "
+"marked as shared (with each shared mount point being a member of a distinct "
+"peer group), while others are private (or slaved or unbindable)."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Note that a mount's propagation type determines whether mounts and unmounts "
+"of mount points I<immediately under> the mount point are propagated.  Thus, "
+"the propagation type does not affect propagation of events for grandchildren "
+"and further removed descendant mount points.  What happens if the mount "
+"point itself is unmounted is determined by the propagation type that is in "
+"effect for the I<parent> of the mount point."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Members are added to a I<peer group> when a mount point is marked as shared "
+"and either:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"the mount point is replicated during the creation of a new mount namespace; "
+"or"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid "a new bind mount is created from the mount point."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"In both of these cases, the new mount point joins the peer group of which "
+"the existing mount point is a member."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"A new peer group is also created when a child mount point is created under "
+"an existing mount point that is marked as shared.  In this case, the new "
+"child mount point is also marked as shared and the resulting peer group "
+"consists of all the mount points that are replicated under the peers of "
+"parent mount."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"The propagation type of the mount points in a mount namespace can be "
+"discovered via the \"optional fields\" exposed in I</proc/[pid]/mountinfo>.  "
+"(See B<proc>(5)  for details of this file.)  The following tags can appear "
+"in the optional fields for a record in that file:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"This mount point is shared in peer group I<X>.  Each peer group has a unique "
+"ID that is automatically generated by the kernel, and all mount points in "
+"the same peer group will show the same ID.  (These IDs are assigned starting "
+"from the value 1, and may be recycled when a peer group ceases to have any "
+"members.)"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Suppose that on a terminal in the initial mount namespace, we mark one mount "
+"point as shared and another as private, and then view the mounts in I</proc/"
+"self/mountinfo>:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"From the I</proc/self/mountinfo> output, we see that I</mntS> is a shared "
+"mount in peer group 1, and that I</mntP> has no optional tags, indicating "
+"that it is a private mount.  The first two fields in each record in this "
+"file are the unique ID for this mount, and the mount ID of the parent "
+"mount.  We can further inspect this file to see that the parent mount point "
+"of I</mntS> and I</mntP> is the root directory, I</>, which is mounted as "
+"private:"
+msgstr ""
+
+#.  Since util-linux 2.27
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"The new mount namespace received a copy of the initial mount namespace's "
+"mount points.  These new mount points maintain the same propagation types, "
+"but have unique mount IDs.  (The I<--propagation\\ unchanged> option "
+"prevents B<unshare>(1)  from marking all mounts as private when creating a "
+"new mount namespace, which it does by default.)"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Returning to the first terminal and inspecting the set-up, we see that the "
+"new mount created under the shared mount point I</mntS> propagated to its "
+"peer mount (in the initial mount namespace), but the new mount created under "
+"the private mount point I</mntP> did not propagate:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Making a mount point a slave allows it to receive propagated mount and "
+"unmount events from a master shared peer group, while preventing it from "
+"propagating events to that master.  This is useful if we want to (say) "
+"receive a mount event when an optical disk is mounted in the master shared "
+"peer group (in another mount namespace), but want to prevent mount and "
+"unmount events under the slave mount from having side effects in other "
+"namespaces."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"We can demonstrate the effect of slaving by first marking two mount points "
+"as shared in the initial mount namespace:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"On a second terminal, we create a new mount namespace and inspect the mount "
+"points:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"In the new mount namespace, we then mark one of the mount points as a slave:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"When we inspect the state of the mount points in the new mount namespace, we "
+"see that I</mntX/a> was created as a new shared mount (inheriting the "
+"\"shared\" setting from its parent mount) and I</mntY/b> was created as a "
+"private mount:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid "Now we create a new mount point under I</mntY> in the first shell:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"When we examine the mount points in the second mount namespace, we see that "
+"in this case the new mount has been propagated to the slave mount point, and "
+"that the new mount is itself a slave mount (to peer group 4):"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"One of the primary purposes of unbindable mounts is to avoid the \"mount "
+"point explosion\" problem when repeatedly performing bind mounts of a higher-"
+"level subtree at a lower-level mount point.  The problem is illustrated by "
+"the following shell session."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid "Suppose we have a system with the following mount points:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Suppose furthermore that we wish to recursively bind mount the root "
+"directory under several users' home directories.  We do this for the first "
+"user, and inspect the mount points:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Upon examining the list of mount points, we see there has been no explosion "
+"of mount points, because the unbindable mounts were not replicated under "
+"each user's directory:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"The following table shows the effect that applying a new propagation type (i."
+"e., I<mount --make-xxxx>)  has on the existing propagation type of a mount "
+"point.  The rows correspond to existing propagation types, and the columns "
+"are the new propagation settings.  For reasons of space, \"private\" is "
+"abbreviated as \"priv\" and \"unbindable\" as \"unbind\"."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Here, I<A> is the source mount point, I<B> is the destination mount point, "
+"I<a> is a subdirectory path under the mount point I<A>, and I<b> is a "
+"subdirectory path under the mount point I<B>.  The propagation type of the "
+"resulting mount, I<B/b>, depends on the propagation types of the mount "
+"points I<A> and I<B>, and is summarized in the following table."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Here, I<A> is the source mount point, I<B> is the destination mount point, "
+"and I<b> is a subdirectory path under the mount point I<B>.  The propagation "
+"type of the resulting mount, I<B/b>, depends on the propagation types of the "
+"mount points I<A> and I<B>, and is summarized in the following table."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid "Suppose that we use the following command to create a mount point:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Here, I<B> is the destination mount point, and I<b> is a subdirectory path "
+"under the mount point I<B>.  The propagation type of the resulting mount, "
+"I<B/b>, follows the same rules as for a bind mount, where the propagation "
+"type of the source mount is considered always to be private."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid "Suppose that we use the following command to tear down a mount point:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Here, I<A> is a mount point on I<B/b>, where I<B> is the parent mount and "
+"I<b> is a subdirectory path under the mount point I<B>.  If B<B> is shared, "
+"then all most-recently-mounted mounts at I<b> on mounts that receive "
+"propagation from mount I<B> and do not have submounts under them are "
+"unmounted."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Initially, these two mount points are in the same peer group, but we then "
+"make the I</tmp/etc> a slave of I</mnt/etc>, and then make I</tmp/etc> "
+"shared as well, so that it can propagate events to the next slave in the "
+"chain:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Then we bind mount I</tmp/etc> onto I</mnt/tmp/etc>.  Again, the two mount "
+"points are initially in the same peer group, but we then make I</mnt/tmp/"
+"etc> a slave of I</tmp/etc>:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"The propagation type assigned to a new mount point depends on the "
+"propagation type of the parent mount.  If the mount point has a parent (i."
+"e., it is a non-root mount point) and the propagation type of the parent is "
+"B<MS_SHARED>, then the propagation type of the new mount is also "
+"B<MS_SHARED>.  Otherwise, the propagation type of the new mount is "
+"B<MS_PRIVATE>."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Notwithstanding the fact that the default propagation type for new mount "
+"points is in many cases B<MS_PRIVATE>, B<MS_SHARED> is typically more "
+"useful.  For this reason, B<systemd>(1)  automatically remounts all mount "
+"points as B<MS_SHARED> on system startup.  Thus, on most modern systems, the "
+"default propagation type is in practice B<MS_SHARED>."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable opensuse-leap-15-3
+msgid ""
+"Since, when one uses B<unshare>(1)  to create a mount namespace, the goal is "
+"commonly to provide full isolation of the mount points in the new namespace, "
+"B<unshare>(1)  (since I<util-linux> version 2.27) in turn reverses the step "
+"performed by B<systemd>(1), by making all mount points private in the new "
+"namespace.  That is, B<unshare>(1)  performs the equivalent of the following "
+"in the new mount namespace:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"An application that creates a new mount namespace directly using "
+"B<clone>(2)  or B<unshare>(2)  may desire to prevent propagation of mount "
+"events to other mount namespaces (as is done by B<unshare>(1)).  This can be "
+"done by changing the propagation type of mount points in the new namespace "
+"to either B<MS_SLAVE> or B<MS_PRIVATE>.  using a call such as the following:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<unshare>(1), B<clone>(2), B<mount>(2), B<pivot_root>(2), B<setns>(2), "
+"B<umount>(2), B<unshare>(2), B<proc>(5), B<namespaces>(7), "
+"B<user_namespaces>(7), B<findmnt>(8), B<mount>(8), B<pivot_root>(8), "
+"B<umount>(8)"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This page is part of release 5.10 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2018-04-30"
+msgstr ""
+
+#
+#.  ============================================================
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"When a process creates a new mount namespace using B<clone>(2)  or "
+"B<unshare>(2)  with the B<CLONE_NEWNS> flag, the mount point list for the "
+"new namespace is a I<copy> of the caller's mount point list.  Subsequent "
+"modifications to the mount point list (B<mount>(2)  and B<umount>(2))  in "
+"either mount namespace will not (by default) affect the mount point list "
+"seen in the other namespace (but see the following discussion of shared "
+"subtrees)."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"A mount namespace has an owner user namespace.  A mount namespace whose "
+"owner user namespace is different from the owner user namespace of its "
+"parent mount namespace is considered a less privileged mount namespace."
+msgstr ""
+
+#.  FIXME .
+#. 	What does "come as a single unit from more privileged mount" mean?
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"Mounts that come as a single unit from more privileged mount are locked "
+"together and may not be separated in a less privileged mount namespace.  "
+"(The B<unshare>(2)  B<CLONE_NEWNS> operation brings across all of the mounts "
+"from the original mount namespace as a single unit, and recursive mounts "
+"that propagate between mount namespaces propagate as a single unit.)"
+msgstr ""
+
+#.  (As of 3.18-rc1 (in Al Viro's 2014-08-30 vfs.git#for-next tree))
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"A file or directory that is a mount point in one namespace that is not a "
+"mount point in another namespace, may be renamed, unlinked, or removed "
+"(B<rmdir>(2))  in the mount namespace in which it is not a mount point "
+"(subject to the usual permission checks)."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"Previously, attempting to unlink, rename, or remove a file or directory that "
+"was a mount point in another mount namespace would result in the error "
+"B<EBUSY>.  That behavior had technical problems of enforcement (e.g., for "
+"NFS)  and permitted denial-of-service attacks against more privileged "
+"users.  (i.e., preventing individual files from being updated by bind "
+"mounting on top of them)."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"sh1# B<mkdir /mntY/c>\n"
+"sh1# B<mount /dev/sda1 /mntY/c>\n"
+"sh1# B<cat /proc/self/mountinfo | grep '/mnt' | sed 's/ - .*//'>\n"
+"132 83 8:23 / /mntX rw,relatime shared:1\n"
+"133 83 8:22 / /mntY rw,relatime shared:2\n"
+"174 132 8:3 / /mntX/a rw,relatime shared:3\n"
+"178 133 8:1 / /mntY/c rw,relatime shared:4\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "    mount --bind A/a B/b\n"
+msgstr ""
+
+#. type: tbl table
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "shared    |"
+msgstr ""
+
+#. type: tbl table
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "nonshared |"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "    mount --move A B/b\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "    mount device B/b\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "    unmount A\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"The propagation type assigned to a new mount point depends on the "
+"propagation type of the parent directory.  If the mount point has a parent "
+"(i.e., it is a non-root mount point) and the propagation type of the parent "
+"is B<MS_SHARED>, then the propagation type of the new mount is also "
+"B<MS_SHARED>.  Otherwise, the propagation type of the new mount is "
+"B<MS_PRIVATE>.  But see also NOTES."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "    mount --make-rprivate /\n"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"B<unshare>(1), B<clone>(2), B<mount>(2), B<setns>(2), B<umount>(2), "
+"B<unshare>(2), B<proc>(5), B<namespaces>(7), B<user_namespaces>(7)"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""

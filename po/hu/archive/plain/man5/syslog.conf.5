@@ -1,0 +1,419 @@
+.TH SYSLOG.CONF 5 "1 January 1998" "Version 1.3" "Linux System Administration"
+.SH NÉV
+syslog.conf \- syslogd (8) konfigurációs fájl
+.SH ÁTTEKINTÉS
+A
+.I syslog.conf
+fájl a 
+.BR syslogd(8)
+fõ konfigurációs fájlja, amely 
+naplózza a rendszerüzeneteket a *nix rendszereken.
+A 
+.I syslog.conf
+fájl határozza meg a naplózási szabályokat.
+A 
+.BR syslogd (8)
+további tulajdonságai
+a 
+.BR syslogd(8)
+kézikönyvoldalán találhatók.
+
+Valamennyi szabály két mezõbõl  áll, egy 
+.I kiválasztó
+és egy 
+.I végrehajtó
+mezõbõl. A két mezõt szóközökkel vagy tabulátor jelekkel választjuk 
+el egymástól. A kiválasztó mezõ meghatároz egy szolgáltatási sémát és 
+definiálja azt a prioritást, amely a hozzárendelt végrehajtáshoz tartozik.
+
+A sorok kettõskereszt ("#") jellel kezdõdnek és az üres sorok nem számítanak.
+
+A 
+.B syslogd
+kiterjedt szintaktikát képes megérteni. Egy szabály akár több sorra is 
+felosztható, ha a vezetõ sor egy backslash-sel ("\\") fejezõdik be.
+
+
+.SH KIVÁLASZTÓK
+A kiválasztó mezõ önmaga is két részbõl áll; a
+.I szolgáltatás
+és a
+.IR prioritás
+egymástól ponttal (".") elválasztva.
+Mindkét összetevõ érzéketlen a kis- és nagybetûk közötti különbségre, 
+és decimális számok segítségével is definiálható, de ha lehet, akkor 
+ezt inkább kerüljük el. A szolgáltatásról és a prioritásról bõvebb leírás a 
+.BR syslog (3)
+kézikönyvoldalán olvasható. Az alábbiakban megemlített nevek 
+megfelelnek a hasonló 
+.BR LOG_-értékeknek
+a 
+.IR /usr/include/syslog.h
+fájlban.
+
+ A
+.I szolgáltatás
+értéke az alábbi kulcsszavak közül kerülhet ki:
+.BR auth ", " authpriv ", " cron ", " daemon ", " kern ", " lpr ", "
+.BR mail ", " mark ", " news ", " security " (megfelel az " auth "-nak),"
+.BR syslog ", " user ", " uucp " és a " local0 "-tól a " local7 "-ig."
+A 
+.B security
+kulcsszó használata nem javallott, a 
+.B mark
+kulcsszó pedig kizárólag belsõ használatra javasolt, 
+ezért alkalmazások esetében inkább ne használjuk. 
+Naszóval ezeket az üzeneteket itt is meghatározhatod, 
+de utólag is definiálhatod.
+A
+.I szolgáltatás
+meghatároz egy alrendszert, amely létrehoz egy üzenetet, 
+pl. valamennyi levelezõprogram naplózható a mail szolgáltatással
+.BR "" ( LOG_MAIL )
+, ha ezek naplóznak, használva a syslogot.
+
+A
+.I prioritás
+értéke az alábbi kulcsszavak közül kerülhet ki, emelkedõ sorrendben:
+.BR debug ", " info ", " notice ", " warning ", " warn " (megfelel a " warning " -nak), "
+.BR err ", " error " (megfelel az " err " -nek), " crit ", " alert ", " emerg ", " 
+. BR panic " (megfelel az " emerg " -nek)."
+Az
+.BR error ", " warn " és a " panic " kulcsszavak nem használatosak."
+A 
+.I prioritás
+definiálja az üzenetek szigorúságát.
+
+Az eredeti BSD syslogd úgy viselkedik, hogy valamennyi meghatározott 
+prioritású üzenetet és a magasabb rendûeket is naplózza az adott 
+végrehajtásnak megfelelõen. A jelenlegi
+.BR syslogd "(8) "
+is ugyanígy viselkedik, de van néhány további kiterjesztése.
+
+Továbbá a fent megemlített neveket a 
+.BR syslogd "(8) "
+a következõ kiterjesztésekkel érti meg: egy csillag ("*") jelképezi 
+valamennyi szolgáltatást vagy valamennyi prioritást, attól függõen,
+hogy hol használjuk (a pont elõtt vagy után).
+A 
+.B none
+kulcsszó azt jelenti, hogy nincs prioritása az adott szolgáltatásnak.
+
+Definiálható többszörös szolgáltatás ugyanazzal a prioritási sémával
+a meghatározásban, használva a vesszõ (",") operátort.
+Annyi szolgáltatást határozhatsz meg, amennyit csak akarsz, de ne feledd el,
+hogy csak a szolgáltatás része a meghatározásnak, a 
+prioritás rész viszont elhagyható.
+
+Többszörös kiválasztók is meghatározhatók egyetlen
+.I végrehajtásban
+, használva a pontosvesszõ (";") elválasztást. De ne feledjük, hogy
+valamennyi kiválasztó a 
+.I kiválasztó
+mezõben képes felülírni az azt megelõzõt.
+Felhasználva ezt a viselkedést ki lehet zárni néhány prioritást a sémából.
+
+A jelenlegi
+.BR syslogd (8)-nak 
+van egy szintaktikai kiterjesztése az eredeti BSD forráshoz képest,
+amely lehetõvé teszi azt, hogy a használata sokkal inkább érthetõ legyen.
+Valamennyi prioritás elé tehetsz egy egyenlõségjelet ("=") jelezve, 
+hogy csak ezt a
+prioritást vegye figyelembe és a magasabbakat ne. 
+De tehetsz egy felkiáltójelet ("!") is a prioritás
+elé (mindkettõ elfogadott), hogy az itt található valamennyi 
+prioritás figyelmen kívül legyen
+hagyva. Ekkor sem a meglévõ, sem a magasabb prioritások nem 
+lesznek értelmezve. Ha egyszerre
+mindkét jelet használjuk, akkor a felkiáltójelet az egyenlõségjel 
+elé kell tenni, de ezt csak érzéssel használjuk.
+
+.SH VÉGREHAJTÁSOK
+A szabályhoz tartozó végrehajtási mezõ egy elvont formájú "naplófájlt" ír le.
+Ennek a naplófájlnak nem szükséges létezõ nevûnek lennie.
+A 
+.BR syslogd (8)
+a következõ végrehajtásokat látja el.
+
+.SS Szokásos fájl
+Normál üzenetek kerülnek naplózásra létezõ fájlokba. A fájlt a teljes elérési 
+úttal kell megadni, amelyet a slash ("/") jellel kell kezdeni.
+
+Lehet egy mínusz ("-") jel is valamennyi bejegyzés elõtt, jelezve azt, 
+hogy nem szükséges
+szikronizálni a fájlt minden bejelentkezés után. Jegyezzük meg azt, hogy 
+információvesztés léphet fel, ha rendszerösszeomlás következik be rögtön egy
+írási kísérlet után. Mindazonáltal ez vissza is adhat némi 
+teljesítményt, különösen akkor,
+ha olyan programot használunk, amely igen bõbeszédûen adja 
+a naplózandó információkat.
+
+.SS Névvel jelölt csõvezetékek
+A
+.BR syslogd "(8) "
+jelenlegi verziója támogatja a naplózást a névvel jelölt csõvezetékek 
+felé (fifo-k).
+A fifo vagy a névvel azonosított csõvezeték használható üzenetek 
+naplózásának céljára. Ekkor a
+fájl neve elé tegyünk egy ("l") jelet, ezzel jelölve, 
+hogy a célállomány egy fifo. Ez általában
+hibakeresésre használatos. Ám  jegyezzük meg, hogy a fifo-t az 
+.BR mkfifo (1)
+paranccsal kell létrehozni még mielõtt a 
+.BR syslogd (8)
+elindult volna.
+  
+.SS Terminálok és a konzol
+Amennyiben állományként egy tty van megadva, speciális 
+tty-kezelés hajtódik végre, hasonlóan a
+.IR /dev/console -hoz.
+
+.SS Távoli számítógépek
+A jelenlegi 
+.BR syslogd (8)
+teljes távoli naplózást képes véghezvinni, azaz például képes üzenetet
+küldeni egy távoli gépen futó 
+.BR syslogd (8)
+részére és tud fogadni üzeneteket egy távoli számítógéptõl is. A távoli gép 
+nem fogja a kapott üzenetet ismételten  továbbítani, csak helyi	szinten fogja
+naplózni. Hogy továbbítsunk egy üzenetet egy másik számítógép részére tegyünk a gép
+neve elé egy kukac ("@") jelet.
+
+Használva ezt a képességet lehetõvé válik, hogy egy gépen ellenõrizzük le 
+valamennyi syslog üzenetet, amennyiben a többi gép egy 
+adott távoli gépre naplózik.
+
+.SS Felhasználói lista
+Általában a kritikus üzenetek közvetlenül az adott gép "root" felhasználójához
+kerülnek. Meghatározhatunk egy listát azokról a felhasználókról, akik szintén
+megkaphatják az üzenetet. Ehhez	csak a felhasználói nevüket kell megadni. Egyszerre
+több felhasználót is megadhatunk, vesszõvel (",") elválasztva az egyes neveket.
+Ha õk be vannak jelentkezve a rendszerre, akkor megkapják az üzenetet. De ne higgyük
+azt, hogy egy levél is elküldésre kerül, mivel akkor már lehet hogy túl késõ.
+
+.SS Mindenki, aki be van jelentkezve
+Valósidejû vészüzeneteket gyakran szükséges valamennyi felhasználó részére elküldeni, értesítve ezzel
+õket arról, hogy például valami különleges dolog történt a rendszerrel. Hogy meghatározzunk egy ilyen 
+.IR wall (1)-típusú
+üzenetet, használjuk a csillag ("*") jelet.
+
+.SH PÉLDÁK
+A következõkben néhány olyan példa kerül felsorolásra, amelyek között alkalmanként a való életbõl (létezõ 
+számítógépekrõl, konfigurációkból) kiragadott esetek is vannak. Remélhetõleg ezek minden tekintetben
+kidolgozott példák, ám ha mégsem küldjetek a részemre (Joey) néhány sort.
+.IP
+.nf
+#Összegyûjti a kritikus üzeneteket a critical-ba
+#
+*.=crit;kern.none              /var/adm/critical
+.fi
+.LP
+Ezzel a bejegyzéssel valamennyi 
+.B crit 
+prioritású (kritikus) üzenetet gyûjtjük össze a 
+.IR /var/adm/critical
+fájlba, kivéve bármely kernel üzenetet.
+
+.IP
+.nf
+#A kernel üzenetei elsõként összegyûlnek a kernel fájlban.
+#A kritikus és a magasabb prioritásúak pedig átmennek egy
+#másik számítógépre, illetve a konzolra kerülnek.
+#
+kern.*                         /var/adm/kernel
+kern.crit                      @finlandia
+kern.crit                      /dev/console
+kern.info;kern.!err            /var/adm/kernel-info
+.fi
+.LP
+Az elsõ szabály alapján bármely üzenet, amely a kernel szolgáltatásából adódik, a 
+.IR /var/adm/kernel
+fájlba kerül.
+
+A második szabálynál a 
+.B crit
+és az annál magasabb prioritású kernel üzenetek átkerülnek
+a finlandia nevû távoli számítógépre. Ez abban az esetben hasznos, 
+ha egy számítógép összeomlik, és a merevlemezén olyan helyrehozhatatlan 
+hibák keletkeznek, amik miatt nem lehet elolvasni az összegyûjtött 
+üzeneteket. Ám ha ezek az üzenetek egy távoli
+számítógépen is megtalálhatók, akkor még megtudhatjuk a rendszerösszeomlás okát.
+
+A harmadik szabály ezeket az üzeneteket (a második jelentés üzeneteit) közvetlenül 
+az aktuális gép konzoljára küldi, igy az a személy is megkapja azt, aki éppen
+ezen a gépen dolgozik.
+
+A negyedik sor azt mondja meg a syslogd-nak, hogy mentse el valamennyi 
+.BR info
+és az annál magasabb prioritású (egészen a 
+.BR warning
+-ig) kernel üzenetet a 
+.IR /var/adm/kernel-info
+fájlba. Azonban	ebbõl hagyja ki valamennyi
+.I err
+, illetve a magasabb prioritású üzeneteket.
+
+.IP
+.nf
+#A tcp wrappers naplózzon a mail.info-val, hogy lássunk
+#valamennyi kapcsolatot a tty12-n.
+#
+mail.=info                     /dev/tty12
+.fi
+.LP
+Ez valamennyi üzenetet, amely
+.BR mail.info"-t használ(forrásban " LOG_MAIL " | " LOG_INFO)
+a
+.IR /dev/tty12
+-höz irányítja, azaz a 12. konzolra. Például a tcpwrapper 
+.BR tcpd (8)
+ezt használja alapértelmezésben.
+
+.IP
+.nf
+#Gyûjtse össze valamennyi a levelezéssel kapcsolatos
+#üzenetet egy fájlba
+#
+mail.*;mail.!=info             /var/adm/mail
+.fi
+.LP
+Ez a séma megfelel valamennyi olyan üzenetnek, amely a 
+.B mail
+szolgáltatással kapcsolatos, kivéve az
+.B info
+prioritású üzeneteket. Ezek a 
+.IR /var/adm/mail
+fájlban lesznek összegyûjtve.
+
+.IP
+.nf
+#Naplózza valamennyi mail.info és news.info típusú 
+#üzeneteket az info fájlban.
+#
+mail,news.=info                /var/adm/info
+.fi
+.LP
+Így egy kivonatot fogunk kapni azokról az üzenetekrõl, amelyek
+.BR mail.info " vagy " news.info
+típussal érkeznek és ezeket a 
+.IR /var/adm/info
+fájlban tároljuk.
+
+.IP
+.nf
+#Naplózd az info és a notice (megjegyzés) üzeneteket
+#a messages fájlban
+#
+*.=info;*.=notice;\\
+	mail.none              /var/log/messages
+.fi
+.LP
+Ez hagyja, hogy a
+.B syslogd
+naplózza valamennyi olyan üzenetet, amely
+.BR info " vagy " notice
+szolgáltatással	érkezik és ezeket tegye a
+.IR /var/log/messages
+fájlba. Kivétel azonban minden olyan üzenet, amely a
+.B mail
+szolgáltatást használja.
+
+.IP
+.nf
+#Naplózza az info üzeneteket a messages fájlba
+#
+*.=info;\\
+	mail,news.none        /var/log/messages
+
+.fi
+.LP
+Ez a megállapítás azt fogja okozni, hogy a 
+.B syslogd
+naplózni fogja valamennyi 
+.B info
+prioritással érkezõ üzenetet a 
+.IR /var/log/messages
+fájlba, ám a 
+.BR mail " vagy a " news
+szolgáltatással érkezõ üzenetek nem kerülnek bele ebbe az állományba.
+
+.IP
+.nf
+#A vészüzenetek a wall-t használva jelenítõdjenek meg.
+#
+*.=emerg
+.fi
+.LP
+Ez a szabály arra utasítja a 
+.BR syslogd -t, 
+hogy írja ki valamennyi vészüzenetet a jelenleg bejelentkezett
+valamennyi felhasználó részére. Ez a wall tipusú végrehajtás.
+
+.IP
+.nf
+#Az alert (készenléti) prioritás üzenetei közvetlenül
+#az üzembentartóhoz (a karbantartóhoz) kerülnek.
+#
+*.alert		root,joey
+.fi
+.LP
+E szabály alapján valamennyi 
+.B alert
+(készenléti) vagy magasabb prioritású üzenetet a terminálok
+üzembentartója kapja meg; ez esetben a "root" és a "joey" nevû
+felhasználó, amennyiben be vannak jelentkezve a rendszerre.
+
+.IP
+.nf
+*.*		@finlandia
+.fi
+.LP
+Ennek a szabálynak a következményeként valamennyi üzenet
+átküldésre kerül a távoli finlandia nevû számítógépre. 
+Ez különösen több számítógép esetében hasznos, mivel ekkor
+valamennyi syslog üzenet egy gépen gyûlik össze, illetve tárolódik.
+
+.SH KONFIGURÁCIÓS FÁJL SZINTAKTIKAI KÜLÖNBSÉGEK
+A 
+.B syslogd
+némileg eltérõ konfigurációs szintaktikát használ, mint
+az eredeti BSD forrás. Eredetileg valamennyi specifikált és az annál
+magasabb prioritású üzenetek továbbítódtak a naplófájlhoz. Az "=" , "!" 
+és a "-" jelek megváltoztatták ezt, és használatukkal a 
+.B syslogd
+sokkal hajlékonyabb és érzékenyebb módon használható.
+
+Az eredeti BSD syslogd nem értelmezi a szóköz karaktereket
+a kiválasztó és a végrehajtó mezõ közti elválasztásra.
+
+.SH FÁJLOK
+.PD 0
+.TP
+.I /etc/syslog.conf
+A 
+.B syslogd
+konfigurációs fájlja.
+
+.SH HIBÁK
+A többszörös kiválasztók hatása néha nem igazán érezhetõ.
+Például a "mail.crit,*.err"  kiválasztó csoport az "err" 
+és a magasabb szintû mail szolgáltatási üzeneteket fogja
+kiválasztani, nem pedig a "crit" és az ennél magasabb
+prioritású üzeneteket.
+
+.SH LÁSD MÉG
+.BR sysklogd (8),
+.BR klogd (8),
+.BR logger(1),
+.BR syslog(2),
+.BR syslog(3)
+
+.SH A SZERZÕK
+A 
+.B syslogd 
+BSD forrásból lett átvéve. A Linuxra való alkalmazását
+Greg Wettstein (greg@wind.rmcc.com) végezte, Martin Schulze
+(joey@linux.de) pedig kijavított néhány mûködésbeli hibát 
+és hozzáadott némi új sajátosságot is. 
+.SH MAGYAR FORDÍTÁS
+kuksi <kuksi@arts7.hu>

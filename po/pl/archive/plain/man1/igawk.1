@@ -1,0 +1,67 @@
+.\" {PTM/WK/1999-11-22}
+.TH IGAWK 1 "3 listopada 1999" FSF "Narzędzia"
+.SH NAZWA
+igawk \- gawk z plikami włączanymi
+.SH SKŁADNIA
+.B igawk
+.RI [ "opcje gawk" ]
+.B \-f
+.I plik-programu
+.RB [ -- ]
+.IR plik ...
+.br
+.B igawk
+.RI [ "opcje gawk" ]
+.RB [ -- ]
+.I tekst-programu
+.IR plik ...
+.SH OPIS
+.I igawk
+jest prostym skryptem powłoki dodającym do
+.IR gawk (1)
+możliwość obsługi "plików włączanych" ("include files").
+.PP
+Programy AWK dla
+.I igawk
+są takie same jak dla
+.IR gawk ,
+z wyjątkiem tego, że dodatkowo możesz w swoim programie umieszczać
+wiersze w rodzaju
+.RS
+.sp
+.ft B
+@include getopt.awk
+.ft R
+.sp
+.RE
+by włączyć zawartość pliku
+.B getopt.awk
+albo z katalogu bieżącego albo z jednego z katalogów w ścieżce przeszukiwań.
+.SH OPCJE
+W
+.IR gawk (1)
+znajdziesz pełny opis języka AWK oraz opcji, jakie obsługuje
+.IR gawk .
+.SH PRZYKŁADY
+.nf
+.ft B
+cat << EOF > test.awk
+@include getopt.awk
+.sp
+BEGIN {
+	while (getopt(ARGC, ARGV, "am:q") != \-1)
+		\&.\^.\^.
+}
+EOF
+.sp
+igawk \-f test.awk
+.ft R
+.fi
+.SH ZOBACZ TAKŻE
+.BR gawk (1)
+.PP
+.IR "Effective AWK Programming" ,
+Edycja 1.0, opublikowane przez Free Software Foundation, 1995.
+.SH AUTOR
+Arnold Robbins
+.RB ( arnold@skeeve.com ).

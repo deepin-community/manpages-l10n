@@ -1,0 +1,107 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.\"	%W%	%R% (Berkeley) %E%
+.\"
+.TH YACC 1 "15 lipca 1990"
+.UC 6
+.SH NAZWA
+Yacc \- generator analizatorów składni LALR(1)
+.SH SKŁADNIA
+.B yacc [ -dlrtv ] [ -b
+.I przedrostek_pliku
+.B ] [ -p
+.I przedrostek_symbolu
+.B ]
+.I nazwapliku
+.SH OPIS
+.I Yacc
+czyta opis gramatyki z pliku
+.I nazwapliku
+i generuje dla niej analizator składni LR(1).
+Analizatory składają się z zestawu tabel analizy LALR(1) i procedury
+sterującej napisanej w języku C.
+.I Yacc
+zazwyczaj zapisuje tabele analizy i funkcję sterującą do pliku
+.IR y.tab.c.
+.PP
+Dostępne są następujące opcje:
+.RS
+.TP
+\fB-b \fIprzedrostek_pliku\fR
+Opcja
+.B -b
+zmienia przedrostek, który jest doklejany do wyjściowych nazw plików. Nowym
+przedrostkiem staje się
+.IR przedrostek_pliku .
+Domyślnym przedrostkiem jest znak
+.IR y.
+.TP
+.B -d
+Opcja \fB-d\fR powoduje zapisanie pliku nagłówkowego
+.IR y.tab.h .
+.TP
+.B -l
+Jeśli nie poda się opcji
+.BR -l ,
+.I yacc
+wstawi do generowanego kodu dyrektywy #line. Dyrektywy te umożliwiają
+kompilatorowi C wiązanie błędów w generowanym kodzie z oryginalnym kodem
+użytkownika.
+Jeśli podana jest opcja \fB-l\fR,
+.I yacc
+nie będzie wstawiał dyrektyw #line.
+Dyrektywy #line, podawane przez użytkownika zostaną zachowane.
+.TP
+\fB-p \fIprzedrostek_symbolu\fR
+Opcja
+.B -p
+zmienia przedrostek doklejany do symboli generowanych przez yacc na łańcuch
+określony przez
+.IR przedrostek_symbolu .
+Domyślnym przedrostkiem jest łańcuch
+.IR yy.
+.TP
+.B -r
+Opcja
+.B -r
+powoduje, że
+.I yacc
+tworzy oddzielne pliki z kodem i tabelami. Plik z kodem jest nazywany
+.IR y.code.c ,
+a plik z tabelami
+.IR y.tab.c .
+.TP
+.B -t
+Opcja
+.B -t
+zmienia dyrektywy preprocesora, generowane przez
+.I yacc
+tak, że do skompilowanego kodu zostaną załączone instrukcje debuggujące.
+.TP
+.B -v
+Opcja
+.B -v
+powoduje wyświetlenie czytelnego dla człowieka opisu generowanego
+analizatora do pliku
+.IR y.output.
+.RE
+.PP
+Jeśli ustawiona jest zmienna środowiskowa TMPDIR, to łańcuch wskazany przez
+TMPDIR będzie używany jako nazwa katalogu plików tymczasowych.
+.SH PLIKI
+.IR y.code.c
+.br
+.IR y.tab.c
+.br
+.IR y.tab.h
+.br
+.IR y.output
+.br
+.IR /tmp/yacc.aXXXXXX
+.br
+.IR /tmp/yacc.tXXXXXX
+.br
+.IR /tmp/yacc.uXXXXXX
+.SH DIAGNOSTYKA
+Jeśli istnieją nieredukowalne reguły, to ich liczba jest zgłaszana na
+stderr.
+Jeśli istnieją konflikty z LALR(1), to ich liczba zgłaszana jest na stderr.

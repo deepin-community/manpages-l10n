@@ -1,0 +1,170 @@
+.TH "libalpm_misc" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+libalpm_misc \- Miscellaneous Functions
+.PP
+ \- Various libalpm functions\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef int64_t \fBalpm_time_t\fP"
+.br
+.RI "The time type used by libalpm\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBalpm_caps\fP { \fBALPM_CAPABILITY_NLS\fP = (1 << 0), \fBALPM_CAPABILITY_DOWNLOADER\fP = (1 << 1), \fBALPM_CAPABILITY_SIGNATURES\fP = (1 << 2) }"
+.br
+.RI "Enum of possible compile time features\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBalpm_pkg_t\fP * \fBalpm_sync_get_new_version\fP (\fBalpm_pkg_t\fP *pkg, \fBalpm_list_t\fP *dbs_sync)"
+.br
+.RI "Check for new version of pkg in syncdbs\&. "
+.ti -1c
+.RI "char * \fBalpm_compute_md5sum\fP (const char *filename)"
+.br
+.RI "Get the md5 sum of file\&. "
+.ti -1c
+.RI "char * \fBalpm_compute_sha256sum\fP (const char *filename)"
+.br
+.RI "Get the sha256 sum of file\&. "
+.ti -1c
+.RI "int \fBalpm_unlock\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Remove the database lock file\&. "
+.ti -1c
+.RI "const char * \fBalpm_version\fP (void)"
+.br
+.RI "Get the version of library\&. "
+.ti -1c
+.RI "int \fBalpm_capabilities\fP (void)"
+.br
+.RI "Get the capabilities of the library\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Various libalpm functions\&. 
+
+
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef int64_t \fBalpm_time_t\fP"
+
+.PP
+The time type used by libalpm\&. Represents a unix time stamp 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBalpm_caps\fP"
+
+.PP
+Enum of possible compile time features\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIALPM_CAPABILITY_NLS \fP\fP
+localization 
+.TP
+\fB\fIALPM_CAPABILITY_DOWNLOADER \fP\fP
+Ability to download\&. 
+.TP
+\fB\fIALPM_CAPABILITY_SIGNATURES \fP\fP
+Signature checking\&. 
+.SH "Function Documentation"
+.PP 
+.SS "int alpm_capabilities (void)"
+
+.PP
+Get the capabilities of the library\&. 
+.PP
+\fBReturns\fP
+.RS 4
+a bitmask of the capabilities 
+.RE
+.PP
+
+.SS "char * alpm_compute_md5sum (const char * filename)"
+
+.PP
+Get the md5 sum of file\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfilename\fP name of the file 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the checksum on success, NULL on error 
+.RE
+.PP
+
+.SS "char * alpm_compute_sha256sum (const char * filename)"
+
+.PP
+Get the sha256 sum of file\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfilename\fP name of the file 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the checksum on success, NULL on error 
+.RE
+.PP
+
+.SS "\fBalpm_pkg_t\fP * alpm_sync_get_new_version (\fBalpm_pkg_t\fP * pkg, \fBalpm_list_t\fP * dbs_sync)"
+
+.PP
+Check for new version of pkg in syncdbs\&. If the same package appears multiple dbs only the first will be checked
+.PP
+This only checks the syncdb for a newer version\&. It does not access the network at all\&. See \fBalpm_db_update\fP to update a database\&. 
+.SS "int alpm_unlock (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Remove the database lock file\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error
+.RE
+.PP
+\fBNote\fP
+.RS 4
+Safe to call from inside signal handlers\&. 
+.RE
+.PP
+
+.SS "const char * alpm_version (void)"
+
+.PP
+Get the version of library\&. 
+.PP
+\fBReturns\fP
+.RS 4
+the library version, e\&.g\&. '6\&.0\&.4' 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libalpm from the source code\&.

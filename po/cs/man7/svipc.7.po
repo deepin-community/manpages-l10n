@@ -1,0 +1,739 @@
+# Czech translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Pavel Heimlich <tropikhajma@gmail.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n\n"
+"POT-Creation-Date: 2021-04-12 19:44+0200\n"
+"PO-Revision-Date: 2009-02-09 20:06+0100\n"
+"Last-Translator: Pavel Heimlich <tropikhajma@gmail.com>\n"
+"Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 20.08.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "SVIPC"
+msgstr "SVIPC"
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "2016-03-15"
+msgstr "15. března 2016"
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "Linux"
+msgstr "Linux"
+
+#. type: TH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr "Linux - příručka programátora"
+
+#. type: SH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "NAME"
+msgstr "JMÉNO"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "svipc - System V interprocess communication mechanisms"
+msgstr "svipc - System V meziprocesový komunikační mechanismus"
+
+#. type: SH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "POUŽITÍ"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"B<#include E<lt>sys/msg.hE<gt>>\n"
+"B<#include E<lt>sys/sem.hE<gt>>\n"
+"B<#include E<lt>sys/shm.hE<gt>>\n"
+msgstr ""
+"B<#include E<lt>sys/msg.hE<gt>>\n"
+"B<#include E<lt>sys/sem.hE<gt>>\n"
+"B<#include E<lt>sys/shm.hE<gt>>\n"
+
+#. type: SH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "POPIS"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This manual page refers to the Linux implementation of the System V "
+"interprocess communication (IPC) mechanisms: message queues, semaphore sets, "
+"and shared memory segments.  In the following, the word I<resource> means an "
+"instantiation of one among such mechanisms."
+msgstr ""
+"Tato manuálová stránka popisuje implementaci System V meziprocesových "
+"komunikačních mechanismů (IPC) v Linuxu: fronty zpráv, sady semaforů a "
+"sdílenou paměť.  V následujícím textu slovo I<resource> znamená instanci "
+"jednoho z těchto mechanismů."
+
+#. type: SS
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "Resource access permissions"
+msgstr "Přístupová práva pro Resource"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"For each resource, the system uses a common structure of type I<struct "
+"ipc_perm> to store information needed in determining permissions to perform "
+"an IPC operation.  The I<ipc_perm> structure includes the following members:"
+msgstr ""
+"Pro každé resource používá systém společnou strukturu typu I<struct "
+"ipc_perm> pro ukládání informací potřebných k určení práva na provedení IPC "
+"operace.  Struktura I<ipc_perm> obsahuje následující členy:"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"struct ipc_perm {\n"
+"    uid_t          cuid;   /* creator user ID */\n"
+"    gid_t          cgid;   /* creator group ID */\n"
+"    uid_t          uid;    /* owner user ID */\n"
+"    gid_t          gid;    /* owner group ID */\n"
+"    unsigned short mode;   /* r/w permissions */\n"
+"};\n"
+msgstr ""
+"struct ipc_perm {\n"
+"    uid_t          cuid;   /* uid toho, kdo objekt vytvořil */\n"
+"    gid_t          cgid;   /* gid toho, kdo objekt vytvořil */\n"
+"    uid_t          uid;    /* uid vlastníka */\n"
+"    gid_t          gid;    /* gid vlastníka */\n"
+"    unsigned short mode;   /* práva pro čtení/zápis */\n"
+"};\n"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"The I<mode> member of the I<ipc_perm> structure defines, with its lower 9 "
+"bits, the access permissions to the resource for a process executing an IPC "
+"system call.  The permissions are interpreted as follows:"
+msgstr ""
+"Člen I<mode> ze struktury I<ipc_perm> definuje ve svých spodních 9 bitech "
+"přístupová práva pro resource pro proces vykonávající systémové voláni IPC "
+"takto:"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"    0400    Read by user.\n"
+"    0200    Write by user.\n"
+"    0040    Read by group.\n"
+"    0020    Write by group.\n"
+"    0004    Read by others.\n"
+"    0002    Write by others.\n"
+msgstr ""
+"    0400    Uživatel smí číst.\n"
+"    0200    Uživatel smí zapisovat.\n"
+"    0040    Skupina smí číst.\n"
+"    0020    Skupina smí zapisovat.\n"
+"    0004    Kdokoli smí číst.\n"
+"    0002    Kdokoli smí zapisovat.\n"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"Bits 0100, 0010, and 0001 (the execute bits) are unused by the system.  "
+"Furthermore, \"write\" effectively means \"alter\" for a semaphore set."
+msgstr ""
+"Bity 0100, 0010 a 0001 (právo na spuštění) nejsou použity.  Navíc, \"zápis\" "
+"ve skutečnosti znamená \"změnu\" pro sadu semaforů."
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"The same system header file also defines the following symbolic constants:"
+msgstr ""
+"Tentýž hlavičkový soubor definuje také následující symbolické konstanty:"
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "B<IPC_CREAT>"
+msgstr "B<IPC_CREAT>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Create entry if key doesn't exist."
+msgstr "Vytvoř, neexistuje-li."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "B<IPC_EXCL>"
+msgstr "B<IPC_EXCL>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Fail if key exists."
+msgstr "Ukonči chybou, existuje-li."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "B<IPC_NOWAIT>"
+msgstr "B<IPC_NOWAIT>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Error if request must wait."
+msgstr "Způsobí chybu, má-li se čekat."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "B<IPC_PRIVATE>"
+msgstr "B<IPC_PRIVATE>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Private key."
+msgstr "Privátní klíč."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "B<IPC_RMID>"
+msgstr "B<IPC_RMID>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Remove resource."
+msgstr "Vymaž resource."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "B<IPC_SET>"
+msgstr "B<IPC_SET>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Set resource options."
+msgstr "Nastav parametry pro resource."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "B<IPC_STAT>"
+msgstr "B<IPC_STAT>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Get resource options."
+msgstr "Zjisti nastavení resource."
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"Note that B<IPC_PRIVATE> is a I<key_t> type, while all the other symbolic "
+"constants are flag fields and can be OR'ed into an I<int> type variable."
+msgstr ""
+"Poznamenejme, že B<IPC_PRIVATE> je typu I<key_t>, zatímco všechny ostatní "
+"symbolické konstanty jsou vlajky, které lze logickým součtem kombinovat do "
+"proměnné typu I<int>."
+
+#. type: SS
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "Message queues"
+msgstr "Fronty zpráv"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"A message queue is uniquely identified by a positive integer (its I<msqid>)  "
+"and has an associated data structure of type I<struct msqid_ds>, defined in "
+"I<E<lt>sys/msg.hE<gt>>, containing the following members:"
+msgstr ""
+"Fronta událostí je jednoznačně identifikována kladným celým číslem (jejím "
+"I<msqid>)  a má asociovanou datovou strukturu typu I<struct msquid_ds>, "
+"definovanou v I<E<lt>sys/msg.hE<gt>>, obsahující následující členy:"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"struct msqid_ds {\n"
+"    struct ipc_perm msg_perm;\n"
+"    msgqnum_t       msg_qnum;    /* no of messages on queue */\n"
+"    msglen_t        msg_qbytes;  /* bytes max on a queue */\n"
+"    pid_t           msg_lspid;   /* PID of last msgsnd(2) call */\n"
+"    pid_t           msg_lrpid;   /* PID of last msgrcv(2) call */\n"
+"    time_t          msg_stime;   /* last msgsnd(2) time */\n"
+"    time_t          msg_rtime;   /* last msgrcv(2) time */\n"
+"    time_t          msg_ctime;   /* last change time */\n"
+"};\n"
+msgstr ""
+"struct msqid_ds {\n"
+"    struct ipc_perm msg_perm;\n"
+"    msgqnum_t       msg_qnum;   /*počet zpráv ve frontě */\n"
+"    msglen_t        msg_qbytes; /*max počet bytů ve frontě */\n"
+"    pid_t           msg_lspid;  /*PID posledního volání msgsnd(2) */\n"
+"    pid_t           msg_lrpid;  /*PID posledního volání msgrcv(2) */\n"
+"    time_t          msg_stime;  /*čas posledního volání msgsnd(2) */\n"
+"    time_t          msg_rtime;  /*čas posledního volání msgrcv(2) */\n"
+"    time_t          msg_ctime;  /*čas poslední změny */\n"
+"};\n"
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<msg_perm>"
+msgstr "I<msg_perm>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"I<ipc_perm> structure that specifies the access permissions on the message "
+"queue."
+msgstr "typu I<ipc_perm> specifikuje přístupová práva pro frontu událostí."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<msg_qnum>"
+msgstr "I<msg_qnum>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Number of messages currently on the message queue."
+msgstr "Počet zpráv ve frontě."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<msg_qbytes>"
+msgstr "I<msg_qbytes>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Maximum number of bytes of message text allowed on the message queue."
+msgstr "Maximální počet bytů ve zprávě pro tuto frontu."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<msg_lspid>"
+msgstr "I<msg_lspid>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "ID of the process that performed the last B<msgsnd>(2)  system call."
+msgstr "ID procesu, který poslední vykonal systémové volání B<msgsnd>(2)."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<msg_lrpid>"
+msgstr "I<msg_lrpid>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "ID of the process that performed the last B<msgrcv>(2)  system call."
+msgstr "ID procesu, který poslední vykonal systémové volání B<msgrcv>(2)."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<msg_stime>"
+msgstr "I<msg_stime>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Time of the last B<msgsnd>(2)  system call."
+msgstr "Čas posledního volání systémové služby B<msgsnd>(2)."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<msg_rtime>"
+msgstr "I<msg_rtime>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Time of the last B<msgrcv>(2)  system call."
+msgstr "Čas posledního volání systémové služby B<msgrcv>(2)."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<msg_ctime>"
+msgstr "I<msg_ctime>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"Time of the last system call that changed a member of the I<msqid_ds> "
+"structure."
+msgstr ""
+"Čas poslední volání systémové služby, která změnila členy struktury "
+"I<msqid_ds>."
+
+#. type: SS
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "Semaphore sets"
+msgstr "Sady semaforů"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"A semaphore set is uniquely identified by a positive integer (its I<semid>)  "
+"and has an associated data structure of type I<struct semid_ds>, defined in "
+"I<E<lt>sys/sem.hE<gt>>, containing the following members:"
+msgstr ""
+"Sada semaforů je jednoznačně identifikována kladným celým číslem (jejím "
+"I<semid>)  a má asociovanou datovou strukturu typu I<struct semid_ds>, "
+"definovanou v I<E<lt>sys/sem.hE<gt>>, obsahující následující členy:"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"struct semid_ds {\n"
+"    struct ipc_perm sem_perm;\n"
+"    time_t          sem_otime;   /* last operation time */\n"
+"    time_t          sem_ctime;   /* last change time */\n"
+"    unsigned long   sem_nsems;   /* count of sems in set */\n"
+"};\n"
+msgstr ""
+"struct semid_ds {\n"
+"    struct ipc_perm sem_perm;\n"
+"    time_t          sem_otime;   /* čas poslední operace */\n"
+"    time_t          sem_ctime;   /* čas poslední změny */\n"
+"    unsigned long   sem_nsems;   /* počet semaforů v sadě */\n"
+"};\n"
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<sem_perm>"
+msgstr "I<sem_perm>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"I<ipc_perm> structure that specifies the access permissions on the semaphore "
+"set."
+msgstr "typu I<ipc_perm> specifikuje přístupová práva pro sadu semaforů."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<sem_otime>"
+msgstr "I<sem_otime>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Time of last B<semop>(2)  system call."
+msgstr "Čas posledního volání systémové služby B<semop>(2)."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<sem_ctime>"
+msgstr "I<sem_ctime>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"Time of last B<semctl>(2)  system call that changed a member of the above "
+"structure or of one semaphore belonging to the set."
+msgstr ""
+"Čas posledního volání systémové služby B<semctl>(2), která změnila předchozí "
+"strukturu nebo hodnotu některého ze semaforů ze sady."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<sem_nsems>"
+msgstr "I<sem_nsems>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"Number of semaphores in the set.  Each semaphore of the set is referenced by "
+"a nonnegative integer ranging from B<0> to I<sem_nsems-1>."
+msgstr ""
+"Počet semaforů v sadě.  Každý semafor je identifikován nezáporným číslem od "
+"B<0> do I<sem_nsems-1>."
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"A semaphore is a data structure of type I<struct sem> containing the "
+"following members:"
+msgstr "Semafor je datová struktura typu I<struct sem> obsahující tyto členy:"
+
+#.     unsigned short semncnt; /* nr awaiting semval to increase */
+#.     unsigned short semzcnt; /* nr awaiting semval = 0 */
+#. type: Plain text
+#: opensuse-leap-15-3
+#, fuzzy, no-wrap
+#| msgid ""
+#| "struct sem {\n"
+#| "    int semval;  /* semaphore value */\n"
+#| "    int sempid;  /* PID for last operation */\n"
+#| "};\n"
+msgid ""
+"struct sem {\n"
+"    int semval;  /* semaphore value */\n"
+"    int sempid;  /* PID of process that last modified */\n"
+"};\n"
+msgstr ""
+"struct sem {\n"
+"    int semval; /* hodnota semaforu */\n"
+"    int sempid; /* PID poslední operace */\n"
+"}\n"
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<semval>"
+msgstr "I<semval>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Semaphore value: a nonnegative integer."
+msgstr "Hodnota semaforu, nezáporné číslo."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<sempid>"
+msgstr "I<sempid>"
+
+#. .TP
+#. .I semncnt
+#. Number of processes suspended awaiting for
+#. .I semval
+#. to increase.
+#. .TP
+#. .I semznt
+#. Number of processes suspended awaiting for
+#. .I semval
+#. to become zero.
+#. type: Plain text
+#: opensuse-leap-15-3
+#, fuzzy
+#| msgid ""
+#| "ID of the last process that performed a semaphore operation on this "
+#| "semaphore."
+msgid "PID of the last process that modified the value of this semaphore."
+msgstr "ID procesu, který naposledy měnil hodnotu tohoto semaforu."
+
+#. type: SS
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "Shared memory segments"
+msgstr "Segmenty sdílené paměti"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"A shared memory segment is uniquely identified by a positive integer (its "
+"I<shmid>)  and has an associated data structure of type I<struct shmid_ds>, "
+"defined in I<E<lt>sys/shm.hE<gt>>, containing the following members:"
+msgstr ""
+"Segment sdílené paměti je jednoznačně identifikován kladným celým číslem "
+"(jeho I<shmid>)  a má asociovanou datovou strukturu typu I<struct shmid_ds>, "
+"definovanou v I<E<lt>sys/shm.hE<gt>>, obsahující následující členy:"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+#, no-wrap
+msgid ""
+"struct shmid_ds {\n"
+"    struct ipc_perm shm_perm;\n"
+"    size_t          shm_segsz;   /* size of segment */\n"
+"    pid_t           shm_cpid;    /* PID of creator */\n"
+"    pid_t           shm_lpid;    /* PID, last operation */\n"
+"    shmatt_t        shm_nattch;  /* no. of current attaches */\n"
+"    time_t          shm_atime;   /* time of last attach */\n"
+"    time_t          shm_dtime;   /* time of last detach */\n"
+"    time_t          shm_ctime;   /* time of last change */\n"
+"};\n"
+msgstr ""
+"struct shmid_ds {\n"
+"    struct ipc_perm shm_perm;\n"
+"    size_t          shm_segsz;  /* velikost segmentu */\n"
+"    pid_t           shm_cpid;   /* PID tvůrce segmentu */\n"
+"    pid_t           shm_lpid;   /* PID, poslední operace */\n"
+"    shmatt_t        shm_nattch; /* počet připojených */\n"
+"    time_t          shm_atime;  /* čas posledního připojení */\n"
+"    time_t          shm_dtime;  /* čas posledního odpojení */\n"
+"    time_t          shm_ctime;  /* čas poslední změny */\n"
+"};\n"
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<shm_perm>"
+msgstr "I<shm_perm>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"I<ipc_perm> structure that specifies the access permissions on the shared "
+"memory segment."
+msgstr ""
+"typu I<ipc_perm> specifikuje přístupová práva pro segment sdílené paměti."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<shm_segsz>"
+msgstr "I<shm_segsz>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Size in bytes of the shared memory segment."
+msgstr "Velikost segmentu v bytech."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<shm_cpid>"
+msgstr "I<shm_cpid>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "ID of the process that created the shared memory segment."
+msgstr "ID procesu, který tento segment vytvořil."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<shm_lpid>"
+msgstr "I<shm_lpid>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"ID of the last process that executed a B<shmat>(2)  or B<shmdt>(2)  system "
+"call."
+msgstr ""
+"ID procesu, který naposledy volal systémovou službu B<shmat>(2)  nebo "
+"B<shmdt>(2)."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<shm_nattch>"
+msgstr "I<shm_nattch>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Number of current alive attaches for this shared memory segment."
+msgstr "Počet připojených procesů."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<shm_atime>"
+msgstr "I<shm_atime>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Time of the last B<shmat>(2)  system call."
+msgstr "Čas posledního volání systémové služby B<shmat>(2)."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<shm_dtime>"
+msgstr "I<shm_dtime>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Time of the last B<shmdt>(2)  system call."
+msgstr "Čas posledního volání systémové služby B<shmdt>(2)."
+
+#. type: TP
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "I<shm_ctime>"
+msgstr "I<shm_ctime>"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid "Time of the last B<shmctl>(2)  system call that changed I<shmid_ds>."
+msgstr ""
+"Čas posledního volání systémové služby B<shmctl>(2), která změnila hodnotu "
+"I<shmid_ds>."
+
+#. type: SS
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "IPC namespaces"
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"For a discussion of the interaction of System V IPC objects and IPC "
+"namespaces, see B<namespaces>(7)."
+msgstr ""
+
+#. type: SH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "DALŠÍ INFORMACE"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"B<ipcmk>(1), B<ipcrm>(1), B<ipcs>(1), B<lsipc>(1), B<ipc>(2), B<msgctl>(2), "
+"B<msgget>(2), B<msgrcv>(2), B<msgsnd>(2), B<semctl>(2), B<semget>(2), "
+"B<semop>(2), B<shmat>(2), B<shmctl>(2), B<shmdt>(2), B<shmget>(2), "
+"B<ftok>(3), B<namespaces>(7)"
+msgstr ""
+"B<ipcmk>(1), B<ipcrm>(1), B<ipcs>(1), B<lsipc>(1), B<ipc>(2), B<msgctl>(2), "
+"B<msgget>(2), B<msgrcv>(2), B<msgsnd>(2), B<semctl>(2), B<semget>(2), "
+"B<semop>(2), B<shmat>(2), B<shmctl>(2), B<shmdt>(2), B<shmget>(2), "
+"B<ftok>(3), B<namespaces>(7)"
+
+#. type: SH
+#: opensuse-leap-15-3
+#, no-wrap
+msgid "COLOPHON"
+msgstr "TIRÁŽ"
+
+#. type: Plain text
+#: opensuse-leap-15-3
+msgid ""
+"This page is part of release 4.16 of the Linux I<man-pages> project.  A "
+"description of the project, information about reporting bugs, and the latest "
+"version of this page, can be found at \\%https://www.kernel.org/doc/man-"
+"pages/."
+msgstr ""
+"Tato stránka je součástí projektu Linux I<man-pages> v4.16. Popis projektu a "
+"informace o hlášení chyb najdete na \\%https://www.kernel.org/doc/man\\-"
+"pages/."

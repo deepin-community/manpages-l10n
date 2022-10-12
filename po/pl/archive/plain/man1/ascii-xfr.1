@@ -1,0 +1,61 @@
+.\" {PTM/PB/0.1/28-09-1998/"podeślij/pobierz pliki przy użyciu protokołu ASCII"}
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.TH ascii-xfr 1 "Februari 18, 1996" "" "Podręcznik użytkownika Linuksa"
+.SH NAZWA
+ascii-xfr \- podeślij/pobierz pliki przy użyciu protokołu ASCII
+.SH SKŁADNIA
+.B ascii-xfr
+.B -s|-r
+.RB [ \-dnv ]
+.RB [ \-l
+.IR linedelay ]
+.RB [ \-c
+.IR characterdelay ]
+.I filename
+.SH OPIS
+.B Ascii-xfr
+Transferuje pliki w trybie ASCII. Oznacza to brak kontroli przepływu,
+brak sum kontrolnych i brak negocjacji nazwy pliku. Powinno się tego sposobu
+używać tylko w ostateczności.
+.PP
+Protokół ASCII transferuje pliki linia-po-linii. Znak EOL (końca linii) jest
+transferowany jako CRLF. Podczas odbierania, znak CR jest odrywany z
+nadchodzącego pliku. Znak Control-Z (ASCII 26) sygnalizuje EOF (koniec
+pliku).
+.PP
+\fBAscii-xfr\fP podczas odczytu czyta z \fIstdin\fP, a
+podczas wysyłania zapisuje dane do \fIstdout\fP. Określona forma
+przekierowania wejścia lub wyjścia na urządzenie modemowe jest więc
+niezbędna do jakichkolwiek działań.
+.SH OPCJE
+.IP \fB\-s\fP
+Wyślij plik.
+.IP \fB\-r\fP
+Pobierz plik. Jedna z opcji \fB-s\fP lub \fB-r\fP \fImusi\fP
+być obecna.
+.IP \fB\-d\fP
+Użyj Control-D (ASCII 4) jako znaku EOF.
+.IP \fB\-n\fP
+Nie tłumacz CR na CRLF i odwrotnie.
+.IP \fB\-v\fP
+Verbose: pokazuj statystyki transferu na stderr.
+.IP "\fB\-l\fP \fImilliseconds\fP"
+Podczas transmitowania, określa pauzę po każdej linii.
+.IP "\fB\-c\fP \fImilliseconds\fP"
+Podczas transmisji, określa pauzę po każdym znaku.
+.IP \fIfile\fP
+Nazwa wysyłanego (lub odbieranego) pliku. Podczas odbierania, każdy
+istniejący plik o tej nazwie zostanie skrócony.
+.SH UŻYCIE Z MINICOMEM
+Jeśli chcesz wołać ten program z \fBminicoma(1)\fP, uruchom go i przejdź do
+menu \fBO\fPptions (opcje). Wybierz \fIFile transfer protocols\fP (protokoły
+transferu plików). Dodaj następujące linie, np. jako protokoły \fBI\fP i \fBJ\fP.
+.sp 1
+.nf
+I  Ascii    /usr/bin/ascii\-xfr \-sv   Y   U   N   Y
+J  Ascii    /usr/bin/ascii\-xfr \-rv   Y   D   N   Y
+.fi
+.SH AUTOR
+Miquel van Smoorenburg, miquels@cistron.nl
+.SH "ZOBACZ TAKŻE"
+minicom(1)

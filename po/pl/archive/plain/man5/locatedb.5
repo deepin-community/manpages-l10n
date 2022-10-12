@@ -1,0 +1,114 @@
+.\" {PTM/WK/1999-XII}
+.TH LOCATEDB 5 \" -*- nroff -*-
+.SH NAZWA
+locatedb \- bazy nazw plików z kompresją początków
+.SH OPIS
+Ta strona podręcznika opisuje format baz danych nazw plików dla \fBlocate\fP
+w wersji GNU.
+.P
+Bazy nazw plików zawierają listy plików, istniejących w szczególnych drzewach
+katalogów w momencie ostatniej aktualizacji baz.
+.P
+Może istnieć wiele baz danych nazw plików.
+Użytkownicy mogą wybrać bazy, które przeszukuje \fBlocate\fP, posługując się
+zmienną środowiskową lub opcją wiersza poleceń; zobacz \fBlocate\fP(1L).
+Administrator systemu może wybrać częstość, z jaką aktualizowane są bazy,
+oraz katalogi, dla których zawierają zapisy. Normalnie bazy nazw plików
+zaktualizowane są przez okresowe uruchamianie programu \fBupdatedb\fP, 
+zwykle nocą; zobacz \fBupdatedb\fP(1L).
+.P
+\fBupdatedb\fP uruchamia program o nazwie \fBfrcode\fP kompresujący
+listę nazw plików przy użyciu front-compression [kompresji początków],
+redukującej rozmiar bazy danych 4 do 5-krotnie. Front-compression
+(znana również jako incremental encoding [kodowanie przyrostowe]) działa
+według następujących zasad.
+.P
+Pozycje w bazie danych stanowią posortowaną listę (dla wygody użytkowników
+nie rozróżniającymi wielkości znaków). Ponieważ lista jest posortowana,
+prawdopodobnie każda z jej pozycji posiada wspólny przedrostek
+(łańcuch początkowy) z pozycją poprzednią. Każda pozycja bazy rozpoczyna się
+bajtem licznika różnicy offsetu. Jest to dodatkowa liczba znaków przedrostka
+pochodzącego z poprzedniej pozycji bazy, jaka powinna być zastosowana ponad
+liczbę znaków, jakiej używa poprzednia pozycja w stosunku do jej z kolei
+poprzednika. (Licznik ten może być ujemny.) Po liczniku następuje ograniczona
+znakiem null końcówka ASCII \(em część nazwy, która następuje po wspólnym
+przedrostku.
+.P
+Jeśli licznik różnicy offsetu jest większy niż możliwy do przechowania
+w pojedynczym bajcie (+/\-127), to bajt posiada wartość 0x80, a licznik
+następuje w słowie dwubajtowym, z bajtem starszym jako pierwszym (sieciowy
+porządek bajtów).
+.P
+Każda baza danych rozpoczyna się od sztucznej pozycji dla pliku o nazwie
+`LOCATE02'. \fBlocate\fP sprawdza ten zapis, by upewnić się, że plik bazy
+posiada poprawny format; ignoruje te pozycję podczas przeszukiwań.
+.P
+Bazy danych nie mogą być sklejane (łączone), nawet jeśli ze wszystkich baz
+oprócz pierwszej usunięto pierwszą (sztuczną) pozycję. Wynika to stąd, że
+licznik różnicy offsetu pierwszego wpisu pochodzącego z drugiej i kolejnych
+baz będzie nieprawidłowy.
+.P
+Istnieje również stary format bazy danych, używany przez uniksowe programy
+.B locate
+i
+.B find
+oraz ich wcześniejsze wydania GNU.
+W celu utworzenia baz w starym formacie \fBupdatedb\fP uruchamia programy
+o nazwach \fBbigram\fP i \fBcode\fP. Stary format różni się od powyższego
+opisu w następujący sposób. W nowym formacie każda z pozycji zaczyna się od
+licznika różnicy offsetu i kończy się bajtem null. W starym formacie wartości
+bajtu od 0 do 28 wskazują na licznik różnicy offsetu od \-14 do 14. Wartością
+bajtu wskazującą, na to że występuje po niej długi licznik jest 0x1e (30),
+nie zaś 0x80. Długie liczniki przechowywane są w porządku bajtów hosta, który
+niekoniecznie jest sieciowym porządkiem bajtów, oraz o rozmiarze słowa
+integer hosta, zwykle mającym 4 znaki. One także reprezentują licznik
+o 14 mniejszy od ich wartości. Wiersze bazy danych nie posiadają bajtu
+ogranicznika; początek następnego wiersza wskazywany jest jego pierwszy bajt
+o wartości <= 30.
+.P
+Poza tym, zamiast rozpoczynania się fikcyjną pozycją, stary format bazy
+danych rozpoczyna się od 256 bajtowej tablicy zawierającej 128 najczęściej
+występujących dwuznaków (bigram) w liście plików. Dwuznak w tym kontekście
+jest parą sąsiednich bajtów. Bajty w bazie danych posiadające ustawiony
+starszy bit są indeksami (z wyczyszczonym starszym bitem) do tablicy dwuznaków.
+Kodowanie dwuznaków i liczniki różnicy offsetu powodują, że bazy te są
+o 20-25% mniejsze w porównaniu z nowym formatem. Nie są jednak czysto 8-bitowe.
+Każdy z bajtów nazwy pliku, przypadający na zakres używany dla kodów
+specjalnych, zastępowany jest w bazie przez znak zapytania, co nieprzypadkowo
+stanowi maskę powłoki dopasowującą pojedynczy znak.
+.SH PRZYKŁAD
+.nf
+
+Dane wejściowe do \fBfrcode\fP:
+.\" null wymienione na znaki nowej linii:
+/usr/src
+/usr/src/cmd/aardvark.c
+/usr/src/cmd/armadillo.c
+/usr/tmp/zoo
+
+Długość najdłuższego wspólnego przedrostka z poprzedniego zapisu:
+0 /usr/src
+8 /cmd/aardvark.c
+14 rmadillo.c
+5 tmp/zoo
+
+.fi
+Dane wynikowe z \fBfrcode\fP, z końcowymi znakami null zamienionymi
+na znaki nowej linii i zmianie liczby bajtów na postać drukowalną:
+.nf
+0 LOCATE02
+0 /usr/src
+8 /cmd/aardvark.c
+6 rmadillo.c
+\-9 tmp/zoo
+
+(6 = 14 \- 8, a \-9 = 5 \- 14)
+.fi
+.SH "ZOBACZ TAKŻE"
+.BR find (1L),
+.BR locate (1L),
+.BR locatedb (5L),
+.BR xargs (1L).
+.br
+.B Znajdowanie plików
+(dokumentacji Info on-line lub drukowanej)

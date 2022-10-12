@@ -1,0 +1,547 @@
+.\" PTM: $Id: innd.8,v 1.3 2002/05/21 08:49:57 robert Exp $
+.\"
+.\" $XXRevisionXX: 1.24.2.4 $
+.\"  ^- dodane XX
+.TH INND 8
+.SH NAZWA
+innd, inndstart \- InterNetNews daemon
+.SH SKŁADNIA
+.B innd
+[
+.B \-a
+]
+[
+.BI \-c " dni"
+]
+[
+.B \-C
+]
+[
+.B \-d
+]
+[
+.B \-f
+]
+[
+.BI \-H " licznik"
+]
+[
+.BI \-i " licznik"
+]
+[
+.BI \-I "adres_IP"
+]
+[
+.BI \-l " rozmiar"
+]
+[
+.BI \-m " tryb"
+]
+[
+.BI \-n " flaga"
+]
+[
+.BI \-o " licznik"
+]
+[
+.BI \-p "fd_des"
+]
+[
+.BI \-P "port"
+]
+[
+.B \-r
+]
+[
+.B \-s
+]
+[
+.BI \-t " opóźnienie"
+]
+[
+.BI \-T " licznik"
+]
+[
+.B \-u
+]
+[
+.BI \-X " sekundy"
+]
+[
+.B \-Z
+]
+
+.B inndstart
+[
+.B flagi
+]
+.SH OPIS
+.IR Innd ,
+który jest demonem news (InterNetNews), obsługuje wszystkie nadchodzące
+feedy. Najpierw wczytuje do pamięci pliki
+.IR active (5),
+.IR newsfeeds (5)
+i
+.IR incoming.conf (5).
+Potem otwiera port NNTP do odbierania artykułów ze zdalnych stacji (zobacz
+opcję ``\fB\-p\fP''). Jeśli w include/config.h zdefiniowano
+.IR HAVE_UNIX_DOMAIN_SOCKETS ,
+to do odbioru artykułów od lokalnych procesów, takich jak 
+.IR nnrpd (8)
+i
+.IR rnews (1)
+otwierane jest gniazdo strumieniowe dziedziny Uniksowej, a dla
+.IR ctlinnd (8)
+odwierane jest analogiczne gniazdo datagramowe.
+Gdy makro to nie jest zdefiniowane, używane są łącza nazwane.
+.IR Ctlinnd (8)
+wykorzystywany jest do przekazywania serwerowi poleceń wykonania określonych akcji.
+Otwiera również bazę
+.IR history (5)
+i dwa pliki raportowe, zastępujące jego standardowe wyjście i wyjście błędu.
+.PP
+Po otwarciu wszystkich plików i gniazd,
+.I innd
+oczekuje na połączenia i dane na swoich portach, używając do tego
+.IR select (2)
+i nieblokującego I/O.
+Jeśli nie ma dostępnych danych, to wypróżni on swoje wewnątrzrdzeniowe
+struktury danych. Domyślna liczba sekund opóźnienia przed wypróżnieniem jest
+ustawiana jako
+.I <DEFAULT_TIMEOUT w config.data>
+(zwykle
+.\" =()<.IR @<typDEFAULT_TIMEOUT>@ ) >()=
+.IR 300 ) 
+sekund.
+.PP
+Jeśli 
+.I innd
+otrzyma błąd ENOSPC (zobacz
+.IR intro (2))
+podczas zapisu pliku
+.IR active ,
+pliku article lub bazy historii, to wyśle do siebie komendę ``throttle''.
+Stanie się tak również, jeśli otrzyma zbyt wiele błędów wejścia-wyjścia podczas
+zapisu do jakiegoś pliku.
+.PP
+Niektóre parametry ustawiane w
+.IR inn.conf (5)
+mogą być również podane w linii poleceń innd. W tym wypadku,
+opcje z
+.IR inn.conf (5)
+będą nadpisane przez opcje linii poleceń.
+.SH OPCJE
+.TP
+.B \-a
+Domyślnie, jeśli host nie jest wymieniony w pliku
+.I incoming.conf
+to połączenie jest przekazywane do
+.IR nnrpd .
+Po użyciu tej flagi dowolny host może się podłączyć i przesyłać artykuły.
+.TP
+.B \-c
+.I innd
+odrzuca stare artykuły. Zasadniczo zachowanie to może być sterowane przez
+bazę historii, lecz czasem stacja wyrzuca w sieć paczkę bardzo starych
+artykułów. Flaga ``\fB\c\fP'' określa przedział czasu. Na przykład ``\fB\-c21\fP''
+odrzuca wszelkie artykuły, wysłane dawniej niż 21 dni temu. Wartość zerowa
+powstrzymuje ten test. Domyślną wartością jest 14 dni, lecz można to zmienić
+opcją ``artcutoff'' w
+.IR inn.conf (5)
+.TP
+.B \-C
+Jeśli użyta jest flaga ``\fB\-C\fP'', to
+.I innd
+przyjmie i przesyła dalej, ale nie przetwarza wiadomości anulowania i
+powstrzymania. Jest to przeznaczone dla stacji, w których nadużywane są
+anulowania i które wybierają mechanizm z lepszą autoryzacją.
+.TP
+.B "\-d \-f"
+.I Innd
+normalnie przechodzi w tło, ustawia standardowe wyjścia na pliki raportowe i
+odłącza się od terminala. Po użyciu flagi ``\fB\-d\fP'' serwer tego nie
+robi, a po użyciu flagi ``\fB\-f\fP'', serwer pozostaje na pierwszym planie.
+.TP
+.B "\-H \-T \-X"
+Flagi ``\fB\-H\fP'', ``\fB\-T\fP'' i ``\fB\-X\fP'' sterują liczbą połączeń
+dozwolonych na minutę. Ma to w założeniach działać jako ochrona serwera
+przed czytnikami, które wykonują w ciągu minuty zbyt wiele połączeń z
+serwerem. Zazwyczaj nie używa się tego, chyba że rzeczywiście pojawia się
+jakiś problem.
+Tablica używana do tych sprawdzeń jest ograniczona do 128 wpisów i jest
+używana jako pierścień (ring). Rozmiar został wybrany do ułatwienia
+obliczania indeksu i do upewnienia się, że nie zabraknie ci miejsca.
+Praktycznie wydaje się wątpliwe, żebyś wykorzystał nawet połowę tablicy
+naraz.
+.IP
+Flaga ``\fB\-H\fP'' określa maksymalną liczbę połączeń pochodzących z danego hosta
+z serwerem podczas ``\fB\-X\fP'' sekund. Domyślnie 2.
+.IP
+Flaga ``\fB\-T\fP'' ogranicza całkowitą liczbę nadchodzących połączeń innda
+w okresie ``\fB\-X\fP'' sekund. Maksymalną wartością jest 128. Domyślną 60.
+.IP
+Flaga ``\fB\-X\fP'' ustawia liczbę sekund, używaną przez  ``\fB\-H\fP'' i
+``\fB\-T\fP''. Wartość zerowa wyłącza sprawdzanie. Domyślnie jest 0.
+.TP
+.B \-i
+Flaga ``\fB\-i\fP'' ogranicza liczbę nadchodzących połączeń NNTP. Wartość
+zerowa wyłącza to sprawdzenie. Domyślną wartością, jeśli w \fIinn.conf\fR(5)
+nie podano opcji ``maxconnections'' jest 50.
+Wymieniona opcja jest zastępowana wartością tej opcji.
+.TP
+.B \-I
+Opcja ta umożliwia wiązanie innda do podanego adresu interfejsu IP. Adres IP
+musi być w postaci kropkowej czwórki liczb (nnn.nnn.nnn.nnn). Zobacz też
+opcję ``bindaddress'' w
+.IR inn.conf (5).
+.TP
+.B \-l
+Flaga ``\fB\-l\fP'' ogranicza rozmiar artykułu. Po użyciu tej flagi,
+wszystkie artykuły większe niż
+.I rozmiar
+bajtów będą odrzucane. Domyślną wartością jest 1000000L bajtów. Sprawdzanie
+można wyłączyć, używając wartości zerowej.
+Patrz także opcje ``maxartsize'' i ``localmaxartsize'' w
+.IR inn.conf (5).
+.TP
+.B \-m
+Flaga ``\fB\-m\fP'' służy do uruchamiania serwera w zatrzymanym lub
+stłumionym stanie (zobacz
+.IR ctlinnd (8)).
+Argument rozpoczyna się pojedynczą literą:
+.IR g ,
+.IR p
+lub
+.IR t ,
+wskazujące odpowiednio na ``go'' (startuj), ``pause'' (zatrzymaj) lub ``throttle''
+(stłum).
+.TP
+.B \-n
+Flaga ``\-n'' określa czy pauzowanie lub stłumienie serwera powinno również
+wyłączyć przyszłe procesy czytnikowe. Wartość ``\fBy\fP'' powoduje, że
+czytniki zachowują się jak serwer, a wartość ``\fBn\fP'' umożliwia czytanie,
+nawet gdy serwer nie pracuje.
+Domyślnie zezwala się na czytanie, a zmienić można to opcją
+``readerswhenstopped'' w
+.IR inn.conf (5).
+.TP
+.B \-o
+Flaga ``\fB\-o\fP'' służy ograniczaniu liczby plików, które są utrzymywane
+otwarte dla wychodzących feedów plikowych. Domyślną wartością jest liczba
+dostępnych deskryptorów minus część zarezerwowana do użytku wewnętrznego.
+.TP
+.B \-p
+Po użyciu flagi ``\fB\-p\fP'' przyjmuje się, że port NNTP jest otwierany na
+podanym deskryptorze. (Jeśli użyta jest ta flaga, to
+.I innd
+zakłada, że pracuje z właściwymi uprawnieniami i nie będzie wołał
+.IR chown (2)
+na żadnych z tworzonych plików lub katalogów.)
+.TP
+.B \-P
+Jeśli użyta jest flaga ``\fB\-P\fP'', to podany port jest używany do
+nasłuchiwania połączeń.
+.I innd
+musi mieć wystarczające uprawnienia startowe by otworzyć podany port.
+.TP
+.B \-r
+Jeśli użyta jest flaga ``\fB\-r\fP'', serwer przenumeruje plik
+.I active
+zupełnie tak, jak po wysłaniu komendy ``renumber''.
+.TP
+.B \-s
+Jeśli użyta jest flaga ``\fB\-s\fP'', to
+.I innd
+nic nie będzie robić, lecz tylko sprawdzi składnię pliku
+.IR newsfeeds .
+Jeśli będą tam błędy, to zgłosi kod błędu; rzeczywiste błędy będą natomiast
+zgłoszone w
+.IR syslog (3).
+.TP
+.B \-t
+Zmienia czas opóźnienia przed wypróżnieniem do
+.IR timeout 
+sekund.
+.TP
+.B \-u
+Raporty są normalnie buforowane; flaga ta wyłącza to zachowanie.
+.PP
+.I Inndstart
+jest małym programem typu front-end, który otwiera port NNTP, ustawia uid i
+gid na opiekuna news, a następnie uruchamia demona
+.I innd
+z flagą ``\fB\-p\fP'' i minimalnym bezpiecznym środowiskiem.
+Jest to mały front-end dla stacji, która nie chce uruchamiać 
+.I innd
+z uprawnieniami roota.
+.SH "KOMUNIKATY STERUJĄCE"
+Artykuły przychodzące, mające nagłówek Control są nazywane
+.IR "komunikatami sterującymi" .
+Poza komunikatem anulowania, są one zaimplementowane przez zewnętrzne
+programy w katalogu
+.I <pathcontrol w inn.conf>
+o ile
+.I <usecontrolchan w inn.conf>
+jest ustawione na ``false''. (Komunikaty anulowania (cancel) odświeżają bazę
+historii, więc muszą być obsługiwane wewnętrznie; koszt synchronizowania,
+blokowania i odblokowywania byłby zbyt wysoki przy odbiorze wielu takich
+komunikatów.)
+.PP
+Gdy nadchodzi komunikat sterujący, pierwsze słowo tekstu jest konwertowane
+na małe litery i jest używane jako nazwa uruchamianego programu. Jeśli
+program nie istnieje, wywoływany jest domyślny program, określony przez
+.IR "<pathcontrol w inn.conf>/default" .
+.PP
+Wszystkie programy sterujące są wywoływane z czterema parametrami. Pierwszym
+jest adres nadawcy komunikatu; jest to pobierane z nagłówka Sender. Jeśli
+nagłówek ten jest pusty, to dane są pobierane z nagłówka From. Następnym
+parametrem jest adres zwrotny replik; pobierany z nagłówka Reply-To.
+Jeśli nagłówek ten jest pusty, użyty zostanie adres nadawcy.
+Trzecim parametrem będzie nazwa pliku, w którym znajduje się artykuł
+względem katalogu składowego news.
+Czwartym parametrem jest host, który wysłał artykuł. Jest to odczytywane z
+linii Path.
+.PP
+Jeśli
+.I <usecontrolchan w inn.conf> 
+jest ustawione na ``true'', to żaden komunikat sterujący nie będzie
+przetwarzany przez program zewnętrzny, forkowany przez innda. Zamiast tego,
+będzie przetwarzany przez skrypt
+.IR controlchan ,
+który jest wywoływany jako program kanałowy innda. Musisz do używania
+tego skryptu skonfigurować
+.IR newsfeeds (5).
+Przetwarzanie z użyciem
+.I controlchan
+może zredukować nadmierne obciążenie, jeśli zbyt wiele komunikatów
+sterujących pojawia się naraz.
+.PP
+Dystrybucja komunikatu sterującego jest odmienna od dystrybucji
+standardowych artykułów.
+.PP
+Komunikaty sterujące normalnie wpadają do grupy dyskusyjnej
+.IR control .
+Mogą one być zapisywane w podgrupach, lecz w oparciu o polecenie komunikatu
+sterującego.
+Na przykład komunikat newgroup może być zapisany w grupie
+.I control.newgroup
+lub w ogólnym
+.IR control ,
+jeśli specjalizowana podgrupa nie istnieje.
+.PP
+Stacje mogą jawnie udostępniać grupę ``control'' w ich listach zapisowych,
+lecz zwykle lepiej jest ją wyłączyć. Jeśli komunikat sterujący jest wysyłany
+na grupę, której nazwa kończy się czterema znakami ``.ctl'', to przyrostek
+jest obcinany, a to co pozostanie jest używane jako nazwa grupy.
+Na przykład komunikat anulujący, wysłany na ``news.admin.ctl'' zostanie
+przesłany do wszystkich stacji zapisanych na grupy ``control'' lub
+``news.admin''.
+Wiadomości newgroup lub rmgroup wymagają dodatkowego specjalnego traktowania.
+Jeżeli wiadomość jest zaakceptowana i została wysłana do tworzonej lub usuwanej grupy, 
+to ta wiadomość zostanie przesłana do wszystkich serwerów,
+których wzorce subskrypcji grup pozwoliłyby na odebranie wiadomości wysyłanych do
+tej grupy.
+.PP
+Jeśli
+.I <mergetogroups w inn.conf>
+jest ustawione na ``true'', to gdy artykuł jest wysyłany na grupę, która
+rozpoczyna się trzema literami ``to.'', to zostanie potraktowany specjalnie,
+jeśli grupa ta nie istnieje w pliku
+.IR active :
+artukuł jest składowany do grupy ``to'' i jest wysyłany do pierwszej stacji,
+nazwanej po przedrostku. Na przykład, wysyłanie do ``to.uunet'' zostanie
+złożone do ``to'' i przesłane do stacji ``uunet''.
+file:
+.SH "RÓŻNICE PROTOKOŁU"
+.I Innd
+implementuje komendy NNTP zdefiniowane w RFC 977 z następującymi
+odstępstwami:
+.IP 1.
+Za
+\&``\fIlist\fP''
+może występować dodatkowo argument
+\&``\fIactive\fP'',
+\&``\fIactive.times\fP'',
+\&``\fInewsgroups\fP''
+lub
+\&``\fIsubscription\fP''.
+Jest to popularne rozszerzenie, lecz nie w pełni obsługiwane; zobacz
+.IR nnrpd (8).
+.IP 2.
+Zaimplementowane są komendy
+\&``\fIauthinfo user\fP''
+oraz
+\&``\fIauthinfo pass\fP''.
+Zobacz draft-barber-nntp-imp-07.txt dla dalszych szczegółów.
+.IP 3.
+Udostępniona jest nowa komenda,
+\&``\fImode reader\fP''.
+Komenda ta powoduje, że serwer przekazuje połączenie do
+.IR nnrpd .
+Komenda
+\&``\fImode query\fP''
+przeznaczona jest dla przyszłych zastosowań i obecnie jest traktowana tak
+samo.
+.IP 4.
+Udostępnione są komendy wspierające transfer strumieniowy:
+\&``\fIcheck messageid\fP'' i ``\fItakethis messageid\fP''.
+.IP 5.
+Udostępniona jest komenda transferu wsadowego ``\fIxbatch
+liczba-bajtów\fP''. Komenda ta odczyta \fIliczbę-bajtów\fP bajtów i zapisze
+je dla dalszego przetwarzania przez rnews(1) (który należy uruchomić
+oddzielnie). Obejrzyj programy innxbatch i sendxbatches.sh.
+.IP 6.
+Pozostałymi zaimplementowanymi komendami są
+\&``\fIhead\fP'' ,
+\&``\fIhelp\fP'' ,
+\&``\fIihave\fP'' ,
+\&``\fIquit\fP''
+oraz
+\&``\fIstat\fP''.
+.SH "MODYFIKACJE NAGŁÓWKÓW"
+.I Innd
+modyfikuje tak mało nagłówków, jak tylko się da, lecz mógłby być lepszy.
+.PP
+Oto lista nagłówków, które jeśli istnieją, są usuwane:
+.RS
+.nf
+Date-Received
+Posted
+Posting-Version
+Received
+Relay-Version
+.fi
+.RE
+Puste nagłówki oraz nagłówki składające się z białych spacji również są
+opuszczane.
+.PP
+Do nagłówka Path doklejana jest nazwa lokalnej stacji 
+(określanej przez wartość ``pathhost'' w
+.IR inn.conf (5))
+i wyrzyknik (jeśli nazwa pierwszej stacji nagłówka różni się od lokalnej).
+.PP
+Nagłówek Xref jest usuwany i tworzony jest nowy.
+.PP
+W przypadku nieobecności, nagłówek Lines jest dodawany.
+.PP
+.I Innd
+nie przepisuje nieprawidłowych nagłówków. Na przykład nie będzie zmieniać
+nieprawidłowego nagłówka Lines, ale odrzuci artykuł.
+.SH RAPORTOWANIE
+.I Innd
+raportuje wszystkie nadchodzące artykuły do pliku raportowego. Jest to plik
+tekstowy o zmiennej ilości rozdzielanych spacjami pól o jednym z
+następujących formatów:
+.RS
+.nf
+mon dd hh:mm:ss.mmm + feed <Message-ID> stacja...
+mon dd hh:mm:ss.mmm j feed <Message-ID> stacja...
+mon dd hh:mm:ss.mmm c feed <Message-ID> stacja...
+mon dd hh:mm:ss.mmm - feed <Message-ID> powód...
+mon dd hh:mm:ss.mmm ? feed <Message-ID> powód...
+.fi
+.RE
+.PP
+Po polu Message-ID może być również pole nazwy hosta i rozmiaru, zależnie od
+opcji ``nntplinklog'' i ``logsize'' z
+.IR inn.conf (5).
+.PP
+Pierwsze trzy pola są polami daty i czasu w rozdzielczości milisekundowej.
+Piąte pole jest stacją, która wysłała artykuł (odczytywane z nagłówka Path).
+Szóste pole jest identyfikatorem artykułu; jeśli informacja jest
+niedostępna, pojawi się w jej miejscu pytajnik.
+.PP
+Czwarte pole określa czy artykuł został przyjęty czy nie. Jeśli jest tam
+znak plus, to został przyjęty. Jeśli ``j'', to został przyjęty, lecz
+wszystkie grupy mają w swoich rekordach
+.I active
+``j'', więc artykuł został złożony do grupy ``junk''.
+Jeśli w polu pojawiła się litera ``c'', to przed pojawieniem się
+oryginalnego artykułu odebrany został komunikat anulujący.
+We wszystkich tych przypadkach artykuł został przyjęty i pole ``stacja...''
+zawiera rozdzieloną spacjami listę stacji, do których artykuł jest
+przesyłany.
+.PP
+Jeśli czwarte pole zawiera znak minusa, o artykuł został odrzucony. Powodami
+odrzucenia mogą być:
+.RS
+.nf
+"%s" header too long (za długi nagłówek)
+"%s" wants to cancel <%s> by "%s" ("%s" chce anulować <%c> poprzez "%s")
+Article exceeds local limit of %s bytes (Artykuł przekracza lokalny 
+                                         limit %s bajtów)
+Article posted in the future -- "%s" (Artykuł wysłany w przyszłości -- "%s")
+Bad "%s" header (Zły nagłówek "%s")
+Can't write history (Nie mogę zapisać historii)
+Duplicate (Duplikat)
+Duplicate "%s" header (Zduplikowany nagłówek "%s")
+EOF in headers (EOF w nagłówkach)
+Linecount %s != %s +- %s (Liczba linii %s != %s +- %s)
+Missing %s header (Brak nagłówka %s)
+No body (Brak ciała)
+No colon-space in "%s" header (Brak dwukropka-spacji w nagłówku "%s")
+No space (Brak spacji (albo miejsca???))
+Space before colon in "%s" header (Spacja przed dwukropkiem w nagłówku "%s")
+Too old -- "%s" (Za stare -- "%s")
+Unapproved for "%s" (Niezatwierdzone dla "%s")
+Unwanted newsgroup "%s" (Niechciana grupa dyskusyjna "%s")
+Unwanted distribution "%s" (Niechciana dystrybucja "%s")
+Whitespace in "Newsgroups" header -- "%s" (Biała spacja w nagłówku
+                                           "Newsgroups" -- "%s")
+.fi
+.RE
+Gdzie ``%s'' jest podmieniane przez konretniejsze informacje.
+.PP
+Jeżeli w czwartym polu wystąpi znak ``?'', oznzcza to, że atykuł
+zawiera dziwne łańcuchy znaków, tj. CR bez LF lub LF bez CR. Te znaki
+są używane razem ``CRLF'', co oznacza koniec linii. Obecnie taka informacja
+w logu oznacza dziwność tego artykułu, ale
+.I innd
+nigdy nie odrzuca artykułu z tego powodu.
+.PP
+Zauważ, że jeśli artykuł jest przyjęty i <wanttrash w inn.conf> jest
+ustawione na ``yes'' i żadna z grup nie jest odpowiednia, to zostanie
+zraportowany w dwóch liniach: w linii ``j'' i ``\-''.
+.PP
+.I Innd
+zgłasza też obszerne raporty poprzez
+.IR syslog a.
+Pierwsze słowo komunikatu raportowego będzie: nazwą stacji, jeśli wpis jest
+dla niej specyficzny (np. komunikat ``connected''); słowem ``SERVER'', jeśli
+komunikat jest związany z serwerem, np. gdy pojawi się błąd odczytu.
+.PP
+Jeśli drugim słowem są cztery litery ``cant'', to zgłaszany jest błąd.
+W tym przypadku następne dwa słowa ogólnie nazywają wywołanie systemowe lub
+funkcję biblioteczną, która się nie powiodła oraz obiekt, wokół którego
+wykonywane były działania. Reszta linii może zawierać inne informacje.
+.PP
+W innych przypadkach, drugie słowa określa rodzaj zmiany, a reszta linii
+uściśla tę informację. Słowo ``internal'' ogólnie oznacza wewnętrzny błąd
+logiczny.
+.SH SYGNAŁY
+.I Innd
+przechwytuje sygnały SIGTERM i SIGDANGER i wyłącza się po nich. Jeśli użyta
+jest flaga ``\-d'', przechwytywany będzie również SIGINT i będzie działał
+analogicznie.
+.PP
+.I Innd
+przechwytuje sygnał SIGUSR1 i odtwarza kanał sterujący, wykorzystywany
+normalnie przez
+.IR ctlinnd (8).
+.SH HISTORIA
+Napisane przez Richa $alza <rsalz@uunet.uu.net> dla InterNetNews.
+.de R$
+Jest to rewizja \\$3, z dnia \\$4.
+..
+.R$ $XXIdXX: innd.8,v 1.24.2.4 2000/08/20 22:19:53 kondou Exp $
+.SH "ZOBACZ TAKŻE"
+active(5),
+ctlinnd(8),
+dbz(3),
+history(5),
+incoming.conf(5),
+inn.conf(5),
+newsfeeds(5),
+nnrpd(8),
+rnews(1),
+syslog(8).

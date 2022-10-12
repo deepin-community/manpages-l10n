@@ -1,0 +1,520 @@
+.\" {PTM/PB/0.1/18-05-1999/"śledź wywołania systemowe i sygnały"}
+.\" Translation 1999 Przemek Borys <pborys@dione.ids.pl>
+.\" Copyright (c) 1991, 1992 Paul Kranenburg <pk@cs.few.eur.nl>
+.\" Copyright (c) 1993 Branko Lankester <branko@hacktic.nl>
+.\" Copyright (c) 1993, 1994, 1995, 1996 Rick Sladkey <jrs@world.std.com>
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. The name of the author may not be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+.\" OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+.\" IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+.\" INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+.\" NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+.\" DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+.\" THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+.\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+.\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.\"
+.\"	$Id: strace.1,v 1.9 2001/06/12 11:09:04 robert Exp $
+.\"
+.de CW
+.sp
+.nf
+.ft CW
+..
+.de CE
+.ft
+.fi
+.sp
+..
+.TH STRACE 1 "96/02/13"
+.SH NAZWA
+strace \- śledź wywołania systemowe i sygnały
+.SH SKŁADNIA
+.B strace
+[
+.B \-dffhiqrtttTvxx
+]
+[
+.BI \-a kolumna
+]
+[
+.BI \-e wyraż
+]
+\&...
+[
+.BI \-o plik
+]
+[
+.BI \-p pid
+]
+\&...
+[
+.BI \-s rozmiarnapisu
+]
+[
+.BI \-u użytkownik
+]
+[
+.I komenda
+[
+.I arg
+\&...
+]
+]
+.sp
+.B strace
+.B \-c
+[
+.BI \-e wyraż
+]
+\&...
+[
+.BI \-O wydatki
+]
+[
+.BI \-S sortuj
+]
+[
+.I komenda
+[
+.I arg
+\&...
+]
+]
+.SH OPIS
+.IX "strace komenda" "" "\fLstrace\fR komenda"
+.LP
+W najprostszym przypadku, 
+.B strace
+wykonuje zadaną komendę 
+.RI "`" komenda "'"
+aż się ona nie skończy.
+Strace przechwytuje i nagrywa wywołania systemowe, dokonane przez proces,
+oraz sygnały, które do niego dotarły. Nazwa każdego wywołania, oraz jego
+argumenty, są wypisywane na wyjście standardowe błędu, lub do pliku podanego
+w opcji
+.BR \-o . 
+.LP
+.B strace
+jest użytecznym narzędziem diagnostyki, debuggowania. Administratorzy
+systemów, diagnostycy i napotykacze problemów zauważą, że jest nieocenione
+dla rozwiązywania problemów z programami, których źródeł nie ma wprost
+dostępnych. Strace bowiem nie potrzebuje rekompilacji aby go użyć.
+Studenci, hackerzy i ogólnie zainteresowani zauważą, że z śledzenia wywołań
+systemowych można się wiele nauczyć o systemie. Programiści zauważą, że
+skoro wywołania systemowe i sygnały są zdarzeniami zachodzącymi na
+interfejsie użytkownik/jądro, to ich bliska obserwacja może być bardzo
+użyteczna do izolowania błędów, sprawdzania czystości i próbowania
+wyłapywania ulotnych warunków.
+.LP
+Każda śledzona linia zawiera nazwę wywołania systemowego, za którą następują
+jego argumenty, otoczone nawiasami, oraz jego wartość zwracana.
+Przykładowe śledzenie komendy ``cat /dev/null'' daje:
+.CW
+open("/dev/null", O_RDONLY) = 3
+.CE
+Do błędów (zwykle wartości zwracane \-1) dopisywany jest symbol errno i
+napis błędu.
+.CW
+open("/foo/bar", O_RDONLY) = \-1 ENOENT (No such file or directory)
+.CE
+Sygnały są drukowane jako symbol, oraz napis sygnału. Fragment śledzenia i
+przerwania komendy ``sleep 666'' to:
+.CW
+sigsuspend([] <unfinished ...>
+--- SIGINT (Interrupt) ---
++++ killed by SIGINT +++
+.CE
+Argumenty są namiętnie drukowane w formie symbolicznej.
+Przykład ten pokazuje dokonanie przekierowania ``>>xyzzy'':
+.CW
+open("xyzzy", O_WRONLY|O_APPEND|O_CREAT, 0666) = 3
+.CE
+Tutaj, wymienione trzy argumenty z open są zdekodowane poprzez rozbicie
+argumentu flagi na jego bitowe składniki i wydrukowanie ich tradycyjnych
+nazw, oraz wartości ósemkowej praw. Choć tradycyjne, lub natywne używanie
+różni się od ANSI lub POSIX, to te ostatnie formy są jednak preferowane.
+W niektórych wypadkach, wyjście strace może być bardziej czytelne niż
+źródła.
+.LP
+Wskaźniki struktury są dereferencjonowane, a członkowie są odpowiednio
+wyświetlani. We wszystkich wypadkach argumenty są formatowane w stylu C.
+Na przykład, istota komendy ``ls \-l /dev/null'' jest przechwytywana jako:
+.CW
+lstat("/dev/null", {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+.CE
+Zauważ, jak zdereferencjonowano argument `struct stat' i jak wyświetlono
+każdego członka. Praktycznie, zauważ jak ostrożnie został zdekodowany
+członek st_mode na jego maskę bitową. Zauważ też, że w tym przykładzie,
+pierwszym argumentem lstat jest wejście wywołania systemowego, a drugim jego
+wyjście. Ponieważ argumenty wyjściowe nie są modyfikowane jeśli wywołanie
+zawiedzie, argumenty nie zawsze mogą zostać zdereferencjonowane. Na przykład
+próba ``ls \-l'' na nieistniejącym pliku da następującą linię:
+.CW
+lstat("/foo/bar", 0xb004) = \-1 ENOENT (No such file or directory)
+.CE
+.LP
+Wskaźniki znakowe są dereferencjonowane i wyświetlane jako napisy C.
+Niedrukowalne znaki są reprezentowane w kodach eskejpowych.
+Drukowanych jest tylko pierwszych
+.I rozmiarnapisu
+(domyślnie 32) bajtów napisu;
+dłuższe napisy mają za zamykającym cytatem dołączone wielokropki.
+Oto przykład ``ls \-l'', gdzie funkcja biblioteki getpwuid odczytuje plik z
+hasłem:
+.CW
+read(3, "root::0:0:System Administrator:/"..., 1024) = 422
+.CE
+\fRPodczas gdy struktury są notowane przy użyciu nawiasów klamrowych, zwykłe
+wskaźniki i tablice są drukowane przy użyciu nawiasów kwadratowych, z
+przecinkami oddzielającymi elementy. Oto przykład wywołania komendy ``id''
+na systemie z dodatkowymi id grup:
+.CW
+getgroups(32, [100, 0]) = 2
+.CE
+\fRZ drugiej strony, zbiory bitowe też są pokazywane w nawiasach kwadratowych,
+lecz elementy są oddzielane tylko przez spację. Oto powłoka, przygotowująca
+się do wywołania komendy zewnętrznej:
+.CW
+sigprocmask(SIG_BLOCK, [CHLD TTOU], []) = 0
+.CE
+\fRDrugi argument jest zbiorem bitowym dwóch sygnałów, SIGCHLD i SIGTTOU.
+W niektórych wypadkach, zbiory bitowe są tak pełne, że bardziej sensowne
+jest drukowanie nieustawionych elementów. W takiej sytuacji zbiór jest
+poprzedzony tyldą, jak w następującym przykładzie:
+.CW
+sigprocmask(SIG_UNBLOCK, ~[], NULL) = 0
+.CE
+\fRDrugi argument wskazuje, że ustawiono cały zestaw sygnałów.
+.SH OPCJE
+.TP 12
+.TP
+.B \-c
+Zliczaj czas, wywołania i błędy dla każdego wywołania systemowego i zgłoś na
+końcu raport.
+.TP
+.B \-d
+Przekaż na
+.I stderr 
+wyjście debuggowe strace.
+.TP
+.B \-f
+Śledź procesy potomne, tworzone prze obecnie śledzone procesy, jako rezultat
+wywołania systemowego fork(2). Nowe procesy są dołączane tak szybko, jak
+szybko zostaje uzyskany ich pid (poprzez wartość zwracaną fork(2) w procesie
+rodzicielskim). Oznacza to, że takie dzieci mogą na chwilę być
+niekontrolowane (szczególnie w wypadku vfork(2)), aż rodzic nie zostanie
+znów wyshedulowany do dokończenia wywołania (v)fork(2).
+Jeśli rodzic zdecyduje zaczekać (wait(2)) na dziecko, które obecnie jest
+śledzone, zostaje on zawieszony aż potomek się nie zakończy.
+.TP
+.B \-ff
+opcja
+.B \-o
+.I nazwapliku
+będzie działać, śledzenie każdego procesu jest zapisywane do
+.IR nazwapliku.pid ,
+gdzie pid jest numerycznym identyfikatorem procesu.
+.TP
+.B \-F
+Na SunOS 4.x opcja ta powoduje próbę podążania za vforkami poprzez triki
+dynamicznego linkowania. W przeciwnym wypadku, vforki nie będą śledzone,
+nawet z podaną opcją
+.BR \-f .
+.TP
+.B \-h
+Wydrukuj podsumowanie pomocy.
+.TP
+.B \-i
+Drukuj podczas wywołania systemowego wskaźnik instrukcji.
+.TP
+.B \-q
+Zahamuj komunikaty o przyłączaniu, odłączaniu, etc. Dzieje się to
+automatycznie gdy wyjście jest przekierowywane do pliku, a komenda jest
+wykonywana bezpośrednio, zamiast przyłączania.
+.TP
+.B \-r
+Drukuj względny timestamp podczas każdego wywołania systemowego. Nagruwa to
+różnicę czasu między początkami kolejnych wywołań systemowych.
+.TP
+.B \-t
+Poprzedź każdą linię trace czasem dnia.
+.TP
+.B \-tt
+Jeśli podane dwukrotnie, wydrukowany czas włącza mikrosekundy.
+.TP
+.B \-ttt
+Jeśli podane trzykrotnie, wydrukowany czas włącza mikrosekundy, a prowadząca
+porcja będzie zawierać liczbę sekund od epoki.
+.TP
+.B \-T
+Pokaż czas spędzony na wywołaniach systemowych. Nagrywa to różnice czasowe
+między początkiem i końcem każdego wywołania systemowego.
+.TP
+.B \-v
+Drukuj nieskrócone wersje wywołań environment, stat, termios, itp. 
+Struktury te są wspólne w wywołaniach, więc domyślne zachowanie wyświetla
+rozsądny podzbiór członków. Gdy uzyjesz tej opcji, wyświetlone zostanie
+wszystko.
+.TP
+.B \-V
+Wydrukuj numer wersji strace.
+.TP
+.B \-x
+Drukuj wszystkie niedrukowalne napisy w formacie szesnastkowym.
+.TP
+.B \-xx
+Drukuj wszystkie napisy w formacie szesnastkowym.
+.TP
+.BI "\-a " kolumna
+Justuj zwracane wartości w konkretnej kolumnie (domyślnie 40).
+.TP
+.BI "\-e " wyraż
+Wyrażenie kwalifikujące, określające które zdarzenia śledzić, lub jak je
+śledzić. Formatem wyrażenia jest:
+.br
+[kwalifikator=][!]wartość1[,wartość2]...
+.br
+gdzie kwalifikator jest jednym z trace, abbrev, verbose, raw, signal, read,
+lub write, a wartość jest zależnaym od kwalifikatora symbolem, lub liczbą.
+Domyślnym kwalifikatorem jest trace (śledź). Użycie wykrzyknika neguje zbiór
+wartości. Na przykład \-eopen oznacza \-e trace=open, co z kolei oznacza, by
+śledzić tylko wywołania systemowe open. Odwrotnie, \-etrace=!open oznacza,
+by śledzić wszystkie wywołania poza wywołaniami open. Dodatkowo, istnieją
+specjalne wartości all (wszystko) i none (nic).
+.LP
+Zauważ, że niektóre powłoki używają wykrzyknika dla rozszerzenia histori;
+nawet wewnątrz cytowanych argumentów. Jeśli tak będzie, musisz wyeskejpować
+wykrzyknik odwrotnym ukośnikiem.
+.TP
+.BI "\-e trace=" zbiór
+Śledź tylko podany zbiór wywołań systemowych. Opcja
+.B \-c
+jest użyteczna dla określania, które wywołania systemowe mogą być użyteczne
+do śledzenia. Na przykład trace=open,close,read,write oznacza, by śledzić
+tylko te cztery wywołania systemowe. Uważaj z wyciąganiem wniosków o ramce
+użytkownik/jądro jeśli monitorujesz tylko podzbiór używanych wywołań
+systemowych. Domyślnie, trace=all.
+.TP
+.B "\-e trace=file"
+Śledź wszystkie wywołania systemowe, które biorą nazwę pliku jako argument.
+Możesz myśleć o tym jak o skrócie dla
+.BR "\-e trace=open,stat,chmod,unlink," ...
+co może być użyteczne dla sprawdzenia, które pliki są ważne dla procesu.
+Co więcej, użycie skrótu zapewni, że przypadkiem nie zapomnisz dołączyć
+wywołania w rodzaju
+.BR lstat .
+.TP
+.B "\-e trace=process"
+Śledź wszystkie wywołania systemowe, które zajmują się zarządzaniem
+procesami. Jest to przydatne do obserwowania kroków fork, wait i exec
+procesu.
+.TP
+.B "\-e trace=network"
+Śledź wszystkie wywołania związane z siecią.
+.TP
+.B "\-e trace=signal"
+Śledź wszystkie wywołania związane z sygnałami.
+.TP
+.B "\-e trace=ipc"
+Śledź wszystkie wywołania związane z IPC.
+.TP
+.BI "\-e abbrev=" zbiór
+Skróć wyjście przez niedrukowanie każdego członka dużych struktur.
+Domyślnie abbrev=all. Opcja
+.B \-v
+ma efekt abbrev=none.
+.TP
+.BI "\-e verbose=" zbiór
+Dereferencjuj struktury podanego zestawu wywołań systemowych. Domyślnie jest
+verbose=all.
+.TP
+.BI "\-e raw=" zbiór
+Drukuj czyste, niezdekodowane argumenty podanych wywołań systemowych. Opcja
+te powoduje, że wszystkie argumenty są drukowane szesnastkowo. Jest to
+najbardziej użyteczne, jeśli nie ufasz dekodowaniu, lub jeśli potrzebujesz
+znać właściwe wartości numeryczne argumentów.
+.TP
+.BI "\-e signal=" zbiór
+Śledź tylko podany zbiór sygnałów. Domyślnie jest signal=all. Na przykład
+signal=!SIGIO (lub signal=!io) powoduje, że sygnały SIGIO nie będą śledzone.
+.TP
+.BI "\-e read=" zbiór
+Dokonuj zrzutów szesnastkowych i ascii wszystkich danych odczytywanych z
+deskryptorów podanych w zbiorze. Na przykład, by zobaczyć co dzieje się na
+wejściu deskryptorów 3, 5, użyj:
+.BR "\-e read=3,5" .
+Zauważ, że jest to niezależne od normalnego śledzenia wywołania read, które
+jest kontrolowane opcją
+.BR "\-e trace=read" .
+.TP
+.BI "\-e write=" zbiór
+Dokonuj zrzutów szesnastkowych i ascii wszystkich danych zapisywanych do
+deskryptorów podanych w zbiorze. Na przykład, by zobaczyć co dzieje się na
+wyjściu deskryptorów 3, 5, użyj:
+.BR "\-e write=3,5" .
+Zauważ, że jest to niezależne od normalnego śledzenia wywołania write, które
+jest kontrolowane opcją
+.BR "\-e trace=write" .
+.TP
+.BI "\-o " nazwapliku
+Zapisuj wyjście śledzenia do pliku
+.IR nazwapliku ,
+a nie na standardowy błąd.
+Użyj
+.I nazwapliku.pid
+jeśli użyto opcji
+.BR \-ff .
+Jesli argument zaczyna się od `|' lub od `!', reszta argumentu traktowana
+jest jak komenda i całe wyjście jest do niej przesyłane. Jest to przydatne
+dla przekierowywania wyjścia debuggowego, nie dotykając przekierowań
+normalnego wyjścia programu.
+.TP
+.BI "\-O " wydatki
+Ustaw wydatki na śledzenie wywołań systemowych na wydatki mikrosekund.
+Jest to użyteczne dla przeciążenia domyślnej heurystyki dla zgadywania ile
+czasu jest spędzanego na czystym mierzeniu podczas timingowaniu wywołań
+systemowych przy użyciu opcji
+.BR \-c .
+Dokładność heurystyki może być ocenione przez timingowanie danego programu
+bez śledzenia i porównanie zebranego czasu wywołań systemowych do
+całkowitego, wydanego przy użyciu
+.B \-c .
+.TP
+.BI "\-p " pid
+Podwieś się do procesu o podanym identyfikatorze
+.SM ID
+.I pid
+i rozpocznij śledzenie.
+Śledzenie może być zakończone w dowolnym momencie przez przerwanie z
+klawiatury (\c
+.SM CTRL\s0-C).
+.B strace
+odpowie przez odwieszenie się od śledzonego procesu(ów), pozostawiając go
+(je) w spokoju.
+Do podwieszenia się do kolejnych 32 procesów, można używać wielu opcji
+.BR \-p ,
+jako uzupełnienie komendy
+.I komenda
+(która jest opcjonalna, jeśli podano przynajmniej jedną opcję
+.BR \-p ).
+.TP
+.BI "\-s " wielkośćnapisu
+Podaj maksymalną długość drukowanego napisu (domyślnie 32). Zauważ, że
+nazwy plików nie są uważane za napisy i zawsze są drukowane w całości.
+.TP
+.BI "\-S " sortuj
+Sotruj wyjściowy histogram opcji
+.B \-c
+według podanego kryterium. Legalnymi wartościami są
+time, calls, name, i nothing (domyślne to time).
+.TP
+.BI "\-u " użytkownik
+Uruchom komendę z userid i groupid, oraz dodatkowymi grupami
+.IR użytkownika .
+Opcja ta jest użyteczna tylko podczas pracy z roota i umożliwia właściwe
+wywołanie binariów z ustawionymi sgid/suid.
+Bez tej opcji, programy suid/sgid są wywoływane bez efektywnych przywilejów.
+.SH "INSTALACJA SETUID"
+Jeśli
+.B strace
+jest zainstalowane z suid root, to użytkownik wywołujący będzie mógł się
+podłączyć i śledzić procesy dowolnego innego użytkownika.
+Dodatkowo, programy suid i sgid będą wywoływane i śledzonez właściwymi
+efektywnymi przywilejami. Ponieważ robić to powinni tylko zaufani
+użytkownicy z przywilejami roota, takie instalowanie
+.B strace
+ma sens tylko, jeśli użytkownicy uprawnieni do jego wywoływania mają
+odpowiednie przywileje. Na przykład sensowne jest instalowanie specjalnej
+wersji
+.B strace
+z prawami `rwsr-xr--', dla użytkownika root i grupy trace, gdzie członkowie
+grupy trace są zaufanymi osobami. Jeśli używasz tej właściwości, pamiętej by
+zainstalować niesuidowaną wersję strace dla zwykłych luserów.
+.SH "ZOBACZ TAKŻE"
+.BR ptrace(2) ,
+.BR proc(4) ,
+.BR time(1) ,
+.BR trace(1) ,
+.BR truss(1)
+.SH UWAGI
+Szkoda, że w systemach z bibliotekami dzielonym jest produkowanych tyle
+śmieci podczas śledzenia.
+.LP
+Jest dobrze myśleć o wejściach i wyjściach wywołań systemowych jak o
+przepływie danych między przestrzenią użytkownika i jądra. Ponieważ
+przestrzeń użytkownika i przestrzeń jądra są oddzielone granicą ochrony
+adresów, można czasem wyciągać wnioski dedukcyjne o zachowaniu procesu na
+podstawie wartości wejścia i wyjścia.
+.LP
+W niektórych wypadkach wywołanie systemowe może różnić się od
+udokumentowanego zachowania, lub mieć inną nazwę. Na przykład na systemach
+zgodnych z System V, rzeczywiste wywołanie time(2) nie pobiera argumentu, a
+funkcja stat nazywana jest xstat i bierze dodatkowy argument. 
+Różnice te są normalne, lecz uczulone charakterystyki interfejsu wywołań
+systemowych są obsługiwane przez wrappery biblioteki C.
+.LP
+Na niektórych platformach proces, który ma załączone śledzenie wywołań
+systemowych z opcją
+.B \-p
+otrzyma
+.BR \s-1SIGSTOP\s0 .
+Sygnał ten może przerwać wywołanie systemowe, które nie jest restartowalne.
+Może to mieć nieprzewidziane efekty na procesie, jeśli proces nie podejmuje
+działań do restartowania wywołania systemowego.
+.SH BŁĘDY
+Programy, które używają bitu
+.I setuid
+nie będą miały efektywnych uprawnień użytkownika podczas śledzenia.
+.LP
+Śledzony proces ignoruje
+.SM SIGSTOP
+(poza platformami SVR4).
+.LP
+Śledzony proces, próbujący zablokować SIGTRAP otrzyma SIGSTOP w próbie
+kontynuacji śledzenia.
+.LP
+Śledzony program działa powoli.
+.LP
+Śledzone procesy, które schodzą z komendy
+.I komenda
+mogą zostać pozostawione po sygnale przerwania (\c
+.SM CTRL\s0-C).
+.LP
+Pod Linuksem, śledzenie procesu init jest zabronione.
+.LP
+Opcja
+.B \-i
+jest słabo wspierana.
+.SH HISTORIA
+.B strace
+Oryginalny strace został napisany przez Paula Kranenburga
+dla SunOS, który został zinspirowany narzędziem trace.
+Wersja SunOS strace została przeniesiona na Linuksa i rozszerzona przez
+Branko Lankestera, który również napisał wsparcie jądra Linuksa.
+Mimo, że Paul w 1992 wypuścił wersję 2.5 strace, prace Branko opierały się
+na strace 1.5 z 1991. W 1993 Rick Sladkey połączył zmiany strace 2.5 z SunOS
+ze zmianami wersji linuksowej, dodał wiele właściwości z truss'a z SVR4 i
+wydał wersję strace, która działała na obydwu platformach. W 1994 Rick
+przeportował strace na SVR4 i Solaris, oraz napisał wsparcie automatycznej
+konfiguracji. W 1995 przeportował strace na Irixa i zmęczył się pisaniem 
+o sobie w trzeciej osobie.
+.SH PROBLEMY
+Problemy związane ze
+.B strace
+powinny być zgłaszane do obecnego opiekuna
+.BR strace ,
+którym jest Rick Sladkey <jrs@world.std.com>.

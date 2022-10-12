@@ -1,0 +1,397 @@
+# Spanish translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Vicente Pastor Gómez <vpastorg@santandersupernet.com>, 2004.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n\n"
+"POT-Creation-Date: 2021-02-07 14:11+01:00\n"
+"PO-Revision-Date: 2021-06-07 00:13+0200\n"
+"Last-Translator: Vicente Pastor Gómez <vpastorg@santandersupernet.com>\n"
+"Language-Team: Spanish <debian-l10n-spanish@lists.debian.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 20.04.1\n"
+
+#. type: TH
+#: debian-unstable
+#, no-wrap
+msgid "LOCATEDB"
+msgstr "LOCATEDB"
+
+#. type: SH
+#: debian-unstable
+#, no-wrap
+msgid "NAME"
+msgstr "NOMBRE"
+
+#. type: Plain text
+#: debian-unstable
+#, fuzzy
+msgid "locatedb - front-compressed file name database"
+msgstr "locatedb - base de datos de cabecera comprimida de nombres de fichero"
+
+#. type: SH
+#: debian-unstable
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "DESCRIPCIÓN"
+
+#. type: Plain text
+#: debian-unstable
+#, fuzzy
+msgid ""
+"This manual page documents the format of file name databases for the GNU "
+"version of B<locate>.  The file name databases contain lists of files that "
+"were in particular directory trees when the databases were last updated."
+msgstr ""
+"Esta página de manual documenta el formato de las bases de datos de nombres "
+"de fichero para la versión GNU de B<locate>.  La base de datos de nombres de "
+"fichero contiene listas de los ficheros que estaban en los árboles de "
+"directorios cuando se actualizaron la última vez las bases de datos."
+
+#. type: Plain text
+#: debian-unstable
+#, fuzzy
+msgid ""
+"There can be multiple databases.  Users can select which databases B<locate> "
+"searches using an environment variable or command line option; see "
+"B<locate>(1).  The system administrator can choose the file name of the "
+"default database, the frequency with which the databases are updated, and "
+"the directories for which they contain entries.  Normally, file name "
+"databases are updated by running the B<updatedb> program periodically, "
+"typically nightly; see B<updatedb>(1)."
+msgstr ""
+"Puede haber múltiples bases de datos. Los usuarios pueden seleccionar en qué "
+"bases de datos busca B<locate> usando una variable de entorno, o una opción "
+"de línea de órdenes; ver B<locate>(1L). El administrador de sistema puede "
+"elegir el nombre de fichero de la base de datos por defecto, la frecuencia "
+"con que se actualizan las bases de datos, y los directorios para los que "
+"contienen entradas. Normalmente, las bases de datos de nombres de fichero se "
+"actualizan al ejecutar el programa B<updatedb> periódicamente, típicamente "
+"de noche; ver B<updatedb>(1L)."
+
+#. type: SH
+#: debian-unstable
+#, no-wrap
+msgid "GNU LOCATE02 database format"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"This is the default format of databases produced by B<updatedb>.  The "
+"B<updatedb> program runs B<frcode> to compress the list of file names using "
+"front-compression, which reduces the database size by a factor of 4 to 5.  "
+"Front-compression (also known as incremental encoding) works as follows."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"The database entries are a sorted list (case-insensitively, for users' "
+"convenience).  Since the list is sorted, each entry is likely to share a "
+"prefix (initial string) with the previous entry.  Each database entry begins "
+"with an signed offset-differential count byte, which is the additional "
+"number of characters of prefix of the preceding entry to use beyond the "
+"number that the preceding entry is using of its predecessor.  (The counts "
+"can be negative.)  Following the count is a null-terminated ASCII remainder "
+"\\(em the part of the name that follows the shared prefix."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"If the offset-differential count is larger than can be stored in a signed "
+"byte (\\(+-127), the byte has the value 0x80 (binary 10000000)  and the "
+"actual count follows in a 2-byte word, with the high byte first (network "
+"byte order).  This count can also be negative (the sign bit being in the "
+"first of the two bytes)."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"Every database begins with a dummy entry for a file called `LOCATE02', which "
+"B<locate> checks for to ensure that the database file has the correct "
+"format; it ignores the entry in doing the search."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"Databases cannot be concatenated together, even if the first (dummy) entry "
+"is trimmed from all but the first database.  This is because the offset-"
+"differential count in the first entry of the second and following databases "
+"will be wrong."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"In the future, the data within the locate database may not be sorted in any "
+"particular order.  To obtain sorted results, pipe the output of B<locate> "
+"through B<sort -f>."
+msgstr ""
+
+#. type: SH
+#: debian-unstable
+#, no-wrap
+msgid "slocate database format"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"The B<slocate> program uses a database format similar to, but not quite the "
+"same as, GNU B<locate>.  The first byte of the database specifies its "
+"I<security> I<level>.  If the security level is 0, B<slocate> will read, "
+"match and print filenames on the basis of the information in the database "
+"only.  However, if the security level byte is 1, B<slocate> omits entries "
+"from its output if the invoking user is unable to access them.  The second "
+"byte of the database is zero.  The second byte is followed by the first "
+"database entry.  The first entry in the database is not preceded by any "
+"differential count or dummy entry.  Instead the differential count for the "
+"first item is assumed to be zero."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"Starting with the second entry (if any) in the database, data is interpreted "
+"as for the GNU LOCATE02 format."
+msgstr ""
+
+#. type: SH
+#: debian-unstable
+#, no-wrap
+msgid "Old Locate Database format"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+#, fuzzy
+msgid ""
+"There is also an old database format, used by Unix B<locate> and B<find> "
+"programs and earlier releases of the GNU ones.  B<updatedb> runs programs "
+"called B<bigram> and B<code> to produce old-format databases.  The old "
+"format differs from the above description in the following ways.  Instead of "
+"each entry starting with an offset-differential count byte and ending with a "
+"null, byte values from 0 through 28 indicate offset-differential counts from "
+"-14 through 14.  The byte value indicating that a long offset-differential "
+"count follows is 0x1e (30), not 0x80.  The long counts are stored in host "
+"byte order, which is not necessarily network byte order, and host integer "
+"word size, which is usually 4 bytes.  They also represent a count 14 less "
+"than their value.  The database lines have no termination byte; the start of "
+"the next line is indicated by its first byte having a value \\(E<lt>= 30."
+msgstr ""
+"También hay un formato antiguo de base de datos, usado por los programas "
+"B<locate> y B<find> de Unix y versiones anteriores a las de GNU.  "
+"B<updatedb> ejecuta los programas llamados B<bigram> y B<code> para producir "
+"bases de datos en el formato antiguo.  El formato antiguo difiere de la "
+"descripción de arriba de las siguientes maneras. En vez de que cada entrada "
+"empiece con un byte de cuenta diferencial de desplazamiento y termine con un "
+"nulo, los valores del byte de 0 a 28 indican cuentas diferenciales de "
+"desplazamiento de -14 a 14. El valor del byte que indica una cuenta de "
+"desplazamiento larga es 0x1e (30), no 0x80.  Las cuentas largas se almacenan "
+"en el orden de byte de host, que no es necesariamente el orden de byte de "
+"red, y con tamaño de palabra de entero de host, que normalmente son 4 bytes. "
+"También representan una cuenta inferior en 14 a su valor. Las líneas de la "
+"base de datos no tienen byte de terminación; el comienzo de la siguiente "
+"línea está indicado por su primer byte con valor E<lt>= 30."
+
+#. type: Plain text
+#: debian-unstable
+#, fuzzy
+msgid ""
+"In addition, instead of starting with a dummy entry, the old database format "
+"starts with a 256 byte table containing the 128 most common bigrams in the "
+"file list.  A bigram is a pair of adjacent bytes.  Bytes in the database "
+"that have the high bit set are indexes (with the high bit cleared) into the "
+"bigram table.  The bigram and offset-differential count coding makes these "
+"databases 20\\(en25% smaller than the new format, but makes them not 8-bit "
+"clean.  Any byte in a file name that is in the ranges used for the special "
+"codes is replaced in the database by a question mark, which not "
+"coincidentally is the shell wildcard to match a single character."
+msgstr ""
+"Además, en vez de comenzar con una entrada falsa, el formato antiguo de base "
+"de datos comienza con una tabla de 256 bytes que contiene los 128 bigramas "
+"más comunes en la lista de ficheros. Un bigrama es un par de bytes "
+"adyacentes.  Los bytes de la base de datos que tienen el bit alto a 1 son "
+"índices (con el bit alto borrado) a la tabla de bigramas. La codificación de "
+"bigramas y cuentas diferenciales de desplazamiento hace estas bases de datos "
+"20\\(en25% más pequeñas que el nuevo formato, pero hace que no tengan el bit "
+"8 limpio. Cualquier byte de un nombre de fichero que esté en los rangos "
+"usados para los códigos especiales es reemplazado en la base de datos por "
+"una interrogación, que no es por coincidencia el comodín de la shell para "
+"sustituír un carácter cualquiera."
+
+#. type: SH
+#: debian-unstable
+#, no-wrap
+msgid "EXAMPLE"
+msgstr "EJEMPLO"
+
+#.  with nulls changed to newlines:
+#. type: Plain text
+#: debian-unstable
+#, no-wrap
+msgid ""
+"Input to B<frcode>:\n"
+"/usr/src\n"
+"/usr/src/cmd/aardvark.c\n"
+"/usr/src/cmd/armadillo.c\n"
+"/usr/tmp/zoo\n"
+msgstr ""
+"Entrada a B<frcode>:\n"
+"/usr/src\n"
+"/usr/src/cmd/aardvark.c\n"
+"/usr/src/cmd/armadillo.c\n"
+"/usr/tmp/zoo\n"
+
+#. type: Plain text
+#: debian-unstable
+#, no-wrap
+msgid ""
+"Length of the longest prefix of the preceding entry to share:\n"
+"0 /usr/src\n"
+"8 /cmd/aardvark.c\n"
+"14 rmadillo.c\n"
+"5 tmp/zoo\n"
+msgstr ""
+"Longitud del prefijo más largo a compartir de la entrada precedente:\n"
+"0 /usr/src\n"
+"8 /cmd/aardvark.c\n"
+"14 rmadillo.c\n"
+"5 tmp/zoo\n"
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"Output from B<frcode>, with trailing nulls changed to newlines and count "
+"bytes made printable:"
+msgstr ""
+"Salida a B<frcode>, con nulos al final cambiados a saltos de línea y bytes "
+"de cuenta hechos imprimibles:"
+
+#. type: Plain text
+#: debian-unstable
+#, no-wrap
+msgid ""
+"0 LOCATE02\n"
+"0 /usr/src\n"
+"8 /cmd/aardvark.c\n"
+"6 rmadillo.c\n"
+"-9 tmp/zoo\n"
+msgstr ""
+"0 LOCATE02\n"
+"0 /usr/src\n"
+"8 /cmd/aardvark.c\n"
+"6 rmadillo.c\n"
+"-9 tmp/zoo\n"
+
+#. type: Plain text
+#: debian-unstable
+#, no-wrap
+msgid "(6 = 14 - 8, and -9 = 5 - 14)\n"
+msgstr "(6 = 14 - 8, y -9 = 5 - 14)\n"
+
+#. type: SH
+#: debian-unstable
+#, no-wrap
+msgid "REPORTING BUGS"
+msgstr "INFORMAR DE ERRORES"
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"GNU findutils online help: E<lt>https://www.gnu.org/software/findutils/#get-"
+"helpE<gt>"
+msgstr ""
+"Ayuda en línea de GNU Foreutils: E<lt>https://www.gnu.org/software/findutils/"
+"#get-helpE<gt>"
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"Report any translation bugs to E<lt>https://translationproject.org/team/E<gt>"
+msgstr ""
+"Informe cualquier error de traducción a E<lt>https://translationproject.org/"
+"team/es.htmlE<gt>"
+
+#. type: Plain text
+#: debian-unstable
+msgid "Report any other issue via the form at the GNU Savannah bug tracker:"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid "E<lt>https://savannah.gnu.org/bugs/?group=findutilsE<gt>"
+msgstr "E<lt>https://savannah.gnu.org/bugs/?group=findutilsE<gt>"
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"General topics about the GNU findutils package are discussed at the I<bug-"
+"findutils> mailing list:"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable
+msgid "E<lt>https://lists.gnu.org/mailman/listinfo/bug-findutilsE<gt>"
+msgstr "E<lt>https://lists.gnu.org/mailman/listinfo/bug-findutilsE<gt>"
+
+#. type: SH
+#: debian-unstable
+#, no-wrap
+msgid "COPYRIGHT"
+msgstr "COPYRIGHT"
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"Copyright \\(co 1994-2021 Free Software Foundation, Inc.  License GPLv3+: "
+"GNU GPL version 3 or later E<lt>https://gnu.org/licenses/gpl.htmlE<gt>."
+msgstr ""
+"Copyright \\(co 1994-2021 Free Software Foundation, Inc. Licencia GPLv3+: "
+"GNU GPL versión 3 o posterior E<lt>https://gnu.org/licenses/gpl.htmlE<gt>."
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"This is free software: you are free to change and redistribute it.  There is "
+"NO WARRANTY, to the extent permitted by law."
+msgstr ""
+"Esto es software libre: usted es libre de cambiarlo y redistribuirlo.  NO "
+"HAY GARANTÍA, en la medida permitida por la legislación."
+
+#. type: SH
+#: debian-unstable
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "VÉASE TAMBIÉN"
+
+#. type: Plain text
+#: debian-unstable
+msgid "B<find>(1), B<locate>(1), B<xargs>(1), B<locatedb>(5)"
+msgstr "B<find>(1), B<locate>(1), B<xargs>(1), B<locatedb>(5)"
+
+#. type: Plain text
+#: debian-unstable
+#, fuzzy
+#| msgid ""
+#| "GNU coreutils online help: E<lt>https://www.gnu.org/software/coreutils/"
+#| "E<gt>"
+msgid ""
+"Full documentation E<lt>https://www.gnu.org/software/findutils/locatedbE<gt>"
+msgstr ""
+"Ayuda en línea de GNU Coreutils: E<lt>https://www.gnu.org/software/coreutils/"
+"E<gt>"
+
+#. type: Plain text
+#: debian-unstable
+msgid "or available locally via: B<info locatedb>"
+msgstr ""

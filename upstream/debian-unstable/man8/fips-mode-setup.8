@@ -1,0 +1,113 @@
+'\" t
+.\"     Title: fips-mode-setup
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 08/24/2019
+.\"    Manual: \ \&
+.\"    Source: fips-mode-setup
+.\"  Language: English
+.\"
+.TH "FIPS\-MODE\-SETUP" "8" "08/24/2019" "fips\-mode\-setup" "\ \&"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+fips-mode-setup \- Check, enable, or disable the system FIPS mode\&.
+.SH "SYNOPSIS"
+.sp
+\fBfips\-mode\-setup\fR [\fICOMMAND\fR]
+.SH "DESCRIPTION"
+.sp
+fips\-mode\-setup(8) is used to check and control the system FIPS mode\&.
+.sp
+When enabling the system FIPS mode the command completes the installation of FIPS modules if needed by calling \fIfips\-finish\-install\fR and changes the system crypto policy to FIPS\&.
+.sp
+Then the command modifies the boot loader configuration to add \fIfips=1\fR and \fIboot=<boot\-device>\fR options to the kernel command line\&.
+.sp
+When disabling the system FIPS mode the system crypto policy is switched to DEFAULT and the kernel command line option \fIfips=0\fR is set\&.
+.SH "OPTIONS"
+.sp
+The following options are available in fips\-mode\-setup tool\&.
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\-\-enable: Enables the system FIPS mode\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\-\-disable: Disables the system FIPS mode\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\-\-check: Checks the system FIPS mode status\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\-\-is\-enabled: Checks the system FIPS mode status and returns failure error code if disabled (2) or inconsistent (1)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\-\-no\-bootcfg: The tool will not attempt to change the boot loader configuration and it just prints the options that need to be added to the kernel command line\&.
+.RE
+.SH "FILES"
+.PP
+/proc/sys/crypto/fips_enabled
+.RS 4
+The kernel FIPS mode flag\&.
+.RE
+.SH "SEE ALSO"
+.sp
+update\-crypto\-policies(8), fips\-finish\-install(8)
+.SH "AUTHOR"
+.sp
+Written by Tomáš Mráz\&.

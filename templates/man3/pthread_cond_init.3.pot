@@ -1,0 +1,434 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-08-27 17:42+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "PTHREAD_COND"
+msgstr ""
+
+#. type: TH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "LinuxThreads"
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"pthread_cond_init, pthread_cond_destroy, pthread_cond_signal, "
+"pthread_cond_broadcast, pthread_cond_wait, pthread_cond_timedwait - "
+"operations on conditions"
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "B<#include E<lt>pthread.hE<gt>>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "B<pthread_cond_t >I<cond>B< = PTHREAD_COND_INITIALIZER;>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<int pthread_cond_init(pthread_cond_t *>I<cond>B<, pthread_condattr_t "
+"*>I<cond_attr>B<);>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "B<int pthread_cond_signal(pthread_cond_t *>I<cond>B<);>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "B<int pthread_cond_broadcast(pthread_cond_t *>I<cond>B<);>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<int pthread_cond_wait(pthread_cond_t *>I<cond>B<, pthread_mutex_t "
+"*>I<mutex>B<);>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<int pthread_cond_timedwait(pthread_cond_t *>I<cond>B<, pthread_mutex_t "
+"*>I<mutex>B<, const struct timespec *>I<abstime>B<);>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "B<int pthread_cond_destroy(pthread_cond_t *>I<cond>B<);>"
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"A condition (short for ``condition variable'') is a synchronization device "
+"that allows threads to suspend execution and relinquish the processors until "
+"some predicate on shared data is satisfied. The basic operations on "
+"conditions are: signal the condition (when the predicate becomes true), and "
+"wait for the condition, suspending the thread execution until another thread "
+"signals the condition."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"A condition variable must always be associated with a mutex, to avoid the "
+"race condition where a thread prepares to wait on a condition variable and "
+"another thread signals the condition just before the first thread actually "
+"waits on it."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_cond_init> initializes the condition variable I<cond>, using the "
+"condition attributes specified in I<cond_attr>, or default attributes if "
+"I<cond_attr> is B<NULL>. The LinuxThreads implementation supports no "
+"attributes for conditions, hence the I<cond_attr> parameter is actually "
+"ignored."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Variables of type B<pthread_cond_t> can also be initialized statically, "
+"using the constant B<PTHREAD_COND_INITIALIZER>."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_cond_signal> restarts one of the threads that are waiting on the "
+"condition variable I<cond>. If no threads are waiting on I<cond>, nothing "
+"happens. If several threads are waiting on I<cond>, exactly one is "
+"restarted, but it is not specified which."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_cond_broadcast> restarts all the threads that are waiting on the "
+"condition variable I<cond>. Nothing happens if no threads are waiting on "
+"I<cond>."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_cond_wait> atomically unlocks the I<mutex> (as per "
+"B<pthread_unlock_mutex>) and waits for the condition variable I<cond> to be "
+"signaled. The thread execution is suspended and does not consume any CPU "
+"time until the condition variable is signaled. The I<mutex> must be locked "
+"by the calling thread on entrance to B<pthread_cond_wait>. Before returning "
+"to the calling thread, B<pthread_cond_wait> re-acquires I<mutex> (as per "
+"B<pthread_lock_mutex>)."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Unlocking the mutex and suspending on the condition variable is done "
+"atomically. Thus, if all threads always acquire the mutex before signaling "
+"the condition, this guarantees that the condition cannot be signaled (and "
+"thus ignored) between the time a thread locks the mutex and the time it "
+"waits on the condition variable."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_cond_timedwait> atomically unlocks I<mutex> and waits on I<cond>, "
+"as B<pthread_cond_wait> does, but it also bounds the duration of the wait. "
+"If I<cond> has not been signaled within the amount of time specified by "
+"I<abstime>, the mutex I<mutex> is re-acquired and B<pthread_cond_timedwait> "
+"returns the error B<ETIMEDOUT>.  The I<abstime> parameter specifies an "
+"absolute time, with the same origin as B<time>(2) and B<gettimeofday>(2): an "
+"I<abstime> of 0 corresponds to 00:00:00 GMT, January 1, 1970."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_cond_destroy> destroys a condition variable, freeing the resources "
+"it might hold. No threads must be waiting on the condition variable on "
+"entrance to B<pthread_cond_destroy>. In the LinuxThreads implementation, no "
+"resources are associated with condition variables, thus "
+"B<pthread_cond_destroy> actually does nothing except checking that the "
+"condition has no waiting threads."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "CANCELLATION"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_cond_wait> and B<pthread_cond_timedwait> are cancellation points. "
+"If a thread is cancelled while suspended in one of these functions, the "
+"thread immediately resumes execution, then locks again the I<mutex> argument "
+"to B<pthread_cond_wait> and B<pthread_cond_timedwait>, and finally executes "
+"the cancellation.  Consequently, cleanup handlers are assured that I<mutex> "
+"is locked when they are called."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "ASYNC-SIGNAL SAFETY"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"The condition functions are not async-signal safe, and should not be called "
+"from a signal handler. In particular, calling B<pthread_cond_signal> or "
+"B<pthread_cond_broadcast> from a signal handler may deadlock the calling "
+"thread."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "RETURN VALUE"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"All condition variable functions return 0 on success and a non-zero error "
+"code on error."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "ERRORS"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_cond_init>, B<pthread_cond_signal>, B<pthread_cond_broadcast>, and "
+"B<pthread_cond_wait> never return an error code."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"The B<pthread_cond_timedwait> function returns the following error codes on "
+"error:"
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "B<ETIMEDOUT>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"the condition variable was not signaled until the timeout specified by "
+"I<abstime>"
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "B<EINTR>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "B<pthread_cond_timedwait> was interrupted by a signal"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"The B<pthread_cond_destroy> function returns the following error code on "
+"error:"
+msgstr ""
+
+#. type: TP
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "B<EBUSY>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "some threads are currently waiting on I<cond>."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "AUTHOR"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "Xavier Leroy E<lt>Xavier.Leroy@inria.frE<gt>"
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"B<pthread_condattr_init>(3), B<pthread_mutex_lock>(3), "
+"B<pthread_mutex_unlock>(3), B<gettimeofday>(2), B<nanosleep>(2)."
+msgstr ""
+
+#. type: SH
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid "EXAMPLE"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Consider two shared variables I<x> and I<y>, protected by the mutex I<mut>, "
+"and a condition variable I<cond> that is to be signaled whenever I<x> "
+"becomes greater than I<y>."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"B<int x,y;\n"
+"pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;\n"
+"pthread_cond_t cond = PTHREAD_COND_INITIALIZER;>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid "Waiting until I<x> is greater than I<y> is performed as follows:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"B<pthread_mutex_lock(&mut);\n"
+"while (x E<lt>= y) {\n"
+"        pthread_cond_wait(&cond, &mut);\n"
+"}\n"
+"/* operate on x and y */\n"
+"pthread_mutex_unlock(&mut);>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Modifications on I<x> and I<y> that may cause I<x> to become greater than "
+"I<y> should signal the condition if needed:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"B<pthread_mutex_lock(&mut);\n"
+"/* modify x and y */\n"
+"if (x E<gt> y) pthread_cond_broadcast(&cond);\n"
+"pthread_mutex_unlock(&mut);>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"If it can be proved that at most one waiting thread needs to be waken up "
+"(for instance, if there are only two threads communicating through I<x> and "
+"I<y>), B<pthread_cond_signal> can be used as a slightly more efficient "
+"alternative to B<pthread_cond_broadcast>. In doubt, use "
+"B<pthread_cond_broadcast>."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"To wait for I<x> to becomes greater than I<y> with a timeout of 5 seconds, "
+"do:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"B<struct timeval now;\n"
+"struct timespec timeout;\n"
+"int retcode;>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+#, no-wrap
+msgid ""
+"B<pthread_mutex_lock(&mut);\n"
+"gettimeofday(&now);\n"
+"timeout.tv_sec = now.tv_sec + 5;\n"
+"timeout.tv_nsec = now.tv_usec * 1000;\n"
+"retcode = 0;\n"
+"while (x E<lt>= y && retcode != ETIMEDOUT) {\n"
+"        retcode = pthread_cond_timedwait(&cond, &mut, &timeout);\n"
+"}\n"
+"if (retcode == ETIMEDOUT) {\n"
+"        /* timeout occurred */\n"
+"} else {\n"
+"        /* operate on x and y */\n"
+"}\n"
+"pthread_mutex_unlock(&mut);>\n"
+msgstr ""

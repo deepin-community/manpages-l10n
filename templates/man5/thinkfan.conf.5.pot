@@ -1,0 +1,634 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-01-30 10:10+01:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "THINKFAN.CONF"
+msgstr ""
+
+#. type: TH
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "April 2020"
+msgstr ""
+
+#. type: TH
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "thinkfan 1.2"
+msgstr ""
+
+#. type: SH
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid "thinkfan.conf - YAML-formatted config for B<thinkfan>(1)"
+msgstr ""
+
+#. type: SH
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"YAML is a very powerful, yet concise notation for structured data.  Its full "
+"specification is available at https://yaml.org/spec/1.2/spec.html.  Thinkfan "
+"uses only a small subset of the full YAML syntax, so it may be helpful, but "
+"not strictly necessary for users to take a look at the spec."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"The most important thing to note is that indentation is syntactically "
+"relevant.  In particular, tabs should not be mixed with spaces.  We "
+"recommend using two spaces for indentation, like it is shown below."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid "The thinkfan config has three main sections:"
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "B<sensors:>"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"Where temperatures should be read from. All B<hwmon>-style drivers are "
+"supported, as well as B</proc/acpi/ibm/thermal>, and, depending on the "
+"compile-time options, B<libatasmart> (to read temperatures directly from "
+"hard disks) and B<NVML> (via the proprietary nvidia driver)."
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "B<fans:>"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"Which fans should be used (currently only one allowed).  Support for "
+"multiple fans is currently in development and planned for a future release.  "
+"Both B<hwmon>-style PWM controls and B</proc/acpi/ibm/fan> can be used."
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "B<levels:>"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"Maps temperatures to fan speeds.  A ``simple mapping'' just specifies one "
+"temperature as the lower and upper bound (respectively) for a given fan "
+"speed.  In a ``detailed mapping'', the upper and lower bounds are specified "
+"for each driver/sensor configured under B<sensors:>.  This mode should be "
+"used when thinkfan is monitoring multiple devices that can tolerate "
+"different amounts of heat."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"Under each of these sections, there must be a list of key-value maps, each "
+"of which configures a sensor driver, fan driver or fan speed mapping."
+msgstr ""
+
+#. type: SH
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "SENSOR & FAN DRIVERS"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"For thinkfan to work, it first needs to know which temperature sensor "
+"drivers and which fan drivers it should use.  The mapping between "
+"temperature readings and fan speeds is specified in a separate config "
+"section (see the B<FAN SPEEDS> section below)."
+msgstr ""
+
+#. type: SS
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "Sensor Syntax"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"The entries under the B<sensors:> section can specify B<hwmon,> "
+"B<thinkpad_acpi,> B<NVML> or B<atasmart> drivers, where the latter two must "
+"be enabled at compile-time.  There can be any number (greater than zero) and "
+"combination of B<hwmon>, B<tpacpi>, B<nvml> and B<atasmart> entries.  "
+"However there may be at most one instance of the B<tpacpi> entry."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"B<sensors:>\n"
+"B<  - hwmon: >I<hwmon-path>\n"
+"B<    name: >I<hwmon-name>\n"
+"B<    indices: >I<index-list>\n"
+"B<    correction: >I<correction-list>\n"
+"B<    optional: >I<bool-allow-errors>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"B<- tpacpi: /proc/acpi/ibm/thermal>\n"
+"B<    indices: >I<index-list>\n"
+"B<    correction: >I<correction-list>\n"
+"B<    optional: >I<bool-allow-errors>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"B<  - nvml: >I<nvml-bus-id>\n"
+"B<    correction: >I<correction-list>\n"
+"B<    optional: >I<bool-allow-errors>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"B<  - atasmart: >I<disk-device-file>\n"
+"B<    correction: >I<correction-list>\n"
+"B<    optional: >I<bool-allow-errors>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "B<  - >...\n"
+msgstr ""
+
+#. type: SS
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "Fan Syntax"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"Currently, thinkfan supports only one fan, so there can be only one entry in "
+"the list.  Support for multiple fans is currently in development and planned "
+"for a future release.  The fan is either an B<hwmon> fan:"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"B<fans:>\n"
+"B<  - hwmon: >I<hwmon-path>\n"
+"B<    name: >I<hwmon-name>\n"
+"B<    indices: >I<index-list>\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid "or a B<tpacpi> fan:"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"B<fans:>\n"
+"B<- tpacpi: /proc/acpi/ibm/fan>\n"
+msgstr ""
+
+#. type: SS
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "Values"
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "I<hwmon-path>"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid "There are three ways of specifying hwmon fans or sensors:"
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "\\h'8m'1)"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"A full path of a ``temp*_input'' or ``pwm*'' file, like ``/sys/class/hwmon/"
+"hwmon0/pwm1'' or ``/sys/class/hwmon/hwmon0/temp1_input''.  In this case, the "
+"``B<indices:>I< index-list>'' and ``B<name:>I< hwmon-name>'' entries are "
+"unncessary since the path uniquely identifies a specific fan or sensor."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"Note that this method may lead to problems when the load order of the "
+"drivers changes across bootups, because in the ``hwmonI<X>'' folder name, "
+"the I<X> actually corresponds to the load order.  Use method 2) or 3) to "
+"avoid this problem."
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "\\h'8m'2)"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"A directory that contains a specific hwmon driver, for example ``/sys/"
+"devices/platform/nct6775.2592''.  Note that this path does not contain the "
+"load-order dependent ``hwmonI<X>'' folder.  As long as it contains only a "
+"single hwmon driver/interface it is sufficient to specify the ``B<indices:"
+">I< index-list>'' entry to tell thinkfan which specific sensors to use from "
+"that interface.  The ``B<name:>I< hwmon-name>'' entry is unnecessary."
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "\\h'8m'3)"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"A directory that contains multiple or all of the hwmon drivers, for example "
+"``/sys/class/hwmon''.  Here, both the ``B<name:>I< hwmon-name>'' and "
+"``B<indices:>I< index-list>'' entries are required to tell thinkfan which "
+"interface to select below that path, and which sensors or which fan to use "
+"from that interface."
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "I<hwmon-name>"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"The name of a hwmon interface, typically found in a file called ``name''.  "
+"This has to be specified if I<hwmon-path> is a base path that contains "
+"multiple hwmons.  This method of specifying sensors is particularly useful "
+"if the full path to a particular hwmon keeps changing between bootups, e.g. "
+"due to changing load order of the driver modules."
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "I<index-list>"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"A YAML list B<[ >I<X1>B<, >I<X2>B<, >...B< ]> that specifies which sensors, "
+"resp. which fan to use from a given interface.  Both B</proc/acpi/ibm/"
+"thermal> and also many hwmon interfaces contain multiple sensors, and not "
+"all of them may be relevant for fan control."
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "\\h'9m'\\(bu"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"For B<hwmon> entries, this is required if I<hwmon-path> does not refer "
+"directly to a single ``tempI<Xi>_input'' file, but to a folder that contains "
+"one or more of them.  In this case, I<index-list> specifies the I<Xi> for "
+"the ``tempI<Xi>_input'' files that should be used.  A hwmon interface may "
+"also contain multiple PWM controls for fans, so in that case, I<index-list> "
+"must contain exactly one entry."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"For B<tpacpi> sensors, this entry is optional.  If it is omitted, all "
+"temperatures found in B</proc/acpi/ibm/thermal> will be used."
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "I<nvml-bus-id>"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid "NOTE: only available if thinkfan was compiled with USE_NVML enabled."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"The PCI bus ID of an nVidia graphics card that is run with the proprietary "
+"nVidia driver. Can be obtained with e.g. ``lspci | grep -i vga''.  Usually, "
+"nVidia cards will use the open source B<nouveau> driver, which should "
+"support hwmon sensors instead."
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "I<disk-device-file>"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"NOTE: only available if thinkfan was compiled with USE_ATASMART enabled."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"Full path to a device file for a hard disk that supports S.M.A.R.T.  See "
+"also the B<-d> option in B<thinkfan>(1)  that prevents thinkfan from waking "
+"up sleeping (mechanical) disks to read their temperature."
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "I<correction-list> (always optional)"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"A YAML list that specifies temperature offsets for each sensor in use by the "
+"given driver. Use this if you want to use the ``simple'' level syntax, but "
+"need to compensate for devices with a lower heat tolerance.  Note however "
+"that the detailed level syntax is usually the better (i.e. more fine-"
+"grained) choice."
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "I<bool-allow-errors> (always optional, B<false> by default)"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"A truth value (B<yes>/B<no>/B<true>/B<false>)  that specifies whether "
+"thinkfan should accept errors when reading from this sensor.  Normally, "
+"thinkfan will exit with an error message if reading the temperature from any "
+"configured sensor fails.  Marking a sensor as optional may be useful for "
+"removable hardware or devices that may get switched off entirely to save "
+"power."
+msgstr ""
+
+#. type: SH
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "FAN SPEEDS"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"The B<levels:> section specifies a list of fan speeds with associated lower "
+"and upper temperature bounds.  If temperature(s) drop below the lower bound, "
+"thinkfan switches to the previous level, and if the upper bound is reached, "
+"thinkfan switches to the next level."
+msgstr ""
+
+#. type: SS
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "Simple Syntax"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"In the simplified form, only one temperature is specified as an upper/lower "
+"limit for a given fan speed.  In that case, the I<lower-bound> and I<upper-"
+"bound> are compared only to the highest temperature found among all "
+"configured sensors.  All other temperatures are ignored.  This mode is "
+"suitable for small systems (like laptops) where there is only one device (e."
+"g. the CPU) whose temperature needs to be controlled, or where the required "
+"fan behaviour is similar enough for all heat-generating devices."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"B<levels:>\n"
+"B<  - [ >I<fan-speed>B<, >I<lower-bound>B<, >I<upper-bound>B< ]>\n"
+"B<  - >...\n"
+msgstr ""
+
+#. type: SS
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "Detailed Syntax"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"This mode is suitable for more complex systems, with devices that have "
+"different temperature ratings.  For example, many modern CPUs and GPUs can "
+"deal with temperatures above 80\\[char176]C on a daily basis, whereas a hard "
+"disk will die quickly if it reaches such temperatures.  In detailed mode, "
+"upper and lower temperature limits are specified for each sensor "
+"individually:"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"B<levels:>\n"
+"B<  - speed: >I<fan-speed>\n"
+"B<    lower_limit: [ >I<l1>B<, >I<l2>B<, >...B< ]>\n"
+"B<    upper_limit: [ >I<u1>B<, >I<u2>B<, >...B< ]>\n"
+"B<  - >...\n"
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "I<fan-speed>"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"The possible speed values are different depending on which fan driver is "
+"used."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"For a B<hwmon> fan, I<fan-speed> is a numeric value ranging from B<0> to "
+"B<255>, corresponding to the PWM values accepted by the various kernel "
+"drivers."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"For a B<tpacpi> fan on Lenovo/IBM ThinkPads and some other Lenovo laptops "
+"(see B<SENSORS & FAN DRIVERS> above), numeric values and strings can be "
+"used.  The numeric values range from 0 to 7.  The string values take the "
+"form B<\"level >I<lvl-id>B<\">, where I<lvl-id> may be a value from B<0> to "
+"B<7>, B<auto>, B<full-speed> or B<disengaged>.  The numeric values B<0> to "
+"B<7> correspond to the regular fan speeds used by the firmware, although "
+"many firmwares don't even use level B<7>.  The value B<\"level auto\"> gives "
+"control back to the firmware, which may be useful if the fan behavior only "
+"needs to be changed for certain specific temperature ranges (usually at the "
+"high and low end of the range).  The values B<\"level full-speed\"> and B<"
+"\"level disengaged\"> take the fan speed control away from the firmware, "
+"causing the fan to slowly ramp up to an absolute maximum that can be "
+"achieved within electrical limits.  Note that this will run the fan out of "
+"specification and cause increased wear, though it may be helpful to combat "
+"thermal throttling."
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "I<l1>B<, >I<l2>B<, >..."
+msgstr ""
+
+#. type: TP
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "I<u1>B<, >I<u2>B<, >..."
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+msgid ""
+"The lower and upper limits refer to the sensors in the same order in which "
+"they were found when processing the B<sensors:> section (see B<SENSOR & FAN "
+"DRIVERS> above).  For the first level entry, the B<lower_limit> may be "
+"omitted, and for the last one, the B<upper_limit> may be omitted.  For all "
+"levels in between, the lower limits must overlap with the upper limits of "
+"the previous level, to make sure the entire temperature range is covered and "
+"that there is some hysteresis between speed levels."
+msgstr ""
+
+#. type: SH
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"The thinkfan manpage:\n"
+"B<thinkfan>(1)\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "Example configs shipped with the source distribution, also available at:\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "https://github.com/vmatare/thinkfan/tree/master/examples\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"The Linux hwmon user interface documentation:\n"
+"https://www.kernel.org/doc/html/latest/hwmon/sysfs-interface.html\n"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"The thinkpad_acpi interface documenation:\n"
+"https://www.kernel.org/doc/html/latest/admin-guide/laptops/thinkpad-acpi.html\n"
+msgstr ""
+
+#. type: SH
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "BUGS"
+msgstr ""
+
+#. type: Plain text
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"Report bugs on the github issue tracker:\n"
+"https://github.com/vmatare/thinkfan/issues\n"
+msgstr ""

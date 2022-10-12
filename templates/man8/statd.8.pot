@@ -1,0 +1,887 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-08-27 17:55+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "RPC.STATD"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "1 November 2009"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "rpc.statd - NSM service daemon"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"B<rpc.statd [-dh?FLNvV] [-H >I<prog>B<] [-n >I<my-name>B<] [-o >I<outgoing-"
+"port>B<]>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<[-p >I<listener-port>B<] [-P >I<path>B<]>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<[--nlm-port >I<port>B<] [--nlm-udp-port >I<port>B<]>"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"File locks are not part of persistent file system state.  Lock state is thus "
+"lost when a host reboots."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Network file systems must also detect when lock state is lost because a "
+"remote host has rebooted.  After an NFS client reboots, an NFS server must "
+"release all file locks held by applications that were running on that "
+"client.  After a server reboots, a client must remind the server of file "
+"locks held by applications running on that client."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"For NFS version 2 [RFC1094] and NFS version 3 [RFC1813], the I<Network "
+"Status Monitor> protocol (or NSM for short)  is used to notify NFS peers of "
+"reboots.  On Linux, two separate user-space components constitute the NSM "
+"service:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<rpc.statd>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"A daemon that listens for reboot notifications from other hosts, and manages "
+"the list of hosts to be notified when the local system reboots"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<sm-notify>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "A helper program that notifies NFS peers after the local system reboots"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The local NFS lock manager alerts its local B<rpc.statd> of each remote peer "
+"that should be monitored.  When the local system reboots, the B<sm-notify> "
+"command notifies the NSM service on monitored peers of the reboot.  When a "
+"remote reboots, that peer notifies the local B<rpc.statd>, which in turn "
+"passes the reboot notification back to the local NFS lock manager."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "NSM OPERATION IN DETAIL"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The first file locking interaction between an NFS client and server causes "
+"the NFS lock managers on both peers to contact their local NSM service to "
+"store information about the opposite peer.  On Linux, the local lock manager "
+"contacts B<rpc.statd>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"B<rpc.statd> records information about each monitored NFS peer on persistent "
+"storage.  This information describes how to contact a remote peer in case "
+"the local system reboots, how to recognize which monitored peer is reporting "
+"a reboot, and how to notify the local lock manager when a monitored peer "
+"indicates it has rebooted."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"An NFS client sends a hostname, known as the client's I<caller_name>, in "
+"each file lock request.  An NFS server can use this hostname to send "
+"asynchronous GRANT calls to a client, or to notify the client it has "
+"rebooted."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The Linux NFS server can provide the client's I<caller_name> or the client's "
+"network address to B<rpc.statd>.  For the purposes of the NSM protocol, this "
+"name or address is known as the monitored peer's I<mon_name>.  In addition, "
+"the local lock manager tells B<rpc.statd> what it thinks its own hostname "
+"is.  For the purposes of the NSM protocol, this hostname is known as "
+"I<my_name>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"There is no equivalent interaction between an NFS server and a client to "
+"inform the client of the server's I<caller_name>.  Therefore NFS clients do "
+"not actually know what I<mon_name> an NFS server might use in an SM_NOTIFY "
+"request.  The Linux NFS client uses the server hostname from the mount "
+"command to identify rebooting NFS servers."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "Reboot notification"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"When the local system reboots, the B<sm-notify> command reads the list of "
+"monitored peers from persistent storage and sends an SM_NOTIFY request to "
+"the NSM service on each listed remote peer.  It uses the I<mon_name> string "
+"as the destination.  To identify which host has rebooted, the B<sm-notify> "
+"command sends the I<my_name> string recorded when that remote was "
+"monitored.  The remote B<rpc.statd> matches incoming SM_NOTIFY requests "
+"using this string, or the caller's network address, to one or more peers on "
+"its own monitor list."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"If B<rpc.statd> does not find a peer on its monitor list that matches an "
+"incoming SM_NOTIFY request, the notification is not forwarded to the local "
+"lock manager.  In addition, each peer has its own I<NSM state number>, a 32-"
+"bit integer that is bumped after each reboot by the B<sm-notify> command.  "
+"B<rpc.statd> uses this number to distinguish between actual reboots and "
+"replayed notifications."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Part of NFS lock recovery is rediscovering which peers need to be monitored "
+"again.  The B<sm-notify> command clears the monitor list on persistent "
+"storage after each reboot."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "OPTIONS"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-d>,B< --no-syslog>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Causes B<rpc.statd> to write log messages on I<stderr> instead of to the "
+"system log, if the B<-F> option was also specified."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-F>,B< --foreground>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Keeps B<rpc.statd> attached to its controlling terminal so that NSM "
+"operation can be monitored directly or run under a debugger.  If this option "
+"is not specified, B<rpc.statd> backgrounds itself soon after it starts."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-h>,B< -?>,B< --help>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Causes B<rpc.statd> to display usage information on I<stderr> and then exit."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-H,>B< --ha-callout >I<prog>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Specifies a high availability callout program.  If this option is not "
+"specified, no callouts are performed.  See the B<High-availability callouts> "
+"section below for details."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-L>,B< --no-notify>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Prevents B<rpc.statd> from running the B<sm-notify> command when it starts "
+"up, preserving the existing NSM state number and monitor list."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Note: the B<sm-notify> command contains a check to ensure it runs only once "
+"after each system reboot.  This prevents spurious reboot notification if "
+"B<rpc.statd> restarts without the B<-L> option."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-n, >B<--name >I<ipaddr>B< | >I<hostname>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"This string is only used by the B<sm-notify> command as the source address "
+"from which to send reboot notification requests."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"The I<ipaddr> form can be expressed as either an IPv4 or an IPv6 "
+"presentation address.  If this option is not specified, B<rpc.statd> uses a "
+"wildcard address as the transport bind address.  See B<sm-notify>(8)  for "
+"details."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-N>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Causes B<rpc.statd> to run the B<sm-notify> command, and then exit.  Since "
+"the B<sm-notify> command can also be run directly, this option is deprecated."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-o,>B< --outgoing-port >I<port>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Specifies the source port number the B<sm-notify> command should use when "
+"sending reboot notifications.  See B<sm-notify>(8)  for details."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-p,>B< --port >I<port>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Specifies the port number used for RPC listener sockets.  If this option is "
+"not specified, B<rpc.statd> will try to consult I</etc/services>, if gets "
+"port succeed, set the same port for all listener socket, otherwise chooses a "
+"random ephemeral port for each listener socket."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This option can be used to fix the port value of its listeners when "
+"SM_NOTIFY requests must traverse a firewall between clients and servers."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-T,>B< --nlm-port >I<port>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Specifies the port number that I<lockd> should listen on for B<NLM> "
+"requests.  This sets both the TCP and UDP ports unless the UDP port is set "
+"separately."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-U,>B< --nlm-udp-port >I<port>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Specifies the UDP port number that I<lockd> should listen on for B<NLM> "
+"requests."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-P, >B<--state-directory-path>I< pathname>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable opensuse-tumbleweed
+msgid ""
+"Specifies the pathname of the parent directory where NSM state information "
+"resides.  If this option is not specified, B<rpc.statd> uses I</var/lib/nfs> "
+"by default."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"After starting, B<rpc.statd> attempts to set its effective UID and GID to "
+"the owner and group of the subdirectory B<sm> of this directory.  After "
+"changing the effective ids, B<rpc.statd> only needs to access files in B<sm> "
+"and B<sm.bak> within the state-directory-path."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "B<-v>, B<-V>, B<--version>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Causes B<rpc.statd> to display version information on I<stderr> and then "
+"exit."
+msgstr ""
+
+#. type: SH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "CONFIGURATION FILE"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"Many of the options that can be set on the command line can also be "
+"controlled through values set in the B<[statd]> or, in some cases, the "
+"B<[lockd]> sections of the I</etc/nfs.conf> configuration file.  Values "
+"recognized in the B<[statd]> section include B<port>, B<outgoing-port>, "
+"B<name>, B<state-directory-path>, and B<ha-callout> which each have the same "
+"effect as the option with the same name."
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid ""
+"The values recognized in the B<[lockd]> section include B<port> and B<udp-"
+"port> which have the same effect as the B<--nlm-port> and B<--nlm-udp-port> "
+"options, respectively."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "SECURITY"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The B<rpc.statd> daemon must be started as root to acquire privileges needed "
+"to create sockets with privileged source ports, and to access the state "
+"information database.  Because B<rpc.statd> maintains a long-running network "
+"service, however, it drops root privileges as soon as it starts up to reduce "
+"the risk of a privilege escalation attack."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"During normal operation, the effective user ID it chooses is the owner of "
+"the state directory.  This allows it to continue to access files in that "
+"directory after it has dropped its root privileges.  To control which user "
+"ID B<rpc.statd> chooses, simply use B<chown>(1)  to set the owner of the "
+"state directory."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable opensuse-tumbleweed
+msgid ""
+"You can also protect your B<rpc.statd> listeners using the B<tcp_wrapper> "
+"library or B<iptables>(8).  To use the B<tcp_wrapper> library, add the "
+"hostnames of peers that should be allowed access to I</etc/hosts.allow>.  "
+"Use the daemon name B<statd> even if the B<rpc.statd> binary has a different "
+"filename."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable opensuse-tumbleweed
+msgid ""
+"For further information see the B<tcpd>(8)  and B<hosts_access>(5)  man "
+"pages."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "ADDITIONAL NOTES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Lock recovery after a reboot is critical to maintaining data integrity and "
+"preventing unnecessary application hangs.  To help B<rpc.statd> match "
+"SM_NOTIFY requests to NLM requests, a number of best practices should be "
+"observed, including:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The UTS nodename of your systems should match the DNS names that NFS peers "
+"use to contact them"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The UTS nodenames of your systems should always be fully qualified domain "
+"names"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The forward and reverse DNS mapping of the UTS nodenames should be consistent"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The hostname the client uses to mount the server should match the server's "
+"I<mon_name> in SM_NOTIFY requests it sends"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Unmounting an NFS file system does not necessarily stop either the NFS "
+"client or server from monitoring each other.  Both may continue monitoring "
+"each other for a time in case subsequent NFS traffic between the two results "
+"in fresh mounts and additional file locking."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"On Linux, if the B<lockd> kernel module is unloaded during normal operation, "
+"all remote NFS peers are unmonitored.  This can happen on an NFS client, for "
+"example, if an automounter removes all NFS mount points due to inactivity."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "High-availability callouts"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"B<rpc.statd> can exec a special callout program during processing of "
+"successful SM_MON, SM_UNMON, and SM_UNMON_ALL requests, or when it receives "
+"SM_NOTIFY.  Such a program may be used in High Availability NFS (HA-NFS)  "
+"environments to track lock state that may need to be migrated after a system "
+"reboot."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The name of the callout program is specified with the B<-H> option.  The "
+"program is run with 3 arguments: The first is either B<add-client> B<del-"
+"client> or B<sm-notify> depending on the reason for the callout.  The second "
+"is the I<mon_name> of the monitored peer.  The third is the I<caller_name> "
+"of the requesting lock manager for B<add-client> or B<del-client> , "
+"otherwise it is I<IP_address> of the caller sending SM_NOTIFY.  The forth is "
+"the I<state_value> in the SM_NOTIFY request."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "IPv6 and TI-RPC support"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"TI-RPC is a pre-requisite for supporting NFS on IPv6.  If TI-RPC support is "
+"built into B<rpc.statd>, it attempts to start listeners on network "
+"transports marked 'visible' in I</etc/netconfig>.  As long as at least one "
+"network transport listener starts successfully, B<rpc.statd> will operate."
+msgstr ""
+
+#. type: SH
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "ENVIRONMENT"
+msgstr ""
+
+#. type: TP
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#, no-wrap
+msgid "B<RPC_STATD_NO_NOTIFY=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+msgid "If set to a positive integer, has the same effect as I<--no-notify>."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "FILES"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable opensuse-tumbleweed
+#, no-wrap
+msgid "I</var/lib/nfs/sm>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "directory containing monitor list"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable opensuse-tumbleweed
+#, no-wrap
+msgid "I</var/lib/nfs/sm.bak>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "directory containing notify list"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable opensuse-tumbleweed
+#, no-wrap
+msgid "I</var/lib/nfs/state>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "NSM state number for this host"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "I</run/run.statd.pid>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "pid file"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "I</etc/netconfig>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "network transport capability database"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable opensuse-tumbleweed
+msgid ""
+"B<sm-notify>(8), B<nfs>(5), B<rpc.nfsd>(8), B<rpcbind>(8), B<tcpd>(8), "
+"B<hosts_access>(5), B<iptables>(8), B<netconfig>(5)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "RFC 1094 - \"NFS: Network File System Protocol Specification\""
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "RFC 1813 - \"NFS Version 3 Protocol Specification\""
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "OpenGroup Protocols for Interworking: XNFS, Version 3W - Chapter 11"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "AUTHORS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Jeff Uphoff E<lt>juphoff@users.sourceforge.netE<gt>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Olaf Kirch E<lt>okir@monad.swb.deE<gt>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "H.J. Lu E<lt>hjl@gnu.orgE<gt>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Lon Hohberger E<lt>hohberger@missioncriticallinux.comE<gt>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Paul Clements E<lt>paul.clements@steeleye.comE<gt>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Chuck Lever E<lt>chuck.lever@oracle.comE<gt>"
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"Specifies the bind address used for RPC listener sockets.  The I<ipaddr> "
+"form can be expressed as either an IPv4 or an IPv6 presentation address.  If "
+"this option is not specified, B<rpc.statd> uses a wildcard address as the "
+"transport bind address."
+msgstr ""
+
+#. type: Plain text
+#: debian-bullseye debian-unstable
+msgid ""
+"This string is also passed to the B<sm-notify> command to be used as the "
+"source address from which to send reboot notification requests.  See B<sm-"
+"notify>(8)  for details."
+msgstr ""
+
+#. type: Plain text
+#: fedora-rawhide mageia-cauldron
+msgid ""
+"Specifies the pathname of the parent directory where NSM state information "
+"resides.  If this option is not specified, B<rpc.statd> uses I</var/lib/nfs/"
+"statd> by default."
+msgstr ""
+
+#. type: TP
+#: fedora-rawhide mageia-cauldron
+#, no-wrap
+msgid "I</var/lib/nfs/statd/sm>"
+msgstr ""
+
+#. type: TP
+#: fedora-rawhide mageia-cauldron
+#, no-wrap
+msgid "I</var/lib/nfs/statd/sm.bak>"
+msgstr ""
+
+#. type: TP
+#: fedora-rawhide mageia-cauldron
+#, no-wrap
+msgid "I</var/lib/nfs/statd/state>"
+msgstr ""
+
+#. type: Plain text
+#: fedora-rawhide mageia-cauldron
+msgid ""
+"B<sm-notify>(8), B<nfs>(5), B<rpc.nfsd>(8), B<rpcbind>(8), B<tcpd>(8), "
+"B<iptables>(8), B<netconfig>(5)"
+msgstr ""

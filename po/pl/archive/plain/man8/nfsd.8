@@ -1,0 +1,43 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.\"
+.\" nfsd(8)
+.\"
+.\" Copyright (C) 1999 Olaf Kirch <okir@monad.swb.de>
+.TH rpc.nfsd 8 "31 maj 1999"
+.SH NAZWA
+rpc.nfsd \- proces serwera NFS
+.SH SKŁADNIA
+.BI "/usr/sbin/rpc.nfsd [-p " port "] " nproc
+.SH OPIS
+Program
+.B rpc.nfsd
+implementuje użytkownikową część poziomu usługi NFS. Podstawowe właściwości
+obsługiwane są przez moduł jądrowy
+.BR nfsd.o ;
+program użytkownikowy jedynie rozpoczyna pewną liczbę wątków jądra.
+.P
+Serwer
+.B rpc.mountd
+daje usługę wymaganą do zaspokojenia żądań montowania od klientów NFS.
+.SH OPCJE
+.TP
+.BI \-p " port"
+określa inny port do nasłuchiwania żądań NFS. Domyślnie
+.B rpc.nfsd
+nasłuchuje na porcie 2049.
+.TP
+.I nproc
+podaj liczbę wątków serwerów NFS. Domyślnie uruchamiany jest tylko jeden.
+Jednak dla optymalnej wydajności dobrze jest użyć wielu wątków. Dokładne
+określenie wartości zależy od liczby i obciążenia klientami NFS. Dobrym
+punktem zaczepu jest 8 wątków. Wyniki modyfikowania tej liczby można
+sprawdzać programem
+.BR nfsstat (8).
+.SH ZOBACZ TAKŻE
+.BR rpc.mountd (8),
+.BR exportfs (8),
+.BR rpc.rquotad (8),
+.BR nfsstat (8).
+.SH AUTOR
+Olaf Kirch, Bill Hawes, H. J. Lu, G. Allan Morris III
+i wielu innych.
