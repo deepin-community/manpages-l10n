@@ -1,26 +1,7 @@
+'\" t
 .\" Copyright 1993 David Metcalfe (david@prism.demon.co.uk)
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" References consulted:
 .\"     Linux libc source code
@@ -30,32 +11,35 @@
 .\" Modified Sat Jul 24 19:22:14 1993 by Rik Faith (faith@cs.unc.edu)
 .\" Modified Mon May 27 21:37:47 1996 by Martin Schulze (joey@linux.de)
 .\"
-.TH GETPWENT 3  2021-03-22 "GNU" "Linux Programmer's Manual"
+.TH getpwent 3 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 getpwent, setpwent, endpwent \- get password file entry
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/types.h>
 .B #include <pwd.h>
-.PP
+.P
 .B struct passwd *getpwent(void);
 .B void setpwent(void);
 .B void endpwent(void);
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR getpwent (),
 .BR setpwent (),
 .BR endpwent ():
 .nf
     _XOPEN_SOURCE >= 500
 .\"    || _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED
-        || /* Glibc since 2.19: */ _DEFAULT_SOURCE
-        || /* Glibc <= 2.19: */ _BSD_SOURCE || _SVID_SOURCE
+        || /* glibc >= 2.19: */ _DEFAULT_SOURCE
+        || /* glibc <= 2.19: */ _BSD_SOURCE || _SVID_SOURCE
 .fi
 .SH DESCRIPTION
 The
@@ -69,19 +53,19 @@ The first time
 .BR getpwent ()
 is called, it returns the first entry; thereafter, it returns successive
 entries.
-.PP
+.P
 The
 .BR setpwent ()
 function rewinds to the beginning
 of the password database.
-.PP
+.P
 The
 .BR endpwent ()
 function is used to close the password database
 after all processing has been performed.
-.PP
+.P
 The \fIpasswd\fP structure is defined in \fI<pwd.h>\fP as follows:
-.PP
+.P
 .in +4n
 .EX
 struct passwd {
@@ -95,7 +79,7 @@ struct passwd {
 };
 .EE
 .in
-.PP
+.P
 For more information about the fields of this structure, see
 .BR passwd (5).
 .SH RETURN VALUE
@@ -111,7 +95,7 @@ is set to indicate the error.
 If one wants to check
 .I errno
 after the call, it should be set to zero before the call.
-.PP
+.P
 The return value may point to a static area, and may be overwritten
 by subsequent calls to
 .BR getpwent (),
@@ -151,29 +135,33 @@ local password database file
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lb lb lbx
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR getpwent ()
 T}	Thread safety	T{
+.na
+.nh
 MT-Unsafe race:pwent
 race:pwentbuf locale
 T}
 T{
+.na
+.nh
 .BR setpwent (),
 .BR endpwent ()
 T}	Thread safety	T{
+.na
+.nh
 MT-Unsafe race:pwent locale
 T}
 .TE
-.hy
-.ad
-.sp 1
+.P
 In the above table,
 .I pwent
 in
@@ -185,11 +173,14 @@ or
 .BR endpwent ()
 are used in parallel in different threads of a program,
 then data races could occur.
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, SVr4, 4.3BSD.
+.SH VERSIONS
 The
 .I pw_gecos
 field is not specified in POSIX, but is present on most implementations.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, SVr4, 4.3BSD.
 .SH SEE ALSO
 .BR fgetpwent (3),
 .BR getpw (3),
@@ -198,12 +189,3 @@ field is not specified in POSIX, but is present on most implementations.
 .BR getpwuid (3),
 .BR putpwent (3),
 .BR passwd (5)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

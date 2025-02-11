@@ -1,5 +1,5 @@
 '\" t
-.TH "SD\-DAEMON" "3" "" "systemd 249" "sd-daemon"
+.TH "SD\-DAEMON" "3" "" "systemd 255" "sd-daemon"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -33,7 +33,9 @@ sd-daemon, SD_EMERG, SD_ALERT, SD_CRIT, SD_ERR, SD_WARNING, SD_NOTICE, SD_INFO, 
 .SH "DESCRIPTION"
 .PP
 sd\-daemon\&.h
-provides APIs for new\-style daemons, as implemented by the
+is part of
+\fBlibsystemd\fR(3)
+and provides APIs for new\-style daemons, as implemented by the
 \fBsystemd\fR(1)
 service manager\&.
 .PP
@@ -90,9 +92,16 @@ fprintf(stderr, SD_NOTICE "Hello World!\en");
 .\}
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

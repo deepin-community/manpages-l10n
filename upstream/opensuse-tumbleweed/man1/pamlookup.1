@@ -50,22 +50,22 @@ whole tuple with each possible ordered pair index.  Modifying the example
 above, the index value could be (23, 5) instead of 23.
 .PP
 With whole tuple indexing, the output thus has the same width and height as
-the index image, and tuple depth and type and maxval determined by the lookup
-table.
+the index image, and tuple depth and type and maxval are determined by the
+lookup table.
 .PP
 With whole tuple indexing, if the index image has depth 1, its sample
 values are single whole number indices.  If the index image has depth greater
 than 1, its tuples are ordered pair indices composed of the first and second
 sample in the tuple.
 .PP
-In by plane indexing, the index image contains whole number indices.
-The first sample of each tuple in the index image is the index.  The lookup
-table maps each whole number index to another whole number.
-\fBpamlookup\fP looks up each sample from the index image in the lookup table
-and uses the resulting whole number as the sample value for the same
-row, column, and plane in the output.
+In by-plane indexing, the index image contains whole number indices.  Each
+sample in the index image is an index.  The lookup table maps each whole
+number index to another whole number.  \fBpamlookup\fP looks up the sample at
+each row, column, and plane in the index image in the lookup table and uses
+the resulting whole number as the sample value for the same row, column, and
+plane in the output.
 .PP
-With by plane indexing, the output thus has the same dimensions as the
+With by-plane indexing, the output thus has the same dimensions as the
 index image an the same maxval as the lookup image.
 
 
@@ -110,7 +110,7 @@ The mandatory \fB-lookupfile\fP option identifies the file containing the
 lookup table image.  \fB-\fP means Standard Input.  It won't work if both the
 index image file and lookup table file are Standard Input.
 .PP
-You can use \fBppmmake\fP and \fBpnmcat\fP to create a lookup table file.
+You can use \fBppmmake\fP and \fBpamcat\fP to create a lookup table file.
 
 
 .UN wholetuple
@@ -307,6 +307,7 @@ Call it colorkey.ppm.
 \f(CW
     pamlookup rainfall.pam -lookupfile=colorkey.ppm >rainfallmap.ppm
 \fP
+
 .fi
 .PP
 Now lets say you're too lazy to type in 200 color values and nobody really
@@ -319,6 +320,7 @@ this:
     pamlookup rainfall.ppm -lookupfile=colorkey.ppm -missingcolor=black \e
        >rainfallmap.ppm
 \fP
+
 .fi
 
 Now if there are areas that get more than 100 centimeters of rainfall, they
@@ -340,6 +342,7 @@ input PBMs:
 \f(CW
     pamstack image1.pbm image2.pbm >bothimages.pam
 \fP
+
 .fi
 
 Note that this image has 1 of 4 possible tuple values at each location:
@@ -353,10 +356,11 @@ Now, we create a lookup table that we can index with those 4 values:
     ppmmake black 1 1 >black.ppm
     ppmmake red   1 1 >red.ppm
     ppmmake green 1 1 >green.ppm
-    pnmcat -leftright black.ppm red.ppm   >blackred.ppm
-    pnmcat -leftright green.ppm white.ppm >greenwhite.ppm
-    pnmcat -topbottom blackred.ppm greenwhite.ppm >lookup.ppm
+    pamcat -leftright black.ppm red.ppm   >blackred.ppm
+    pamcat -leftright green.ppm white.ppm >greenwhite.ppm
+    pamcat -topbottom blackred.ppm greenwhite.ppm >lookup.ppm
 \fP
+
 .fi
 .PP
 Finally, we look up the indices from our index in our lookup table and
@@ -366,6 +370,7 @@ produce the output:
 \f(CW
     pamlookup bothimages.ppm -lookupfile=lookup.ppm >imagediff.ppm
 \fP
+
 .fi
 
      
@@ -377,7 +382,7 @@ produce the output:
 \&,
 .BR "ppmmake" (1)\c
 \&,
-.BR "pnmcat" (1)\c
+.BR "pamcat" (1)\c
 \&,
 .BR "pamstack" (1)\c
 \&,

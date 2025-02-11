@@ -1,0 +1,877 @@
+'\" t
+.TH "UKIFY" "1" "" "systemd 257" "ukify"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+ukify \- Combine components into a signed Unified Kernel Image for UEFI systems
+.SH "SYNOPSIS"
+.HP \w'\fBukify\fR\ 'u
+\fBukify\fR [OPTIONS...] build
+.HP \w'\fBukify\fR\ 'u
+\fBukify\fR [OPTIONS...] genkey
+.HP \w'\fBukify\fR\ 'u
+\fBukify\fR [OPTIONS...] inspect FILE...
+.SH "DESCRIPTION"
+.PP
+\fBukify\fR
+is a tool whose primary purpose is to combine components (usually a kernel, an initrd, and a UEFI boot stub) to create a
+\m[blue]\fBUnified Kernel Image (UKI)\fR\m[]\&\s-2\u[1]\d\s+2
+\(em a PE binary that can be executed by the firmware to start the embedded linux kernel\&. See
+\fBsystemd-stub\fR(7)
+for details about the stub\&.
+.SH "COMMANDS"
+.PP
+The following commands are understood:
+.SS "build"
+.PP
+This command creates a Unified Kernel Image\&. The two primary options that should be specified for the
+\fBbuild\fR
+verb are
+\fILinux=\fR/\fB\-\-linux=\fR, and
+\fIInitrd=\fR/\fB\-\-initrd=\fR\&.
+\fIInitrd=\fR
+accepts multiple whitespace\-separated paths and
+\fB\-\-initrd=\fR
+can be specified multiple times\&.
+.PP
+Additional sections will be inserted into the UKI, either automatically or only if a specific option is provided\&. See the discussions of
+\fIMicrocode=\fR/\fB\-\-microcode=\fR,
+\fICmdline=\fR/\fB\-\-cmdline=\fR,
+\fIOSRelease=\fR/\fB\-\-os\-release=\fR,
+\fIDeviceTree=\fR/\fB\-\-devicetree=\fR,
+\fIDeviceTreeAuto=\fR/\fB\-\-devicetree\-auto=\fR,
+\fIHWIDs=\fR/\fB\-\-hwids=\fR,
+\fISplash=\fR/\fB\-\-splash=\fR,
+\fIPCRPKey=\fR/\fB\-\-pcrpkey=\fR,
+\fIUname=\fR/\fB\-\-uname=\fR,
+\fISBAT=\fR/\fB\-\-sbat=\fR, and
+\fB\-\-section=\fR
+below\&.
+.PP
+\fBukify\fR
+can also be used to assemble a PE binary that is not executable but contains auxiliary data, for example additional kernel command line entries\&.
+.PP
+If PCR signing keys are provided via the
+\fIPCRPrivateKey=\fR/\fB\-\-pcr\-private\-key=\fR
+and
+\fIPCRPublicKey=\fR/\fB\-\-pcr\-public\-key=\fR
+options, PCR values that will be seen after booting with the given kernel, initrd, and other sections, will be calculated, signed, and embedded in the UKI\&.
+\fBsystemd-measure\fR(1)
+is used to perform this calculation and signing\&.
+.PP
+The calculation of PCR values is done for specific boot phase paths\&. Those can be specified with the
+\fIPhases=\fR/\fB\-\-phases=\fR
+option\&. If not specified, the default provided by
+\fBsystemd\-measure\fR
+is used\&. It is also possible to specify the
+\fIPCRPrivateKey=\fR/\fB\-\-pcr\-private\-key=\fR,
+\fIPCRPublicKey=\fR/\fB\-\-pcr\-public\-key=\fR, and
+\fIPhases=\fR/\fB\-\-phases=\fR
+arguments more than once\&. Signatures will then be performed with each of the specified keys\&. On the command line, when both
+\fB\-\-phases=\fR
+and
+\fB\-\-pcr\-private\-key=\fR
+are used, they must be specified the same number of times, and then the n\-th boot phase path set will be signed by the n\-th key\&. This can be used to build different trust policies for different phases of the boot\&. In the config file,
+\fIPCRPrivateKey=\fR,
+\fIPCRPublicKey=\fR, and
+\fIPhases=\fR
+are grouped into separate sections, describing separate boot phases\&. If one of
+\fISigningEngine=\fR/\fB\-\-signing\-engine=\fR
+or
+\fISigningProvider=\fR/\fB\-\-signing\-provider=\fR
+is specified, then the private key arguments will be passed verbatim to OpenSSL as URIs, and the public key arguments will be loaded as X\&.509 certificates, so that signing can be performed with an OpenSSL engine or provider respectively\&.
+.PP
+If a SecureBoot signing key is provided via the
+\fISecureBootPrivateKey=\fR/\fB\-\-secureboot\-private\-key=\fR
+option, the resulting PE binary will be signed as a whole, allowing the resulting UKI to be trusted by SecureBoot\&. Also see the discussion of automatic enrollment in
+\fBsystemd-boot\fR(7)\&.
+.PP
+If the stub and/or the kernel contain
+"\&.sbat"
+sections they will be merged in the UKI so that revocation updates affecting either are considered when the UKI is loaded by Shim\&. For more information on SBAT see
+\m[blue]\fBShim documentation\fR\m[]\&\s-2\u[2]\d\s+2\&.
+.SS "genkey"
+.PP
+This command creates the keys for PCR signing and the key and certificate used for SecureBoot signing\&. The same configuration options that determine what keys and in which paths will be needed for signing when
+\fBbuild\fR
+is used, here determine which keys will be created\&. See the discussion of
+\fIPCRPrivateKey=\fR/\fB\-\-pcr\-private\-key=\fR,
+\fIPCRPublicKey=\fR/\fB\-\-pcr\-public\-key=\fR, and
+\fISecureBootPrivateKey=\fR/\fB\-\-secureboot\-private\-key=\fR
+below\&.
+.PP
+The output files must not exist\&.
+.SS "inspect"
+.PP
+Display information about the sections in a given binary or binaries\&. If
+\fB\-\-all\fR
+is given, all sections are shown\&. Otherwise, if
+\fB\-\-section=\fR
+option is specified at least once, only those sections are shown\&. Otherwise, well\-known sections that are typically included in an UKI are shown\&. For each section, its name, size, and sha256\-digest is printed\&. For text sections, the contents are printed\&.
+.PP
+Also see the description of
+\fB\-j\fR/\fB\-\-json=\fR
+and
+\fB\-\-section=\fR\&.
+.PP
+Other tools that may be useful for inspect UKIs:
+\fBllvm-objdump\fR(1)
+\fB\-p\fR
+and
+\fBpe\-inspect\fR\&.
+.SH "CONFIGURATION SETTINGS"
+.PP
+Settings can appear in configuration files (the syntax with
+\fISomeSetting=\fR\fI\fIvalue\fR\fR) and on the command line (the syntax with
+\fB\-\-some\-setting=\fR\fB\fIvalue\fR\fR)\&. For some command line parameters, a single\-letter shortcut is also allowed\&. In the configuration files, the setting must be in the appropriate section, so the descriptions are grouped by section below\&. When the same setting appears in the configuration file and on the command line, generally the command line setting has higher priority and overwrites the config file setting completely\&. If some setting behaves differently, this is described below\&.
+.PP
+If no config file is provided via the option
+\fB\-\-config=\fR\fB\fIPATH\fR\fR,
+\fBukify\fR
+will try to look for a default configuration file in the following paths in this order:
+/etc/systemd/ukify\&.conf,
+/run/systemd/ukify\&.conf,
+/usr/local/lib/systemd/ukify\&.conf, and
+/usr/lib/systemd/ukify\&.conf, and then load the first one found\&.
+\fBukify\fR
+will proceed normally if no configuration file is specified and no default one is found\&.
+.PP
+The
+\fILINUX\fR
+and
+\fIINITRD\fR
+positional arguments, or the equivalent
+\fILinux=\fR
+and
+\fIInitrd=\fR
+settings, are optional\&. If more than one initrd is specified, they will all be combined into a single PE section\&. This is useful to, for example, prepend microcode before the actual initrd\&.
+.PP
+The following options and settings are understood:
+.SS "Command line\-only options"
+.PP
+\fB\-\-config=\fR\fB\fIPATH\fR\fR
+.RS 4
+Load configuration from the given config file\&. In general, settings specified in the config file have lower precedence than the settings specified via options\&. In cases where the command line option does not fully override the config file setting are explicitly mentioned in the descriptions of individual options\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fB\-\-measure\fR, \fB\-\-no\-measure\fR
+.RS 4
+Enable or disable a call to
+\fBsystemd-measure\fR(1)
+to print pre\-calculated PCR values\&. Defaults to false\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fB\-\-section=\fR\fB\fINAME\fR\fR\fB:\fR\fB\fITEXT\fR\fR\fB|\fR\fB\fI@PATH\fR\fR, \fB\-\-section=\fR\fB\fINAME\fR\fR\fB:text|binary\fR\fB[@\fIPATH\fR]\fR
+.RS 4
+For all verbs except
+\fBinspect\fR, the first syntax is used\&. Specify an arbitrary additional section
+"\fINAME\fR"\&. The argument may be a literal string, or
+"@"
+followed by a path name\&. This option may be specified more than once\&. Any sections specified in this fashion will be inserted (in order) before the
+"\&.linux"
+section which is always last\&.
+.sp
+For the
+\fBinspect\fR
+verb, the second syntax is used\&. The section
+\fINAME\fR
+will be inspected (if found)\&. If the second argument is
+"text", the contents will be printed\&. If the third argument is given, the contents will be saved to the file named
+\fIPATH\fR\&.
+.sp
+Note that the name is used as\-is, and if the section name should start with a dot, it must be included in
+\fINAME\fR\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fB\-\-join\-profile=\fR\fB\fIPATH\fR\fR
+.RS 4
+Takes a path to an existing PE file containing an additional profile to add to the unified kernel image\&. The profile can be generated beforehand with
+\fBukify\fR\&. The profile does not need to be signed or contain PCR measurements\&. All UKI PE sections of the specified PE file are copied into the generated UKI\&. This is useful for generating multi\-profile UKIs\&. Note that this only copies PE sections that are defined by the UKI specification, and ignores any other, for example
+"\&.text"
+or similar\&.
+.sp
+Added in version 257\&.
+.RE
+.PP
+\fB\-\-tools=\fR\fB\fIDIRS\fR\fR
+.RS 4
+Specify one or more directories with helper tools\&.
+\fBukify\fR
+will look for helper tools in those directories first, and if not found, try to load them from
+\fI$PATH\fR
+in the usual fashion\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fB\-\-output=\fR\fB\fIFILENAME\fR\fR
+.RS 4
+The output filename\&. If not specified, the name of the
+\fILINUX\fR
+argument, with the suffix
+"\&.unsigned\&.efi"
+or
+"\&.signed\&.efi"
+will be used, depending on whether signing for SecureBoot was performed\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fB\-\-summary\fR
+.RS 4
+Print a summary of loaded config and exit\&. This is useful to check how the options from the configuration file and the command line are combined\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fB\-\-all\fR
+.RS 4
+Print all sections (with
+\fBinspect\fR
+verb)\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-json\fR
+.RS 4
+Generate JSON output (with
+\fBinspect\fR
+verb)\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SS "[UKI] section"
+.PP
+\fILinux=\fR\fI\fILINUX\fR\fR, \fB\-\-linux=\fR\fB\fILINUX\fR\fR
+.RS 4
+A path to the kernel binary\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fIOSRelease=\fR\fI\fITEXT\fR\fR\fI|\fR\fI\fI@PATH\fR\fR, \fB\-\-os\-release=\fR\fB\fITEXT\fR\fR\fB|\fR\fB\fI@PATH\fR\fR
+.RS 4
+The os\-release description (the
+"\&.osrel"
+section)\&. The argument may be a literal string, or
+"@"
+followed by a path name\&. If not specified, the
+\fBos-release\fR(5)
+file will be picked up from the host system\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fICmdline=\fR\fI\fITEXT\fR\fR\fI|\fR\fI\fI@PATH\fR\fR, \fB\-\-cmdline=\fR\fB\fITEXT\fR\fR\fB|\fR\fB\fI@PATH\fR\fR
+.RS 4
+The kernel command line (the
+"\&.cmdline"
+section)\&. The argument may be a literal string, or
+"@"
+followed by a path name\&. If not specified, no command line will be embedded\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fIInitrd=\fR\fI\fIINITRD\fR\fR\fI\&.\&.\&.\fR, \fB\-\-initrd=\fR\fB\fILINUX\fR\fR
+.RS 4
+Zero or more initrd paths\&. In the configuration file, items are separated by whitespace\&. The initrds are combined in the order of specification, with the initrds specified in the config file first\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fIMicrocode=\fR\fI\fIUCODE\fR\fR, \fB\-\-microcode=\fR\fB\fIUCODE\fR\fR
+.RS 4
+Path to initrd containing microcode updates\&. If not specified, the section will not be present\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fISplash=\fR\fI\fIPATH\fR\fR, \fB\-\-splash=\fR\fB\fIPATH\fR\fR
+.RS 4
+A picture to display during boot (the
+"\&.splash"
+section)\&. The argument is a path to a BMP file\&. If not specified, the section will not be present\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fIDeviceTree=\fR\fI\fIPATH\fR\fR, \fB\-\-devicetree=\fR\fB\fIPATH\fR\fR
+.RS 4
+The devicetree description (the
+"\&.dtb"
+section)\&. The argument is a path to a compiled binary DeviceTree file\&. If not specified, the section will not be present\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fIDeviceTreeAuto=\fR\fI\fIPATH\fR\fR\fI\&.\&.\&.\fR, \fB\-\-devicetree\-auto=\fR\fB\fIPATH\fR\fR
+.RS 4
+Zero or more automatically selectable DeviceTree files\&. In the configuration file, items are separated by whitespace\&. Each DeviceTree will be in a separate
+"\&.dtbauto"
+section\&.
+.sp
+Added in version 257\&.
+.RE
+.PP
+\fIHWIDs=\fR\fI\fIPATH\fR\fR, \fB\-\-hwids=\fR\fB\fIPATH\fR\fR
+.RS 4
+The hardware ID device table (the
+"\&.hwids"
+section)\&. The argument is a path to a directory with JSON HWID device description files\&. Each file needs to contain a single JSON object with a
+"name",
+"compatible"
+and
+"hwids"
+keys\&. The
+"name"
+and
+"compatible"
+keys must have string values and the
+"hwids"
+key must have a list of strings as value, where the strings must be valid UUIDs that represent CHIDs/HWIDs\&. Example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+{
+    "name": "Example Laptop 16 Gen 7",
+    "compatible": "example,laptop\-16\-g7",
+    "hwids": [
+        "5dc05bf4\-01f6\-4089\-b464\-a08c47ea9295",
+        "3e3f8f3c\-2003\-46f2\-811c\-85554f7d5952"
+    ]
+}
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Here
+"Example Laptop 16 Gen 7"
+is the device
+"name"
+(as defined by the manufacturer),
+"example,laptop\-16\-g7"
+is the
+"compatible"
+(as defined by the kernel) and
+"hwids"
+is an array of CHIDs/HWIDs (extracted i\&.e\&. from
+\fBfwupdtool hwids\fR
+output)\&. If not specified, the section will not be present\&. It is recommended to specify this parameter if automatically selectable DeviceTrees are to be used\&.
+.sp
+Added in version 257\&.
+.RE
+.PP
+\fIUname=\fR\fI\fIVERSION\fR\fR, \fB\-\-uname=\fR\fB\fIVERSION\fR\fR
+.RS 4
+Specify the kernel version (as in
+\fBuname \-r\fR, the
+"\&.uname"
+section)\&. If not specified, an attempt will be made to extract the version string from the kernel image\&. It is recommended to pass this explicitly if known, because the extraction is based on heuristics and not very reliable\&. If not specified and extraction fails, the section will not be present\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fISBAT=\fR\fI\fITEXT\fR\fR\fI|\fR\fI\fI@PATH\fR\fR, \fB\-\-sbat=\fR\fB\fITEXT\fR\fR\fB|\fR\fB\fI@PATH\fR\fR
+.RS 4
+SBAT metadata associated with the UKI or addon\&. SBAT policies are useful to revoke whole groups of UKIs or addons with a single, static policy update that does not take space in DBX/MOKX\&. If not specified manually, a default metadata entry consisting of
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+uki,1,UKI,uki,1,https://uapi\-group\&.org/specifications/specs/unified_kernel_image/
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+for UKIs and
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+uki\-addon,1,UKI Addon,addon,1,https://www\&.freedesktop\&.org/software/systemd/man/latest/systemd\-stub\&.html
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+for addons will be used, to ensure it is always possible to revoke them\&. For more information on SBAT see
+\m[blue]\fBShim documentation\fR\m[]\&\s-2\u[2]\d\s+2\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fIPCRPKey=\fR\fI\fIPATH\fR\fR, \fB\-\-pcrpkey=\fR\fB\fIPATH\fR\fR
+.RS 4
+A path to a public key to embed in the
+"\&.pcrpkey"
+section\&. If not specified, and there\*(Aqs exactly one
+\fIPCRPublicKey=\fR/\fB\-\-pcr\-public\-key=\fR
+argument, that key will be used\&. Otherwise, the section will not be present\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fIProfile=\fR\fI\fIPATH\fR\fR, \fB\-\-profile=\fR\fB\fIPATH\fR\fR
+.RS 4
+A path to a UKI profile to place in an
+"\&.profile"
+section\&. This option is useful for creating multi\-profile UKIs, and is typically used in combination with
+\fB\-\-extend=\fR, to extend the specified UKI with an additional profile\&.
+.sp
+Added in version 257\&.
+.RE
+.PP
+\fIPCRBanks=\fR\fI\fIPATH\fR\fR, \fB\-\-pcr\-banks=\fR\fB\fIPATH\fR\fR
+.RS 4
+A comma or space\-separated list of PCR banks to sign a policy for\&. If not present, all known banks will be used ("sha1",
+"sha256",
+"sha384",
+"sha512"), which will fail if not supported by the system\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fISecureBootSigningTool=\fR\fI\fISIGNER\fR\fR, \fB\-\-signtool=\fR\fB\fISIGNER\fR\fR
+.RS 4
+Whether to use
+"sbsign",
+"pesign", or
+"systemd\-sbsign"\&. Depending on this choice, different parameters are required in order to sign an image\&. Defaults to
+"sbsign"\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fISecureBootPrivateKey=\fR\fI\fISB_KEY\fR\fR, \fB\-\-secureboot\-private\-key=\fR\fB\fISB_KEY\fR\fR
+.RS 4
+A path to a private key to use for signing of the resulting binary\&. If the
+\fISigningEngine=\fR/\fB\-\-signing\-engine=\fR
+or
+\fISigningProvider=\fR/\fB\-\-signing\-provider=\fR
+option is used, this may also be an engine or provider specific designation\&. This option is required by
+\fISecureBootSigningTool=sbsign\fR/\fB\-\-signtool=sbsign\fR\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fISecureBootCertificate=\fR\fI\fISB_CERT\fR\fR, \fB\-\-secureboot\-certificate=\fR\fB\fISB_CERT\fR\fR
+.RS 4
+A path to a certificate to use for signing of the resulting binary\&. If the
+\fISigningEngine=\fR/\fB\-\-signing\-engine=\fR
+or
+\fISigningProvider=\fR/\fB\-\-signing\-provider=\fR
+option is used, this may also be an engine or provider specific designation\&. This option is required by
+\fISecureBootSigningTool=sbsign\fR/\fB\-\-signtool=sbsign\fR\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fISecureBootCertificateDir=\fR\fI\fISB_PATH\fR\fR, \fB\-\-secureboot\-certificate\-dir=\fR\fB\fISB_PATH\fR\fR
+.RS 4
+A path to a nss certificate database directory to use for signing of the resulting binary\&. Takes effect when
+\fISecureBootSigningTool=pesign\fR/\fB\-\-signtool=pesign\fR
+is used\&. Defaults to
+/etc/pki/pesign\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fISecureBootCertificateName=\fR\fI\fISB_CERTNAME\fR\fR, \fB\-\-secureboot\-certificate\-name=\fR\fB\fISB_CERTNAME\fR\fR
+.RS 4
+The name of the nss certificate database entry to use for signing of the resulting binary\&. This option is required by
+\fISecureBootSigningTool=pesign\fR/\fB\-\-signtool=pesign\fR\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fISecureBootCertificateValidity=\fR\fI\fIDAYS\fR\fR, \fB\-\-secureboot\-certificate\-validity=\fR\fB\fIDAYS\fR\fR
+.RS 4
+Period of validity (in days) for a certificate created by
+\fBgenkey\fR\&. Defaults to 3650, i\&.e\&. 10 years\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fISigningEngine=\fR\fI\fIENGINE\fR\fR, \fB\-\-signing\-engine=\fR\fB\fIENGINE\fR\fR
+.RS 4
+An OpenSSL engine to be used for signing the resulting binary and PCR measurements\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fISigningProvider=\fR\fI\fIPROVIDER\fR\fR, \fB\-\-signing\-provider=\fR\fB\fIPROVIDER\fR\fR
+.RS 4
+An OpenSSL provider to be used for signing the resulting binary and PCR measurements\&. This option can only be used when using
+\fBsystemd\-sbsign\fR
+as the signing tool\&.
+.sp
+Added in version 257\&.
+.RE
+.PP
+\fICertificateProvider=\fR\fI\fIPROVIDER\fR\fR, \fB\-\-certificate\-provider=\fR\fB\fIPROVIDER\fR\fR
+.RS 4
+An OpenSSL provider to be used for loading the certificate used to sign the resulting binary and PCR measurements\&. This option can only be used when using
+\fBsystemd\-sbsign\fR
+as the signing tool\&.
+.sp
+Added in version 257\&.
+.RE
+.PP
+\fISignKernel=\fR\fI\fIBOOL\fR\fR, \fB\-\-sign\-kernel\fR, \fB\-\-no\-sign\-kernel\fR
+.RS 4
+Override the detection of whether to sign the Linux binary itself before it is embedded in the combined image\&. If not specified, it will be signed if a SecureBoot signing key is provided via the
+\fISecureBootPrivateKey=\fR/\fB\-\-secureboot\-private\-key=\fR
+option and the binary has not already been signed\&. If
+\fISignKernel=\fR/\fB\-\-sign\-kernel\fR
+is true, and the binary has already been signed, the signature will be appended anyway\&.
+.sp
+Added in version 253\&.
+.RE
+.SS "[PCRSignature:\fINAME\fR] section"
+.PP
+In the config file, those options are grouped by section\&. On the command line, they must be specified in the same order\&. The sections specified in both sources are combined\&.
+.PP
+\fIPCRPrivateKey=\fR\fI\fIPATH\fR\fR, \fB\-\-pcr\-private\-key=\fR\fB\fIPATH\fR\fR
+.RS 4
+A private key to use for signing PCR policies\&. On the command line, this option may be specified more than once, in which case multiple signatures will be made\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fIPCRPublicKey=\fR\fI\fIPATH\fR\fR, \fB\-\-pcr\-public\-key=\fR\fB\fIPATH\fR\fR
+.RS 4
+A public key to use for signing PCR policies\&.
+.sp
+On the command line, this option may be specified more than once, similarly to the
+\fB\-\-pcr\-private\-key=\fR
+option\&. If not present, the public keys will be extracted from the private keys\&. On the command line, if present, this option must be specified the same number of times as the
+\fB\-\-pcr\-private\-key=\fR
+option\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fIPhases=\fR\fI\fILIST\fR\fR, \fB\-\-phases=\fR\fB\fILIST\fR\fR
+.RS 4
+A comma or space\-separated list of colon\-separated phase paths to sign a policy for\&. Each set of boot phase paths will be signed with the corresponding private key\&. If not present, the default of
+\fBsystemd-measure\fR(1)
+will be used\&.
+.sp
+On the command line, when this argument is present, it must appear the same number of times as the
+\fB\-\-pcr\-private\-key=\fR
+option\&.
+.sp
+Added in version 253\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Minimal invocation\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ ukify build \e
+      \-\-linux=/lib/modules/6\&.0\&.9\-300\&.fc37\&.x86_64/vmlinuz \e
+      \-\-initrd=/some/path/initramfs\-6\&.0\&.9\-300\&.fc37\&.x86_64\&.img \e
+      \-\-cmdline=\*(Aqquiet rw\*(Aq
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+This creates an unsigned UKI
+\&./vmlinuz\&.unsigned\&.efi\&.
+.PP
+\fBExample\ \&2.\ \&All the bells and whistles\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ ukify build \e
+      \-\-linux=/lib/modules/6\&.0\&.9\-300\&.fc37\&.x86_64/vmlinuz \e
+      \-\-initrd=early_cpio \e
+      \-\-initrd=/some/path/initramfs\-6\&.0\&.9\-300\&.fc37\&.x86_64\&.img \e
+      \-\-sbat=\*(Aqsbat,1,SBAT Version,sbat,1,https://github\&.com/rhboot/shim/blob/main/SBAT\&.md
+      uki\&.author\&.myimage,1,UKI for System,uki\&.author\&.myimage,1,https://uapi\-group\&.org/specifications/specs/unified_kernel_image/\*(Aq \e
+      \-\-pcr\-private\-key=tpm2\-pcr\-private\-key\-initrd\&.pem \e
+      \-\-pcr\-public\-key=tpm2\-pcr\-public\-key\-initrd\&.pem \e
+      \-\-phases=\*(Aqenter\-initrd\*(Aq \e
+      \-\-pcr\-private\-key=tpm2\-pcr\-private\-key\-system\&.pem \e
+      \-\-pcr\-public\-key=tpm2\-pcr\-public\-key\-system\&.pem \e
+      \-\-phases=\*(Aqenter\-initrd:leave\-initrd enter\-initrd:leave\-initrd:sysinit \e
+                enter\-initrd:leave\-initrd:sysinit:ready\*(Aq \e
+      \-\-pcr\-banks=sha384,sha512 \e
+      \-\-secureboot\-private\-key=sb\&.key \e
+      \-\-secureboot\-certificate=sb\&.cert \e
+      \-\-sign\-kernel \e
+      \-\-cmdline=\*(Aqquiet rw rhgb\*(Aq
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+This creates a signed UKI
+\&./vmlinuz\&.signed\&.efi\&. The initrd section contains two concatenated parts,
+early_cpio
+and
+initramfs\-6\&.0\&.9\-300\&.fc37\&.x86_64\&.img\&. The policy embedded in the
+"\&.pcrsig"
+section will be signed for the initrd (the
+\fBenter\-initrd\fR
+phase) with the key
+tpm2\-pcr\-private\-key\-initrd\&.pem, and for the main system (phases
+\fBleave\-initrd\fR,
+\fBsysinit\fR,
+\fBready\fR) with the key
+tpm2\-pcr\-private\-key\-system\&.pem\&. The Linux binary and the resulting combined image will be signed with the SecureBoot key
+sb\&.key\&.
+.PP
+\fBExample\ \&3.\ \&All the bells and whistles, via a config file\fR
+.PP
+This is the same as the previous example, but this time the configuration is stored in a file:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ cat ukify\&.conf
+[UKI]
+Initrd=early_cpio
+Cmdline=quiet rw rhgb
+
+SecureBootPrivateKey=secure\-boot\-key\&.pem
+SecureBootCertificate=secure\-boot\-certificate\&.pem
+SignKernel=yes
+PCRBanks=sha384,sha512
+
+[PCRSignature:initrd]
+PCRPrivateKey=tpm2\-pcr\-private\-key\-initrd\&.pem
+PCRPublicKey=tpm2\-pcr\-public\-key\-initrd\&.pem
+Phases=enter\-initrd
+
+[PCRSignature:system]
+PCRPrivateKey=tpm2\-pcr\-private\-key\-system\&.pem
+PCRPublicKey=tpm2\-pcr\-public\-key\-system\&.pem
+Phases=enter\-initrd:leave\-initrd
+       enter\-initrd:leave\-initrd:sysinit
+       enter\-initrd:leave\-initrd:sysinit:ready
+
+$ ukify \-c ukify\&.conf build \e
+        \-\-linux=/lib/modules/6\&.0\&.9\-300\&.fc37\&.x86_64/vmlinuz \e
+        \-\-initrd=/some/path/initramfs\-6\&.0\&.9\-300\&.fc37\&.x86_64\&.img
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+One "initrd" (early_cpio) is specified in the config file, and the other initrd (initramfs\-6\&.0\&.9\-300\&.fc37\&.x86_64\&.img) is specified on the command line\&. This may be useful for example when the first initrd contains microcode for the CPU and does not need to be updated when the kernel version changes, unlike the actual initrd\&.
+.PP
+\fBExample\ \&4.\ \&Kernel command line PE addon\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+ukify build \e
+      \-\-secureboot\-private\-key=secure\-boot\-key\&.pem \e
+      \-\-secureboot\-certificate=secure\-boot\-certificate\&.pem \e
+      \-\-cmdline=\*(Aqdebug\*(Aq \e
+      \-\-sbat=\*(Aqsbat,1,SBAT Version,sbat,1,https://github\&.com/rhboot/shim/blob/main/SBAT\&.md
+      uki\-addon\&.author,1,UKI Addon for System,uki\-addon\&.author,1,https://www\&.freedesktop\&.org/software/systemd/man/systemd\-stub\&.html\*(Aq
+      \-\-output=debug\&.addon\&.efi
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+This creates a signed PE binary that contains the additional kernel command line parameter
+"debug"
+with SBAT metadata referring to the owner of the addon\&.
+.PP
+\fBExample\ \&5.\ \&Decide signing policy, and create certificate and keys\fR
+.PP
+First, let\*(Aqs create a configuration file that specifies what signatures shall be made:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# cat >/etc/kernel/uki\&.conf <<EOF
+[UKI]
+SecureBootPrivateKey=/etc/kernel/secure\-boot\-key\&.pem
+SecureBootCertificate=/etc/kernel/secure\-boot\-certificate\&.pem
+
+[PCRSignature:initrd]
+Phases=enter\-initrd
+PCRPrivateKey=/etc/systemd/tpm2\-pcr\-private\-key\-initrd\&.pem
+PCRPublicKey=/etc/systemd/tpm2\-pcr\-public\-key\-initrd\&.pem
+
+[PCRSignature:system]
+Phases=enter\-initrd:leave\-initrd enter\-initrd:leave\-initrd:sysinit
+       enter\-initrd:leave\-initrd:sysinit:ready
+PCRPrivateKey=/etc/systemd/tpm2\-pcr\-private\-key\-system\&.pem
+PCRPublicKey=/etc/systemd/tpm2\-pcr\-public\-key\-system\&.pem
+EOF
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Next, we can generate the certificate and keys:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# ukify genkey \-\-config=/etc/kernel/uki\&.conf
+Writing SecureBoot private key to /etc/kernel/secure\-boot\-key\&.pem
+Writing SecureBoot certificate to /etc/kernel/secure\-boot\-certificate\&.pem
+Writing private key for PCR signing to /etc/systemd/tpm2\-pcr\-private\-key\-initrd\&.pem
+Writing public key for PCR signing to /etc/systemd/tpm2\-pcr\-public\-key\-initrd\&.pem
+Writing private key for PCR signing to /etc/systemd/tpm2\-pcr\-private\-key\-system\&.pem
+Writing public key for PCR signing to /etc/systemd/tpm2\-pcr\-public\-key\-system\&.pem
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+(Both operations need to be done as root to allow write access to
+/etc/kernel/\&.)
+.PP
+Subsequent invocations using the config file (\fBukify build \-\-config=/etc/kernel/uki\&.conf\fR) will use this certificate and key files\&. Note that the
+\fBkernel-install\fR(8)
+plugin
+60\-ukify\&.install
+uses
+/etc/kernel/uki\&.conf
+by default, so after this file has been created, installations of kernels that create a UKI on the local machine using
+\fBkernel\-install\fR
+will perform signing using this config\&.
+.PP
+\fBExample\ \&6.\ \&Multi\-Profile UKI\fR
+.PP
+First, create a few profiles:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ ukify build \e
+      \-\-profile=\*(AqTITLE=Base\*(Aq \e
+      \-\-output=profile0\&.efi
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Add a second profile (@1):
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ ukify build \e
+      \-\-profile=\*(AqTITLE=Boot into Storage Target Mode
+ID=storagetm\*(Aq \e
+      \-\-cmdline=\*(Aqquiet rw rd\&.systemd\&.unit=stroage\-target\-mode\&.target\*(Aq \e
+      \-\-output=profile1\&.efi
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Add a third profile (@2):
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ ukify build \e
+      \-\-profile=\*(AqTITLE=Factory Reset
+ID=factory\-reset\*(Aq \e
+      \-\-cmdline=\*(Aqquiet rw systemd\&.unit=factory\-reset\&.target\*(Aq \e
+      \-\-output=profile2\&.efi
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Then, create a UKI and include all the generated profiles:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ ukify build \e
+      \-\-linux=/lib/modules/6\&.0\&.9\-300\&.fc37\&.x86_64/vmlinuz \e
+      \-\-initrd=/some/path/initramfs\-6\&.0\&.9\-300\&.fc37\&.x86_64\&.img \e
+      \-\-cmdline=\*(Aqquiet rw\*(Aq \e
+      \-\-join\-profile=profile0\&.efi \e
+      \-\-join\-profile=profile1\&.efi \e
+      \-\-join\-profile=profile2\&.efi \e
+      \-\-output=base\&.efi
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+The resulting UKI
+base\-with\-profile\-0\-1\-2\&.efi
+will now contain three profiles\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1), \fBsystemd-stub\fR(7), \fBsystemd-boot\fR(7), \fBsystemd-measure\fR(1), \fBsystemd-pcrphase.service\fR(8)
+.SH "NOTES"
+.IP " 1." 4
+Unified Kernel Image (UKI)
+.RS 4
+\%https://uapi-group.org/specifications/specs/unified_kernel_image/
+.RE
+.IP " 2." 4
+Shim documentation
+.RS 4
+\%https://github.com/rhboot/shim/blob/main/SBAT.md
+.RE

@@ -1,28 +1,8 @@
 .\" Copyright (c) 2016 by Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
-.\"
-.TH TMPFS 5 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH tmpfs 5 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 tmpfs \- a virtual memory filesystem
 .SH DESCRIPTION
@@ -32,33 +12,33 @@ facility allows the creation of filesystems whose contents reside
 in virtual memory.
 Since the files on such filesystems typically reside in RAM,
 file access is extremely fast.
-.PP
+.P
 The filesystem is automatically created when mounting
 a filesystem with the type
-.BR tmpfs
+.B tmpfs
 via a command such as the following:
-.PP
+.P
 .in +4n
 .EX
 $ sudo mount \-t tmpfs \-o size=10M tmpfs /mnt/mytmpfs
 .EE
 .in
-.PP
+.P
 A
 .B tmpfs
 filesystem has the following properties:
-.IP * 3
+.IP \[bu] 3
 The filesystem can employ swap space when physical memory pressure
 demands it.
-.IP *
+.IP \[bu]
 The filesystem consumes only as much physical memory and swap space
 as is required to store the current contents of the filesystem.
-.IP *
+.IP \[bu]
 During a remount operation
 .RI ( "mount\ \-o\ remount" ),
 the filesystem size can be changed
 (without losing the existing contents of the filesystem).
-.PP
+.P
 If a
 .B tmpfs
 filesystem is unmounted, its contents are discarded (lost).
@@ -71,6 +51,8 @@ filesystem supports the following mount options:
 .BR size "=\fIbytes\fP"
 Specify an upper limit on the size of the filesystem.
 The size is given in bytes, and rounded up to entire pages.
+The limit is removed if the size is
+.BR 0 .
 .IP
 The size may have a
 .BR k ,
@@ -109,6 +91,8 @@ but not a % suffix.
 The maximum number of inodes for this instance.
 The default is half of the number of your physical RAM pages, or (on a
 machine with highmem) the number of lowmem RAM pages, whichever is smaller.
+The limit is removed if the number is
+.BR 0 .
 .IP
 Inodes may be specified with
 .BR k ,
@@ -118,6 +102,12 @@ or
 suffixes like
 .BR size ,
 but not a % suffix.
+.TP
+.BR noswap "(since Linux 6.4)"
+.\" commit 2c6efe9cf2d7841b75fe38ed1adbd41a90f51ba0
+Disables swap.
+Remounts must respect the original settings.
+By default swap is enabled.
 .TP
 .BR mode "=\fImode\fP"
 Set initial permissions of the root directory.
@@ -135,7 +125,7 @@ Set the initial user ID of the root directory.
 .BR huge "=\fIhuge_option\fR (since Linux 4.7.0)"
 .\" commit 5a6e75f8110c97e2a5488894d4e922187e6cb343
 Set the huge table memory allocation policy for all files in this instance (if
-.B CONFIG_TRANSPARENT_HUGE_PAGECACHE
+.B CONFIG_TRANSPARENT_HUGEPAGE
 is enabled).
 .IP
 The
@@ -154,12 +144,16 @@ Attempt to allocate huge pages every time a new page is needed.
 Only allocate huge page if it will be fully within
 .IR i_size .
 Also respect
-.BR fadvise (2)/ madvise (2)
+.BR fadvise (2)
+and
+.BR madvise (2)
 hints
 .TP
 .B advise
 Only allocate huge pages if requested with
-.BR fadvise (2)/ madvise (2).
+.BR fadvise (2)
+or
+.BR madvise (2).
 .TP
 .B deny
 For use in emergencies, to force the huge option off from all mounts.
@@ -224,15 +218,15 @@ In order for user-space tools and applications to create
 filesystems, the kernel must be configured with the
 .B CONFIG_TMPFS
 option.
-.PP
+.P
 The
-.BR tmpfs
+.B tmpfs
 filesystem supports extended attributes (see
 .BR xattr (7)),
 but
 .I user
 extended attributes are not permitted.
-.PP
+.P
 An internal shared memory filesystem is used for
 System V shared memory
 .RB ( shmget (2))
@@ -241,33 +235,33 @@ and shared anonymous mappings
 with the
 .B MAP_SHARED
 and
-.BR MAP_ANONYMOUS
+.B MAP_ANONYMOUS
 flags).
 This filesystem is available regardless of whether
 the kernel was configured with the
 .B CONFIG_TMPFS
 option.
-.PP
+.P
 A
 .B tmpfs
 filesystem mounted at
-.IR /dev/shm
+.I /dev/shm
 is used for the implementation of POSIX shared memory
 .RB ( shm_overview (7))
 and POSIX semaphores
 .RB ( sem_overview (7)).
-.PP
+.P
 The amount of memory consumed by all
 .B tmpfs
 filesystems is shown in the
 .I Shmem
 field of
-.IR /proc/meminfo
+.I /proc/meminfo
 and in the
 .I shared
 field displayed by
 .BR free (1).
-.PP
+.P
 The
 .B tmpfs
 facility was formerly called
@@ -280,8 +274,8 @@ facility was formerly called
 .BR set_mempolicy (2),
 .BR shm_open (3),
 .BR mount (8)
-.PP
+.P
 The kernel source files
-.IR Documentation/filesystems/tmpfs.txt
+.I Documentation/filesystems/tmpfs.txt
 and
 .IR Documentation/admin\-guide/mm/transhuge.rst .

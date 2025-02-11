@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-JOURNAL\-GATEWAYD\&.SERVICE" "8" "" "systemd 247" "systemd-journal-gatewayd.service"
+.TH "SYSTEMD\-JOURNAL\-GATEWAYD\&.SERVICE" "8" "" "systemd 257.1" "systemd-journal-gatewayd.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -26,8 +26,8 @@ systemd-journal-gatewayd.service, systemd-journal-gatewayd.socket, systemd-journ
 systemd\-journal\-gatewayd\&.service
 .PP
 systemd\-journal\-gatewayd\&.socket
-.HP \w'\fB/lib/systemd/systemd\-journal\-gatewayd\fR\ 'u
-\fB/lib/systemd/systemd\-journal\-gatewayd\fR [OPTIONS...]
+.HP \w'\fB/usr/lib/systemd/systemd\-journal\-gatewayd\fR\ 'u
+\fB/usr/lib/systemd/systemd\-journal\-gatewayd\fR [OPTIONS...]
 .SH "DESCRIPTION"
 .PP
 \fBsystemd\-journal\-gatewayd\fR
@@ -54,6 +54,8 @@ stream socket to read the server certificate from\&. The certificate must be in 
 \fBsystemd\-journal\-gatewayd\fR
 into HTTPS mode and must be used together with
 \fB\-\-key=\fR\&.
+.sp
+Added in version 198\&.
 .RE
 .PP
 \fB\-\-key=\fR
@@ -63,6 +65,8 @@ Specify the path to a file or
 stream socket to read the secret server key corresponding to the certificate specified with
 \fB\-\-cert=\fR
 from\&. The key must be in PEM format\&.
+.sp
+Added in version 198\&.
 .RE
 .PP
 \fB\-\-trust=\fR
@@ -70,6 +74,30 @@ from\&. The key must be in PEM format\&.
 Specify the path to a file or
 \fBAF_UNIX\fR
 stream socket to read a CA certificate from\&. The certificate must be in PEM format\&.
+.sp
+Added in version 236\&.
+.RE
+.PP
+\fB\-\-system\fR, \fB\-\-user\fR
+.RS 4
+Limit served entries to entries from system services and the kernel, or to entries from services of current user\&. This has the same meaning as
+\fB\-\-system\fR
+and
+\fB\-\-user\fR
+options for
+\fBjournalctl\fR(1)\&. If neither is specified, all accessible entries are served\&.
+.sp
+Added in version 249\&.
+.RE
+.PP
+\fB\-m\fR, \fB\-\-merge\fR
+.RS 4
+Serve entries interleaved from all available journals, including other machines\&. This has the same meaning as
+\fB\-\-merge\fR
+option for
+\fBjournalctl\fR(1)\&.
+.sp
+Added in version 249\&.
 .RE
 .PP
 \fB\-D \fR\fB\fIDIR\fR\fR, \fB\-\-directory=\fR\fB\fIDIR\fR\fR
@@ -79,6 +107,20 @@ Takes a directory path as argument\&. If specified,
 will serve the specified journal directory
 \fIDIR\fR
 instead of the default runtime and system journal paths\&.
+.sp
+Added in version 232\&.
+.RE
+.PP
+\fB\-\-file=\fR\fB\fIGLOB\fR\fR
+.RS 4
+Takes a file glob as an argument\&. Serve entries from the specified journal files matching
+\fIGLOB\fR
+instead of the default runtime and system journal paths\&. May be specified multiple times, in which case files will be suitably interleaved\&. This has the same meaning as
+\fB\-\-file=\fR
+option for
+\fBjournalctl\fR(1)\&.
+.sp
+Added in version 249\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
@@ -97,6 +139,8 @@ The following URLs are recognized:
 /browse
 .RS 4
 Interactive browsing\&.
+.sp
+Added in version 197\&.
 .RE
 .PP
 /entries[?option1&option2=value\&...]
@@ -112,6 +156,8 @@ The
 part of the HTTP header determines the range of events returned\&. Supported values are described below\&.
 .sp
 GET parameters can be used to modify what events are returned\&. Supported parameters are described below\&.
+.sp
+Added in version 197\&.
 .RE
 .PP
 /machine
@@ -135,11 +181,14 @@ Example:
 .RE
 .\}
 .sp
+Added in version 197\&.
 .RE
 .PP
 /fields/\fIFIELD_NAME\fR
 .RS 4
 Return a list of values of this field present in the logs\&.
+.sp
+Added in version 197\&.
 .RE
 .SH "ACCEPT HEADER"
 .PP
@@ -151,6 +200,8 @@ Recognized formats:
 .RS 4
 The default\&. Plaintext syslog\-like output, one line per journal entry (like
 \fBjournalctl \-\-output short\fR)\&.
+.sp
+Added in version 197\&.
 .RE
 .PP
 \fBapplication/json\fR
@@ -159,6 +210,8 @@ Entries are formatted as JSON data structures, one per line (like
 \fBjournalctl \-\-output json\fR)\&. See
 \m[blue]\fBJournal JSON Format\fR\m[]\&\s-2\u[1]\d\s+2
 for more information\&.
+.sp
+Added in version 197\&.
 .RE
 .PP
 \fBtext/event\-stream\fR
@@ -167,6 +220,8 @@ Entries are formatted as JSON data structures, wrapped in a format suitable for
 \m[blue]\fBServer\-Sent Events\fR\m[]\&\s-2\u[2]\d\s+2
 (like
 \fBjournalctl \-\-output json\-sse\fR)\&.
+.sp
+Added in version 229\&.
 .RE
 .PP
 \fBapplication/vnd\&.fdo\&.journal\fR
@@ -175,14 +230,22 @@ Entries are serialized into a binary (but mostly text\-based) stream suitable fo
 \fBjournalctl \-\-output export\fR)\&. See
 \m[blue]\fBJournal Export Format\fR\m[]\&\s-2\u[3]\d\s+2
 for more information\&.
+.sp
+Added in version 197\&.
 .RE
 .SH "RANGE HEADER"
 .PP
 \fBRange: entries=\fR\fB\fIcursor\fR\fR\fB[[:\fR\fB\fInum_skip\fR\fR\fB]:\fR\fB\fInum_entries\fR\fR\fB]\fR
 .PP
+\fBRange: realtime=[\fR\fB\fIsince\fR\fR\fB]:[\fR\fB\fIuntil\fR\fR\fB][[:\fR\fB\fInum_skip\fR\fR\fB]:\fR\fB\fInum_entries\fR\fR\fB]\fR
+.PP
 where
 \fIcursor\fR
 is a cursor string,
+\fIsince\fR
+and
+\fIuntil\fR
+are timestamps (seconds since 1970\-01\-01 00:00:00 UTC),
 \fInum_skip\fR
 is an integer,
 \fInum_entries\fR
@@ -197,23 +260,31 @@ follow
 .RS 4
 wait for new events (like
 \fBjournalctl \-\-follow\fR, except that the number of events returned is not limited)\&.
+.sp
+Added in version 197\&.
 .RE
 .PP
 discrete
 .RS 4
 Test that the specified cursor refers to an entry in the journal\&. Returns just this entry\&.
+.sp
+Added in version 197\&.
 .RE
 .PP
 boot
 .RS 4
 Limit events to the current boot of the system (like
 \fBjournalctl \-b\fR)\&.
+.sp
+Added in version 197\&.
 .RE
 .PP
 \fIKEY\fR=\fImatch\fR
 .RS 4
 Match journal fields\&. See
 \fBsystemd.journal-fields\fR(7)\&.
+.sp
+Added in version 197\&.
 .RE
 .SH "EXAMPLES"
 .PP
@@ -244,17 +315,12 @@ curl \*(Aqhttp://localhost:19531/entries?follow&MESSAGE_ID=fc2e22bc6ee647b6b9072
 .\}
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBjournalctl\fR(1),
-\fBsystemd.journal-fields\fR(7),
-\fBsystemd-journald.service\fR(8),
-\fBsystemd-journal-remote.service\fR(8),
-\fBsystemd-journal-upload.service\fR(8)
+\fBsystemd\fR(1), \fBjournalctl\fR(1), \fBsystemd.journal-fields\fR(7), \fBsystemd-journald.service\fR(8), \fBsystemd-journal-remote.service\fR(8), \fBsystemd-journal-upload.service\fR(8)
 .SH "NOTES"
 .IP " 1." 4
 Journal JSON Format
 .RS 4
-\%https://www.freedesktop.org/wiki/Software/systemd/json
+\%https://systemd.io/JOURNAL_EXPORT_FORMATS#journal-json-format
 .RE
 .IP " 2." 4
 Server-Sent Events
@@ -264,5 +330,5 @@ Server-Sent Events
 .IP " 3." 4
 Journal Export Format
 .RS 4
-\%https://www.freedesktop.org/wiki/Software/systemd/export
+\%https://systemd.io/JOURNAL_EXPORT_FORMATS#journal-export-format
 .RE

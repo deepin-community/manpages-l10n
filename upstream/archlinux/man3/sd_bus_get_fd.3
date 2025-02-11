@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_GET_FD" "3" "" "systemd 249" "sd_bus_get_fd"
+.TH "SD_BUS_GET_FD" "3" "" "systemd 257" "sd_bus_get_fd"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -53,13 +53,17 @@ or a similar call\&. Returns a combination of
 \fBPOLLOUT\fR, \&... events, or negative on error\&.
 .PP
 \fBsd_bus_get_timeout()\fR
-returns the timeout in \(mcs to pass to
+returns the
+\fIabsolute\fR
+timeout in μs, from which the relative timeout to pass to
 \fBpoll()\fR
-or a similar call when waiting for events on the specified bus connection\&. The returned timeout may be zero, in which case a subsequent I/O polling call should be invoked in non\-blocking mode\&. The returned timeout may be
+(or a similar call) can be derived, when waiting for events on the specified bus connection\&. The returned timeout may be zero, in which case a subsequent I/O polling call should be invoked in non\-blocking mode\&. The returned timeout may be
 \fBUINT64_MAX\fR
-in which case the I/O polling call may block indefinitely, without any applied timeout\&. Note that the returned timeout should be considered only a maximum sleeping time\&. It is permissible (and even expected) that shorter timeouts are used by the calling program, in case other event sources are polled in the same event loop\&. Note that the returned time\-value is relative and specified in microseconds\&. When converting this value in order to pass it as third argument to
+in which case the I/O polling call may block indefinitely, without any applied timeout\&. Note that the returned timeout should be considered only a maximum sleeping time\&. It is permissible (and even expected) that shorter timeouts are used by the calling program, in case other event sources are polled in the same event loop\&. Note that the returned time\-value is absolute, based of
+\fBCLOCK_MONOTONIC\fR
+and specified in microseconds\&. When converting this value in order to pass it as third argument to
 \fBpoll()\fR
-(which expects milliseconds), care should be taken to use a division that rounds up to ensure the I/O polling operation doesn\*(Aqt sleep for shorter than necessary, which might result in unintended busy looping (alternatively, use
+(which expects relative milliseconds), care should be taken to convert to a relative time and use a division that rounds up to ensure the I/O polling operation doesn\*(Aqt sleep for shorter than necessary, which might result in unintended busy looping (alternatively, use
 \fBppoll\fR(2)
 instead of plain
 \fBpoll()\fR, which understands timeouts with nano\-second granularity)\&.
@@ -127,15 +131,22 @@ The bus cannot be resolved\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_get_fd()\fR,
+\fBsd_bus_get_events()\fR, and
+\fBsd_bus_get_timeout()\fR
+were added in version 221\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-bus\fR(3),
-\fBsd_bus_process\fR(3),
-\fBsd_bus_attach_event\fR(3),
-\fBsd_bus_wait\fR(3),
-\fBsd_bus_set_fd\fR(3),
-\fBpoll\fR(3)
+\fBsystemd\fR(1), \fBsd-bus\fR(3), \fBsd_bus_process\fR(3), \fBsd_bus_attach_event\fR(3), \fBsd_bus_wait\fR(3), \fBsd_bus_set_fd\fR(3), \fBpoll\fR(3)

@@ -1,0 +1,2038 @@
+.\" Man page generated from reStructuredText.
+.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.TH "YUM" "8" "Nov 16, 2024" "4.22.0" "DNF"
+.SH NAME
+yum \- redirecting to DNF Command Reference
+.SH SYNOPSIS
+.sp
+\fBdnf [options] <command> [<args>...]\fP
+.SH DESCRIPTION
+.sp
+\X'tty: link https://github.com/rpm-software-management/dnf/'\fI\%DNF\fP\X'tty: link' is the next upcoming major version of \X'tty: link http://yum.baseurl.org/'\fI\%YUM\fP\X'tty: link', a package manager for RPM\-based Linux
+distributions. It roughly maintains CLI compatibility with YUM and defines a strict API for
+extensions and plugins.
+.sp
+Plugins can modify or extend features of DNF or provide additional CLI commands on top of those
+mentioned below. If you know the name of such a command (including commands mentioned below), you
+may find/install the package which provides it using the appropriate virtual provide in the form of
+\fBdnf\-command(<alias>)\fP, where \fB<alias>\fP is the name of the command; e.g. \fBdnf install
+\(aqdnf\-command(versionlock)\(aq\fP installs a \fBversionlock\fP plugin. This approach also applies to
+specifying dependencies of packages that require a particular DNF command.
+.sp
+Return values:
+.INDENT 0.0
+.IP \(bu 2
+\fB0\fP  : Operation was successful.
+.IP \(bu 2
+\fB1\fP  : An error occurred, which was handled by dnf.
+.IP \(bu 2
+\fB3\fP  : An unknown unhandled error occurred during operation.
+.IP \(bu 2
+\fB100\fP: See \fI\%check\-update\fP
+.IP \(bu 2
+\fB200\fP: There was a problem with acquiring or releasing of locks.
+.UNINDENT
+.sp
+Available commands:
+.INDENT 0.0
+.IP \(bu 2
+\fI\%alias\fP
+.IP \(bu 2
+\fI\%autoremove\fP
+.IP \(bu 2
+\fI\%check\fP
+.IP \(bu 2
+\fI\%check\-update\fP
+.IP \(bu 2
+\fI\%clean\fP
+.IP \(bu 2
+\fI\%deplist\fP
+.IP \(bu 2
+\fI\%distro\-sync\fP
+.IP \(bu 2
+\fI\%downgrade\fP
+.IP \(bu 2
+\fI\%group\fP
+.IP \(bu 2
+\fI\%help\fP
+.IP \(bu 2
+\fI\%history\fP
+.IP \(bu 2
+\fI\%info\fP
+.IP \(bu 2
+\fI\%install\fP
+.IP \(bu 2
+\fI\%list\fP
+.IP \(bu 2
+\fI\%makecache\fP
+.IP \(bu 2
+\fI\%mark\fP
+.IP \(bu 2
+\fI\%module\fP
+.IP \(bu 2
+\fI\%provides\fP
+.IP \(bu 2
+\fI\%reinstall\fP
+.IP \(bu 2
+\fI\%remove\fP
+.IP \(bu 2
+\fI\%repoinfo\fP
+.IP \(bu 2
+\fI\%repolist\fP
+.IP \(bu 2
+\fI\%repoquery\fP
+.IP \(bu 2
+\fI\%repository\-packages\fP
+.IP \(bu 2
+\fI\%search\fP
+.IP \(bu 2
+\fI\%shell\fP
+.IP \(bu 2
+\fI\%swap\fP
+.IP \(bu 2
+\fI\%updateinfo\fP
+.IP \(bu 2
+\fI\%upgrade\fP
+.IP \(bu 2
+\fI\%upgrade\-minimal\fP
+.UNINDENT
+.sp
+Additional information:
+.INDENT 0.0
+.IP \(bu 2
+\fI\%Options\fP
+.IP \(bu 2
+\fI\%Specifying Packages\fP
+.IP \(bu 2
+\fI\%Specifying Provides\fP
+.IP \(bu 2
+\fI\%Specifying File Provides\fP
+.IP \(bu 2
+\fI\%Specifying Groups\fP
+.IP \(bu 2
+\fI\%Specifying Transactions\fP
+.IP \(bu 2
+\fI\%Metadata Synchronization\fP
+.IP \(bu 2
+\fI\%Configuration Files Replacement Policy\fP
+.IP \(bu 2
+\fI\%Files\fP
+.IP \(bu 2
+\fI\%See Also\fP
+.UNINDENT
+.SH OPTIONS
+.INDENT 0.0
+.TP
+.B \fB\-4\fP
+Resolve to IPv4 addresses only.
+.TP
+.B \fB\-6\fP
+Resolve to IPv6 addresses only.
+.TP
+.B \fB\-\-advisory=<advisory>, \-\-advisories=<advisory>\fP
+Include packages corresponding to the advisory ID, Eg. FEDORA\-2201\-123.
+Applicable for the \fBinstall\fP, \fBrepoquery\fP, \fBupdateinfo\fP, \fBupgrade\fP and \fBoffline\-upgrade\fP (dnf\-plugins\-core) commands.
+.TP
+.B \fB\-\-allowerasing\fP
+Allow erasing of installed packages to resolve dependencies. This option could be used as an alternative to the \fByum swap\fP command where packages to remove are not explicitly defined.
+.TP
+.B \fB\-\-assumeno\fP
+Automatically answer no for all questions.
+.TP
+.B \fB\-b, \-\-best\fP
+Try the best available package versions in transactions. Specifically during \fI\%dnf upgrade\fP, which by default skips over updates that can not be installed for dependency reasons, the switch forces DNF to only consider the latest packages. When running into packages with broken dependencies, DNF will fail giving a reason why the latest version can not be installed.
+.sp
+Note that the use of the newest available version is only guaranteed for
+the packages directly requested (e.g. as a command line arguments), and the
+solver may use older versions of dependencies to meet their requirements.
+.TP
+.B \fB\-\-bugfix\fP
+Include packages that fix a bugfix issue.
+Applicable for the \fBinstall\fP, \fBrepoquery\fP, \fBupdateinfo\fP, \fBupgrade\fP and \fBoffline\-upgrade\fP (dnf\-plugins\-core) commands.
+.TP
+.B \fB\-\-bz=<bugzilla>, \-\-bzs=<bugzilla>\fP
+Include packages that fix a Bugzilla ID, Eg. 123123.
+Applicable for the \fBinstall\fP, \fBrepoquery\fP, \fBupdateinfo\fP, \fBupgrade\fP and \fBoffline\-upgrade\fP (dnf\-plugins\-core) commands.
+.TP
+.B \fB\-C, \-\-cacheonly\fP
+Run entirely from system cache, don\(aqt update the cache and use it even in case it is expired.
+.sp
+DNF uses a separate cache for each user under which it executes. The cache for the root user is called the system cache. This switch allows a regular user read\-only access to the system cache, which usually is more fresh than the user\(aqs and thus he does not have to wait for metadata sync.
+.TP
+.B \fB\-\-color=<color>\fP
+Control whether color is used in terminal output. Valid values are \fBalways\fP, \fBnever\fP and \fBauto\fP (default).
+.TP
+.B \fB\-\-comment=<comment>\fP
+Add a comment to the transaction history.
+.TP
+.B \fB\-c <config file>, \-\-config=<config file>\fP
+Configuration file location.
+.TP
+.B \fB\-\-cve=<cves>, \-\-cves=<cves>\fP
+Include packages that fix a CVE (Common Vulnerabilities and Exposures) ID
+(\X'tty: link http://cve.mitre.org/about/'\fI\%http://cve.mitre.org/about/\fP\X'tty: link'), Eg. CVE\-2201\-0123.
+Applicable for the \fBinstall\fP, \fBrepoquery\fP, \fBupdateinfo\fP, \fBupgrade\fP and \fBoffline\-upgrade\fP (dnf\-plugins\-core) commands.
+.TP
+.B \fB\-d <debug level>, \-\-debuglevel=<debug level>\fP
+Debugging output level. This is an integer value between 0 (no additional information strings) and 10 (shows all debugging information, even that not understandable to the user), default is 2. Deprecated, use \fB\-v\fP instead.
+.TP
+.B \fB\-\-debugsolver\fP
+Dump data aiding in dependency solver debugging into \fB\&./debugdata\fP\&.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-disableexcludes=[all|main|<repoid>], \-\-disableexcludepkgs=[all|main|<repoid>]\fP
+Disable the configuration file excludes. Takes one of the following three options:
+.INDENT 7.0
+.IP \(bu 2
+\fBall\fP, disables all configuration file excludes
+.IP \(bu 2
+\fBmain\fP, disables excludes defined in the \fB[main]\fP section
+.IP \(bu 2
+\fBrepoid\fP, disables excludes defined for the given repository
+.UNINDENT
+.TP
+.B \fB\-\-disable, \-\-set\-disabled\fP
+Disable specified repositories (automatically saves). The option has to be used together with the
+\fBconfig\-manager\fP command (dnf\-plugins\-core).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-disableplugin=<plugin names>\fP
+Disable the listed plugins specified by names or globs.
+.TP
+.B \fB\-\-disablerepo=<repoid>\fP
+Temporarily disable active repositories for the purpose of the current dnf command.
+Accepts an id, a comma\-separated list of ids, or a glob of ids. This option can be
+specified multiple times, but is mutually exclusive with \fB\-\-repo\fP\&.
+.TP
+.B \fB\-\-downloaddir=<path>, \-\-destdir=<path>\fP
+Redirect downloaded packages to provided directory. The option has to be used together with the \-\fI\%\-downloadonly\fP command line option, with the
+\fBdownload\fP, \fBmodulesync\fP, \fBreposync\fP or \fBsystem\-upgrade\fP commands (dnf\-plugins\-core).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-downloadonly\fP
+Download the resolved package set without performing any rpm transaction (install/upgrade/erase).
+.sp
+Packages are removed after the next successful transaction. This applies also when used together
+with \fB\-\-destdir\fP option as the directory is considered as a part of the DNF cache. To persist
+the packages, use the \fBdownload\fP command instead.
+.TP
+.B \fB\-e <error level>, \-\-errorlevel=<error level>\fP
+Error output level. This is an integer value between 0 (no error output) and
+10 (shows all error messages), default is 3. Deprecated, use \fB\-v\fP instead.
+.TP
+.B \fB\-\-enable, \-\-set\-enabled\fP
+Enable specified repositories (automatically saves). The option has to be used together with the
+\fBconfig\-manager\fP command (dnf\-plugins\-core).
+.TP
+.B \fB\-\-enableplugin=<plugin names>\fP
+Enable the listed plugins specified by names or globs.
+.TP
+.B \fB\-\-enablerepo=<repoid>\fP
+Temporarily enable additional repositories for the purpose of the current dnf command.
+Accepts an id, a comma\-separated list of ids, or a glob of ids. This option can be
+specified multiple times.
+.TP
+.B \fB\-\-enhancement\fP
+Include enhancement relevant packages.
+Applicable for the \fBinstall\fP, \fBrepoquery\fP, \fBupdateinfo\fP, \fBupgrade\fP and \fBoffline\-upgrade\fP (dnf\-plugins\-core) commands.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-x <package\-file\-spec>, \-\-exclude=<package\-file\-spec>\fP
+Exclude packages specified by \fB<package\-file\-spec>\fP from the operation.
+.TP
+.B \fB\-\-excludepkgs=<package\-file\-spec>\fP
+Deprecated option. It was replaced by the \-\fI\%\-exclude\fP option.
+.TP
+.B \fB\-\-forcearch=<arch>\fP
+Force the use of an architecture. Any architecture can be specified.
+However, use of an architecture not supported natively by your CPU will
+require emulation of some kind. This is usually through QEMU. The behavior of \fB\-\-forcearch\fP
+can be configured by using the \X'tty: link #arch-label'\fI\%arch\fP\X'tty: link' and \X'tty: link #ignorearch-label'\fI\%ignorearch\fP\X'tty: link'
+configuration options with values \fB<arch>\fP and \fBTrue\fP respectively.
+.TP
+.B \fB\-h, \-\-help, \-\-help\-cmd\fP
+Show the help.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-installroot=<path>\fP
+Specifies an alternative installroot, relative to where all packages will be
+installed. Think of this like doing \fBchroot <root> dnf\fP, except using
+\fB\-\-installroot\fP allows dnf to work before the chroot is created. It requires absolute path.
+.UNINDENT
+.INDENT 0.0
+.IP \(bu 2
+\fIcachedir\fP, \fIlog files\fP, \fIreleasever\fP, and \fIgpgkey\fP are taken from or
+stored in the installroot. \fIGpgkeys\fP are imported into the installroot from
+a path relative to the host which can be specified in the repository section
+of configuration files.
+.IP \(bu 2
+\fIconfiguration file\fP and \X'tty: link #reposdir-label'\fI\%reposdir\fP\X'tty: link' are searched inside the installroot first. If
+they are not present, they are taken from the host system.
+Note:  When a path is specified within a command line argument
+(\fB\-\-config=<config file>\fP in case of \fIconfiguration file\fP and
+\fB\-\-setopt=reposdir=<reposdir>\fP for \fIreposdir\fP) then this path is always
+relative to the host with no exceptions.
+.IP \(bu 2
+\fIvars\fP are taken from the host system or installroot according to \X'tty: link #reposdir-label'\fI\%reposdir\fP\X'tty: link'
+\&. When \fIreposdir\fP path is specified within a command line argument, vars are taken from the
+installroot. When \X'tty: link #varsdir-options-label'\fI\%varsdir\fP\X'tty: link' paths are specified within a command line
+argument (\fB\-\-setopt=varsdir=<reposdir>\fP) then those path are always relative to the host with no
+exceptions.
+.IP \(bu 2
+The \fIpluginpath\fP and \fIpluginconfpath\fP are relative to the host.
+.UNINDENT
+.INDENT 0.0
+.INDENT 3.5
+Note: You may also want to use the command\-line option
+\fB\-\-releasever=<release>\fP when creating the installroot, otherwise the
+\fI$releasever\fP value is taken from the rpmdb within the installroot (and thus
+it is empty at the time of creation and the transaction will fail). If \fB\-\-releasever=/\fP is used, the
+releasever will be detected from the host (\fB/\fP) system. The new installroot path at the time of creation
+does not contain the \fIrepository\fP, \fIreleasever\fP and \fIdnf.conf\fP files.
+.sp
+On a modular system you may also want to use the
+\fB\-\-setopt=module_platform_id=<module_platform_name:stream>\fP command\-line option when creating the installroot,
+otherwise the \X'tty: link #module-platform-id-label'\fI\%module_platform_id\fP\X'tty: link' value will be taken from the
+\fB/etc/os\-release\fP file within the installroot (and thus it will be empty at the time of creation, the modular
+dependency could be unsatisfied and modules content could be excluded).
+.sp
+Installroot examples:
+.INDENT 0.0
+.TP
+.B \fBdnf \-\-installroot=<installroot> \-\-releasever=<release> install system\-release\fP
+Permanently sets the \fBreleasever\fP of the system in the
+\fB<installroot>\fP directory to \fB<release>\fP\&.
+.TP
+.B \fBdnf \-\-installroot=<installroot> \-\-setopt=reposdir=<path> \-\-config /path/dnf.conf upgrade\fP
+Upgrades packages inside the installroot from a repository described by
+\fB\-\-setopt\fP using configuration from \fB/path/dnf.conf\fP\&.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-newpackage\fP
+Include newpackage relevant packages.
+Applicable for the \fBinstall\fP, \fBrepoquery\fP, \fBupdateinfo\fP, \fBupgrade\fP and \fBoffline\-upgrade\fP (dnf\-plugins\-core) commands.
+.TP
+.B \fB\-\-noautoremove\fP
+Disable removal of dependencies that are no longer used. It sets
+\X'tty: link #clean-requirements-on-remove-label'\fI\%clean_requirements_on_remove\fP\X'tty: link' configuration option to \fBFalse\fP\&.
+.TP
+.B \fB\-\-nobest\fP
+Set best option to \fBFalse\fP, so that transactions are not limited to best candidates only.
+.TP
+.B \fB\-\-nodocs\fP
+Do not install documentation. Sets the rpm flag \(aqRPMTRANS_FLAG_NODOCS\(aq.
+.TP
+.B \fB\-\-nogpgcheck\fP
+Skip checking GPG signatures on packages (if RPM policy allows).
+.TP
+.B \fB\-\-noplugins\fP
+Disable all plugins.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-obsoletes\fP
+This option has an effect on an install/update, it enables
+dnf\(aqs obsoletes processing logic. For more information see the
+\X'tty: link #obsoletes-conf-option-label'\fI\%obsoletes\fP\X'tty: link' option.
+.sp
+This option also displays capabilities that the package obsoletes when used together with the \fI\%repoquery\fP command.
+.sp
+Configuration Option: \X'tty: link #obsoletes-conf-option-label'\fI\%obsoletes\fP\X'tty: link'
+.TP
+.B \fB\-q, \-\-quiet\fP
+In combination with a non\-interactive command, shows just the relevant content. Suppresses messages notifying about the current state or actions of DNF.
+.TP
+.B \fB\-R <minutes>, \-\-randomwait=<minutes>\fP
+Maximum command wait time.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-refresh\fP
+Set metadata as expired before running the command.
+.TP
+.B \fB\-\-releasever=<release>\fP
+Configure DNF as if the distribution release was \fB<release>\fP\&. This can
+affect cache paths, values in configuration files and mirrorlist URLs.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-repofrompath <repo>,<path/url>\fP
+Specify a repository to add to the repositories for this query.
+This option can be used multiple times.
+.UNINDENT
+.INDENT 0.0
+.IP \(bu 2
+The repository label is specified by \fB<repo>\fP\&.
+.IP \(bu 2
+The path or url to the repository is specified by \fB<path/url>\fP\&.
+It is the same path as a baseurl and can be also enriched by the
+\X'tty: link #repo-variables-label'\fI\%repo variables\fP\X'tty: link'\&.
+.IP \(bu 2
+The configuration for the repository can be adjusted using \-\fI\%\-setopt\fP=<repo>.<option>=<value>.
+.IP \(bu 2
+If you want to view only packages from this repository, combine this
+with the \fB\-\-repo=<repo>\fP or \fB\-\-disablerepo=\(dq*\(dq\fP switches.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-repo=<repoid>, \-\-repoid=<repoid>\fP
+Enable just specific repositories by an id or a glob. Can be used multiple
+times with accumulative effect. It is basically a shortcut for
+\fB\-\-disablerepo=\(dq*\(dq \-\-enablerepo=<repoid>\fP and is mutually exclusive with
+the \fB\-\-disablerepo\fP option.
+.TP
+.B \fB\-\-rpmverbosity=<name>\fP
+RPM debug scriptlet output level. Sets the debug level to \fB<name>\fP for RPM scriptlets.
+For available levels, see the \fBrpmverbosity\fP configuration option.
+.TP
+.B \fB\-\-sec\-severity=<severity>, \-\-secseverity=<severity>\fP
+Includes packages that provide a fix for an issue of the specified severity.
+Applicable for the \fBinstall\fP, \fBrepoquery\fP, \fBupdateinfo\fP, \fBupgrade\fP and \fBoffline\-upgrade\fP (dnf\-plugins\-core) commands.
+.TP
+.B \fB\-\-security\fP
+Includes packages that provide a fix for a security issue.
+Applicable for the \fBinstall\fP, \fBrepoquery\fP, \fBupdateinfo\fP, \fBupgrade\fP and \fBoffline\-upgrade\fP (dnf\-plugins\-core) commands.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-setopt=<option>=<value>\fP
+Override a configuration option from the configuration file. To override configuration options for repositories, use
+\fBrepoid.option\fP for the \fB<option>\fP\&. Values for configuration options like \fBexcludepkgs\fP, \fBincludepkgs\fP,
+\fBinstallonlypkgs\fP and \fBtsflags\fP are appended to the original value, they do not override it. However, specifying
+an empty value (e.g. \fB\-\-setopt=tsflags=\fP) will clear the option.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-skip\-broken\fP
+Resolve depsolve problems by removing packages that are causing problems from the transaction.
+It is an alias for the \X'tty: link #strict-label'\fI\%strict\fP\X'tty: link' configuration option with value \fBFalse\fP\&.
+Additionally, with the \fI\%enable\fP and
+\fI\%disable\fP module subcommands it allows one to perform an action even in case of
+broken modular dependencies.
+.TP
+.B \fB\-\-showduplicates\fP
+Show duplicate packages in repositories. Applicable for the list and search commands.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-v, \-\-verbose\fP
+Verbose operation, show debug messages.
+.TP
+.B \fB\-\-version\fP
+Show DNF version and exit.
+.TP
+.B \fB\-y, \-\-assumeyes\fP
+Automatically answer yes for all questions.
+.UNINDENT
+.sp
+List options are comma\-separated. Command\-line options override respective settings from configuration files.
+.SH COMMANDS
+.sp
+For an explanation of \fB<package\-spec>\fP, \fB<package\-file\-spec>\fP and \fB<package\-name\-spec>\fP see
+\fI\%Specifying Packages\fP\&.
+.sp
+For an explanation of \fB<provide\-spec>\fP see \fI\%Specifying Provides\fP\&.
+.sp
+For an explanation of \fB<group\-spec>\fP see \fI\%Specifying Groups\fP\&.
+.sp
+For an explanation of \fB<module\-spec>\fP see \fI\%Specifying Modules\fP\&.
+.sp
+For an explanation of \fB<transaction\-spec>\fP see \fI\%Specifying Transactions\fP\&.
+.SS Alias Command
+.nf
+Command: \fBalias\fP
+.fi
+.sp
+.sp
+Allows the user to define and manage a list of aliases (in the form \fB<name=value>\fP),
+which can be then used as dnf commands to abbreviate longer command sequences. For examples on using
+the alias command, see \fI\%Alias Examples\fP\&. For examples on the alias
+processing, see \fI\%Alias Processing Examples\fP\&.
+.sp
+To use an alias (name=value), the name must be placed as the first \(dqcommand\(dq (e.g. the first argument
+that is not an option). It is then replaced by its value and the resulting sequence is again searched
+for aliases. The alias processing stops when the first found command is not a name of any alias.
+.sp
+In case the processing would result in an infinite recursion, the original arguments are used instead.
+.sp
+Also, like in shell aliases, if the result starts with a \fB\e\fP, the alias processing will stop.
+.sp
+All aliases are defined in configuration files in the \fB/etc/dnf/aliases.d/\fP directory in the [aliases] section,
+and aliases created by the alias command are written to the \fBUSER.conf\fP file. In case of conflicts,
+the \fBUSER.conf\fP has the highest priority, and alphabetical ordering is used for the rest of the
+configuration files.
+.sp
+Optionally, there is the \fBenabled\fP option in the \fB[main]\fP section defaulting to True. This can be set for each
+file separately in the respective file, or globally for all aliases in the \fBALIASES.conf\fP file.
+.sp
+\fBdnf alias [options] [list] [<name>...]\fP
+.INDENT 0.0
+.INDENT 3.5
+List aliases with their final result. The \fB[<alias>...]\fP parameter further limits the result to only those aliases matching it.
+.UNINDENT
+.UNINDENT
+.sp
+\fBdnf alias [options] add <name=value>...\fP
+.INDENT 0.0
+.INDENT 3.5
+Create new aliases.
+.UNINDENT
+.UNINDENT
+.sp
+\fBdnf alias [options] delete <name>...\fP
+.INDENT 0.0
+.INDENT 3.5
+Delete aliases.
+.UNINDENT
+.UNINDENT
+.SS Alias Examples
+.INDENT 0.0
+.TP
+.B \fBdnf alias list\fP
+Lists all defined aliases.
+.TP
+.B \fBdnf alias add rm=remove\fP
+Adds a new command alias called \fBrm\fP which works the same as the \fBremove\fP command.
+.TP
+.B \fBdnf alias add upgrade=\(dq\eupgrade \-\-skip\-broken \-\-disableexcludes=all \-\-obsoletes\(dq\fP
+Adds a new command alias called \fBupgrade\fP which works the same as the \fBupgrade\fP command,
+with additional options. Note that the original \fBupgrade\fP command is prefixed with a \fB\e\fP
+to prevent an infinite loop in alias processing.
+.UNINDENT
+.SS Alias Processing Examples
+.sp
+If there are defined aliases \fBin=install\fP and \fBFORCE=\(dq\-\-skip\-broken \-\-disableexcludes=all\(dq\fP:
+.INDENT 0.0
+.IP \(bu 2
+\fBdnf FORCE in\fP will be replaced with \fBdnf \-\-skip\-broken \-\-disableexcludes=all install\fP
+.IP \(bu 2
+\fBdnf in FORCE\fP will be replaced with \fBdnf install FORCE\fP (which will fail)
+.UNINDENT
+.sp
+If there is defined alias \fBin=install\fP:
+.INDENT 0.0
+.IP \(bu 2
+\fBdnf in\fP will be replaced with \fBdnf install\fP
+.IP \(bu 2
+\fBdnf \-\-repo updates in\fP will be replaced with \fBdnf \-\-repo updates in\fP (which will fail)
+.UNINDENT
+.SS Autoremove Command
+.nf
+Command: \fBautoremove\fP
+Aliases for \fI\%explicit NEVRA matching\fP: \fBautoremove\-n\fP, \fBautoremove\-na\fP, \fBautoremove\-nevra\fP
+.fi
+.sp
+.sp
+\fBdnf [options] autoremove\fP
+.INDENT 0.0
+.INDENT 3.5
+Removes all packages from the system that were originally installed as dependencies of user\-installed packages, but which are no longer required by any such package.
+.UNINDENT
+.UNINDENT
+.sp
+\fBdnf [options] autoremove <spec>...\fP
+.INDENT 0.0
+.INDENT 3.5
+This is an alias for the \fI\%Remove Command\fP command with clean_requirements_on_remove set to
+\fBTrue\fP\&. It removes the specified packages from the system along with any packages depending on the
+packages being removed. Each \fB<spec>\fP can be either a \fB<package\-spec>\fP, which specifies a
+package directly, or a \fB@<group\-spec>\fP, which specifies an (environment) group which contains
+it. It also removes any dependencies that are no longer needed.
+.UNINDENT
+.UNINDENT
+.sp
+There are also a few specific autoremove commands \fBautoremove\-n\fP, \fBautoremove\-na\fP and
+\fBautoremove\-nevra\fP that allow the specification of an exact argument in the NEVRA
+(name\-epoch:version\-release.architecture) format.
+.sp
+This command by default does not force a sync of expired metadata. See also \fI\%Metadata Synchronization\fP\&.
+.SS Check Command
+.nf
+Command: \fBcheck\fP
+.fi
+.sp
+.sp
+\fBdnf [options] check [\-\-dependencies] [\-\-duplicates] [\-\-obsoleted] [\-\-provides]\fP
+.INDENT 0.0
+.INDENT 3.5
+Checks the local packagedb and produces information on any problems it
+finds. You can limit the checks to be performed by using the \fB\-\-dependencies\fP,
+\fB\-\-duplicates\fP, \fB\-\-obsoleted\fP and \fB\-\-provides\fP options (the default is to
+check everything).
+.UNINDENT
+.UNINDENT
+.SS Check\-Update Command
+.nf
+Command: \fBcheck\-update\fP
+Aliases: \fBcheck\-upgrade\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] check\-update [\-\-changelogs] [<package\-file\-spec>...]\fP
+Non\-interactively checks if updates of the specified packages are available. If no \fB<package\-file\-spec>\fP is given, checks whether any updates at all are available for your system. DNF exit code will be 100 when there are updates available and a list of the updates will be printed, 0 if not and 1 if an error occurs. If \fB\-\-changelogs\fP option is specified, also changelog delta of packages about to be updated is printed.
+.sp
+Please note that having a specific newer version available for an installed package (and reported by \fBcheck\-update\fP) does not imply that subsequent \fBdnf upgrade\fP will install it. The difference is that \fBdnf upgrade\fP has restrictions (like package dependencies being satisfied) to take into account.
+.sp
+The output is affected by the \X'tty: link #autocheck-running-kernel-label'\fI\%autocheck_running_kernel\fP\X'tty: link' configuration option.
+.UNINDENT
+.SS Clean Command
+.nf
+Command: \fBclean\fP
+.fi
+.sp
+.sp
+Performs cleanup of temporary files kept for repositories. This includes any
+such data left behind from disabled or removed repositories as well as for
+different distribution release versions.
+.INDENT 0.0
+.TP
+.B \fBdnf clean dbcache\fP
+Removes cache files generated from the repository metadata. This forces DNF
+to regenerate the cache files the next time it is run.
+.TP
+.B \fBdnf clean expire\-cache\fP
+Marks the repository metadata expired. DNF will re\-validate the cache for
+each repository the next time it is used.
+.TP
+.B \fBdnf clean metadata\fP
+Removes repository metadata. Those are the files which DNF uses to determine
+the remote availability of packages. Using this option will make DNF
+download all the metadata the next time it is run.
+.TP
+.B \fBdnf clean packages\fP
+Removes any cached packages from the system.
+.TP
+.B \fBdnf clean all\fP
+Does all of the above.
+.UNINDENT
+.SS Deplist Command
+.INDENT 0.0
+.TP
+.B \fBdnf [options] deplist [<select\-options>] [<query\-options>] [<package\-spec>]\fP
+Deprecated alias for \fI\%dnf repoquery \-\-deplist\fP\&.
+.UNINDENT
+.SS Distro\-Sync Command
+.nf
+Command: \fBdistro\-sync\fP
+Aliases: \fBdsync\fP
+Deprecated aliases: \fBdistrosync\fP, \fBdistribution\-synchronization\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf distro\-sync [<package\-spec>...]\fP
+As necessary upgrades, downgrades or keeps selected installed packages to match
+the latest version available from any enabled repository. If no package is given, all installed packages are considered.
+.sp
+See also \fI\%Configuration Files Replacement Policy\fP\&.
+.UNINDENT
+.SS Downgrade Command
+.nf
+Command: \fBdowngrade\fP
+Aliases: \fBdg\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] downgrade <package\-spec>...\fP
+Downgrades the specified packages to the highest installable package of all known lower versions
+if possible. When version is given and is lower than version of installed package then it
+downgrades to target version.
+.UNINDENT
+.SS Group Command
+.nf
+Command: \fBgroup\fP
+Aliases: \fBgrp\fP
+Deprecated aliases: \fBgroups\fP, \fBgrouplist\fP, \fBgroupinstall\fP, \fBgroupupdate\fP, \fBgroupremove\fP, \fBgrouperase\fP, \fBgroupinfo\fP
+.fi
+.sp
+.sp
+Groups are virtual collections of packages. DNF keeps track of groups that the user selected (\(dqmarked\(dq) installed and can manipulate the comprising packages with simple commands.
+.INDENT 0.0
+.TP
+.B \fBdnf [options] group [summary] <group\-spec>\fP
+Display overview of how many groups are installed and available. With a
+spec, limit the output to the matching groups. \fBsummary\fP is the default
+groups subcommand.
+.TP
+.B \fBdnf [options] group info <group\-spec>\fP
+Display package lists of a group. Shows which packages are installed or
+available from a repository when \fB\-v\fP is used.
+.TP
+.B \fBdnf [options] group install [\-\-with\-optional] <group\-spec>...\fP
+Mark the specified group installed and install packages it contains. Also
+include \fIoptional\fP packages of the group if \fB\-\-with\-optional\fP is
+specified. All \fIMandatory\fP and \fIDefault\fP packages will be installed whenever possible.
+Conditional packages are installed if they meet their requirement.
+If the group is already (partially) installed, the command installs the missing packages from the group.
+Depending on the value of \X'tty: link #obsoletes-conf-option-label'\fI\%obsoletes configuration option\fP\X'tty: link' group installation takes obsoletes into account.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fBdnf [options] group list <group\-spec>...\fP
+List all matching groups, either among installed or available groups. If
+nothing is specified, list all known groups. \fB\-\-installed\fP and \fB\-\-available\fP options narrow down the requested list.
+Records are ordered by the \fIdisplay_order\fP tag defined in comps.xml file.
+Provides a list of all hidden groups by using option \fB\-\-hidden\fP\&.
+Provides group IDs when the \fB\-v\fP or \fB\-\-ids\fP options are used.
+.TP
+.B \fBdnf [options] group remove <group\-spec>...\fP
+Mark the group removed and remove those packages in the group from the system which do not belong to another installed group and were not installed explicitly by the user.
+.TP
+.B \fBdnf [options] group upgrade <group\-spec>...\fP
+Upgrades the packages from the group and upgrades the group itself. The latter comprises of installing packages that were added to the group by the distribution and removing packages that got removed from the group as far as they were not installed explicitly by the user.
+.UNINDENT
+.sp
+Groups can also be marked installed or removed without physically manipulating any packages:
+.INDENT 0.0
+.TP
+.B \fBdnf [options] group mark install <group\-spec>...\fP
+Mark the specified group installed. No packages will be installed by this command, but the group is then considered installed.
+.TP
+.B \fBdnf [options] group mark remove <group\-spec>...\fP
+Mark the specified group removed. No packages will be removed by this command.
+.UNINDENT
+.sp
+See also \fI\%Configuration Files Replacement Policy\fP\&.
+.SS Help Command
+.nf
+Command: \fBhelp\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf help [<command>]\fP
+Displays the help text for all commands. If given a command name then only
+displays help for that particular command.
+.UNINDENT
+.SS History Command
+.nf
+Command: \fBhistory\fP
+Aliases: \fBhist\fP
+.fi
+.sp
+.sp
+The history command allows the user to view what has happened in past
+transactions and act according to this information (assuming the
+\fBhistory_record\fP configuration option is set).
+.INDENT 0.0
+.TP
+.B \fBdnf history [list] [\-\-reverse] [<spec>...]\fP
+The default history action is listing information about given transactions
+in a table. Each \fB<spec>\fP can be either a \fB<transaction\-spec>\fP, which
+specifies a transaction directly, or a \fB<transaction\-spec>..<transaction\-spec>\fP,
+which specifies a range of transactions, or a \fB<package\-name\-spec>\fP,
+which specifies a transaction by a package which it manipulated. When no
+transaction is specified, list all known transactions.
+.sp
+The \(dqAction(s)\(dq column lists each type of action taken in the transaction. The possible values are:
+.INDENT 7.0
+.IP \(bu 2
+Install (I): a new package was installed on the system
+.IP \(bu 2
+Downgrade (D): an older version of a package replaced the previously\-installed version
+.IP \(bu 2
+Obsolete (O): an obsolete package was replaced by a new package
+.IP \(bu 2
+Upgrade (U): a newer version of the package replaced the previously\-installed version
+.IP \(bu 2
+Remove (E): a package was removed from the system
+.IP \(bu 2
+Reinstall (R): a package was reinstalled with the same version
+.IP \(bu 2
+Reason change (C): a package was kept in the system but its reason for being installed changed
+.UNINDENT
+.sp
+The \(dqAltered\(dq column lists the number of actions taken in each transaction, possibly followed by one or two of the following symbols:
+.INDENT 7.0
+.IP \(bu 2
+\fB>\fP: The RPM database was changed, outside DNF, after the transaction
+.IP \(bu 2
+\fB<\fP: The RPM database was changed, outside DNF, before the transaction
+.IP \(bu 2
+\fB*\fP: The transaction aborted before completion
+.IP \(bu 2
+\fB#\fP: The transaction completed, but with a non\-zero status
+.IP \(bu 2
+\fBE\fP: The transaction completed successfully, but had warning/error output
+.UNINDENT
+.INDENT 7.0
+.TP
+.B \fB\-\-reverse\fP
+The order of \fBhistory list\fP output is printed in reverse order.
+.UNINDENT
+.TP
+.B \fBdnf history info [<spec>...]\fP
+Describe the given transactions. The meaning of \fB<spec>\fP is the same as
+in the \fI\%History List Command\fP\&. When no
+transaction is specified, describe what happened during the latest
+transaction.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fBdnf history redo <transaction\-spec>|<package\-file\-spec>\fP
+Repeat the specified transaction. Uses the last transaction (with the highest ID)
+if more than one transaction for given <package\-file\-spec> is found. If it is not possible
+to redo some operations due to the current state of RPMDB, it will not redo the transaction.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fBdnf history replay [\-\-ignore\-installed] [\-\-ignore\-extras] [\-\-skip\-unavailable] <filename>\fP
+Replay a transaction stored in file \fB<filename>\fP by \fI\%History Store
+Command\fP\&. The replay will perform the exact
+same operations on the packages as in the original transaction and will
+return with an error if case of any differences in installed packages or
+their versions. See also the \X'tty: link #transaction-json-label'\fI\%Transaction JSON Format specification\fP\X'tty: link' of the
+file format.
+.INDENT 7.0
+.TP
+.B \fB\-\-ignore\-installed\fP
+Don\(aqt check for the installed packages being in the same state as those
+recorded in the transaction. E.g. in case there is an upgrade
+\fBfoo\-1.0\fP \-> \fBfoo\-2.0\fP stored in the transaction, but there is
+\fBfoo\-1.1\fP installed on the target system.
+.TP
+.B \fB\-\-ignore\-extras\fP
+Don\(aqt check for extra packages pulled into the transaction on the
+target system. E.g. the target system may not have some dependency,
+which was installed on the source system. The replay errors out on this
+by default, as the transaction would not be the same.
+.TP
+.B \fB\-\-skip\-unavailable\fP
+In case some packages stored in the transaction are not available on
+the target system, skip them instead of erroring out.
+.UNINDENT
+.TP
+.B \fBdnf history rollback <transaction\-spec>|<package\-file\-spec>\fP
+Undo all transactions performed after the specified transaction. Uses the last transaction
+(with the highest ID) if more than one transaction for given <package\-file\-spec> is found.
+If it is not possible to undo some transactions due to the current state of RPMDB, it will not undo
+any transaction.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fBdnf history store [\-\-output <output\-file>] <transaction\-spec>\fP
+Store a transaction specified by \fB<transaction\-spec>\fP\&. The transaction
+can later be replayed by the \fI\%History Replay Command\fP\&.
+.sp
+Warning: The stored transaction format is considered unstable and may
+change at any time. It will work if the same version of dnf is used to
+store and replay (or between versions as long as it stays the same).
+.sp
+\fB\-o <output\-file>, \-\-output=<output\-file>\fP
+Store the serialized transaction into \fB<output\-file\fP\&. Default is \fBtransaction.json\fP\&.
+.TP
+.B \fBdnf history undo <transaction\-spec>|<package\-file\-spec>\fP
+Perform the opposite operation to all operations performed in the specified transaction.
+Uses the last transaction (with the highest ID) if more than one transaction for given
+<package\-file\-spec> is found. If it is not possible to undo some operations due to
+the current state of RPMDB, it will not undo the transaction.
+.TP
+.B \fBdnf history userinstalled\fP
+Show all packages installed by user, installed from a group or a module profile, and packages
+installed outside of DNF. I.e. it lists packages that will stay on the system when
+\fI\%Autoremove Command\fP or \fI\%Remove Command\fP along with
+\fIclean_requirements_on_remove\fP configuration option set to True is executed. Note the same
+results can be accomplished with \fBdnf repoquery \-\-userinstalled\fP, and the repoquery
+command is more powerful in formatting of the output.
+.UNINDENT
+.sp
+This command by default does not force a sync of expired metadata, except for
+the redo, rollback, and undo subcommands.
+See also \fI\%Metadata Synchronization\fP
+and \fI\%Configuration Files Replacement Policy\fP\&.
+.SS Info Command
+.nf
+Command: \fBinfo\fP
+Aliases: \fBif\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] info [<package\-file\-spec>...]\fP
+Lists description and summary information about installed and available packages.
+.UNINDENT
+.sp
+The info command limits the displayed packages the same way as the \fI\%list command\fP\&.
+.sp
+This command by default does not force a sync of expired metadata. See also \fI\%Metadata Synchronization\fP\&.
+.SS Install Command
+.nf
+Command: \fBinstall\fP
+Aliases: \fBin\fP
+Aliases for \fI\%explicit NEVRA matching\fP: \fBinstall\-n\fP, \fBinstall\-na\fP, \fBinstall\-nevra\fP
+Deprecated aliases: \fBlocalinstall\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] install <spec>...\fP
+Makes sure that the given packages and their dependencies are installed
+on the system. Each \fB<spec>\fP can be either a \fI\%<package\-spec>\fP,
+or a @\fI\%<module\-spec>\fP, or a @\fI\%<group\-spec>\fP\&.
+See \fI\%Install Examples\fP\&.
+If a given package or provide cannot be (and is not already) installed,
+the exit code will be non\-zero.
+If the \fB<spec>\fP matches both a @\fI\%<module\-spec>\fP and
+a @\fI\%<group\-spec>\fP, only the module is installed.
+.sp
+When \fI\%<package\-spec>\fP to specify the exact version
+of the package is given, DNF will install the desired version, no matter which
+version of the package is already installed. The former version of the package
+will be removed in the case of non\-installonly package.
+.sp
+On the other hand if \fI\%<package\-spec>\fP specifies only a name,
+DNF also takes into account packages obsoleting it when picking which package to install.
+This behaviour is specific to the install command.
+Note that this can lead to seemingly unexpected results if a package has multiple versions and
+some older version is being obsoleted. It creates a split in the upgrade\-path and both ways
+are considered correct, the resulting package is picked simply by lexicographical order.
+.UNINDENT
+.sp
+There are also a few specific install commands \fBinstall\-n\fP, \fBinstall\-na\fP and
+\fBinstall\-nevra\fP that allow the specification of an exact argument in the NEVRA format. As a consequence, <spec>
+will be not matched with provides and file provides.
+.sp
+See also \fI\%Configuration Files Replacement Policy\fP\&.
+.SS Install Examples
+.INDENT 0.0
+.TP
+.B \fBdnf install tito\fP
+Install the \fBtito\fP package (tito is the package name).
+.TP
+.B \fBdnf install ~/Downloads/tito\-0.6.2\-1.fc22.noarch.rpm\fP
+Install a local rpm file tito\-0.6.2\-1.fc22.noarch.rpm from the ~/Downloads/
+directory.
+.TP
+.B \fBdnf install tito\-0.5.6\-1.fc22\fP
+Install the package with a specific version. If the package is already installed it
+will automatically try to downgrade or upgrade to the specific version.
+.TP
+.B \fBdnf \-\-best install tito\fP
+Install the latest available version of the package. If the package is already installed it
+will try to automatically upgrade to the latest version. If the latest version
+of the package cannot be installed, the installation will fail.
+.TP
+.B \fBdnf install vim\fP
+DNF will automatically recognize that vim is not a package name, but
+will look up and install a package that provides vim with all the required
+dependencies. Note: Package name match has precedence over package provides
+match.
+.TP
+.B \fBdnf install https://kojipkgs.fedoraproject.org//packages/tito/0.6.0/1.fc22/noarch/tito\-0.6.0\-1.fc22.noarch.rpm\fP
+Install a package directly from a URL.
+.TP
+.B \fBdnf install \(aq@docker\(aq\fP
+Install all default profiles of module \(aqdocker\(aq and their RPMs. Module streams get enabled accordingly.
+.TP
+.B \fBdnf install \(aq@Web Server\(aq\fP
+Install the \(aqWeb Server\(aq environmental group.
+.TP
+.B \fBdnf install /usr/bin/rpmsign\fP
+Install a package that provides the /usr/bin/rpmsign file.
+.TP
+.B \fBdnf \-y install tito \-\-setopt=install_weak_deps=False\fP
+Install the \fBtito\fP package (tito is the package name) without weak deps. Weak deps are not required for
+core functionality of the package, but they enhance the original package (like extended
+documentation, plugins, additional functions, etc.).
+.TP
+.B \fBdnf install \-\-advisory=FEDORA\-2018\-b7b99fe852 \e*\fP
+Install all packages that belong to the \(dqFEDORA\-2018\-b7b99fe852\(dq advisory.
+.UNINDENT
+.SS List Command
+.nf
+Command: \fBlist\fP
+Aliases: \fBls\fP
+.fi
+.sp
+.sp
+Prints lists of packages depending on the packages\(aq relation to the
+system. A package is \fBinstalled\fP if it is present in the RPMDB, and it is \fBavailable\fP
+if it is not installed but is present in a repository that DNF knows about.
+.sp
+The list command also limits the displayed packages according to specific criteria,
+e.g. to only those that update an installed package (respecting the repository
+\X'tty: link #repo-priority-label'\fI\%priority\fP\X'tty: link'). The \X'tty: link #exclude-label'\fI\%exclude\fP\X'tty: link' option in the configuration file can influence the
+result, but if the \-\fI\%\-disableexcludes\fP command line
+option is used, it ensures that all installed packages will be listed.
+.INDENT 0.0
+.TP
+.B \fBdnf [options] list [\-\-all] [<package\-file\-spec>...]\fP
+Lists all packages, present in the RPMDB, in a repository or both.
+.TP
+.B \fBdnf [options] list \-\-installed [<package\-file\-spec>...]\fP
+Lists installed packages.
+.TP
+.B \fBdnf [options] list \-\-available [<package\-file\-spec>...]\fP
+Lists available packages.
+.TP
+.B \fBdnf [options] list \-\-extras [<package\-file\-spec>...]\fP
+Lists extras, that is packages installed on the system that are not
+available in any known repository.
+.TP
+.B \fBdnf [options] list \-\-obsoletes [<package\-file\-spec>...]\fP
+List packages installed on the system that are obsoleted by packages in
+any known repository.
+.TP
+.B \fBdnf [options] list \-\-recent [<package\-file\-spec>...]\fP
+List packages recently added into the repositories.
+.TP
+.B \fBdnf [options] list \-\-upgrades [<package\-file\-spec>...]\fP
+List upgrades available for the installed packages.
+.TP
+.B \fBdnf [options] list \-\-autoremove\fP
+List packages which will be removed by the \fBdnf autoremove\fP command.
+.UNINDENT
+.sp
+This command by default does not force a sync of expired metadata. See also \fI\%Metadata Synchronization\fP\&.
+.SS Makecache Command
+.nf
+Command: \fBmakecache\fP
+Aliases: \fBmc\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] makecache\fP
+Downloads and caches metadata for enabled repositories. Tries to
+avoid downloading whenever possible (e.g. when the local metadata hasn\(aqt
+expired yet or when the metadata timestamp hasn\(aqt changed).
+.TP
+.B \fBdnf [options] makecache \-\-timer\fP
+Like plain \fBmakecache\fP, but instructs DNF to be more resource\-aware,
+meaning it will not do anything if running on battery power, it will terminate
+immediately if it\(aqs too soon after the last successful \fBmakecache\fP run
+(see \fBdnf.conf(5)\fP, \X'tty: link #metadata-timer-sync-label'\fI\%metadata_timer_sync\fP\X'tty: link'), and if the first mirror in a repository mirrorlist fails,
+it will not try to synchronize the metadata from more mirrors for that repository.
+.UNINDENT
+.SS Mark Command
+.nf
+Command: \fBmark\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf mark install <package\-spec>...\fP
+Marks the specified packages as installed by user. This can be useful if any package was installed as a dependency and is desired to stay on the system when \fI\%Autoremove Command\fP or \fI\%Remove Command\fP along with \fIclean_requirements_on_remove\fP configuration option set to \fBTrue\fP is executed.
+.TP
+.B \fBdnf mark remove <package\-spec>...\fP
+Unmarks the specified packages as installed by user. Whenever you as a user don\(aqt need a specific package you can mark it for removal. The package stays installed on the system but will be removed when \fI\%Autoremove Command\fP or \fI\%Remove Command\fP along with \fIclean_requirements_on_remove\fP configuration option set to \fBTrue\fP is executed. You should use this operation instead of \fI\%Remove Command\fP if you\(aqre not sure whether the package is a requirement of other user installed packages on the system.
+.TP
+.B \fBdnf mark group <package\-spec>...\fP
+Marks the specified packages as installed by group. This can be useful if any package was
+installed as a dependency or a user and is desired to be protected and handled as a group
+member like during group remove.
+.UNINDENT
+.SS Module Command
+.nf
+Command: \fBmodule\fP
+.fi
+.sp
+.sp
+Modularity overview is available at \X'tty: link #modularity-label'\fI\%man page dnf.modularity(7)\fP\X'tty: link'\&.
+Module subcommands take \fI\%<module\-spec>\fP\&... arguments that specify modules or profiles.
+.INDENT 0.0
+.TP
+.B \fBdnf [options] module install <module\-spec>...\fP
+Install module profiles, including their packages.
+In case no profile was provided, all default profiles get installed.
+Module streams get enabled accordingly.
+.sp
+This command cannot be used for switching module streams. Use the
+\fI\%dnf module switch\-to\fP command for that.
+.TP
+.B \fBdnf [options] module update <module\-spec>...\fP
+Update packages associated with an active module stream, optionally restricted to a profile.
+If the \fIprofile_name\fP is provided, only the packages referenced by that profile will be updated.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fBdnf [options] module switch\-to <module\-spec>...\fP
+Switch to or enable a module stream, change versions of installed packages to versions provided
+by the new stream, and remove packages from the old stream that are no longer available. It also
+updates installed profiles if they are available for the new stream. When a profile was
+provided, it installs that profile and does not update any already installed profiles.
+.sp
+This command can be used as a stronger version of the
+\fI\%dnf module enable\fP command, which not only enables modules,
+but also does a \fIdistrosync\fP to all modular packages in the enabled modules.
+.sp
+It can also be used as a stronger version of the
+\fI\%dnf module install\fP command, but it requires to specify
+profiles that are supposed to be installed, because \fIswitch\-to\fP command does not use \fIdefault
+profiles\fP\&. The \fIswitch\-to\fP command doesn\(aqt only install profiles, it also makes a \fIdistrosync\fP
+to all modular packages in the installed module.
+.TP
+.B \fBdnf [options] module remove <module\-spec>...\fP
+Remove installed module profiles, including packages that were installed with the
+\fI\%dnf module install\fP command. Will not remove packages
+required by other installed module profiles or by other user\-installed packages.
+In case no profile was provided, all installed profiles get removed.
+.TP
+.B \fBdnf [options] module remove \-\-all <module\-spec>...\fP
+Remove installed module profiles, including packages that were installed with the
+\fI\%dnf module install\fP command.
+With \-\-all option it additionally removes all packages whose names are provided by specified
+modules. Packages required by other installed module profiles and packages whose names are also
+provided by any other module are not removed.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fBdnf [options] module enable <module\-spec>...\fP
+Enable a module stream and make the stream RPMs available in the package set.
+.sp
+Modular dependencies are resolved, dependencies checked and also recursively enabled. In case
+of modular dependency issue the operation will be rejected. To perform the action anyway please use
+\-\fI\%\-skip\-broken\fP option.
+.sp
+This command cannot be used for switching module streams. Use the
+\fI\%dnf module switch\-to\fP command for that.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fBdnf [options] module disable <module\-name>...\fP
+Disable a module. All related module streams will become unavailable.
+Consequently, all installed profiles will be removed and the module RPMs
+will become unavailable in the package set. In case of modular
+dependency issue the operation will be rejected. To perform the action anyway please use \-\fI\%\-skip\-broken\fP option.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fBdnf [options] module reset <module\-name>...\fP
+Reset module state so it\(aqs no longer enabled or disabled.
+Consequently, all installed profiles will be removed and
+only RPMs from the default stream will be available in the package set.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fBdnf [options] module provides <package\-name\-spec>...\fP
+Lists all modular packages matching \fB<package\-name\-spec>\fP from all modules (including disabled), along with the modules and streams they belong to.
+.TP
+.B \fBdnf [options] module list [\-\-all] [module_name...]\fP
+Lists all module streams, their profiles and states (enabled, disabled, default).
+.TP
+.B \fBdnf [options] module list \-\-enabled [module_name...]\fP
+Lists module streams that are enabled.
+.TP
+.B \fBdnf [options] module list \-\-disabled [module_name...]\fP
+Lists module streams that are disabled.
+.TP
+.B \fBdnf [options] module list \-\-installed [module_name...]\fP
+List module streams with installed profiles.
+.TP
+.B \fBdnf [options] module info <module\-spec>...\fP
+Print detailed information about given module stream.
+.TP
+.B \fBdnf [options] module info \-\-profile <module\-spec>...\fP
+Print detailed information about given module profiles.
+.TP
+.B \fBdnf [options] module repoquery <module\-spec>...\fP
+List all available packages belonging to selected modules.
+.TP
+.B \fBdnf [options] module repoquery \-\-available <module\-spec>...\fP
+List all available packages belonging to selected modules.
+.TP
+.B \fBdnf [options] module repoquery \-\-installed <module\-spec>...\fP
+List all installed packages with same name like packages belonging to selected modules.
+.UNINDENT
+.SS Provides Command
+.nf
+Command: \fBprovides\fP
+Aliases: \fBprov\fP, \fBwhatprovides\fP, \fBwp\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] provides <provide\-spec>\fP
+Finds the packages providing the given \fB<provide\-spec>\fP\&. This is useful
+when one knows a filename and wants to find what package (installed or not)
+provides this file.
+The \fB<provide\-spec>\fP is gradually looked for at following locations:
+.INDENT 7.0
+.IP 1. 3
+The \fB<provide\-spec>\fP is matched with all file provides of any available package:
+.INDENT 3.0
+.INDENT 3.5
+.sp
+.EX
+$ dnf provides /usr/bin/gzip
+gzip\-1.9\-9.fc29.x86_64 : The GNU data compression program
+Matched from:
+Filename    : /usr/bin/gzip
+.EE
+.UNINDENT
+.UNINDENT
+.IP 2. 3
+Then all provides of all available packages are searched:
+.INDENT 3.0
+.INDENT 3.5
+.sp
+.EX
+$ dnf provides \(dqgzip(x86\-64)\(dq
+gzip\-1.9\-9.fc29.x86_64 : The GNU data compression program
+Matched from:
+Provide     : gzip(x86\-64) = 1.9\-9.fc29
+.EE
+.UNINDENT
+.UNINDENT
+.IP 3. 3
+DNF assumes that the \fB<provide\-spec>\fP is a system command, prepends it with \fB/usr/bin/\fP, \fB/usr/sbin/\fP prefixes (one at a time) and does the file provides search again. For legacy reasons (packages that didn\(aqt do UsrMove) also \fB/bin\fP and \fB/sbin\fP prefixes are being searched:
+.INDENT 3.0
+.INDENT 3.5
+.sp
+.EX
+$ dnf provides zless
+gzip\-1.9\-9.fc29.x86_64 : The GNU data compression program
+Matched from:
+Filename    : /usr/bin/zless
+.EE
+.UNINDENT
+.UNINDENT
+.IP 4. 3
+If this last step also fails, DNF returns \(dqError: No Matches found\(dq.
+.UNINDENT
+.UNINDENT
+.sp
+This command by default does not force a sync of expired metadata. See also \fI\%Metadata Synchronization\fP\&.
+.SS Reinstall Command
+.nf
+Command: \fBreinstall\fP
+Aliases: \fBrei\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] reinstall <package\-spec>...\fP
+Installs the specified packages, fails if some of the packages are either
+not installed or not available (i.e. there is no repository where to
+download the same RPM).
+.UNINDENT
+.SS Remove Command
+.nf
+Command: \fBremove\fP
+Aliases: \fBrm\fP
+Aliases for \fI\%explicit NEVRA matching\fP: \fBremove\-n\fP, \fBremove\-na\fP, \fBremove\-nevra\fP
+Deprecated aliases: \fBerase\fP, \fBerase\-n\fP, \fBerase\-na\fP, \fBerase\-nevra\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] remove <package\-spec>...\fP
+Removes the specified packages from the system along with any packages depending on the packages being removed. Each \fB<spec>\fP can be either a \fB<package\-spec>\fP, which specifies a package directly, or a \fB@<group\-spec>\fP, which specifies an (environment) group which contains it. If \fBclean_requirements_on_remove\fP is enabled (the default), also removes any dependencies that are no longer needed.
+.TP
+.B \fBdnf [options] remove \-\-duplicates\fP
+Removes older versions of duplicate packages. To ensure the integrity of the system it
+reinstalls the newest package. In some cases the command cannot resolve conflicts. In such cases
+the \fI\%dnf shell\fP command with \fBremove \-\-duplicates\fP and \fBupgrade\fP
+dnf\-shell sub\-commands could help.
+.TP
+.B \fBdnf [options] remove \-\-oldinstallonly\fP
+Removes old installonly packages, keeping only latest versions and version of running kernel.
+.UNINDENT
+.sp
+There are also a few specific remove commands \fBremove\-n\fP, \fBremove\-na\fP and \fBremove\-nevra\fP
+that allow the specification of an exact argument in the NEVRA format. As a consequence, <spec>
+will be not matched with provides and file provides.
+.SS Remove Examples
+.INDENT 0.0
+.TP
+.B \fBdnf remove acpi tito\fP
+Remove the \fBacpi\fP and \fBtito\fP packages.
+.TP
+.B \fBdnf remove $(dnf repoquery \-\-extras \-\-exclude=tito,acpi)\fP
+Remove packages not present in any repository, but don\(aqt remove the \fBtito\fP
+and \fBacpi\fP packages (they still might be removed if they depend on some of the removed packages).
+.TP
+.B \fBdnf remove \-\-duplicates\fP
+Remove older versions of duplicated packages (an equivalent of yum\(aqs \fIpackage\-cleanup \-\-cleandups\fP).
+.UNINDENT
+.SS Repoinfo Command
+.nf
+Command: \fBrepoinfo\fP
+.fi
+.sp
+.sp
+An alias for the \fI\%repolist\fP command
+that provides more detailed information like \fBdnf repolist \-v\fP\&.
+.SS Repolist Command
+.nf
+Command: \fBrepolist\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] repolist [\-\-enabled|\-\-disabled|\-\-all]\fP
+Depending on the exact command lists enabled, disabled or all known
+repositories. Lists all enabled repositories by default. Provides more
+detailed information when \fB\-v\fP option is used.
+.UNINDENT
+.sp
+This command by default does not force a sync of expired metadata. See also \fI\%Metadata Synchronization\fP\&.
+.SS Repoquery Command
+.nf
+Command: \fBrepoquery\fP
+Aliases: \fBrq\fP
+Aliases for \fI\%explicit NEVRA matching\fP: \fBrepoquery\-n\fP, \fBrepoquery\-na\fP, \fBrepoquery\-nevra\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] repoquery [<select\-options>] [<query\-options>] [<package\-file\-spec>]\fP
+Searches available DNF repositories for selected packages and displays the requested information about them. It
+is an equivalent of \fBrpm \-q\fP for remote repositories.
+.TP
+.B \fBdnf [options] repoquery \-\-groupmember <package\-spec>...\fP
+List groups that contain <package\-spec>.
+.TP
+.B \fBdnf [options] repoquery \-\-querytags\fP
+Provides the list of tags recognized by the \-\fI\%\-queryformat\fP repoquery option.
+.UNINDENT
+.sp
+There are also a few specific repoquery commands \fBrepoquery\-n\fP, \fBrepoquery\-na\fP and \fBrepoquery\-nevra\fP
+that allow the specification of an exact argument in the NEVRA format (does not affect arguments of options like \-\-whatprovides <arg>, ...).
+As a consequence, <spec> will be not matched with file provides.
+.SS Select Options
+.sp
+Together with \fB<package\-file\-spec>\fP, control what packages are displayed in the output. If \fB<package\-file\-spec>\fP is given, limits the resulting set of
+packages to those matching the specification. All packages are considered if no \fB<package\-file\-spec>\fP is specified.
+.INDENT 0.0
+.TP
+.B \fB<package\-file\-spec>\fP
+Package specification in the NEVRA format (name[\-[epoch:]version[\-release]][.arch]) or a file provide. See \fI\%Specifying Packages\fP\&.
+.TP
+.B \fB\-a\fP, \fB\-\-all\fP
+Query all packages (for rpmquery compatibility, also a shorthand for repoquery \(aq*\(aq or repoquery
+without arguments).
+.TP
+.B \fB\-\-arch <arch>[,<arch>...], \-\-archlist <arch>[,<arch>...]\fP
+Limit the resulting set only to packages of selected architectures (default is all
+architectures). In some cases the result is affected by the basearch of the running system, therefore
+to run repoquery for an arch incompatible with your system use the \fB\-\-forcearch=<arch>\fP
+option to change the basearch.
+.TP
+.B \fB\-\-duplicates\fP
+Limit the resulting set to installed duplicate packages (i.e. more package versions
+for the same name and architecture). Installonly packages are excluded from this set.
+.TP
+.B \fB\-\-unneeded\fP
+Limit the resulting set to leaves packages that were installed as dependencies so they are no longer needed. This
+switch lists packages that are going to be removed after executing the \fBdnf autoremove\fP command.
+.TP
+.B \fB\-\-available\fP
+Limit the resulting set to available packages only (set by default).
+.TP
+.B \fB\-\-disable\-modular\-filtering\fP
+Disables filtering of modular packages, so that packages of inactive module streams are included in the result.
+.TP
+.B \fB\-\-extras\fP
+Limit the resulting set to packages that are not present in any of the available repositories.
+.TP
+.B \fB\-f <file>\fP, \fB\-\-file <file>\fP
+Limit the resulting set only to the package that owns \fB<file>\fP\&.
+.TP
+.B \fB\-\-installed\fP
+Limit the resulting set to installed packages only. The \X'tty: link #exclude-label'\fI\%exclude\fP\X'tty: link' option in the configuration file
+might influence the result, but if the command line option  \-\fI\%\-disableexcludes\fP is used, it ensures that all installed packages will be listed.
+.TP
+.B \fB\-\-installonly\fP
+Limit the resulting set to installed installonly packages.
+.TP
+.B \fB\-\-latest\-limit <number>\fP
+Limit the resulting set to <number> of latest packages for every package name and architecture.
+If <number> is negative, skip <number> of latest packages. For a negative <number> use the
+\fB\-\-latest\-limit=<number>\fP syntax.
+.TP
+.B \fB\-\-recent\fP
+Limit the resulting set to packages that were recently edited.
+.TP
+.B \fB\-\-repo <repoid>\fP
+Limit the resulting set only to packages from a repository identified by \fB<repoid>\fP\&.
+Can be used multiple times with accumulative effect.
+.TP
+.B \fB\-\-unsatisfied\fP
+Report unsatisfied dependencies among installed packages (i.e. missing requires and
+existing conflicts).
+.TP
+.B \fB\-\-upgrades\fP
+Limit the resulting set to packages that provide an upgrade for some already installed package.
+.TP
+.B \fB\-\-userinstalled\fP
+Limit the resulting set to packages installed by the user. The \X'tty: link #exclude-label'\fI\%exclude\fP\X'tty: link' option
+in the configuration file might influence the result, but if the command line option  \-\fI\%\-disableexcludes\fP is used, it ensures that all installed packages will be listed.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-whatdepends <capability>[,<capability>...]\fP
+Limit the resulting set only to packages that require, enhance, recommend, suggest or
+supplement any of \fB<capabilities>\fP\&.
+.TP
+.B \fB\-\-whatconflicts <capability>[,<capability>...]\fP
+Limit the resulting set only to packages that conflict with any of \fB<capabilities>\fP\&.
+.TP
+.B \fB\-\-whatenhances <capability>[,<capability>...]\fP
+Limit the resulting set only to packages that enhance any of \fB<capabilities>\fP\&. Use \-\fI\%\-whatdepends\fP if you want to list all depending packages.
+.TP
+.B \fB\-\-whatobsoletes <capability>[,<capability>...]\fP
+Limit the resulting set only to packages that obsolete any of \fB<capabilities>\fP\&.
+.TP
+.B \fB\-\-whatprovides <capability>[,<capability>...]\fP
+Limit the resulting set only to packages that provide any of \fB<capabilities>\fP\&.
+.TP
+.B \fB\-\-whatrecommends <capability>[,<capability>...]\fP
+Limit the resulting set only to packages that recommend any of \fB<capabilities>\fP\&. Use \-\fI\%\-whatdepends\fP if you want to list all depending packages.
+.TP
+.B \fB\-\-whatrequires <capability>[,<capability>...]\fP
+Limit the resulting set only to packages that require any of \fB<capabilities>\fP\&. Use \-\fI\%\-whatdepends\fP if you want to list all depending packages.
+.TP
+.B \fB\-\-whatsuggests <capability>[,<capability>...]\fP
+Limit the resulting set only to packages that suggest any of \fB<capabilities>\fP\&. Use \-\fI\%\-whatdepends\fP if you want to list all depending packages.
+.TP
+.B \fB\-\-whatsupplements <capability>[,<capability>...]\fP
+Limit the resulting set only to packages that supplement any of \fB<capabilities>\fP\&. Use \-\fI\%\-whatdepends\fP if you want to list all depending packages.
+.TP
+.B \fB\-\-alldeps\fP
+This option is stackable with \fB\-\-whatrequires\fP or \-\fI\%\-whatdepends\fP only. Additionally it adds all packages requiring
+the package features to the result set (used as default).
+.TP
+.B \fB\-\-exactdeps\fP
+This option is stackable with \fB\-\-whatrequires\fP or \-\fI\%\-whatdepends\fP only. Limit the resulting set only to packages
+that require \fB<capability>\fP specified by \-\-whatrequires.
+.TP
+.B \fB\-\-srpm\fP
+Operate on the corresponding source RPM.
+.UNINDENT
+.SS Query Options
+.sp
+Set what information is displayed about each package.
+.sp
+The following are mutually exclusive, i.e. at most one can be specified. If no query option is given, matching packages
+are displayed in the standard NEVRA notation.
+.INDENT 0.0
+.TP
+.B \fB\-i, \-\-info\fP
+Show detailed information about the package.
+.TP
+.B \fB\-l, \-\-list\fP
+Show the list of files in the package.
+.TP
+.B \fB\-s, \-\-source\fP
+Show the package source RPM name.
+.TP
+.B \fB\-\-changelogs\fP
+Print the package changelogs.
+.TP
+.B \fB\-\-conflicts\fP
+Display capabilities that the package conflicts with. Same as \fB\-\-qf \(dq%{conflicts}\fP\&.
+.TP
+.B \fB\-\-depends\fP
+Display capabilities that the package depends on, enhances, recommends, suggests or
+supplements.
+.TP
+.B \fB\-\-enhances\fP
+Display capabilities enhanced by the package. Same as \fB\-\-qf \(dq%{enhances}\(dq\(dq\fP\&.
+.TP
+.B \fB\-\-location\fP
+Show a location where the package could be downloaded from.
+.TP
+.B \fB\-\-obsoletes\fP
+Display capabilities that the package obsoletes. Same as \fB\-\-qf \(dq%{obsoletes}\(dq\fP\&.
+.TP
+.B \fB\-\-provides\fP
+Display capabilities provided by the package. Same as \fB\-\-qf \(dq%{provides}\(dq\fP\&.
+.TP
+.B \fB\-\-recommends\fP
+Display capabilities recommended by the package. Same as \fB\-\-qf \(dq%{recommends}\(dq\fP\&.
+.TP
+.B \fB\-\-requires\fP
+Display capabilities that the package depends on. Same as \fB\-\-qf \(dq%{requires}\(dq\fP\&.
+.TP
+.B \fB\-\-requires\-pre\fP
+Display capabilities that the package depends on for running a \fB%pre\fP script.
+Same as \fB\-\-qf \(dq%{requires\-pre}\(dq\fP\&.
+.TP
+.B \fB\-\-suggests\fP
+Display capabilities suggested by the package. Same as \fB\-\-qf \(dq%{suggests}\(dq\fP\&.
+.TP
+.B \fB\-\-supplements\fP
+Display capabilities supplemented by the package. Same as \fB\-\-qf \(dq%{supplements}\(dq\fP\&.
+.TP
+.B \fB\-\-tree\fP
+Display a recursive tree of packages with capabilities specified by one of the following supplementary options:
+\fB\-\-whatrequires\fP, \fB\-\-requires\fP, \fB\-\-conflicts\fP, \fB\-\-enhances\fP, \fB\-\-suggests\fP, \fB\-\-provides\fP,
+\fB\-\-supplements\fP, \fB\-\-recommends\fP\&.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-deplist\fP
+Produce a list of all direct dependencies and what packages provide those
+dependencies for the given packages. The result only shows the newest
+providers (which can be changed by using \-\-verbose).
+.TP
+.B \fB\-\-nvr\fP
+Show found packages in the name\-version\-release format. Same as
+\fB\-\-qf \(dq%{name}\-%{version}\-%{release}\(dq\fP\&.
+.TP
+.B \fB\-\-nevra\fP
+Show found packages in the name\-epoch:version\-release.architecture format. Same as
+\fB\-\-qf \(dq%{name}\-%{epoch}:%{version}\-%{release}.%{arch}\(dq\fP (default).
+.TP
+.B \fB\-\-envra\fP
+Show found packages in the epoch:name\-version\-release.architecture format. Same as
+\fB\-\-qf \(dq%{epoch}:%{name}\-%{version}\-%{release}.%{arch}\(dq\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-qf <format>\fP, \fB\-\-queryformat <format>\fP
+Custom display format. \fB<format>\fP is the string to output for each matched package. Every occurrence of
+\fB%{<tag>}\fP within is replaced by the corresponding attribute of the package. The list of recognized tags can be displayed
+by running \fBdnf repoquery \-\-querytags\fP\&.
+.TP
+.B \fB\-\-recursive\fP
+Query packages recursively. Has to be used with \fB\-\-whatrequires <REQ>\fP
+(optionally with \fB\-\-alldeps\fP, but not with \fB\-\-exactdeps\fP) or with
+\fB\-\-requires <REQ> \-\-resolve\fP\&.
+.TP
+.B \fB\-\-resolve\fP
+resolve capabilities to originating package(s).
+.UNINDENT
+.SS Repoquery Examples
+.INDENT 0.0
+.TP
+.B \fBdnf repoquery \(aqlight*\(aq\fP
+Display NEVRAs of all available packages matching \fBlight*\fP
+.TP
+.B \fBdnf repoquery\-na \(aqlight*.noarch\(aq\fP
+Display NEVRAs of all available packages matching name \fBlight*\fP and architecture \fBnoarch\fP (accepts only arguments in the \(dq<name>.<arch>\(dq format)
+.TP
+.B \fBdnf repoquery \-\-requires lighttpd\fP
+Display requires of all lighttpd packages
+.TP
+.B \fBdnf repoquery \-\-requires python \-\-resolve\fP
+Display packages providing the requires of python packages
+.TP
+.B \fBdnf repoquery \-\-source lighttpd\fP
+Display source rpm of lighttpd package
+.TP
+.B \fBdnf repoquery \-\-file /etc/lighttpd/lighttpd.conf\fP
+Display package name that owns the given file
+.TP
+.B \fBdnf repoquery \-\-queryformat \(aq%{name}.%{arch} : %{reponame}\(aq lighttpd\fP
+Display name, architecture and the containing repository of all lighttpd packages
+.TP
+.B \fBdnf repoquery \-\-whatprovides webserver\fP
+Display all available packages providing \(dqwebserver\(dq
+.TP
+.B \fBdnf repoquery \-\-whatprovides webserver \-\-arch i686\fP
+Display all available packages providing \(dqwebserver\(dq but only for \(dqi686\(dq architecture
+.TP
+.B \fBdnf repoquery \-\-duplicates\fP
+Display duplicate packages
+.TP
+.B \fBdnf repoquery \-\-disablerepo=\(dq*\(dq \-\-enablerepo=\(dq*\-source\(dq \-\-arch=src \-\-whatrequires <provide>\fP
+Display source packages that require a <provide> for a build
+.UNINDENT
+.SS Repository\-Packages Command
+.nf
+Command: \fBrepository\-packages\fP
+Deprecated aliases: \fBrepo\-pkgs\fP, \fBrepo\-packages\fP, \fBrepository\-pkgs\fP
+.fi
+.sp
+.sp
+The repository\-packages command allows the user to run commands on top of all packages in the repository named \fB<repoid>\fP\&. However, any dependency resolution takes into account packages from all enabled repositories. The \fB<package\-file\-spec>\fP and \fB<package\-spec>\fP specifications further limit the candidates to only those packages matching at least one of them.
+.sp
+The \fBinfo\fP subcommand lists description and summary information about packages depending on the packages\(aq relation to the repository. The \fBlist\fP subcommand just prints lists of those packages.
+.INDENT 0.0
+.TP
+.B \fBdnf [options] repository\-packages <repoid> check\-update [<package\-file\-spec>...]\fP
+Non\-interactively checks if updates of the specified packages in the repository are available. DNF exit code will be 100 when there are updates available and a list of the updates will be printed.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> info [\-\-all] [<package\-file\-spec>...]\fP
+List all related packages.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> info \-\-installed [<package\-file\-spec>...]\fP
+List packages installed from the repository.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> info \-\-available [<package\-file\-spec>...]\fP
+List packages available in the repository but not currently installed on the system.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> info \-\-extras [<package\-file\-specs>...]\fP
+List packages installed from the repository that are not available in any repository.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> info \-\-obsoletes [<package\-file\-spec>...]\fP
+List packages in the repository that obsolete packages installed on the system.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> info \-\-recent [<package\-file\-spec>...]\fP
+List packages recently added into the repository.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> info \-\-upgrades [<package\-file\-spec>...]\fP
+List packages in the repository that upgrade packages installed on the system.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> install [<package\-spec>...]\fP
+Install packages matching \fB<package\-spec>\fP from the repository. If \fB<package\-spec>\fP isn\(aqt specified at all, install all packages from the repository.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> list [\-\-all] [<package\-file\-spec>...]\fP
+List all related packages.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> list \-\-installed [<package\-file\-spec>...]\fP
+List packages installed from the repository.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> list \-\-available [<package\-file\-spec>...]\fP
+List packages available in the repository but not currently installed on the system.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> list \-\-extras [<package\-file\-spec>...]\fP
+List packages installed from the repository that are not available in any repository.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> list \-\-obsoletes [<package\-file\-spec>...]\fP
+List packages in the repository that obsolete packages installed on the system.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> list \-\-recent [<package\-file\-spec>...]\fP
+List packages recently added into the repository.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> list \-\-upgrades [<package\-file\-spec>...]\fP
+List packages in the repository that upgrade packages installed on the system.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> move\-to [<package\-spec>...]\fP
+Reinstall all those packages that are available in the repository.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> reinstall [<package\-spec>...]\fP
+Run the \fBreinstall\-old\fP subcommand. If it fails, run the \fBmove\-to\fP subcommand.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> reinstall\-old [<package\-spec>...]\fP
+Reinstall all those packages that were installed from the repository and simultaneously are available in the repository.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> remove [<package\-spec>...]\fP
+Remove all packages installed from the repository along with any packages depending on the packages being removed. If \fBclean_requirements_on_remove\fP is enabled (the default) also removes any dependencies that are no longer needed.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> remove\-or\-distro\-sync [<package\-spec>...]\fP
+Select all packages installed from the repository. Upgrade, downgrade or keep those of them that are available in another repository to match the latest version available there and remove the others along with any packages depending on the packages being removed. If \fBclean_requirements_on_remove\fP is enabled (the default) also removes any dependencies that are no longer needed.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> remove\-or\-reinstall [<package\-spec>...]\fP
+Select all packages installed from the repository. Reinstall those of them that are available in another repository and remove the others along with any packages depending on the packages being removed. If \fBclean_requirements_on_remove\fP is enabled (the default) also removes any dependencies that are no longer needed.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> upgrade [<package\-spec>...]\fP
+Update all packages to the highest resolvable version available in the repository.
+When versions are specified in the \fB<package\-spec>\fP, update to these versions.
+.TP
+.B \fBdnf [options] repository\-packages <repoid> upgrade\-to [<package\-specs>...]\fP
+A deprecated alias for the upgrade subcommand.
+.UNINDENT
+.SS Search Command
+.nf
+Command: \fBsearch\fP
+Aliases: \fBse\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] search [\-\-all] <keywords>...\fP
+Search package metadata for keywords. Keywords are matched as case\-insensitive substrings, globbing is supported.
+By default lists packages that match all requested keys (AND operation). Keys are searched in package names and summaries.
+If the \fB\-\-all\fP option is used, lists packages that match at least one of the keys (an OR operation).
+In addition the keys are searched in the package descriptions and URLs.
+The result is sorted from the most relevant results to the least.
+.UNINDENT
+.sp
+This command by default does not force a sync of expired metadata. See also \fI\%Metadata Synchronization\fP\&.
+.SS Shell Command
+.nf
+Command: \fBshell\fP
+Aliases: \fBsh\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] shell [filename]\fP
+Open an interactive shell for conducting multiple commands during a single execution of DNF. These commands can be issued manually
+or passed to DNF from a file. The commands are much the same as the normal DNF command line options. There are a few additional
+commands documented below.
+.INDENT 7.0
+.TP
+.B \fBconfig [conf\-option] [value]\fP
+.INDENT 7.0
+.IP \(bu 2
+Set a configuration option to a requested value. If no value is given it prints the current value.
+.UNINDENT
+.TP
+.B \fBrepo [list|enable|disable] [repo\-id]\fP
+.INDENT 7.0
+.IP \(bu 2
+list: list repositories and their status
+.IP \(bu 2
+enable: enable repository
+.IP \(bu 2
+disable: disable repository
+.UNINDENT
+.TP
+.B \fBtransaction [list|reset|solve|run]\fP
+.INDENT 7.0
+.IP \(bu 2
+list: resolve and list the content of the transaction
+.IP \(bu 2
+reset: reset the transaction
+.IP \(bu 2
+run: resolve and run the transaction
+.UNINDENT
+.UNINDENT
+.sp
+Note that all local packages must be used in the first shell transaction subcommand (e.g.
+\fIinstall /tmp/nodejs\-1\-1.x86_64.rpm /tmp/acpi\-1\-1.noarch.rpm\fP) otherwise an error will occur.
+Any \fIdisable\fP, \fIenable\fP, and \fIreset\fP module operations (e.g. \fImodule enable nodejs\fP) must also
+be performed before any other shell transaction subcommand is used.
+.UNINDENT
+.SS Swap Command
+.nf
+Command: \fBswap\fP
+.fi
+.sp
+.sp
+\fBdnf [options] swap <remove\-spec> <install\-spec>\fP
+.INDENT 0.0
+.INDENT 3.5
+Remove \fBremove\-spec\fP and install \fBinstall\-spec\fP in one transaction. Each \fB<spec>\fP can be either a
+\fI\%<package\-spec>\fP, which specifies a package directly, or a
+\fB@<group\-spec>\fP, which specifies an (environment) group which contains it. Automatic
+conflict solving is provided in DNF by the \-\-allowerasing option that provides the functionality of the swap
+command automatically.
+.UNINDENT
+.UNINDENT
+.SS Updateinfo Command
+.nf
+Command: \fBupdateinfo\fP
+Aliases: \fBupif\fP
+Deprecated aliases: \fBlist\-updateinfo\fP, \fBlist\-security\fP, \fBlist\-sec\fP, \fBinfo\-updateinfo\fP, \fBinfo\-security\fP, \fBinfo\-sec\fP, \fBsummary\-updateinfo\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] updateinfo [\-\-summary|\-\-list|\-\-info] [<availability>] [<spec>...]\fP
+Display information about update advisories.
+.sp
+Depending on the output type, DNF displays just counts of advisory types
+(omitted or \fB\-\-summary\fP), list of advisories (\fB\-\-list\fP) or detailed
+information (\fB\-\-info\fP). The \fB\-v\fP option extends the output. When
+used with \fB\-\-info\fP, the information is even more detailed. When used
+with \fB\-\-list\fP, an additional column with date of the last advisory update
+is added.
+.sp
+\fB<availability>\fP specifies whether advisories about newer versions of
+installed packages (omitted or \fB\-\-available\fP), advisories about equal and
+older versions of installed packages (\fB\-\-installed\fP), advisories about
+newer versions of those installed packages for which a newer version is
+available (\fB\-\-updates\fP) or advisories about any versions of installed
+packages (\fB\-\-all\fP) are taken into account. Most of the time, \fB\-\-available\fP
+and \fB\-\-updates\fP displays the same output. The outputs differ only in the
+cases when an advisory refers to a newer version but there is no enabled
+repository which contains any newer version.
+.sp
+Note, that \fB\-\-available\fP takes only the latest installed versions of
+packages into account. In case of the kernel packages (when multiple
+version could be installed simultaneously) also packages of the currently
+running version of kernel are added.
+.sp
+To print only advisories referencing a CVE or a bugzilla use \fB\-\-with\-cve\fP or
+\fB\-\-with\-bz\fP options. When these switches are used also the output
+of the \fB\-\-list\fP is altered \- the ID of the CVE or the bugzilla is printed
+instead of the one of the advisory.
+.sp
+If given and if neither ID, type (\fBbugfix\fP, \fBenhancement\fP,
+\fBsecurity\fP/\fBsec\fP) nor a package name of an advisory matches
+\fB<spec>\fP, the advisory is not taken into account. The matching is
+case\-sensitive and in the case of advisory IDs and package names, globbing
+is supported.
+.sp
+Output of the \fB\-\-summary\fP option is affected by the \X'tty: link #autocheck-running-kernel-label'\fI\%autocheck_running_kernel\fP\X'tty: link' configuration option.
+.UNINDENT
+.SS Upgrade Command
+.nf
+Command: \fBupgrade\fP
+Aliases: \fBup\fP
+Deprecated aliases: \fBupdate\fP, \fBupgrade\-to\fP, \fBupdate\-to\fP, \fBlocalupdate\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] upgrade\fP
+Updates each package to the latest version that is both available and
+resolvable.
+.TP
+.B \fBdnf [options] upgrade <package\-spec>...\fP
+Updates each specified package to the latest available version. Updates
+dependencies as necessary. When versions are specified in the
+\fB<package\-spec>\fP, update to these versions.
+.TP
+.B \fBdnf [options] upgrade @<spec>...\fP
+Alias for the \fIdnf module update\fP command.
+.UNINDENT
+.sp
+If the main \fBobsoletes\fP configure option is true or the \fB\-\-obsoletes\fP flag
+is present, dnf will include package obsoletes in its calculations.
+For more information see \X'tty: link #obsoletes-conf-option-label'\fI\%obsoletes\fP\X'tty: link'\&.
+.sp
+See also \fI\%Configuration Files Replacement Policy\fP\&.
+.SS Upgrade\-Minimal Command
+.nf
+Command: \fBupgrade\-minimal\fP
+Aliases: \fBup\-min\fP
+Deprecated aliases: \fBupdate\-minimal\fP
+.fi
+.sp
+.INDENT 0.0
+.TP
+.B \fBdnf [options] upgrade\-minimal\fP
+Updates each package to the nearest available version that provides
+a bugfix, enhancement or a fix for a security issue (security).
+.TP
+.B \fBdnf [options] upgrade\-minimal <package\-spec>...\fP
+Updates each specified package to the nearest available version that provides
+a bugfix, enhancement or a fix for security issue (security). Updates
+dependencies as necessary.
+.UNINDENT
+.SH SPECIFYING PACKAGES
+.sp
+Many commands take a \fB<package\-spec>\fP parameter that selects a package for
+the operation. The \fB<package\-spec>\fP argument is matched against package
+NEVRAs, provides and file provides.
+.sp
+\fB<package\-file\-spec>\fP is similar to \fB<package\-spec>\fP, except provides
+matching is not performed. Therefore, \fB<package\-file\-spec>\fP is matched only
+against NEVRAs and file provides.
+.sp
+\fB<package\-name\-spec>\fP is matched against NEVRAs only.
+.SS Globs
+.sp
+Package specification supports the same glob pattern matching that shell does,
+in all three above mentioned packages it matches against (NEVRAs, provides and
+file provides).
+.sp
+The following patterns are supported:
+.INDENT 0.0
+.TP
+.B \fB*\fP
+Matches any number of characters.
+.TP
+.B \fB?\fP
+Matches any single character.
+.TP
+.B \fB[]\fP
+Matches any one of the enclosed characters. A pair of characters separated
+by a hyphen denotes a range expression; any character that falls between
+those two characters, inclusive, is matched. If the first character
+following the \fB[\fP is a \fB!\fP or a \fB^\fP then any character not enclosed
+is matched.
+.UNINDENT
+.sp
+Note: Curly brackets (\fB{}\fP) are not supported. You can still use them in
+shells that support them and let the shell do the expansion, but if quoted or
+escaped, dnf will not expand them.
+.SS NEVRA Matching
+.sp
+When matching against NEVRAs, partial matching is supported. DNF tries to match
+the spec against the following list of NEVRA forms (in decreasing order of
+priority):
+.INDENT 0.0
+.IP \(bu 2
+\fBname\-[epoch:]version\-release.arch\fP
+.IP \(bu 2
+\fBname.arch\fP
+.IP \(bu 2
+\fBname\fP
+.IP \(bu 2
+\fBname\-[epoch:]version\-release\fP
+.IP \(bu 2
+\fBname\-[epoch:]version\fP
+.UNINDENT
+.sp
+Note that \fBname\fP can in general contain dashes (e.g. \fBpackage\-with\-dashes\fP).
+.sp
+The first form that matches any packages is used and the remaining forms are
+not tried. If none of the forms match any packages, an attempt is made to match
+the \fB<package\-spec>\fP against full package NEVRAs. This is only relevant
+if globs are present in the \fB<package\-spec>\fP\&.
+.sp
+\fB<package\-spec>\fP matches NEVRAs the same way \fB<package\-name\-spec>\fP does,
+but in case matching NEVRAs fails, it attempts to match against provides and
+file provides of packages as well.
+.sp
+You can specify globs as part of any of the five NEVRA components. You can also
+specify a glob pattern to match over multiple NEVRA components (in other words,
+to match across the NEVRA separators). In that case, however, you need to write
+the spec to match against full package NEVRAs, as it is not possible to split
+such spec into NEVRA forms.
+.SS Specifying NEVRA Matching Explicitly
+.sp
+Some commands (\fBautoremove\fP, \fBinstall\fP, \fBremove\fP and \fBrepoquery\fP) also
+have aliases with suffixes \fB\-n\fP, \fB\-na\fP and \fB\-nevra\fP that allow to
+explicitly specify how to parse the arguments:
+.INDENT 0.0
+.IP \(bu 2
+Command \fBinstall\-n\fP only matches against \fBname\fP\&.
+.IP \(bu 2
+Command \fBinstall\-na\fP only matches against \fBname.arch\fP\&.
+.IP \(bu 2
+Command \fBinstall\-nevra\fP only matches against \fBname\-[epoch:]version\-release.arch\fP\&.
+.UNINDENT
+.SH SPECIFYING PROVIDES
+.sp
+\fB<provide\-spec>\fP in command descriptions means the command operates on
+packages providing the given spec. This can either be an explicit provide, an
+implicit provide (i.e. name of the package) or a file provide. The selection is
+case\-sensitive and globbing is supported.
+.SS Specifying File Provides
+.sp
+If a spec starts with either \fB/\fP or \fB*/\fP, it is considered as a potential file provide.
+.SH SPECIFYING GROUPS
+.sp
+\fB<group\-spec>\fP allows one to select (environment) groups a particular operation should work
+on. It is a case insensitive string (supporting globbing characters) that is
+matched against a group\(aqs ID, canonical name and name translated into the
+current LC_MESSAGES locale (if possible).
+.SH SPECIFYING MODULES
+.sp
+\fB<module\-spec>\fP allows one to select modules or profiles a particular operation should work
+on.
+.sp
+It is in the form of \fBNAME:STREAM:VERSION:CONTEXT:ARCH/PROFILE\fP and supported partial forms are the following:
+.INDENT 0.0
+.IP \(bu 2
+\fBNAME\fP
+.IP \(bu 2
+\fBNAME:STREAM\fP
+.IP \(bu 2
+\fBNAME:STREAM:VERSION\fP
+.IP \(bu 2
+\fBNAME:STREAM:VERSION:CONTEXT\fP
+.IP \(bu 2
+all above combinations with \fB::ARCH\fP (e.g. \fBNAME::ARCH\fP)
+.IP \(bu 2
+\fBNAME:STREAM:VERSION:CONTEXT:ARCH\fP
+.IP \(bu 2
+all above combinations with \fB/PROFILE\fP (e.g. \fBNAME/PROFILE\fP)
+.UNINDENT
+.sp
+In case stream is not specified, the enabled or the default stream is used, in this order. In case profile is not specified, the system default profile or the \(aqdefault\(aq profile is used.
+.SH SPECIFYING TRANSACTIONS
+.sp
+\fB<transaction\-spec>\fP can be in one of several forms. If it is an integer, it
+specifies a transaction ID. Specifying \fBlast\fP is the same as specifying the ID
+of the most recent transaction. The last form is \fBlast\-<offset>\fP, where
+\fB<offset>\fP is a positive integer. It specifies offset\-th transaction preceding
+the most recent transaction.
+.SH PACKAGE FILTERING
+.sp
+Package filtering filters packages out from the available package set, making them invisible to most
+of dnf commands. They cannot be used in a transaction. Packages can be filtered out by either
+Exclude Filtering or Modular Filtering.
+.SS Exclude Filtering
+.sp
+Exclude Filtering is a mechanism used by a user or by a DNF plugin to modify the set of available
+packages. Exclude Filtering can be modified by either \X'tty: link #include-label'\fI\%includepkgs\fP\X'tty: link' or
+\X'tty: link #exclude-label'\fI\%excludepkgs\fP\X'tty: link' configuration options in
+\X'tty: link #conf-ref-label'\fI\%configuration files\fP\X'tty: link'\&. The \-\fI\%\-disableexcludes\fP
+command line option can be used to override excludes from configuration files. In addition to
+user\-configured excludes, plugins can also extend the set of excluded packages. To disable excludes
+from a DNF plugin you can use the \-\fI\%\-disableplugin\fP command line option.
+.sp
+To disable all excludes for e.g. the install command you can use the following combination
+of command line options:
+.sp
+\fBdnf \-\-disableexcludes=all \-\-disableplugin=\(dq*\(dq install bash\fP
+.SS Modular Filtering
+.sp
+Please see \X'tty: link #modularity-label'\fI\%the modularity documentation\fP\X'tty: link' for details on how Modular
+Filtering works.
+.sp
+With modularity, only RPM packages from \fBactive\fP module streams are included in the available
+package set. RPM packages from \fBinactive\fP module streams, as well as non\-modular packages with
+the same name or provides as a package from an \fBactive\fP module stream, are filtered out. Modular
+filtering is not applied to packages added from the command line, installed packages, or packages
+from repositories with \fBmodule_hotfixes=true\fP in their \fB\&.repo\fP file.
+.sp
+Disabling of modular filtering is not recommended, because it could cause the system to get into
+a broken state. To disable modular filtering for a particular repository, specify
+\fBmodule_hotfixes=true\fP in the \fB\&.repo\fP file or use \fB\-\-setopt=<repo_id>.module_hotfixes=true\fP\&.
+.sp
+To discover the module which contains an excluded package use
+\fI\%dnf module provides\fP\&.
+.SH METADATA SYNCHRONIZATION
+.sp
+Correct operation of DNF depends on having access to up\-to\-date data from all enabled repositories but contacting remote mirrors on every operation considerably slows it down and costs bandwidth for both the client and the repository provider. The \X'tty: link #metadata-expire-label'\fI\%metadata_expire\fP\X'tty: link' (see \fBdnf.conf(5)\fP) repository configuration option is used by DNF to determine whether a particular local copy of repository data is due to be re\-synced. It is crucial that the repository providers set the option well, namely to a value where it is guaranteed that if particular metadata was available in time \fBT\fP on the server, then all packages it references will still be available for download from the server in time \fBT + metadata_expire\fP\&.
+.sp
+To further reduce the bandwidth load, some of the commands where having up\-to\-date metadata is not critical (e.g. the \fBlist\fP command) do not look at whether a repository is expired and whenever any version of it is locally available to the user\(aqs account, it will be used. For non\-root use, see also the \fB\-\-cacheonly\fP switch. Note that in all situations the user can force synchronization of all enabled repositories with the \fB\-\-refresh\fP switch.
+.SH CONFIGURATION FILES REPLACEMENT POLICY
+.sp
+The updated packages could replace the old modified configuration files
+with the new ones or keep the older files. Neither of the files are actually replaced.
+To the conflicting ones RPM gives additional suffix to the origin name. Which file
+should maintain the true name after transaction is not controlled by package manager
+but is specified by each package itself, following packaging guideline.
+.SH FILES
+.INDENT 0.0
+.TP
+.B \fBCache Files\fP
+/var/cache/dnf
+.TP
+.B \fBMain Configuration\fP
+/etc/dnf/dnf.conf
+.TP
+.B \fBRepository\fP
+/etc/yum.repos.d/
+.UNINDENT
+.SH SEE ALSO
+.INDENT 0.0
+.IP \(bu 2
+\fBdnf.conf(5)\fP, \X'tty: link #conf-ref-label'\fI\%DNF Configuration Reference\fP\X'tty: link'
+.IP \(bu 2
+\fBdnf\-PLUGIN(8)\fP for documentation on DNF plugins.
+.IP \(bu 2
+\fBdnf.modularity(7)\fP, \X'tty: link #modularity-label'\fI\%Modularity overview\fP\X'tty: link'\&.
+.IP \(bu 2
+\fBdnf\-transaction\-json(5)\fP, \X'tty: link #transaction-json-label'\fI\%Stored Transaction JSON Format Specification\fP\X'tty: link'\&.
+.IP \(bu 2
+\X'tty: link https://github.com/rpm-software-management/dnf/'\fI\%DNF\fP\X'tty: link' project homepage (\X'tty: link https://github.com/rpm-software-management/dnf/'\fI\%https://github.com/rpm\-software\-management/dnf/\fP\X'tty: link')
+.IP \(bu 2
+How to report a bug (\X'tty: link https://github.com/rpm-software-management/dnf/wiki/Bug-Reporting'\fI\%https://github.com/rpm\-software\-management/dnf/wiki/Bug\-Reporting\fP\X'tty: link')
+.IP \(bu 2
+\X'tty: link http://yum.baseurl.org/'\fI\%YUM\fP\X'tty: link' project homepage (\X'tty: link http://yum.baseurl.org/'\fI\%http://yum.baseurl.org/\fP\X'tty: link')
+.UNINDENT
+.SH AUTHOR
+See AUTHORS in DNF source distribution.
+.SH COPYRIGHT
+2012-2020, Red Hat, Licensed under GPLv2+
+.\" Generated by docutils manpage writer.
+.

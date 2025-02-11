@@ -1,5 +1,5 @@
 '\" t
-.TH "NETWORKCTL" "1" "" "systemd 249" "networkctl"
+.TH "NETWORKCTL" "1" "" "systemd 255" "networkctl"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,14 +20,14 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-networkctl \- Query the status of network links
+networkctl \- Query or modify the status of network links
 .SH "SYNOPSIS"
 .HP \w'\fBnetworkctl\fR\ 'u
 \fBnetworkctl\fR [OPTIONS...] COMMAND [LINK...]
 .SH "DESCRIPTION"
 .PP
 \fBnetworkctl\fR
-may be used to introspect the state of the network links as seen by
+may be used to query or modify the state of the network links as seen by
 \fBsystemd\-networkd\fR\&. Please refer to
 \fBsystemd-networkd.service\fR(8)
 for an introduction to the basic concepts, functionality, and configuration syntax\&.
@@ -37,7 +37,7 @@ The following commands are understood:
 .PP
 \fBlist\fR [\fIPATTERN\&...\fR]
 .RS 4
-Show a list of existing links and their status\&. If one ore more
+Show a list of existing links and their status\&. If one or more
 \fIPATTERN\fRs are specified, only links matching one of them are shown\&. If no further arguments are specified shows all links, otherwise just the specified links\&. Produces output similar to:
 .sp
 .if n \{\
@@ -60,86 +60,129 @@ The operational status is one of the following:
 .PP
 missing
 .RS 4
-the device is missing
+The device is missing\&.
+.sp
+Added in version 245\&.
 .RE
 .PP
 off
 .RS 4
-the device is powered down
+The device is powered down\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 no\-carrier
 .RS 4
-the device is powered up, but it does not yet have a carrier
+The device is powered up, but does not yet have a carrier\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 dormant
 .RS 4
-the device has a carrier, but is not yet ready for normal traffic
+The device has a carrier, but is not yet ready for normal traffic\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 degraded\-carrier
 .RS 4
-for bond or bridge master, one of the bonding or bridge slave network interfaces is in off, no\-carrier, or dormant state
+One of the bonding or bridge slave network interfaces is in off, no\-carrier, or dormant state, and the master interface has no address\&.
+.sp
+Added in version 242\&.
 .RE
 .PP
 carrier
 .RS 4
-the link has a carrier, or for bond or bridge master, all bonding or bridge slave network interfaces are enslaved to the master
+The link has carrier, or for bond or bridge master, all bonding or bridge slave network interfaces are enslaved to the master\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 degraded
 .RS 4
-the link has carrier and addresses valid on the local link configured
+The link has carrier and addresses valid on the local link configured\&. For bond or bridge master this means that not all slave network interfaces have carrier but at least one does\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 enslaved
 .RS 4
-the link has carrier and is enslaved to bond or bridge master network interface
+The link has carrier and is enslaved to bond or bridge master network interface\&.
+.sp
+Added in version 242\&.
 .RE
 .PP
 routable
 .RS 4
-the link has carrier and routable address configured
+The link has carrier and routable address configured\&. For bond or bridge master it is not necessary for all slave network interfaces to have carrier, but at least one must\&.
+.sp
+Added in version 240\&.
 .RE
 .sp
 The setup status is one of the following:
 .PP
 pending
 .RS 4
-udev is still processing the link, we don\*(Aqt yet know if we will manage it
+\fBsystemd-udevd\fR(8)
+is still processing the link, we don\*(Aqt yet know if we will manage it\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
-failed
+initialized
 .RS 4
-networkd failed to manage the link
+\fBsystemd-udevd\fR(8)
+has processed the link, but we don\*(Aqt yet know if we will manage it\&.
+.sp
+Added in version 251\&.
 .RE
 .PP
 configuring
 .RS 4
-in the process of retrieving configuration or configuring the link
+Configuration for the link is being retrieved or the link is being configured\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 configured
 .RS 4
-link configured successfully
+Link has been configured successfully\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 unmanaged
 .RS 4
-networkd is not handling the link
+\fBsystemd\-networkd\fR
+is not handling the link\&.
+.sp
+Added in version 240\&.
+.RE
+.PP
+failed
+.RS 4
+\fBsystemd\-networkd\fR
+failed to configure the link\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 linger
 .RS 4
-the link is gone, but has not yet been dropped by networkd
+The link is gone, but has not yet been dropped by
+\fBsystemd\-networkd\fR\&.
+.sp
+Added in version 240\&.
 .RE
 .sp
+Added in version 219\&.
 .RE
 .PP
 \fBstatus\fR [\fIPATTERN\&...\fR]
 .RS 4
-Show information about the specified links: type, state, kernel module driver, hardware and IP address, configured DNS servers, etc\&. If one ore more
+Show information about the specified links: type, state, kernel module driver, hardware and IP address, configured DNS servers, etc\&. If one or more
 \fIPATTERN\fRs are specified, only links matching one of them are shown\&.
 .sp
 When no links are specified, an overall network status is shown\&. Also see the option
@@ -169,24 +212,33 @@ In the overall network status, the online state depends on the individual online
 .PP
 unknown
 .RS 4
-all links have unknown online status (i\&.e\&. there are no required links)
+All links have unknown online status (i\&.e\&. there are no required links)\&.
+.sp
+Added in version 249\&.
 .RE
 .PP
 offline
 .RS 4
-all required links are offline
+All required links are offline\&.
+.sp
+Added in version 249\&.
 .RE
 .PP
 partial
 .RS 4
-some, but not all, required links are online
+Some, but not all, required links are online\&.
+.sp
+Added in version 249\&.
 .RE
 .PP
 online
 .RS 4
-all required links are online
+All required links are online\&.
+.sp
+Added in version 249\&.
 .RE
 .sp
+Added in version 219\&.
 .RE
 .PP
 \fBlldp\fR [\fIPATTERN\&...\fR]
@@ -217,6 +269,8 @@ s \- Service VLAN, m \- Two\-port MAC Relay (TPMR)
 .if n \{\
 .RE
 .\}
+.sp
+Added in version 219\&.
 .RE
 .PP
 \fBlabel\fR
@@ -248,31 +302,43 @@ Prefix/Prefixlen                          Label
 .if n \{\
 .RE
 .\}
+.sp
+Added in version 234\&.
 .RE
 .PP
 \fBdelete\fR \fIDEVICE\&...\fR
 .RS 4
 Deletes virtual netdevs\&. Takes interface name or index number\&.
+.sp
+Added in version 243\&.
 .RE
 .PP
 \fBup\fR \fIDEVICE\&...\fR
 .RS 4
 Bring devices up\&. Takes interface name or index number\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBdown\fR \fIDEVICE\&...\fR
 .RS 4
 Bring devices down\&. Takes interface name or index number\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBrenew\fR \fIDEVICE\&...\fR
 .RS 4
 Renew dynamic configurations e\&.g\&. addresses received from DHCP server\&. Takes interface name or index number\&.
+.sp
+Added in version 244\&.
 .RE
 .PP
 \fBforcerenew\fR \fIDEVICE\&...\fR
 .RS 4
 Send a FORCERENEW message to all connected clients, triggering DHCP reconfiguration\&. Takes interface name or index number\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBreconfigure\fR \fIDEVICE\&...\fR
@@ -284,6 +350,8 @@ or
 corresponding to the specified interface\&. So, if you edit config files, it is necessary to call
 \fBnetworkctl reload\fR
 first to apply new settings\&.
+.sp
+Added in version 244\&.
 .RE
 .PP
 \fBreload\fR
@@ -301,6 +369,51 @@ is modified or removed,
 does not update or remove the netdev\&. If a new, modified or removed
 \&.network
 file is found, then all interfaces which match the file are reconfigured\&.
+.sp
+Added in version 244\&.
+.RE
+.PP
+\fBedit\fR \fIFILE\fR|\fI@DEVICE\fR\&...
+.RS 4
+Edit network configuration files, which include
+\&.network,
+\&.netdev, and
+\&.link
+files\&. If no network config file matching the given name is found, a new one will be created under
+/etc/\&. Specially, if the name is prefixed by
+"@", it will be treated as a network interface, and editing will be performed on the network config files associated with it\&. Additionally, the interface name can be suffixed with
+":network"
+(default) or
+":link", in order to choose the type of network config to operate on\&.
+.sp
+If
+\fB\-\-drop\-in=\fR
+is specified, edit the drop\-in file instead of the main configuration file\&. Unless
+\fB\-\-no\-reload\fR
+is specified,
+\fBsystemd\-networkd\fR
+will be reloaded after the edit of the
+\&.network
+or
+\&.netdev
+files finishes\&. The same applies for
+\&.link
+files and
+\fBsystemd-udevd\fR(8)\&. Note that the changed link settings are not automatically applied after reloading\&. To achieve that, trigger uevents for the corresponding interface\&. Refer to
+\fBsystemd.link\fR(5)
+for more information\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fBcat\fR \fIFILE\fR|\fI@DEVICE\fR\&...
+.RS 4
+Show network configuration files\&. This command honors the
+"@"
+prefix in the same way as
+\fBedit\fR\&.
+.sp
+Added in version 254\&.
 .RE
 .SH "OPTIONS"
 .PP
@@ -310,23 +423,53 @@ The following options are understood:
 .RS 4
 Show all links with
 \fBstatus\fR\&.
+.sp
+Added in version 219\&.
 .RE
 .PP
 \fB\-s\fR \fB\-\-stats\fR
 .RS 4
 Show link statistics with
 \fBstatus\fR\&.
+.sp
+Added in version 243\&.
 .RE
 .PP
 \fB\-l\fR, \fB\-\-full\fR
 .RS 4
 Do not ellipsize the output\&.
+.sp
+Added in version 245\&.
 .RE
 .PP
 \fB\-n\fR, \fB\-\-lines=\fR
 .RS 4
 When used with
 \fBstatus\fR, controls the number of journal lines to show, counting from the most recent ones\&. Takes a positive integer argument\&. Defaults to 10\&.
+.sp
+Added in version 245\&.
+.RE
+.PP
+\fB\-\-drop\-in=\fR\fINAME\fR
+.RS 4
+When used with
+\fBedit\fR, edit the drop\-in file
+\fINAME\fR
+instead of the main configuration file\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fB\-\-no\-reload\fR
+.RS 4
+When used with
+\fBedit\fR,
+\fBsystemd-networkd.service\fR(8)
+or
+\fBsystemd-udevd.service\fR(8)
+will not be reloaded after the editing finishes\&.
+.sp
+Added in version 254\&.
 .RE
 .PP
 \fB\-\-json=\fR\fIMODE\fR

@@ -1,5 +1,5 @@
 .\" iostat manual page - (C) 1998-2020 Sebastien Godard (sysstat <at> orange.fr)
-.TH IOSTAT 1 "OCTOBER 2020" Linux "Linux User's Manual" \-*\- nroff \-*\-
+.TH IOSTAT 1 "AUGUST 2023" Linux "Linux User's Manual" -*- nroff -*-
 .SH NAME
 iostat \- Report Central Processing Unit (CPU) statistics and input/output
 statistics for devices and partitions.
@@ -7,13 +7,13 @@ statistics for devices and partitions.
 .SH SYNOPSIS
 .ie 'yes'no' \{
 .B iostat [ \-c ] [ \-d ] [ \-h ] [ \-k | \-m ] [ \-N ] [ \-s ] [ \-t ] [ \-V ] [ \-x ] [ \-y ] [ \-z ]
-.BI "[ \-\-dec={ 0 | 1 | 2 } ] [ { \-f | +f } " "directory" " ] [ \-j { ID | LABEL | PATH | UUID | ... } ] "
+.BI "[ \-\-compact ] [ \-\-dec={ 0 | 1 | 2 } ] [ { \-f | +f } " "directory" " ] [ \-j { ID | LABEL | PATH | UUID | ... } ] "
 .BI "[ \-o JSON ] [ [ \-H ] \-g " "group_name " "] [ \-\-human ] [ \-\-pretty ] [ \-p [ " "device" "[,...] | ALL ] ] ["
 .IB "device " "[...] | ALL ] [ \-\-debuginfo ] [ " "interval " "[ " "count " "] ] "
 .\}
 .el \{
 .B iostat [ \-c ] [ \-d ] [ \-h ] [ \-k | \-m ] [ \-N ] [ \-s ] [ \-t ] [ \-V ] [ \-x ] [ \-y ] [ \-z ]
-.BI "[ \-\-dec={ 0 | 1 | 2 } ] [ { \-f | +f } " "directory" " ] [ \-j { ID | LABEL | PATH | UUID | ... } ] "
+.BI "[ \-\-compact ] [ \-\-dec={ 0 | 1 | 2 } ] [ { \-f | +f } " "directory" " ] [ \-j { ID | LABEL | PATH | UUID | ... } ] "
 .BI "[ \-o JSON ] [ [ \-H ] \-g " "group_name " "] [ \-\-human ] [ \-\-pretty ] [ \-p [ " "device" "[,...] | ALL ] ] ["
 .IB "device " "[...] | ALL ] [ " "interval " "[ " "count " "] ]"
 .\}
@@ -41,7 +41,7 @@ each time the
 command is run. The report consists of a
 CPU header row followed by a row of
 CPU statistics. On
-multiprocessor systems, CPU statistics are calculated system\-wide
+multiprocessor systems, CPU statistics are calculated system-wide
 as averages among all processors. A device header row is displayed
 followed by a line of statistics for each device that is configured.
 .PP
@@ -107,7 +107,7 @@ that have never been used.
 Transfer rates are shown in 1K blocks by default, unless the environment
 variable
 .B POSIXLY_CORRECT
-is set, in which case 512\-byte blocks are used.
+is set, in which case 512-byte blocks are used.
 The report may show the following fields, depending on the flags used (e.g.
 .BR "\-x" ", " "\-s " "and " "\-k " "or " "\-m" "):"
 .RS
@@ -222,6 +222,10 @@ modern SSDs, this number does not reflect their performance limits.
 .B \-c
 Display the CPU utilization report.
 .TP
+.B \-\-compact
+Don't break the Device Utilization Report into sub-reports so that all the metrics get displayed
+on a single line.
+.TP
 .B \-d
 Display the device utilization report.
 .if 'yes'no' \{
@@ -249,9 +253,9 @@ to read device statistics.
 .IR "directory" " is a directory containing files with statistics for devices managed in userspace."
 It may contain:
 
-\- a "diskstats" file whose format is compliant with that located in "/proc",
+- a "diskstats" file whose format is compliant with that located in "/proc",
 .br
-\- statistics for individual devices contained in files whose format is compliant with that of files located in
+- statistics for individual devices contained in files whose format is compliant with that of files located in
 "/sys".
 
 In particular, the following files located in
@@ -264,7 +268,7 @@ In particular, the following files located in
 
 .IR "partition" " files must have an entry in " "directory" "/dev/block/ directory, e.g.:"
 
-.IR "directory" "/dev/block/" "major" ":" "minor" " \-\-> ../../block/" "device" "/" "partition"
+.IR "directory" "/dev/block/" "major" ":" "minor" " --> ../../block/" "device" "/" "partition"
 .RE
 .TP
 .BI "\-g " "group_name " "{ " "device " "[...] | ALL }"
@@ -317,7 +321,7 @@ Display the registered device mapper names for any device mapper devices.
 Useful for viewing LVM2 statistics.
 .TP
 .B \-o JSON
-Display the statistics in JSON (Javascript Object Notation) format.
+Display the statistics in JSON (JavaScript Object Notation) format.
 JSON output field order is undefined, and new fields may be added
 in the future.
 .TP
@@ -336,6 +340,10 @@ specified with the chosen persistent name type.
 .TP
 .B \-\-pretty
 Make the Device Utilization Report easier to read by a human.
+The device name will be printed on the right side. The report may also be broken
+into sub-reports if there are many metrics to display (use
+.B \-\-compact
+option to prevent this).
 .TP
 .B \-s
 Display a short (narrow) version of the report that should fit in 80
@@ -368,7 +376,7 @@ The
 command takes into account the following environment variables:
 .TP
 .B POSIXLY_CORRECT
-When this variable is set, transfer rates are shown in 512\-byte blocks instead
+When this variable is set, transfer rates are shown in 512-byte blocks instead
 of the default 1K blocks.
 .TP
 .B S_COLORS
@@ -383,22 +391,24 @@ ranges of values.
 .TP
 .B S_COLORS_SGR
 Specify the colors and other attributes used to display statistics on the terminal.
-Its value is a colon\-separated list of capabilities that defaults to
-.BR "H=31;1:I=32;22:M=35;1:N=34;1:Z=34;22" "."
+Its value is a colon-separated list of capabilities that defaults to
+.BR "I=32;22:N=34;1:W=35;1:X=31;1:Z=34;22" "."
 Supported capabilities are:
 .RS
 .TP
-.B H=
-SGR (Select Graphic Rendition) substring for percentage values greater than or equal to 75%.
-.TP
 .B I=
-SGR substring for device names.
-.TP
-.B M=
-SGR substring for percentage values in the range from 50% to 75%.
+SGR (Select Graphic Rendition) substring for device names.
 .TP
 .B N=
-SGR substring for non\-zero statistics values.
+SGR substring for non-zero statistics values.
+.TP
+.BR "W=" " (or " "M=" ")"
+SGR substring for percentage values in the range from 75% to 90% (or in the range 10% to 25% depending on the
+metric's meaning).
+.TP
+.BR "X=" " (or " "H=" ")"
+SGR substring for percentage values greater than or equal to 90% (or lower than or equal to 10% depending on the
+metric's meaning).
 .TP
 .B Z=
 SGR substring for zero values.
@@ -410,7 +420,7 @@ If this variable exists and its value is
 then the current locale will be ignored when printing the date in the report
 header. The
 .B iostat
-command will use the ISO 8601 format (YYYY\-MM\-DD) instead.
+command will use the ISO 8601 format (YYYY-MM-DD) instead.
 The timestamp displayed with option
 .B \-t
 will also be compliant with ISO 8601 format.
@@ -466,4 +476,4 @@ Sebastien Godard (sysstat <at> orange.fr)
 .PP
 .I https://github.com/sysstat/sysstat
 .br
-.I http://pagesperso\-orange.fr/sebastien.godard/
+.I https://sysstat.github.io/

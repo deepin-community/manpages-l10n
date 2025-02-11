@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-SYSCTL\&.SERVICE" "8" "" "systemd 249" "systemd-sysctl.service"
+.TH "SYSTEMD\-SYSCTL\&.SERVICE" "8" "" "systemd 255" "systemd-sysctl.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -53,11 +53,25 @@ before it takes effect\&. It is possible to update specific settings, or simply 
 \fB\-\-prefix=\fR
 .RS 4
 Only apply rules with the specified prefix\&.
+.sp
+Added in version 230\&.
+.RE
+.PP
+\fB\-\-strict=\fR
+.RS 4
+Always return non\-zero exit code on failure (including invalid sysctl variable name and insufficient permissions), unless the sysctl variable name is prefixed with a "\-" character\&.
+.sp
+Added in version 252\&.
 .RE
 .PP
 \fB\-\-cat\-config\fR
 .RS 4
 Copy the contents of config files to standard output\&. Before each file, the filename is printed as a comment\&.
+.RE
+.PP
+\fB\-\-tldr\fR
+.RS 4
+Copy the contents of config files to standard output\&. Only the "interesting" parts of the configuration files are printed, comments and empty lines are skipped\&. Before each file, the filename is printed as a comment\&.
 .RE
 .PP
 \fB\-\-no\-pager\fR
@@ -74,6 +88,29 @@ Print a short help text and exit\&.
 .RS 4
 Print a short version string and exit\&.
 .RE
+.SH "CREDENTIALS"
+.PP
+\fBsystemd\-sysctl\fR
+supports the service credentials logic as implemented by
+\fIImportCredential=\fR/\fILoadCredential=\fR/\fISetCredential=\fR
+(see
+\fBsystemd.exec\fR(5)
+for details)\&. The following credentials are used when passed in:
+.PP
+\fIsysctl\&.extra\fR
+.RS 4
+The contents of this credential may contain additional lines to operate on\&. The credential contents should follow the same format as any other
+sysctl\&.d/
+drop\-in configuration file\&. If this credential is passed it is processed after all of the drop\-in files read from the file system\&. The settings configured in the credential hence take precedence over those in the file system\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+Note that by default the
+systemd\-sysctl\&.service
+unit file is set up to inherit the
+"sysctl\&.extra"
+credential from the service manager\&.
 .SH "EXAMPLES"
 .PP
 \fBExample\ \&1.\ \&Reset all sysctl settings\fR
@@ -144,4 +181,4 @@ for various ways to directly apply sysctl settings\&.
 .PP
 \fBsystemd\fR(1),
 \fBsysctl.d\fR(5),
-\fBsysctl\fR(8),
+\fBsysctl\fR(8)

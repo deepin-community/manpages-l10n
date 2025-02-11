@@ -1,0 +1,209 @@
+.\" Man page generated from reStructuredText.
+.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.TH "DNF4-SYSTEM-UPGRADE" "8" "Nov 12, 2024" "4.10.0" "dnf-plugins-core"
+.SH NAME
+dnf4-system-upgrade \- DNF system-upgrade Plugin
+.SH DESCRIPTION
+.sp
+DNF system\-upgrades plugin provides three commands: \fBsystem\-upgrade\fP, \fBoffline\-upgrade\fP, and
+\fBoffline\-distrosync\fP\&. Only \fBsystem\-upgrade\fP command requires increase of distribution major
+version (\fB\-\-releasever\fP) compared to installed version.
+.sp
+\fBdnf system\-upgrade\fP is a recommended way to upgrade a system to a new major release.
+It replaces fedup (the old Fedora Upgrade tool). Before you proceed ensure that your system
+is fully upgraded (\fBdnf \-\-refresh upgrade\fP).
+.sp
+The \fBsystem\-upgrade\fP command also performes additional actions necessary for the upgrade of the
+system, for example an upgrade of groups and environments.
+.SH SYNOPSIS
+.sp
+\fBdnf system\-upgrade download \-\-releasever VERSION [OPTIONS]\fP
+.sp
+\fBdnf system\-upgrade reboot\fP
+.sp
+\fBdnf system\-upgrade reboot \-\-poweroff\fP
+.sp
+\fBdnf system\-upgrade clean\fP
+.sp
+\fBdnf system\-upgrade log\fP
+.sp
+\fBdnf system\-upgrade log \-\-number=<number>\fP
+.sp
+\fBdnf offline\-upgrade download [OPTIONS]\fP
+.sp
+\fBdnf offline\-upgrade reboot\fP
+.sp
+\fBdnf offline\-upgrade reboot \-\-poweroff\fP
+.sp
+\fBdnf offline\-upgrade clean\fP
+.sp
+\fBdnf offline\-upgrade log\fP
+.sp
+\fBdnf offline\-upgrade log \-\-number=<number>\fP
+.sp
+\fBdnf offline\-distrosync download [OPTIONS]\fP
+.sp
+\fBdnf offline\-distrosync reboot\fP
+.sp
+\fBdnf offline\-distrosync reboot \-\-poweroff\fP
+.sp
+\fBdnf offline\-distrosync clean\fP
+.sp
+\fBdnf offline\-distrosync log\fP
+.sp
+\fBdnf offline\-distrosync log \-\-number=<number>\fP
+.SH SUBCOMMANDS
+.INDENT 0.0
+.TP
+.B \fBdownload\fP
+Downloads everything needed to upgrade to a new major release.
+.TP
+.B \fBreboot\fP
+Prepares the system to perform the upgrade, and reboots to start the upgrade.
+This can only be used after the \fBdownload\fP command completes successfully.
+.TP
+.B \fBclean\fP
+Remove previously\-downloaded data. This happens automatically at the end of
+a successful upgrade.
+.TP
+.B \fBlog\fP
+Used to see a list of boots during which an upgrade was attempted, or show
+the logs from an upgrade attempt. The logs for one of the boots can be shown
+by specifying one of the numbers in the first column. Negative numbers can
+be used to number the boots from last to first. For example, \fBlog \-\-number=\-1\fP can
+be used to see the logs for the last upgrade attempt.
+.UNINDENT
+.SH OPTIONS
+.INDENT 0.0
+.TP
+.B \fB\-\-releasever=VERSION\fP
+REQUIRED. The version to upgrade to. Sets \fB$releasever\fP in all enabled
+repos. Usually a number, or \fBrawhide\fP\&.
+.TP
+.B \fB\-\-downloaddir=<path>\fP
+Redirect download of packages to provided \fB<path>\fP\&. By default, packages
+are downloaded into (per repository created) subdirectories of
+/var/lib/dnf/system\-upgrade.
+.TP
+.B \fB\-\-distro\-sync\fP
+Behave like \fBdnf distro\-sync\fP: always install packages from the new
+release, even if they are older than the currently\-installed version. This
+is the default behavior.
+.TP
+.B \fB\-\-no\-downgrade\fP
+Behave like \fBdnf update\fP: do not install packages from the new release
+if they are older than what is currently installed. This is the opposite of
+\fB\-\-distro\-sync\fP\&. If both are specified, the last option will be used. The option cannot be
+used with the \fBoffline\-distrosync\fP command.
+.TP
+.B \fB\-\-poweroff\fP
+When applied with the \fBreboot\fP subcommand, the system will power off after
+upgrades are completed, instead of restarting.
+.TP
+.B \fB\-\-number\fP
+Applied with \fBlog\fP subcommand will show the log specified by the number.
+.UNINDENT
+.SH NOTES
+.sp
+\fBdnf system\-upgrade reboot\fP does not create a \(dqSystem Upgrade\(dq boot item. The
+upgrade will start regardless of which boot item is chosen.
+.sp
+The \fBDNF_SYSTEM_UPGRADE_NO_REBOOT\fP environment variable can be set to a
+non\-empty value to disable the actual reboot performed by \fBsystem\-upgrade\fP
+(e.g. for testing purposes).
+.sp
+Since this is a DNF plugin, options accepted by \fBdnf\fP are also valid here,
+such as \fB\-\-allowerasing\fP\&.
+See \fBdnf(8)\fP for more information.
+.sp
+The \fBfedup\fP command is not provided, not even as an alias for
+\fBdnf system\-upgrade\fP\&.
+.SH BUGS
+.sp
+Upgrading from install media (e.g. a DVD or .iso file) currently requires the
+user to manually set up a DNF repo and fstab entry for the media.
+.SH EXAMPLES
+.SS Typical upgrade usage
+.sp
+\fBdnf \-\-refresh upgrade\fP
+.sp
+\fBdnf system\-upgrade download \-\-releasever 26\fP
+.sp
+\fBdnf system\-upgrade reboot\fP
+.SS Show logs from last upgrade attempt
+.sp
+\fBdnf system\-upgrade log \-\-number=\-1\fP
+.SH REPORTING BUGS
+.sp
+Bugs should be filed here:
+.INDENT 0.0
+.INDENT 3.5
+\X'tty: link https://bugzilla.redhat.com/'\fI\%https://bugzilla.redhat.com/\fP\X'tty: link'
+.UNINDENT
+.UNINDENT
+.sp
+For more info on filing bugs, see the Fedora Project wiki:
+.INDENT 0.0
+.INDENT 3.5
+\X'tty: link https://fedoraproject.org/wiki/How_to_file_a_bug_report'\fI\%https://fedoraproject.org/wiki/How_to_file_a_bug_report\fP\X'tty: link'
+.sp
+\X'tty: link https://fedoraproject.org/wiki/Bugs_and_feature_requests'\fI\%https://fedoraproject.org/wiki/Bugs_and_feature_requests\fP\X'tty: link'
+.UNINDENT
+.UNINDENT
+.sp
+Please include \fB/var/log/dnf.log\fP and the output of
+\fBdnf system\-upgrade log \-\-number=\-1\fP (if applicable) in your bug reports.
+.sp
+Problems with dependency solving during download are best reported to the
+maintainers of the package(s) with the dependency problems.
+.sp
+Similarly, problems encountered on your system after the upgrade completes
+should be reported to the maintainers of the affected components. In other
+words: if (for example) KDE stops working, it\(aqs best if you report that to
+the KDE maintainers.
+.SH SEE ALSO
+.sp
+\fBdnf(8)\fP,
+\fBdnf.conf(5)\fP,
+\fBjournalctl(1)\fP\&.
+.SS Project homepage
+.sp
+\X'tty: link https://github.com/rpm-software-management/dnf-plugins-core'\fI\%https://github.com/rpm\-software\-management/dnf\-plugins\-core\fP\X'tty: link'
+.SH AUTHORS
+.sp
+Will Woods <\X'tty: link mailto:wwoods@redhat.com'\fI\%wwoods@redhat.com\fP\X'tty: link'>
+.sp
+Štěpán Smetana <\X'tty: link mailto:ssmetana@redhat.com'\fI\%ssmetana@redhat.com\fP\X'tty: link'>
+.SH AUTHOR
+See AUTHORS in your Core DNF Plugins distribution
+.SH COPYRIGHT
+2024, Red Hat, Licensed under GPLv2+
+.\" Generated by docutils manpage writer.
+.

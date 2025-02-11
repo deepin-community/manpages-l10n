@@ -6,9 +6,33 @@ include /usr/share/dpkg/pkg-info.mk
 	dh $@
 
 override_dh_installman:
+	# Create symlinks, do not rely on man itself to find them out
+	# see https://bugs.debian.org/1020742
+	# Old method, based on name, unreliable
+	# debian/create-symlinks
 	dh_installman
 	# Prevent broken symlinks, see https://bugs.debian.org/876047
 	# and https://bugs.debian.org/875419
+	if [ -L $(CURDIR)/debian/manpages-cs/usr/share/man/cs/man4/console_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-cs-dev/usr/share/man/cs/man4 ; \
+		mv $(CURDIR)/debian/manpages-cs/usr/share/man/cs/man4/console_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-cs-dev/usr/share/man/cs/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-cs/usr/share/man/cs/man4/tty_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-cs-dev/usr/share/man/cs/man4 ; \
+		mv $(CURDIR)/debian/manpages-cs/usr/share/man/cs/man4/tty_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-cs-dev/usr/share/man/cs/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-da/usr/share/man/da/man4/console_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-da-dev/usr/share/man/da/man4 ; \
+		mv $(CURDIR)/debian/manpages-da/usr/share/man/da/man4/console_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-da-dev/usr/share/man/da/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-da/usr/share/man/da/man4/tty_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-da-dev/usr/share/man/da/man4 ; \
+		mv $(CURDIR)/debian/manpages-da/usr/share/man/da/man4/tty_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-da-dev/usr/share/man/da/man4 ; \
+	fi
 	if [ -L $(CURDIR)/debian/manpages-de/usr/share/man/de/man4/console_ioctl.4.gz ]; then \
 		mkdir -p $(CURDIR)/debian/manpages-de-dev/usr/share/man/de/man4 ; \
 		mv $(CURDIR)/debian/manpages-de/usr/share/man/de/man4/console_ioctl.4.gz \
@@ -18,6 +42,16 @@ override_dh_installman:
 		mkdir -p $(CURDIR)/debian/manpages-de-dev/usr/share/man/de/man4 ; \
 		mv $(CURDIR)/debian/manpages-de/usr/share/man/de/man4/tty_ioctl.4.gz \
 		  $(CURDIR)/debian/manpages-de-dev/usr/share/man/de/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-el/usr/share/man/el/man4/console_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-el-dev/usr/share/man/el/man4 ; \
+		mv $(CURDIR)/debian/manpages-el/usr/share/man/el/man4/console_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-el-dev/usr/share/man/el/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-el/usr/share/man/el/man4/tty_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-el-dev/usr/share/man/el/man4 ; \
+		mv $(CURDIR)/debian/manpages-el/usr/share/man/el/man4/tty_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-el-dev/usr/share/man/el/man4 ; \
 	fi
 	if [ -L $(CURDIR)/debian/manpages-es/usr/share/man/es/man4/console_ioctl.4.gz ]; then \
 		mkdir -p $(CURDIR)/debian/manpages-es-dev/usr/share/man/es/man4 ; \
@@ -29,6 +63,16 @@ override_dh_installman:
 		mv $(CURDIR)/debian/manpages-es/usr/share/man/es/man4/tty_ioctl.4.gz \
 		  $(CURDIR)/debian/manpages-es-dev/usr/share/man/es/man4 ; \
 	fi
+	if [ -L $(CURDIR)/debian/manpages-fi/usr/share/man/fi/man4/console_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-fi-dev/usr/share/man/fi/man4 ; \
+		mv $(CURDIR)/debian/manpages-fi/usr/share/man/fi/man4/console_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-fi-dev/usr/share/man/fi/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-fi/usr/share/man/fi/man4/tty_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-fi-dev/usr/share/man/fi/man4 ; \
+		mv $(CURDIR)/debian/manpages-fi/usr/share/man/fi/man4/tty_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-fi-dev/usr/share/man/fi/man4 ; \
+	fi
 	if [ -L $(CURDIR)/debian/manpages-fr/usr/share/man/fr/man4/console_ioctl.4.gz ]; then \
 		mkdir -p $(CURDIR)/debian/manpages-fr-dev/usr/share/man/fr/man4 ; \
 		mv $(CURDIR)/debian/manpages-fr/usr/share/man/fr/man4/console_ioctl.4.gz \
@@ -38,6 +82,26 @@ override_dh_installman:
 		mkdir -p $(CURDIR)/debian/manpages-fr-dev/usr/share/man/fr/man4 ; \
 		mv $(CURDIR)/debian/manpages-fr/usr/share/man/fr/man4/tty_ioctl.4.gz \
 		  $(CURDIR)/debian/manpages-fr-dev/usr/share/man/fr/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-hu/usr/share/man/hu/man4/console_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-hu-dev/usr/share/man/hu/man4 ; \
+		mv $(CURDIR)/debian/manpages-hu/usr/share/man/hu/man4/console_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-hu-dev/usr/share/man/hu/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-hu/usr/share/man/hu/man4/tty_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-hu-dev/usr/share/man/hu/man4 ; \
+		mv $(CURDIR)/debian/manpages-hu/usr/share/man/hu/man4/tty_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-hu-dev/usr/share/man/hu/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-id/usr/share/man/id/man4/tty_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-id-dev/usr/share/man/id/man4 ; \
+		mv $(CURDIR)/debian/manpages-id/usr/share/man/id/man4/tty_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-id-dev/usr/share/man/id/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-it/usr/share/man/id/man4/console_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-id-dev/usr/share/man/id/man4 ; \
+		mv $(CURDIR)/debian/manpages-id/usr/share/man/id/man4/console_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-id-dev/usr/share/man/id/man4 ; \
 	fi
 	if [ -L $(CURDIR)/debian/manpages-it/usr/share/man/it/man4/console_ioctl.4.gz ]; then \
 		mkdir -p $(CURDIR)/debian/manpages-it-dev/usr/share/man/it/man4 ; \
@@ -49,6 +113,16 @@ override_dh_installman:
 		mv $(CURDIR)/debian/manpages-it/usr/share/man/it/man4/tty_ioctl.4.gz \
 		  $(CURDIR)/debian/manpages-it-dev/usr/share/man/it/man4 ; \
 	fi
+	if [ -L $(CURDIR)/debian/manpages-ko/usr/share/man/ko/man4/console_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-ko-dev/usr/share/man/ko/man4 ; \
+		mv $(CURDIR)/debian/manpages-ko/usr/share/man/ko/man4/console_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-ko-dev/usr/share/man/ko/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-ko/usr/share/man/ko/man4/tty_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-ko-dev/usr/share/man/ko/man4 ; \
+		mv $(CURDIR)/debian/manpages-ko/usr/share/man/ko/man4/tty_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-ko-dev/usr/share/man/ko/man4 ; \
+	fi
 	if [ -L $(CURDIR)/debian/manpages-mk/usr/share/man/mk/man4/console_ioctl.4.gz ]; then \
 		mkdir -p $(CURDIR)/debian/manpages-mk-dev/usr/share/man/mk/man4 ; \
 		mv $(CURDIR)/debian/manpages-mk/usr/share/man/mk/man4/console_ioctl.4.gz \
@@ -58,6 +132,16 @@ override_dh_installman:
 		mkdir -p $(CURDIR)/debian/manpages-mk-dev/usr/share/man/mk/man4 ; \
 		mv $(CURDIR)/debian/manpages-mk/usr/share/man/mk/man4/tty_ioctl.4.gz \
 		  $(CURDIR)/debian/manpages-mk-dev/usr/share/man/mk/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-nb/usr/share/man/nb/man4/console_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-nb-dev/usr/share/man/nb/man4 ; \
+		mv $(CURDIR)/debian/manpages-nb/usr/share/man/nb/man4/console_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-nb-dev/usr/share/man/nb/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-nb/usr/share/man/nb/man4/tty_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-nb-dev/usr/share/man/nb/man4 ; \
+		mv $(CURDIR)/debian/manpages-nb/usr/share/man/nb/man4/tty_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-nb-dev/usr/share/man/nb/man4 ; \
 	fi
 	if [ -L $(CURDIR)/debian/manpages-nl/usr/share/man/nl/man4/console_ioctl.4.gz ]; then \
 		mkdir -p $(CURDIR)/debian/manpages-nl-dev/usr/share/man/nl/man4 ; \
@@ -99,52 +183,84 @@ override_dh_installman:
 		mv $(CURDIR)/debian/manpages-ro/usr/share/man/ro/man4/tty_ioctl.4.gz \
 		  $(CURDIR)/debian/manpages-ro-dev/usr/share/man/ro/man4 ; \
 	fi
-	if [ -L $(CURDIR)/debian/manpages-cs/usr/share/man/cs/man4/console_ioctl.4.gz ]; then \
-		mkdir -p $(CURDIR)/debian/manpages-cs-dev/usr/share/man/cs/man4 ; \
-		mv $(CURDIR)/debian/manpages-cs/usr/share/man/cs/man4/console_ioctl.4.gz \
-		  $(CURDIR)/debian/manpages-cs-dev/usr/share/man/cs/man4 ; \
+	if [ -L $(CURDIR)/debian/manpages-ru/usr/share/man/ru/man4/console_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-ru-dev/usr/share/man/ru/man4 ; \
+		mv $(CURDIR)/debian/manpages-ru/usr/share/man/ru/man4/console_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-ru-dev/usr/share/man/ru/man4 ; \
 	fi
-	if [ -L $(CURDIR)/debian/manpages-cs/usr/share/man/cs/man4/tty_ioctl.4.gz ]; then \
-		mkdir -p $(CURDIR)/debian/manpages-cs-dev/usr/share/man/cs/man4 ; \
-		mv $(CURDIR)/debian/manpages-cs/usr/share/man/cs/man4/tty_ioctl.4.gz \
-		  $(CURDIR)/debian/manpages-cs-dev/usr/share/man/cs/man4 ; \
+	if [ -L $(CURDIR)/debian/manpages-ru/usr/share/man/ru/man4/tty_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-ru-dev/usr/share/man/ru/man4 ; \
+		mv $(CURDIR)/debian/manpages-ru/usr/share/man/ru/man4/tty_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-ru-dev/usr/share/man/ru/man4 ; \
 	fi
-	if [ -L $(CURDIR)/debian/manpages-da/usr/share/man/da/man4/console_ioctl.4.gz ]; then \
-		mkdir -p $(CURDIR)/debian/manpages-da-dev/usr/share/man/da/man4 ; \
-		mv $(CURDIR)/debian/manpages-da/usr/share/man/da/man4/console_ioctl.4.gz \
-		  $(CURDIR)/debian/manpages-da-dev/usr/share/man/da/man4 ; \
+	if [ -L $(CURDIR)/debian/manpages-sr/usr/share/man/sr/man4/console_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-sr-dev/usr/share/man/sr/man4 ; \
+		mv $(CURDIR)/debian/manpages-sr/usr/share/man/sr/man4/console_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-sr-dev/usr/share/man/sr/man4 ; \
 	fi
-	if [ -L $(CURDIR)/debian/manpages-da/usr/share/man/da/man4/tty_ioctl.4.gz ]; then \
-		mkdir -p $(CURDIR)/debian/manpages-da-dev/usr/share/man/da/man4 ; \
-		mv $(CURDIR)/debian/manpages-da/usr/share/man/da/man4/tty_ioctl.4.gz \
-		  $(CURDIR)/debian/manpages-da-dev/usr/share/man/da/man4 ; \
+	if [ -L $(CURDIR)/debian/manpages-sr/usr/share/man/sr/man4/tty_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-sr-dev/usr/share/man/sr/man4 ; \
+		mv $(CURDIR)/debian/manpages-sr/usr/share/man/sr/man4/tty_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-sr-dev/usr/share/man/sr/man4 ; \
 	fi
-	#if [ -L $(CURDIR)/debian/manpages-hu/usr/share/man/hu/man4/console_ioctl.4.gz ]; then \
-	#	mkdir -p $(CURDIR)/debian/manpages-hu-dev/usr/share/man/hu/man4 ; \
-	#	mv $(CURDIR)/debian/manpages-hu/usr/share/man/hu/man4/console_ioctl.4.gz \
-	#	  $(CURDIR)/debian/manpages-hu-dev/usr/share/man/hu/man4 ; \
-	#fi
-	#if [ -L $(CURDIR)/debian/manpages-hu/usr/share/man/hu/man4/tty_ioctl.4.gz ]; then \
-	#	mkdir -p $(CURDIR)/debian/manpages-hu-dev/usr/share/man/hu/man4 ; \
-	#	mv $(CURDIR)/debian/manpages-hu/usr/share/man/hu/man4/tty_ioctl.4.gz \
-	#	  $(CURDIR)/debian/manpages-hu-dev/usr/share/man/hu/man4 ; \
-	#fi
+	if [ -L $(CURDIR)/debian/manpages-sv/usr/share/man/sv/man4/console_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-sv-dev/usr/share/man/sv/man4 ; \
+		mv $(CURDIR)/debian/manpages-sv/usr/share/man/sv/man4/console_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-sv-dev/usr/share/man/sv/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-sv/usr/share/man/sv/man4/tty_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-sv-dev/usr/share/man/sv/man4 ; \
+		mv $(CURDIR)/debian/manpages-sv/usr/share/man/sv/man4/tty_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-sv-dev/usr/share/man/sv/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-uk/usr/share/man/uk/man4/console_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-uk-dev/usr/share/man/uk/man4 ; \
+		mv $(CURDIR)/debian/manpages-uk/usr/share/man/uk/man4/console_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-uk-dev/usr/share/man/uk/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-uk/usr/share/man/uk/man4/tty_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-uk-dev/usr/share/man/uk/man4 ; \
+		mv $(CURDIR)/debian/manpages-uk/usr/share/man/uk/man4/tty_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-uk-dev/usr/share/man/uk/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-vi/usr/share/man/vi/man4/console_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-vi-dev/usr/share/man/vi/man4 ; \
+		mv $(CURDIR)/debian/manpages-vi/usr/share/man/vi/man4/console_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-vi-dev/usr/share/man/vi/man4 ; \
+	fi
+	if [ -L $(CURDIR)/debian/manpages-vi/usr/share/man/vi/man4/tty_ioctl.4.gz ]; then \
+		mkdir -p $(CURDIR)/debian/manpages-vi-dev/usr/share/man/vi/man4 ; \
+		mv $(CURDIR)/debian/manpages-vi/usr/share/man/vi/man4/tty_ioctl.4.gz \
+		  $(CURDIR)/debian/manpages-vi-dev/usr/share/man/vi/man4 ; \
+	fi
 	# Remove intro.{2,3} manpages from manpages-LANGUAGE-dev,
 	# they are included in manpages-LANGUAGE
-	rm -f debian/manpages-de-dev/usr/share/man/de/man2/intro.2
-	rm -f debian/manpages-de-dev/usr/share/man/de/man3/intro.3
 	rm -f debian/manpages-cs-dev/usr/share/man/cs/man2/intro.2
 	rm -f debian/manpages-cs-dev/usr/share/man/cs/man3/intro.3
+	rm -f debian/manpages-da-dev/usr/share/man/da/man2/intro.2
+	rm -f debian/manpages-da-dev/usr/share/man/da/man3/intro.3
+	rm -f debian/manpages-de-dev/usr/share/man/de/man2/intro.2
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/intro.3
+	rm -f debian/manpages-el-dev/usr/share/man/el/man2/intro.2
+	rm -f debian/manpages-el-dev/usr/share/man/el/man3/intro.3
 	rm -f debian/manpages-es-dev/usr/share/man/es/man2/intro.2
 	rm -f debian/manpages-es-dev/usr/share/man/es/man3/intro.3
+	rm -f debian/manpages-fi-dev/usr/share/man/fi/man2/intro.2
+	rm -f debian/manpages-fi-dev/usr/share/man/fi/man3/intro.3
 	rm -f debian/manpages-fr-dev/usr/share/man/fr/man2/intro.2
 	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/intro.3
-	#rm -f debian/manpages-hu-dev/usr/share/man/hu/man2/intro.2
-	#rm -f debian/manpages-hu-dev/usr/share/man/hu/man3/intro.3
+	rm -f debian/manpages-hu-dev/usr/share/man/hu/man2/intro.2
+	rm -f debian/manpages-hu-dev/usr/share/man/hu/man3/intro.3
+	rm -f debian/manpages-id-dev/usr/share/man/id/man2/intro.2
+	rm -f debian/manpages-id-dev/usr/share/man/id/man3/intro.3
 	rm -f debian/manpages-it-dev/usr/share/man/it/man2/intro.2
 	rm -f debian/manpages-it-dev/usr/share/man/it/man3/intro.3
+	rm -f debian/manpages-ko-dev/usr/share/man/ko/man2/intro.2
+	rm -f debian/manpages-ko-dev/usr/share/man/ko/man3/intro.3
 	rm -f debian/manpages-mk-dev/usr/share/man/mk/man2/intro.2
 	rm -f debian/manpages-mk-dev/usr/share/man/mk/man3/intro.3
+	rm -f debian/manpages-nb-dev/usr/share/man/nb/man2/intro.2
+	rm -f debian/manpages-nb-dev/usr/share/man/nb/man3/intro.3
 	rm -f debian/manpages-nl-dev/usr/share/man/nl/man2/intro.2
 	rm -f debian/manpages-nl-dev/usr/share/man/nl/man3/intro.3
 	rm -f debian/manpages-pl-dev/usr/share/man/pl/man2/intro.2
@@ -153,28 +269,603 @@ override_dh_installman:
 	rm -f debian/manpages-pt-br-dev/usr/share/man/pt_BR/man3/intro.3
 	rm -f debian/manpages-ro-dev/usr/share/man/ro/man2/intro.2
 	rm -f debian/manpages-ro-dev/usr/share/man/ro/man3/intro.3
+	rm -f debian/manpages-ru-dev/usr/share/man/ru/man2/intro.2
+	rm -f debian/manpages-ru-dev/usr/share/man/ru/man3/intro.3
+	rm -f debian/manpages-sr-dev/usr/share/man/sr/man2/intro.2
+	rm -f debian/manpages-sr-dev/usr/share/man/sr/man3/intro.3
+	rm -f debian/manpages-sv-dev/usr/share/man/sv/man2/intro.2
+	rm -f debian/manpages-sv-dev/usr/share/man/sv/man3/intro.3
+	rm -f debian/manpages-uk-dev/usr/share/man/uk/man2/intro.2
+	rm -f debian/manpages-uk-dev/usr/share/man/uk/man3/intro.3
+	rm -f debian/manpages-vi-dev/usr/share/man/vi/man2/intro.2
+	rm -f debian/manpages-vi-dev/usr/share/man/vi/man3/intro.3
 	# Remove manpages from procps
-	rm -f debian/manpages-de/usr/share/man/de/man1/kill.1
-	rm -f debian/manpages-de/usr/share/man/de/man1/ps.1
-	rm -f debian/manpages-de/usr/share/man/de/man8/sysctl.8
+	rm -f debian/manpages-cs/usr/share/man/cs/man1/uptime.1
 	rm -f debian/manpages-de/usr/share/man/de/man1/uptime.1
-	rm -f debian/manpages-de/usr/share/man/de/man1/w.procps.1
-	rm -f debian/manpages-de/usr/share/man/de/man1/watch.1
-	rm -f debian/manpages-fr/usr/share/man/fr/man1/kill.1
-	rm -f debian/manpages-fr/usr/share/man/fr/man1/ps.1
-	rm -f debian/manpages-fr/usr/share/man/fr/man1/skill.1
-	rm -f debian/manpages-fr/usr/share/man/fr/man8/sysctl.8
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/uptime.1
 	rm -f debian/manpages-fr/usr/share/man/fr/man1/uptime.1
-	rm -f debian/manpages-fr/usr/share/man/fr/man1/w.procps.1
-	rm -f debian/manpages-fr/usr/share/man/fr/man1/watch.1
-	rm -f debian/manpages-pl/usr/share/man/pl/man1/kill.1
-	rm -f debian/manpages-pl/usr/share/man/pl/man1/w.procps.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/uptime.1
 	rm -f debian/manpages-pl/usr/share/man/pl/man1/uptime.1
-	# Other conflicting man pages (as band aid for now) #982833
-	rm -f debian/manpages-it/usr/share/man/it/man1/hman.1
+	rm -f debian/manpages-sr/usr/share/man/sr/man1/uptime.1
+	rm -f debian/manpages-sv/usr/share/man/sv/man1/uptime.1
+	# Remove manpages from net-tools (see #1017006, #1017007)
+	rm -f debian/manpages-de/usr/share/man/de/man5/ethers.5
+	# Remove manpages from util-linux (see #1037040)
+	rm -f debian/manpages-cs/usr/share/man/cs/man1/su.1
+	rm -f debian/manpages-cs/usr/share/man/cs/man1/write.1
+	rm -f debian/manpages-cs/usr/share/man/cs/man5/fstab.5
+	rm -f debian/manpages-de/usr/share/man/da/man1/newgrp.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/ncal.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/chfn.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/choom.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/chrt.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/chsh.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/col.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/colcrt.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/colrm.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/column.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/dmesg.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/eject.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/fadvise.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/fallocate.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/fincore.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/flock.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/getopt.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/hardlink.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/hexdump.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/ionice.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/ipcmk.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/ipcrm.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/ipcs.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/irqtop.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/kill.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/last.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/logger.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/login.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/look.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/lscpu.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/lsfd.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/lsipc.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/lsirq.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/lslogins.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/lsmem.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/mcookie.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/mesg.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/more.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/mountpoint.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/namei.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/newgrp.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/nsenter.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/pipesz.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/prlimit.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/rename.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/rename.ul.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/renice.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/rev.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/runuser.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/script.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/scriptlive.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/scriptreplay.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/setpriv.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/setsid.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/setterm.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/su.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/taskset.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/ul.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/unshare.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/utmpdump.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/uuidgen.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/uuidparse.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/wall.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/whereis.1
+	rm -f debian/manpages-de/usr/share/man/de/man1/write.1
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/libblkid.3
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/uuid.3
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/uuid_clear.3
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/uuid_compare.3
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/uuid_copy.3
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/uuid_generate.3
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/uuid_is_null.3
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/uuid_parse.3
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/uuid_time.3
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/uuid_unparse.3
+	rm -f debian/manpages-de/usr/share/man/de/man5/adjtime_config.5
+	rm -f debian/manpages-de/usr/share/man/de/man5/fstab.5
+	rm -f debian/manpages-de/usr/share/man/de/man5/hwclock.5
+	rm -f debian/manpages-de/usr/share/man/de/man5/terminal-colors.d.5
+	rm -f debian/manpages-de/usr/share/man/de/man8/addpart.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/agetty.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/blkdiscard.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/blkid.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/blkpr.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/blkzone.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/blockdev.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/cfdisk.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/chcpu.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/chmem.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/ctrlaltdel.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/delpart.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/fdformat.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/fdisk.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/findfs.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/findmnt.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/fsck.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/fsck.cramfs.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/fsck.minix.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/fsfreeze.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/fstrim.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/hwclock.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/isosize.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/ldattach.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/losetup.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/lsblk.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/lslocks.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/lsns.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/mkfs.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/mkfs.bfs.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/mkfs.cramfs.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/mkfs.minix.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/mkswap.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/mount.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/nologin.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/partx.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/pivot_root.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/raw.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/readprofile.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/resizepart.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/rfkill.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/rtcwake.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/setarch.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/sfdisk.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/sulogin.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/swaplabel.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/swapon.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/switch_root.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/tunelp.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/umount.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/uuidd.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/vipw.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/wdctl.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/wipefs.8
+	rm -f debian/manpages-de/usr/share/man/de/man8/zramctl.8
+	rm -f debian/manpages-es/usr/share/man/es/man1/chrt.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/colrm.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/column.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/getopt.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/ipcrm.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/ipcs.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/last.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/login.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/look.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/mesg.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/more.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/namei.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/newgrp.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/renice.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/rev.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/script.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/setsid.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/setterm.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/su.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/ul.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/wall.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/whereis.1
+	rm -f debian/manpages-es/usr/share/man/es/man1/write.1
+	rm -f debian/manpages-es/usr/share/man/es/man5/fstab.5
+	rm -f debian/manpages-es/usr/share/man/es/man8/agetty.8
+	rm -f debian/manpages-es/usr/share/man/es/man8/ctrlaltdel.8
+	rm -f debian/manpages-es/usr/share/man/es/man8/fdisk.8
+	rm -f debian/manpages-es/usr/share/man/es/man8/fsck.minix.8
+	rm -f debian/manpages-es/usr/share/man/es/man8/hwclock.8
+	rm -f debian/manpages-es/usr/share/man/es/man8/mkfs.8
+	rm -f debian/manpages-es/usr/share/man/es/man8/mkfs.minix.8
+	rm -f debian/manpages-es/usr/share/man/es/man8/mkswap.8
+	rm -f debian/manpages-es/usr/share/man/es/man8/mount.8
+	rm -f debian/manpages-es/usr/share/man/es/man8/sulogin.8
+	rm -f debian/manpages-es/usr/share/man/es/man8/swapon.8
+	rm -f debian/manpages-es/usr/share/man/es/man8/tunelp.8
+	rm -f debian/manpages-es/usr/share/man/es/man8/umount.8
+	rm -f debian/manpages-es/usr/share/man/es/man8/vipw.8
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/cal.1
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/chfn.1
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/chsh.1
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/column.1
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/eject.1
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/kill.1
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/last.1
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/mesg.1
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/more.1
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/newgrp.1
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/su.1
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/wall.1
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/whereis.1
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/write.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/chrt.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/dmesg.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/fallocate.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/flock.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/getopt.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/ionice.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/ipcmk.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/ipcrm.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/ipcs.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/kill.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/last.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/logger.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/lscpu.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/mcookie.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/mesg.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/more.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/mountpoint.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/namei.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/nsenter.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/prlimit.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/rename.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/rename.ul.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/renice.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/rev.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/runuser.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/script.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/scriptreplay.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/setsid.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/setterm.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/su.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/taskset.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/unshare.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/utmpdump.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/uuidgen.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/wall.1
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/whereis.1
+	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/libblkid.3
+	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/uuid.3
+	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/uuid_clear.3
+	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/uuid_compare.3
+	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/uuid_copy.3
+	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/uuid_generate.3
+	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/uuid_is_null.3
+	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/uuid_parse.3
+	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/uuid_time.3
+	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/uuid_unparse.3
+	rm -f debian/manpages-fr/usr/share/man/fr/man5/fstab.5
+	rm -f debian/manpages-fr/usr/share/man/fr/man5/hwclock.5
+	rm -f debian/manpages-fr/usr/share/man/fr/man5/terminal-colors.d.5
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/addpart.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/agetty.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/blkdiscard.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/blkid.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/blockdev.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/cfdisk.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/chcpu.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/ctrlaltdel.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/delpart.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/fdformat.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/fdisk.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/findfs.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/findmnt.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/fsck.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/fsck.cramfs.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/fsck.minix.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/fsfreeze.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/fstrim.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/hwclock.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/isosize.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/ldattach.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/losetup.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/lsblk.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/lslocks.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/mkfs.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/mkfs.cramfs.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/mkfs.minix.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/mkswap.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/mount.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/partx.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/pivot_root.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/raw.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/readprofile.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/resizepart.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/rtcwake.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/setarch.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/sfdisk.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/sulogin.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/swaplabel.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/swapon.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/switch_root.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/umount.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/uuidd.8
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/wdctl.8
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/cal.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/chfn.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/colrm.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/hexdump.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/eject.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/kill.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/last.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/logger.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/mesg.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/more.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/setterm.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/wall.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/whereis.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/write.1
+	rm -f debian/manpages-hu/usr/share/man/hu/man5/fstab.5
+	rm -f debian/manpages-hu/usr/share/man/hu/man8/hwclock.8
+	rm -f debian/manpages-id/usr/share/man/id/man1/cal.1
+	rm -f debian/manpages-id/usr/share/man/id/man1/chsh.1
+	rm -f debian/manpages-id/usr/share/man/id/man1/dmesg.1
+	rm -f debian/manpages-id/usr/share/man/id/man1/kill.1
+	rm -f debian/manpages-id/usr/share/man/id/man1/logger.1
+	rm -f debian/manpages-id/usr/share/man/id/man1/login.1
+	rm -f debian/manpages-id/usr/share/man/id/man1/more.1
+	rm -f debian/manpages-id/usr/share/man/id/man1/script.1
+	rm -f debian/manpages-id/usr/share/man/id/man1/write.1
+	rm -f debian/manpages-id/usr/share/man/id/man8/fdformat.8
+	rm -f debian/manpages-it/usr/share/man/it/man5/fstab.5
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/cal.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/chfn.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/chsh.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/col.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/colcrt.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/colrm.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/column.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/dmesg.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/getopt.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/hexdump.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/ipcrm.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/ipcs.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/kill.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/last.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/logger.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/login.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/look.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/mcookie.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/mesg.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/more.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/namei.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/newgrp.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/renice.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/rev.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/script.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/setsid.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/setterm.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/su.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/ul.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/wall.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/whereis.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/write.1
+	rm -f debian/manpages-ko/usr/share/man/ko/man5/fstab.5
+	rm -f debian/manpages-ko/usr/share/man/ko/man8/ctrlaltdel.8
+	rm -f debian/manpages-ko/usr/share/man/ko/man8/fdformat.8
+	rm -f debian/manpages-ko/usr/share/man/ko/man8/fdisk.8
+	rm -f debian/manpages-ko/usr/share/man/ko/man8/fsck.minix.8
+	rm -f debian/manpages-ko/usr/share/man/ko/man8/hwclock.8
+	rm -f debian/manpages-ko/usr/share/man/ko/man8/losetup.8
+	rm -f debian/manpages-ko/usr/share/man/ko/man8/mkfs.8
+	rm -f debian/manpages-ko/usr/share/man/ko/man8/mkfs.minix.8
+	rm -f debian/manpages-ko/usr/share/man/ko/man8/mkswap.8
+	rm -f debian/manpages-ko/usr/share/man/ko/man8/mount.8
+	rm -f debian/manpages-ko/usr/share/man/ko/man8/sulogin.8
+	rm -f debian/manpages-ko/usr/share/man/ko/man8/swapon.8
+	rm -f debian/manpages-nl/usr/share/man/nl/man1/kill.1
+	rm -f debian/manpages-nl/usr/share/man/nl/man1/nsenter.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/col.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/colcrt.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/colrm.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/eject.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/dmesg.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/getopt.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/hexdump.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/ipcmk.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/ipcrm.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/ipcs.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/kill.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/last.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/logger.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/look.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/lscpu.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/mesg.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/more.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/renice.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/rev.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/script.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/setterm.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/ul.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/wall.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/whereis.1
+	rm -f debian/manpages-pl/usr/share/man/pl/man5/fstab.5
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/ctrlaltdel.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/fdformat.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/fdisk.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/fsck.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/fsck.minix.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/losetup.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/lsblk.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/mkfs.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/mkfs.minix.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/mkswap.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/mount.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/sulogin.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/swaplabel.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/swapon.8
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/umount.8
+	rm -f debian/manpages-ro/usr/share/man/ro/man1/eject.1
+	rm -f debian/manpages-ro/usr/share/man/ro/man1/newgrp.1
+	rm -f debian/manpages-ro/usr/share/man/ro/man1/write.1
+	rm -f debian/manpages-ro-dev/usr/share/man/ro/man3/uuid.3
+	rm -f debian/manpages-ro-dev/usr/share/man/ro/man3/uuid_parse.3
+	rm -f debian/manpages-ro-dev/usr/share/man/ro/man3/uuid_time.3
+	rm -f debian/manpages-ro/usr/share/man/ro/man5/hwclock.5
+	rm -f debian/manpages-sr/usr/share/man/sr/man1/newgrp.1
+	rm -f debian/manpages-sr/usr/share/man/sr/man1/rev.1
+	rm -f debian/manpages-sr/usr/share/man/sr/man1/setsid.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/cal.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/chfn.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/choom.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/chrt.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/chsh.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/col.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/colcrt.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/colrm.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/column.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/dmesg.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/fallocate.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/fincore.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/getopt.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/hardlink.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/ionice.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/ipcmk.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/ipcrm.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/ipcs.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/irqtop.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/kill.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/last.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/logger.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/login.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/look.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/lscpu.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/lsipc.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/lsirq.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/lslogins.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/lsmem.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/mcookie.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/mesg.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/more.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/mountpoint.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/namei.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/newgrp.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/prlimit.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/rename.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/rename.ul.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/renice.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/rev.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/runuser.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/scriptlive.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/scriptreplay.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/setpriv.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/setsid.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/setterm.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/su.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/taskset.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/ul.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/utmpdump.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/uuidgen.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/uuidparse.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/wall.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/whereis.1
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/write.1
+	rm -f debian/manpages-uk-dev/usr/share/man/uk/man3/libblkid.3
+	rm -f debian/manpages-uk-dev/usr/share/man/uk/man3/uuid.3
+	rm -f debian/manpages-uk-dev/usr/share/man/uk/man3/uuid_clear.3
+	rm -f debian/manpages-uk-dev/usr/share/man/uk/man3/uuid_compare.3
+	rm -f debian/manpages-uk-dev/usr/share/man/uk/man3/uuid_copy.3
+	rm -f debian/manpages-uk-dev/usr/share/man/uk/man3/uuid_generate.3
+	rm -f debian/manpages-uk-dev/usr/share/man/uk/man3/uuid_parse.3
+	rm -f debian/manpages-uk-dev/usr/share/man/uk/man3/uuid_unparse.3
+	rm -f debian/manpages-uk/usr/share/man/uk/man5/adjtime_config.5
+	rm -f debian/manpages-uk/usr/share/man/uk/man5/fstab.5
+	rm -f debian/manpages-uk/usr/share/man/uk/man5/terminal-colors.d.5
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/addpart.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/blkdiscard.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/blkid.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/blkzone.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/blockdev.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/cfdisk.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/chcpu.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/chmem.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/ctrlaltdel.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/delpart.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/fdformat.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/fdisk.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/findfs.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/findmnt.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/fsck.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/fsck.cramfs.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/fsck.minix.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/fsfreeze.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/fstrim.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/isosize.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/ldattach.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/losetup.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/lsblk.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/lslocks.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/lsns.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/mkfs.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/mkfs.bfs.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/mkfs.cramfs.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/mkfs.minix.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/mkswap.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/mount.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/nologin.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/partx.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/pivot_root.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/raw.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/readprofile.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/resizepart.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/rfkill.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/rtcwake.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/setarch.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/sfdisk.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/sulogin.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/swaplabel.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/swapon.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/switch_root.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/umount.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/uuidd.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/vipw.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/wdctl.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/wipefs.8
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/zramctl.8
 
-# Use epoch for Polish packages
+override_dh_link:
+	dh_link
+	rm -f debian/manpages-de/usr/share/man/de/man1/cal.1.gz
+	rm -f debian/manpages-de/usr/share/man/de/man1/hd.1.gz
+	rm -f debian/manpages-de/usr/share/man/de/man1/lastb.1.gz
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/uuid_generate_random.3.gz
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/uuid_generate_time.3.gz
+	rm -f debian/manpages-de-dev/usr/share/man/de/man3/uuid_generate_time_safe.3.gz
+	rm -f debian/manpages-de/usr/share/man/de/man8/i386.8.gz
+	rm -f debian/manpages-de/usr/share/man/de/man8/linux32.8.gz
+	rm -f debian/manpages-de/usr/share/man/de/man8/linux64.8.gz
+	rm -f debian/manpages-de/usr/share/man/de/man8/x86_64.8.gz
+	rm -f debian/manpages-de/usr/share/man/de/man8/swapoff.8.gz
+	rm -f debian/manpages-es/usr/share/man/es/man1/lastb.1.gz
+	rm -f debian/manpages-es/usr/share/man/es/man8/swapoff.8.gz
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/ncal.1.gz
+	rm -f debian/manpages-fi/usr/share/man/fi/man1/lastb.1.gz
+	rm -f debian/manpages-fr/usr/share/man/fr/man1/lastb.1.gz
+	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/uuid_generate_random.3.gz
+	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/uuid_generate_time.3.gz
+	rm -f debian/manpages-fr-dev/usr/share/man/fr/man3/uuid_generate_time_safe.3.gz
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/i386.8.gz
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/linux32.8.gz
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/linux64.8.gz
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/x86_64.8.gz
+	rm -f debian/manpages-fr/usr/share/man/fr/man8/swapoff.8.gz
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/ncal.1.gz
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/hd.1.gz
+	rm -f debian/manpages-hu/usr/share/man/hu/man1/lastb.1.gz
+	rm -f debian/manpages-id/usr/share/man/id/man1/ncal.1.gz
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/ncal.1.gz
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/hd.1.gz
+	rm -f debian/manpages-ko/usr/share/man/ko/man1/lastb.1.gz
+	rm -f debian/manpages-ko/usr/share/man/ko/man8/swapoff.8.gz
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/hd.1.gz
+	rm -f debian/manpages-pl/usr/share/man/pl/man1/lastb.1.gz
+	rm -f debian/manpages-pl/usr/share/man/pl/man8/swapoff.8.gz
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/ncal.1.gz
+	rm -f debian/manpages-uk/usr/share/man/uk/man1/lastb.1.gz
+	rm -f debian/manpages-uk-dev/usr/share/man/uk/man3/uuid_generate_random.3.gz
+	rm -f debian/manpages-uk-dev/usr/share/man/uk/man3/uuid_generate_time.3.gz
+	rm -f debian/manpages-uk-dev/usr/share/man/uk/man3/uuid_generate_time_safe.3.gz
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/i386.8.gz
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/linux32.8.gz
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/linux64.8.gz
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/x86_64.8.gz
+	rm -f debian/manpages-uk/usr/share/man/uk/man8/swapoff.8.gz
+
+# Use epoch for Polish and Hungarian packages
 override_dh_gencontrol:
 	dh_gencontrol
+	dh_gencontrol -pmanpages-hu -- -v1:$(DEB_VERSION)
 	dh_gencontrol -pmanpages-pl -- -v1:$(DEB_VERSION)
 	dh_gencontrol -pmanpages-pl-dev -- -v1:$(DEB_VERSION)

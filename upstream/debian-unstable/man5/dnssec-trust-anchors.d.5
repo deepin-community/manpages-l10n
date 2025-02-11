@@ -1,5 +1,5 @@
 '\" t
-.TH "DNSSEC\-TRUST\-ANCHORS\&.D" "5" "" "systemd 247" "dnssec-trust-anchors.d"
+.TH "DNSSEC\-TRUST\-ANCHORS\&.D" "5" "" "systemd 257.1" "dnssec-trust-anchors.d"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -23,17 +23,30 @@
 dnssec-trust-anchors.d, systemd.positive, systemd.negative \- DNSSEC trust anchor configuration files
 .SH "SYNOPSIS"
 .PP
+.RS 4
 /etc/dnssec\-trust\-anchors\&.d/*\&.positive
-.PP
+.RE
+.RS 4
 /run/dnssec\-trust\-anchors\&.d/*\&.positive
-.PP
+.RE
+.RS 4
+/usr/local/lib/dnssec\-trust\-anchors\&.d/*\&.positive
+.RE
+.RS 4
 /usr/lib/dnssec\-trust\-anchors\&.d/*\&.positive
-.PP
+.RE
+.RS 4
 /etc/dnssec\-trust\-anchors\&.d/*\&.negative
-.PP
+.RE
+.RS 4
 /run/dnssec\-trust\-anchors\&.d/*\&.negative
-.PP
+.RE
+.RS 4
+/usr/local/lib/dnssec\-trust\-anchors\&.d/*\&.negative
+.RE
+.RS 4
 /usr/lib/dnssec\-trust\-anchors\&.d/*\&.negative
+.RE
 .SH "DESCRIPTION"
 .PP
 The DNSSEC trust anchor configuration files define positive and negative trust anchors
@@ -41,7 +54,11 @@ The DNSSEC trust anchor configuration files define positive and negative trust a
 bases DNSSEC integrity proofs on\&.
 .SH "POSITIVE TRUST ANCHORS"
 .PP
-Positive trust anchor configuration files contain DNSKEY and DS resource record definitions to use as base for DNSSEC integrity proofs\&. See
+Positive trust anchor configuration files contain
+\fBDNSKEY\fR
+and
+\fBDS\fR
+resource record definitions to use as base for DNSSEC integrity proofs\&. See
 \m[blue]\fBRFC 4035, Section 4\&.4\fR\m[]\&\s-2\u[1]\d\s+2
 for more information about DNSSEC trust anchors\&.
 .PP
@@ -62,7 +79,17 @@ that is either empty or a symlink to
 ("masked")\&.
 .PP
 Positive trust anchor files are simple text files resembling DNS zone files, as documented in
-\m[blue]\fBRFC 1035, Section 5\fR\m[]\&\s-2\u[2]\d\s+2\&. One DS or DNSKEY resource record may be listed per line\&. Empty lines and lines starting with a semicolon (";") are ignored and considered comments\&. A DS resource record is specified like in the following example:
+\m[blue]\fBRFC 1035, Section 5\fR\m[]\&\s-2\u[2]\d\s+2\&. One
+\fBDS\fR
+or
+\fBDNSKEY\fR
+resource record may be listed per line\&. Empty lines and lines starting with
+"#"
+or
+";"
+are ignored, which may be used for commenting\&. A
+\fBDS\fR
+resource record is specified like in the following example:
 .sp
 .if n \{\
 .RS 4
@@ -83,7 +110,9 @@ the third word
 \m[blue]\fBRFC 4034, Section 5\fR\m[]\&\s-2\u[3]\d\s+2
 for details about the precise syntax and meaning of these fields\&.
 .PP
-Alternatively, DNSKEY resource records may be used to define trust anchors, like in the following example:
+Alternatively,
+\fBDNSKEY\fR
+resource records may be used to define trust anchors, like in the following example:
 .sp
 .if n \{\
 .RS 4
@@ -97,19 +126,31 @@ Alternatively, DNSKEY resource records may be used to define trust anchors, like
 .PP
 The first word specifies the domain again, the second word must be
 "IN", followed by
-"DNSKEY"\&. The subsequent words encode the DNSKEY flags, protocol and algorithm fields, followed by the key data encoded in Base64\&. See
+"DNSKEY"\&. The subsequent words encode the
+\fBDNSKEY\fR
+flags, protocol and algorithm fields, followed by the key data encoded in Base64\&. See
 \m[blue]\fBRFC 4034, Section 2\fR\m[]\&\s-2\u[4]\d\s+2
 for details about the precise syntax and meaning of these fields\&.
 .PP
-If multiple DS or DNSKEY records are defined for the same domain (possibly even in different trust anchor files), all keys are used and are considered equivalent as base for DNSSEC proofs\&.
+If multiple
+\fBDS\fR
+or
+\fBDNSKEY\fR
+records are defined for the same domain (possibly even in different trust anchor files), all keys are used and are considered equivalent as base for DNSSEC proofs\&.
 .PP
 Note that
 systemd\-resolved
 will automatically use a built\-in trust anchor key for the Internet root domain if no positive trust anchors are defined for the root domain\&. In most cases it is hence unnecessary to define an explicit key with trust anchor files\&. The built\-in key is disabled as soon as at least one trust anchor key for the root domain is defined in trust anchor files\&.
 .PP
-It is generally recommended to encode trust anchors in DS resource records, rather than DNSKEY resource records\&.
+It is generally recommended to encode trust anchors in
+\fBDS\fR
+resource records, rather than
+\fBDNSKEY\fR
+resource records\&.
 .PP
-If a trust anchor specified via a DS record is found revoked it is automatically removed from the trust anchor database for the runtime\&. See
+If a trust anchor specified via a
+\fBDS\fR
+record is found revoked it is automatically removed from the trust anchor database for the runtime\&. See
 \m[blue]\fBRFC 5011\fR\m[]\&\s-2\u[5]\d\s+2
 for details about revoked trust anchors\&. Note that
 systemd\-resolved
@@ -157,10 +198,7 @@ setting in
 files\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd-resolved.service\fR(8),
-\fBresolved.conf\fR(5),
-\fBsystemd.network\fR(5)
+\fBsystemd\fR(1), \fBsystemd-resolved.service\fR(8), \fBresolved.conf\fR(5), \fBsystemd.network\fR(5)
 .SH "NOTES"
 .IP " 1." 4
 RFC 4035, Section 4.4

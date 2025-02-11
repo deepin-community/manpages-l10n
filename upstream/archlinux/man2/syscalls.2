@@ -1,3 +1,4 @@
+'\" t
 .\" Copyright (C) 2007 Michael Kerrisk <mtk.manpages@gmail.com>
 .\" with some input from Stepan Kasal <kasal@ucw.cz>
 .\"
@@ -6,29 +7,9 @@
 .\" Modifications for 2.2 and 2.4 Copyright (C) 2002 Ian Redfern
 .\" <redferni@logica.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
-.\"
-.TH SYSCALLS 2 2021-08-27 "Linux" "Linux Programmer's Manual"
+.TH syscalls 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 syscalls \- Linux system calls
 .SH SYNOPSIS
@@ -48,7 +29,7 @@ as the name of the system call that it invokes.
 For example, glibc contains a function
 .BR chdir ()
 which invokes the underlying "chdir" system call.
-.PP
+.P
 Often the glibc wrapper function is quite thin, doing little work
 other than copying arguments to the right registers
 before invoking the system call,
@@ -68,7 +49,7 @@ the wrapper function negates the returned error number
 (to make it positive), copies it to
 .IR errno ,
 and returns \-1 to the caller of the wrapper.
-.PP
+.P
 Sometimes, however, the wrapper function does some extra work
 before invoking the system call.
 For example, nowadays there are (for reasons described below) two
@@ -88,81 +69,80 @@ column indicates the kernel version
 for those system calls that were new in Linux 2.2,
 or have appeared since that kernel version.
 Note the following points:
-.IP * 3
+.IP \[bu] 3
 Where no kernel version is indicated,
-the system call appeared in kernel 1.0 or earlier.
-.IP *
+the system call appeared in Linux 1.0 or earlier.
+.IP \[bu]
 Where a system call is marked "1.2"
-this means the system call probably appeared in a 1.1.x kernel version,
+this means the system call probably appeared in a Linux 1.1.x kernel version,
 and first appeared in a stable kernel with 1.2.
-(Development of the 1.2 kernel was initiated from a branch of kernel
-1.0.6 via the 1.1.x unstable kernel series.)
-.IP *
+(Development of the Linux 1.2 kernel was initiated from a branch of
+Linux 1.0.6 via the Linux 1.1.x unstable kernel series.)
+.IP \[bu]
 Where a system call is marked "2.0"
-this means the system call probably appeared in a 1.3.x kernel version,
-and first appeared in a stable kernel with 2.0.
-(Development of the 2.0 kernel was initiated from a branch of kernel
-1.2.x, somewhere around 1.2.10,
-via the 1.3.x unstable kernel series.)
-.\" Was kernel 2.0 started from a branch of 1.2.10?
+this means the system call probably appeared in a Linux 1.3.x kernel version,
+and first appeared in a stable kernel with Linux 2.0.
+(Development of the Linux 2.0 kernel was initiated from a branch of
+Linux 1.2.x, somewhere around Linux 1.2.10,
+via the Linux 1.3.x unstable kernel series.)
+.\" Was Linux 2.0 started from a branch of Linux 1.2.10?
 .\" At least from the timestamps of the tarballs of
-.\" of 1.2.10 and 1.3.0, that's how it looks, but in
+.\" of Linux 1.2.10 and Linux 1.3.0, that's how it looks, but in
 .\" fact the diff doesn't seem very clear, the
-.\" 1.3.0 .tar.bz is much bigger (2.0 MB) than the
-.\" 1.2.10 .tar.bz2 (1.8 MB), and AEB points out the
-.\" timestamps of some files in 1.3.0 seem to be older
-.\" than those in 1.2.10.  All of this suggests
+.\" Linux 1.3.0 .tar.bz is much bigger (2.0 MB) than the
+.\" Linux 1.2.10 .tar.bz2 (1.8 MB), and AEB points out the
+.\" timestamps of some files in Linux 1.3.0 seem to be older
+.\" than those in Linux 1.2.10.  All of this suggests
 .\" that there might not have been a clean branch point.
-.IP *
+.IP \[bu]
 Where a system call is marked "2.2"
-this means the system call probably appeared in a 2.1.x kernel version,
-and first appeared in a stable kernel with 2.2.0.
-(Development of the 2.2 kernel was initiated from a branch of kernel
-2.0.21 via the 2.1.x unstable kernel series.)
-.IP *
+this means the system call probably appeared in a Linux 2.1.x kernel version,
+and first appeared in a stable kernel with Linux 2.2.0.
+(Development of the Linux 2.2 kernel was initiated from a branch of
+Linux 2.0.21 via the Linux 2.1.x unstable kernel series.)
+.IP \[bu]
 Where a system call is marked "2.4"
-this means the system call probably appeared in a 2.3.x kernel version,
-and first appeared in a stable kernel with 2.4.0.
-(Development of the 2.4 kernel was initiated from a branch of
-kernel 2.2.8 via the 2.3.x unstable kernel series.)
-.IP *
+this means the system call probably appeared in a Linux 2.3.x kernel version,
+and first appeared in a stable kernel with Linux 2.4.0.
+(Development of the Linux 2.4 kernel was initiated from a branch of
+Linux 2.2.8 via the Linux 2.3.x unstable kernel series.)
+.IP \[bu]
 Where a system call is marked "2.6"
-this means the system call probably appeared in a 2.5.x kernel version,
-and first appeared in a stable kernel with 2.6.0.
-(Development of kernel 2.6 was initiated from a branch
-of kernel 2.4.15 via the 2.5.x unstable kernel series.)
-.IP *
-Starting with kernel 2.6.0, the development model changed,
-and new system calls may appear in each 2.6.x release.
+this means the system call probably appeared in a Linux 2.5.x kernel version,
+and first appeared in a stable kernel with Linux 2.6.0.
+(Development of Linux 2.6 was initiated from a branch
+of Linux 2.4.15 via the Linux 2.5.x unstable kernel series.)
+.IP \[bu]
+Starting with Linux 2.6.0, the development model changed,
+and new system calls may appear in each Linux 2.6.x release.
 In this case, the exact version number where the system call appeared
 is shown.
-This convention continues with the 3.x kernel series,
-which followed on from kernel 2.6.39; and the 4.x kernel series,
-which followed on from kernel 3.19; and the 5.x kernel series,
-which followed on from kernel 4.20.
-.IP *
+This convention continues with the Linux 3.x kernel series,
+which followed on from Linux 2.6.39; and the Linux 4.x kernel series,
+which followed on from Linux 3.19; and the Linux 5.x kernel series,
+which followed on from Linux 4.20; and the Linux 6.x kernel series,
+which followed on from Linux 5.19.
+.IP \[bu]
 In some cases, a system call was added to a stable kernel
 series after it branched from the previous stable kernel
 series, and then backported into the earlier stable kernel series.
-For example some system calls that appeared in 2.6.x were also backported
-into a 2.4.x release after 2.4.15.
+For example some system calls that appeared in Linux 2.6.x were also backported
+into a Linux 2.4.x release after Linux 2.4.15.
 When this is so, the version where the system call appeared
 in both of the major kernel series is listed.
-.PP
-The list of system calls that are available as at kernel 5.11
+.P
+The list of system calls that are available as at Linux 5.14
 (or in a few cases only on older kernels) is as follows:
+.P
 .\"
 .\" Looking at scripts/checksyscalls.sh in the kernel source is
 .\" instructive about x86 specifics.
 .\"
-.nh
-.ad l
 .TS
-l2 le l
----
-l l l.
-\fBSystem call\fP	\fBKernel\fP	\fBNotes\fP
-
+Lb Lb Lb
+L2 L  L.
+System call	Kernel	Notes
+_
 \fB_llseek\fP(2)	1.2
 \fB_newselect\fP(2)	2.0
 \fB_sysctl\fP(2)	2.0	Removed in 5.5
@@ -344,7 +324,9 @@ T}
 \fBgetpeername\fP(2)	2.0	T{
 See notes on \fBsocketcall\fP(2)
 T}
-\fBgetpagesize\fP(2)	2.0	Not on x86
+\fBgetpagesize\fP(2)	2.0	T{
+Alpha, SPARC/SPARC64 only
+T}
 \fBgetpgid\fP(2)	1.0
 \fBgetpgrp\fP(2)	1.0
 \fBgetpid\fP(2)	1.0
@@ -415,7 +397,6 @@ T}
 \fBlandlock_add_rule\fP(2)	5.13
 \fBlandlock_create_ruleset\fP(2)	5.13
 \fBlandlock_restrict_self\fP(2)	5.13
-\fBlandlock_add_rule\fP(2)	5.13
 \fBlchown\fP(2)	1.0	T{
 See \fBchown\fP(2) for
 version details
@@ -442,6 +423,7 @@ T}
 .\" bb6fb6dfcc17cddac11ac295861f7608194447a7
 \fBmembarrier\fP(2)	3.17
 \fBmemfd_create\fP(2)	3.17
+\fBmemfd_secret\fP(2)	5.14
 \fBmigrate_pages\fP(2)	2.6.16
 \fBmincore\fP(2)	2.4
 \fBmkdir\fP(2)	1.0
@@ -487,7 +469,9 @@ T}
 \fBname_to_handle_at\fP(2)	2.6.39
 \fBnanosleep\fP(2)	2.0
 .\" 5590ff0d5528b60153c0b4e7b771472b5a95e297
-\fBnewfstatat\fP(2)	2.6.16	See \fBstat\fP(2)
+\fBnewfstatat\fP(2)	2.6.16	T{
+See \fBstat\fP(2)
+T}
 \fBnfsservctl\fP(2)	2.2	Removed in 3.1
 \fBnice\fP(2)	1.0
 \fBold_adjtimex\fP(2)	2.0	T{
@@ -615,7 +599,8 @@ T}
 \fBs390_sthyi\fP(2)	4.15	s390 only
 \fBs390_guarded_storage\fP(2)	4.12	s390 only
 \fBsched_get_affinity\fP(2)	2.6	T{
-Name of \fBsched_getaffinity\fP(2)
+Name of
+.BR \%sched_getaffinity (2)
 on SPARC and SPARC64
 T}
 \fBsched_get_priority_max\fP(2)	2.0
@@ -626,7 +611,8 @@ T}
 \fBsched_getscheduler\fP(2)	2.0
 \fBsched_rr_get_interval\fP(2)	2.0
 \fBsched_set_affinity\fP(2)	2.6	T{
-Name of \fBsched_setaffinity\fP(2)
+Name of
+.BR \%sched_setaffinity (2)
 on SPARC and SPARC64
 T}
 \fBsched_setaffinity\fP(2)	2.6
@@ -693,8 +679,7 @@ T}
 \fBsetns\fP(2)	3.0
 \fBsetpgid\fP(2)	1.0
 \fBsetpgrp\fP(2)	2.0	T{
-Alternative name for
-\fBsetpgid\fP(2) on Alpha
+Alternative name for \fBsetpgid\fP(2) on Alpha
 T}
 \fBsetpriority\fP(2)	1.0
 \fBsetregid\fP(2)	1.0
@@ -851,15 +836,13 @@ T}
 .\" 5a0015d62668e64c8b6e02e360fbbea121bfd5e6
 \fBxtensa\fP(2)	2.6.13	Xtensa only
 .TE
-.ad
-.hy
-.PP
+.P
 On many platforms, including x86-32, socket calls are all multiplexed
 (via glibc wrapper functions) through
 .BR socketcall (2)
 and similarly System\ V IPC calls are multiplexed through
 .BR ipc (2).
-.PP
+.P
 Although slots are reserved for them in the system call table,
 the following system calls are not implemented in the standard kernel:
 .BR afs_syscall (2), \" __NR_afs_syscall is 53 on Linux 2.6.22/i386
@@ -894,7 +877,7 @@ and
 exist as library routines.
 The slot for
 .BR phys (2)
-is in use since kernel 2.1.116 for
+is in use since Linux 2.1.116 for
 .BR umount (2);
 .BR phys (2)
 will never be implemented.
@@ -904,10 +887,10 @@ and
 .BR putpmsg (2)
 calls are for kernels patched to support STREAMS,
 and may never be in the standard kernel.
-.PP
+.P
 There was briefly
 .BR set_zone_reclaim (2),
-added in Linux 2.6.13, and removed in 2.6.16;
+added in Linux 2.6.13, and removed in Linux 2.6.16;
 this system call was never available to user space.
 .\"
 .SS System calls on removed ports
@@ -917,9 +900,9 @@ since been removed from the kernel:
 AVR32 (port removed in Linux 4.12)
 .RS
 .PD 0
-.IP * 2
+.IP \[bu] 3
 .BR pread (2)
-.IP *
+.IP \[bu]
 .BR pwrite (2)
 .PD
 .RE
@@ -927,22 +910,22 @@ AVR32 (port removed in Linux 4.12)
 Blackfin (port removed in Linux 4.17)
 .RS
 .PD 0
-.IP * 2
+.IP \[bu] 3
 .BR bfin_spinlock (2)
 (added in Linux 2.6.22)
-.IP *
+.IP \[bu]
 .BR dma_memcpy (2)
 (added in Linux 2.6.22)
-.IP *
+.IP \[bu]
 .BR pread (2)
 (added in Linux 2.6.22)
-.IP *
+.IP \[bu]
 .BR pwrite (2)
 (added in Linux 2.6.22)
-.IP *
+.IP \[bu]
 .BR sram_alloc (2)
 (added in Linux 2.6.22)
-.IP *
+.IP \[bu]
 .BR sram_free (2)
 (added in Linux 2.6.22)
 .PD
@@ -951,16 +934,16 @@ Blackfin (port removed in Linux 4.17)
 Metag (port removed in Linux 4.17)
 .RS
 .PD 0
-.IP * 2
+.IP \[bu] 3
 .BR metag_get_tls (2)
 (add in Linux 3.9)
-.IP *
+.IP \[bu]
 .BR metag_set_fpu_flags (2)
 (add in Linux 3.9)
-.IP *
+.IP \[bu]
 .BR metag_set_tls (2)
 (add in Linux 3.9)
-.IP *
+.IP \[bu]
 .BR metag_setglobalbit (2)
 (add in Linux 3.9)
 .PD
@@ -969,7 +952,7 @@ Metag (port removed in Linux 4.17)
 Tile (port removed in Linux 4.17)
 .RS
 .PD 0
-.IP * 2
+.IP \[bu] 3
 .BR cmpxchg_badaddr (2)
 (added in Linux 2.6.36)
 .PD
@@ -988,7 +971,7 @@ proprietary operating-system emulation,
 such as sparc, sparc64, and alpha,
 there are many additional system calls; mips64 also contains a full
 set of 32-bit system calls.
-.PP
+.P
 Over time, changes to the interfaces of some system calls have been
 necessary.
 One reason for such changes was the need to increase the size of
@@ -1005,9 +988,9 @@ details such as the size of their arguments.
 the glibc wrapper functions do some work to ensure that the right
 system call is invoked, and that ABI compatibility is
 preserved for old binaries.)
-Examples of systems calls that exist in multiple versions are
+Examples of system calls that exist in multiple versions are
 the following:
-.IP * 3
+.IP \[bu] 3
 By now there are three different versions of
 .BR stat (2):
 .IR sys_stat ()
@@ -1028,7 +1011,7 @@ A similar story applies for
 .BR lstat (2)
 and
 .BR fstat (2).
-.IP *
+.IP \[bu]
 Similarly, the defines
 .IR __NR_oldolduname ,
 .IR __NR_olduname ,
@@ -1039,14 +1022,14 @@ refer to the routines
 .IR sys_uname (),
 and
 .IR sys_newuname ().
-.IP *
+.IP \[bu]
 In Linux 2.0, a new version of
 .BR vm86 (2)
 appeared, with the old and the new kernel routines being named
 .IR sys_vm86old ()
 and
 .IR sys_vm86 ().
-.IP *
+.IP \[bu]
 In Linux 2.4, a new version of
 .BR getrlimit (2)
 appeared, with the old and the new kernel routines being named
@@ -1057,7 +1040,7 @@ and
 .IR sys_getrlimit ()
 (slot
 .IR __NR_ugetrlimit ).
-.IP *
+.IP \[bu]
 Linux 2.4 increased the size of user and group IDs from 16 to 32 bits.
 .\" 64-bit off_t changes: ftruncate64, *stat64,
 .\" fcntl64 (because of the flock structure), getdents64, *statfs64
@@ -1069,7 +1052,7 @@ To support this change, a range of system calls were added
 .BR setresuid32 (2)),
 superseding earlier calls of the same name without the
 "32" suffix.
-.IP *
+.IP \[bu]
 Linux 2.4 added support for applications on 32-bit architectures
 to access large files (i.e., files for which the sizes and
 file offsets can't be represented in 32 bits.)
@@ -1092,15 +1075,15 @@ On newer platforms that only have 64-bit file access and 32-bit UIDs/GIDs
 the UID/GID and file access system calls.
 On platforms (typically, 32-bit platforms) where the *64 and *32 calls exist,
 the other versions are obsolete.
-.IP *
+.IP \[bu]
 The
 .I rt_sig*
-calls were added in kernel 2.2 to support the addition
+calls were added in Linux 2.2 to support the addition
 of real-time signals (see
 .BR signal (7)).
 These system calls supersede the older system calls of the same
 name without the "rt_" prefix.
-.IP *
+.IP \[bu]
 The
 .BR select (2)
 and
@@ -1132,7 +1115,7 @@ and similarly
 .IR __NR_mmap2 .
 s390x is the only 64-bit architecture that has
 .IR old_mmap ().
-.\" .PP
+.\" .P
 .\" Two system call numbers,
 .\" .IR __NR__llseek
 .\" and
@@ -1142,7 +1125,7 @@ s390x is the only 64-bit architecture that has
 .\" and
 .\" .IR sys_sysctl ().
 .\"
-.\" In kernel 2.1.81,
+.\" In Linux 2.1.81,
 .\" .BR lchown (2)
 .\" and
 .\" .BR chown (2)
@@ -1155,44 +1138,35 @@ s390x is the only 64-bit architecture that has
 .\"
 .\"
 .SS "Architecture-specific details: Alpha"
-.IP * 3
+.TP
 .BR getxgid (2)
 returns a pair of GID and effective GID via registers
 \fBr0\fP and \fBr20\fP; it is provided
 instead of
 \fBgetgid\fP(2) and \fBgetegid\fP(2).
-.IP *
+.TP
 .BR getxpid (2)
 returns a pair of PID and parent PID via registers
 \fBr0\fP and \fBr20\fP; it is provided instead of
 \fBgetpid\fP(2) and \fBgetppid\fP(2).
-.IP *
+.TP
 .BR old_adjtimex (2)
 is a variant of \fBadjtimex\fP(2) that uses \fIstruct timeval32\fP,
 for compatibility with OSF/1.
-.IP *
+.TP
 .BR getxuid (2)
 returns a pair of GID and effective GID via registers
 \fBr0\fP and \fBr20\fP; it is provided instead of
 \fBgetuid\fP(2) and \fBgeteuid\fP(2).
-.IP *
+.TP
 .BR sethae (2)
 is used for configuring the Host Address Extension register on
 low-cost Alphas in order to access address space beyond first 27 bits.
 .SH SEE ALSO
-.BR ausyscall (1)
+.BR ausyscall (1),
 .BR intro (2),
 .BR syscall (2),
 .BR unimplemented (2),
 .BR errno (3),
 .BR libc (7),
 .BR vdso (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

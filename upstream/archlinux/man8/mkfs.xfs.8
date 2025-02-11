@@ -7,6 +7,9 @@ mkfs.xfs \- construct an XFS filesystem
 .B \-b
 .I block_size_options
 ] [
+.B \-c
+.I config_file_options
+] [
 .B \-m
 .I global_metadata_options
 ] [
@@ -25,7 +28,7 @@ mkfs.xfs \- construct an XFS filesystem
 .I naming_options
 ] [
 .B \-p
-.I protofile
+.I protofile_options
 ] [
 .B \-q
 ] [
@@ -64,11 +67,11 @@ SCSI disk, use:
 .PP
 The metadata log can be placed on another device to reduce the number
 of disk seeks.  To create a filesystem on the first partition on the
-first SCSI disk with a 10MiB log located on the first partition
+first SCSI disk with a 100MiB log located on the first partition
 on the second SCSI disk, use:
 .RS
 .HP
-.B mkfs.xfs\ \-l\ logdev=/dev/sdb1,size=10m /dev/sda1
+.B mkfs.xfs\ \-l\ logdev=/dev/sdb1,size=100m /dev/sda1
 .RE
 .PP
 Each of the
@@ -78,9 +81,9 @@ suboptions if multiple suboptions apply to the same option.
 Equivalently, each main option can be given multiple times with
 different suboptions.
 For example,
-.B \-l internal,size=10m
+.B \-l internal,size=100m
 and
-.B \-l internal \-l size=10m
+.B \-l internal \-l size=100m
 are equivalent.
 .PP
 In the descriptions below, sizes are given in sectors, bytes, blocks,
@@ -121,6 +124,10 @@ If the size of the block or sector is not specified, the default sizes
 .PP
 Many feature options allow an optional argument of 0 or 1, to explicitly
 disable or enable the functionality.
+
+The correctness of the crc32c checksum implementation will be tested
+before formatting the filesystem.
+If the test fails, the format will abort.
 .SH OPTIONS
 Options may be specified either on the command line or in a configuration file.
 Not all command line options can be specified in configuration files; only the
@@ -155,6 +162,7 @@ The configuration options will be sourced from the file specified by the
 option string.
 This option can be use either an absolute or relative path to the configuration
 file to be read.
+Sample configuration files can be found in /usr/share/xfsprogs/mkfs.
 .RE
 .PP
 .PD 0
@@ -203,7 +211,7 @@ December 1901 to January 2038, and quota timers from January 1970 to February
 .IP
 By default,
 .B mkfs.xfs
-will not enable this feature.
+will enable this feature.
 If the option
 .B \-m crc=0
 is used, the large timestamp feature is not supported and is disabled.
@@ -256,7 +264,7 @@ This can be used to reduce mount times when the free inode btree is enabled.
 .IP
 By default,
 .B mkfs.xfs
-will not enable this option.
+will enable this option.
 This feature is only available for filesystems created with the (default)
 .B \-m finobt=1
 option set.
@@ -281,8 +289,8 @@ pinpoint exactly which data has been lost when a disk error occurs.
 .IP
 By default,
 .B mkfs.xfs
-will not create reverse mapping btrees.  This feature is only available
-for filesystems created with the (default)
+will create reverse mapping btrees when possible.
+This feature is only available for filesystems created with the (default)
 .B \-m crc=1
 option set. When the option
 .B \-m crc=0
@@ -315,13 +323,12 @@ option set. When the option
 .B \-m crc=0
 is used, the reference count btree feature is not supported and reflink is
 disabled.
-.IP
-Note: the filesystem DAX mount option (
-.B \-o dax
-) is incompatible with
-reflink-enabled XFS filesystems.  To use filesystem DAX with XFS, specify the
-.B \-m reflink=0
-option to mkfs.xfs to disable the reflink feature.
+.TP
+.BI autofsck= value
+Set the autofsck filesystem property to this value.
+See the
+.BI xfs_scrub (8)
+manual page for more information on this property.
 .RE
 .PP
 .PD 0
@@ -396,6 +403,8 @@ is required if
 .B \-d file[=1]
 is given. Otherwise, it is only needed if the filesystem should occupy
 less space than the size of the special file.
+
+The data section must be at least 300MB in size.
 .TP
 .BI sunit= value
 This is used to specify the stripe unit for a RAID device or a
@@ -448,13 +457,13 @@ is expressed as a multiplier of the stripe unit,
 usually the same as the number of stripe members in the logical
 volume configuration, or data disks in a RAID device.
 .IP
-When a filesystem is created on a logical volume device,
+When a filesystem is created on a block device,
 .B mkfs.xfs
-will automatically query the logical volume for appropriate
+will automatically query the block device for appropriate
 .B sunit
 and
 .B swidth
-values.
+values if the block device and the filesystem size would be larger than 1GB.
 .TP
 .BI noalign
 This option disables automatic geometry detection and creates the filesystem
@@ -501,6 +510,33 @@ directories.
 By default,
 .B mkfs.xfs
 will not enable DAX mode.
+.TP
+.BI concurrency= value
+Create enough allocation groups to handle the desired level of concurrency.
+The goal of this calculation scheme is to set the number of allocation groups
+to an integer multiple of the number of writer threads desired, to minimize
+contention of AG locks.
+This scheme will neither create fewer AGs than would be created by the default
+configuration, nor will it create AGs smaller than 4GB.
+This option is not compatible with the
+.B agcount
+or
+.B agsize
+options.
+The magic value
+.I nr_cpus
+or
+.I 1
+or no value at all will set this parameter to the number of active processors
+in the system.
+If the kernel advertises that the data device is a non-mechanical storage
+device,
+.B mkfs.xfs
+will use this new geometry calculation scheme.
+The magic value of
+.I 0
+forces use of the older AG geometry calculations that is used for mechanical
+storage.
 .RE
 .TP
 .B \-f
@@ -568,22 +604,15 @@ can be allocated to inodes. The default
 is 25% for filesystems under 1TB, 5% for filesystems under 50TB and 1%
 for filesystems over 50TB.
 .IP
-In the default inode allocation mode, inode blocks are chosen such
-that inode numbers will not exceed 32 bits, which restricts the inode
-blocks to the lower portion of the filesystem. The data block
-allocator will avoid these low blocks to accommodate the specified
-maxpct, so a high value may result in a filesystem with nothing but
-inodes in a significant portion of the lower blocks of the filesystem.
-(This restriction is not present when the filesystem is mounted with
-the
-.I "inode64"
-option on 64-bit platforms).
-.IP
 Setting the value to 0 means that essentially all of the filesystem
-can become inode blocks, subject to inode32 restrictions.
+can become inode blocks (subject to possible
+.B inode32
+mount option restrictions, see
+.BR xfs (5)
+for details.)
 .IP
 This value can be modified with
-.IR xfs_growfs(8) .
+.BR xfs_growfs (8).
 .TP
 .BI align[= value ]
 This is used to specify that inode allocation is or is not aligned. The
@@ -628,7 +657,7 @@ Enable sparse inode chunk allocation. The
 .I value
 is either 0 or 1, with 1 signifying that sparse allocation is enabled.
 If the value is omitted, 1 is assumed. Sparse inode allocation is
-disabled by default. This feature is only available for filesystems
+enabled by default. This feature is only available for filesystems
 formatted with
 .B \-m crc=1.
 .IP
@@ -639,6 +668,21 @@ space over time such that no free extents are large enough to
 accommodate a chunk of 64 inodes. Without this feature enabled, inode
 allocations can fail with out of space errors under severe fragmented
 free space conditions.
+.TP
+.BI nrext64[= value]
+Extend maximum values of inode data and attr fork extent counters from 2^31 -
+1 and 2^15 - 1 to 2^48 - 1 and 2^32 - 1 respectively.
+If the value is omitted, 1 is assumed.
+This feature will be enabled when possible.
+This feature is only available for filesystems formatted with -m crc=1.
+.TP
+.BI exchange[= value]
+When enabled, application programs can exchange file contents atomically
+via the XFS_IOC_EXCHANGE_RANGE ioctl.
+Online repair uses this functionality to rebuild extended attributes,
+directories, symbolic links, and realtime metadata files.
+This feature is disabled by default.
+This feature is only available for filesystems formatted with -m crc=1.
 .RE
 .PP
 .PD 0
@@ -694,6 +738,9 @@ suffix meaning multiplication by the filesystem block size, as
 described above. The overriding minimum value for size is 512 blocks.
 With some combinations of filesystem block size, inode size,
 and directory block size, the minimum log size is larger than 512 blocks.
+
+The log must be at least 64MB in size.
+The log cannot be more than 2GB in size.
 .TP
 .BI version= value
 This specifies the version of the log. The current default is 2,
@@ -761,6 +808,25 @@ if you want to disable this feature for older kernels which don't support
 it.
 .IP
 This option is only tunable on the deprecated V4 format.
+.TP
+.BI concurrency= value
+Allocate a log that is estimated to be large enough to handle the desired level
+of concurrency without userspace program threads contending for log space.
+This scheme will neither create a log smaller than the minimum required,
+nor create a log larger than the maximum possible.
+This option is only valid for internal logs and is not compatible with the
+size option.
+This option is not compatible with the
+.B logdev
+or
+.B size
+options.
+The magic value
+.I nr_cpus
+or
+.I 1
+or no value at all will set this parameter to the number of active processors
+in the system.
 .RE
 .PP
 .PD 0
@@ -796,11 +862,26 @@ can be either 2 or 'ci', defaulting to 2 if unspecified.
 With version 2 directories, the directory block size can be
 any power of 2 size from the filesystem block size up to 65536.
 .IP
-The
+If the
 .B version=ci
-option enables ASCII only case-insensitive filename lookup and version
-2 directories. Filenames are case-preserving, that is, the names
-are stored in directories using the case they were created with.
+option is specified, the kernel will transform certain bytes in filenames
+before performing lookup-related operations.
+The byte sequence given to create a directory entry is persisted without
+alterations.
+The lookup transformations are defined as follows:
+
+    0x41-0x5a -> 0x61-0x7a
+
+    0xc0-0xd6 -> 0xe0-0xf6
+
+    0xd8-0xde -> 0xf8-0xfe
+
+This transformation roughly corresponds to case insensitivity in ISO
+8859-1.
+The transformations are not compatible with other encodings (e.g. UTF8).
+Do not enable this feature unless your entire environment has been coerced
+to ISO 8859-1.
+This feature is deprecated and will be removed in September 2030.
 .IP
 Note: Version 1 directories are not supported.
 .TP
@@ -821,12 +902,29 @@ When CRCs are enabled (the default), the ftype functionality is always
 enabled, and cannot be turned off.
 .IP
 In other words, this option is only tunable on the deprecated V4 format.
-.IP
 .RE
+.PP
+.PD 0
 .TP
-.BI \-p " protofile"
+.BI \-p " protofile_options"
+.TP
+.BI "Section Name: " [proto]
+.PD
+These options specify the protofile parameters for populating the filesystem.
+The valid
+.I protofile_options
+are:
+.RS 1.2i
+.TP
+.BI [file=] protofile
+The
+.B file=
+prefix is not required for this CLI argument for legacy reasons.
+If specified as a config file directive, the prefix is required.
+
 If the optional
-.BI \-p " protofile"
+.PD
+.I protofile
 argument is given,
 .B mkfs.xfs
 uses
@@ -966,6 +1064,13 @@ in the directory. A scan of the protofile is
 always terminated with the dollar (
 .B $
 ) token.
+.TP
+.BI slashes_are_spaces= value
+If set to 1, slashes ("/") in the first token of each line of the protofile
+are converted to spaces.
+This enables the creation of a filesystem containing filenames with spaces.
+By default, this is set to 0.
+.RE
 .TP
 .B \-q
 Quiet option. Normally

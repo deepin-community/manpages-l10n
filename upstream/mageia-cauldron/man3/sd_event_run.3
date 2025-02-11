@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_EVENT_RUN" "3" "" "systemd 249" "sd_event_run"
+.TH "SD_EVENT_RUN" "3" "" "systemd 255" "sd_event_run"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -106,15 +106,28 @@ The event loop is already terminated\&.
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The event loop has been created in a different process\&.
+The event loop has been created in a different process, library or module instance\&.
 .RE
 .PP
 Other errors are possible, too\&.
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_event_run()\fR
+and
+\fBsd_event_loop()\fR
+were added in version 220\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

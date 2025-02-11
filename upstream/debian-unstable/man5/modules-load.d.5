@@ -1,5 +1,5 @@
 '\" t
-.TH "MODULES\-LOAD\&.D" "5" "" "systemd 247" "modules-load.d"
+.TH "MODULES\-LOAD\&.D" "5" "" "systemd 257.1" "modules-load.d"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -23,11 +23,18 @@
 modules-load.d \- Configure kernel modules to load at boot
 .SH "SYNOPSIS"
 .PP
+.RS 4
 /etc/modules\-load\&.d/*\&.conf
-.PP
+.RE
+.RS 4
 /run/modules\-load\&.d/*\&.conf
-.PP
+.RE
+.RS 4
+/usr/local/lib/modules\-load\&.d/*\&.conf
+.RE
+.RS 4
 /usr/lib/modules\-load\&.d/*\&.conf
+.RE
 .SH "DESCRIPTION"
 .PP
 \fBsystemd-modules-load.service\fR(8)
@@ -42,14 +49,14 @@ Configuration files are read from directories in
 /etc/,
 /run/,
 /usr/local/lib/, and
-/lib/, in order of precedence, as listed in the SYNOPSIS section above\&. Files must have the
+/usr/lib/, in order of precedence, as listed in the SYNOPSIS section above\&. Files must have the
 "\&.conf"
 extension\&. Files in
 /etc/
 override files with the same name in
 /run/,
 /usr/local/lib/, and
-/lib/\&. Files in
+/usr/lib/\&. Files in
 /run/
 override files with the same name under
 /usr/\&.
@@ -60,9 +67,17 @@ Packages should install their configuration files in
 /usr/lib/
 (distribution packages) or
 /usr/local/lib/
-(local installs)\&. Files in
+(local installs)
+\&\s-2\u[1]\d\s+2\&. Files in
 /etc/
-are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. It is recommended to prefix all filenames with a two\-digit number and a dash, to simplify the ordering of the files\&.
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&.
+.PP
+It is recommended to prefix all filenames with a two\-digit number and a dash to simplify the ordering\&. It is recommended to use the range 10\-40 for configuration files in
+/usr/
+and the range 60\-90 for configuration files in
+/etc/
+and
+/run/, to make sure that local and transient configuration files will always take priority over configuration files shipped by the OS vendor\&.
 .PP
 If the administrator wants to disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
 /dev/null
@@ -84,7 +99,10 @@ virtio\-net
 .\}
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd-modules-load.service\fR(8),
-\fBsystemd-delta\fR(1),
-\fBmodprobe\fR(8)
+\fBsystemd\fR(1), \fBsystemd-modules-load.service\fR(8), \fBsystemd-delta\fR(1), \fBmodprobe\fR(8)
+.SH "NOTES"
+.IP " 1." 4
+💣💥🧨💥💥💣 Please note that those configuration files must be available at all times. If
+/usr/local/
+is a separate partition, it may not be available during early boot, and must not be used for configuration.
+

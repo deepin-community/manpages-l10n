@@ -1,42 +1,20 @@
 .\" Copyright (c) 1995 Michael Chastain (mec@shell.portal.com), 15 April 1995.
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
-.\"
-.\" The GNU General Public License's references to "object code"
-.\" and "executables" are to be interpreted as the output of any
-.\" document formatting or typesetting system, including
-.\" intermediate and printed output.
-.\"
-.\" This manual is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
 .\" Modified 1997-01-31 by Eric S. Raymond <esr@thyrsus.com>
 .\" Modified 2004-06-17 by Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.TH BDFLUSH 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH bdflush 2 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 bdflush \- start, flush, or tune buffer-dirty-flush daemon
 .SH SYNOPSIS
 .nf
 .B #include <sys/kdaemon.h>
-.PP
-.BI "int bdflush(int "  func ", long *" address );
-.BI "int bdflush(int "  func ", long " data );
+.P
+.BI "[[deprecated]] int bdflush(int "  func ", long *" address );
+.BI "[[deprecated]] int bdflush(int "  func ", long " data );
 .fi
-.PP
-.IR Note :
-There is no glibc wrapper for this system call; see VERSIONS.
 .SH DESCRIPTION
 .IR Note :
 Since Linux 2.6,
@@ -48,25 +26,25 @@ Nowadays, the task performed by
 is handled by the kernel
 .I pdflush
 thread.
-.PP
+.P
 .BR bdflush ()
 starts, flushes, or tunes the buffer-dirty-flush daemon.
 Only a privileged process (one with the
 .B CAP_SYS_ADMIN
 capability) may call
 .BR bdflush ().
-.PP
+.P
 If
 .I func
 is negative or 0, and no daemon has been started, then
 .BR bdflush ()
 enters the daemon code and never returns.
-.PP
+.P
 If
 .I func
 is 1,
 some dirty buffers are written to disk.
-.PP
+.P
 If
 .I func
 is 2 or more and is even (low bit is 0), then
@@ -75,7 +53,7 @@ is the address of a long word,
 and the tuning parameter numbered
 .RI "(" "func" "\-2)/2"
 is returned to the caller in that address.
-.PP
+.P
 If
 .I func
 is 3 or more and is odd (low bit is 1), then
@@ -84,7 +62,7 @@ is a long word,
 and the kernel sets tuning parameter numbered
 .RI "(" "func" "\-3)/2"
 to that value.
-.PP
+.P
 The set of parameters, their values, and their valid ranges
 are defined in the Linux kernel source file
 .IR fs/buffer.c .
@@ -115,22 +93,11 @@ or to write an invalid value to a parameter.
 Caller does not have the
 .B CAP_SYS_ADMIN
 capability.
-.SH VERSIONS
-Since version 2.23, glibc no longer supports this obsolete system call.
-.SH CONFORMING TO
-.BR bdflush ()
-is Linux-specific and should not be used in programs
-intended to be portable.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Since glibc 2.23, glibc no longer supports this obsolete system call.
 .SH SEE ALSO
 .BR sync (1),
 .BR fsync (2),
 .BR sync (2)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-MACHINED\&.SERVICE" "8" "" "systemd 247" "systemd-machined.service"
+.TH "SYSTEMD\-MACHINED\&.SERVICE" "8" "" "systemd 257.1" "systemd-machined.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -25,7 +25,7 @@ systemd-machined.service, systemd-machined \- Virtual machine and container regi
 .PP
 systemd\-machined\&.service
 .PP
-/lib/systemd/systemd\-machined
+/usr/lib/systemd/systemd\-machined
 .SH "DESCRIPTION"
 .PP
 \fBsystemd\-machined\fR
@@ -159,7 +159,8 @@ If you are interested in writing a VM or container manager that makes use of mac
 \m[blue]\fBNew Control Group Interfaces\fR\m[]\&\s-2\u[3]\d\s+2\&.
 .PP
 The daemon provides both a C library interface (which is shared with
-\fBsystemd-logind.service\fR(8)) as well as a D\-Bus interface\&. The library interface may be used to introspect and watch the state of virtual machines/containers\&. The bus interface provides the same but in addition may also be used to register or terminate machines\&. For more information please consult
+\fBsystemd-logind.service\fR(8)) as well as a D\-Bus interface and a Varlink interface\&. The library interface may be used to introspect and watch the state of virtual machines/containers\&. The bus interface provides the same but in addition may also be used to register or terminate machines\&. The Varlink interface may be used to register machines with optional extensions, e\&.g\&. with an SSH key / address; it can be queried with
+\fBvarlinkctl introspect /run/systemd/machine/io\&.systemd\&.Machine io\&.systemd\&.Machine\fR\&. For more information please consult
 \fBsd-login\fR(3)
 and
 \fBorg.freedesktop.machine1\fR(5)
@@ -178,11 +179,7 @@ that employs user namespacing, users/groups are synthesized for the used UIDs/GI
 or the usual glibc NSS calls\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBmachinectl\fR(1),
-\fBsystemd-nspawn\fR(1),
-\fBnss-mymachines\fR(8),
-\fBsystemd.special\fR(7)
+\fBsystemd\fR(1), \fBmachinectl\fR(1), \fBsystemd-nspawn\fR(1), \fBnss-mymachines\fR(8), \fBsystemd.special\fR(7), \fBorg.freedesktop.machine1\fR(5), \fBssh\fR(1)
 .SH "NOTES"
 .IP " 1." 4
 gnome-system-monitor
@@ -192,12 +189,12 @@ gnome-system-monitor
 .IP " 2." 4
 Writing Virtual Machine or Container Managers
 .RS 4
-\%https://www.freedesktop.org/wiki/Software/systemd/writing-vm-managers
+\%https://systemd.io/WRITING_VM_AND_CONTAINER_MANAGERS
 .RE
 .IP " 3." 4
 New Control Group Interfaces
 .RS 4
-\%https://www.freedesktop.org/wiki/Software/systemd/ControlGroupInterface/
+\%https://systemd.io/CONTROL_GROUP_INTERFACE
 .RE
 .IP " 4." 4
 User/Group Record Lookup API via Varlink

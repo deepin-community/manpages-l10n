@@ -1,5 +1,5 @@
 '\" t
-.TH "LIBUDEV" "3" "" "systemd 249" "libudev"
+.TH "LIBUDEV" "3" "" "systemd 255" "libudev"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -33,12 +33,21 @@ libudev \- API for enumerating and introspecting local devices
 .SH "DESCRIPTION"
 .PP
 libudev\&.h
-provides APIs to introspect and enumerate devices on the local system\&.
+provides an API to introspect and enumerate devices on the local system\&. This library is supported, but should not be used in new projects\&. Please see
+\fBsd-device\fR(3)
+for an equivalent replacement with a more modern API\&.
 .PP
-All functions require a libudev context to operate\&. This context can be create via
+All functions require a libudev context to operate\&. This context can be created via
 \fBudev_new\fR(3)\&. It is used to track library state and link objects together\&. No global state is used by libudev, everything is always linked to a udev context\&.
 .PP
 All functions listed here are thread\-agnostic and only a single specific thread may operate on a given object during its entire lifetime\&. It\*(Aqs safe to allocate multiple independent objects and use each from a specific thread in parallel\&. However, it\*(Aqs not safe to allocate such an object in one thread, and operate or free it from any other, even if locking is used to ensure these threads don\*(Aqt operate on it at the very same time\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
 .PP
 To introspect a local device on a system, a udev device object can be created via
 \fBudev_device_new_from_syspath\fR(3)

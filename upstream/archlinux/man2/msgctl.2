@@ -1,27 +1,8 @@
+'\" t
 .\" Copyright 1993 Giorgio Ciucci (giorgio@crcc.it)
 .\" and Copyright 2004, 2005 Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" Modified Tue Oct 22 08:11:14 EDT 1996 by Eric S. Raymond <esr@thyrsus.com>
 .\" Modified Sun Feb 18 01:59:29 2001 by Andries E. Brouwer <aeb@cwi.nl>
@@ -35,26 +16,29 @@
 .\" 2005-08-02, mtk: Added IPC_INFO, MSG_INFO, MSG_STAT descriptions
 .\" 2018-03-20, dbueso: Added MSG_STAT_ANY description.
 .\"
-.TH MSGCTL 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH msgctl 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 msgctl \- System V message control operations
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/msg.h>
-.PP
-.BI "int msgctl(int " msqid ", int " cmd ", struct msqid_ds *" buf );
+.P
+.BI "int msgctl(int " msqid ", int " op ", struct msqid_ds *" buf );
 .fi
 .SH DESCRIPTION
 .BR msgctl ()
 performs the control operation specified by
-.I cmd
+.I op
 on the System\ V message queue with identifier
 .IR msqid .
-.PP
+.P
 The
 .I msqid_ds
 data structure is defined in \fI<sys/msg.h>\fP as follows:
-.PP
+.P
 .in +4n
 .EX
 struct msqid_ds {
@@ -71,9 +55,9 @@ struct msqid_ds {
 };
 .EE
 .in
-.PP
+.P
 The fields of the
-.I msgid_ds
+.I msqid_ds
 structure are as follows:
 .TP 11
 .I msg_perm
@@ -95,7 +79,7 @@ system call.
 .I msg_ctime
 Time of creation of queue or time of last
 .BR msgctl ()
-.BR IPC_SET
+.B IPC_SET
 operation.
 .TP
 .I msg_cbytes
@@ -118,13 +102,13 @@ system call.
 ID of the process that performed the last
 .BR msgrcv (2)
 system call.
-.PP
+.P
 The
 .I ipc_perm
 structure is defined as follows
 (the highlighted fields are settable using
 .BR IPC_SET ):
-.PP
+.P
 .in +4n
 .EX
 struct ipc_perm {
@@ -138,7 +122,7 @@ struct ipc_perm {
 };
 .EE
 .in
-.PP
+.P
 The least significant 9 bits of the
 .I mode
 field of the
@@ -154,11 +138,11 @@ l l.
 0004	Read by others
 0002	Write by others
 .TE
-.PP
+.P
 Bits 0100, 0010, and 0001 (the execute bits) are unused by the system.
-.PP
+.P
 Valid values for
-.I cmd
+.I op
 are:
 .TP
 .B IPC_STAT
@@ -299,9 +283,9 @@ structure as for
 However,
 .I msg_perm.mode
 is not checked for read access for
-.IR msqid
+.I msqid
 meaning that any user can employ this operation (just as any user may read
-.IR /proc/sysvipc/msg
+.I /proc/sysvipc/msg
 to obtain the same information).
 .SH RETURN VALUE
 On success,
@@ -328,7 +312,7 @@ or
 .B MSG_STAT_ANY
 operation returns the identifier of the queue whose index was given in
 .IR msqid .
-.PP
+.P
 On failure, \-1 is returned and
 .I errno
 is set to indicate the error.
@@ -336,7 +320,7 @@ is set to indicate the error.
 .TP
 .B EACCES
 The argument
-.I cmd
+.I op
 is equal to
 .B IPC_STAT
 or
@@ -349,7 +333,7 @@ capability in the user namespace that governs its IPC namespace.
 .TP
 .B EFAULT
 The argument
-.I cmd
+.I op
 has the value
 .B IPC_SET
 or
@@ -363,7 +347,7 @@ The message queue was removed.
 .TP
 .B EINVAL
 Invalid value for
-.I cmd
+.I op
 or
 .IR msqid .
 Or: for a
@@ -374,7 +358,7 @@ referred to an array slot that is currently unused.
 .TP
 .B EPERM
 The argument
-.I cmd
+.I op
 has the value
 .B IPC_SET
 or
@@ -400,22 +384,12 @@ beyond the system parameter
 but the caller is not privileged (Linux: does not have the
 .B CAP_SYS_RESOURCE
 capability).
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, SVr4.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, SVr4.
 .\" SVID does not document the EIDRM error condition.
-.SH NOTES
-The
-.BR IPC_INFO ,
-.BR MSG_STAT ,
-and
-.B MSG_INFO
-operations are used by the
-.BR ipcs (1)
-program to provide information on allocated resources.
-In the future these may modified or moved to a
-.I /proc
-filesystem interface.
-.PP
+.P
 Various fields in the \fIstruct msqid_ds\fP were
 typed as
 .I short
@@ -428,7 +402,19 @@ a recompilation under glibc-2.1.91 or later should suffice.
 (The kernel distinguishes old and new calls by an
 .B IPC_64
 flag in
-.IR cmd .)
+.IR op .)
+.SH NOTES
+The
+.BR IPC_INFO ,
+.BR MSG_STAT ,
+and
+.B MSG_INFO
+operations are used by the
+.BR ipcs (1)
+program to provide information on allocated resources.
+In the future these may modified or moved to a
+.I /proc
+filesystem interface.
 .SH SEE ALSO
 .BR msgget (2),
 .BR msgrcv (2),
@@ -436,12 +422,3 @@ flag in
 .BR capabilities (7),
 .BR mq_overview (7),
 .BR sysvipc (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

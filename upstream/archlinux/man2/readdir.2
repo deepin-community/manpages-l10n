@@ -1,44 +1,27 @@
 .\" Copyright (C) 1995 Andries Brouwer (aeb@cwi.nl)
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" Written 11 June 1995 by Andries Brouwer <aeb@cwi.nl>
 .\" Modified 22 July 1995 by Michael Chastain <mec@duracef.shout.net>:
 .\"   In 1.3.X, returns only one entry each time; return value is different.
 .\" Modified 2004-12-01, mtk, fixed headers listed in SYNOPSIS
 .\"
-.TH READDIR 2  2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH readdir 2 2024-06-15 "Linux man-pages 6.9.1"
 .SH NAME
 readdir \- read directory entry
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .BR "#include <sys/syscall.h>" "      /* Definition of " SYS_* " constants */"
 .B #include <unistd.h>
-.PP
+.P
 .BI "int syscall(SYS_readdir, unsigned int " fd ,
 .BI "            struct old_linux_dirent *" dirp ", unsigned int " count );
 .fi
-.PP
+.P
 .IR Note :
 There is no definition of
 .BR "struct old_linux_dirent" ;
@@ -51,7 +34,7 @@ for the POSIX conforming C library interface.
 This page documents the bare kernel system call interface,
 which is superseded by
 .BR getdents (2).
-.PP
+.P
 .BR readdir ()
 reads one
 .I old_linux_dirent
@@ -65,13 +48,13 @@ The argument
 is ignored; at most one
 .I old_linux_dirent
 structure is read.
-.PP
+.P
 The
 .I old_linux_dirent
 structure is declared (privately in Linux kernel file
 .BR fs/readdir.c )
 as follows:
-.PP
+.P
 .in +4n
 .EX
 struct old_linux_dirent {
@@ -82,7 +65,7 @@ struct old_linux_dirent {
 }
 .EE
 .in
-.PP
+.P
 .I d_ino
 is an inode number.
 .I d_offset
@@ -91,7 +74,7 @@ is the distance from the start of the directory to this
 .I d_reclen
 is the size of
 .IR d_name ,
-not counting the terminating null byte (\(aq\e0\(aq).
+not counting the terminating null byte (\[aq]\[rs]0\[aq]).
 .I d_name
 is a null-terminated filename.
 .SH RETURN VALUE
@@ -117,26 +100,17 @@ No such directory.
 .TP
 .B ENOTDIR
 File descriptor does not refer to a directory.
-.SH CONFORMING TO
-This system call is Linux-specific.
-.SH NOTES
+.SH VERSIONS
 You will need to define the
 .I old_linux_dirent
 structure yourself.
 However, probably you should use
 .BR readdir (3)
 instead.
-.PP
+.P
 This system call does not exist on x86-64.
+.SH STANDARDS
+Linux.
 .SH SEE ALSO
 .BR getdents (2),
 .BR readdir (3)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

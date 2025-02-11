@@ -1,35 +1,7 @@
 .\" Copyright (c) 1983, 1991 The Regents of the University of California.
 .\" All rights reserved.
 .\"
-.\" %%%LICENSE_START(BSD_4_CLAUSE_UCB)
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. All advertising materials mentioning features or use of this software
-.\"    must display the following acknowledgement:
-.\"	This product includes software developed by the University of
-.\"	California, Berkeley and its contributors.
-.\" 4. Neither the name of the University nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: BSD-4-Clause-UC
 .\"
 .\" Modified 1993-07-24 by Rik Faith <faith@cs.unc.edu>
 .\" Modified 1996-10-22 by Eric S. Raymond <esr@thyrsus.com>
@@ -37,16 +9,19 @@
 .\" Modified Oct 2003 by aeb
 .\" Modified 2004-07-01 by mtk
 .\"
-.TH SEND 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH send 2 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 send, sendto, sendmsg \- send a message on a socket
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/socket.h>
-.PP
-.BI "ssize_t send(int " sockfd ", const void *" buf ", size_t " len \
+.P
+.BI "ssize_t send(int " sockfd ", const void " buf [. len "], size_t " len \
 ", int " flags );
-.BI "ssize_t sendto(int " sockfd ", const void *" buf ", size_t " len \
+.BI "ssize_t sendto(int " sockfd ", const void " buf [. len "], size_t " len \
 ", int " flags ,
 .BI "               const struct sockaddr *" dest_addr ", socklen_t " addrlen );
 .BI "ssize_t sendmsg(int " sockfd ", const struct msghdr *" msg \
@@ -59,7 +34,7 @@ The system calls
 and
 .BR sendmsg ()
 are used to transmit a message to another socket.
-.PP
+.P
 The
 .BR send ()
 call may be used only when the socket is in a
@@ -78,17 +53,25 @@ argument,
 is equivalent to
 .BR write (2).
 Also, the following call
-.PP
-    send(sockfd, buf, len, flags);
-.PP
+.P
+.in +4n
+.EX
+send(sockfd, buf, len, flags);
+.EE
+.in
+.P
 is equivalent to
-.PP
-    sendto(sockfd, buf, len, flags, NULL, 0);
-.PP
+.P
+.in +4n
+.EX
+sendto(sockfd, buf, len, flags, NULL, 0);
+.EE
+.in
+.P
 The argument
 .I sockfd
 is the file descriptor of the sending socket.
-.PP
+.P
 If
 .BR sendto ()
 is used on a connection-mode
@@ -116,7 +99,7 @@ the address of the target is given by
 with
 .I msg.msg_namelen
 specifying its size.
-.PP
+.P
 For
 .BR send ()
 and
@@ -132,16 +115,16 @@ the message is pointed to by the elements of the array
 The
 .BR sendmsg ()
 call also allows sending ancillary data (also known as control information).
-.PP
+.P
 If the message is too long to pass atomically through the
 underlying protocol, the error
 .B EMSGSIZE
 is returned, and the message is not transmitted.
-.PP
+.P
 No indication of failure to deliver is implicit in a
 .BR send ().
 Locally detected errors are indicated by a return value of \-1.
-.PP
+.P
 When the message does not fit into the send buffer of the socket,
 .BR send ()
 normally blocks, unless the socket has been placed in nonblocking I/O
@@ -159,7 +142,7 @@ The
 .I flags
 argument is the bitwise OR
 of zero or more of the following flags.
-.\" FIXME . ? document MSG_PROXY (which went away in 2.3.15)
+.\" FIXME . ? document MSG_PROXY (which went away in Linux 2.3.15)
 .TP
 .BR MSG_CONFIRM " (since Linux 2.3.15)"
 Tell the link layer that forward progress happened: you got a successful
@@ -201,7 +184,7 @@ is a per-call option, whereas
 is a setting on the open file description (see
 .BR open (2)),
 which will affect all threads in the calling process
-and as well as other processes that hold file descriptors
+as well as other processes that hold file descriptors
 referring to the same open file description.
 .TP
 .BR MSG_EOR " (since Linux 2.2)"
@@ -252,13 +235,45 @@ data on sockets that support this notion (e.g., of type
 the underlying protocol must also support
 .I out-of-band
 data.
+.TP
+.BR MSG_FASTOPEN " (since Linux 3.7)"
+Attempts TCP Fast Open (RFC7413) and sends data in the SYN like a
+combination of
+.BR connect (2)
+and
+.BR write (2),
+by performing an implicit
+.BR connect (2)
+operation.
+It blocks until the data is buffered and the handshake has completed.
+For a non-blocking socket,
+it returns the number of bytes buffered and sent in the SYN packet.
+If the cookie is not available locally,
+it returns
+.BR EINPROGRESS ,
+and sends a SYN with a Fast Open cookie request automatically.
+The caller needs to write the data again when the socket is connected.
+On errors,
+it sets the same
+.I errno
+as
+.BR connect (2)
+if the handshake fails.
+This flag requires enabling TCP Fast Open client support on sysctl
+.IR net.ipv4.tcp_fastopen .
+.IP
+Refer to
+.B TCP_FASTOPEN_CONNECT
+socket option in
+.BR tcp (7)
+for an alternative approach.
 .SS sendmsg()
 The definition of the
 .I msghdr
 structure employed by
 .BR sendmsg ()
 is as follows:
-.PP
+.P
 .in +4n
 .EX
 struct msghdr {
@@ -272,7 +287,7 @@ struct msghdr {
 };
 .EE
 .in
-.PP
+.P
 The
 .I msg_name
 field is used on an unconnected socket to specify the target
@@ -282,14 +297,14 @@ It points to a buffer containing the address; the
 field should be set to the size of the address.
 For a connected socket, these fields should be specified as NULL and 0,
 respectively.
-.PP
+.P
 The
 .I msg_iov
 and
 .I msg_iovlen
 fields specify scatter-gather locations, as for
 .BR writev (2).
-.PP
+.P
 You may send control information (ancillary data) using the
 .I msg_control
 and
@@ -305,7 +320,7 @@ socket domains, see
 .BR unix (7)
 and
 .BR ip (7).
-.PP
+.P
 The
 .I msg_flags
 field is ignored.
@@ -422,21 +437,7 @@ will also receive a
 unless
 .B MSG_NOSIGNAL
 is set.
-.SH CONFORMING TO
-4.4BSD, SVr4, POSIX.1-2001.
-These interfaces first appeared in 4.2BSD.
-.PP
-POSIX.1-2001 describes only the
-.B MSG_OOB
-and
-.B MSG_EOR
-flags.
-POSIX.1-2008 adds a specification of
-.BR MSG_NOSIGNAL .
-The
-.B MSG_CONFIRM
-flag is a Linux extension.
-.SH NOTES
+.SH VERSIONS
 According to POSIX.1-2001, the
 .I msg_controllen
 field of the
@@ -455,7 +456,23 @@ but glibc currently types both as
 .\" __kernel_size_t type used to type these fields varies
 .\" across architectures, but socklen_t is always 32 bits,
 .\" as (at least with GCC) is int.
-.PP
+.SH STANDARDS
+POSIX.1-2008.
+.P
+.B MSG_CONFIRM
+is a Linux extension.
+.SH HISTORY
+4.4BSD, SVr4, POSIX.1-2001.
+(first appeared in 4.2BSD).
+.P
+POSIX.1-2001 describes only the
+.B MSG_OOB
+and
+.B MSG_EOR
+flags.
+POSIX.1-2008 adds a specification of
+.BR MSG_NOSIGNAL .
+.SH NOTES
 See
 .BR sendmmsg (2)
 for information about a Linux-specific system call

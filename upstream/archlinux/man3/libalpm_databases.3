@@ -1,4 +1,4 @@
-.TH "libalpm_databases" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.TH "libalpm_databases" 3 "libalpm" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,7 +13,7 @@ libalpm_databases \- Database
 
 .in +1c
 .ti -1c
-.RI "typedef struct __alpm_db_t \fBalpm_db_t\fP"
+.RI "typedef struct _alpm_db_t \fBalpm_db_t\fP"
 .br
 .RI "A database\&. "
 .in -1c
@@ -48,6 +48,10 @@ libalpm_databases \- Database
 .RI "int \fBalpm_db_unregister\fP (\fBalpm_db_t\fP *db)"
 .br
 .RI "Unregister a package database\&. "
+.ti -1c
+.RI "\fBalpm_handle_t\fP * \fBalpm_db_get_handle\fP (\fBalpm_db_t\fP *db)"
+.br
+.RI "Get the handle of a package database\&. "
 .ti -1c
 .RI "const char * \fBalpm_db_get_name\fP (const \fBalpm_db_t\fP *db)"
 .br
@@ -104,6 +108,22 @@ libalpm_databases \- Database
 .RI "int \fBalpm_db_remove_server\fP (\fBalpm_db_t\fP *db, const char *url)"
 .br
 .RI "Remove a download server from a database\&. "
+.ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_db_get_cache_servers\fP (const \fBalpm_db_t\fP *db)"
+.br
+.RI "Get the list of cache servers assigned to this db\&. "
+.ti -1c
+.RI "int \fBalpm_db_set_cache_servers\fP (\fBalpm_db_t\fP *db, \fBalpm_list_t\fP *servers)"
+.br
+.RI "Sets the list of cache servers for the database to use\&. "
+.ti -1c
+.RI "int \fBalpm_db_add_cache_server\fP (\fBalpm_db_t\fP *db, const char *url)"
+.br
+.RI "Add a download cache server to a database\&. "
+.ti -1c
+.RI "int \fBalpm_db_remove_cache_server\fP (\fBalpm_db_t\fP *db, const char *url)"
+.br
+.RI "Remove a download cache server from a database\&. "
 .in -1c
 .SS "Usage accessors"
 
@@ -124,16 +144,20 @@ Functions to query and manipulate the database of libalpm\&.
 
 .SH "Typedef Documentation"
 .PP 
-.SS "typedef struct __alpm_db_t \fBalpm_db_t\fP"
+.SS "typedef struct _alpm_db_t \fBalpm_db_t\fP"
 
 .PP
 A database\&. A database is a container that stores metadata about packages\&.
+
 .PP
 A database can be located on the local filesystem or on a remote server\&.
+
 .PP
 To use a database, it must first be registered via \fBalpm_register_syncdb\fP\&. If the database is already present in dbpath then it will be usable\&. Otherwise, the database needs to be downloaded using \fBalpm_db_update\fP\&. Even if the source of the database is the local filesystem\&.
+
 .PP
 After this, the database can be used to query packages and groups\&. Any packages or groups from the database will continue to be owned by the database and do not need to be freed by the user\&. They will be freed when the database is unregistered\&.
+
 .PP
 Databases are automatically unregistered when the \fBalpm_handle_t\fP is released\&. 
 .SH "Enumeration Type Documentation"
@@ -146,22 +170,40 @@ The usage level of a database\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIALPM_DB_USAGE_SYNC \fP\fP
+\f(BIALPM_DB_USAGE_SYNC \fP
 Enable refreshes for this database\&. 
 .TP
-\fB\fIALPM_DB_USAGE_SEARCH \fP\fP
+\f(BIALPM_DB_USAGE_SEARCH \fP
 Enable search for this database\&. 
 .TP
-\fB\fIALPM_DB_USAGE_INSTALL \fP\fP
+\f(BIALPM_DB_USAGE_INSTALL \fP
 Enable installing packages from this database\&. 
 .TP
-\fB\fIALPM_DB_USAGE_UPGRADE \fP\fP
+\f(BIALPM_DB_USAGE_UPGRADE \fP
 Enable sysupgrades with this database\&. 
 .TP
-\fB\fIALPM_DB_USAGE_ALL \fP\fP
+\f(BIALPM_DB_USAGE_ALL \fP
 Enable all usage levels\&. 
 .SH "Function Documentation"
 .PP 
+.SS "int alpm_db_add_cache_server (\fBalpm_db_t\fP * db, const char * url)"
+
+.PP
+Add a download cache server to a database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdb\fP database pointer 
+.br
+\fIurl\fP url of the server 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
 .SS "int alpm_db_add_server (\fBalpm_db_t\fP * db, const char * url)"
 
 .PP
@@ -177,6 +219,22 @@ Add a download server to a database\&.
 \fBReturns\fP
 .RS 4
 0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "\fBalpm_list_t\fP * alpm_db_get_cache_servers (const \fBalpm_db_t\fP * db)"
+
+.PP
+Get the list of cache servers assigned to this db\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdb\fP pointer to the database to get the servers from 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a char* list of servers 
 .RE
 .PP
 
@@ -211,6 +269,22 @@ Get the group cache of a package database\&.
 \fBReturns\fP
 .RS 4
 the list of groups on success, NULL on error 
+.RE
+.PP
+
+.SS "\fBalpm_handle_t\fP * alpm_db_get_handle (\fBalpm_db_t\fP * db)"
+
+.PP
+Get the handle of a package database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdb\fP pointer to the package database 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the alpm handle that the package database belongs to 
 .RE
 .PP
 
@@ -330,6 +404,24 @@ Check the validity of a database\&. This is most useful for sync databases and v
 .RE
 .PP
 
+.SS "int alpm_db_remove_cache_server (\fBalpm_db_t\fP * db, const char * url)"
+
+.PP
+Remove a download cache server from a database\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdb\fP database pointer 
+.br
+\fIurl\fP url of the server 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, 1 on server not present, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
 .SS "int alpm_db_remove_server (\fBalpm_db_t\fP * db, const char * url)"
 
 .PP
@@ -368,6 +460,19 @@ Searches a database with regular expressions\&.
 .RE
 .PP
 
+.SS "int alpm_db_set_cache_servers (\fBalpm_db_t\fP * db, \fBalpm_list_t\fP * servers)"
+
+.PP
+Sets the list of cache servers for the database to use\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdb\fP the database to set the servers\&. The list will be duped and the original will still need to be freed by the caller\&. 
+.br
+\fIservers\fP a char* list of servers\&. 
+.RE
+.PP
+
 .SS "int alpm_db_set_servers (\fBalpm_db_t\fP * db, \fBalpm_list_t\fP * servers)"
 
 .PP
@@ -403,6 +508,7 @@ Sets the usage of a database\&.
 
 .PP
 Unregister a package database\&. Databases can not be unregistered when there is an active transaction\&.
+
 .PP
 \fBParameters\fP
 .RS 4
@@ -419,21 +525,24 @@ Unregister a package database\&. Databases can not be unregistered when there is
 
 .PP
 Update package databases\&. An update of the package databases in the list \fIdbs\fP will be attempted\&. Unless \fIforce\fP is true, the update will only be performed if the remote databases were modified since the last update\&.
+
 .PP
 This operation requires a database lock, and will return an applicable error if the lock could not be obtained\&.
+
 .PP
 Example: 
 .PP
 .nf
-alpm_list_t *dbs = alpm_get_syncdbs(config->handle);
-ret = alpm_db_update(config->handle, dbs, force);
+alpm_list_t *dbs = alpm_get_syncdbs(config\->handle);
+ret = alpm_db_update(config\->handle, dbs, force);
 if(ret < 0) {
-    pm_printf(ALPM_LOG_ERROR, _("failed to synchronize all databases (%s)\n"),
-        alpm_strerror(alpm_errno(config->handle)));
+    pm_printf(ALPM_LOG_ERROR, _("failed to synchronize all databases (%s)\\n"),
+        alpm_strerror(alpm_errno(config\->handle)));
 }
 
 .fi
 .PP
+
 .PP
 \fBNote\fP
 .RS 4
@@ -470,6 +579,7 @@ a reference to the local database
 
 .PP
 Get the list of sync databases\&. Returns a list of alpm_db_t structures, one for each registered sync database\&.
+
 .PP
 \fBParameters\fP
 .RS 4
@@ -486,6 +596,7 @@ a reference to an internal list of alpm_db_t structures
 
 .PP
 Register a sync database of packages\&. Databases can not be registered when there is an active transaction\&.
+
 .PP
 \fBParameters\fP
 .RS 4
@@ -506,6 +617,7 @@ an alpm_db_t* on success (the value), NULL on error
 
 .PP
 Unregister all package databases\&. Databases can not be unregistered while there is an active transaction\&.
+
 .PP
 \fBParameters\fP
 .RS 4

@@ -1,31 +1,25 @@
-.\" This man page is Copyright (C) 1999 Andi Kleen <ak@muc.de>.
+'\" t
+.\" SPDX-License-Identifier: Linux-man-pages-1-para
 .\"
-.\" %%%LICENSE_START(VERBATIM_ONE_PARA)
-.\" Permission is granted to distribute possibly modified copies
-.\" of this page provided the header is included verbatim,
-.\" and in case of nontrivial modification author and date
-.\" of the modification is added to the header.
-.\" %%%LICENSE_END
+.\" This man page is Copyright (C) 1999 Andi Kleen <ak@muc.de>.
 .\"
 .\" Based on the original comments from Alexey Kuznetsov, written with
 .\" help from Matthew Wilcox.
 .\" $Id: rtnetlink.7,v 1.8 2000/01/22 01:55:04 freitag Exp $
 .\"
-.TH RTNETLINK  7 2020-06-09 "Linux" "Linux Programmer's Manual"
+.TH rtnetlink 7 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
-rtnetlink \- Linux IPv4 routing socket
+rtnetlink \- Linux routing socket
 .SH SYNOPSIS
+.nf
 .B #include <asm/types.h>
-.br
 .B #include <linux/if_link.h>
-.br
 .B #include <linux/netlink.h>
-.br
 .B #include <linux/rtnetlink.h>
-.br
 .B #include <sys/socket.h>
-.PP
+.P
 .BI "rtnetlink_socket = socket(AF_NETLINK, int " socket_type ", NETLINK_ROUTE);"
+.fi
 .SH DESCRIPTION
 Rtnetlink allows the kernel's routing tables to be read and altered.
 It is used within the kernel to communicate between
@@ -42,7 +36,7 @@ for more information.
 .\" FIXME . ? all these macros could be moved to rtnetlink(3)
 .SS Routing attributes
 Some rtnetlink messages have optional attributes after the initial header:
-.PP
+.P
 .in +4n
 .EX
 struct rtattr {
@@ -52,7 +46,7 @@ struct rtattr {
 };
 .EE
 .in
-.PP
+.P
 These attributes should be manipulated using only the RTA_* macros
 or libnetlink, see
 .BR rtnetlink (3).
@@ -60,7 +54,11 @@ or libnetlink, see
 Rtnetlink consists of these message types
 (in addition to standard netlink messages):
 .TP
-.BR RTM_NEWLINK ", " RTM_DELLINK ", " RTM_GETLINK
+.B RTM_NEWLINK
+.TQ
+.B RTM_DELLINK
+.TQ
+.B RTM_GETLINK
 Create, remove, or get information about a specific network interface.
 These messages contain an
 .I ifinfomsg
@@ -107,20 +105,27 @@ IFLA_QDISC:asciiz string:Queueing discipline
 IFLA_STATS:T{
 see below
 T}:Interface Statistics
+IFLA_PERM_ADDRESS:hardware address:T{
+hardware address provided by device (since Linux 5.5)
+T}
 .TE
 .IP
 The value type for
 .B IFLA_STATS
 is
-.IR "struct rtnl_link_stats"
+.I struct rtnl_link_stats
 .RI ( "struct net_device_stats"
 in Linux 2.4 and earlier).
 .TP
-.BR RTM_NEWADDR ", " RTM_DELADDR ", " RTM_GETADDR
+.B RTM_NEWADDR
+.TQ
+.B RTM_DELADDR
+.TQ
+.B RTM_GETADDR
 Add, remove, or receive information about an IP address associated with
 an interface.
 In Linux 2.2, an interface can carry multiple IP addresses,
-this replaces the alias device concept in 2.0.
+this replaces the alias device concept in Linux 2.0.
 In Linux 2.2, these messages
 support IPv4 and IPv6 addresses.
 They contain an
@@ -174,7 +179,11 @@ IFA_CACHEINFO:struct ifa_cacheinfo:Address information
 .TE
 .\" FIXME Document struct ifa_cacheinfo
 .TP
-.BR RTM_NEWROUTE ", " RTM_DELROUTE ", " RTM_GETROUTE
+.B RTM_NEWROUTE
+.TQ
+.B RTM_DELROUTE
+.TQ
+.B RTM_GETROUTE
 Create, remove, or receive information about a network route.
 These messages contain an
 .I rtmsg
@@ -205,7 +214,7 @@ struct rtmsg {
     unsigned char rtm_protocol; /* Routing protocol; see below */
     unsigned char rtm_scope;    /* See below */
     unsigned char rtm_type;     /* See below */
-
+\&
     unsigned int  rtm_flags;
 };
 .EE
@@ -246,7 +255,7 @@ RTPROT_KERNEL:by the kernel
 RTPROT_BOOT:during boot
 RTPROT_STATIC:by the administrator
 .TE
-.sp 1
+.IP
 Values larger than
 .B RTPROT_STATIC
 are not interpreted by the kernel, they are just for user information.
@@ -269,7 +278,7 @@ RT_SCOPE_LINK:route on this link
 RT_SCOPE_HOST:route on the local host
 RT_SCOPE_NOWHERE:destination doesn't exist
 .TE
-.sp 1
+.IP
 The values between
 .B RT_SCOPE_UNIVERSE
 and
@@ -288,7 +297,7 @@ T}
 RTM_F_CLONED:route is cloned from another route
 RTM_F_EQUALIZE:a multipath equalizer (not yet implemented)
 .TE
-.sp 1
+.IP
 .I rtm_table
 specifies the routing table
 .TS
@@ -299,7 +308,7 @@ RT_TABLE_DEFAULT:the default table
 RT_TABLE_MAIN:the main table
 RT_TABLE_LOCAL:the local table
 .TE
-.sp 1
+.IP
 The user may assign arbitrary values between
 .B RT_TABLE_UNSPEC
 and
@@ -411,7 +420,7 @@ may contain values
 .BR ICMPV6_ROUTER_PREF_LOW ,
 .BR ICMPV6_ROUTER_PREF_MEDIUM ,
 and
-.BR ICMPV6_ROUTER_PREF_HIGH
+.B ICMPV6_ROUTER_PREF_HIGH
 defined incw
 .IR <linux/icmpv6.h> .
 .IP
@@ -421,13 +430,17 @@ may contain values
 .BR LWTUNNEL_ENCAP_IP ,
 .BR LWTUNNEL_ENCAP_ILA ,
 or
-.BR LWTUNNEL_ENCAP_IP6
+.B LWTUNNEL_ENCAP_IP6
 defined in
 .IR <linux/lwtunnel.h> .
 .IP
 .B Fill these values in!
 .TP
-.BR RTM_NEWNEIGH ", " RTM_DELNEIGH  ", " RTM_GETNEIGH
+.B RTM_NEWNEIGH
+.TQ
+.B RTM_DELNEIGH
+.TQ
+.B RTM_GETNEIGH
 Add, remove, or receive information about a neighbor table
 entry (e.g., an ARP entry).
 The message contains an
@@ -442,7 +455,7 @@ struct ndmsg {
     __u8          ndm_flags;    /* Flags */
     __u8          ndm_type;
 };
-
+\&
 struct nda_cacheinfo {
     __u32         ndm_confirmed;
     __u32         ndm_used;
@@ -465,7 +478,7 @@ NUD_FAILED:an invalid cache entry
 NUD_NOARP:a device with no destination cache
 NUD_PERMANENT:a static entry
 .TE
-.sp 1
+.IP
 Valid
 .I ndm_flags
 are:
@@ -475,7 +488,7 @@ lb l.
 NTF_PROXY:a proxy arp entry
 NTF_ROUTER:an IPv6 router
 .TE
-.sp 1
+.IP
 .\" FIXME .
 .\" document the members of the struct better
 The
@@ -491,7 +504,7 @@ NDA_DST:a neighbor cache n/w layer destination address
 NDA_LLADDR:a neighbor cache link layer address
 NDA_CACHEINFO:cache statistics
 .TE
-.sp 1
+.IP
 If the
 .I rta_type
 field is
@@ -500,12 +513,20 @@ then a
 .I struct nda_cacheinfo
 header follows.
 .TP
-.BR RTM_NEWRULE ", " RTM_DELRULE ", " RTM_GETRULE
+.B RTM_NEWRULE
+.TQ
+.B RTM_DELRULE
+.TQ
+.B RTM_GETRULE
 Add, delete, or retrieve a routing rule.
 Carries a
 .I struct rtmsg
 .TP
-.BR RTM_NEWQDISC ", " RTM_DELQDISC ", " RTM_GETQDISC
+.B RTM_NEWQDISC
+.TQ
+.B RTM_DELQDISC
+.TQ
+.B RTM_GETQDISC
 Add, remove, or get a queueing discipline.
 The message contains a
 .I struct tcmsg
@@ -535,17 +556,25 @@ TCA_STATS:struct tc_stats:Qdisc statistics
 TCA_XSTATS:qdisc-specific:Module-specific statistics
 TCA_RATE:struct tc_estimator:Rate limit
 .TE
-.sp 1
+.IP
 In addition, various other qdisc-module-specific attributes are allowed.
 For more information see the appropriate include files.
 .TP
-.BR RTM_NEWTCLASS ", " RTM_DELTCLASS ", " RTM_GETTCLASS
+.B RTM_NEWTCLASS
+.TQ
+.B RTM_DELTCLASS
+.TQ
+.B RTM_GETTCLASS
 Add, remove, or get a traffic class.
 These messages contain a
 .I struct tcmsg
 as described above.
 .TP
-.BR RTM_NEWTFILTER ", " RTM_DELTFILTER ", " RTM_GETTFILTER
+.B RTM_NEWTFILTER
+.TQ
+.B RTM_DELTFILTER
+.TQ
+.B RTM_GETTFILTER
 Add, remove, or receive information about a traffic filter.
 These messages contain a
 .I struct tcmsg
@@ -560,12 +589,3 @@ This manual page is incomplete.
 .BR rtnetlink (3),
 .BR ip (7),
 .BR netlink (7)
-.SH COLOPHON
-This page is part of release 5.10 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

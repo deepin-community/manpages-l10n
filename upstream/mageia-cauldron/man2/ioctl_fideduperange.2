@@ -1,34 +1,18 @@
 .\" Copyright (c) 2016, Oracle.  All rights reserved.
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
-.\"
-.\" The GNU General Public License's references to "object code"
-.\" and "executables" are to be interpreted as the output of any
-.\" document formatting or typesetting system, including
-.\" intermediate and printed output.
-.\"
-.\" This manual is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
-.TH IOCTL_FIDEDUPERANGE 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.\" SPDX-License-Identifier: GPL-2.0-or-later
+.TH ioctl_fideduperange 2 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 ioctl_fideduperange \- share some the data of one file with another file
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
-.BR "#include <linux/fs.h>" "      /* Definition of " FIDEDUPERANGE " and
+.BR "#include <linux/fs.h>" "      /* Definition of " FIDEDUPERANGE " and"
 .BR "                              FILE_DEDUPE_* " constants */
 .B #include <sys/ioctl.h>
-.PP
+.P
 .BI "int ioctl(int " src_fd ", FIDEDUPERANGE, struct file_dedupe_range *" arg );
 .fi
 .SH DESCRIPTION
@@ -48,15 +32,15 @@ If a file write should occur to a shared
 region, the filesystem must ensure that the changes remain private to the file
 being written.
 This behavior is commonly referred to as "copy on write".
-.PP
+.P
 This ioctl performs the "compare and share if identical" operation on up to
-.IR src_length
+.I src_length
 bytes from file descriptor
-.IR src_fd
+.I src_fd
 at offset
 .IR src_offset .
 This information is conveyed in a structure of the following form:
-.PP
+.P
 .in +4n
 .EX
 struct file_dedupe_range {
@@ -69,20 +53,20 @@ struct file_dedupe_range {
 };
 .EE
 .in
-.PP
+.P
 Deduplication is atomic with regards to concurrent writes, so no locks need to
 be taken to obtain a consistent deduplicated copy.
-.PP
+.P
 The fields
 .IR reserved1 " and " reserved2
 must be zero.
-.PP
+.P
 Destinations for the deduplication operation are conveyed in the array at the
 end of the structure.
 The number of destinations is given in
 .IR dest_count ,
 and the destination information is conveyed in the following form:
-.PP
+.P
 .in +4n
 .EX
 struct file_dedupe_range_info {
@@ -94,50 +78,50 @@ struct file_dedupe_range_info {
 };
 .EE
 .in
-.PP
+.P
 Each deduplication operation targets
-.IR src_length
+.I src_length
 bytes in file descriptor
-.IR dest_fd
+.I dest_fd
 at offset
 .IR dest_offset .
 The field
-.IR reserved
+.I reserved
 must be zero.
 During the call,
-.IR src_fd
+.I src_fd
 must be open for reading and
-.IR dest_fd
+.I dest_fd
 must be open for writing.
 The combined size of the struct
-.IR file_dedupe_range
+.I file_dedupe_range
 and the struct
-.IR file_dedupe_range_info
+.I file_dedupe_range_info
 array must not exceed the system page size.
 The maximum size of
-.IR src_length
-is filesystem dependent and is typically 16\ MiB.
+.I src_length
+is filesystem dependent and is typically 16\~MiB.
 This limit will be enforced silently by the filesystem.
 By convention, the storage used by
-.IR src_fd
+.I src_fd
 is mapped into
-.IR dest_fd
+.I dest_fd
 and the previous contents in
-.IR dest_fd
+.I dest_fd
 are freed.
-.PP
+.P
 Upon successful completion of this ioctl, the number of bytes successfully
 deduplicated is returned in
-.IR bytes_deduped
+.I bytes_deduped
 and a status code for the deduplication operation is returned in
 .IR status .
 If even a single byte in the range does not match, the deduplication
 request will be ignored and
-.IR status
+.I status
 set to
 .BR FILE_DEDUPE_RANGE_DIFFERS .
 The
-.IR status
+.I status
 code is set to
 .B FILE_DEDUPE_RANGE_SAME
 for success, a negative error code in case of error, or
@@ -151,12 +135,12 @@ is set to indicate the error.
 Possible errors include (but are not limited to) the following:
 .TP
 .B EBADF
-.IR src_fd
+.I src_fd
 is not open for reading;
-.IR dest_fd
+.I dest_fd
 is not open for writing or is open for append-only writes; or the filesystem
 which
-.IR src_fd
+.I src_fd
 resides on does not support deduplication.
 .TP
 .B EINVAL
@@ -175,7 +159,7 @@ regions in directories.
 .B ENOMEM
 The kernel was unable to allocate sufficient memory to perform the
 operation or
-.IR dest_count
+.I dest_count
 is so large that the input argument description spans more than a single
 page of memory.
 .TP
@@ -184,7 +168,7 @@ This can appear if the filesystem does not support deduplicating either file
 descriptor, or if either file descriptor refers to special inodes.
 .TP
 .B EPERM
-.IR dest_fd
+.I dest_fd
 is immutable.
 .TP
 .B ETXTBSY
@@ -192,31 +176,25 @@ One of the files is a swap file.
 Swap files cannot share storage.
 .TP
 .B EXDEV
-.IR dest_fd " and " src_fd
+.I dest_fd
+and
+.I src_fd
 are not on the same mounted filesystem.
 .SH VERSIONS
-This ioctl operation first appeared in Linux 4.5.
+Some filesystems may limit the amount of data that can be deduplicated in a
+single call.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 4.5.
+.P
 It was previously known as
 .B BTRFS_IOC_FILE_EXTENT_SAME
 and was private to Btrfs.
-.SH CONFORMING TO
-This API is Linux-specific.
 .SH NOTES
 Because a copy-on-write operation requires the allocation of new storage, the
 .BR fallocate (2)
 operation may unshare shared blocks to guarantee that subsequent writes will
 not fail because of lack of disk space.
-.PP
-Some filesystems may limit the amount of data that can be deduplicated in a
-single call.
 .SH SEE ALSO
 .BR ioctl (2)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

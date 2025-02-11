@@ -1,0 +1,191 @@
+'\" t
+.\"     Title: pkgctl-build
+.\"    Author: [see the "AUTHOR(S)" section]
+.\" Generator: Asciidoctor 2.0.23
+.\"      Date: 2024-06-18
+.\"    Manual: \ \&
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "PKGCTL\-BUILD" "1" "2024-06-18" "\ \&" "\ \&"
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.ss \n[.ss] 0
+.nh
+.ad l
+.de URL
+\fI\\$2\fP <\\$1>\\$3
+..
+.als MTO URL
+.if \n[.g] \{\
+.  mso www.tmac
+.  am URL
+.    ad l
+.  .
+.  am MTO
+.    ad l
+.  .
+.  LINKSTYLE blue R < >
+.\}
+.SH "NAME"
+pkgctl-build \- Build packages inside a clean chroot
+.SH "SYNOPSIS"
+.sp
+pkgctl build [OPTIONS] [PATH...]
+.SH "DESCRIPTION"
+.sp
+Build packages in clean chroot environment, offering various options
+and functionalities to customize the package building process.
+.SH "BUILD OPTIONS"
+.sp
+\fB\-\-arch\fP \fIARCH\fP
+.RS 4
+Specify architectures to build for (disables auto\-detection)
+.RE
+.sp
+\fB\-\-repo\fP \fIREPO\fP
+.RS 4
+Specify target repository for new packages not in any official repo.
+Fallback to \f(CR\*(Aqextra\*(Aq\fP when building packages that are not present in any
+official repository yet. Using this option is disallowed if the package is
+already released, as it would circumvent the auto\-detection safeguard.
+.RE
+.sp
+\fB\-s, \-\-staging\fP
+.RS 4
+Build against the staging counterpart of the auto\-detected repo
+.RE
+.sp
+\fB\-t, \-\-testing\fP
+.RS 4
+Build against the testing counterpart of the auto\-detected repo
+.RE
+.sp
+\fB\-o, \-\-offload\fP
+.RS 4
+Build on a remote server and transfer artifacts afterwards
+.RE
+.sp
+\fB\-c, \-\-clean\fP
+.RS 4
+Recreate the chroot before building
+.RE
+.sp
+\fB\-\-inspect\fP \fIWHEN\fP
+.RS 4
+Spawn an interactive shell to inspect the chroot after building. Useful to ease the debugging of a package build.
+.br
+Possible values for \fIWHEN\fP are \f(CR\*(Aqnever\*(Aq\fP, \f(CR\*(Aqalways\*(Aq\fP or \f(CR\*(Aqfailure\*(Aq\fP
+.RE
+.sp
+\fB\-w, \-\-worker\fP \fISLOT\fP
+.RS 4
+Name of the worker slot, useful for concurrent builds. By default the slot
+is automatically assigned to the current tty pts number. In case the caller
+is not a tty, choose a random slot between 1 and number of available
+processing units.
+.RE
+.sp
+\fB\-\-nocheck\fP
+.RS 4
+Do not run the check() function in the PKGBUILD
+.RE
+.SH "INSTALL OPTIONS"
+.sp
+\fB\-I, \-\-install\-to\-chroot\fP \fIFILE\fP
+.RS 4
+Install a package to the working copy of the chroot
+.RE
+.sp
+\fB\-i, \-\-install\-to\-host\fP \fIMODE\fP
+.RS 4
+Install the built packages to the host system. Useful when one wants to verify that the package works as intended.
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+When \fIMODE\fP is \fIall\fP, this installs all built packages
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+When \fIMODE\fP is \fIauto\fP, this installs all built packages which are currently installed
+.RE
+.RE
+.SH "PKGBUILD OPTIONS"
+.sp
+\fB\-\-pkgver\fP=\fIPKGVER\fP
+.RS 4
+Set pkgver, reset pkgrel and update checksums
+.RE
+.sp
+\fB\-\-pkgrel\fP=\fIPKGREL\fP
+.RS 4
+Set pkgrel to a given value
+.RE
+.sp
+\fB\-\-rebuild\fP
+.RS 4
+Increment the current pkgrel variable
+.RE
+.sp
+\fB\-\-update\-checksums\fP
+.RS 4
+Force computation and update of the checksums by disabling auto\-detection.
+.br
+Should only be used in special circumstances, like when adding new patch
+files to the source array. During regular packaging operations, checksums
+are either automatically updated when upgrading a package using \f(CR\-\-pkgver\fP
+or should remain immutable during rebuilds.
+.RE
+.sp
+\fB\-e, \-\-edit\fP
+.RS 4
+Edit the PKGBUILD before building
+.RE
+.SH "RELEASE OPTIONS"
+.sp
+\fB\-r, \-\-release\fP
+.RS 4
+Automatically commit, tag and release after building
+.br
+Specifying this option is required when using any of the following options
+in this section
+.RE
+.sp
+\fB\-m, \-\-message\fP \fIMSG\fP
+.RS 4
+Use the given <msg> as the commit message
+.RE
+.sp
+\fB\-u, \-\-db\-update\fP
+.RS 4
+Automatically update the pacman database as last action
+.RE
+.SH "OPTIONS"
+.sp
+\fB\-h, \-\-help\fP
+.RS 4
+Show a help text
+.RE
+.SH "SEE ALSO"
+.sp
+pkgctl\-release(1)
+pkgctl\-db\-update(1)
+.SH "HOMEPAGE"
+.sp
+\fI\c
+.URL "https://gitlab.archlinux.org/archlinux/devtools" "" "\fP"
+.sp
+Please report bugs and feature requests in the issue tracker. Please do your best to provide a reproducible test case for bugs.

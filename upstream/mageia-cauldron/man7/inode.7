@@ -1,28 +1,9 @@
+'\" t
 .\" Copyright (c) 2017 Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
-.\"
-.TH INODE 7 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH inode 7 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 inode \- file inode information
 .SH DESCRIPTION
@@ -36,7 +17,7 @@ structure, or
 which returns a
 .I statx
 structure.
-.PP
+.P
 The following is a list of the information typically found in,
 or associated with, the file inode,
 with the names of the corresponding structure fields returned by
@@ -75,7 +56,6 @@ Additional links to an existing file are created using
 .BR link (2).
 .TP
 User ID
-.I st_uid
 \fIstat.st_uid\fP; \fIstatx.stx_uid\fP
 .IP
 This field records the user ID of the owner of the file.
@@ -118,7 +98,7 @@ This field gives the "preferred" blocksize for efficient filesystem I/O.
 an inefficient read-modify-rewrite.)
 .TP
 Number of blocks allocated to the file
-\fIstat.st_blocks\fP; \fIstatx.stx_size\fP
+\fIstat.st_blocks\fP; \fIstatx.stx_blocks\fP
 .IP
 This field indicates the number of blocks allocated to the file,
 512-byte units,
@@ -166,7 +146,7 @@ and related information in
 .BR mount (2).)
 In addition, the atime timestamp
 is not updated if a file is opened with the
-.BR O_NOATIME
+.B O_NOATIME
 flag; see
 .BR open (2).
 .TP
@@ -204,12 +184,12 @@ Last status change timestamp (ctime)
 This is the file's last status change timestamp.
 It is changed by writing or by setting inode information
 (i.e., owner, group, link count, mode, etc.).
-.PP
+.P
 The timestamp fields report time measured with a zero point at the
 .IR Epoch ,
 1970-01-01 00:00:00 +0000, UTC (see
 .BR time (7)).
-.PP
+.P
 Nanosecond timestamps are supported on XFS, JFS, Btrfs, and
 ext4 (since Linux 2.6.23).
 .\" commit ef7f38359ea8b3e9c7f2cae9a4d4935f55ca9e80
@@ -240,7 +220,7 @@ field (for
 the
 .I statx.stx_mode
 field) contains the file type and mode.
-.PP
+.P
 POSIX refers to the
 .I stat.st_mode
 bits corresponding to the mask
@@ -248,10 +228,10 @@ bits corresponding to the mask
 (see below) as the
 .IR "file type" ,
 the 12 bits corresponding to the mask 07777 as the
-.IR "file mode bits"
+.I file mode bits
 and the least significant 9 bits (0777) as the
 .IR "file permission bits" .
-.PP
+.P
 The following mask values are defined for the file type:
 .in +4n
 .TS
@@ -267,9 +247,9 @@ S_IFCHR	0020000	character device
 S_IFIFO	0010000	FIFO
 .TE
 .in
-.PP
+.P
 Thus, to test for a regular file (for example), one could write:
-.PP
+.P
 .in +4n
 .EX
 stat(pathname, &sb);
@@ -278,7 +258,7 @@ if ((sb.st_mode & S_IFMT) == S_IFREG) {
 }
 .EE
 .in
-.PP
+.P
 Because tests of the above form are common, additional
 macros are defined by POSIX to allow the test of the file type in
 .I st_mode
@@ -306,9 +286,9 @@ symbolic link?  (Not in POSIX.1-1996.)
 .BR S_ISSOCK (m)
 socket?  (Not in POSIX.1-1996.)
 .RE
-.PP
+.P
 The preceding code snippet could thus be rewritten as:
-.PP
+.P
 .in +4n
 .EX
 stat(pathname, &sb);
@@ -317,55 +297,53 @@ if (S_ISREG(sb.st_mode)) {
 }
 .EE
 .in
-.PP
+.P
 The definitions of most of the above file type test macros
 are provided if any of the following feature test macros is defined:
-.BR _BSD_SOURCE
+.B _BSD_SOURCE
 (in glibc 2.19 and earlier),
-.BR _SVID_SOURCE
+.B _SVID_SOURCE
 (in glibc 2.19 and earlier),
 or
-.BR _DEFAULT_SOURCE
+.B _DEFAULT_SOURCE
 (in glibc 2.20 and later).
 In addition, definitions of all of the above macros except
-.BR S_IFSOCK
+.B S_IFSOCK
 and
 .BR S_ISSOCK ()
 are provided if
-.BR _XOPEN_SOURCE
+.B _XOPEN_SOURCE
 is defined.
-.PP
+.P
 The definition of
-.BR S_IFSOCK
+.B S_IFSOCK
 can also be exposed either by defining
-.BR _XOPEN_SOURCE
+.B _XOPEN_SOURCE
 with a value of 500 or greater or (since glibc 2.24) by defining both
-.BR _XOPEN_SOURCE
+.B _XOPEN_SOURCE
 and
 .BR _XOPEN_SOURCE_EXTENDED .
-.PP
+.P
 The definition of
 .BR S_ISSOCK ()
 is exposed if any of the following feature test macros is defined:
-.BR _BSD_SOURCE
+.B _BSD_SOURCE
 (in glibc 2.19 and earlier),
-.BR _DEFAULT_SOURCE
+.B _DEFAULT_SOURCE
 (in glibc 2.20 and later),
-.BR _XOPEN_SOURCE
+.B _XOPEN_SOURCE
 with a value of 500 or greater,
-.BR _POSIX_C_SOURCE
+.B _POSIX_C_SOURCE
 with a value of 200112L or greater, or (since glibc 2.24) by defining both
-.BR _XOPEN_SOURCE
+.B _XOPEN_SOURCE
 and
 .BR _XOPEN_SOURCE_EXTENDED .
-.PP
+.P
 The following mask values are defined for
 the file mode component of the
 .I st_mode
 field:
 .in +4n
-.nh
-.ad l
 .TS
 lB l lx.
 S_ISUID	  04000	T{
@@ -417,10 +395,8 @@ S_IXOTH	  00001	T{
 others have execute permission
 T}
 .TE
-.ad
-.hy
 .in
-.PP
+.P
 The set-group-ID bit
 .RB ( S_ISGID )
 has several special uses.
@@ -437,26 +413,18 @@ For a file that does not have the group execution bit
 .RB ( S_IXGRP )
 set,
 the set-group-ID bit indicates mandatory file/record locking.
-.PP
+.P
 The sticky bit
 .RB ( S_ISVTX )
 on a directory means that a file
 in that directory can be renamed or deleted only by the owner
 of the file, by the owner of the directory, and by a privileged
 process.
-.SH CONFORMING TO
-If you need to obtain the definition of the
-.IR blkcnt_t
-or
-.IR blksize_t
-types from
-.IR <sys/stat.h> ,
-then define
-.BR _XOPEN_SOURCE
-with the value 500 or greater (before including
-.I any
-header files).
-.PP
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001.
+.P
 POSIX.1-1990 did not describe the
 .BR S_IFMT ,
 .BR S_IFSOCK ,
@@ -472,18 +440,15 @@ constants, but instead specified the use of
 the macros
 .BR S_ISDIR ()
 and so on.
-The
-.BR S_IF*
-constants are present in POSIX.1-2001 and later.
-.PP
+.P
 The
 .BR S_ISLNK ()
 and
 .BR S_ISSOCK ()
 macros were not in
-POSIX.1-1996, but both are present in POSIX.1-2001;
+POSIX.1-1996;
 the former is from SVID 4, the latter from SUSv2.
-.PP
+.P
 UNIX\ V7 (and later systems) had
 .BR S_IREAD ,
 .BR S_IWRITE ,
@@ -503,22 +468,13 @@ For example, the value 0 is returned for many files under the
 .I /proc
 directory,
 while various files under
-.IR /sys
+.I /sys
 report a size of 4096 bytes, even though the file content is smaller.
 For such files, one should simply try to read as many bytes as possible
-(and append \(aq\e0\(aq to the returned buffer
+(and append \[aq]\e0\[aq] to the returned buffer
 if it is to be interpreted as a string).
 .SH SEE ALSO
 .BR stat (1),
 .BR stat (2),
 .BR statx (2),
 .BR symlink (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

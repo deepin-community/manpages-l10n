@@ -1,35 +1,11 @@
 .\" Copyright (c) 1993
 .\"    The Regents of the University of California.  All rights reserved.
-.\" and Copyright (c) 2020 by Alejandro Colomar <colomar.6.4.3@gmail.com>
+.\" and Copyright (c) 2020 by Alejandro Colomar <alx@kernel.org>
 .\"
-.\" %%%LICENSE_START(BSD_3_CLAUSE_UCB)
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of the University nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: BSD-3-Clause
 .\"
 .\"
-.TH SLIST 3 2021-03-22 "GNU" "Linux Programmer's Manual"
+.TH SLIST 3 2024-06-15 "Linux man-pages (unreleased)"
 .SH NAME
 SLIST_EMPTY,
 SLIST_ENTRY,
@@ -49,48 +25,51 @@ SLIST_REMOVE,
 SLIST_REMOVE_HEAD
 .\"SLIST_SWAP
 \- implementation of a singly linked list
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/queue.h>
-.PP
+.P
 .B SLIST_ENTRY(TYPE);
-.PP
+.P
 .B SLIST_HEAD(HEADNAME, TYPE);
 .BI "SLIST_HEAD SLIST_HEAD_INITIALIZER(SLIST_HEAD " head );
 .BI "void SLIST_INIT(SLIST_HEAD *" head );
-.PP
+.P
 .BI "int SLIST_EMPTY(SLIST_HEAD *" head );
-.PP
+.P
 .BI "void SLIST_INSERT_HEAD(SLIST_HEAD *" head ,
 .BI "                        struct TYPE *" elm ", SLIST_ENTRY " NAME );
 .BI "void SLIST_INSERT_AFTER(struct TYPE *" listelm ,
 .BI "                        struct TYPE *" elm ", SLIST_ENTRY " NAME );
-.PP
+.P
 .BI "struct TYPE *SLIST_FIRST(SLIST_HEAD *" head );
 .BI "struct TYPE *SLIST_NEXT(struct TYPE *" elm ", SLIST_ENTRY " NAME );
-.PP
+.P
 .BI "SLIST_FOREACH(struct TYPE *" var ", SLIST_HEAD *" head ", SLIST_ENTRY " NAME );
 .\" .BI "SLIST_FOREACH_FROM(struct TYPE *" var ", SLIST_HEAD *" head ,
 .\" .BI "                        SLIST_ENTRY " NAME );
-.\" .PP
+.\" .P
 .\" .BI "SLIST_FOREACH_SAFE(struct TYPE *" var ", SLIST_HEAD *" head ,
 .\" .BI "                        SLIST_ENTRY " NAME ", struct TYPE *" temp_var );
 .\" .BI "SLIST_FOREACH_FROM_SAFE(struct TYPE *" var ", SLIST_HEAD *" head ,
 .\" .BI "                        SLIST_ENTRY " NAME ", struct TYPE *" temp_var );
-.PP
+.P
 .BI "void SLIST_REMOVE(SLIST_HEAD *" head ", struct TYPE *" elm ,
 .BI "                        SLIST_ENTRY " NAME );
 .BI "void SLIST_REMOVE_HEAD(SLIST_HEAD *" head ,
 .BI "                        SLIST_ENTRY " NAME );
 .\" .BI "void SLIST_REMOVE_AFTER(struct TYPE *" elm ,
 .\" .BI "                        SLIST_ENTRY " NAME );
-.\" .PP
+.\" .P
 .\" .BI "void SLIST_SWAP(SLIST_HEAD *" head1 ", SLIST_HEAD *" head2 ,
 .\" .BI "                        SLIST_ENTRY " NAME );
 .fi
 .SH DESCRIPTION
-These macros define and operate on doubly linked lists.
-.PP
+These macros define and operate on singly linked lists.
+.P
 In the macro definitions,
 .I TYPE
 is the name of a user-defined structure,
@@ -99,7 +78,7 @@ that must contain a field of type
 named
 .IR NAME .
 The argument
-.IR HEADNAME
+.I HEADNAME
 is the name of a user-defined structure
 that must be declared using the macro
 .BR SLIST_HEAD ().
@@ -117,44 +96,44 @@ or at the head of the list.
 An
 .I SLIST_HEAD
 structure is declared as follows:
-.PP
+.P
 .in +4
 .EX
 SLIST_HEAD(HEADNAME, TYPE) head;
 .EE
 .in
-.PP
+.P
 where
 .I struct HEADNAME
 is the structure to be defined, and
 .I struct TYPE
 is the type of the elements to be linked into the list.
 A pointer to the head of the list can later be declared as:
-.PP
+.P
 .in +4
 .EX
 struct HEADNAME *headp;
 .EE
 .in
-.PP
+.P
 (The names
 .I head
 and
 .I headp
 are user selectable.)
-.PP
+.P
 .BR SLIST_ENTRY ()
 declares a structure that connects the elements in
 the list.
-.PP
+.P
 .BR SLIST_HEAD_INITIALIZER ()
 evaluates to an initializer for the list
 .IR head .
-.PP
+.P
 .BR SLIST_INIT ()
 initializes the list referenced by
 .IR head .
-.PP
+.P
 .BR SLIST_EMPTY ()
 evaluates to true if there are no elements in the list.
 .SS Insertion
@@ -162,7 +141,7 @@ evaluates to true if there are no elements in the list.
 inserts the new element
 .I elm
 at the head of the list.
-.PP
+.P
 .BR SLIST_INSERT_AFTER ()
 inserts the new element
 .I elm
@@ -171,17 +150,17 @@ after the element
 .SS Traversal
 .BR SLIST_FIRST ()
 returns the first element in the list, or NULL if the list is empty.
-.PP
+.P
 .BR SLIST_NEXT ()
 returns the next element in the list.
-.PP
+.P
 .BR SLIST_FOREACH ()
 traverses the list referenced by
 .I head
 in the forward direction,
 assigning each element in turn to
 .IR var .
-.\" .PP
+.\" .P
 .\" .BR SLIST_FOREACH_FROM ()
 .\" behaves identically to
 .\" .BR SLIST_FOREACH ()
@@ -206,7 +185,7 @@ assigning each element in turn to
 .\" .I var
 .\" as well as free it from within the loop safely without interfering with the
 .\" traversal.
-.\" .PP
+.\" .P
 .\" .BR SLIST_FOREACH_FROM_SAFE ()
 .\" behaves identically to
 .\" .BR SLIST_FOREACH_SAFE ()
@@ -223,7 +202,7 @@ assigning each element in turn to
 removes the element
 .I elm
 from the list.
-.PP
+.P
 .BR SLIST_REMOVE_HEAD ()
 removes the element
 .I elm
@@ -232,7 +211,7 @@ For optimum efficiency,
 elements being removed from the head of the list
 should explicitly use this macro instead of the generic
 .BR SLIST_REMOVE ().
-.\" .PP
+.\" .P
 .\" .BR SLIST_REMOVE_AFTER ()
 .\" removes the element after
 .\" .I elm
@@ -250,21 +229,21 @@ should explicitly use this macro instead of the generic
 .BR SLIST_EMPTY ()
 returns nonzero if the list is empty,
 and zero if the list contains at least one entry.
-.PP
+.P
 .BR SLIST_FIRST (),
 and
 .BR SLIST_NEXT ()
 return a pointer to the first or next
 .I TYPE
 structure, respectively.
-.PP
+.P
 .BR SLIST_HEAD_INITIALIZER ()
 returns an initializer that can be assigned to the list
 .IR head .
-.SH CONFORMING TO
-Not in POSIX.1, POSIX.1-2001, or POSIX.1-2008.
-Present on the BSDs
-(SLIST macros first appeared in 4.4BSD).
+.SH STANDARDS
+BSD.
+.SH HISTORY
+4.4BSD.
 .SH BUGS
 .BR SLIST_FOREACH ()
 doesn't allow
@@ -278,61 +257,63 @@ fixes this limitation by allowing
 to safely be removed from the list and freed from within the loop
 without interfering with the traversal.
 .SH EXAMPLES
+.\" SRC BEGIN (slist.c)
 .EX
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/queue.h>
-
+\&
 struct entry {
     int data;
     SLIST_ENTRY(entry) entries;             /* Singly linked list */
 };
-
+\&
 SLIST_HEAD(slisthead, entry);
-
+\&
 int
 main(void)
 {
     struct entry *n1, *n2, *n3, *np;
     struct slisthead head;                  /* Singly linked list
                                                head */
-
+\&
     SLIST_INIT(&head);                      /* Initialize the queue */
-
+\&
     n1 = malloc(sizeof(struct entry));      /* Insert at the head */
     SLIST_INSERT_HEAD(&head, n1, entries);
-
+\&
     n2 = malloc(sizeof(struct entry));      /* Insert after */
     SLIST_INSERT_AFTER(n1, n2, entries);
-
+\&
     SLIST_REMOVE(&head, n2, entry, entries);/* Deletion */
     free(n2);
-
+\&
     n3 = SLIST_FIRST(&head);
     SLIST_REMOVE_HEAD(&head, entries);      /* Deletion from the head */
     free(n3);
-
-    for (int i = 0; i < 5; i++) {
+\&
+    for (unsigned int i = 0; i < 5; i++) {
         n1 = malloc(sizeof(struct entry));
         SLIST_INSERT_HEAD(&head, n1, entries);
         n1\->data = i;
     }
-
+\&
                                             /* Forward traversal */
     SLIST_FOREACH(np, &head, entries)
-        printf("%i\en", np\->data);
-
+        printf("%i\[rs]n", np\->data);
+\&
     while (!SLIST_EMPTY(&head)) {           /* List deletion */
         n1 = SLIST_FIRST(&head);
         SLIST_REMOVE_HEAD(&head, entries);
         free(n1);
     }
     SLIST_INIT(&head);
-
+\&
     exit(EXIT_SUCCESS);
 }
 .EE
+.\" SRC END
 .SH SEE ALSO
 .BR insque (3),
 .BR queue (7)

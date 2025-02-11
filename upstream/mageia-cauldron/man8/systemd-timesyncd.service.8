@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-TIMESYNCD\&.SERVICE" "8" "" "systemd 249" "systemd-timesyncd.service"
+.TH "SYSTEMD\-TIMESYNCD\&.SERVICE" "8" "" "systemd 255" "systemd-timesyncd.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -69,7 +69,25 @@ until synchronization to an accurate reference clock is reached\&.
 .PP
 /var/lib/systemd/timesync/clock
 .RS 4
-The modification time ("mtime") of this file indicates the timestamp of the last successful synchronization (or at least the systemd build date, in case synchronization was not possible)\&. It is used to ensure that the system clock remains roughly monotonic across reboots, in case no local RTC is available\&.
+The modification time ("mtime") of this file is updated on each successful NTP synchronization or after each
+\fISaveIntervalSec=\fR
+time interval, as specified in
+\fBtimesyncd.conf\fR(5)\&.
+.sp
+When initializing, the local clock is advanced to the modification time of this file (if the file timestamp is in the past this adjustment is not made)\&. If the file does not exist yet, the clock is instead advanced to the modification time of
+/usr/lib/clock\-epoch
+\(en if it exists \(en or to a time derived from the source tree at build time\&. This mechanism is used to ensure that the system clock remains somewhat reasonably initialized and roughly monotonic across reboots, in case no battery\-buffered local RTC is available\&.
+.sp
+Added in version 219\&.
+.RE
+.PP
+/usr/lib/clock\-epoch
+.RS 4
+The modification time ("mtime") of this file is used for advancing the system clock in case
+/var/lib/systemd/timesync/clock
+does not exist yet, see above\&.
+.sp
+Added in version 254\&.
 .RE
 .PP
 /run/systemd/timesync/synchronized
@@ -77,6 +95,8 @@ The modification time ("mtime") of this file indicates the timestamp of the last
 A file that is touched on each successful synchronization, to assist
 systemd\-time\-wait\-sync
 and other applications to detecting synchronization with accurate reference clocks\&.
+.sp
+Added in version 239\&.
 .RE
 .SH "SEE ALSO"
 .PP

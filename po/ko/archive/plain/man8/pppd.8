@@ -1,0 +1,900 @@
+
+.\" $Id: pppd.8,v 1.1.1.1 2002/07/18 10:40:12 hhyoon Exp $
+.\" SH section heading
+.\" SS subsection heading
+.\" LP paragraph
+.\" IP indented paragraph
+.\" TP hanging label
+.TH PPPD 8
+.SH 이름(NAME)
+pppd \- 점대점 통신 규약  daemon
+.SH 간추려 쓰기(SYNOPSIS)
+.B pppd
+[
+.I tty_name
+] [
+.I speed
+] [
+.I 옵션
+]
+.SH 설명(DESCRIPTION)
+.LP
+점대점 통신 규약 (Ponit-to-Point Protocol)은 직렬(serial) 점대점 연결된 
+상태에서 datagram의 전송하는 방법을 제공한다. 
+PPP는 다음과 같은 세부분으로 구성된다. 첫째, 직렬(serial) 연결 상에서
+데이타 그램의 캡슐화를 위한 방법, 둘째, 확장가능한 Link Control Protocls(LCP)
+그리고 서로 다른 네트워크-계층 프로토콜들 간에 연결설정을 위한 네트워크 제어 
+프로토콜 계열(NCP) 등이다.
+.LP
+캡슐화 책략(encapsulation scheme)은 커널에서 드라이버 코드(driver code)에 의해 
+주어진다.
+.B pppd
+는 기본적인 연결 제어 프로토콜(LCP), 확인을 지원하고, 인터넷 프로토콜( IP;
+여기에서는 IP 제어 프로토콜로 불리워지는 IPCP)을 설정하고 연결을 설립하기 
+위한 네트워크 제어 프로토콜(NCP)를 제공한다.
+.SH 주로 사용되어지는 옵션(FREQUENTLY USED OPTIONS)
+.TP
+.I <tty_name>
+명명되어진 장치와 통신한다. 문자열 "/dev/"는 필요에 따라 <tty_name>앞에 붙여
+진다. 만약 장치가 명명되지 않았거나 제어할 터미널이 주어진다면 
+.I pppd
+는 제어할 터미널을 사용하게 될 것이고 백그라운드에서 이것을 실행하기 위해
+fork하지 않을 것이다. 
+.TP
+.I <speed>
+는 baud rate로써 10진 상수를 취한다. NetBSD나 4.4BSD와 같은 시스템상에서는
+어떤 속도로도 명시될 수 있다. 다른 시스템(예를들어 Sunos)에서는 제한된 
+속도들의 집합에 따른다.
+.TP
+.B asyncmap \fI<map>
+<map>로 비동기적 문자 지도(async character map)를 설정한다. 이 지도는 제어
+문자들이 serial line상에서 제대로 받아지지 않는다는 것을 나타낸다.
+.I pppd
+는 송신측에 2바이트 escape 문자열로서 이 문자들을 보낼 것을 요구할 것이다.
+Argument 는 각 비트의 문자가 escape 문자를 나타내는 32비트 16진수이다.
+Bit 0 (00000001) 는 문자 0x00를 나타냄.
+bit 31 (80000000) 는 문자 0x1f 혹은 '^_'를 나타냄.
+만약 다중 \fBasyncmap\fR 옵션들이 주어진다면 그값은 함께 OR연산된다.
+만약 어떤 \fBasyncmap\fR option도 주어지지 않는다면, 어떤 async character map 
+도 받는쪽에서 타협되지 않을 것이고 이로인해 상대측에서는 \fI모든\fR 제언 
+문자들을 제외할 것이다.
+.TP
+.B auth
+는 네트워크 패킷이 보내지거나 받아들이기를 승인하기 전에 상대측이 확인 
+되기를 요구한다.
+.TP
+.B connect \fI<p>
+는 실행 명령이나 serial line을 설정하기 위한 \fI<p>\fR에 의해 명시되어지는  
+쉘 명령을 사용한다. 이 script는 전형적으로 모뎀에서 다이얼하거나 remote ppp 
+session을 시작할때 사용되어지는 chat(8) 프로그램을 사용한다. 
+.TP
+.B crtscts
+는 serial port상에서 data의 흐름을 제어하기 위해 하드웨어의 흐름 (즉, RTS/CTS )
+을 
+제어하기 위해 사용되어진다. 
+\fBcrtscts\fR 나 \fB\-crtscts\fR option 주어지지 않는다면, serial port를 위한 
+하드웨어 흐름 제어의 설정은 바뀌지 않은 채 남았있다.
+.TP
+.B defaultroute
+기본 설정 라우트를 게이트웨이로서 상대측(the peer)을 사용함으로써 시스템의 
+라우팅 테이블에 추가하고, 그 때 IPCP 협약이 성공적으로 완성된다. 
+PPP접속이 끊기면 이 라우트 목록은 제거된다.
+.TP
+.B disconnect \fI<p>
+실행 명령이나 \fIpppd\fR가 연결을 끊은 후에 \fI<p>\fR에 의해 명시되는
+쉘명령을 수행한다. 예를 들어 이 script는 하드웨어 모뎀 제어 신호들이 
+사용되어질 수 없을때 모뎀의 접속을 끊도록 모뎀에 명령을 줄 수 있다.
+.TP
+.B escape \fIxx,yy,...
+어떤 문자들이 전송상에서 제외되어져야 한다는 것을 명시한다.(상대측에서 
+비동기 제어 문자 지도(async control character map)에 그것을 제외하던지 
+말든지 상관하지 않고). 제외될 문자들은 콤마들에 의해 분리되는 16진수들의 
+리스트로 명시된다. 제어 문자들이 표시되어지는 것을 허용하는 
+\fBasyncmap\fR option과는 달리, 거의 어떤 문자는 \fBescape\fR option 
+으로 명시될 수 있다는 것에 주의하라. 제외되지 않을 수 있는 문자들은 16진수로  
+0x20 - 0x3f 혹은 0x5e까지의 값을 가지는 문자들이다.
+.TP
+.B file \fI<f>
+화일<f>로부터 옵션들을 읽는다.(형식은 아래에 표기되어 있다.)
+.TP
+.B lock
+\fIpppd\fR 가 serial 장치의 외부 접근을 방지하기 위해 UUCP-style lock 
+file을 생성한다. 
+.TP
+.B mru \fI<n>
+협약(Negotiation)을 위해 <n>까지 MRU[Maximum Receive Unit] value를 설정한다.
+.I pppd
+가 상대측에게 <n>보다 많은 패킷을 보내지 않도록 요구한다. 최소 MRU값은 
+128이다. 기본설정 MRU 값은 1500이다. 296이라는 값은 느린 연결 상태에
+권장된다.(40 Bytes는 TCP/IP + 256 Bytes는 데이타) 
+.TP
+.B mtu \fI<n>
+MTU [Maximum Transmit Unit] 값을 \fI<n>\fR까지 설정한다. 상대측(the peer)이 
+MRU negotiation에 따라 보다 작은 값을 요구하는 한, \fIpppd\fR은 커널
+네트워킹 코드가 PPP 네트워크 인터페이스를 통해 \fIn\fR bytes보다 많지 않은
+data packet을 보내도록 요구할 것이다.
+.TP
+.B netmask \fI<n>
+interface netmask를 decimal dot 개념(예를 들어 255.255.255.0)의
+32비트 netmask인 <n>으로 설정한다. 만약 이 옵션이 주어지면, 그 명시된
+값은 기본설정된 netmask와 OR연산된다. 기본설정된 netmask는 협약된 
+remote IP address에 기반을 두고 선택된다. 즉 remote IP address의 클래스에 
+알맞은 네트워크 mask이며, 동일한 네트워크 상에 있는 시스템안에 비점대점
+네트웍크 인터페이스의 netmask와 OR연산되어진다.
+.TP
+.B passive
+LCP(Link Control Protocol)에서 "passive"옵션이 사용가능하다. 
+이 옵션을 사용하면, 
+.I pppd
+는 접속을 초기화하려 할 것이고, 만약 상대측으로부터 어떠한 응답이 없으면
+.I pppd
+는 (끝내기를 하는 대신에) 상대측으로부터 유효한 LCP 패킷을 마냥 기다린다.
+.TP
+.B silent
+이 옵션을 가지면
+.I pppd
+는 (구버젼의 \fIpppd\fR에서의 'passive'옵션처럼)
+상대측으로부터 오는 유효한 LCP 패킷이 받아질 때 까지 접속을 초기화하려는
+LCP패킷들을 전송하지 않을 것이다.  
+.SH 옵션(OPTIONS)
+.TP
+.I <local_IP_address>\fB:\fI<remote_IP_address>
+Local이나 remote 인터페이스 IP 주소들을 설정한다. 둘 중 하나를 설정하지 
+않아도 된다. IP주소는 호스트 이름이나 십진수와 점으로 명시될 수 있다.
+(예를들어 150.234.56.78). 기본 설정된 local 주소는 ( 
+.B noipdefault
+옵션이 주어지기까지는) 그 시스템의 (첫) IP 주소이다. Remote주소는 
+어떤 옵션이라도 명시되지 않는다면 상대측으로부터 얻어질 것이다. 
+대체로 이 옵션은 요구사항은 아니다. 만약 local, remote IP 주소가 
+이 옵션으로 명시된다면  
+.I pppd
+는 
+.B ipcp-accept-local,
+.B ipcp-accept-remote
+옵션이 각각 주어지기까지는 IPCP개념상으로 상대측으로부터 다른 값을 갖지 않는다.
+.TP
+.B -ac
+Address/Control압축 협약을 사용 불가하게 한다. (기본적으로 사용 
+불가하도록 설정된다. 즉, Address/Control field의 압축이 불가하게 
+되어진다.)
+.TP
+.B -all
+LCP와 IPCP를 위한 어떠한 다른 옵션을 사용할 수 없으며, 기본적으로 설정된
+값만을 사용하겠다는 옵션이다.
+.TP
+.B -am
+asyncmap 협약을 불가하게 하고, 기본 설정된 asyncmap을 사용하겠다는 
+옵션, 즉 모든 제어 문자들을 제외시킨다.
+.TP
+.B -as \fI<n>
+.B asyncmap \fI<n>
+과 동일한 개념의 옵션이다.
+.TP
+.B bsdcomp \fInr,nt
+상대측에서 packet들을 보낼때 최대 코드 크기인  \fInr\fR bits의 크기로 
+BSD-Compression 기술(scheme)을 사용하여 압축해서 보내도록하며, 최대 
+코드 크기인 \fInt\fR bits로 보내어지도록 하는 옵션이다.
+만약  \fInt\fR 가  명시되지 않는다면, \fInr\fR값으로 주어진 것이 
+\fInt\fR값으로 기본 설정된다.  9에서 15까지의 범위안에 값이 
+\fInr\fR과 \fInt\fR의 값으로 사용될 수 있다. 이보다 큰 범위의 값은 
+압축율은 좋으나 compression dictionary들을 위해 커널의 메모리를 많이 
+사용하게 한다. 상대적으로 \fInr\fR과  \fInt\fR의 값으로 0을 사용하면 
+통신상에서 압축이 이뤄지지 않는다.
+.TP
+.B \-bsdcomp
+압축하지 않게 하는 옵션. \fBpppd\fR 는 BSD-Compress 기술로 패킷을 압축하지 않게
+하는 옵션이다.
+.TP
+.B +chap
+상대에게 CHAP [Cryptographic Handshake Authentication Protocol] 
+확인(authentication)를 사용함으로써 보안을 위해 자신임을 확인하도록 
+하는 옵션.
+.TP
+.B -chap
+CHAP를 사용하는 확인 절차를 허용하지 않겠다는 옵션.
+.TP
+.B chap-interval \fI<n>
+만약 이옵션이 주어지면, 
+.I pppd
+는 <n>초마다 상대측에 CHAP을 이용하는 확인 작업을 재시도하게 하는 옵션. 
+.TP
+.B chap-max-challenge \fI<n>
+CAHP 을 시도 전송하는 회수 <n>의 최대수를 제어하는 옵션. (기본설정 10).
+.TP
+.B chap-restart \fI<n>
+CHAP 확인을 매 <n>초마다 다시 시작하게 하는 옵션. ( 먼저의 시도에 대한 time out
+으로 재전송). (기본설정은 3)
+.TP
+.B -crtscts
+serial port상에서 하드웨어 흐름 제어(예 RTS/CTS)를 불가하게 하는 옵션. 
+만약 \fBcrtscts\fR, \fB\-crtscts\fR option 어느 것도 주어지지 않는다면,
+serial port에 대한 하드웨어 흐름제어는 바뀌지 않은 채로 남아 있게된다.
+.TP
+.B -d
+debugging level을 높인다(\fBdebug\fR option과 동일하다).
+.TP
+.B debug
+Debugging level을 높인다.(same as \fB\-d\fR).
+만약 이 옵션이 주어진다면, \fIpppd\fR 는 보내고 받은 모든 
+제어 패킷의 내용들을 읽을 수 있는 형태로 log된다.
+이 패킷들은 facility \fIdaemon\fR 과 level \fIdebug\fR을 가지는 syslog를 
+통해 log되어진다. 이 정보는 /etc/syslog.conf 를 적당히 셋팅함으로 화일로 
+저장할 수 있다(syslog.conf(5)를 보라).  
+.TP
+.B \-defaultroute
+\fBdefaultroute\fR option을 사용 불가하게 하는 옵션. 
+시스템 관리자는 일반 사용자들이 \fIpppd\fR 을 이용하여 기본적으로 설정된 
+라우트를 만드는 것을 방지하기 위해 /etc/ppp/options 화일안에 이 옵션을 
+둘 수 있다.
+.TP
+.B -detach
+Background process로 fork되지 않게 하는 옵션.(otherwise
+.I pppd
+will do so if a serial device other than its controlling terminal is
+specified).
+.TP
+.B dns-addr \fI<n>
+이 옵션은 도메인 네임 서버를 위해 IP address 혹은 address들을 설정한다.
+이것은 Microsoft Windows client들에 의해 사용되어진다. Primary DNS address
+는 dns-addr옵션의 첫번째 instance에 의해 명시된다. Secondary DNS address는
+두번째 instance에 의해 명시된다.
+.TP
+.B domain \fI<d>
+확인을 목적으로 local host name에 domain name <d>를 덧붙인다. 예를 들어
+만약 gethostname()이 porsche라는 이름을 return했는데 이것이 도메인 네임
+으로 갖추어진 이름이 porsche.Quotron.COM이라면, Quotron.COM을
+도메인 네임으로 하기위해 이 옵션을 사용할 것이다.
+.TP
+.B -ip
+IP address 협약(negotiation)을 사용불가하게 하는 옵션. 이 옵션이 
+사용된다면, remote IP address는 options 화일에나 혹은 command 
+line상에서 이 옵션을 이용하여 명시해야만 한다.
+.TP
+.B +ip-protocol
+IPCP, IP protocol들을 사용가능하게 하는 옵션. 이것은 기본 조건이다. 이
+옵션은 기본설정이 -ip-protocol일때만 필요되어지는 옵션이다.
+.TP
+.B -ip-protocol
+IPCP, IP 프로토콜들을 사용불가하게 하는 옵션이다. 이 옵션은 만약에
+IPCP protocol을 사용하는 client가 혼돈되어지는 것을 원하지 않거나 
+IPX protocol을 알아먹는 client를 사용하는 것이라면 이 옵션은 그 때 
+사용되어질 것이다.
+.TP
+.B +ipx-protocol
+IPXCP, IPX protocol을 사용하게 하는 옵션. 사용하는 시스템의 커널이 IPX를 
+지원한다면 기본 조건이다. 만약 기본설정이 -ipx-protocol로 되어 있다면 이 
+옵션이 필요하다. 만약 사용하는 시스템의 kernel이 IPX protocol을 지원하지 
+않는다면 이 옵션은 아무런 영향도 미치지 않는다.
+.TP
+.B -ipx-protocol
+IPXCP, IPX protocol들을 사용불가하게 하는 옵션. IPXCP protocol을 사용함으로
+혼란이 생기는 것을 원하지 않거나 IP protocol을 알아먹는 client를 사용한다면
+그때 이옵션을 사용할 수 있다. 
+.TP
+.B ipcp-accept-local
+이 옵션을 사용하면, 
+.I pppd
+는 마치 local IP address로 옵션에 명시된 것처럼 상대측의 정보(idea)를
+시스템의 local IP address로 받아들인다.
+.TP
+.B ipcp-accept-remote
+이 옵션을 사용하면, 
+.I pppd
+는 마치 remote IP address로 옵션에 명시된 것처럼 상대측의 정보(idea)를 
+시스템의 remote IP address로 받아 들인다.
+.TP
+.B ipcp-max-configure \fI<n>
+IPCP 설정요청(configure-request)을 위한 전송(transmission)들의 최대 회수를 
+<n>으로 설정하는 옵션.(default 10)
+.TP
+.B ipcp-max-failure \fI<n>
+configure-Reject들을 보내기 시작하기전에 되돌려 보내진 IPCP configure-NAK들의 
+최대회수를 <n>으로 설정한다(default 10).
+.TP
+.B ipcp-max-terminate \fI<n>
+IPCP terminate-request의 전송의 최대회수를 <n>으로 설정(default 3).
+.TP
+.B ipcp-restart \fI<n>
+IPCP의 재시작 간격을 <n>초로 설정한다(재전송을 위한 time out).
+.TP
+.B ipparam \fIstring
+는 여분의 매개변수(parameter)로 ip-up과 ip-down script들을 제공한다.
+만약 이 옵션이 주어지면, 주어진 \fIstring\fR은  6번째 매개변수(parameter)로 그
+script에 주어진다.
+.TP
+.B ipx-network \fI<n>
+IPXCP configure request frame안에 있는 IPX network number를 <n>으로 설정하는
+옵션. 기본적으로 설정된 값(default)은 없다. 만약 이 옵션이 주어지지 않는다면
+network number는 상대측으로부터 얻어지게 된다.만약 상대측이 network number를 
+가지고 있지 않다면 IPX protocol은 시작되지 않을 것이다. 이 수는 16진수이며, 
+0x와 같은 것을 16진수 앞에 사용하지 않고 숫자만 입력한다. 
+이것은 \fIipxcp-accept-network\fR option과 관련있다.
+.TP
+.B ipx-node \fI<n>:<m>
+IPX node number를 설정하는 옵션. <n>,<m> 이 두개의 node number는 콜론
+으로 각각 구분된다. 첫번째 숫자<n>은 local node number이고, 두번째 <m>
+은 상대의 node number이다. 각 node number는 16진수 이고, 10개의
+의미있는 숫자의 최대수로 한다
+ipx network상에서 node number들은 유일해야만 한다.
+기본적으로 설정된 값은 없다. 만약 이 옵션이 명시되지 않았다면 상대측
+으로부터 얻어지는 node number를 사용한다. 이 옵션은 
+\fIipxcp-accept-local\fR 와 \fIipxcp-accept-remote\fR 옵션들과 관련 있다.
+.TP
+.B ipx-router-name \fI<string>
+라우터의 이름을 설정하는 옵션. 이것은 string이며, information data로
+상대측에 보내어진다.
+.TP
+.B ipx-routing \fI<n>
+라우팅 프로토콜이 이 옵션에 의해 받아지도록 설정하는 옵션.
+\fIipx-routing\fR의 하나 이상의 instance가 명시될 수도 있다.
+'\fInone\fR' option(0)은 ipx-routing의 단지 하나의 instance로 명시될 수 있다. 
+그 값이 \fINONE\fR의 값으로 \fI0\fR을, \fI2\fR \fIRIP/SAP\fR의 값으로
+\fI2\fR를, \fINLSP\fR의 값으로 \fI4\fR를 줄 수 있다.
+.TP
+.B ipxcp-accept-local
+ipx-node 옵션에 명시된 node number에 대한 상대측의 NAK를 받아들인다.
+만약 node number가 '0'이 아닌 값으로 명시된다면, 기본 설정된 값대신에
+주어진 값을 사용하게 한다. 만약 이 옵션을 사용한다면 상대측이 node number
+의 entry를 무시(override)하도록 허용하는 것이 된다.
+.TP
+.B ipxcp-accept-network
+ipx-network option에 명시된 network number를 위해  상대측의 NAK를 
+받아들인다. 만약 network number가 '0'이 아닌 값이 명시된다면, 기본 
+설정값대신 주어진 값을 사용한다. 만약 이 옵션이 사용되어진다면 상대측이
+node number의 entry를 무시(override)하도록 허용하게 된다.
+.TP
+.B ipxcp-accept-remote
+configure request frame 안에 명시된 상대측의 network number를 사용하는
+옵션. 이 node number는 상대측을 위해 명시되고 이 옵션이 명시되지
+않는다면, 상대측은 사용자가 명시했던 값을 강제로 사용하게 될 것이다.
+.TP
+.B ipxcp-max-configure \fI<n>
+System이 보낼 IPXCP configure request frame의 최대수를 <n>으로 설정
+하는 옵션. 기본설정 값은 10.
+.TP
+.B ipxcp-max-failure \fI<n>
+Local system이 이 옵션을 거절(reject)하기 전에 local system이 보낼 IPXCP
+NAK frame의 최대수를 설정한다. 기본설정값은 3.
+.TP
+.B ipxcp-max-terminate \fI<n>
+local system이 상대측이 IPXCP terminate requets frame들에 귀기울이지
+않고 있는 것을 알기 전에 IPXCP terminate request frame의 최대수를 
+설정한다. 기본 설정값은 3이다.
+.TP
+.B kdebug \fIn
+kernel-level PPPdriver안에 debugging code를 사용가능하게 하는 옵션.
+변수 \fIn\fR 는 다음의 값들의 합이다. 1은 일반적 debugging message
+를 enabel시키는 값, 2는 받은 패킷의 내용이 인쇄되어지도록 요청하는 
+값이고, 4는 전송된 패킷의 내용이 인쇄되도록 요청하는 값이다.
+.TP
+.B lcp-echo-failure \fI<n>
+이 옵션이 주어진다면, 만약 \fIn\fR LCP echo-request들이 유효한
+LCP echo-reply를 받지 않은채 보내어진다면, \fIpppd\fR 는 
+상대측이 죽은 것으로 가정할 것이다. 이런일이 발생하면,\fIpppd\fR은 
+그 접속을 종료하게 된다. 이 옵션의 사용은  \fIlcp-echo-interval\fR 
+parameter의 값으로 '0'이 아닌 값을 필요한다.
+이 옵션은 하드웨어 modem 제어 라인이 불가한 상태 즉, modem의
+접속이 끊겨진 상태와 같이 물리적인 접속이 끊어진 후에 \fIpppd\fR이 
+종료되도록 사용되어질 수 있다.
+.TP
+.B lcp-echo-interval \fI<n>
+이 옵션이 사용되어진다면, \fIpppd\fR은 상대측에게 매 \fIn\fR초마다
+LCP echo-request frame을 보내게 된다. 리눅스 하에서, echo-request는
+어떤 패킷도 \fIn\fR초동안 도착되어지지 않을때 보내어진다.
+보통 상대측은 echo-reply가 보내질 때 echo-request를 보내야만 한다.
+이 옵션은 상대측이 더이상 연결되어 있지 않다는 것을
+알게 되도록 \fIlcp-echo-failure\fR option과 함께 사용되어질 수 있다.
+.TP
+.B lcp-max-configure \fI<n>
+LCP configure-request 전송의 최대수를 <n>으로 설정하는 옵션.
+기본설정값은 10.
+.TP
+.B lcp-max-failure \fI<n>
+LCP configure-Reject가 보내지기 시작하기 전에 되돌려보내진
+configure-NAK의 최대수를 <n>으로 설정하는 옵션. 기본설정값은 10.
+.TP
+.B lcp-max-terminate \fI<n>
+LCP terminate-request frame의 전송회수를 최대 <n>까지 설정하는 옵션.
+(기본설정값은 3).
+.TP
+.B lcp-restart \fI<n>
+LCP의 재전송을 위한 time out, restart간격을 <n>초로 설정하는 옵션.
+(기본설정값은 3).
+.TP
+.B local
+modem 제어 라인을 사용하지 않는다 즉, modem을 통하지 않고 사용.
+이 옵션을 이용하면,
+.B pppd
+는 모뎀으로부터의 CD (Carrier Detect) signal의 상태를 무시할 것이고,
+DTR (Data Terminal Ready) signal의 상태를 바꾸지 않을 것이다. 
+.TP
+.B login
+PAP를 사용함으로 상대측을 확인하기 위해 시스템의 password database를 사용하고,
+그리고 시스템의 wtmp 화일에 사용자를 기록한다.
+.TP
+.B modem
+Modem control line들을 이용한다. 이 옵션은 기본적으로 설정되며, 이 옵션을 
+사용하면,
+.B pppd
+는 serial device를 열때(openning) (connect script가 명시되어지는한)
+승인되어지는 모뎀으로부터 CD(Carrier Detect) 신호를 기다릴 것이다.
+그리고 pppd는 connect script를 실행하기 전에 연결을 종료할때 DTR (Data
+Terminal Ready) signal을 떨어뜨린다. 
+Ultrix상에서는 이 옵션이 \fBcrtscts\fR옵션과 마찬가지로
+하드웨어 흐름 제어를 의미한다.
+.TP
+.B -mn
+magic number negotiation을 사용불가하게 만든다. 이 옵션을 사용하면,
+.I pppd
+는 looped-back line을 발견할 수 없다.
+.TP
+.B -mru
+MRU [Maximum Receive Unit] negotiation을 사용불가하게 하는 옵션. 이 옵션을 
+사용하면,
+\fIpppd\fR 는 MRU의 기본설정값인 1500바이트를 사용한다.
+.TP
+.B name \fI<n>
+확인을 목적으로 local system의 이름을 <n>으로 설정한다.
+.TP
+.B noipdefault
+local IP address가 명시되어 있지 않을때 기본설정된 것을 사용불가하게 하는
+옵션으로 가능하다면 호스트 이름으로부터 local IP address를 결정하기 위해서이다. 
+이 옵션을 사용하면 상대측은 IP address가 옵션 화일이나 command line상에 
+명확히 명시되어지는 한 IPCP 협약(negotiation)동안 local IP address를 주어야 한다.
+.TP
+.B -p
+.B passive
+옵션과 동일하다.
+.TP
+.B +pap
+상대측에게 PAP를 사용하고 있는지 확인을 요구하는 옵션.
+.TP
+.B -pap
+PAP를 사용해서 확인하는 것을 거부하는 옵션.
+.TP
+.B papcrypt
+상대측의 정체를 확인하기 위해 사용되어지는 /etc/ppp/pap-secrets 화일
+안에 있는 모든 비밀들은 암호화되어짐을 나타내는 옵션이고, pppd는 
+/etc/ppp/pap-secrets 화일로부터 비밀에 대한 정체성을 갖는 password를
+받지않아도 된다.
+.TP
+.B pap-max-authreq \fI<n>
+PAP ahthenticate-request 전송회수의 최대수를 <n>으로 설정한다
+(기본설정값 10).
+.TP
+.B pap-restart \fI<n>
+PAP 재시작 간격을 <n>초로 설정한다(기본설정값 3).
+.TP
+.B pap-timeout \fI<n>
+
+Set the maximum time that
+.I pppd
+가 상대측이 <n>초까지 PAP로써 자신을 확인하도록 기다리는 최대 시간을
+설정한다(0을 주면 한정없이 기다린다).
+.TP
+.B -pc
+프로토콜 필드의 compression negotiation을 disable시킨다(이것은
+기본설정되어 있는 옵션이다. 다시말해 protocol field compression disabled이다).
+.TP
+.B persist
+접속이 종결된 후에라도 pppd가 종료되지 않도록한다. 대신에 접속을 재개하기를
+시도한다.
+.TP
+.B pred1comp
+상대측이 지역 시스템에게 예언자(predictor)-1 compression에 의해 압축되어진
+프레임들을 보내는 것을 요구할 것이다. 압축 프로토콜은 (메모리에) 적재되어야만하고
+그렇지 않으면 이 옵션이 무시될 것이다.
+.TP
+.B -pred1comp
+Predictor-1 compression을 허용하지 않는다. 마치 상대측이 이러한 compression
+의 형태를 보내기를 원하고 지원하는 것처럼 Predictor-1 compression이 커널안에
+정의되어진 것을 허용하지 않는다.
+.TP
+.B proxyarp
+상대측의 IP 주소와 시스템의 이더넷 주소를 가지는 
+이 시스템의 ARP[Address Resolution Protocol] 테이블에 entry를 추가시킨다.
+.TP
+.B \-proxyarp
+\fBproxyarp\fR option을 제하는 옵션.  
+\fIpppd\fR로 일반유저들이 프록시 ARP의 목록을 만드는 것을 방지하고자
+하는 시스템 관리자는 이 옵션을 /etc/ppp/options 화일에 둠으로서 그렇게
+할수 있다.
+.TP
+.B remotename \fI<n>
+Authentication을 목적으로 리모트 시스템의 가상되어지는 이름을 <n>으로 한다.
+.TP
+.B +ua \fI<p>
+상대측의 요청이 있다면 PAP[Password Authentication Protocol]을 이용하여
+확인하도록 허용하고, 상대측에 보낼 패스워드와 사용자를 위해 화일 <p>를 사용한다. 
+그 화일은 원격에서 접속한 사용자의 이름과 다시 새로운 줄에 입력될 원격접속할
+패스워드를 포함한다. 그러나 이 옵션은 더 이상은 사용가치가 없다.
+.TP
+.B usehostname
+강제로 확인을 할 목적으로 지역 시스템의 이름으로 호스트 이름을 사용하게 한다.
+(
+.B name
+옵션을 덧 씌우는 옵션).
+.TP
+.B user \fI<u>
+PAP를 사용해서 상대측에 이 기계를 확인시키기 위해 사용할 사용자의 이름을 <u>
+로 설정한다.
+.TP
+.B -vj
+Van Jacobson형의 TCP/IP 헤드 압축 negotiation을 사용하지 않게 하는 옵션
+(기본 설정 값으로 아무런 압축도 사용하지 않는다.)
+.TP
+.B -vjccomp
+Van Jacobsion 형의 TCP/IP header 압축 방법으로 Connection-ID 압축 옵션을
+사용하지 않겠다는 옵션. 이 옵션을 사용하면, \fIpppd\fR 은  Van Jacobson
+방식으로 압축된 TCP/IP header들에서 connection-ID byte를 빠뜨리지 않을 것이고, 
+상대측에게 그렇게 하도록 요구하지 않을 것이다.
+.TP
+.B vj-max-slots \fIn
+Van Jacobson TCP/IP header 압축과 풀기 코드에 의해 사용되어질 connection 
+슬롯들의 수를 \fIn\fR로 설정한다. 그리고 \fIn\fR은 2와 16을 포함하는  그
+사이의 값이어야 한다.
+.TP
+.B xonxoff
+시리얼 포트 상에서 데이타의 흐름을 제어하기 위해 XON/XOFF와 같은 소프트웨어로
+흐름 제어를 사용한다. 이 옵션은 현재 Linux system들에만 고안되어져 있다.
+.SH OPTIONS FILES
+옵션들은 명령어 라인에서와 마찬가지로 화일들로부터 획득되어질 수 있다.
+.I pppd
+는 command line에서 옵션을 찾기 전에 /etc/ppp/options와 ~/.ppprc로부터 읽는다.
+하나의 옵션 화일은 단어별로 구문분석되고, white space(즉 스페이스,탭,개행문자)
+들로 구분되어진다. 화이트 스페이스는 인용부호(")안에서 단어들 사이에 화이트 스페이
+스는 구분자(delimeter)로 고려되지 않는다. 백슬래쉬(\\)는 다음에 오는 문자를 
+인용한다. 해쉬(#)는 comment의 시작을 나타내고, 이것은 그 라인의 끝에 까지만 
+코멘트로 인정한다.
+.SH AUTHENTICATION
+.I pppd
+는 PPP가 접근하는 충분한 접근 제어를 갖는 시스템 운영자들이
+네트워크나 서버의 보안에 위협적이지 않은 합법적인 사용자들에게 제공되어
+질 수 있는 서버기계를 제공한다. 이것은 부분적으로 /etc/ppp/options 화일에
+의해 제공되어진다. 시스템 운영자가  
+.I pppd
+가 실행될 때마다 확인을 요구하도록 하는 옵션들을 둘 수 있는 화일인
+/etc/ppp/options 화일에 의해 제공되어지고, 부분적으로 PAP와 CHAP secret
+화일에 의해 제공되어지며, 여기에는 시스템 운영자가 개개 유저들이 사용할
+수 있는 IP 주소의 집합을 제한할 수 있다. 
+.LP
+.I pppd
+의 기본적인 행동은 요청이 있으면 확인을 허용하는 것과 상대측으로부터 확인을 
+요구하지 않는 것이다. 그러나  
+.I pppd
+는 확인을 하도록 사용되어질 수 있는 비밀을 가지고 있지않다면 특별한
+프로토콜로 자체 확인을 허용하지 않는다.
+.LP
+확인은 비밀에 기반을 두며, 이것은 보안 화일들(/etc/ppp/pap-secrets for PAP, 
+/etc/ppp/chap-secrets for CHAP)로부터 선택되어진다.
+두개의 화일모두가 동일한 형식이며, 서버(상대측을 확인하는 서버)와 클라이언트
+의 몇몇 조합들을 위한 비밀들을 저장할 수 있다.
+
+.I pppd
+는 서버와 클라이언트 둘 다일수 있고, 다른 프로토콜들이 두가지로 사용되어질수
+있다는 것을 주의하라.
+.LP
+secrets 화일은 options 화일에서 처럼 단어별로 구문분석된다. 비밀은 클라이언트 
+이름, 서버 이름,비밀 순으로 된 적어도 세 단어를 포함하는 한 라인으로 명시
+되어진다. 동일한 라인위에 세 단어 다음에 따르는 단어들은 그 클라이언트를 
+위한 접근 가능한 IP주소의 목록으로 받아들여진다. 만약 동일한 라인에 단지 
+세 단어만 있다면, 이것은 어떤 IP 주소라도 좋다는 것으로 가정된다.
+모든 IP 주소를 허용하지 않는 것은 "-"를 사용한다. 만약 비밀이 '@'로 시작한다면,
+다음에 따라 오는 것이 비밀을 읽기 위한 것으로부터 화일의 이름이 될 수 있는 
+것으로 가정된다(If the secret starts
+with an `@', what follows is assumed to be the name of a file from
+which to read the secret). 서버와 클라이언트의 이름으로서 "*"는 어떤
+이름과도 매치(match)된다. 비밀을 선택할 때, \fIpppd\fR은 최적의 것을 갖는다.
+즉, 가장적은 와일드 카드들을 가지는 것으로 한다.
+.LP
+이리하여 secrets 화일은 다른 호스트들을 확인하기 위해 사용되는 두 secrets를 
+포함하고 거기다가 다른 호스트에 우리자신의 호스트를 확인시키기 위해 사용되는
+비밀을 추가한다. 비밀에 사용되어지는 것은 host('local name')와 이것의 
+상대측('remote name')의 이름에 근거해서 선택되어진다. 
+그 local name은 다음과 같은 집합이다.
+.TP 3 
+만약 \fBusehostname\fR옵션이 주어진다면, local name은 (도메인이 주어진다면,
+도메인이 추가된 이름을 가지는) 이 기계의 이름이다.
+.TP 3 
+그렇지 않고 만약 \fBname\fR 옵션이 주어진다면, 첫번째 \fBname\fR옵션의 
+argument를 사용한다.
+.TP 3
+만약 local IP 주소가 호스트 이름과 함께 명시된다면, 그 이름을 사용한다.
+.TP 3
+그렇지 않다면 (호스트 도메인이 주어진다면 도메인과 함께 이 기계의 호스트 이름을 
+사용한다.
+.LP
+PAP를 사용해서 자체 시스템을 확인하고자 할 때, 디폴트로 local name인 'user name'
+이 있지만, \fBuser\fR옵션이나 혹은 \fB+us\fR옵션으로 설정한다.
+.LP
+Remote name은 다음과 같이 설정된다.
+.TP 3
+만약 \fBremotename\fR 옵션이 주어지면, 옵션에서 보여진 마지막 \fBremotename\fR의
+argument를 사용한다.
+.TP 3
+만약 그렇지 않고 remote IP address가 호스트 이름으로 명시되어진다면,
+그 호스트 이름 을 사용한다.
+.TP 3
+그렇지 않다면 remote name은 널(null) 스트링("")이다
+.LP
+secrets는 다음과 같이 PAP secrets 화일로부터 선택되어진다.
+.TP 2
+*
+상대측을 확인하기 위해, secret(클라이언트와 함께) == username(PAP 
+authenticate-request안에 명시되어진 username), 그리고 server == 
+local name를 찾는다.
+.TP 2
+*
+자체에서 상대측에게 확인하고자 할 때, secret(with client) == our username,
+server == remote name을 찾는다.
+.LP
+PAP로 상대측을 확인할 때, ""의 비밀이 상대측에 의해 제공되어지는 어떤 password와 
+매치(match)된다. 만약 password가 secret와 매치되지 않는다면, password는 
+crypt()를 사용하여 암호화되고 다시 secret를 확인하게 된다. 이리하여 상대측을 
+확인하기 위한 secrets는 암호화된 형태로 저장되어질 수 있다. 만약 
+\fBpapcrypt\fR옵션이 주어진다면, 첫번째 암호화되지 않은 상태에서의 비교는 
+보다 나은 보안을 위해 생략되어진다. 
+.LP
+만약 \fBlogin\fR옵션이 명시된다면, username과 password는 system password 
+database를 상대로 확인되게 된다. 이리하여 시스템 운영자는 pap-secrets 화일을 
+어떤 사용자들에게 PPP 접근을 허용하도록 그리고 각각의 사용자들이 사용할 수 
+있는 IP address의 집합을 제한하도록 설정할 수 있다. 전형적으로 \fBlogin\fR 
+옵션을 사용할 때 /etc/ppp/pap-secrets화일 안에 secret는 두곳에서 동일한 
+secret를 가지는 것을 피하기 위해 ""일 것이다. 
+.LP
+Secrets는 다음과 같은 CHAP secrets화일로부터 선택되어진다.
+.TP 2
+*
+상대측을 확인하기 위해, secret(클라이언트와 함께) == name(CHAP-Challenge 
+message안에 명시된 name), 그리고 server == local name를 찾는다. 
+.TP 2
+*
+상대측에게 우리의 자신을 확인시키기 위해, secret( with client) ==
+local name, 그리고 server == name(CHAP-Challenge message안에 명시된 name)
+을 찾는다.
+.LP
+확인은 IPCP(혹은 어떤 다른 Network Control Protocol)이 시작되기전에 만족할
+만큼 완벽해야 한다. 만약 확인이 실패한다면, \fIpppd\fR은 (LCP를 닫음으로서)
+접속을 종료하게 될 것이다. 만약 IPCP 가 접근할 수 없는 IP주소를 가진 remote
+호스트에 대해서 접근을 시도한다면 IPCP는 닫혀질 것이다. IP packets들은 IPCP
+가 열려있을 때만 보내지고 받아질 수 있다.
+.LP
+어떤 경우에 hosts들 자체에 대해 확인할 수 없는 어떤 호스트들에게 제한된
+IP주소들의 집합 중에 하나를 이용하여 접속하는 것을 허용하는 것이 바람직하다.
+일반적으로 local host가 확인을 요구할 때이더라도 그렇다. 
+만약 상대측이 요청이 있을 때에 자체에 확인을 거절한다면, \fIpppd\fR은 username
+과 password를 위한 공문자열(empty string)을 사용하는 PAP로 확인하는 것고 
+동등한 것으로서 그것을 취한다.
+이리하여 pap-secrets화일에 client와 password를 위한 empty string을 명시하는 
+한 줄을 추가함으로서 자체를 확인하는 것을 거절하는 호스트들에게 제한된 접근
+을 허용할 수 있다.
+.SH ROUTING
+.LP
+IPCP negotiation이 성공적으로 완성되었을 때
+.I pppd
+는 ppp interface를 위해 local과 remote IP 주소들의 kernel에게 알린다.
+이것은 연결된 끝의 host route를 만들기에 충분하다. 이 연결은 연결상호간에
+IP packets들을 교환하는 것이 가능할 것이다.
+다른 기계와의 ㅤ통신은 일반적으로 라우팅 테이블, ARP(Address Resolution 
+Protocol) 테이블에 더 변형을 요구한다.
+어떤 경우들에서는  이것은 \fIrouted\fR 혹은 \fIgated\fR 데몬들의 행동을 통해 
+자동적으로 되어질 것이다. 그러나 거의 모든 경우에서 좀더 intervention이 
+요구되어진다. 
+.LP
+때때로 ppp 인터페이스를 통해서만 Internet에 접속이 가능한 기계의 경우에서
+처럼 remote host를 통해 기본 라우트(경로)를 추가하는 것은 바람직한 것이다.
+\fBdefaultroute\fR옵션은 \fIpppd\fR이 IPCP가 있을 때 그와 같은 기본 
+경로(default route)를 만들게 하는 원인이며, 연결이 종료되면 defualt route를 
+지운다.
+.LP
+어떤 경우들에서는 proxy ARP를 사용하는 것이 바람직하다. 예를 들어, LAN에 
+연결된 서버 기계상에서 다른 호스트에게 remote호스트와 통신하도록 허용하기 위해
+서 proxy ARP를 사용하는 경우. \fBproxyarp\fR옵션은 \fIpppd\fR이 
+point-to-point나 loopback interface가 아닌 ARP나 broadcast를 지원하는 
+innterface를 갖는 remote host와 같은 subnet상에서 nettwork interface를 찾는 
+원인이다. 만약 발견한다면, \fIpppd\fR은 ARP의 목록에 remote hosr의 주소와 
+발견된 network interface의 하드웨어 주소를 영구히 기록한다.
+.SH EXAMPLES
+.LP
+가장 간단한 경우,  두 기계의 시리얼 포트를 연결할 수 있고, 시리얼 포트 상에
+\fIgetty\fR이 실행되고 있지 않다는 가정하에서
+.IP
+pppd /dev/ttya 9600 passive
+.LP
+와 같이 각각의 기계에 명령을 줄수 있다.
+만약 한 기계가 \fIgetty\fR를 실행중에 있다면, \fIkermit\fR이나 \fItip\fR을 
+첫번째 기계에 로그인 하기 위해 다른 기계상에서 실행할 수 있고, 
+다음과 같이 명령을 줄 수 있다.
+.IP
+pppd passive
+.LP
+그러면 (접속이 끊겨지지 않은 것을 확신하는) 통신 프로그램에 빠져나오게 되고,
+다음과 같이 명령을 한다. 
+.IP
+pppd /dev/ttya 9600
+.LP
+다른 기계에 로그인 하는 작업과 \fIpppd\fR을 시작하는 작업은 \fIchat\fR을 실행
+하면서 \fBconnect\fR 옵션을 사용하여서 자동화할 수 있다.
+예를들어,
+.IP
+pppd /dev/ttya 38400 connect 'chat "" "" "login:" "username"
+"Password:" "password" "% " "exec pppd passive"'
+.LP
+(그러나 위에서 처럼 chat을 실행하는 것은 chat와 pppd의 변수 리스트 안에
+패스워드를 보여진 채로 두게 된다는 것에 주의하라)
+.LP
+여러분의 시리얼 접속이 한 줄의 철사보다 복잡하다면, 여러분들은 
+빠져나오기 위해서 조금의 제어 문자들을 정리해 볼 필요가 있다.
+특히, \fBasyncmap a0000\fR을 사용함으로서  XON(^Q)와 XOFF(^S)로 빠져나오는 것은 
+종종 사용되어진다. 만약 path가 telnet을 포함할 경우에는 
+(\fBasyncmap 200a0000\fR처럼) ^]로서 빠져 나올 수 있다.
+만약 접속한 경로가 rlogin을 포함한다면, rlogin client를 실행하고 있는 기계에서
+\fBescape ff\fR옵션을 사용할 필요가 있다. 그러므로 많은 rlogin의 구현은 
+투명하지 않다. 즉 많은 rlogin의 구현된 것들이 스트림으로부터 sequence
+[0xff, 0xff, 0x73, 0x73, followed by any 8 bytes]를 제거할 것이다.
+.SH DIAGNOSTICS
+.LP
+메세지들은 LOG_DAEMON을 이용하는 syslog 데몬에게 보내어진다. (이것은 원하는 
+장치(facility)로서 정의된 매크로 LOG_PPP를 갖는 \fIpppd\fR을 재컴파일함으로서
+무시되어질 수 있다.) Error과 debug 메세지들을 보기 위해서, 
+보내고자 하는 출력 장치나 화일로 메세지가 가도록 /etc/syslog.conf
+화일을 편집할 필요가 있다. 
+.LP
+\fBdebug\fR옵션은 모든 LCP, PAP, CHAP 혹은 IPCP 패킷들과 같이 로그인되기
+위해 주고 받는 모든 제어 패킷들의 내용에 영향을 미친다(cause).
+이런 것은 만약에 PPP negotiation이 성공하지 못했다면 유용할 수 있다(PPP의 
+접속이 왜 성공하지 못했는지에 대한 것을 알 수 있다).
+만약 debugging이 컴파일 시간에 있어진다면, \fBdebug\fR옵션은 로그인 되기 위한
+다른 디버깅 메세지에도 영향을 미친다.
+.LP
+디버깅은 SIGUSR1을
+.I pppd
+process에게 보냄으로서 가동되거나 정지시킬 수 있다.
+이 신호는 토글(toggle)로 작동된다.
+.SH FILES
+.TP
+.B /var/run/ppp\fIn\fB.pid \fR(BSD or Linux), \fB/etc/ppp/ppp\fIn\fB.pid \fR(others)
+Process-ID for \fIpppd\fR process on ppp interface unit \fIn\fR.
+.TP
+.B /etc/ppp/ip-up
+IP 패킷들을 주고 받기 위한 접속이 있을 때, 실행되는 스크립트나 프로그램(즉
+IPCP가 수행된다). 이것은 다음과 같은 매개 변수들고 함께 실행된다.
+.IP
+\fIinterface-name tty-device speed local-IP-address
+remote-IP-address\fR
+.IP
+그리고 이것의 기본 입력과 출력(standard I/O) 그리고 \fB/dev/null\fR로 방향이 
+재설정된 error 스트림들과 함께 실행된다.
+.IP
+이 프로그램 혹은 스크립트는 pppd와 같은 실질적이고 영향을 미칠 수 있는 user-ID
+를 갖고 실행된다. 즉, 적어도 영향력이 있는 user-ID와 실질적인 user-ID는 
+\fBroot\fR일 것이다. 이런 user-ID는 라우트(route)를 조작할 수 있으며, 특권을
+가지는 데몬들(즉, \fBsendmail\fR)을 실행하는 등의 일을 할 수 있다. 
+/etc/ppp/ip-up 와 /etc/ppp/ip-down 스크립트들이 여러분의 시스템의 보안과 타협
+하지 않는다는 것에 주의하라.
+.TP
+.B /etc/ppp/ip-down
+Link가 IP 패킷들 주고 받는데 더이상 유용하지 않을 때 실행되는 스크립트 혹은 
+프로그램이다. 이 스크립트는 /etc/ip-up 스크립트의 효과들을 원상태로 돌려 놓는
+데 사용되어질 수 있다. 이것은 ip-up스크립트에서와 동일한 매개 변수들을 사용함
+원상태로 돌리고, 동일한 보안을 고려하는 적용시켜서 원상대로 돌린다.
+그렇게 함으로 \fIpppd\fR와 같은 영향력있고 실질적인 user-ID로서 실행되어진다.
+.TP
+.B /etc/ppp/ipx-up
+IPX packet들을 주고 받기 위한 접속이 성공적일때 실행되는 프로그램 혹은 스크립트.
+(즉, IPX가 수행된다.) 이것은 다음과 같은 매개변수와 함께 수행된다.
+.IP
+\fIinterface-name tty-device speed network-number local-IPX-node-address
+remote-IPX-node-address local-IPX-routing-protocol remote-IPX-routing-protocol
+local-IPX-router-name remote-IPX-router-name ipparam pppd-pid\fR 
+.IP
+그리고 여기에 standard input, output 그리고 \fB/dev/null\fR로 출력되는 
+error stream들과 함께 실행된다.
+.br
+local-IPX-routing-protocol과 remote-IPX-routing-protocol field은 다음 중
+한 부분일 수도 있다.
+.IP
+RIP		RIP/SAP가 사용가 사용해야할 것을 가르키는 것.
+.br
+NLSP		NLSP가 사용해야할 것을 가르키는 것.
+.br
+RIP NLSP  	RIP/SAP와 NLSP가 사용해야할 것을 가르키는 것.
+.br
+.IP
+이 프로그램 혹은 스크립트는 \fIpppd\fR과 동일하게 권한과 영향을 미칠 수 있는
+user-ID로 실행되어야 한다. 즉, 적어도 라우트를 조작할 수 있으며, 특별한 
+daemon들(예를 들어 \fBripd\fR)을 실행하는 등과 같이 이러한 실질적인 권한과 
+영향을 미칠 수 있는 user-ID는 \fBroot\fR일 것이다.
+/etc/ppp/ipx-up와 /etc/ppp/ipx-down script들의 내용들이 여러분의 시스템의
+보안에 영향을 미치지 않도록 주의하라.
+.TP
+.B /etc/ppp/ipx-down
+이것은 접속이 더이상 IPX 패킷을 주고 받는 것을 불가하게 할때 실행되어지는
+프로그램/스크립트 이다. 이 스크립트는 /etc/ppp/ipx-up 스크립트의 효과를 
+원래대로 할 때 사용되어질 수 있다. 이 ipx-up 스크립트로서 동일한 매개 변수
+를 구동시킬 수 있고, 동일한 보안에 관련된 적용으로서 구동되며, \fIpppd\fR과
+실질적으로 영향을 미칠 수 있는 user-ID들로서 실행될 수 있다.
+.TP
+.B /etc/ppp/pap-secrets
+PAP 확인을 위한 사용자 이름들, 비밀번호들 그리고 IP 주소.
+.TP
+.B /etc/ppp/chap-secrets
+CHAP 확인을 위한 이름들, 비밀들 그리고 IP 주소들.
+.TP
+.B /etc/ppp/options
+사용자의 기본 설정 옵션들 혹은 명령어 라인에서 받아 들여지는 옵션을 읽기 전에를
+읽혀지는
+.I pppd
+위한 시스템의 기본 설정 옵션들.
+.TP
+.B ~/.ppprc
+명령어 라인(command-line)에서 받아 들여지는 옵션들을 읽기 전에 읽혀지는
+사용자 기본 설정 옵션들.
+.TP
+.B /etc/ppp/options.\fIttyname
+명령어 라인(command-line)상에서 읽기 전에 읽혀지는 시리얼 포트가 사용되어지기 
+위한 시스템의 기본 설정 옵션들.
+.SH SEE ALSO
+.TP
+.B RFC1144
+Jacobson, V.
+.I Compressing TCP/IP headers for low-speed serial links.
+1990 February.
+.TP
+.B RFC1321
+Rivest, R.
+.I The MD5 Message-Digest Algorithm.
+1992 April.
+.TP
+.B RFC1332
+McGregor, G.
+.I PPP Internet Protocol Control Protocol (IPCP).
+1992 May.
+.TP
+.B RFC1334
+Lloyd, B.; Simpson, W.A.
+.I PPP authentication protocols.
+1992 October.
+.TP
+.B RFC1548
+Simpson, W.A.
+.I The Point\-to\-Point Protocol (PPP).
+1993 December.
+.TP
+.B RFC1549
+Simpson, W.A.
+.I PPP in HDLC Framing.
+1993 December
+.SH NOTES
+다음의 신호(signal)들은 
+.I pppd
+프로세스에 보내어질 때 아래 명시된 효과들을 가진다.
+.TP
+.B SIGINT, SIGTERM
+이 신호들은 \fBpppd\fR (LCP를 닫음으로서) 연결을 종료하도록 하고 시리얼
+장치의 설정들을 원상태로 돌리고 끝내도록 한다.
+.TP
+.B SIGHUP
+이 신호는 \fBpppd\fR 이 연결을 종료하도록 하고, 시리얼 장치의 설정들을 
+원상태로 돌리고, 시리얼 장치를 닫도록 한다. 만약 \fBpersist\fR 옵션이 설정
+되었다면, \fBpppd\fR은 시리얼 장치를 재개방하고 다른 연결을 시작하려 할 
+것이다. 반면 \fBpppd\fR은 끝난다.
+.TP
+.B SIGUSR2
+이 신호는 
+.B pppd
+가 압축을 재 교섭하도록 한다. 이것은 압축(compression)이 치명적인 압축풀기의
+error의 결과로 사용 불가하게 된 이후에 압축을 다시 가능하게 할 수 있다.
+BSD Compress scheme에서는 치명적인 압축 풀기 error들은 일반적으로 압축 혹은
+다른 것의 구현에 버그를 가르킨다.
+
+.SH AUTHORS
+Drew Perkins,
+Brad Clements,
+Karl Fox,
+Greg Christy,
+Brad Parker,
+Paul Mackerras (paulus@cs.anu.edu.au).
+
+.SH TRANSLATOR
+Isaac Yi (isaac1@soback.kornet.nm.kr, isaac1@unitel.co.kr, isaac@suro.dongguk.ac.kr)

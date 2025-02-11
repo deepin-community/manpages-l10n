@@ -2,12 +2,12 @@
 .\"     Title: crypto-policies
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 01/21/2021
+.\"      Date: 09/22/2023
 .\"    Manual: \ \&
 .\"    Source: crypto-policies
 .\"  Language: English
 .\"
-.TH "CRYPTO\-POLICIES" "7" "01/21/2021" "crypto\-policies" "\ \&"
+.TH "CRYPTO\-POLICIES" "7" "09/22/2023" "crypto\-policies" "\ \&"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -35,7 +35,9 @@ The security of cryptographic components of the operating system does not remain
 .sp
 While in the past the algorithms were not disabled in a consistent way and different applications applied different policies, the system\-wide crypto\-policies followed by the crypto core components allow consistently deprecating and disabling algorithms system\-wide\&.
 .sp
-The individual policy levels (\fBDEFAULT\fR, \fBLEGACY\fR, \fBFUTURE\fR, and \fBFIPS\fR) are included in the \fBcrypto\-policies(7)\fR package\&. In the future, there will be also a mechanism for easy creation and deployment of policies defined by the system administrator or a third party vendor\&.
+Several preconfigured policies (\fBDEFAULT\fR, \fBLEGACY\fR, \fBFUTURE\fR, and \fBFIPS\fR) and subpolicies are included in the \fBcrypto\-policies(7)\fR package\&. System administrators or third\-party vendors can define custom policies and subpolicies\&.
+.sp
+The recommended way to modify the effective configuration is to apply a custom subpolicy on top of a predefined policy\&. This allows configuration to evolve with future updates of the predefined policies keeping desired modification in place\&. Modifying effective configuration by defining a fully custom policy prevents the configuration from evolving with future updates of the predefined policies\&. The syntax to define custom policies and subpolicies is described in the CRYPTO POLICY DEFINITION FORMAT section below\&.
 .sp
 For rationale, see \fBRFC 7457\fR for a list of attacks taking advantage of legacy crypto algorithms\&.
 .SH "COVERED APPLICATIONS"
@@ -55,7 +57,9 @@ The policies currently provide settings for these applications and libraries:
 .IP \(bu 2.3
 .\}
 \fBBIND\fR
-DNS name server daemon
+DNS name server daemon (scopes:
+\fBBIND\fR,
+\fBDNSSec\fR)
 .RE
 .sp
 .RS 4
@@ -67,7 +71,10 @@ DNS name server daemon
 .IP \(bu 2.3
 .\}
 \fBGnuTLS\fR
-TLS library
+TLS library (scopes:
+\fBGnuTLS\fR,
+\fBSSL\fR,
+\fBTLS\fR)
 .RE
 .sp
 .RS 4
@@ -79,7 +86,10 @@ TLS library
 .IP \(bu 2.3
 .\}
 \fBOpenJDK\fR
-runtime environment
+runtime environment (scopes:
+\fBjava\-tls\fR,
+\fBSSL\fR,
+\fBTLS\fR)
 .RE
 .sp
 .RS 4
@@ -91,7 +101,9 @@ runtime environment
 .IP \(bu 2.3
 .\}
 \fBKerberos 5\fR
-library
+library (scopes:
+\fBkrb5\fR,
+\fBKerberos\fR)
 .RE
 .sp
 .RS 4
@@ -103,7 +115,10 @@ library
 .IP \(bu 2.3
 .\}
 \fBLibreswan\fR
-IPsec and IKE protocol implementation
+IPsec and IKE protocol implementation (scopes:
+\fBlibreswan\fR,
+\fBIPSec\fR,
+\fBIKE\fR)
 .RE
 .sp
 .RS 4
@@ -115,7 +130,10 @@ IPsec and IKE protocol implementation
 .IP \(bu 2.3
 .\}
 \fBNSS\fR
-TLS library
+TLS library (scopes:
+\fBNSS\fR,
+\fBSSL\fR,
+\fBTLS\fR)
 .RE
 .sp
 .RS 4
@@ -127,7 +145,9 @@ TLS library
 .IP \(bu 2.3
 .\}
 \fBOpenSSH\fR
-SSH2 protocol implementation
+SSH2 protocol implementation (scopes:
+\fBOpenSSH\fR,
+\fBSSH\fR)
 .RE
 .sp
 .RS 4
@@ -139,7 +159,10 @@ SSH2 protocol implementation
 .IP \(bu 2.3
 .\}
 \fBOpenSSL\fR
-TLS library
+TLS library (scopes:
+\fBOpenSSL\fR,
+\fBSSL\fR,
+\fBTLS\fR)
 .RE
 .sp
 .RS 4
@@ -151,11 +174,40 @@ TLS library
 .IP \(bu 2.3
 .\}
 \fBlibssh\fR
-SSH2 protocol implementation
+SSH2 protocol implementation (scopes:
+\fBlibssh\fR,
+\fBSSH\fR)
 .RE
 .sp
-Applications using the above libraries and tools are covered by the cryptographic policies unless they are explicitly configured not to be so\&.
-.SH "PROVIDED POLICY LEVELS"
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBsequoia\fR
+PGP implementation, for usage outside of rpm\-sequoia (scopes:
+\fBsequoia\fR)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBrpm\-sequoia\fR
+RPM Sequoia PGP backend (scopes:
+\fBrpm\fR,
+\fBrpm\-sequoia\fR)
+.RE
+.sp
+Applications using the above libraries and tools are covered by the cryptographic policies unless they are explicitly configured otherwise\&.
+.SH "PROVIDED POLICIES"
 .PP
 \fBLEGACY\fR
 .RS 4
@@ -164,14 +216,14 @@ This policy ensures maximum compatibility with legacy systems; it is less secure
 \fBTLS 1\&.1\fR, and
 \fBSSH2\fR
 protocols or later\&. The algorithms
-\fBDSA\fR,
-\fB3DES\fR, and
-\fBRC4\fR
+\fBDSA\fR
+and
+\fB3DES\fR
 are allowed, while
 \fBRSA\fR
 and
 \fBDiffie\-Hellman\fR
-parameters are accepted if larger than 1023 bits\&. The level provides at least 64\-bit security\&.
+parameters are accepted if larger than 1024 bits\&. This policy provides at least 64\-bit security\&.
 .sp
 .RS 4
 .ie n \{\
@@ -224,9 +276,8 @@ allowed)
 .\}
 \fBTLS\fR
 Ciphers: all available >= 112\-bit key, >= 128\-bit block (including
-\fBRC4\fR
-and
-\fB3DES\fR)
+\fB3DES\fR, excluding
+\fBRC4\fR)
 .RE
 .sp
 .RS 4
@@ -266,7 +317,7 @@ Key exchange:
 .IP \(bu 2.3
 .\}
 \fBDH\fR
-params size: >= 1023
+params size: >= 1024
 .RE
 .sp
 .RS 4
@@ -278,7 +329,7 @@ params size: >= 1023
 .IP \(bu 2.3
 .\}
 \fBRSA\fR
-keys size: >= 1023
+keys size: >= 1024
 .RE
 .sp
 .RS 4
@@ -290,7 +341,7 @@ keys size: >= 1023
 .IP \(bu 2.3
 .\}
 \fBDSA\fR
-params size: >= 1023
+params size: >= 1024
 .RE
 .sp
 .RS 4
@@ -322,7 +373,7 @@ protocols, as well as
 and
 \fBSSH2\fR\&. The
 \fBDiffie\-Hellman\fR
-parameters are accepted if they are at least 2048 bits long\&. The level provides at least 112\-bit security with the exception of allowing
+parameters are accepted if they are at least 2048 bits long\&. This policy provides at least 112\-bit security with the exception of allowing
 \fBSHA\-1\fR
 signatures in DNSSec where they are still prevalent\&.
 .sp
@@ -463,13 +514,13 @@ policy\&.
 .PP
 \fBFUTURE\fR
 .RS 4
-A conservative security level that is believed to withstand any near\-term future attacks\&. This level does not allow the use of
+A conservative security policy that is believed to withstand any near\-term future attacks at the expense of interoperability\&. It may prevent communication with many commonly used systems that only offer weaker security\&. This policy does not allow the use of
 \fBSHA\-1\fR
-in signature algorithms\&. The level also provides some (not complete) preparation for post\-quantum encryption support in form of 256\-bit symmetric encryption requirement\&. The
+in signature algorithms\&. The policy also provides some (not complete) preparation for post\-quantum encryption support in form of 256\-bit symmetric encryption requirement\&. The
 \fBRSA\fR
 and
 \fBDiffie\-Hellman\fR
-parameters are accepted if larger than 3071 bits\&. The level provides at least 128\-bit security\&.
+parameters are accepted if larger than 3071 bits\&. This policy provides at least 128\-bit security\&.
 .sp
 .RS 4
 .ie n \{\
@@ -595,15 +646,197 @@ protocols:
 .RE
 .RE
 .PP
+\fBBSI\fR
+.RS 4
+A security policy based on recommendations by the german government agency BSI (Bundesamt fuer Sicherheit in der Informationstechnik, translated as "agency for security in software technology") in its ruleset BSI TR 02102 (TR \- technical recommendation)\&. The BSI TR 02102 standard is updated in regular intervals\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+This policy does not allow the use of *SHA\-1* in signature algorithms
+(except *DNSSEC* and *RPM*)\&.
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+The policy also provides some (not complete) preparation for
+post\-quantum encryption support in form of 256\-bit symmetric encryption
+requirement\&.
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+The *RSA* parameters are accepted if larger than 2047 bits, and
+*Diffie\-Hellman* parameters are accepted if larger than 3071 bits\&.
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+This policy provides at least 128\-bit security, excepting the transition
+of *RSA*\&.
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+MACs: all
+\fBHMAC\fR
+with
+\fBSHA\-256\fR
+or better + all modern MACs
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Curves: all prime >= 255 bits (including Bernstein curves)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Signature algorithms: with
+\fBSHA\-256\fR
+hash or better (no
+\fBDSA\fR)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBTLS\fR
+Ciphers: >= 256\-bit key, >= 128\-bit block, only Authenticated Encryption (AE) ciphers
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+non\-TLS Ciphers: same as
+\fBTLS\fR
+ciphers with added non AE ciphers
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+key exchange:
+\fBECDHE\fR,
+\fBDHE\fR
+(no
+\fBDHE\-DSS\fR, no
+\fBRSA\fR)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBDH\fR
+params size: >= 3072
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBRSA\fR
+keys size: >= 2048 (until end of 2023, then it will switch to 3072)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBTLS\fR
+protocols:
+\fBTLS\fR
+>= 1\&.2,
+\fBDTLS\fR
+>= 1\&.2
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Note that compared to others profiles *Chacha20* and *Camellia* are not
+recommended by the BSI\&.
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.RE
+.PP
 \fBFIPS\fR
 .RS 4
-A level that conforms to the
-\fBFIPS 140\-2\fR
+A policy to aid conformance to the
+\fBFIPS 140\fR
 requirements\&. This policy is used internally by the
 \fBfips\-mode\-setup(8)\fR
 tool which can switch the system into the
-\fBFIPS 140\-2\fR
-compliance mode\&. The level provides at least 112\-bit security\&.
+\fBFIPS 140\fR
+mode\&. This policy provides at least 112\-bit security\&.
 .sp
 .RS 4
 .ie n \{\
@@ -732,9 +965,9 @@ protocols:
 .RS 4
 All cryptographic algorithms are disabled (used for debugging only, do not use)\&.
 .RE
-.SH "CRYPTO POLICY DEFINITON FORMAT"
+.SH "CRYPTO POLICY DEFINITION FORMAT"
 .sp
-The crypto policy definiton files have a simple syntax following an \fBINI\fR file \fIkey\fR = \fIvalue\fR syntax with these particular features:
+The crypto policy definition files have a simple syntax following an \fBINI\fR file \fIkey\fR = \fIvalue\fR syntax with these particular features:
 .sp
 .RS 4
 .ie n \{\
@@ -770,10 +1003,48 @@ character followed immediately with the end\-of\-line character indicates line c
 .sp -1
 .IP \(bu 2.3
 .\}
-Value types can be either decimal integers, arbitrary strings, or lists of strings without whitespace characters separated by any number of whitespaces\&.
+Value types for integer options can be decimal integers (\fIoption = 1\fR)\&.
 .RE
 .sp
-The allowed keys are:
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Multiple\-choice options can be specified by setting them to a list of values (\fIoption = value1 value2\fR)\&. This list can further be altered by prepending/omitting/appending values (\fIoption = \fR\fIprepended \-omitted appended\fR)\&. A follow\-up reassignment will reset the list\&. The latter syntax cannot be combined with the former one in the same directive\&. Setting an option to an empty list is possible with
+\fIoption =\fR\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Asterisk sign can be used for wildcard matching as a shortcut for specifying multiple values when setting multiple\-choice options\&. Note that wildcard matching can lead to future updates implicitly enabling algorithms not yet available in the current version\&. If this is a concern, do not use wildcard\-matching outside of algorithm\-omitting directives\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+In order to limit the scope of the directive and make it affect just some of the backends, the following extended syntax can be used:
+\fIoption@scope = \&...\fR,
+\fIoption@{scope1,scope2,\&...} = \&...\fR\&. Negation of scopes is possible with
+\fIoption@!scope\fR
+/ \*(Aqoption@{scope1,scope2,\&...}\&. Scope selectors are case\-insensitive\&.
+.RE
+.sp
+The available options are:
 .sp
 .RS 4
 .ie n \{\
@@ -784,18 +1055,6 @@ The allowed keys are:
 .IP \(bu 2.3
 .\}
 \fBmac\fR: List of allowed MAC algorithms
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-\fBssh_group\fR: Optional; list of allowed groups or elliptic curves for key exchanges for use with the SSH protocol\&. If absent, the value is derived from
-\fBgroup\fR\&.
 .RE
 .sp
 .RS 4
@@ -839,30 +1098,6 @@ The allowed keys are:
 .sp -1
 .IP \(bu 2.3
 .\}
-\fBtls_cipher\fR: Optional; list of allowed symmetric encryption algorithms (including the modes) for use with the TLS protocol\&. If absent, the value is derived from
-\fBcipher\fR\&.
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-\fBssh_cipher\fR: Optional; list of allowed symmetric encryption algorithms (including the modes) for use with the SSH protocol\&. If absent, the value is derived from
-\fBcipher\fR\&.
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
 \fBcipher\fR: List of allowed symmetric encryption algorithms (including the modes) for use with other protocols
 .RE
 .sp
@@ -885,50 +1120,7 @@ The allowed keys are:
 .sp -1
 .IP \(bu 2.3
 .\}
-\fBprotocol\fR: List of allowed TLS and DTLS protocol versions (ignored by
-\fBOpenSSL\fR
-and
-\fBNSS\fR
-back ends)
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-\fBike_protocol\fR: List of allowed IKE protocol versions
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-\fBmin_tls_version\fR: Lowest allowed TLS protocol version (used only by
-\fBOpenSSL\fR
-a and
-\fBNSS\fR
-back ends)
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-\fBmin_dtls_version\fR: Lowest allowed DTLS protocol version (used only by
-\fBNSS\fR
-back end)
+\fBprotocol\fR: List of allowed TLS, DTLS and IKE protocol versions; mind that some backends do not allow selectively disabling protocols versions and only use the oldest version as the lower boundary\&.
 .RE
 .sp
 .RS 4
@@ -993,25 +1185,6 @@ back end only\&.)
 .sp -1
 .IP \(bu 2.3
 .\}
-\fBsha1_in_dnssec\fR: Value of 1 if
-\fBSHA1\fR
-allowed in DNSSec protocol even if it is not present in the
-\fBhash\fR
-and
-\fBsign\fR
-lists, 0 otherwise (Applies to
-\fBBIND\fR
-back end only\&.)
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
 \fBarbitrary_dh_groups\fR: Value of 1 if arbitrary group in
 \fBDiffie\-Hellman\fR
 is allowed, 0 otherwise
@@ -1043,78 +1216,33 @@ certificate authentication is allowed, 0 otherwise
 EtM (encrypt\-then\-mac) extension is allowed, 0 otherwise
 .RE
 .sp
-The full policy definition files have suffix \&.pol, the policy module definition files have suffix \&.pmod\&. The policy module files do not have to have values set for all the keys listed above\&.
+Full policy definition files have suffix \&.pol, subpolicy files have suffix \&.pmod\&. Subpolicies do not have to have values set for all the keys listed above\&.
 .sp
-The lists as set in the base (full policy) are modified by the lists specified in the module files in following way:
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-\fB\-\fR\fIlist\-item\fR: The
-\fIlist\-item\fR
-is removed from the list specified in the base policy\&.
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-\fB+\fR\fIlist\-item\fR: The
-\fIlist\-item\fR
-is inserted at the beginning of the list specified in the base policy\&. The inserts are done in the order of appearance in the policy module file so the actual order in the final list will be reversed\&.
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-\fIlist\-item\fR\fB+\fR: The
-\fIlist\-item\fR
-is appended to the end of the list specified in the base policy\&.
-.RE
-.sp
-To completely override a list value in a module file just use \fIlist\-items\fR without any sign\&. Combining \fIlist\-items\fR with and without signs in a single list value assignment is not allowed however an existing list value can be modified in multiple further assignments\&.
-.sp
-Non\-list key values in the policy module files are simply overridden\&.
-.sp
-The keys marked as \fBOptional\fR can be omitted in the policy definition files\&. In that case, the values will be derived from the base keys\&. Note that, this value propagation only applies to the policy definition files\&. In the policy module files, each key that needs modification must be explicitly specified\&.
+The effective configuration of a policy with subpolicies applied is the same as a configuration from a single policy obtained by concatenating the policy and the subpolicies in question\&.
 .sp
 \fBPolicy file placement and naming:\fR
 .sp
-The policy files shipped in packages are placed in /usr/share/crypto\-policies/policies and the policy modules in /usr/share/crypto\-policies/policies/modules\&.
+The policy files shipped in packages are placed in /usr/share/crypto\-policies/policies and the subpolicies in /usr/share/crypto\-policies/policies/modules\&.
 .sp
-The locally configured policy files are placed in /etc/crypto\-policies/policies and the policy modules in /etc/crypto\-policies/policies/modules\&.
+Locally configured policy files should be placed in /etc/crypto\-policies/policies and subpolicies in /etc/crypto\-policies/policies/modules\&.
 .sp
-The policy and policy module files must have names in upper\-case except for the \&.pol and \&.pmod suffix as the update\-crypto\-policies command always converts the policy name to upper\-case before searching for the policy on the filesystem\&.
+The policy and subpolicy files must have names in upper\-case except for the \&.pol and \&.pmod suffix as the update\-crypto\-policies command always converts the policy name to upper\-case before searching for the policy on the filesystem\&.
 .SH "COMMANDS"
 .PP
 \fBupdate\-crypto\-policies(8)\fR
 .RS 4
-This command manages the policies available to the various cryptographic back ends and allows the system administrator to change the active cryptographic policy level\&.
+This command manages the policies available to the various cryptographic back ends and allows the system administrator to change the active cryptographic policy\&.
 .RE
 .PP
 \fBfips\-mode\-setup(8)\fR
 .RS 4
 This command allows the system administrator to enable, or disable the system FIPS mode and also apply the
 \fBFIPS\fR
-cryptographic policy level which limits the allowed algorithms and protocols to these allowed by the FIPS 140\-2 requirements\&.
+cryptographic policy which limits the allowed algorithms and protocols to these allowed by the FIPS 140 requirements\&.
 .RE
 .SH "NOTES"
 .sp
-\fBExceptions\fR
+\fBKnown notable exceptions\fR
 .sp
 .RS 4
 .ie n \{\
@@ -1142,7 +1270,7 @@ application does not follow the system\-wide policy\&.
 .sp
 In general only the data\-in\-transit is currently covered by the system\-wide policy\&.
 .sp
-If the system administrator changes the system\-wide policy level with the \fBupdate\-crypto\-policies(8)\fR command it is advisable to restart the system as the individual back\-end libraries read the configuration files usually during their initialization\&. The changes in the policy level thus take place in most cases only when the applications using the back\-end libraries are restarted\&.
+If the system administrator changes the system\-wide policy with the \fBupdate\-crypto\-policies(8)\fR command it is advisable to restart the system as the individual back\-end libraries read the configuration files usually during their initialization\&. The changes in the policy thus take place in most cases only when the applications using the back\-end libraries are restarted\&.
 .sp
 \fBRemoved cipher suites and protocols\fR
 .sp
@@ -1230,9 +1358,9 @@ All binary field
 curves
 .RE
 .sp
-\fBCipher suites and protocols disabled in all policy levels\fR
+\fBCipher suites and protocols disabled in all predefined policies\fR
 .sp
-The following ciphersuites and protocols are available but disabled in all crypto policy levels\&. They can be enabled only by explicit configuration of individual applications:
+The following ciphersuites and protocols are available but disabled in all predefined crypto policies:
 .sp
 .RS 4
 .ie n \{\
@@ -1267,6 +1395,17 @@ with key size < 1024 bits
 .IP \(bu 2.3
 .\}
 \fBCamellia\fR
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBRC4\fR
 .RE
 .sp
 .RS 4
@@ -1374,6 +1513,19 @@ curves incompatible with
 .sp -1
 .IP \(bu 2.3
 .\}
+\fBOpenSSL\fR
+and
+\fBNSS\fR: Disabling all TLS and/or all DTLS versions isn\(cqt actually possible\&. Trying to do so will result in the library defaults being applied instead\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
 \fBOpenSSL\fR: The minimum length of the keys and some other parameters are enforced by the @SECLEVEL value which does not provide a fine granularity\&. The list of
 \fBTLS\fR
 ciphers is not generated as an exact list but by subtracting from all the supported ciphers for the enabled key exchange methods\&. For that reason there is no way to disable a random cipher\&. In particular all
@@ -1420,6 +1572,28 @@ configuration file which does not provide fine granularity\&.
 .sp -1
 .IP \(bu 2.3
 .\}
+\fBGnuTLS\fR: PSK key exchanges have to be explicitly enabled by the applications using them\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBGnuTLS\fR: HMAC\-SHA2\-256 and HMAC\-SHA2\-384 MACs are disabled due to concerns over the constant\-timedness of the implementation\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
 \fBOpenSSH\fR:
 \fBDH\fR
 group 1 is always disabled on server even if the policy allows 1024 bit
@@ -1447,11 +1621,148 @@ can be limited with appropriate setting of the
 \fBgroup\fR
 parameter\&.
 .RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBSequoia\fR: only
+\fBhash_algorithms\fR,
+\fBsymmetric_algorithms\fR
+and
+\fBasymmetric_algorithms\fR
+are controlled by crypto\-policies\&.
+\fBasymmetric_algorithms\fR
+is not controlled directly, but deduced from
+\fBsign\fR
+and
+\fBgroup\fR\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBNSS\fR: order of
+\fBgroup\fR
+values is ignored and built\-in order is used instead\&.
+.RE
 .SH "HISTORY"
 .sp
 The \fBECDHE\-GSS\fR and \fBDHE\-GSS\fR algorithms are newly introduced and must be specified in the base policy for the SSH GSSAPI key exchange methods to be enabled\&. Previously the legacy SSH GSSAPI key exchange methods were automatically enabled when the \fBSHA1\fR hash and \fBDH\fR parameters of at least 2048 bits were enabled\&.
 .sp
-Before the introduction of the \fBcustom crypto policies\fR support it was possible to have an completely arbitrary crypto policy created as a set of arbitrary back\-end config files in /usr/share/crypto\-policies/<POLICYNAME> directory\&. With the introduction of the \fBcustom crypto policies\fR it is still possible but there must be an empty (possibly with any comment lines) <POLICYNAME>\&.pol file in /usr/share/crypto\-policies/policies so the update\-crypto\-policies command can recognize the arbitrary custom policy\&.
+Before the introduction of the \fBcustom crypto policies\fR support it was possible to have an completely arbitrary crypto policy created as a set of arbitrary back\-end config files in /usr/share/crypto\-policies/<POLICYNAME> directory\&. With the introduction of the \fBcustom crypto policies\fR it is still possible but there must be an empty (possibly with any comment lines) <POLICYNAME>\&.pol file in /usr/share/crypto\-policies/policies so the update\-crypto\-policies command can recognize the arbitrary custom policy\&. No subpolicies must be used with such an arbitrary custom policy\&. Modifications from \fBlocal\&.d\fR will be appended to the files provided by the policy\&.
+.sp
+The use of the following historaically available options is discouraged:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBmin_tls_version\fR: Lowest allowed TLS protocol version (recommended replacement:
+\fBprotocol@TLS\fR)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBmin_dtls_version\fR: Lowest allowed DTLS protocol version (recommended replacement:
+\fBprotocol@TLS\fR)
+.RE
+.sp
+The following options are deprecated, please rewrite your policies:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBike_protocol\fR: List of allowed IKE protocol versions (recommended replacement:
+\fBprotocol@IKE\fR, mind the relative position to other
+\fBprotocol\fR
+directives)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBtls_cipher\fR: list of allowed symmetric encryption algorithms for use with the TLS protocol (recommended replacement:
+\fBcipher@TLS\fR, mind the relative position to other
+\fBcipher\fR
+directives)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBssh_cipher\fR: list of allowed symmetric encryption algorithms for use with the SSH protocol (recommended replacement:
+\fBcipher@SSH\fR, mind the relative position to other
+\fBcipher\fR
+directives)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBssh_group\fR: list of allowed groups or elliptic curves for key exchanges for use with the SSH protocol (recommended replacement:
+\fBgroup@SSH\fR, mind the relative position to other
+\fBgroup\fR
+directives)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBsha1_in_dnssec\fR: Allow
+\fBSHA1\fR
+usage in DNSSec protocol even if it is not present in the
+\fBhash\fR
+and
+\fBsign\fR
+lists (recommended replacements:
+\fBhash@DNSSec\fR,
+\fBsign@DNSSec\fR)\&.
+.RE
 .SH "FILES"
 .PP
 /etc/crypto\-policies/back\-ends
@@ -1463,7 +1774,7 @@ is added\&.
 .PP
 /etc/crypto\-policies/config
 .RS 4
-The active crypto\-policies level set on the system\&.
+A file containing the name of the active crypto\-policy set on the system\&.
 .RE
 .PP
 /etc/crypto\-policies/local\&.d
@@ -1480,7 +1791,7 @@ System policy definition files\&.
 .PP
 /usr/share/crypto\-policies/policies/modules
 .RS 4
-System subpolicy module definition files\&.
+System subpolicy definition files\&.
 .RE
 .PP
 /etc/crypto\-policies/policies
@@ -1490,7 +1801,7 @@ Custom policy definition files as configured by the system administrator\&.
 .PP
 /etc/crypto\-policies/policies/modules
 .RS 4
-Custom subpolicy module definition files as configured by the system administrator\&.
+Custom subpolicy definition files as configured by the system administrator\&.
 .RE
 .PP
 /usr/share/crypto\-policies/<\*(AqPOLICYNAME\*(Aq>

@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-SUSPEND\&.SERVICE" "8" "" "systemd 249" "systemd-suspend.service"
+.TH "SYSTEMD\-SUSPEND\&.SERVICE" "8" "" "systemd 257" "systemd-suspend.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -23,15 +23,21 @@
 systemd-suspend.service, systemd-hibernate.service, systemd-hybrid-sleep.service, systemd-suspend-then-hibernate.service, systemd-sleep \- System sleep state logic
 .SH "SYNOPSIS"
 .PP
+.RS 4
 systemd\-suspend\&.service
-.PP
+.RE
+.RS 4
 systemd\-hibernate\&.service
-.PP
+.RE
+.RS 4
 systemd\-hybrid\-sleep\&.service
-.PP
+.RE
+.RS 4
 systemd\-suspend\-then\-hibernate\&.service
-.PP
+.RE
+.RS 4
 /usr/lib/systemd/system\-sleep
+.RE
 .SH "DESCRIPTION"
 .PP
 systemd\-suspend\&.service
@@ -68,12 +74,14 @@ where the value of the variable will be
 "hibernate", or
 "suspend\-after\-failed\-hibernate"
 in cases where hibernation has failed\&. Immediately after leaving system suspend and/or hibernation the same executables are run, but the first argument is now
-"post"\&. All executables in this directory are executed in parallel, and execution of the action is not continued until all executables have finished\&.
+"post"\&. All executables in this directory are executed in parallel, and execution of the action is not continued until all executables have finished\&. Note that
+user\&.slice
+will be frozen while the executables are running, so they should not attempt to communicate with any user services expecting a reply\&.
 .PP
 Note that scripts or binaries dropped in
 /usr/lib/systemd/system\-sleep/
 are intended for local use only and should be considered hacks\&. If applications want to react to system suspend/hibernation and resume, they should rather use the
-\m[blue]\fBInhibitor interface\fR\m[]\&\s-2\u[1]\d\s+2\&.
+\m[blue]\fBInhibitor Locks\fR\m[]\&\s-2\u[1]\d\s+2\&.
 .PP
 Note that
 systemd\-suspend\&.service,
@@ -94,6 +102,11 @@ or a
 sleep\&.conf\&.d
 file\&. See
 \fBsystemd-sleep.conf\fR(5)\&.
+.PP
+Note that by default these services freeze
+user\&.slice
+while they run\&. This prevents the execution of any process in any of the user sessions while the system is entering into and resuming from sleep\&. Thus, this prevents the hooks in
+/usr/lib/systemd/system\-sleep/, or any other process for that matter, from communicating with any user session process during sleep\&.
 .SH "OPTIONS"
 .PP
 \fBsystemd\-sleep\fR
@@ -112,17 +125,15 @@ Print a short version string and exit\&.
 \fBsuspend\fR, \fBhibernate\fR, \fBsuspend\-then\-hibernate\fR, \fBhybrid\-sleep\fR
 .RS 4
 Suspend, hibernate, suspend then hibernate, or put the system to hybrid sleep\&.
+.sp
+Added in version 203\&.
 .RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd-sleep.conf\fR(5),
-\fBsystemd\fR(1),
-\fBsystemctl\fR(1),
-\fBsystemd.special\fR(7),
-\fBsystemd-halt.service\fR(8)
+\fBsystemd-sleep.conf\fR(5), \fBsystemd\fR(1), \fBsystemctl\fR(1), \fBsystemd.special\fR(7), \fBsystemd-halt.service\fR(8)
 .SH "NOTES"
 .IP " 1." 4
-Inhibitor interface
+Inhibitor Locks
 .RS 4
-\%https://www.freedesktop.org/wiki/Software/systemd/inhibit
+\%https://systemd.io/INHIBITOR_LOCKS
 .RE

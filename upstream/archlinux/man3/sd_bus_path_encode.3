@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_PATH_ENCODE" "3" "" "systemd 249" "sd_bus_path_encode"
+.TH "SD_BUS_PATH_ENCODE" "3" "" "systemd 257" "sd_bus_path_encode"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -88,11 +88,27 @@ is returned in the return parameter\&. On failure, a negative errno\-style error
 \fBfree\fR(3)\*(Aqd by the caller\&.
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_path_encode()\fR
+and
+\fBsd_bus_path_decode()\fR
+were added in version 211\&.
+.PP
+\fBsd_bus_path_encode_many()\fR
+and
+\fBsd_bus_path_decode_many()\fR
+were added in version 227\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-bus\fR(3),
-\fBfree\fR(3)
+\fBsystemd\fR(1), \fBsd-bus\fR(3), \fBfree\fR(3)

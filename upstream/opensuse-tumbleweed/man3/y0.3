@@ -1,28 +1,9 @@
+'\" t
 .\" Copyright 1993 David Metcalfe (david@prism.demon.co.uk)
 .\" and Copyright 2008, Linux Foundation, written by Michael Kerrisk
 .\"     <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" References consulted:
 .\"     Linux libc source code
@@ -33,43 +14,44 @@
 .\" Modified 2004-11-12 as per suggestion by Fabian Kreutz/AEB
 .\" 2008-07-24, mtk, created this page, based on material from j0.3.
 .\"
-.TH Y0 3  2021-03-22 "" "Linux Programmer's Manual"
+.TH y0 3 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 y0, y0f, y0l, y1, y1f, y1l, yn, ynf, ynl \-
 Bessel functions of the second kind
+.SH LIBRARY
+Math library
+.RI ( libm ", " \-lm )
 .SH SYNOPSIS
 .nf
 .B #include <math.h>
-.PP
+.P
 .BI "double y0(double " x );
 .BI "double y1(double " x );
 .BI "double yn(int " n ", double " x );
-.PP
+.P
 .BI "float y0f(float " x );
 .BI "float y1f(float " x );
 .BI "float ynf(int " n ", float " x );
-.PP
+.P
 .BI "long double y0l(long double " x );
 .BI "long double y1l(long double " x );
 .BI "long double ynl(int " n ", long double " x );
 .fi
-.PP
-Link with \fI\-lm\fP.
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR y0 (),
 .BR y1 (),
 .BR yn ():
 .nf
     _XOPEN_SOURCE
         || /* Since glibc 2.19: */ _DEFAULT_SOURCE
-        || /* Glibc <= 2.19: */ _SVID_SOURCE || _BSD_SOURCE
+        || /* glibc <= 2.19: */ _SVID_SOURCE || _BSD_SOURCE
 .fi
-.PP
+.P
 .BR y0f (),
 .BR y0l (),
 .BR y1f (),
@@ -80,7 +62,7 @@ Feature Test Macro Requirements for glibc (see
     _XOPEN_SOURCE >= 600
         || (_ISOC99_SOURCE && _XOPEN_SOURCE)
         || /* Since glibc 2.19: */ _DEFAULT_SOURCE
-        || /* Glibc <= 2.19: */ _SVID_SOURCE || _BSD_SOURCE
+        || /* glibc <= 2.19: */ _SVID_SOURCE || _BSD_SOURCE
 .fi
 .SH DESCRIPTION
 The
@@ -97,11 +79,11 @@ returns the Bessel function of
 .I x
 of the second kind of order
 .IR n .
-.PP
+.P
 The value of
 .I x
 must be positive.
-.PP
+.P
 The
 .BR y0f (),
 .BR y1f (),
@@ -122,11 +104,11 @@ values.
 On success, these functions return the appropriate
 Bessel value of the second kind for
 .IR x .
-.PP
+.P
 If
 .I x
 is a NaN, a NaN is returned.
-.PP
+.P
 If
 .I x
 is negative,
@@ -138,7 +120,7 @@ or
 .RB \- HUGE_VALL ,
 respectively.
 (POSIX.1-2001 also allows a NaN return for this case.)
-.PP
+.P
 If
 .I x
 is 0.0,
@@ -149,11 +131,11 @@ and the functions return
 or
 .RB \- HUGE_VALL ,
 respectively.
-.PP
+.P
 If the result underflows,
 a range error occurs,
 and the functions return 0.0
-.PP
+.P
 If the result overflows,
 a range error occurs,
 and the functions return
@@ -168,7 +150,7 @@ See
 .BR math_error (7)
 for information on how to determine whether an error has occurred
 when calling these functions.
-.PP
+.P
 The following errors can occur:
 .TP
 Domain error: \fIx\fP is negative
@@ -184,7 +166,7 @@ Pole error: \fIx\fP is 0.0
 .\" as a range error.
 .I errno
 is set to
-.BR ERANGE
+.B ERANGE
 and an
 .B FE_DIVBYZERO
 exception is raised
@@ -199,7 +181,7 @@ No
 .B FE_UNDERFLOW
 exception is returned by
 .\" This is intended behavior
-.\" See http://sources.redhat.com/bugzilla/show_bug.cgi?id=6806
+.\" See https://www.sourceware.org/bugzilla/show_bug.cgi?id=6806
 .BR fetestexcept (3)
 for this case.
 .TP
@@ -207,7 +189,7 @@ Range error: result overflow
 .\" e.g., yn(10, 1e-40) on glibc 2.8/x86-32
 .I errno
 is set to
-.BR ERANGE
+.B ERANGE
 (but see BUGS).
 An overflow floating-point exception
 .RB ( FE_OVERFLOW )
@@ -215,38 +197,56 @@ is raised.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR y0 (),
 .BR y0f (),
 .BR y0l ()
 T}	Thread safety	MT-Safe
 T{
+.na
+.nh
 .BR y1 (),
 .BR y1f (),
 .BR y1l ()
 T}	Thread safety	MT-Safe
 T{
+.na
+.nh
 .BR yn (),
 .BR ynf (),
 .BR ynl ()
 T}	Thread safety	MT-Safe
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
-The functions returning
-.I double
-conform to SVr4, 4.3BSD,
-POSIX.1-2001, POSIX.1-2008.
-The others are nonstandard functions that also exist on the BSDs.
+.SH STANDARDS
+.TP
+.BR y0 ()
+.TQ
+.BR y1 ()
+.TQ
+.BR yn ()
+POSIX.1-2008.
+.TP
+Others:
+BSD.
+.SH HISTORY
+.TP
+.BR y0 ()
+.TQ
+.BR y1 ()
+.TQ
+.BR yn ()
+SVr4, 4.3BSD,
+POSIX.1-2001.
+.TP
+Others:
+BSD.
 .SH BUGS
 Before glibc 2.19,
 .\" http://sourceware.org/bugzilla/show_bug.cgi?id=6807
@@ -255,20 +255,20 @@ these functions misdiagnosed pole errors:
 was set to
 .BR EDOM ,
 instead of
-.BR ERANGE
+.B ERANGE
 and no
 .B FE_DIVBYZERO
 exception was raised.
-.PP
+.P
 Before glibc 2.17,
-.\" http://sources.redhat.com/bugzilla/show_bug.cgi?id=6808
+.\" https://www.sourceware.org/bugzilla/show_bug.cgi?id=6808
 did not set
 .I errno
 for "range error: result underflow".
-.PP
-In glibc version 2.3.2 and earlier,
+.P
+In glibc 2.3.2 and earlier,
 .\" Actually, 2.3.2 is the earliest test result I have; so yet
-.\" to confirm if this error occurs only in 2.3.2.
+.\" to confirm if this error occurs only in glibc 2.3.2.
 these functions do not raise an invalid floating-point exception
 .RB ( FE_INVALID )
 when a domain error occurs.

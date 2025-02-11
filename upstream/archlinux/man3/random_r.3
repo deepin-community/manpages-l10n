@@ -1,58 +1,43 @@
+'\" t
 .\" Copyright 2008 Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\"
-.TH RANDOM_R 3  2021-03-22 "GNU" "Linux Programmer's Manual"
+.TH random_r 3 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 random_r, srandom_r, initstate_r, setstate_r \- reentrant
 random number generator
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <stdlib.h>
-.PP
+.P
 .BI "int random_r(struct random_data *restrict " buf ,
 .BI "             int32_t *restrict " result );
 .BI "int srandom_r(unsigned int " seed ", struct random_data *" buf );
-.PP
-.BI "int initstate_r(unsigned int " seed ", char *restrict " statebuf ,
+.P
+.BI "int initstate_r(unsigned int " seed ", \
+char " statebuf "[restrict ." statelen ],
 .BI "             size_t " statelen ", struct random_data *restrict " buf );
 .BI "int setstate_r(char *restrict " statebuf ,
 .BI "             struct random_data *restrict " buf );
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR random_r (),
 .BR srandom_r (),
 .BR initstate_r (),
 .BR setstate_r ():
 .nf
-    /* Glibc since 2.19: */ _DEFAULT_SOURCE
-        || /* Glibc <= 2.19: */ _SVID_SOURCE || _BSD_SOURCE
+    /* glibc >= 2.19: */ _DEFAULT_SOURCE
+        || /* glibc <= 2.19: */ _SVID_SOURCE || _BSD_SOURCE
 .fi
 .SH DESCRIPTION
 These functions are the reentrant equivalents
@@ -60,7 +45,7 @@ of the functions described in
 .BR random (3).
 They are suitable for use in multithreaded programs where each thread
 needs to obtain an independent, reproducible sequence of random numbers.
-.PP
+.P
 The
 .BR random_r ()
 function is like
@@ -73,7 +58,7 @@ which must have been previously initialized by
 .BR initstate_r ().
 The generated random number is returned in the argument
 .IR result .
-.PP
+.P
 The
 .BR srandom_r ()
 function is like
@@ -84,7 +69,7 @@ whose state is maintained in the object pointed to by
 which must have been previously initialized by
 .BR initstate_r (),
 instead of the seed associated with the global state variable.
-.PP
+.P
 The
 .BR initstate_r ()
 function is like
@@ -93,7 +78,7 @@ except that it initializes the state in the object pointed to by
 .IR buf ,
 rather than initializing the global state variable.
 Before calling this function, the
-.IR buf.state
+.I buf.state
 field must be initialized to NULL.
 The
 .BR initstate_r ()
@@ -102,9 +87,9 @@ function records a pointer to the
 argument inside the structure pointed to by
 .IR buf .
 Thus,
-.IR statebuf
+.I statebuf
 should not be deallocated so long as
-.IR buf
+.I buf
 is still in use.
 (So,
 .I statebuf
@@ -112,7 +97,7 @@ should typically be allocated as a static variable,
 or allocated on the heap using
 .BR malloc (3)
 or similar.)
-.PP
+.P
 The
 .BR setstate_r ()
 function is like
@@ -156,25 +141,22 @@ was NULL.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR random_r (),
 .BR srandom_r (),
 .BR initstate_r (),
 .BR setstate_r ()
 T}	Thread safety	MT-Safe race:buf
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
-These functions are nonstandard glibc extensions.
+.SH STANDARDS
+GNU.
 .\" These functions appear to be on Tru64, but don't seem to be on
 .\" Solaris, HP-UX, or FreeBSD.
 .SH BUGS
@@ -183,7 +165,7 @@ The
 interface is confusing.
 .\" FIXME . https://sourceware.org/bugzilla/show_bug.cgi?id=3662
 It appears that the
-.IR random_data
+.I random_data
 type is intended to be opaque,
 but the implementation requires the user to either initialize the
 .I buf.state
@@ -192,12 +174,3 @@ field to NULL or zero out the entire structure before the call.
 .BR drand48 (3),
 .BR rand (3),
 .BR random (3)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

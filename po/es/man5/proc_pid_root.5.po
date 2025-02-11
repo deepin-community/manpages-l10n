@@ -1,0 +1,173 @@
+# Spanish translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Juan Piernas <piernas@ditec.um.es>, 1998-1999, 2005.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n 4.22.0\n"
+"POT-Creation-Date: 2024-12-06 18:09+0100\n"
+"PO-Revision-Date: 2024-03-29 09:48+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: Spanish <debian-l10n-spanish@lists.debian.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "proc_pid_root"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-leap-16-0
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "2024-05-02"
+msgstr "2 Mayo 2024"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+#, no-wrap
+msgid "Linux man-pages 6.9.1"
+msgstr "Páginas de Manual de Linux 6.9.1"
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr "NOMBRE"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+msgid "/proc/pid/root/ - symbolic link to root directory"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "DESCRIPCIÓN"
+
+#. type: TP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "I</proc/>pidI</root/>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"UNIX and Linux support the idea of a per-process root of the filesystem, set "
+"by the B<chroot>(2)  system call.  This file is a symbolic link that points "
+"to the process's root directory, and behaves in the same way as I<exe>, and "
+"I<fd/*>."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Note however that this file is not merely a symbolic link.  It provides the "
+"same view of the filesystem (including namespaces and the set of per-process "
+"mounts) as the process itself.  An example illustrates this point.  In one "
+"terminal, we start a shell in new user and mount namespaces, and in that "
+"shell we create some new mounts:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<PS1=\\[aq]sh1# \\[aq] unshare -Urnm>\n"
+"sh1# B<mount -t tmpfs tmpfs /etc>  # Mount empty tmpfs at /etc\n"
+"sh1# B<mount --bind /usr /dev>     # Mount /usr at /dev\n"
+"sh1# B<echo $$>\n"
+"27123\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"In a second terminal window, in the initial mount namespace, we look at the "
+"contents of the corresponding mounts in the initial and new namespaces:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ B<PS1=\\[aq]sh2# \\[aq] sudo sh>\n"
+"sh2# B<ls /etc | wc -l>                  # In initial NS\n"
+"309\n"
+"sh2# B<ls /proc/27123/root/etc | wc -l>  # /etc in other NS\n"
+"0                                     # The empty tmpfs dir\n"
+"sh2# B<ls /dev | wc -l>                  # In initial NS\n"
+"205\n"
+"sh2# B<ls /proc/27123/root/dev | wc -l>  # /dev in other NS\n"
+"11                                    # Actually bind\n"
+"                                      # mounted to /usr\n"
+"sh2# B<ls /usr | wc -l>                  # /usr in initial NS\n"
+"11\n"
+msgstr ""
+
+#.  The following was still true as at kernel 2.6.13
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"In a multithreaded process, the contents of the I</proc/>pidI</root> "
+"symbolic link are not available if the main thread has already terminated "
+"(typically by calling B<pthread_exit>(3))."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Permission to dereference or read (B<readlink>(2))  this symbolic link is "
+"governed by a ptrace access mode B<PTRACE_MODE_READ_FSCREDS> check; see "
+"B<ptrace>(2)."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "VÉASE TAMBIÉN"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<proc>(5)"
+msgstr "B<proc>(5)"
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "2023-08-15"
+msgstr "15 Agosto 2023"
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "Linux man-pages 6.06"
+msgstr "Páginas de Manual de Linux 6.06"
+
+#. type: TH
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux man-pages (unreleased)"
+msgstr "Páginas de Manual de Linux (no publicadas)"

@@ -1,5 +1,120 @@
 # Changelog for manpages-l10n
 
+## Version 4.25.1
+*Fr 10. Jan 09:03:22 CET 2025
+
+* Updated and added translations, including some which missed 4.25.0
+* Fix internal version number and release date of 4.25.0
+* Sync systemd no stable versions (via distros)
+
+## Version 4.25.0
+*Sat Dec 21 11:58:47 CET 2024
+
+* Updated and added many translations
+* Czech is now an active language
+
+## Version 4.24.0
+*Fri Sep 20 18:25:58 CEST 2024
+
+* Updated and added many translations
+
+## Version 4.23.1
+*Sun Jun 23 12:32:39 CEST 2024
+
+* Fixed (workaround) an issue which broke many localized man pages.
+  See https://salsa.debian.org/manpages-l10n-team/manpages-l10n/-/issues/18
+* Updated and added translations
+
+## Version 4.23.0
+*Sat Jun 15 06:12:04 UTC 2024*
+
+* Updated and added many translations
+* More active languages now
+* Fixed version number in previous CHANGES entry
+* Start handling \c in groff better. This requires po4a > 0.72.
+  So if possible, use this (or a later) version. Fallback code
+  is present, but might be incomplete.
+
+## Version 4.22.0
+*Sat Mar 23 07:09:18 CET 2024*
+
+* Updated and added many translations
+
+## Version 4.21.0
+*Sun Dec 17 08:33:23 CET 2023*
+
+* Updated and added many translations
+* New language: Korean
+
+## Version 4.20.0
+*Tue Sep 05 17:13:00 CEST 2023*
+
+* Updated and added many translations
+* util-linux man pages are now only available for 
+  Debian Bookworm and Opensuse Leap. In all other distributions
+  which already ship util-linux-2.39 and newer, the creation
+  of the man pages needs to be enabled in that package
+  (already done for Debian Sid and Fedora 39+).
+* Korean translations are still disabled.
+
+## Version 4.19.0
+*Thu Jun 01 21:45:00 CEST 2023*
+
+* Updated and added many translations
+* Bugfix release for Fedora Rawhide (for util-linux-2.39)
+
+## Version 4.18.1
+*Sat Apr 08 19:44:00 CET 2023*
+
+* Last upstream release towards Debian Bookworm
+* Updated and added many translations
+
+## Version 4.18.0
+*Thu Mar 09 20:43:00 CET 2023*
+
+* Updated and added many translations
+
+## Version 4.17.0
+*Tue Jan 17 18:53:00 CET 2023*
+
+* Updated many translations
+
+## Version 4.16.0
+*Thu Nov 24 21:18:00 CET 2022*
+
+* Updated many translations
+
+## Version 4.15.0
+*Tue Aug 09 20:02:00 CEST 2022*
+
+* Updated many translations
+
+## Version 4.14.0
+*Wed May 04 19:51:00 CEST 2022*
+
+* New language: Ukrainian
+* Updated many translations
+
+## Version 4.13
+*Sun Feb 20 19:45:00 CET 2022*
+
+* New language: Vietnamese
+* New distribution: Fedora 36
+* Fix addendum creation for mdoc based files
+* Updated many translations
+
+## Version 4.12.1
+*Sun Dec 19 11:24:00 CET 2021*
+
+* Bugfix: Enable new languages in po/Makefile.am
+
+## Version 4.12.0
+*Sun Dec 19 11:07:00 CET 2021*
+
+* New languages: Finnish, Greek, Indonesian, Norwegian bokmål, Swedish, Serbian
+* Persian (fa) is in a very early state; still disabled
+* Updated and added many translations
+
 ## Version 4.11.0
 *Tue Sep 14 20:57:20 CET 2021*
 
@@ -30,8 +145,6 @@
 *Sat Feb  06 21:38:01 CET 2021*
 
 * Updated and added many translations
-
-# Changelog for manpages-l10n
 
 ## Version 4.9.0pre1
 *Sat Jan  23 21:39:01 CET 2021*

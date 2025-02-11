@@ -1,5 +1,5 @@
 '\" t
-.TH "NSS\-MYHOSTNAME" "8" "" "systemd 249" "nss-myhostname"
+.TH "NSS\-MYHOSTNAME" "8" "" "systemd 257" "nss-myhostname"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -82,7 +82,7 @@ is resolved to all current default routing gateway addresses, ordered by their m
 .\}
 The hostname
 "_outbound"
-is resolved to the local IPv4 and IPv6 addresses that are most likely used for communication with other hosts\&. This is determined by requesting a routing decision to the configured default gateways from the kernel and then using the local IP addresses selected by this decision\&. This hostname is only available if there is at least one local default gateway configured\&. This assigns a stable hostname to the local outbound IP addresses, useful for referencing them independently of the current network configuration state\&.
+is resolved to the local IPv4 and IPv6 addresses that are most likely used for communication with other hosts\&. This is the preferred source addresses of default gateways if specified, or determined by requesting a routing decision to the configured default gateways from the kernel and then using the local IP addresses selected by this decision\&. This hostname is only available if there is at least one local default gateway configured\&. This assigns a stable hostname to the local outbound IP addresses, useful for referencing them independently of the current network configuration state\&.
 .RE
 .PP
 Various software relies on an always\-resolvable local hostname\&. When using dynamic hostnames, this is traditionally achieved by patching
@@ -116,7 +116,7 @@ and the machine hostnames locally\&. It is consistent with the behaviour of
 Please keep in mind that
 \fBnss\-myhostname\fR
 (and
-\fBnss\-resolve\fR) also resolve in the other direction \(em from locally attached IP adresses to hostnames\&. If you rely on that lookup being provided by DNS, you might want to order things differently\&.
+\fBnss\-resolve\fR) also resolve in the other direction \(em from locally attached IP addresses to hostnames\&. If you rely on that lookup being provided by DNS, you might want to order things differently\&.
 .SH "EXAMPLE"
 .PP
 Here is an example
@@ -129,11 +129,10 @@ correctly:
 .RS 4
 .\}
 .nf
-passwd:         compat systemd
-group:          compat [SUCCESS=merge] systemd
-shadow:         compat systemd
+passwd:         files systemd
+group:          files [SUCCESS=merge] systemd
+shadow:         files systemd
 gshadow:        files systemd
-
 
 hosts:          mymachines resolve [!UNAVAIL=return] files \fBmyhostname\fR dns
 networks:       files
@@ -151,7 +150,7 @@ netgroup:       nis
 .PP
 To test, use
 \fBglibc\fR\*(Aqs
-\fBgetent\fR
+\fBgetent\fR(1)
 tool:
 .sp
 .if n \{\
@@ -174,9 +173,4 @@ In this case, the local hostname is
 \fIomega\fR\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBnss-systemd\fR(8),
-\fBnss-resolve\fR(8),
-\fBnss-mymachines\fR(8),
-\fBnsswitch.conf\fR(5),
-\fBgetent\fR(1)
+\fBsystemd\fR(1), \fBnss-systemd\fR(8), \fBnss-resolve\fR(8), \fBnss-mymachines\fR(8), \fBnsswitch.conf\fR(5), \fBgetent\fR(1)

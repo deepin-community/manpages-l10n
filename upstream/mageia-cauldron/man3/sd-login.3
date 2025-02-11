@@ -1,5 +1,5 @@
 '\" t
-.TH "SD\-LOGIN" "3" "" "systemd 249" "sd-login"
+.TH "SD\-LOGIN" "3" "" "systemd 255" "sd-login"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -33,7 +33,9 @@ sd-login \- APIs for tracking logins
 .SH "DESCRIPTION"
 .PP
 sd\-login\&.h
-provides APIs to introspect and monitor seat, login session and user status information on the local system\&.
+is part of
+\fBlibsystemd\fR(3)
+and provides APIs to introspect and monitor seat, login session, and user status information on the local system\&.
 .PP
 Note that these APIs only allow purely passive access and monitoring of seats, sessions and users\&. To actively make changes to the seat configuration, terminate login sessions, or switch session on a seat you need to utilize the D\-Bus API of systemd\-logind, instead\&.
 .PP
@@ -77,6 +79,8 @@ followed by at least one character from the range [a\-zA\-Z0\-9],
 "_"
 and
 "\-"\&. They are suitable for use as file names\&. Seat names may or may not be stable and may be reused if a seat becomes available again\&.
+.sp
+Added in version 235\&.
 .RE
 .PP
 session
@@ -88,6 +92,8 @@ ensures that audit sessions are identical to systemd sessions, and uses the audi
 "_"
 and
 "\-", suitable for use as a file name\&. Session IDs are unique on the local machine and are never reused as long as the machine is online\&. A user (the way we know it on UNIX) corresponds to the person using a computer\&. A single user can have multiple sessions open at the same time\&. A user is identified by a numeric user id (UID) or a user name (a string)\&. A multi\-session system allows multiple user sessions on the same seat at the same time\&. A multi\-seat system allows multiple independent seats that can be individually and simultaneously used by different users\&.
+.sp
+Added in version 235\&.
 .RE
 .PP
 All hardware devices that are eligible to being assigned to a seat, are assigned to one\&. A device can be assigned to only one seat at a time\&. If a device is not assigned to any particular other seat it is implicitly assigned to the special default seat called
@@ -104,6 +110,8 @@ Assignment of hardware devices to seats is managed inside the udev database, via
 Tag "seat"
 .RS 4
 When set, a device is eligible to be assigned to a seat\&. This tag is set for graphics devices, mice, keyboards, video cards, sound cards and more\&. Note that some devices like sound cards consist of multiple subdevices (i\&.e\&. a PCM for input and another one for output)\&. This tag will be set only for the originating device, not for the individual subdevices\&. A UI for configuring assignment of devices to seats should enumerate and subscribe to all devices with this tag set and show them in the UI\&. Note that USB hubs can be assigned to a seat as well, in which case all (current and future) devices plugged into it will also be assigned to the same seat (unless they are explicitly assigned to another seat)\&.
+.sp
+Added in version 235\&.
 .RE
 .PP
 Tag "master\-of\-seat"
@@ -113,6 +121,8 @@ When set, this device is enough for a seat to be considered existent\&. This tag
 tag, but (at least) one of these devices needs to be tagged with
 "master\-of\-seat"
 before the seat is actually considered to be around\&.
+.sp
+Added in version 235\&.
 .RE
 .PP
 Property \fIID_SEAT\fR
@@ -130,12 +140,16 @@ property manually\&. Again, if a device is assigned to seat0 this is visible on 
 and with no property
 \fIID_SEAT\fR
 set for it at all\&.
+.sp
+Added in version 235\&.
 .RE
 .PP
 Property \fIID_AUTOSEAT\fR
 .RS 4
 When set to
 "1", this device automatically generates a new and independent seat, which is named after the path of the device\&. This is set for specialized USB hubs like the Pluggable devices, which when plugged in should create a hotplug seat without further configuration\&.
+.sp
+Added in version 235\&.
 .RE
 .PP
 Property \fIID_FOR_SEAT\fR
@@ -143,6 +157,8 @@ Property \fIID_FOR_SEAT\fR
 When creating additional (manual) seats starting from a graphics device this is a good choice to name the seat after\&. It is created from the path of the device\&. This is useful in UIs for configuring seats: as soon as you create a new seat from a graphics device, read this property and prefix it with
 "seat\-"
 and use it as name for the seat\&.
+.sp
+Added in version 235\&.
 .RE
 .PP
 A seat exists only and exclusively because a properly tagged device with the right
@@ -154,9 +170,16 @@ Note that
 manages ACLs on a number of device classes, to allow user code to access the device nodes attached to a seat as long as the user has an active session on it\&. This is mostly transparent to applications\&. As mentioned above, for certain user software it might be a good idea to watch whether they can access device nodes instead of thinking about seats\&.
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

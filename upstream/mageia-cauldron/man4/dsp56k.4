@@ -1,38 +1,19 @@
 .\" Copyright (c) 2000 lars brinkhoff <lars@nocrew.org>
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
-.\"
-.\" The GNU General Public License's references to "object code"
-.\" and "executables" are to be interpreted as the output of any
-.\" document formatting or typesetting system, including
-.\" intermediate and printed output.
-.\"
-.\" This manual is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
 .\" Modified, Thu Jan 27 19:16:19 CET 2000, lars@nocrew.org
 .\"
-.TH DSP56K 4 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH dsp56k 4 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 dsp56k \- DSP56001 interface device
 .SH SYNOPSIS
 .nf
 .B #include <asm/dsp56k.h>
-.PP
+.P
 .BI "ssize_t read(int " fd ", void *" data ", size_t " length );
 .BI "ssize_t write(int " fd ", void *" data ", size_t " length );
-.PP
+.P
 .BI "int ioctl(int " fd ", DSP56K_UPLOAD, struct dsp56k_upload *" program );
 .BI "int ioctl(int " fd ", DSP56K_SET_TX_WSIZE, int " wsize );
 .BI "int ioctl(int " fd ", DSP56K_SET_RX_WSIZE, int " wsize );
@@ -41,7 +22,7 @@ dsp56k \- DSP56001 interface device
 .fi
 .SH CONFIGURATION
 The
-.B dsp56k
+.I dsp56k
 device is a character device with major number 55 and minor
 number 0.
 .SH DESCRIPTION
@@ -50,7 +31,7 @@ processor found in Atari Falcon030-compatible computers.
 The \fIdsp56k\fP special file is used to control the DSP56001, and
 to send and receive data using the bidirectional handshaked host
 port.
-.PP
+.P
 To send a data stream to the signal processor, use
 .BR write (2)
 to the
@@ -60,19 +41,21 @@ to receive processed data.
 The data can be sent or
 received in 8, 16, 24, or 32-bit quantities on the host side, but will
 always be seen as 24-bit quantities in the DSP56001.
-.PP
+.P
 The following
 .BR ioctl (2)
 calls are used to control the
 \fIdsp56k\fP device:
-.IP \fBDSP56K_UPLOAD\fP
+.TP
+.B DSP56K_UPLOAD
 resets the DSP56001 and uploads a program.
 The third
 .BR ioctl (2)
 argument must be a pointer to a \fIstruct dsp56k_upload\fP with members
 \fIbin\fP pointing to a DSP56001 binary program, and \fIlen\fP set to
 the length of the program, counted in 24-bit words.
-.IP \fBDSP56K_SET_TX_WSIZE\fP
+.TP
+.B DSP56K_SET_TX_WSIZE
 sets the transmit word size.
 Allowed values are in the range 1 to 4,
 and is the number of bytes that will be sent at a time to the
@@ -80,14 +63,16 @@ DSP56001.
 These data quantities will either be padded with bytes containing zero,
 or truncated to fit the native 24-bit data format of the
 DSP56001.
-.IP \fBDSP56K_SET_RX_WSIZE\fP
+.TP
+.B DSP56K_SET_RX_WSIZE
 sets the receive word size.
 Allowed values are in the range 1 to 4,
-and is the number of bytes that will be received at a time from the
-DSP56001.
-These data quantities will either truncated, or padded with
-a null byte (\(aq\e0\(aq) to fit the native 24-bit data format of the DSP56001.
-.IP \fBDSP56K_HOST_FLAGS\fP
+and is the number of bytes that will be received at a time from the DSP56001.
+These data quantities will either truncated,
+or padded with a null byte (\[aq]\e0\[aq]),
+to fit the native 24-bit data format of the DSP56001.
+.TP
+.B DSP56K_HOST_FLAGS
 read and write the host flags.
 The host flags are four
 general-purpose bits that can be read by both the hosting computer and
@@ -104,7 +89,8 @@ If bit 0 or 1 is set in the
 to the host flags.
 The state of all host flags will be returned in
 the lower four bits of the \fIstatus\fP member.
-.IP \fBDSP56K_HOST_CMD\fP
+.TP
+.B DSP56K_HOST_CMD
 sends a host command.
 Allowed values are in the range 0 to 31, and is a
 user-defined command handled by the program running in the DSP56001.
@@ -119,12 +105,3 @@ user-defined command handled by the program running in the DSP56001.
 .UR http://dsp56k.nocrew.org/
 .UE ,
 DSP56000/DSP56001 Digital Signal Processor User's Manual
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

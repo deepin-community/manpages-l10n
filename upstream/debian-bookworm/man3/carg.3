@@ -1,0 +1,90 @@
+'\" t
+.\" Copyright 2002 Walter Harms (walter.harms@informatik.uni-oldenburg.de)
+.\"
+.\" SPDX-License-Identifier: GPL-1.0-or-later
+.\"
+.TH carg 3 2022-12-15 "Linux man-pages 6.03"
+.SH NAME
+carg, cargf, cargl \- calculate the complex argument
+.SH LIBRARY
+Math library
+.RI ( libm ", " \-lm )
+.SH SYNOPSIS
+.nf
+.B #include <complex.h>
+.PP
+.BI "double carg(double complex " z ");"
+.BI "float cargf(float complex " z ");"
+.BI "long double cargl(long double complex " z ");"
+.fi
+.SH DESCRIPTION
+These functions calculate the complex argument (also called phase angle) of
+.IR z ,
+with a branch cut along the negative real axis.
+.PP
+A complex number can be described by two real coordinates.
+One may use rectangular coordinates and gets
+.PP
+.in +4n
+.EX
+z = x + I * y
+.EE
+.in
+.PP
+where
+.I x\~=\~creal(z)
+and
+.IR y\~=\~cimag(z) .
+.PP
+Or one may use polar coordinates and gets
+.PP
+.in +4n
+.EX
+z = r * cexp(I * a)
+.EE
+.in
+.PP
+where
+.I r\~=\~cabs(z)
+is the "radius", the "modulus", the absolute value of
+.IR z ,
+and
+.I a\~=\~carg(z)
+is the "phase angle", the argument of
+.IR z .
+.PP
+One has:
+.PP
+.in +4n
+.EX
+tan(carg(z)) = cimag(z) / creal(z)
+.EE
+.in
+.SH RETURN VALUE
+The return value is in the range of [\-pi,pi].
+.SH VERSIONS
+These functions were added in glibc 2.1.
+.SH ATTRIBUTES
+For an explanation of the terms used in this section, see
+.BR attributes (7).
+.ad l
+.nh
+.TS
+allbox;
+lbx lb lb
+l l l.
+Interface	Attribute	Value
+T{
+.BR carg (),
+.BR cargf (),
+.BR cargl ()
+T}	Thread safety	MT-Safe
+.TE
+.hy
+.ad
+.sp 1
+.SH STANDARDS
+C99, POSIX.1-2001, POSIX.1-2008.
+.SH SEE ALSO
+.BR cabs (3),
+.BR complex (7)

@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.DEVICE" "5" "" "systemd 247" "systemd.device"
+.TH "SYSTEMD\&.DEVICE" "5" "" "systemd 257.1" "systemd.device"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -29,17 +29,16 @@ systemd.device \- Device unit configuration
 A unit configuration file whose name ends in
 "\&.device"
 encodes information about a device unit as exposed in the sysfs/\fBudev\fR(7)
-device tree\&.
+device tree\&. This may be used to define dependencies between devices and other units\&.
 .PP
 This unit type has no specific options\&. See
 \fBsystemd.unit\fR(5)
 for the common options of all unit configuration files\&. The common configuration items are configured in the generic [Unit] and [Install] sections\&. A separate [Device] section does not exist, since no device\-specific options may be configured\&.
 .PP
-systemd will dynamically create device units for all kernel devices that are marked with the "systemd" udev tag (by default all block and network devices, and a few others)\&. This may be used to define dependencies between devices and other units\&. To tag a udev device, use
-"TAG+="systemd""
-in the udev rules file, see
-\fBudev\fR(7)
-for details\&.
+systemd will dynamically create device units for all kernel devices that are marked with the
+"systemd"
+udev tag (by default all block and network devices, and a few others)\&. Note that
+\fIif \fR\fIsystemd\-udevd\&.service\fR\fI is not running, no device units will be available (for example in a typical container)\fR\&.
 .PP
 Device units are named after the
 /sys/
@@ -50,6 +49,12 @@ paths they control\&. Example: the device
 is exposed in systemd as
 dev\-sda5\&.device\&. For details about the escaping logic used to convert a file system path to a unit name see
 \fBsystemd.unit\fR(5)\&.
+.PP
+To tag a udev device, use
+"TAG+="systemd""
+in the udev rules file, see
+\fBudev\fR(7)
+for details\&.
 .PP
 Device units will be reloaded by systemd whenever the corresponding device generates a
 "changed"
@@ -120,10 +125,10 @@ is set for a device\&.
 .RS 4
 If set, this property is used as description string for the device unit\&.
 .RE
+.SH "OPTIONS"
+.PP
+Device unit files may include [Unit] and [Install] sections, which are described in
+\fBsystemd.unit\fR(5)\&. No options specific to this file type are supported\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemctl\fR(1),
-\fBsystemd.unit\fR(5),
-\fBudev\fR(7),
-\fBsystemd.directives\fR(7)
+\fBsystemd\fR(1), \fBsystemctl\fR(1), \fBsystemd.unit\fR(5), \fBudev\fR(7), \fBsystemd.directives\fR(7)

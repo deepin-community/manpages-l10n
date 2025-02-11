@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-VCONSOLE\-SETUP\&.SERVICE" "8" "" "systemd 249" "systemd-vconsole-setup.service"
+.TH "SYSTEMD\-VCONSOLE\-SETUP\&.SERVICE" "8" "" "systemd 257" "systemd-vconsole-setup.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,10 +28,12 @@ systemd\-vconsole\-setup\&.service
 \fB/usr/lib/systemd/systemd\-vconsole\-setup\fR [TTY]
 .SH "DESCRIPTION"
 .PP
-systemd\-vconsole\-setup
+\fBsystemd\-vconsole\-setup\fR
 sets up and configures either all virtual consoles, or \(em if the optional
 \fITTY\fR
-parameter is provided \(em a specific one\&. When the system is booting up, it\*(Aqs called by
+parameter is provided \(em a specific one\&. When the system is booting up,
+systemd\-vconsole\-setup\&.service
+is called by
 \fBsystemd-udevd\fR(8)
 during VT console subsystem initialization\&. Also,
 \fBsystemd-localed.service\fR(8)
@@ -48,10 +50,46 @@ in order to apply any manual changes made to
 See
 \fBvconsole.conf\fR(5)
 for information about the configuration files and kernel command line options understood by this program\&.
+.SH "CREDENTIALS"
+.PP
+\fBsystemd\-vconsole\-setup\fR
+supports the service credentials logic as implemented by
+\fIImportCredential=\fR/\fILoadCredential=\fR/\fISetCredential=\fR
+(see
+\fBsystemd.exec\fR(5)
+for details)\&. The following credentials are used when passed in:
+.PP
+\fIvconsole\&.keymap\fR, \fIvconsole\&.keymap_toggle\fR
+.RS 4
+The keymap (and toggle keymap) to apply\&. The matching options in
+vconsole\&.conf
+and on the kernel command line take precedence over these credentials\&.
+.sp
+Note the relationship to the
+\fIfirstboot\&.keymap\fR
+credential understood by
+\fBsystemd-firstboot.service\fR(8): both ultimately affect the same setting, but
+\fIfirstboot\&.keymap\fR
+is written into
+/etc/vconsole\&.conf
+on first boot (if not already configured), and then read from there by
+\fBsystemd\-vconsole\-setup\fR, while
+\fIvconsole\&.keymap\fR
+is read on every boot, and is not persisted to disk (but any configuration in
+vconsole\&.conf
+will take precedence if present)\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fIvconsole\&.font\fR, \fIvconsole\&.font_map\fR, \fIvconsole\&.font_unimap\fR
+.RS 4
+The console font settings to apply\&. The matching options in
+vconsole\&.conf
+and on the kernel command line take precedence over these credentials\&.
+.sp
+Added in version 253\&.
+.RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBvconsole.conf\fR(5),
-\fBloadkeys\fR(1),
-\fBsetfont\fR(8),
-\fBsystemd-localed.service\fR(8)
+\fBsystemd\fR(1), \fBvconsole.conf\fR(5), \fBloadkeys\fR(1), \fBsetfont\fR(8), \fBsystemd-localed.service\fR(8)

@@ -1,0 +1,163 @@
+'\" t
+.TH "SYSTEMD\-IMPORT\-GENERATOR" "8" "" "systemd 257.1" "systemd-import-generator"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-import-generator \- Generator for automatically downloading disk images at boot
+.SH "SYNOPSIS"
+.PP
+/usr/lib/systemd/system\-generators/systemd\-import\-generator
+.SH "DESCRIPTION"
+.PP
+\fBsystemd\-import\-generator\fR
+may be used to automatically download disk images (tarballs or DDIs) via
+\fBsystemd-importd.service\fR(8)
+at boot, based on parameters on the kernel command line or via system credentials\&. This is useful for automatically deploying an
+\fBsystemd-confext\fR(8),
+\fBsystemd-sysext\fR(8),
+\fBsystemd-nspawn\fR(1)/
+\fBsystemd-vmspawn\fR(1)
+or
+\fBsystemd-portabled.service\fR(8)
+image at boot\&. This provides functionality equivalent to
+\fBimportctl\fR(1), but accessible via the kernel command line and system credentials\&.
+.PP
+systemd\-import\-generator
+implements
+\fBsystemd.generator\fR(7)\&.
+.SH "KERNEL COMMAND LINE"
+.PP
+systemd\-import\-generator
+understands the following
+\fBkernel-command-line\fR(7)
+parameters:
+.PP
+\fIsystemd\&.pull=\fR
+.RS 4
+This option takes a colon separate triplet of option string, local target image name and remote URL\&. The local target image name can be specified as an empty string, in which case the name is derived from the specified remote URL\&. The remote URL must using the
+"http://",
+"https://",
+"file://"
+schemes\&. The option string itself is a comma separated list of options:
+.PP
+rw, ro
+.RS 4
+Controls whether to mark the local image as read\-only\&. If not specified read\-only defaults to off\&.
+.sp
+Added in version 257\&.
+.RE
+.PP
+verify=
+.RS 4
+Controls whether to cryptographically validate the download before installing it in place\&. Takes one of
+"no",
+"checksum"
+or
+"signature"
+(the latter being the default if not specified)\&. For details see the
+\fB\-\-verify=\fR
+of
+\fBimportctl\fR(1)
+.sp
+Added in version 257\&.
+.RE
+.PP
+sysext, confext, machine, portable
+.RS 4
+Controls the image class to download, and thus ultimately the target directory for the image, depending on this choice the target directory
+/var/lib/extensions/,
+/var/lib/confexts/,
+/var/lib/machines/
+or
+/var/lib/portables/
+is selected\&.
+.sp
+Specification of exactly one of these options is mandatory\&.
+.sp
+Added in version 257\&.
+.RE
+.PP
+tar, raw
+.RS 4
+Controls the type of resource to download, i\&.e\&. a (possibly compressed) tarball that needs to be unpacked into a file system tree, or (possibly compressed) raw disk image (DDI)\&.
+.sp
+Specification of exactly one of these options is mandatory\&.
+.sp
+Added in version 257\&.
+.RE
+.sp
+Added in version 257\&.
+.RE
+.PP
+\fIsystemd\&.pull\&.success_action=\fR, \fIsystemd\&.pull\&.failure_action=\fR
+.RS 4
+Controls whether to execute an action such as reboot, power\-off and similar after completing the download successfully, or unsuccessfully\&. See
+\fISuccessAction=\fR/\fIFailureAction=\fR
+on
+\fBsystemd.unit\fR(5)
+for details about the available actions\&. If not specified no action is taken, and the system will continue to boot normally\&.
+.sp
+Added in version 257\&.
+.RE
+.SH "CREDENTIALS"
+.PP
+\fBsystemd\-import\-generator\fR
+supports the system credentials logic\&. The following credentials are used when passed in:
+.PP
+\fIimport\&.pull\fR
+.RS 4
+This credential should be a text file, with each line referencing one download operation\&. Each line should follow the same format as the value of the
+\fIsystemd\&.pull=\fR
+kernel command line option described above\&.
+.sp
+Added in version 257\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Download Configuration Extension\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+systemd\&.pull=raw,confext::https://example\&.com/myconfext\&.raw\&.gz
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+With a kernel command line option like the above a configuration extension DDI is downloaded automatically at boot from the specified URL, validated cryptographically, uncompressed and installed\&.
+.PP
+\fBExample\ \&2.\ \&Download System Extension (Without Validation)\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+systemd\&.pull=tar,sysext,verify=no::https://example\&.com/mysysext\&.tar\&.gz
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+With a kernel command line option like the above a system extension tarball is downloaded automatically at boot from the specified URL, uncompressed and installed \(en without any cryptographic validation\&. This is useful for development purposes in virtual machines and containers\&. Warning: do not deploy a system with validation disabled like this!
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1), \fBsystemd-importd.service\fR(8), \fBkernel-command-line\fR(7), \fBsystemd.system-credentials\fR(7), \fBimportctl\fR(1)

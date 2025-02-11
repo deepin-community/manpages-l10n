@@ -1,0 +1,66 @@
+'\" t
+.\" Copyright (c) 2012 by Michael Kerrisk <mtk.manpages@gmail.com>
+.\"
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+.\"
+.TH malloc_usable_size 3 2022-12-15 "Linux man-pages 6.03"
+.SH NAME
+malloc_usable_size \- obtain size of block of memory allocated from heap
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
+.SH SYNOPSIS
+.nf
+.B #include <malloc.h>
+.PP
+.BI "size_t malloc_usable_size(void *" ptr );
+.fi
+.SH DESCRIPTION
+The
+.BR malloc_usable_size ()
+function returns the number of usable bytes in the block pointed to by
+.IR ptr ,
+a pointer to a block of memory allocated by
+.BR malloc (3)
+or a related function.
+.SH RETURN VALUE
+.BR malloc_usable_size ()
+returns the number of usable bytes in
+the block of allocated memory pointed to by
+.IR ptr .
+If
+.I ptr
+is NULL, 0 is returned.
+.SH ATTRIBUTES
+For an explanation of the terms used in this section, see
+.BR attributes (7).
+.ad l
+.nh
+.TS
+allbox;
+lbx lb lb
+l l l.
+Interface	Attribute	Value
+T{
+.BR malloc_usable_size ()
+T}	Thread safety	MT-Safe
+.TE
+.hy
+.ad
+.sp 1
+.SH STANDARDS
+This function is a GNU extension.
+.SH NOTES
+The value returned by
+.BR malloc_usable_size ()
+may be greater than the requested size of the allocation because
+of alignment and minimum size constraints.
+Although the excess bytes can be overwritten by the application
+without ill effects,
+this is not good programming practice:
+the number of excess bytes in an allocation depends on
+the underlying implementation.
+.PP
+The main use of this function is for debugging and introspection.
+.SH SEE ALSO
+.BR malloc (3)

@@ -1,70 +1,109 @@
-.\" yumdownloader
-.TH "yumdownloader" "1" "28 November 2005" "Gijs Hollestelle" ""
-.SH "NAME"
-yumdownloader \- download RPM packages from Yum repositories
-.SH "SYNOPSIS"
-\fByumdownloader\fP [options] package1 [package2...]
-.SH "DESCRIPTION"
-.PP 
-\fByumdownloader\fP is a program for downloading RPMs from Yum repositories.
-.PP 
-.SH "GENERAL OPTIONS"
-.IP "\fB\-h, \-\-help\fP"
-Help; display a help message and then quit\&.
-.IP "\fB\-\-destdir DIR\fP" 
-Specify a destination directory for the download.  Defaults to the current directory.
-.IP "\fB\-\-urls\fP"
-Instead of downloading RPMs, list the URLs that would be downloaded.
-.IP "\fB\-\-resolve\fP"
-When downloading RPMs, resolve dependencies and also download the required packages.
-.IP "\fB\-\-source\fP"
-Instead of downloading the binary RPMs, download the source RPMs.
-.IP "\fB\-\-archlist=ARCH1[,ARCH2...]\fP"
-Limit the query to packages of given architecture(s). Valid values are all
-architectures known to rpm/yum such as 'i386' and 'src' for
-source RPMS. Note that repoquery will now change yum's "arch" to the first
-value in the archlist. So "\-\-archlist=i386,i686" will change yum's canonical
-arch to i386, but allow packages of i386 and i686.
-.SH "ADDITIONAL OPTIONS"
-Yumdownloader inherits all other options from yum. See the yum(8) man page
-for more information
-
-.SH "EXAMPLES"
-.IP "Download the kernel RPM to /var/tmp:"
-\fByumdownloader \-\-destdir /var/tmp kernel\fP
-.IP "List the URL for the kernel and kernel-smp RPMs:"
-\fByumdownloader \-\-urls kernel kernel-smp\fP
-.PP 
-.SH "FILES"
-As yumdownloader uses YUM libraries for retrieving all the information, it
-relies on YUM configuration for its default values like which repositories
-to use. Consult YUM documentation for details:
-.PP
-.nf 
-/etc/yum.conf
-/etc/yum/repos.d/
-/var/cache/yum/
-.fi 
-
-.PP 
-.SH "SEE ALSO"
-.nf
-.I yum.conf (5)
-http://yum.baseurl.org/
-.fi 
-
-.PP 
-.SH "AUTHORS"
-.nf 
-See the Authors file included with this program.
-.fi 
-
-.PP 
-.SH "BUGS"
-There are of course no bugs, but should you find any, you should first
-consult the FAQ section on http://yum.baseurl.org/wiki/Faq and if unsuccessful
-in finding a resolution contact the mailing list: yum-devel@lists.baseurl.org.
-To file a bug use http://bugzilla.redhat.com for Fedora/RHEL/Centos
-related bugs and http://yum.baseurl.org/report for all other bugs.
-
-.fi
+.\" Man page generated from reStructuredText.
+.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.TH "YUMDOWNLOADER" "1" "Aug 22, 2024" "4.9.0" "dnf-plugins-core"
+.SH NAME
+yumdownloader \- redirecting to DNF download Plugin
+.sp
+Download binary or source packages.
+.SH SYNOPSIS
+.sp
+\fBdnf download [options] <pkg\-spec>...\fP
+.SH ARGUMENTS
+.INDENT 0.0
+.TP
+.B \fB<pkg\-spec>\fP
+Package specification for the package to download.
+Local RPMs can be specified as well. This is useful with the \fB\-\-source\fP
+option or if you want to download the same RPM again.
+.UNINDENT
+.SH OPTIONS
+.sp
+All general DNF options are accepted, see \fIOptions\fP in \fBdnf(8)\fP for details.
+.INDENT 0.0
+.TP
+.B \fB\-\-help\-cmd\fP
+Show this help.
+.TP
+.B \fB\-\-arch <arch>[,<arch>...]\fP
+Limit the query to packages of given architectures (default is all compatible architectures with
+your system). To download packages with arch incompatible with your system use
+\fB\-\-forcearch=<arch>\fP option to change basearch.
+.TP
+.B \fB\-\-source\fP
+Download the source rpm. Enables source repositories of all enabled binary repositories.
+.TP
+.B \fB\-\-debuginfo\fP
+Download the debuginfo rpm. Enables debuginfo repositories of all enabled binary repositories.
+.TP
+.B \fB\-\-downloaddir\fP
+Download directory, default is the current directory (the directory must exist).
+.TP
+.B \fB\-\-url\fP
+Instead of downloading, print list of urls where the rpms can be downloaded.
+.TP
+.B \fB\-\-urlprotocol\fP
+Limit the protocol of the urls output by the –url option. Options are http, https, rsync, ftp.
+.TP
+.B \fB\-\-resolve\fP
+Resolves dependencies of specified packages and downloads missing dependencies in the system.
+.TP
+.B \fB\-\-alldeps\fP
+When used with \fB\-\-resolve\fP, download all dependencies (do not skip already installed ones).
+.UNINDENT
+.SH EXAMPLES
+.INDENT 0.0
+.TP
+.B \fBdnf download dnf\fP
+Download the latest dnf package to the current directory.
+.TP
+.B \fBdnf download \-\-url dnf\fP
+Just print the remote location url where the dnf rpm can be downloaded from.
+.TP
+.B \fBdnf download \-\-url \-\-urlprotocols=https \-\-urlprotocols=rsync dnf\fP
+Same as above, but limit urls to https or rsync urls.
+.TP
+.B \fBdnf download dnf \-\-destdir /tmp/dnl\fP
+Download the latest dnf package to the /tmp/dnl directory (the directory must exist).
+.TP
+.B \fBdnf download dnf \-\-source\fP
+Download the latest dnf source package to the current directory.
+.TP
+.B \fBdnf download rpm \-\-debuginfo\fP
+Download the latest rpm\-debuginfo package to the current directory.
+.TP
+.B \fBdnf download btanks \-\-resolve\fP
+Download the latest btanks package and the uninstalled dependencies to the current directory.
+.UNINDENT
+.SH AUTHOR
+See AUTHORS in your Core DNF Plugins distribution
+.SH COPYRIGHT
+2024, Red Hat, Licensed under GPLv2+
+.\" Generated by docutils manpage writer.
+.

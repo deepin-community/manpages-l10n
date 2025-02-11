@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-ESCAPE" "1" "" "systemd 249" "systemd-escape"
+.TH "SYSTEMD\-ESCAPE" "1" "" "systemd 257.1" "systemd-escape"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -53,6 +53,8 @@ or
 \fB\-\-unescape\fR
 or
 \fB\-\-mangle\fR\&.
+.sp
+Added in version 216\&.
 .RE
 .PP
 \fB\-\-template=\fR
@@ -64,20 +66,27 @@ foobar@\&.service\&. With
 \fB\-\-instance\fR
 or
 \fB\-\-mangle\fR\&.
+.sp
+Added in version 216\&.
 .RE
 .PP
 \fB\-\-path\fR, \fB\-p\fR
 .RS 4
-When escaping or unescaping a string, assume it refers to a file system path\&. This eliminates leading, trailing or duplicate
+When escaping or unescaping a string, assume it refers to a file system path\&. This simplifies the path (leading, trailing, and duplicate
 "/"
-characters and rejects
+characters are removed, no\-op path
 "\&."
-and
+components are removed, and for absolute paths, leading
 "\&.\&."
-path components\&. This is particularly useful for generating strings suitable for unescaping with the
+components are removed)\&. After the simplification, the path must not contain
+"\&.\&."\&.
+.sp
+This is particularly useful for generating strings suitable for unescaping with the
 "%f"
 specifier in unit files, see
 \fBsystemd.unit\fR(5)\&.
+.sp
+Added in version 216\&.
 .RE
 .PP
 \fB\-\-unescape\fR, \fB\-u\fR
@@ -86,6 +95,8 @@ Instead of escaping the specified strings, undo the escaping, reversing the oper
 \fB\-\-suffix=\fR
 or
 \fB\-\-mangle\fR\&.
+.sp
+Added in version 216\&.
 .RE
 .PP
 \fB\-\-mangle\fR, \fB\-m\fR
@@ -96,6 +107,8 @@ Like
 \fB\-\-template=\fR
 or
 \fB\-\-unescape\fR\&.
+.sp
+Added in version 216\&.
 .RE
 .PP
 \fB\-\-instance\fR
@@ -108,6 +121,8 @@ ssh\&.service\&. Must be used in conjunction with
 \fB\-\-unescape\fR
 and may not be used in conjunction with
 \fB\-\-template\fR\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
@@ -203,6 +218,4 @@ My Container 1
 On success, 0 is returned, a non\-zero failure code otherwise\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd.unit\fR(5),
-\fBsystemctl\fR(1)
+\fBsystemd\fR(1), \fBsystemd.unit\fR(5), \fBsystemctl\fR(1)

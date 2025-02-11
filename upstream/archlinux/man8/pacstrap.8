@@ -1,0 +1,101 @@
+'\" t
+.\"     Title: pacstrap
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 10/20/2024
+.\"    Manual: \ \&
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "PACSTRAP" "8" "10/20/2024" "\ \&" "\ \&"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+pacstrap \- install packages to the specified new root directory
+.SH "SYNOPSIS"
+.sp
+pacstrap [options] root [packages\&...]
+.SH "DESCRIPTION"
+.sp
+pacstrap is designed to create a new system installation from scratch\&. The specified packages will be installed into a given directory after setting up some basic mountpoints\&. By default, the host system\(cqs pacman signing keys and mirrorlist will be used to seed the chroot\&.
+.sp
+If no packages are specified to be installed, the \fIbase\fR metapackage will be installed\&.
+.SH "OPTIONS"
+.PP
+\fB\-C\fR <config>
+.RS 4
+Use an alternate config file for pacman\&.
+.RE
+.PP
+\fB\-c\fR
+.RS 4
+Use the package cache on the host, rather than the target\&.
+.RE
+.PP
+\fB\-D\fR
+.RS 4
+Skip pacman dependency checks\&.
+.RE
+.PP
+\fB\-G\fR
+.RS 4
+Avoid copying the host\(cqs pacman keyring to the target\&.
+.RE
+.PP
+\fB\-i\fR
+.RS 4
+Prompt for package confirmation when needed (run interactively)\&.
+.RE
+.PP
+\fB\-K\fR
+.RS 4
+Initialize an empty pacman keyring in the target (implies
+\fI\-G\fR)\&.
+.RE
+.PP
+\fB\-M\fR
+.RS 4
+Avoid copying the host\(cqs mirrorlist to the target\&.
+.RE
+.PP
+\fB\-N\fR
+.RS 4
+Run in unshare mode\&. This will use
+\fBunshare\fR(1)
+to create a new mount and user namespace, allowing regular users to create new system installations\&.
+.RE
+.PP
+\fB\-P\fR
+.RS 4
+Copy the host\(cqs pacman config to the target\&.
+.RE
+.PP
+\fB\-U\fR
+.RS 4
+Use pacman \-U to install packages\&. Useful for obtaining fine\-grained control over the installed packages\&.
+.RE
+.PP
+\fB\-h\fR
+.RS 4
+Output syntax and command line options\&.
+.RE
+.SH "SEE ALSO"
+.sp
+\fBpacman\fR(8)

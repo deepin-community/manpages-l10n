@@ -6,27 +6,7 @@
 .\" and Copyright (C) 2014 David Herrmann
 .\" and Copyright (C) 2017 Jens Axboe
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" Modified 1993-07-24 by Rik Faith <faith@cs.unc.edu>
 .\" Modified 1995-09-26 by Andries Brouwer <aeb@cwi.nl>
@@ -64,13 +44,16 @@
 .\" 2017-06-26, Jens Axboe <axboe@kernel.dk>
 .\"     Document F_{GET,SET}_RW_HINT and F_{GET,SET}_FILE_RW_HINT
 .\"
-.TH FCNTL 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH fcntl 2 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 fcntl \- manipulate file descriptor
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <fcntl.h>
-.PP
+.P
 .BI "int fcntl(int " fd ", int " cmd ", ... /* " arg " */ );"
 .fi
 .SH DESCRIPTION
@@ -79,7 +62,7 @@ performs one of the operations described below on the open file descriptor
 .IR fd .
 The operation is determined by
 .IR cmd .
-.PP
+.P
 .BR fcntl ()
 can take an optional third argument.
 Whether or not this argument is required is determined by
@@ -93,14 +76,14 @@ and we identify the argument using the name
 or
 .I void
 is specified if the argument is not required.
-.PP
+.P
 Certain of the operations below are supported only since a particular
 Linux kernel version.
 The preferred method of checking whether the host kernel supports
 a particular operation is to invoke
 .BR fcntl ()
 with the desired
-.IR cmd
+.I cmd
 value and then test whether the call failed with
 .BR EINVAL ,
 indicating that the kernel does not recognize this value.
@@ -108,7 +91,7 @@ indicating that the kernel does not recognize this value.
 .TP
 .BR F_DUPFD " (\fIint\fP)"
 Duplicate the file descriptor
-.IR fd
+.I fd
 using the lowest-numbered available file descriptor greater than or equal to
 .IR arg .
 This is different from
@@ -164,7 +147,7 @@ is ignored.
 .BR F_SETFD " (\fIint\fP)"
 Set the file descriptor flags to the value specified by
 .IR arg .
-.PP
+.P
 In multithreaded programs, using
 .BR fcntl ()
 .B F_SETFD
@@ -175,7 +158,7 @@ plus
 is vulnerable to a race condition that may unintentionally leak
 the file descriptor to the program executed in the child process.
 See the discussion of the
-.BR O_CLOEXEC
+.B O_CLOEXEC
 flag in
 .BR open (2)
 for details and a remedy to the problem.
@@ -194,7 +177,7 @@ Duplicated file descriptors
 .BR fork (2),
 etc.) refer to the same open file description, and thus
 share the same file status flags.
-.PP
+.P
 The file status flags and their semantics are described in
 .BR open (2).
 .TP
@@ -224,27 +207,27 @@ and
 .B O_NONBLOCK
 flags.
 It is not possible to change the
-.BR O_DSYNC
+.B O_DSYNC
 and
-.BR O_SYNC
+.B O_SYNC
 flags; see BUGS, below.
 .SS Advisory record locking
 Linux implements traditional ("process-associated") UNIX record locks,
 as standardized by POSIX.
 For a Linux-specific alternative with better semantics,
 see the discussion of open file description locks below.
-.PP
+.P
 .BR F_SETLK ,
 .BR F_SETLKW ,
 and
-.BR F_GETLK
+.B F_GETLK
 are used to acquire, release, and test for the existence of record
 locks (also known as byte-range, file-segment, or file-region locks).
 The third argument,
 .IR lock ,
 is a pointer to a structure that has at least the following fields
 (in unspecified order).
-.PP
+.P
 .in +4n
 .EX
 struct flock {
@@ -261,13 +244,13 @@ struct flock {
 };
 .EE
 .in
-.PP
+.P
 The
 .IR l_whence ", " l_start ", and " l_len
 fields of this structure specify the range of bytes we wish to lock.
 Bytes past the end of the file may be locked,
 but not bytes before the start of the file.
-.PP
+.P
 .I l_start
 is the starting offset for the lock, and is interpreted
 relative to either:
@@ -287,7 +270,7 @@ In the final two cases,
 .I l_start
 can be a negative number provided the
 offset does not lie before the start of the file.
-.PP
+.P
 .I l_len
 specifies the number of bytes to be locked.
 If
@@ -302,7 +285,7 @@ has the special meaning: lock all bytes starting at the
 location specified by
 .IR l_whence " and " l_start
 through to the end of file, no matter how large the file grows.
-.PP
+.P
 POSIX.1-2001 allows (but does not require)
 an implementation to support a negative
 .I l_len
@@ -314,8 +297,8 @@ covers bytes
 .IR l_start + l_len
 up to and including
 .IR l_start \-1.
-This is supported by Linux since kernel versions 2.4.21 and 2.5.49.
-.PP
+This is supported since Linux 2.4.21 and Linux 2.5.49.
+.P
 The
 .I l_type
 field can be used to place a read
@@ -404,7 +387,7 @@ If the conflicting lock is an open file description lock, then
 is set to \-1.
 Note that the returned information
 may already be out of date by the time the caller inspects it.
-.PP
+.P
 In order to place a read lock,
 .I fd
 must be open for reading.
@@ -412,7 +395,7 @@ In order to place a write lock,
 .I fd
 must be open for writing.
 To place both types of lock, open a file read-write.
-.PP
+.P
 When placing locks with
 .BR F_SETLKW ,
 the kernel detects
@@ -435,16 +418,16 @@ attempting regain the locks that it requires.
 Circular deadlocks involving more than two processes are also detected.
 Note, however, that there are limitations to the kernel's
 deadlock-detection algorithm; see BUGS.
-.PP
+.P
 As well as being removed by an explicit
 .BR F_UNLCK ,
 record locks are automatically released when the process terminates.
-.PP
+.P
 Record locks are not inherited by a child created via
 .BR fork (2),
 but are preserved across an
 .BR execve (2).
-.PP
+.P
 Because of the buffering performed by the
 .BR stdio (3)
 library, the use of record locking with routines in that package
@@ -453,11 +436,11 @@ should be avoided; use
 and
 .BR write (2)
 instead.
-.PP
+.P
 The record locks described above are associated with the process
 (unlike the open file description locks described below).
 This has some unfortunate consequences:
-.IP * 3
+.IP \[bu] 3
 If a process closes
 .I any
 file descriptor referring to a file,
@@ -473,12 +456,12 @@ or
 .I /etc/mtab
 when for some reason a library function decides to open, read,
 and close the same file.
-.IP *
+.IP \[bu]
 The threads in a process share locks.
 In other words,
 a multithreaded program can't use record locking to ensure
 that threads don't simultaneously access the same region of a file.
-.PP
+.P
 Open file description locks solve both of these problems.
 .SS Open file description locks (non-POSIX)
 Open file description locks are advisory byte-range locks whose operation is
@@ -491,7 +474,7 @@ and available since Linux 3.15.
 to include this lock type in the next revision of POSIX.1.)
 For an explanation of open file descriptions, see
 .BR open (2).
-.PP
+.P
 The principal difference between the two lock types
 is that whereas traditional record locks
 are associated with a process,
@@ -509,13 +492,13 @@ with
 and are only automatically released on the last close
 of the open file description,
 instead of being released on any close of the file.
-.PP
+.P
 Conflicting lock combinations
 (i.e., a read lock and a write lock or two write locks)
 where one lock is an open file description lock and the other
 is a traditional record lock conflict
 even when they are acquired by the same process on the same file descriptor.
-.PP
+.P
 Open file description locks placed via the same open file description
 (i.e., via the same file descriptor,
 or via a duplicate of the file descriptor created by
@@ -528,7 +511,7 @@ if a new lock is placed on an already locked region,
 then the existing lock is converted to the new lock type.
 (Such conversions may result in splitting, shrinking, or coalescing with
 an existing lock as discussed above.)
-.PP
+.P
 On the other hand, open file description locks may conflict with
 each other when they are acquired via different open file descriptions.
 Thus, the threads in a multithreaded program can use
@@ -536,18 +519,18 @@ open file description locks to synchronize access to a file region
 by having each thread perform its own
 .BR open (2)
 on the file and applying locks via the resulting file descriptor.
-.PP
+.P
 As with traditional advisory locks, the third argument to
 .BR fcntl (),
 .IR lock ,
 is a pointer to an
-.IR flock
+.I flock
 structure.
 By contrast with traditional record locks, the
 .I l_pid
 field of that structure must be set to zero
 when using the commands described below.
-.PP
+.P
 The commands for working with open file description locks are analogous
 to those used with traditional locks:
 .TP
@@ -604,7 +587,7 @@ then details about one of these locks are returned via
 .IR lock ,
 as described above for
 .BR F_GETLK .
-.PP
+.P
 In the current implementation,
 .\" commit 57b65325fe34ec4c917bc4e555144b4a94d9e1f7
 no deadlock detection is performed for open file description locks.
@@ -620,13 +603,13 @@ and the fact that the feature is believed to be little used,
 since Linux 4.5, mandatory locking has been made an optional feature,
 governed by a configuration option
 .RB ( CONFIG_MANDATORY_FILE_LOCKING ).
-This is an initial step toward removing this feature completely.
-.PP
+This feature is no longer supported at all in Linux 5.15 and above.
+.P
 By default, both traditional (process-associated) and open file description
 record locks are advisory.
 Advisory locks are not enforced and are useful only between
 cooperating processes.
-.PP
+.P
 Both lock types can also be mandatory.
 Mandatory locks are enforced for all processes.
 If a process tries to perform an incompatible access (e.g.,
@@ -646,7 +629,7 @@ If the
 .B O_NONBLOCK
 flag is enabled, then the system call fails with the error
 .BR EAGAIN .
-.PP
+.P
 To make use of mandatory locks, mandatory locking must be enabled
 both on the filesystem that contains the file to be locked,
 and on the file itself.
@@ -663,7 +646,7 @@ permission bit (see
 .BR chmod (1)
 and
 .BR chmod (2)).
-.PP
+.P
 Mandatory locking is not specified by POSIX.
 Some other systems also support mandatory locking,
 although the details of how to enable it vary across systems.
@@ -675,7 +658,7 @@ This may happen due to administrative action on the server, or due to a
 network partition (i.e., loss of network connectivity with the server)
 which lasts long enough for the server to assume
 that the client is no longer functioning.
-.PP
+.P
 When the filesystem determines that a lock has been lost, future
 .BR read (2)
 or
@@ -687,7 +670,7 @@ descriptor is closed.
 Since Linux 3.12,
 .\" commit ef1820f9be27b6ad158f433ab38002ab8131db4d
 this happens at least for NFSv4 (including all minor versions).
-.PP
+.P
 Some versions of UNIX send a signal
 .RB ( SIGLOST )
 in this circumstance.
@@ -763,7 +746,7 @@ If this permission check fails, then the signal is
 silently discarded.
 .IR Note :
 The
-.BR F_SETOWN
+.B F_SETOWN
 operation records the caller's credentials at the time of the
 .BR fcntl ()
 call,
@@ -793,8 +776,7 @@ would report the socket as having an "exceptional condition".)
 .\" refers to a terminal device, then SIGIO
 .\" signals are sent to the foreground process group of the terminal.
 .IP
-The following was true in 2.6.x kernels up to and including
-kernel 2.6.11:
+The following was true in Linux 2.6.x up to and including Linux 2.6.11:
 .RS
 .IP
 If a nonzero value is given to
@@ -840,7 +822,7 @@ depending on the value given to
 The above behavior was accidentally dropped in Linux 2.6.12,
 and won't be restored.
 From Linux 2.6.32 onward, use
-.BR F_SETOWN_EX
+.B F_SETOWN_EX
 to target
 .B SIGIO
 and
@@ -850,7 +832,7 @@ signals at a particular thread.
 .BR F_GETOWN_EX " (\fIstruct f_owner_ex *\fP) (since Linux 2.6.32)"
 Return the current file descriptor owner settings
 as defined by a previous
-.BR F_SETOWN_EX
+.B F_SETOWN_EX
 operation.
 The information is returned in the structure pointed to by
 .IR arg ,
@@ -888,7 +870,7 @@ to a specific thread, process, or process group.
 The caller specifies the target of signals via
 .IR arg ,
 which is a pointer to a
-.IR f_owner_ex
+.I f_owner_ex
 structure.
 The
 .I type
@@ -897,7 +879,7 @@ field has one of the following values, which define how
 is interpreted:
 .RS
 .TP
-.BR F_OWNER_TID
+.B F_OWNER_TID
 Send the signal to the thread whose thread ID
 (the value returned by a call to
 .BR clone (2)
@@ -906,12 +888,12 @@ or
 is specified in
 .IR pid .
 .TP
-.BR F_OWNER_PID
+.B F_OWNER_PID
 Send the signal to the process whose ID
 is specified in
 .IR pid .
 .TP
-.BR F_OWNER_PGRP
+.B F_OWNER_PGRP
 Send the signal to the process group whose ID
 is specified in
 .IR pid .
@@ -948,7 +930,7 @@ is the signal to send instead, and in this case additional info
 is available to the signal handler if installed with
 .BR SA_SIGINFO .
 .\"
-.\" The following was true only up until 2.6.11:
+.\" The following was true only up until Linux 2.6.11:
 .\"
 .\" Additionally, passing a nonzero value to
 .\" .B F_SETSIG
@@ -989,7 +971,7 @@ set etc.) to determine which file descriptors are available for I/O.
 Note that the file descriptor provided in
 .I si_fd
 is the one that was specified during the
-.BR F_SETSIG
+.B F_SETSIG
 operation.
 This can lead to an unusual corner case.
 If the file descriptor is duplicated
@@ -1020,26 +1002,26 @@ delivering
 and this signal is delivered to the entire
 process rather than to a specific thread.
 .\" See fs/fcntl.c::send_sigio_to_task() (2.4/2.6) sources -- MTK, Apr 05
-.PP
+.P
 Using these mechanisms, a program can implement fully asynchronous I/O
 without using
 .BR select (2)
 or
 .BR poll (2)
 most of the time.
-.PP
+.P
 The use of
-.BR O_ASYNC
+.B O_ASYNC
 is specific to BSD and Linux.
 The only use of
-.BR F_GETOWN
+.B F_GETOWN
 and
 .B F_SETOWN
 specified in POSIX.1 is in conjunction with the use of the
 .B SIGURG
 signal on sockets.
 (POSIX does not specify the
-.BR SIGIO
+.B SIGIO
 signal.)
 .BR F_GETOWN_EX ,
 .BR F_SETOWN_EX ,
@@ -1050,7 +1032,7 @@ are Linux-specific.
 POSIX has asynchronous I/O and the
 .I aio_sigevent
 structure to achieve similar things; these are also available
-in Linux as part of the GNU C Library (Glibc).
+in Linux as part of the GNU C Library (glibc).
 .SS Leases
 .B F_SETLEASE
 and
@@ -1077,7 +1059,7 @@ values is specified in the integer
 Take out a read lease.
 This will cause the calling process to be notified when
 the file is opened for writing or is truncated.
-.\" The following became true in kernel 2.6.10:
+.\" The following became true in Linux 2.6.10:
 .\" See the man-pages-2.09 Changelog for further info.
 A read lease can be placed only on a file descriptor that
 is opened read-only.
@@ -1092,7 +1074,7 @@ other open file descriptors for the file.
 .B F_UNLCK
 Remove our lease from the file.
 .RE
-.PP
+.P
 Leases are associated with an open file description (see
 .BR open (2)).
 This means that duplicate file descriptors (created by, for example,
@@ -1105,7 +1087,7 @@ Furthermore, the lease is released by either an explicit
 .B F_UNLCK
 operation on any of these duplicate file descriptors, or when all
 such file descriptors have been closed.
-.PP
+.P
 Leases may be taken out only on regular files.
 An unprivileged process may take out a lease only on a file whose
 UID (owner) matches the filesystem UID of the process.
@@ -1121,7 +1103,7 @@ by returning either
 indicating, respectively, a read lease , a write lease, or no lease.
 .I arg
 is ignored.
-.PP
+.P
 When a process (the "lease breaker") performs an
 .BR open (2)
 or
@@ -1152,12 +1134,12 @@ command specifying
 .I arg
 as
 .BR F_RDLCK .
-.PP
+.P
 If the lease holder fails to downgrade or remove the lease within
 the number of seconds specified in
 .IR /proc/sys/fs/lease\-break\-time ,
 then the kernel forcibly removes or downgrades the lease holder's lease.
-.PP
+.P
 Once a lease break has been initiated,
 .B F_GETLEASE
 returns the target lease type (either
@@ -1167,11 +1149,11 @@ or
 depending on what would be compatible with the lease breaker)
 until the lease holder voluntarily downgrades or removes the lease or
 the kernel forcibly does so after the lease break timer expires.
-.PP
+.P
 Once the lease has been voluntarily or forcibly removed or downgraded,
 and assuming the lease breaker has not unblocked its system call,
 the kernel permits the lease breaker's system call to proceed.
-.PP
+.P
 If the lease breaker's blocked
 .BR open (2)
 or
@@ -1192,7 +1174,7 @@ flag when calling
 then the call immediately fails with the error
 .BR EWOULDBLOCK ,
 but the other steps still occur as described above.
-.PP
+.P
 The default signal used to notify the lease holder is
 .BR SIGIO ,
 but this can be changed using the
@@ -1224,7 +1206,7 @@ The events to be notified are specified in
 .IR arg ,
 which is a bit mask specified by ORing together zero or more of
 the following bits:
-.PP
+.P
 .RS
 .PD 0
 .TP
@@ -1333,7 +1315,7 @@ so that multiple notifications can be queued.
 .B NOTE:
 New applications should use the
 .I inotify
-interface (available since kernel 2.6.13),
+interface (available since Linux 2.6.13),
 which provides a much superior interface for obtaining notifications of
 filesystem events.
 See
@@ -1348,13 +1330,13 @@ to be at least
 bytes.
 An unprivileged process can adjust the pipe capacity to any value
 between the system page size and the limit defined in
-.IR /proc/sys/fs/pipe\-max\-size
+.I /proc/sys/fs/pipe\-max\-size
 (see
 .BR proc (5)).
 Attempts to set the pipe capacity below the page size are silently
 rounded up to the page size.
 Attempts by an unprivileged process to set the pipe capacity above the limit in
-.IR /proc/sys/fs/pipe\-max\-size
+.I /proc/sys/fs/pipe\-max\-size
 yield the error
 .BR EPERM ;
 a privileged process
@@ -1395,7 +1377,7 @@ file and filesystem.
 For an overview of file sealing, a discussion of its purpose,
 and some code examples, see
 .BR memfd_create (2).
-.PP
+.P
 Currently,
 file seals can be applied only to a file descriptor returned by
 .BR memfd_create (2)
@@ -1406,7 +1388,7 @@ On other filesystems, all
 .BR fcntl ()
 operations that operate on seals will return
 .BR EINVAL .
-.PP
+.P
 Seals are a property of an inode.
 Thus, all open file descriptors referring to the same inode share
 the same set of seals.
@@ -1420,7 +1402,7 @@ to the set of seals of the inode referred to by the file descriptor
 Seals cannot be removed again.
 Once this call succeeds, the seals are enforced by the kernel immediately.
 If the current set of seals includes
-.BR F_SEAL_SEAL
+.B F_SEAL_SEAL
 (see below), then this call will be rejected with
 .BR EPERM .
 Adding a seal that is already set is a no-op, in case
@@ -1439,10 +1421,10 @@ If the file does not support sealing, \-1 is returned and
 .I errno
 is set to
 .BR EINVAL .
-.PP
+.P
 The following seals are available:
 .TP
-.BR F_SEAL_SEAL
+.B F_SEAL_SEAL
 If this seal is set, any further call to
 .BR fcntl ()
 with
@@ -1454,7 +1436,7 @@ If the initial set of seals of a file includes
 .BR F_SEAL_SEAL ,
 then this effectively causes the set of seals to be constant and locked.
 .TP
-.BR F_SEAL_SHRINK
+.B F_SEAL_SHRINK
 If this seal is set, the file in question cannot be reduced in size.
 This affects
 .BR open (2)
@@ -1469,7 +1451,7 @@ Those calls fail with
 if you try to shrink the file in question.
 Increasing the file size is still possible.
 .TP
-.BR F_SEAL_GROW
+.B F_SEAL_GROW
 If this seal is set, the size of the file in question cannot be increased.
 This affects
 .BR write (2)
@@ -1483,7 +1465,7 @@ These calls fail with
 if you use them to increase the file size.
 If you keep the size or shrink it, those calls still work as expected.
 .TP
-.BR F_SEAL_WRITE
+.B F_SEAL_WRITE
 If this seal is set, you cannot modify the contents of the file.
 Note that shrinking or growing the size of the file is
 still possible and allowed.
@@ -1552,7 +1534,7 @@ for an explanation of open file descriptions.)
 In this context, the term "write lifetime" means
 the expected time the data will live on media, before
 being overwritten or erased.
-.PP
+.P
 An application may use the different hint values specified below to
 separate writes into different write classes,
 so that multiple users or applications running on a single storage back-end
@@ -1560,7 +1542,7 @@ can aggregate their I/O patterns in a consistent manner.
 However, there are no functional semantics implied by these flags,
 and different I/O classes can use the write lifetime hints
 in arbitrary ways, so long as the hints are used consistently.
-.PP
+.P
 The following operations can be applied to the file descriptor,
 .IR fd :
 .TP
@@ -1585,42 +1567,42 @@ the open file description referred to by
 Sets the read/write hint value associated with the open file description
 referred to by
 .IR fd .
-.PP
+.P
 If an open file description has not been assigned a read/write hint,
 then it shall use the value assigned to the inode, if any.
-.PP
+.P
 The following read/write
 hints are valid since Linux 4.13:
 .TP
-.BR RWH_WRITE_LIFE_NOT_SET
+.B RWH_WRITE_LIFE_NOT_SET
 No specific hint has been set.
 This is the default value.
 .TP
-.BR RWH_WRITE_LIFE_NONE
+.B RWH_WRITE_LIFE_NONE
 No specific write lifetime is associated with this file or inode.
 .TP
-.BR RWH_WRITE_LIFE_SHORT
+.B RWH_WRITE_LIFE_SHORT
 Data written to this inode or via this open file description
 is expected to have a short lifetime.
 .TP
-.BR RWH_WRITE_LIFE_MEDIUM
+.B RWH_WRITE_LIFE_MEDIUM
 Data written to this inode or via this open file description
 is expected to have a lifetime longer than
 data written with
 .BR RWH_WRITE_LIFE_SHORT .
 .TP
-.BR RWH_WRITE_LIFE_LONG
+.B RWH_WRITE_LIFE_LONG
 Data written to this inode or via this open file description
 is expected to have a lifetime longer than
 data written with
 .BR RWH_WRITE_LIFE_MEDIUM .
 .TP
-.BR RWH_WRITE_LIFE_EXTREME
+.B RWH_WRITE_LIFE_EXTREME
 Data written to this inode or via this open file description
 is expected to have a lifetime longer than
 data written with
 .BR RWH_WRITE_LIFE_LONG .
-.PP
+.P
 All the write-specific hints are relative to each other,
 and no individual absolute meaning should be attributed to them.
 .SH RETURN VALUE
@@ -1647,17 +1629,19 @@ for traditional
 .B SIGIO
 behavior.
 .TP
-.BR F_GETPIPE_SZ ", " F_SETPIPE_SZ
+.B F_GETPIPE_SZ
+.TQ
+.B F_SETPIPE_SZ
 The pipe capacity.
 .TP
-.BR F_GET_SEALS
+.B F_GET_SEALS
 A bit mask identifying the seals that have been set
 for the inode referred to by
 .IR fd .
 .TP
 All other commands
 Zero.
-.PP
+.P
 On error, \-1 is returned, and
 .I errno
 is set to indicate the error.
@@ -1683,10 +1667,10 @@ or
 and the file descriptor open mode doesn't match with the
 type of lock requested.
 .TP
-.BR EBUSY
+.B EBUSY
 .I cmd
 is
-.BR F_SETPIPE_SZ
+.B F_SETPIPE_SZ
 and the new pipe capacity specified in
 .I arg
 is smaller than the amount of buffer space currently
@@ -1696,7 +1680,7 @@ used to store data in the pipe.
 .I cmd
 is
 .BR F_ADD_SEALS ,
-.IR arg
+.I arg
 includes
 .BR F_SEAL_WRITE ,
 and there exists a writable, shared mapping on the file referred to by
@@ -1714,9 +1698,9 @@ is outside your accessible address space.
 .B EINTR
 .I cmd
 is
-.BR F_SETLKW
+.B F_SETLKW
 or
-.BR F_OFD_SETLKW
+.B F_OFD_SETLKW
 and the operation was interrupted by a signal; see
 .BR signal (7).
 .TP
@@ -1741,17 +1725,17 @@ is not recognized by this kernel.
 .B EINVAL
 .I cmd
 is
-.BR F_ADD_SEALS
+.B F_ADD_SEALS
 and
 .I arg
 includes an unrecognized sealing bit.
 .TP
-.BR EINVAL
+.B EINVAL
 .I cmd
 is
-.BR F_ADD_SEALS
+.B F_ADD_SEALS
 or
-.BR F_GET_SEALS
+.B F_GET_SEALS
 and the filesystem containing the inode referred to by
 .I fd
 does not support sealing.
@@ -1759,19 +1743,19 @@ does not support sealing.
 .B EINVAL
 .I cmd
 is
-.BR F_DUPFD
+.B F_DUPFD
 and
 .I arg
 is negative or is greater than the maximum allowable value
 (see the discussion of
-.BR RLIMIT_NOFILE
+.B RLIMIT_NOFILE
 in
 .BR getrlimit (2)).
 .TP
 .B EINVAL
 .I cmd
 is
-.BR F_SETSIG
+.B F_SETSIG
 and
 .I arg
 is not an allowable signal number.
@@ -1790,7 +1774,7 @@ was not specified as zero.
 .B EMFILE
 .I cmd
 is
-.BR F_DUPFD
+.B F_DUPFD
 and the per-process limit on the number of open file descriptors
 has been reached.
 .TP
@@ -1803,13 +1787,13 @@ protocol failed (e.g., locking over NFS).
 was specified in
 .IR cmd ,
 but
-.IR fd
+.I fd
 does not refer to a directory.
 .TP
-.BR EPERM
+.B EPERM
 .I cmd
 is
-.BR F_SETPIPE_SZ
+.B F_SETPIPE_SZ
 and the soft or hard user pipe limit has been reached; see
 .BR pipe (7).
 .TP
@@ -1827,40 +1811,9 @@ but
 was not open for writing
 or the current set of seals on the file already includes
 .BR F_SEAL_SEAL .
-.SH CONFORMING TO
-SVr4, 4.3BSD, POSIX.1-2001.
-Only the operations
-.BR F_DUPFD ,
-.BR F_GETFD ,
-.BR F_SETFD ,
-.BR F_GETFL ,
-.BR F_SETFL ,
-.BR F_GETLK ,
-.BR F_SETLK ,
-and
-.BR F_SETLKW
-are specified in POSIX.1-2001.
-.PP
-.BR F_GETOWN
-and
-.B F_SETOWN
-are specified in POSIX.1-2001.
-(To get their definitions, define either
-.\" .BR _BSD_SOURCE ,
-.\" or
-.BR _XOPEN_SOURCE
-with the value 500 or greater, or
-.BR _POSIX_C_SOURCE
-with the value 200809L or greater.)
-.PP
-.B F_DUPFD_CLOEXEC
-is specified in POSIX.1-2008.
-(To get this definition, define
-.B _POSIX_C_SOURCE
-with the value 200809L or greater, or
-.B _XOPEN_SOURCE
-with the value 700 or greater.)
-.PP
+.SH STANDARDS
+POSIX.1-2008.
+.P
 .BR F_GETOWN_EX ,
 .BR F_SETOWN_EX ,
 .BR F_SETPIPE_SZ ,
@@ -1875,23 +1828,57 @@ are Linux-specific.
 (Define the
 .B _GNU_SOURCE
 macro to obtain these definitions.)
-.\" .PP
+.\" .P
 .\" SVr4 documents additional EIO, ENOLINK and EOVERFLOW error conditions.
-.PP
+.P
 .BR F_OFD_SETLK ,
 .BR F_OFD_SETLKW ,
 and
-.BR F_OFD_GETLK
+.B F_OFD_GETLK
 are Linux-specific (and one must define
-.BR _GNU_SOURCE
+.B _GNU_SOURCE
 to obtain their definitions),
 but work is being done to have them included in the next version of POSIX.1.
-.PP
-.BR F_ADD_SEALS
+.P
+.B F_ADD_SEALS
 and
-.BR F_GET_SEALS
+.B F_GET_SEALS
 are Linux-specific.
 .\" FIXME . Once glibc adds support, add a note about FTM requirements
+.SH HISTORY
+SVr4, 4.3BSD, POSIX.1-2001.
+.P
+Only the operations
+.BR F_DUPFD ,
+.BR F_GETFD ,
+.BR F_SETFD ,
+.BR F_GETFL ,
+.BR F_SETFL ,
+.BR F_GETLK ,
+.BR F_SETLK ,
+and
+.B F_SETLKW
+are specified in POSIX.1-2001.
+.P
+.B F_GETOWN
+and
+.B F_SETOWN
+are specified in POSIX.1-2001.
+(To get their definitions, define either
+.\" .BR _BSD_SOURCE ,
+.\" or
+.B _XOPEN_SOURCE
+with the value 500 or greater, or
+.B _POSIX_C_SOURCE
+with the value 200809L or greater.)
+.P
+.B F_DUPFD_CLOEXEC
+is specified in POSIX.1-2008.
+(To get this definition, define
+.B _POSIX_C_SOURCE
+with the value 200809L or greater, or
+.B _XOPEN_SOURCE
+with the value 700 or greater.)
 .SH NOTES
 The errors returned by
 .BR dup2 (2)
@@ -1921,16 +1908,16 @@ wrapper function transparently employs the more recent system call
 where it is available.
 .\"
 .SS Record locks
-Since kernel 2.0, there is no interaction between the types of lock
+Since Linux 2.0, there is no interaction between the types of lock
 placed by
 .BR flock (2)
 and
 .BR fcntl ().
-.PP
+.P
 Several systems have more fields in
 .I "struct flock"
 such as, for example,
-.IR l_sysid
+.I l_sysid
 (to identify the machine where the lock is held).
 .\" e.g., Solaris 8 documents this field in fcntl(2), and Irix 6.5
 .\" documents it in fcntl(5).  mtk, May 2007
@@ -1941,7 +1928,7 @@ alone is not going to be very useful if the process holding the lock
 may live on a different machine;
 on Linux, while present on some architectures (such as MIPS32),
 this field is not used.
-.PP
+.P
 The original Linux
 .BR fcntl ()
 system call was not designed to handle large file offsets
@@ -1990,7 +1977,7 @@ The default value for this file is 90.)
 This scenario potentially risks data corruption,
 since another process might acquire a lock in the intervening period
 and perform file I/O.
-.PP
+.P
 Since Linux 3.12,
 .\" commit ef1820f9be27b6ad158f433ab38002ab8131db4d
 if an NFSv4 client loses contact with the server,
@@ -2007,11 +1994,11 @@ this parameter defaults to 0 (disabled).
 .SH BUGS
 .SS F_SETFL
 It is not possible to use
-.BR F_SETFL
+.B F_SETFL
 to change the state of the
-.BR O_DSYNC
+.B O_DSYNC
 and
-.BR O_SYNC
+.B O_SYNC
 flags.
 .\" FIXME . According to POSIX.1-2001, O_SYNC should also be modifiable
 .\" via fcntl(2), but currently Linux does not permit this
@@ -2031,13 +2018,13 @@ will be \-1, and
 .I errno
 will contain the (positive) process group ID.
 The Linux-specific
-.BR F_GETOWN_EX
+.B F_GETOWN_EX
 operation avoids this problem.
 .\" mtk, Dec 04: some limited testing on alpha and ia64 seems to
 .\" indicate that ANY negative PGID value will cause F_GETOWN
 .\" to misinterpret the return as an error. Some other architectures
 .\" seem to have the same range check as i386.
-Since glibc version 2.11, glibc makes the kernel
+Since glibc 2.11, glibc makes the kernel
 .B F_GETOWN
 problem invisible by implementing
 .B F_GETOWN
@@ -2063,7 +2050,7 @@ and signals will be sent to the owner.
 .\"
 .SS Deadlock detection
 The deadlock-detection algorithm employed by the kernel when dealing with
-.BR F_SETLKW
+.B F_SETLKW
 requests can yield both
 false negatives (failures to detect deadlocks,
 leaving a set of deadlocked processes blocked indefinitely)
@@ -2111,25 +2098,16 @@ It is therefore inadvisable to rely on mandatory locking.
 .BR capabilities (7),
 .BR feature_test_macros (7),
 .BR lslocks (8)
-.PP
+.P
 .IR locks.txt ,
 .IR mandatory\-locking.txt ,
 and
 .I dnotify.txt
 in the Linux kernel source directory
-.IR Documentation/filesystems/
+.I Documentation/filesystems/
 (on older kernels, these files are directly under the
 .I Documentation/
 directory, and
 .I mandatory\-locking.txt
 is called
 .IR mandatory.txt )
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

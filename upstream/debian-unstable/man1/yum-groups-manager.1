@@ -1,116 +1,105 @@
-.\" yum-groups-manager
-.TH "yum-groups-manager" "1" "23 August 2008" "" ""
-.SH "NAME"
-yum-groups-manager \- create and edit yum's group metadata
-.SH "SYNOPSIS"
-\fByum-groups-manager\fP [options] [packages]
-.SH "DESCRIPTION"
-\fByum-groups-manager\fP is used to create or edit a group metadata file for a
-yum repository. This is often much easier than writing/editing the XML by hand.
-The \fByum-groups-manager\fP can load an entire file of groups metadata and
-either create a new group or edit an existing group and then write all of the
-groups metadata back out.
-.SH "OPTIONS"
-.IP "\fB\-h, \-\-help\fP"
-Display a help message, and then quit.
-.IP "\fB\-\-version\fP"
-Display a version message, and then quit.
-.IP "\fB\-n, \-\-name\fP"
-The name to lookup/use for the group. If you specify an existing group id, then
-the group with that id will have it's name changed to this value.
-.IP "\fB\-\-id\fP"
-The id to lookup/use for the group. If you don't specify an id, but do specify a
-name that doesn't refer to an existing group, then an id for the group is
-generated based on the name.
-.IP "\fB\-\-description\fP"
+.\" Man page generated from reStructuredText.
+.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.TH "YUM-GROUPS-MANAGER" "1" "Aug 22, 2024" "4.9.0" "dnf-plugins-core"
+.SH NAME
+yum-groups-manager \- redirecting to DNF groups-manager Plugin
+.sp
+Create and edit groups repository metadata files.
+.SH SYNOPSIS
+.sp
+\fBdnf groups\-manager [options] [package\-name\-spec [package\-name\-spec ...]]\fP
+.SH DESCRIPTION
+.sp
+groups\-manager plugin is used to create or edit a group metadata file for a repository. This is often much easier than writing/editing the XML by hand. The groups\-manager can load an entire file of groups metadata and either create a new group or edit an existing group and then write all of the groups metadata back out.
+.SH ARGUMENTS
+.INDENT 0.0
+.TP
+.B \fB<package\-name\-spec>\fP
+Package to add to a group or remove from a group.
+.UNINDENT
+.SH OPTIONS
+.sp
+All general DNF options are accepted, see \fIOptions\fP in \fBdnf(8)\fP for details.
+.INDENT 0.0
+.TP
+.B \fB\-\-load=<path_to_comps.xml>\fP
+Load the groups metadata information from the specified file before performing any operations. Metadata from all files are merged together if the option is specified multiple times.
+.TP
+.B \fB\-\-save=<path_to_comps.xml>\fP
+Save the result to this file. You can specify the name of a file you are loading from as the data will only be saved when all the operations have been performed. This option can also be specified multiple times.
+.TP
+.B \fB\-\-merge=<path_to_comps.xml>\fP
+This is the same as loading and saving a file, however the “merge” file is loaded before any others and saved last.
+.TP
+.B \fB\-\-print\fP
+Also print the result to stdout.
+.TP
+.B \fB\-\-id=<id>\fP
+The id to lookup/use for the group. If you don’t specify an \fB<id>\fP, but do specify a name that doesn’t refer to an existing group, then an id for the group is generated based on the name.
+.TP
+.B \fB\-n <name>, \-\-name=<name>\fP
+The name to lookup/use for the group. If you specify an existing group id, then the group with that id will have it’s name changed to this value.
+.TP
+.B \fB\-\-description=<description>\fP
 The description to use for the group.
-.IP "\fB\-\-mandatory\fP"
-Store the package names specified within the mandatory section of the specified
-group, the default is to use the default section. This overrides the optional
-argument.
-.IP "\fB\-\-optional\fP"
-Store the package names specified within the optional section of the specified
-group, the default is to use the default section. This option is overridden by
-the mandatory argument.
-.IP "\fB\-\-dependencies\fP"
+.TP
+.B \fB\-\-display\-order=<display_order>\fP
+Change the integer which controls the order groups are presented in, for example in \fBdnf grouplist\fP\&.
+.TP
+.B \fB\-\-translated\-name=<lang:text>\fP
+A translation of the group name in the given language. The syntax is \fBlang:text\fP\&. Eg. \fBen:my\-group\-name\-in\-english\fP
+.TP
+.B \fB\-\-translated\-description=<lang:text>\fP
+A translation of the group description in the given language. The syntax is \fBlang:text\fP\&. Eg. \fBen:my\-group\-description\-in\-english\fP\&.
+.TP
+.B \fB\-\-user\-visible\fP
+Make the group visible in \fBdnf grouplist\fP (this is the default).
+.TP
+.B \fB\-\-not\-user\-visible\fP
+Make the group not visible in \fBdnf grouplist\fP\&.
+.TP
+.B \fB\-\-mandatory\fP
+Store the package names specified within the mandatory section of the specified group, the default is to use the default section.
+.TP
+.B \fB\-\-optional\fP
+Store the package names specified within the optional section of the specified group, the default is to use the default section.
+.TP
+.B \fB\-\-remove\fP
+Instead of adding packages remove them. Note that the packages are removed from all sections (default, mandatory and optional).
+.TP
+.B \fB\-\-dependencies\fP
 Also include the names of the direct dependencies for each package specified.
-.IP "\fB\-\-not\-user\-visible\fP"
-Make the group not visible in yum grouplist.
-.IP "\fB\-\-user\-visible\fP"
-Make the group visible in yum grouplist (this is the default).
-.IP "\fB\-\-display\-order\fP"
-Change the integer which controls the order groups are presented in, for example
-in yum grouplist.
-.IP "\fB\-\-load\fP"
-Load the groups metadata information from the specified file, before
-performing any operations. This option can be specified multiple times.
-.IP "\fB\-\-save\fP"
-Save the result to this file, you can specify the name of a file you are
-loading from as the data will only be saved when all the operations have been
-performed. This option can also be specified multiple times.
-.IP "\fB\-\-merge\fP"
-This is the same as loading and saving a file, however the "merge" file is
-loaded before any others and saved last.
-.IP "\fB\-\-print\fP"
-Also print the result to stdout, if saving or merging.
-.IP "\fB\-\-remove\fP"
-Instead of adding package, remove them. Note that the packages are removed from
-all sections (default, mandatory and optional).
-.IP "\fB\-\-translated\-name\fP"
-This is another name for the group within the locale given. The syntax is
-lang:text. Eg. en:my-group-name-in-english
-.IP "\fB\-\-translated\-description\fP"
-This is another description for the group within the locale given. The syntax is
-lang:text. Eg. en:my-group-description-in-english.
-
-.SH "YUM OPTIONS"
-The following options are meant to be the same as those with the same name
-in yum.
-.IP "\fB\-c CONFIG, \-\-config=CONFIG\fP"
-.IP "\fB\-\-quiet\fP"
-.IP "\fB\-\-verbose\fP"
-.IP "\fB\-\-enablerepo\fP"
-.IP "\fB\-\-disablerepo\fP"
-.IP "\fB\-\-noplugins\fP"
-.IP "\fB\-C, \-\-cache\fP"
-.IP "\fB\-\-tempcache\fP"
-
-.SH "EXAMPLES"
-.IP "Create a new group metadata file, with a group called yum containing all the packages that start with yum:"
-\fB yum-groups-manager \-\-name YUM \-\-save groups.xml 'yum*'\fP
-.IP "After the above command, load the groups.xml data, work with the yum group, make the group not user visible, and remove the yum-skip-broken and yum-priorities packages from it:"
-\fB yum-groups-manager \-n YUM \-\-merge groups.xml \-\-remove yum-skip-broken yum-priorities \-\-not\-user\-visible\fP
-.IP "After the above commands, add a description and a translated name to the yum group:"
-\fB yum-groups-manager \-n YUM \-\-merge groups.xml \-\-description 'This is a group with most of the yum packages in it' \-\-translated-name 'en:yum packages'\fP
-.SH "FILES"
-\fByum-groups-manager\fP uses the yum libraries for retrieving information and
-packages. If no configuration file is specified, the default yum
-configuration will be used.
-.PP
-.nf 
-/etc/yum.conf
-/etc/yum/repos.d/
-.fi
-.SH "SEE ALSO"
-.nf
-.I yum (8)
-.I yum.conf (5)
-http://yum.baseurl.org/
-.fi
-.SH "AUTHORS"
-.nf 
-See the Authors file included with this program.
-.fi
-.SH "BUGS"
-.nf
-There are a couple of options you can't set, yet. Most notably you cannot put
-package names into the conditional section (where they are installed with
-groupinstall only if another package is installed).
-
-Other than that, there are no bugs, but should you find any, you should first
-consult the FAQ section on http://yum.baseurl.org/wiki/Faq and if unsuccessful
-in finding a resolution contact the mailing list: yum-devel@lists.baseurl.org.
-To file a bug use http://bugzilla.redhat.com for Fedora/RHEL/Centos
-related bugs and http://yum.baseurl.org/report for all other bugs.
-
-.fi
+.UNINDENT
+.SH AUTHOR
+See AUTHORS in your Core DNF Plugins distribution
+.SH COPYRIGHT
+2024, Red Hat, Licensed under GPLv2+
+.\" Generated by docutils manpage writer.
+.

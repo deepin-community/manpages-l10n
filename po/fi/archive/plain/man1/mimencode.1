@@ -1,0 +1,61 @@
+.\" $Id: $
+.\" Translated into Finnish by rene.gauffin@dlc.fi  
+.\"				1999-08-19
+.\"
+.TH MIMENCODE 1 "7. Huhtikuuta 1998" "Bellcore Prototype" "Käyttäjän sovellusohjelmat"
+.SH NIMI
+mimencode - Kaksisuuntainen postiviestien kooditulkki
+
+(Sama ohjelma on asennettu myös nimellä "mmencode".)
+.SH "YLEISKATSAUS"
+.ta 8n
+\fBmimencode\fP	[-u] [-b] [-q] [-p] [file name] [-o outputfile]
+.br
+.SH KUVAUS
+Molempiin suuntiin toimiva kooditulkki
+.I  mimencode
+yksinkertaisesti vsin muuttaa postiviestin  merkkien  esitysmuodon johonkin  MIMEssä  määriteltyyn muotoon. (MIME:ehdotus Internetim postiviestien multimedian formaattien standardeiksi) Kooditus on välttämätöntä, koska postiviesteissä ei voida lähetttää binääristä tietoa. Useista MIMEn luojille tärkeistä syistä johtuen on  postiviestissä parempi käyttää mimencodin tuntemia formatteja kuin ohjelmia uuencode/uudecode
+
+Oletusarvoina  mimencode  lukee vakiosyötettä ja lähettäää "base64"-kooodatun version syötteestä vakiotulosteeksi.
+
+Valitsin "-b" (tarpeeton) ohjaaa mimencodia käyttämän "base64"-kooditusta.
+
+Valitsin  "-q" ohjaa mimencodia käyttämään "quoted-printable" kooditusta base64.n sijasta 
+
+Valitsin "-u" ohjaa mimencodia 
+.I
+purkamaan vakiosyötteen koodia
+(eikä koodamaan sitä)  
+
+Valitsin  "-p" ohjaa mimencodia kääntämään  puretun CRLF-merkkijonon paikallisen uuden rivin määrittelyn mukaiseksi koodiksi (purku) ja päinvastoin (koodaus)..Valitsin toimiii vain kun valitsin -b (base64 kooditus) on valittu
+
+Jos parametrinä on annettu tiedostonimi, sitä käytetään syötteenä vakiosyötteén sijasta
+
+Valitsin "-o"  jota on seurattava tiedostonimi, ohjaa tulosteen tähän tiedostoon vakiotulosteen sijasta
+.SH RATIONALE
+.I
+Mimencode
+on tarkoitetttu korvaamaan 
+.I
+uuencode
+posti - ja uutisviesteissä Syy on hyvin yksinkertainen: uuencode ei toimi kunnolla useissa tilanteisa ja tavoilla Erityisesti, uuencode käytttää merkkejä jotka eivät käänny oikein kaikissa postiviestiporteissa  (erikoisesti ASCII <-> EBCDIC portit). Lsäksi uuencode ei ole standardi - löytyy useita eri versioita ajelehtimassa, koodaten ja purkaen koodia  eri yhteensovittamattomin tavoin, ilman mitään "standardia", jolle voisi rakentaa sovelluksen.. Lopuksi, uuencode  eri yleensä toimi hyvin putkessa, vaikka jotkut muunnelmat on saatu toimiviksi.  Mimencode käyttää nitä koodituksia jotka määriteltiin MIM.en uuencoden korvaajiksi, ja sen pitäisi olla huomattavsti vakaampi postiviestikäyttöön
+.SH "KATSO MYÖS"
+metamail(1), mailto(1)
+.SH BUGIT
+Tämän ohjelman alkuperäinen jakelunimi oli "mmencode".Nimi osoittautui olevan sama kuin erään toisen ohjelman, joka on osa BBN.n Slate ohjelmistoa. Nimen muttaminen pelkäksi mimencodiksi toisi mukanaan muita ogelmia (erikoisesti siirtokelpoisuuteen systeemeihin joisa nimen vasemman puolen pituus rajoittuu 8 merkkiin)).  Tällä hetkellä ohjelma on jakelusa MOLEMMILLA nimilä Levityksen ohjelmat, jotka kutsuvat tätä ohjelmaa, tekevät sen muodossa "mimencode", joten  "mmencode" versio voidaan poistaa jos se aiheuttaa ongelmia (Lähdekooditiedostot löytyvät edelleen  nimellä "mmencode" eikä "mimencode".)
+.SH COPYRIGHT
+Copyright (c) 1991 Bell Communications Research, Inc. (Bellcore)
+
+Permission to use, copy, modify, and distribute this material 
+for any purpose and without fee is hereby granted, provided 
+that the above copyright notice and this permission notice 
+appear in all copies, and that the name of Bellcore not be 
+used in advertising or publicity pertaining to this 
+material without the specific, prior written permission 
+of an authorized representative of Bellcore.  BELLCORE 
+MAKES NO REPRESENTATIONS ABOUT THE ACCURACY OR SUITABILITY 
+OF THIS MATERIAL FOR ANY PURPOSE.  IT IS PROVIDED "AS IS", 
+WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
+.SH AUTHOR
+Nathaniel S. Borenstein
+.SH "KATSO MYÖS"

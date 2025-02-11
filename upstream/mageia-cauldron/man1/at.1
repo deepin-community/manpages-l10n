@@ -29,10 +29,22 @@ at, batch, atq, atrm \- queue, examine, or delete jobs for later execution
 .I job
 [...\&]
 .br
+.B at
+.RB [ \-V ]
+.RB \-l
+.RB [ -o
+.IR timeformat ]
+.I [job
+.IR ... ]
+.br
 .B atq
 .RB [ \-V ]
 .RB [ \-q
 .IR queue ]
+.RB [ -o
+.IR timeformat ]
+.I [job
+.IR ... ]
 .br
 .B at
 .RB [ \-rd ]
@@ -52,10 +64,7 @@ at, batch, atq, atrm \- queue, examine, or delete jobs for later execution
 and
 .B batch
 read commands from standard input or a specified file which are to
-be executed at a later time, using the shell set by the user's environment
-variable
-.BR SHELL,
-the user's login shell, or ultimately
+be executed at a later time, using
 .BR /bin/sh .
 .TP 8
 .B at
@@ -217,7 +226,7 @@ queue for
 .BR batch .
 Queues with higher letters run with increased niceness.  The special
 queue "=" is reserved for jobs which are currently running.
-.P
+
 If a job is submitted to a queue designated with an uppercase letter, the
 job is treated as if it were submitted to batch at the time of the job.
 Once the time is reached, the batch processing rules with respect to load
@@ -272,6 +281,9 @@ Times displayed will be in the format "Thu Feb 20 14:50:00 1997".
 .B
 \-c
 cats the jobs listed on the command line to standard output.
+.TP 8
+.BI \-o " fmt"
+strftime-like time format used for the job list
 .SH FILES
 .I /var/spool/at
 .br

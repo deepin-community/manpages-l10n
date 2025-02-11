@@ -1,5 +1,5 @@
 '\" t
-.TH "JOURNALD\&.CONF" "5" "" "systemd 247" "journald.conf"
+.TH "JOURNALD\&.CONF" "5" "" "systemd 257.1" "journald.conf"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -23,15 +23,45 @@
 journald.conf, journald.conf.d, journald@.conf \- Journal service configuration files
 .SH "SYNOPSIS"
 .PP
+.RS 4
 /etc/systemd/journald\&.conf
-.PP
+.RE
+.RS 4
+/run/systemd/journald\&.conf
+.RE
+.RS 4
+/usr/local/lib/systemd/journald\&.conf
+.RE
+.RS 4
+/usr/lib/systemd/journald\&.conf
+.RE
+.RS 4
 /etc/systemd/journald\&.conf\&.d/*\&.conf
-.PP
+.RE
+.RS 4
 /run/systemd/journald\&.conf\&.d/*\&.conf
-.PP
+.RE
+.RS 4
+/usr/local/lib/systemd/journald\&.conf\&.d/*\&.conf
+.RE
+.RS 4
 /usr/lib/systemd/journald\&.conf\&.d/*\&.conf
-.PP
+.RE
+.RS 4
 /etc/systemd/journald@\fINAMESPACE\fR\&.conf
+.RE
+.RS 4
+/etc/systemd/journald@\fINAMESPACE\fR\&.conf\&.d/*\&.conf
+.RE
+.RS 4
+/run/systemd/journald@\fINAMESPACE\fR\&.conf\&.d/*\&.conf
+.RE
+.RS 4
+/usr/local/lib/systemd/journald@\fINAMESPACE\fR\&.conf\&.d/*\&.conf
+.RE
+.RS 4
+/usr/lib/systemd/journald@\fINAMESPACE\fR\&.conf\&.d/*\&.conf
+.RE
 .SH "DESCRIPTION"
 .PP
 These files configure various parameters of the systemd journal service,
@@ -45,16 +75,22 @@ instance managing the default namespace is configured by
 /etc/systemd/journald\&.conf
 and associated drop\-ins\&. Instances managing other namespaces read
 /etc/systemd/journald@\fINAMESPACE\fR\&.conf
-with the namespace identifier filled in\&. This allows each namespace to carry a distinct configuration\&. See
+and associated drop\-ins with the namespace identifier filled in\&. This allows each namespace to carry a distinct configuration\&. See
 \fBsystemd-journald.service\fR(8)
 for details about journal namespaces\&.
 .SH "CONFIGURATION DIRECTORIES AND PRECEDENCE"
 .PP
-The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. Initially, the main configuration file in
-/etc/systemd/
-contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by editing this file or by creating drop\-ins, as described below\&. Using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
+The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. The main configuration file is loaded from one of the listed directories in order of priority, only the first file found is used:
+/etc/systemd/,
+/run/systemd/,
+/usr/local/lib/systemd/
+\&\s-2\u[1]\d\s+2,
+/usr/lib/systemd/\&. The vendor version of the file contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can also be created by creating drop\-ins, as described below\&. The main configuration file can also be edited for this purpose (or a copy in
+/etc/
+if it\*(Aqs shipped under
+/usr/), however using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
 .PP
-In addition to the "main" configuration file, drop\-in configuration snippets are read from
+In addition to the main configuration file, drop\-in configuration snippets are read from
 /usr/lib/systemd/*\&.conf\&.d/,
 /usr/local/lib/systemd/*\&.conf\&.d/, and
 /etc/systemd/*\&.conf\&.d/\&. Those drop\-ins have higher precedence and override the main configuration file\&. Files in the
@@ -64,7 +100,12 @@ configuration subdirectories are sorted by their filename in lexicographic order
 When packages need to customize the configuration, they can install drop\-ins under
 /usr/\&. Files in
 /etc/
-are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&.
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering\&. This also defines a concept of drop\-in priorities to allow OS vendors to ship drop\-ins within a specific range lower than the range used by users\&. This should lower the risk of package drop\-ins overriding accidentally drop\-ins defined by users\&. It is recommended to use the range 10\-40 for drop\-ins in
+/usr/
+and the range 60\-90 for drop\-ins in
+/etc/
+and
+/run/, to make sure that local and transient drop\-ins take priority over drop\-ins shipped by the OS vendor\&.
 .PP
 To disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
 /dev/null
@@ -105,12 +146,46 @@ in the default journal namespace, and
 "persistent"
 in all others\&.
 .sp
+Note that journald will initially use volatile storage, until a call to
+\fBjournalctl \-\-flush\fR
+(or sending
+\fBSIGUSR1\fR
+to journald) will cause it to switch to persistent logging (under the conditions mentioned above)\&. This is done automatically on boot via
+"systemd\-journal\-flush\&.service"\&.
+.sp
 Note that when this option is changed to
 "volatile", existing persistent data is not removed\&. In the other direction,
 \fBjournalctl\fR(1)
 with the
 \fB\-\-flush\fR
 option may be used to move volatile data to persistent storage\&.
+.sp
+When journal namespacing (see
+\fILogNamespace=\fR
+in
+\fBsystemd.exec\fR(5)) is used, setting
+\fIStorage=\fR
+to
+"volatile"
+or
+"auto"
+will not have an effect on the creation of the per\-namespace logs directory in
+/var/log/journal/, as the
+systemd\-journald@\&.service
+service file by default carries
+\fILogsDirectory=\fR\&. To turn that off, add a unit file drop\-in file that sets
+\fILogsDirectory=\fR
+to an empty string\&.
+.sp
+Note that per\-user journal files are not supported unless persistent storage is enabled, thus making
+\fBjournalctl \-\-user\fR
+unavailable\&.
+.sp
+The storage to use can also be specified via the
+"journal\&.storage"
+credential\&. Values configured via configuration files take priority over values configured via the credential\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 \fICompress=\fR
@@ -124,8 +199,10 @@ Takes a boolean value\&. If enabled (the default), and a sealing key is availabl
 \fBjournalctl\fR(1)\*(Aqs
 \fB\-\-setup\-keys\fR
 command), Forward Secure Sealing (FSS) for all persistent journal files is enabled\&. FSS is based on
-\m[blue]\fBSeekable Sequential Key Generators\fR\m[]\&\s-2\u[1]\d\s+2
+\m[blue]\fBSeekable Sequential Key Generators\fR\m[]\&\s-2\u[2]\d\s+2
 by G\&. A\&. Marson and B\&. Poettering (doi:10\&.1007/978\-3\-642\-40203\-6_7) and may be used to protect journal files from unnoticed alteration\&.
+.sp
+Added in version 189\&.
 .RE
 .PP
 \fISplitMode=\fR
@@ -135,12 +212,14 @@ Controls whether to split up journal files per user, either
 or
 "none"\&. Split journal files are primarily useful for access control: on UNIX/Linux access control is managed per file, and the journal daemon will assign users read access to their journal files\&. If
 "uid", all regular users (with UID outside the range of system users, dynamic service users, and the nobody user) will each get their own journal files, and system users will log to the system journal\&. See
-\m[blue]\fBUsers, Groups, UIDs and GIDs on systemd systems\fR\m[]\&\s-2\u[2]\d\s+2
+\m[blue]\fBUsers, Groups, UIDs and GIDs on systemd systems\fR\m[]\&\s-2\u[3]\d\s+2
 for more details about UID ranges\&. If
 "none", journal files are not split up by user and all messages are instead stored in the single system journal\&. In this mode unprivileged users generally do not have access to their own log data\&. Note that splitting up journal files by user is only available for journals stored persistently\&. If journals are stored on volatile storage (see
 \fIStorage=\fR
 above), only a single journal file is used\&. Defaults to
 "uid"\&.
+.sp
+Added in version 190\&.
 .RE
 .PP
 \fIRateLimitIntervalSec=\fR, \fIRateLimitBurst=\fR
@@ -267,7 +346,8 @@ and
 control how large individual journal files may grow at most\&. This influences the granularity in which disk space is made available through rotation, i\&.e\&. deletion of historic data\&. Defaults to one eighth of the values configured with
 \fISystemMaxUse=\fR
 and
-\fIRuntimeMaxUse=\fR, so that usually seven rotated journal files are kept as history\&.
+\fIRuntimeMaxUse=\fR
+capped to 128M, so that usually seven rotated journal files are kept as history\&. If the journal compact mode is enabled (enabled by default), the maximum file size is capped to 4G\&.
 .sp
 Specify values in bytes or use K, M, G, T, P, E as units for the specified sizes (equal to 1024, 1024\(S2, \&... bytes)\&. Note that size limits are enforced synchronously when journal files are extended, and no explicit rotation step triggered by time is needed\&.
 .sp
@@ -290,6 +370,8 @@ should be sufficient to ensure that journal files do not grow without bounds\&. 
 or
 "m"
 to override the default time unit of seconds\&.
+.sp
+Added in version 195\&.
 .RE
 .PP
 \fIMaxRetentionSec=\fR
@@ -305,22 +387,33 @@ should be sufficient to ensure that journal files do not grow without bounds\&. 
 or
 " m"
 to override the default time unit of seconds\&.
+.sp
+Added in version 195\&.
 .RE
 .PP
 \fISyncIntervalSec=\fR
 .RS 4
 The timeout before synchronizing journal files to disk\&. After syncing, journal files are placed in the OFFLINE state\&. Note that syncing is unconditionally done immediately after a log message of priority CRIT, ALERT or EMERG has been logged\&. This setting hence applies only to messages of the levels ERR, WARNING, NOTICE, INFO, DEBUG\&. The default timeout is 5 minutes\&.
+.sp
+Added in version 199\&.
 .RE
 .PP
-\fIForwardToSyslog=\fR, \fIForwardToKMsg=\fR, \fIForwardToConsole=\fR, \fIForwardToWall=\fR
+\fIForwardToSyslog=\fR, \fIForwardToKMsg=\fR, \fIForwardToConsole=\fR, \fIForwardToWall=\fR, \fIForwardToSocket=\fR
 .RS 4
-Control whether log messages received by the journal daemon shall be forwarded to a traditional syslog daemon, to the kernel log buffer (kmsg), to the system console, or sent as wall messages to all logged\-in users\&. These options take boolean arguments\&. If forwarding to syslog is enabled but nothing reads messages from the socket, forwarding to syslog has no effect\&. By default, only forwarding to syslog and wall is enabled\&. These settings may be overridden at boot time with the kernel command line options
+Control whether log messages received by the journal daemon shall be forwarded to a traditional syslog daemon, to the kernel log buffer (kmsg), to the system console, sent as wall messages to all logged\-in users or sent over a socket\&. These options take boolean arguments except for
+"ForwardToSocket="
+which takes an address instead\&. If forwarding to syslog is enabled but nothing reads messages from the socket, forwarding to syslog has no effect\&. By default, only forwarding to wall is enabled\&. These settings may be overridden at boot time with the kernel command line options
 "systemd\&.journald\&.forward_to_syslog",
 "systemd\&.journald\&.forward_to_kmsg",
 "systemd\&.journald\&.forward_to_console", and
 "systemd\&.journald\&.forward_to_wall"\&. If the option name is specified without
 "="
 and the following argument, true is assumed\&. Otherwise, the argument is parsed as a boolean\&.
+.sp
+The socket forwarding address can be specified with the credential
+"journal\&.forward_to_socket"\&. The following socket types are supported:
+.sp
+\fBAF_INET\fR (e\&.g\&. "192\&.168\&.0\&.11:4444"), \fBAF_INET6\fR (e\&.g\&. "[2001:db8::ff00:42:8329]:4444"), \fBAF_UNIX\fR (e\&.g\&. "/run/host/journal/socket"), \fBAF_VSOCK\fR (e\&.g\&. "vsock:2:1234")
 .sp
 When forwarding to the console, the TTY to log to can be changed with
 \fITTYPath=\fR, described below\&.
@@ -331,11 +424,30 @@ to the kernel command line\&.
 \fBsystemd\fR
 will automatically disable kernel\*(Aqs rate\-limiting applied to userspace processes (equivalent to setting
 "printk\&.devkmsg=on")\&.
+.sp
+When forwarding over a socket the
+\m[blue]\fBJournal Export Format\fR\m[]\&\s-2\u[4]\d\s+2
+is used when sending over the wire\&. Notably this includes the metadata field
+\fI__REALTIME_TIMESTAMP\fR
+so that
+\fBsystemd\-journal\-remote\fR
+(see
+\fBsystemd-journal-remote.service\fR(8)) can be used to receive the forwarded journal entries\&.
+.sp
+Note: Forwarding is performed synchronously within journald, and may significantly affect its performance\&. This is particularly relevant when using ForwardToConsole=yes in cloud environments, where the console is often a slow, virtual serial port\&. Since journald is implemented as a conventional single\-process daemon, forwarding to a completely hung console will block journald\&. This can have a cascading effect resulting in any services synchronously logging to the blocked journal also becoming blocked\&. Unless actively debugging/developing something, it\*(Aqs generally preferable to setup a
+\fBjournalctl \-\-follow\fR
+style service redirected to the console, instead of ForwardToConsole=yes, for production use\&.
+.PP
+Note: Using
+\fIForwardToSocket=\fR
+over IPv4/IPv6 links can be very slow due to the synchronous nature of the sockets\&. Take care to ensure your link is a low\-latency local link if possible\&. Typically IP networking is not available everywhere journald runs, e\&.g\&. in the initrd during boot\&. Consider using
+\fBAF_VSOCK\fR/\fBAF_UNIX\fR
+sockets for this if possible\&.
 .RE
 .PP
-\fIMaxLevelStore=\fR, \fIMaxLevelSyslog=\fR, \fIMaxLevelKMsg=\fR, \fIMaxLevelConsole=\fR, \fIMaxLevelWall=\fR
+\fIMaxLevelStore=\fR, \fIMaxLevelSyslog=\fR, \fIMaxLevelKMsg=\fR, \fIMaxLevelConsole=\fR, \fIMaxLevelWall=\fR, \fIMaxLevelSocket=\fR
 .RS 4
-Controls the maximum log level of messages that are stored in the journal, forwarded to syslog, kmsg, the console or wall (if that is enabled, see above)\&. As argument, takes one of
+Controls the maximum log level of messages that are stored in the journal, forwarded to syslog, kmsg, the console, the wall, or a socket (if that is enabled, see above)\&. As argument, takes one of
 "emerg",
 "alert",
 "crit",
@@ -346,9 +458,10 @@ Controls the maximum log level of messages that are stored in the journal, forwa
 "debug", or integer values in the range of 0\(en7 (corresponding to the same levels)\&. Messages equal or below the log level specified are stored/forwarded, messages above are dropped\&. Defaults to
 "debug"
 for
-\fIMaxLevelStore=\fR
+\fIMaxLevelStore=\fR,
+\fIMaxLevelSyslog=\fR
 and
-\fIMaxLevelSyslog=\fR, to ensure that the all messages are stored in the journal and forwarded to syslog\&. Defaults to
+\fIMaxLevelSocket=\fR, to ensure that the all messages are stored in the journal, forwarded to syslog and the socket if one exists\&. Defaults to
 "notice"
 for
 \fIMaxLevelKMsg=\fR,
@@ -362,7 +475,10 @@ for
 "systemd\&.journald\&.max_level_syslog=",
 "systemd\&.journald\&.max_level_kmsg=",
 "systemd\&.journald\&.max_level_console=",
-"systemd\&.journald\&.max_level_wall="\&.
+"systemd\&.journald\&.max_level_wall=",
+"systemd\&.journald\&.max_level_socket="\&.
+.sp
+Added in version 185\&.
 .RE
 .PP
 \fIReadKMsg=\fR
@@ -372,17 +488,27 @@ Takes a boolean value\&. If enabled
 processes
 /dev/kmsg
 messages generated by the kernel\&. In the default journal namespace this option is enabled by default, it is disabled in all others\&.
+.sp
+Added in version 235\&.
 .RE
 .PP
 \fIAudit=\fR
 .RS 4
 Takes a boolean value\&. If enabled
-\fBsystemd\-journal\fR
-will turn on kernel auditing on start\-up\&. If disabled it will turn it off\&. If unset it will neither enable nor disable it, leaving the previous state unchanged\&. Note that this option does not control whether
 \fBsystemd\-journald\fR
-collects generated audit records, it just controls whether it tells the kernel to generate them\&. This means if another tool turns on auditing even if
+will turn on kernel auditing on start\-up\&. If disabled it will turn it off\&. If unset it will neither enable nor disable it, leaving the previous state unchanged\&. This means if another tool turns on auditing even if
 \fBsystemd\-journald\fR
-left it off, it will still collect the generated messages\&. Defaults to off\&.
+left it off, it will still collect the generated messages\&. Defaults to on\&.
+.sp
+Note that this option does not control whether
+\fBsystemd\-journald\fR
+collects generated audit records, it just controls whether it tells the kernel to generate them\&. If you need to prevent
+\fBsystemd\-journald\fR
+from collecting the generated messages, the socket unit
+"systemd\-journald\-audit\&.socket"
+can be disabled and in this case this setting is without effect\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fITTYPath=\fR
@@ -391,6 +517,8 @@ Change the console TTY to use if
 \fIForwardToConsole=yes\fR
 is used\&. Defaults to
 /dev/console\&.
+.sp
+Added in version 185\&.
 .RE
 .PP
 \fILineMax=\fR
@@ -402,6 +530,8 @@ characters\&. If no such delimiter is read for the specified number of bytes a h
 or
 \fBAF_INET\fR
 datagram\&. Takes a size in bytes\&. If the value is suffixed with K, M, G or T, the specified size is parsed as Kilobytes, Megabytes, Gigabytes, or Terabytes (with the base 1024), respectively\&. Defaults to 48K, which is relatively large but still small enough so that log records likely fit into network datagrams along with extra room for metadata\&. Note that values below 79 are not accepted and will be bumped to 79\&.
+.sp
+Added in version 235\&.
 .RE
 .SH "FORWARDING TO TRADITIONAL SYSLOG DAEMONS"
 .PP
@@ -419,19 +549,24 @@ option, and not the
 option, is relevant for them\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd-journald.service\fR(8),
-\fBjournalctl\fR(1),
-\fBsystemd.journal-fields\fR(7),
-\fBsystemd-system.conf\fR(5)
+\fBsystemd\fR(1), \fBsystemd-journald.service\fR(8), \fBjournalctl\fR(1), \fBsystemd.journal-fields\fR(7), \fBsystemd-system.conf\fR(5)
 .SH "NOTES"
 .IP " 1." 4
+💣💥🧨💥💥💣 Please note that those configuration files must be available at all times. If
+/usr/local/
+is a separate partition, it may not be available during early boot, and must not be used for configuration.
+.IP " 2." 4
 Seekable Sequential Key Generators
 .RS 4
 \%https://eprint.iacr.org/2013/397
 .RE
-.IP " 2." 4
+.IP " 3." 4
 Users, Groups, UIDs and GIDs on systemd systems
 .RS 4
 \%https://systemd.io/UIDS-GIDS
+.RE
+.IP " 4." 4
+Journal Export Format
+.RS 4
+\%https://systemd.io/JOURNAL_EXPORT_FORMATS/#journal-export-format
 .RE

@@ -1,0 +1,125 @@
+'\" t
+.\"     Title: mkinitcpio.conf
+.\"    Author: [see the "AUTHOR(S)" section]
+.\" Generator: Asciidoctor 2.0.21
+.\"      Date: 2024-04-27
+.\"    Manual: mkinitcpio manual
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "MKINITCPIO.CONF" "5" "2024-04-27" "\ \&" "mkinitcpio manual"
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.ss \n[.ss] 0
+.nh
+.ad l
+.de URL
+\fI\\$2\fP <\\$1>\\$3
+..
+.als MTO URL
+.if \n[.g] \{\
+.  mso www.tmac
+.  am URL
+.    ad l
+.  .
+.  am MTO
+.    ad l
+.  .
+.  LINKSTYLE blue R < >
+.\}
+.SH "NAME"
+mkinitcpio.conf \- mkinitcpio configuration file
+.SH "SYNOPSIS"
+.sp
+\fI/etc/mkinitcpio.conf\fP
+.SH "DESCRIPTION"
+.sp
+mkinitcpio will attempt to read from a configuration file each time it is
+invoked, \fI/etc/mkinitcpio.conf\fP by default. This file defines several variables
+which describe the contents of the image to be generated. In addition to the "main"
+configuration file, drop\-in configuration snippets are read
+from \fI/etc/mkinitcpio.conf.d/*.conf\fP. These drop\-ins have higher precedence and
+override the main configuration file.
+.SH "VARIABLES"
+.sp
+\fBMODULES\fP
+.RS 4
+Defines an array of additional modules which should be added to the image.
+Dependencies (including other modules and necessary firmware), will also be
+added to the image. At runtime, the modules in this array which were
+successfully added to the image will be explicitly loaded.
+.RE
+.sp
+\fBFILES\fP
+.RS 4
+Defines an array of additional files which should be added to the image.
+Files are added as is, and parent directories will be added if needed. Files
+specified in this variable will override previously added files of the same
+path.
+.RE
+.sp
+\fBBINARIES\fP
+.RS 4
+Defines an array of additional binaries which should be added to the
+image. These are assumed to be dynamic ELF binaries, and necessary shared
+library dependencies will automatically be added. However, it is not
+considered an error to specify a non\-ELF binary in this variable. Parent
+directories will be added if needed. Files specified in this variable will
+override previously added files of the same path.
+.RE
+.sp
+\fBHOOKS\fP
+.RS 4
+Defines an array of hooks which will be run during the build process.
+Order is important, as it defines the order in which hooks will be run
+during bootup. Use mkinitcpio\(cqs \fB\-L\fP flag to list all available hooks,
+and the \fB\-H\fP flag to display the help text for a specific hook.
+.RE
+.sp
+\fBCOMPRESSION\fP
+.RS 4
+Defines a program to filter the generated image through. The kernel
+understands the compression formats yielded by the \fBzstd\fP(1), \fBgzip\fP(1),
+\fBbzip2\fP(1), \fBlz4\fP(1), \fBlzop\fP(1), \fBlzma\fP(1), and \fBxz\fP(1) compressors. If
+unspecified, this setting defaults to \fIzstd\fP compression for Linux ≥ 5.9 and
+gzip compression for Linux < 5.9. In order to create an uncompressed image,
+define this variable as \fIcat\fP.
+
+.br
+It is not hard to realize that a filter such as a \fItac\fP or \fIrev\fP will cause
+\fBmkinitcpio\fP to report success but generate a useless image. Similarly,
+using a compression program not listed above may generate an equally useless
+image, despite being "valid".
+.RE
+.sp
+\fBCOMPRESSION_OPTIONS\fP
+.RS 4
+Defines an array of additional options to be passed to the compression
+program. This option is generally not used. It can be potentially dangerous
+and may cause invalid images to be generated without any sign of an error.
+.RE
+.sp
+\fBMODULES_DECOMPRESS\fP
+.RS 4
+Switch (\fIyes\fP/\fIno\fP) to decide whether loadable kernel modules and their
+firmware should remain compressed or be uncompressed during initramfs
+creation. Disabled by default to avoid recompressing the files using a lower
+compression and to reduce RAM usage during early boot. Enable to allow
+further decreasing image size when using high compression (e.g.
+\fBxz \-9e\fP or \fBzstd \-\-long \-\-ultra \-22\fP) at the expense of increased RAM usage
+at early boot.
+
+.br
+Note that any compressed files will be placed in the uncompressed early CPIO
+to avoid double compression.
+.RE
+.SH "SEE ALSO"
+.sp
+\fBmkinitcpio\fP(8)
+.SH "AUTHORS"
+.sp
+mkinitcpio is maintained by the Arch Linux community. Refer to the \fIAUTHORS\fP
+file for a full list of contributors.
+.SH "COPYRIGHT"
+.sp
+Copyright 🄯 mkinitcpio contributors. GPL\-2.0\-only.

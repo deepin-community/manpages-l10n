@@ -1,6 +1,6 @@
 .\" tapestat manual page - (C) 2015 Hewlett-Packard Development Company, L.P.
 .\" Maintained by Sebastien Godard (sysstat <at> orange.fr)
-.TH TAPESTAT 1 "JUNE 2020" Linux "Linux User's Manual" \-*\- nroff \-*\-
+.TH TAPESTAT 1 "AUGUST 2023" Linux "Linux User's Manual" -*- nroff -*-
 .SH NAME
 tapestat \- Report tape statistics.
 
@@ -34,7 +34,7 @@ The
 .B tapestat
 report provides statistics for each tape drive connected to the system.
 The following data are displayed:
-.IP r/s 
+.IP r/s
 The number of reads issued expressed as the number per second averaged over the interval.
 .IP w/s
 The number of writes issued expressed as the number per second averaged over the interval.
@@ -47,20 +47,20 @@ The amount of data written expressed in kilobytes (by default or if option
 .BR "\-k " "used) or megabytes (if option " "\-m"
 used) per second averaged over the interval.
 .IP %Rd
-Read percentage wait \- The percentage of time over the interval spent waiting for read requests
+Read percentage wait - The percentage of time over the interval spent waiting for read requests
 to complete.
-The time is measured from when the request is dispatched to the SCSI mid\-layer until it signals
+The time is measured from when the request is dispatched to the SCSI mid-layer until it signals
 that it completed.
 .IP %Wr
-Write percentage wait \- The percentage of time over the interval spent waiting for write requests
-to complete. The time is measured from when the request is dispatched to the SCSI mid\-layer until
+Write percentage wait - The percentage of time over the interval spent waiting for write requests
+to complete. The time is measured from when the request is dispatched to the SCSI mid-layer until
 it signals that it completed.
 .IP %Oa
-Overall percentage wait \- The percentage of time over the interval spent waiting for any
+Overall percentage wait - The percentage of time over the interval spent waiting for any
 I/O request to complete (read, write, and other).
 .IP Rs/s
 The number of I/Os, expressed as the number per second averaged over the interval, where
-a non\-zero residual value was encountered.
+a non-zero residual value was encountered.
 .IP Ot/s
 The number of I/Os, expressed as the number per second averaged over the interval, that
 were included as "other". Other I/O includes ioctl calls made to the tape driver and
@@ -107,7 +107,7 @@ It is possible for a percentage value (read, write, or other) to be greater than
 command will never show a percentage value more than 999).
 If rewinding a tape takes 40 seconds where the interval time is 5 seconds the %Oa value
 would show as 0 in the intervals before the rewind completed and then show as approximately
-800 percent when the rewind completes. 
+800 percent when the rewind completes.
 
 Similar values will be observed for %Rd and %Wr if a tape drive stops reading or writing
 and then restarts (that is it stopped streaming). In such a case you may see the r/s or w/s drop to zero and the %Rd/%Wr value could be higher than 100 when reading or writing continues
@@ -150,7 +150,7 @@ If both devices reported 28900 kilobytes
 transferred and the reading tape drive had an interval of 5001 milliseconds and the writing
 tape drive 5000 milliseconds that would calculate out as 5778 kB_read/s and 5780 kB_wrtn/s.
 
-The impact of some retrieving statistics during an I/O completion, rounding down, and small differences in the interval period on the statistics calculated should be minimal but may be non\-zero.
+The impact of some retrieving statistics during an I/O completion, rounding down, and small differences in the interval period on the statistics calculated should be minimal but may be non-zero.
 
 .SH ENVIRONMENT
 .RB "The " "tapestat"
@@ -168,22 +168,24 @@ ranges of values.
 .TP
 .B S_COLORS_SGR
 Specify the colors and other attributes used to display statistics on the terminal.
-Its value is a colon\-separated list of capabilities that defaults to
-.BR "H=31;1:I=32;22:M=35;1:N=34;1:Z=34;22" "."
+Its value is a colon-separated list of capabilities that defaults to
+.BR "I=32;22:N=34;1:W=35;1:X=31;1:Z=34;22" "."
 Supported capabilities are:
 .RS
 .TP
-.B H=
-SGR (Select Graphic Rendition) substring for percentage values greater than or equal to 75%.
-.TP
 .B I=
-SGR substring for tape names.
-.TP
-.B M=
-SGR substring for percentage values in the range from 50% to 75%.
+SGR (Select Graphic Rendition) substring for tape names.
 .TP
 .B N=
-SGR substring for non\-zero statistics values.
+SGR substring for non-zero statistics values.
+.TP
+.BR "W=" " (or " "M=" ")"
+SGR substring for percentage values in the range from 75% to 90% (or in the range 10% to 25% depending on the
+metric's meaning).
+.TP
+.BR "X=" " (or " "H=" ")"
+SGR substring for percentage values greater than or equal to 90% (or lower than or equal to 10% depending on the
+metric's meaning).
 .TP
 .B Z=
 SGR substring for zero values.
@@ -195,7 +197,7 @@ If this variable exists and its value is
 then the current locale will be ignored when printing the date in the report
 header. The
 .B tapestat
-command will use the ISO 8601 format (YYYY\-MM\-DD) instead.
+command will use the ISO 8601 format (YYYY-MM-DD) instead.
 The timestamp displayed with option
 .B \-t
 will also be compliant with ISO 8601 format.
@@ -230,4 +232,4 @@ Modified for sysstat by Sebastien Godard (sysstat <at> orange.fr)
 .PP
 .I https://github.com/sysstat/sysstat
 .br
-.I http://pagesperso\-orange.fr/sebastien.godard/
+.I https://sysstat.github.io/

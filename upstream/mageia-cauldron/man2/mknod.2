@@ -3,42 +3,42 @@
 .\"             and Copyright (C) 1993,1994 Ian Jackson
 .\"		and Copyright (C) 2006, 2014, Michael Kerrisk
 .\"
-.\" %%%LICENSE_START(GPL_NOVERSION_ONELINE)
-.\" You may distribute it under the terms of the GNU General
-.\" Public License. It comes with NO WARRANTY.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-1.0-or-later
 .\"
 .\" Modified 1996-08-18 by urs
 .\" Modified 2003-04-23 by Michael Kerrisk
 .\" Modified 2004-06-23 by Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.TH MKNOD 2 2021-08-27 "Linux" "Linux Programmer's Manual"
+.TH mknod 2 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 mknod, mknodat \- create a special or ordinary file
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/stat.h>
-.PP
+.P
 .BI "int mknod(const char *" pathname ", mode_t " mode ", dev_t " dev );
-.PP
+.P
 .BR "#include <fcntl.h>           " "/* Definition of AT_* constants */"
 .B #include <sys/stat.h>
-.PP
+.P
 .BI "int mknodat(int " dirfd ", const char *" pathname ", mode_t " mode \
 ", dev_t " dev );
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR mknod ():
 .nf
     _XOPEN_SOURCE >= 500
 .\"    || _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED
         || /* Since glibc 2.19: */ _DEFAULT_SOURCE
-        || /* Glibc <= 2.19: */ _BSD_SOURCE || _SVID_SOURCE
+        || /* glibc <= 2.19: */ _BSD_SOURCE || _SVID_SOURCE
 .fi
 .SH DESCRIPTION
 The system call
@@ -50,7 +50,7 @@ with attributes specified by
 .I mode
 and
 .IR dev .
-.PP
+.P
 The
 .I mode
 argument specifies both the file mode to use and the type of node
@@ -58,13 +58,13 @@ to be created.
 It should be a combination (using bitwise OR) of one of the file types
 listed below and zero or more of the file mode bits listed in
 .BR inode (7).
-.PP
+.P
 The file mode is modified by the process's
 .I umask
 in the usual way: in the absence of a default ACL, the permissions of the
 created node are
-.RI ( mode " & \(ti" umask ).
-.PP
+.RI ( mode " & \[ti]" umask ).
+.P
 The file type must be one of
 .BR S_IFREG ,
 .BR S_IFCHR ,
@@ -78,7 +78,7 @@ special file, block special file, FIFO (named pipe), or UNIX domain socket,
 respectively.
 (Zero file type is equivalent to type
 .BR S_IFREG .)
-.PP
+.P
 If the file type is
 .B S_IFCHR
 or
@@ -91,13 +91,13 @@ special file
 may be useful to build the value for
 .IR dev );
 otherwise it is ignored.
-.PP
+.P
 If
 .I pathname
 already exists, or is a symbolic link, this call fails with an
 .B EEXIST
 error.
-.PP
+.P
 The newly created node will be owned by the effective user ID of the
 process.
 If the directory containing the node has the set-group-ID
@@ -112,7 +112,7 @@ The
 system call operates in exactly the same way as
 .BR mknod (),
 except for the differences described here.
-.PP
+.P
 If the pathname given in
 .I pathname
 is relative, then it is interpreted relative to the directory
@@ -122,7 +122,7 @@ referred to by the file descriptor
 the calling process, as is done by
 .BR mknod ()
 for a relative pathname).
-.PP
+.P
 If
 .I pathname
 is relative and
@@ -134,13 +134,13 @@ then
 is interpreted relative to the current working
 directory of the calling process (like
 .BR mknod ()).
-.PP
+.P
 If
 .I pathname
 is absolute, then
 .I dirfd
 is ignored.
-.PP
+.P
 See
 .BR openat (2)
 for an explanation of the need for
@@ -164,7 +164,7 @@ did not allow search permission.
 .BR path_resolution (7).)
 .TP
 .B EBADF
-.BR ( mknodat ())
+.RB ( mknodat ())
 .I pathname
 is relative but
 .I dirfd
@@ -217,7 +217,7 @@ A component used as a directory in
 is not, in fact, a directory.
 .TP
 .B ENOTDIR
-.BR ( mknodat ())
+.RB ( mknodat ())
 .I pathname
 is relative and
 .I dirfd
@@ -241,19 +241,6 @@ does not support the type of node requested.
 .I pathname
 refers to a file on a read-only filesystem.
 .SH VERSIONS
-.BR mknodat ()
-was added to Linux in kernel 2.6.16;
-library support was added to glibc in version 2.4.
-.SH CONFORMING TO
-.BR mknod ():
-SVr4, 4.4BSD, POSIX.1-2001 (but see below), POSIX.1-2008.
-.\" The Linux version differs from the SVr4 version in that it
-.\" does not require root permission to create pipes, also in that no
-.\" EMULTIHOP, ENOLINK, or EINTR error is documented.
-.PP
-.BR mknodat ():
-POSIX.1-2008.
-.SH NOTES
 POSIX.1-2001 says: "The only portable use of
 .BR mknod ()
 is to create a FIFO-special file.
@@ -271,14 +258,28 @@ However, nowadays one should never use
 for this purpose; one should use
 .BR mkfifo (3),
 a function especially defined for this purpose.
-.PP
+.P
 Under Linux,
 .BR mknod ()
 cannot be used to create directories.
 One should make directories with
 .BR mkdir (2).
 .\" and one should make UNIX domain sockets with socket(2) and bind(2).
-.PP
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+.TP
+.BR mknod ()
+SVr4, 4.4BSD, POSIX.1-2001 (but see VERSIONS).
+.\" The Linux version differs from the SVr4 version in that it
+.\" does not require root permission to create pipes, also in that no
+.\" EMULTIHOP, ENOLINK, or EINTR error is documented.
+.TP
+.BR mknodat ()
+Linux 2.6.16,
+glibc 2.4.
+POSIX.1-2008.
+.SH NOTES
 There are many infelicities in the protocol underlying NFS.
 Some of these affect
 .BR mknod ()
@@ -299,12 +300,3 @@ and
 .BR mkfifo (3),
 .BR acl (5),
 .BR path_resolution (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

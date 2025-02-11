@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-MOUNT" "1" "" "systemd 249" "systemd-mount"
+.TH "SYSTEMD\-MOUNT" "1" "" "systemd 257.1" "systemd-mount"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -24,6 +24,8 @@ systemd-mount, systemd-umount \- Establish and destroy transient mount or auto\-
 .SH "SYNOPSIS"
 .HP \w'\fBsystemd\-mount\fR\ 'u
 \fBsystemd\-mount\fR [\fIOPTIONS\fR...] \fIWHAT\fR [\fIWHERE\fR]
+.HP \w'\fBsystemd\-mount\fR\ 'u
+\fBsystemd\-mount\fR [\fIOPTIONS\fR...] \fB\-\-tmpfs\fR [\fINAME\fR] \fIWHERE\fR
 .HP \w'\fBsystemd\-mount\fR\ 'u
 \fBsystemd\-mount\fR [\fIOPTIONS\fR...] \fB\-\-list\fR
 .HP \w'\fBsystemd\-mount\fR\ 'u
@@ -55,7 +57,9 @@ or
 /run/media/system/
 whose name is generated from the file system label\&. In this mode the block device or image file must exist at the time of invocation of the command, so that it may be probed\&. If the device is found to be a removable block device (e\&.g\&. a USB stick), an automount point is created instead of a regular mount point (i\&.e\&. the
 \fB\-\-automount=\fR
-option is implied, see below)\&.
+option is implied, see below)\&. If the option
+\fB\-\-tmpfs\fR
+is specified, then the argument is interpreted as the path where the new temporary file system shall be mounted\&.
 .PP
 If two arguments are specified, the first indicates the mount source (the
 \fIWHAT\fR) and the second indicates the path to mount it on (the
@@ -79,6 +83,8 @@ The following options are understood:
 Do not synchronously wait for the requested operation to finish\&. If this is not specified, the job will be verified, enqueued and
 \fBsystemd\-mount\fR
 will wait until the mount or automount unit\*(Aqs start\-up is completed\&. By passing this argument, it is only verified and enqueued\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-l\fR, \fB\-\-full\fR
@@ -86,6 +92,8 @@ will wait until the mount or automount unit\*(Aqs start\-up is completed\&. By p
 Do not ellipsize the output when
 \fB\-\-list\fR
 is specified\&.
+.sp
+Added in version 245\&.
 .RE
 .PP
 \fB\-\-no\-pager\fR
@@ -103,14 +111,29 @@ Do not print the legend, i\&.e\&. column headers and the footer with hints\&.
 Do not query the user for authentication for privileged operations\&.
 .RE
 .PP
+\fB\-\-json=\fR\fB\fIMODE\fR\fR
+.RS 4
+Shows output formatted as JSON\&. Expects one of
+"short"
+(for the shortest possible output without any redundant whitespace or line breaks),
+"pretty"
+(for a pretty version of the same, with indentation and line breaks) or
+"off"
+(to turn off JSON output, the default)\&.
+.RE
+.PP
 \fB\-\-quiet\fR, \fB\-q\fR
 .RS 4
 Suppresses additional informational output while running\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-\-discover\fR
 .RS 4
 Enable probing of the mount source\&. This switch is implied if a single argument is specified on the command line\&. If passed, additional metadata is read from the device to enhance the unit to create\&. For example, a descriptive string for the transient units is generated from the file system label and device model\&. Moreover if a removable block device (e\&.g\&. USB stick) is detected an automount unit instead of a regular mount unit is created, with a short idle timeout, in order to ensure the file\-system is placed in a clean state quickly after each access\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-\-type=\fR, \fB\-t\fR
@@ -120,11 +143,15 @@ Specifies the file system type to mount (e\&.g\&.
 or
 "ext4")\&. If omitted or set to
 "auto", the file system type is determined automatically\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-\-options=\fR, \fB\-o\fR
 .RS 4
 Additional mount options for the mount point\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-\-owner=\fR\fB\fIUSER\fR\fR
@@ -136,6 +163,8 @@ own the mounted file system\&. This is done by appending
 and
 \fBgid=\fR
 options to the list of mount options\&. Only certain file systems support this option\&.
+.sp
+Added in version 237\&.
 .RE
 .PP
 \fB\-\-fsck=\fR
@@ -143,6 +172,8 @@ options to the list of mount options\&. Only certain file systems support this o
 Takes a boolean argument, defaults to on\&. Controls whether to run a file system check immediately before the mount operation\&. In the automount case (see
 \fB\-\-automount=\fR
 below) the check will be run the moment the first access to the device is made, which might slightly delay the access\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-\-description=\fR
@@ -151,6 +182,8 @@ Provide a description for the mount or automount unit\&. See
 \fIDescription=\fR
 in
 \fBsystemd.unit\fR(5)\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-\-property=\fR, \fB\-p\fR
@@ -159,6 +192,8 @@ Sets a unit property for the mount unit that is created\&. This takes an assignm
 \fBsystemctl\fR(1)\*(Aqs
 \fBset\-property\fR
 command\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-\-automount=\fR
@@ -171,12 +206,16 @@ If this switch is not specified it defaults to false\&. If not specified and
 \fB\-\-discover\fR
 is used (or only a single argument passed, which implies
 \fB\-\-discover\fR, see above), and the file system block device is detected to be removable, it is set to true, in order to increase the chance that the file system is in a fully clean state if the device is unplugged abruptly\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-A\fR
 .RS 4
 Equivalent to
 \fB\-\-automount=yes\fR\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-\-timeout\-idle\-sec=\fR
@@ -193,28 +232,36 @@ is used (or only a single argument passed, which implies
 \fB\-\-discover\fR, see above), and the file system block device is detected to be removable,
 \fB\-\-timeout\-idle\-sec=1s\fR
 is implied\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-\-automount\-property=\fR
 .RS 4
 Similar to
 \fB\-\-property=\fR, but applies additional properties to the automount unit created, instead of the mount unit\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-\-bind\-device\fR
 .RS 4
-This option only has an effect in automount mode, and controls whether the automount unit shall be bound to the backing device\*(Aqs lifetime\&. If set, the automount point will be removed automatically when the backing device vanishes\&. By default the automount point stays around, and subsequent accesses will block until backing device is replugged\&. This option has no effect in case of non\-device mounts, such as network or virtual file system mounts\&.
+This option only has an effect in automount mode, and controls whether the automount unit shall be bound to the backing device\*(Aqs lifetime\&. If set, the automount unit will be stopped automatically when the backing device vanishes\&. By default the automount unit stays around, and subsequent accesses will block until backing device is replugged\&. This option has no effect in case of non\-device mounts, such as network or virtual file system mounts\&.
 .sp
 Note that if
 \fB\-\-discover\fR
 is used (or only a single argument passed, which implies
 \fB\-\-discover\fR, see above), and the file system block device is detected to be removable, this option is implied\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-\-list\fR
 .RS 4
 Instead of establishing a mount or automount point, print a terse list of block devices containing file systems that may be mounted with
 "systemd\-mount", along with useful metadata such as labels, etc\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fB\-u\fR, \fB\-\-umount\fR
@@ -234,6 +281,8 @@ style node names, or backing files corresponding to loop devices, like
 or
 \fB\-M\fR
 is specified, only absolute paths to mount points are supported\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fB\-G\fR, \fB\-\-collect\fR
@@ -246,6 +295,30 @@ or an equivalent command\&. On the other hand, units that stopped successfully a
 in
 \fBsystemd.unit\fR(5)
 for further information\&.
+.sp
+Added in version 236\&.
+.RE
+.PP
+\fB\-T\fR, \fB\-\-tmpfs\fR
+.RS 4
+Create and mount a new
+\fBtmpfs\fR
+file system on
+\fIWHERE\fR, with an optional
+\fINAME\fR
+that defaults to
+"tmpfs"\&.
+.sp
+The file system is mounted with the top\-level directory mode determined by the
+\fBumask\fR(2)
+setting of the caller, i\&.e\&.
+\fBrwxrwxrwx\fR
+masked by the umask of the caller\&. This matches what
+\fBmkdir\fR(1)
+does, but is different from the kernel default of
+"rwxrwxrwxt", i\&.e\&. a world\-writable directory with the sticky bit set\&.
+.sp
+Added in version 255\&.
 .RE
 .PP
 \fB\-\-user\fR
@@ -308,11 +381,15 @@ honors a couple of additional udev properties of block devices:
 The mount options to use, if
 \fB\-\-options=\fR
 is not used\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fISYSTEMD_MOUNT_WHERE=\fR
 .RS 4
 The file system path to place the mount point at, instead of the automatically generated one\&.
+.sp
+Added in version 232\&.
 .RE
 .SH "EXAMPLE"
 .PP
@@ -330,10 +407,4 @@ ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesys
 .\}
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBmount\fR(8),
-\fBsystemctl\fR(1),
-\fBsystemd.unit\fR(5),
-\fBsystemd.mount\fR(5),
-\fBsystemd.automount\fR(5),
-\fBsystemd-run\fR(1)
+\fBsystemd\fR(1), \fBmount\fR(8), \fBsystemctl\fR(1), \fBsystemd.unit\fR(5), \fBsystemd.mount\fR(5), \fBsystemd.automount\fR(5), \fBsystemd-run\fR(1)

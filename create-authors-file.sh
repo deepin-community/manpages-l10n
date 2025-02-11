@@ -21,15 +21,25 @@ language_list=(
     '"Czech"      cs'
     '"Danish"     da'
     '"Dutch"      nl'
+    '"Finnish"    fi'
     '"French"     fr'
     '"German"     de'
+    '"Greek"      el'
     '"Hungarian"  hu'
+    '"Indonesian" id'
     '"Italian"    it'
+    '"Korean"     ko'
     '"Macedonian" mk'
+    '"Norwegian bokmål" nb'
     '"Persian"    fa'
     '"Polish"     pl'
     '"Romanian"   ro'
+    '"Russian"    ru'
+    '"Serbian"    sr'
     '"Spanish"    es'
+    '"Swedish"    sv'
+    '"Ukrainian"  uk'
+    '"Vietnamese" vi'
 )
 
 # Generate AUTHORS file
@@ -48,6 +58,7 @@ for language in "${language_list[@]}"; do
     echo -e "\n\n## ${lang_name}:\n" >> AUTHORS.md
 
     # Extract all translators from the copyright headers for the given language
+    # FIXME This misses the files in archive/*
     files=$(find po/${lang_code}/man? -name "*po" | sort)
     # files="$files $(find po/secondary-*/man? -name "*po" | sort)"
     for translation in $files; do

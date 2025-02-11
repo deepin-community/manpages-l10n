@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_MESSAGE_OPEN_CONTAINER" "3" "" "systemd 249" "sd_bus_message_open_container"
+.TH "SD_BUS_MESSAGE_OPEN_CONTAINER" "3" "" "systemd 255" "sd_bus_message_open_container"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -92,9 +92,9 @@ exits the scope of the last container entered with
 \fBsd_bus_message_enter_container()\fR\&. It behaves mostly the same as
 \fBsd_bus_message_close_container()\fR\&. Note that
 \fBsd_bus_message_exit_container()\fR
-may only be called after iterating through all members of the container, i\&.e\&. reading or skipping them\&. Use
+may only be called after iterating through all members of the container, i\&.e\&. reading or skipping over them\&. Use
 \fBsd_bus_message_skip\fR(3)
-to skip over felds of a container in order to be able to exit the container with
+to skip over fields of a container in order to be able to exit the container with
 \fBsd_bus_message_exit_container()\fR
 without reading all members\&.
 .SH "RETURN VALUE"
@@ -122,6 +122,29 @@ are
 or
 \fItype\fR
 is invalid\&.
+.sp
+Added in version 246\&.
+.RE
+.PP
+\fB\-EBADMSG\fR
+.RS 4
+Message
+\fIm\fR
+has invalid structure\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fB\-ENXIO\fR
+.RS 4
+Message
+\fIm\fR
+does not have a container of type
+\fItype\fR
+at the current position, or the contents do not match
+\fIcontents\fR\&.
+.sp
+Added in version 254\&.
 .RE
 .PP
 \fB\-EPERM\fR
@@ -129,6 +152,8 @@ is invalid\&.
 The message
 \fIm\fR
 is already sealed\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ESTALE\fR
@@ -136,23 +161,36 @@ is already sealed\&.
 The message
 \fIm\fR
 is in an invalid state\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOMEM\fR
 .RS 4
 Memory allocation failed\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-EBUSY\fR
 .RS 4
 \fBsd_bus_message_exit_container()\fR
 was called but there are unread members left in the container\&.
+.sp
+Added in version 247\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
 .SH "EXAMPLES"
 .PP
 \fBExample\ \&1.\ \&Append an array of strings to a message\fR
@@ -161,6 +199,8 @@ file\&.
 .RS 4
 .\}
 .nf
+/* SPDX\-License\-Identifier: MIT\-0 */
+
 #include <systemd/sd\-bus\&.h>
 
 int append_strings_to_message(sd_bus_message *m, const char *const *arr) {
@@ -189,6 +229,8 @@ int append_strings_to_message(sd_bus_message *m, const char *const *arr) {
 .RS 4
 .\}
 .nf
+/* SPDX\-License\-Identifier: MIT\-0 */
+
 #include <stdio\&.h>
 
 #include <systemd/sd\-bus\&.h>

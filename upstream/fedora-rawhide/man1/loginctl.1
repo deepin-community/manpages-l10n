@@ -1,5 +1,5 @@
 '\" t
-.TH "LOGINCTL" "1" "" "systemd 249" "loginctl"
+.TH "LOGINCTL" "1" "" "systemd 257.1" "loginctl"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,7 +38,11 @@ The following commands are understood:
 .PP
 \fBlist\-sessions\fR
 .RS 4
-List current sessions\&.
+List current sessions\&. The JSON format output can be toggled using
+\fB\-\-json=\fR
+or
+\fB\-j\fR
+option\&.
 .RE
 .PP
 \fBsession\-status\fR [\fIID\fR\&...]
@@ -46,51 +50,75 @@ List current sessions\&.
 Show terse runtime status information about one or more sessions, followed by the most recent log data from the journal\&. Takes one or more session identifiers as parameters\&. If no session identifiers are passed, the status of the caller\*(Aqs session is shown\&. This function is intended to generate human\-readable output\&. If you are looking for computer\-parsable output, use
 \fBshow\-session\fR
 instead\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBshow\-session\fR [\fIID\fR\&...]
 .RS 4
-Show properties of one or more sessions or the manager itself\&. If no argument is specified, properties of the manager will be shown\&. If a session ID is specified, properties of the session are shown\&. By default, empty properties are suppressed\&. Use
+Show properties of one or more sessions or the manager itself\&. If no argument is specified, properties of the manager will be shown\&. If a session ID is specified, properties of the session are shown\&. Specially, if the given ID is
+"self", the session to which the
+\fBloginctl\fR
+process belongs is used\&. If
+"auto", the current session is used as with
+"self"
+if exists, and falls back to the current user\*(Aqs graphical session\&. By default, empty properties are suppressed\&. Use
 \fB\-\-all\fR
 to show those too\&. To select specific properties to show, use
 \fB\-\-property=\fR\&. This command is intended to be used whenever computer\-parsable output is required\&. Use
 \fBsession\-status\fR
 if you are looking for formatted human\-readable output\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBactivate\fR [\fIID\fR]
 .RS 4
 Activate a session\&. This brings a session into the foreground if another session is currently in the foreground on the respective seat\&. Takes a session identifier as argument\&. If no argument is specified, the session of the caller is put into foreground\&.
+.sp
+Added in version 219\&.
 .RE
 .PP
 \fBlock\-session\fR [\fIID\fR\&...], \fBunlock\-session\fR [\fIID\fR\&...]
 .RS 4
 Activates/deactivates the screen lock on one or more sessions, if the session supports it\&. Takes one or more session identifiers as arguments\&. If no argument is specified, the session of the caller is locked/unlocked\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBlock\-sessions\fR, \fBunlock\-sessions\fR
 .RS 4
 Activates/deactivates the screen lock on all current sessions supporting it\&.
+.sp
+Added in version 188\&.
 .RE
 .PP
 \fBterminate\-session\fR \fIID\fR\&...
 .RS 4
 Terminates a session\&. This kills all processes of the session and deallocates all resources attached to the session\&. If the argument is specified as empty string the session invoking the command is terminated\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBkill\-session\fR \fIID\fR\&...
 .RS 4
 Send a signal to one or more processes of the session\&. Use
-\fB\-\-kill\-who=\fR
+\fB\-\-kill\-whom=\fR
 to select which process to kill\&. Use
 \fB\-\-signal=\fR
 to select the signal to send\&. If the argument is specified as empty string the signal is sent to the session invoking the command\&.
+.sp
+Added in version 233\&.
 .RE
 .SS "User Commands"
 .PP
 \fBlist\-users\fR
 .RS 4
-List currently logged in users\&.
+List currently logged in users\&. The JSON format output can be toggled using
+\fB\-\-json=\fR
+or
+\fB\-j\fR
+option\&.
 .RE
 .PP
 \fBuser\-status\fR [\fIUSER\fR\&...]
@@ -98,6 +126,8 @@ List currently logged in users\&.
 Show terse runtime status information about one or more logged in users, followed by the most recent log data from the journal\&. Takes one or more user names or numeric user IDs as parameters\&. If no parameters are passed, the status is shown for the user of the session of the caller\&. This function is intended to generate human\-readable output\&. If you are looking for computer\-parsable output, use
 \fBshow\-user\fR
 instead\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBshow\-user\fR [\fIUSER\fR\&...]
@@ -108,6 +138,8 @@ to show those too\&. To select specific properties to show, use
 \fB\-\-property=\fR\&. This command is intended to be used whenever computer\-parsable output is required\&. Use
 \fBuser\-status\fR
 if you are looking for formatted human\-readable output\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBenable\-linger\fR [\fIUSER\fR\&...], \fBdisable\-linger\fR [\fIUSER\fR\&...]
@@ -118,11 +150,15 @@ See also
 \fIKillUserProcesses=\fR
 setting in
 \fBlogind.conf\fR(5)\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBterminate\-user\fR \fIUSER\fR\&...
 .RS 4
 Terminates all sessions of a user\&. This kills all processes of all sessions of the user and deallocates all runtime resources attached to the user\&. If the argument is specified as empty string the sessions of the user invoking the command are terminated\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBkill\-user\fR \fIUSER\fR\&...
@@ -130,12 +166,18 @@ Terminates all sessions of a user\&. This kills all processes of all sessions of
 Send a signal to all processes of a user\&. Use
 \fB\-\-signal=\fR
 to select the signal to send\&. If the argument is specified as empty string the signal is sent to the sessions of the user invoking the command\&.
+.sp
+Added in version 233\&.
 .RE
 .SS "Seat Commands"
 .PP
 \fBlist\-seats\fR
 .RS 4
-List currently available seats on the local system\&.
+List currently available seats on the local system\&. The JSON format output can be toggled using
+\fB\-\-json=\fR
+or
+\fB\-j\fR
+option\&.
 .RE
 .PP
 \fBseat\-status\fR [\fINAME\fR\&...]
@@ -143,6 +185,8 @@ List currently available seats on the local system\&.
 Show terse runtime status information about one or more seats\&. Takes one or more seat names as parameters\&. If no seat names are passed the status of the caller\*(Aqs session\*(Aqs seat is shown\&. This function is intended to generate human\-readable output\&. If you are looking for computer\-parsable output, use
 \fBshow\-seat\fR
 instead\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBshow\-seat\fR [\fINAME\fR\&...]
@@ -153,6 +197,8 @@ to show those too\&. To select specific properties to show, use
 \fB\-\-property=\fR\&. This command is intended to be used whenever computer\-parsable output is required\&. Use
 \fBseat\-status\fR
 if you are looking for formatted human\-readable output\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBattach\fR \fINAME\fR \fIDEVICE\fR\&...
@@ -166,6 +212,8 @@ and
 and must be prefixed with
 "seat"\&. To drop assignment of a device to a specific seat, just reassign it to a different seat, or use
 \fBflush\-devices\fR\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBflush\-devices\fR
@@ -177,15 +225,12 @@ Removes all device assignments previously created with
 \fBterminate\-seat\fR \fINAME\fR\&...
 .RS 4
 Terminates all sessions on a seat\&. This kills all processes of all sessions on the seat and deallocates all runtime resources attached to them\&.
+.sp
+Added in version 233\&.
 .RE
 .SH "OPTIONS"
 .PP
 The following options are understood:
-.PP
-\fB\-\-no\-ask\-password\fR
-.RS 4
-Do not query the user for authentication for privileged operations\&.
-.RE
 .PP
 \fB\-p\fR, \fB\-\-property=\fR
 .RS 4
@@ -197,6 +242,8 @@ When showing session/user/seat properties, limit display to certain properties a
 .RS 4
 When showing session/user/seat properties, only print the value, and skip the property name and
 "="\&.
+.sp
+Added in version 230\&.
 .RE
 .PP
 \fB\-a\fR, \fB\-\-all\fR
@@ -207,16 +254,20 @@ When showing session/user/seat properties, show all properties regardless of whe
 \fB\-l\fR, \fB\-\-full\fR
 .RS 4
 Do not ellipsize process tree entries\&.
+.sp
+Added in version 198\&.
 .RE
 .PP
-\fB\-\-kill\-who=\fR
+\fB\-\-kill\-whom=\fR
 .RS 4
 When used with
-\fBkill\-session\fR, choose which processes to kill\&. Must be one of
-\fBleader\fR, or
-\fBall\fR
-to select whether to kill only the leader process of the session or all processes of the session\&. If omitted, defaults to
+\fBkill\-session\fR, choose which processes to kill\&. Takes one of
+"leader"
+or
+"all", to select whether to kill only the leader process of the session or all processes of the session\&. If omitted, defaults to
 \fBall\fR\&.
+.sp
+Added in version 252\&.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-signal=\fR
@@ -244,6 +295,8 @@ When used with
 \fBuser\-status\fR
 and
 \fBsession\-status\fR, controls the number of journal lines to show, counting from the most recent ones\&. Takes a positive integer argument\&. Defaults to 10\&.
+.sp
+Added in version 219\&.
 .RE
 .PP
 \fB\-o\fR, \fB\-\-output=\fR
@@ -254,6 +307,8 @@ and
 \fBsession\-status\fR, controls the formatting of the journal entries that are shown\&. For the available choices, see
 \fBjournalctl\fR(1)\&. Defaults to
 "short"\&.
+.sp
+Added in version 219\&.
 .RE
 .PP
 \fB\-H\fR, \fB\-\-host=\fR
@@ -281,6 +336,11 @@ syntax is used either the left hand side or the right hand side may be omitted (
 are implied\&.
 .RE
 .PP
+\fB\-\-no\-ask\-password\fR
+.RS 4
+Do not query the user for authentication for privileged operations\&.
+.RE
+.PP
 \fB\-\-no\-pager\fR
 .RS 4
 Do not pipe output into a pager\&.
@@ -289,6 +349,26 @@ Do not pipe output into a pager\&.
 \fB\-\-no\-legend\fR
 .RS 4
 Do not print the legend, i\&.e\&. column headers and the footer with hints\&.
+.RE
+.PP
+\fB\-\-json=\fR\fB\fIMODE\fR\fR
+.RS 4
+Shows output formatted as JSON\&. Expects one of
+"short"
+(for the shortest possible output without any redundant whitespace or line breaks),
+"pretty"
+(for a pretty version of the same, with indentation and line breaks) or
+"off"
+(to turn off JSON output, the default)\&.
+.RE
+.PP
+\fB\-j\fR
+.RS 4
+Equivalent to
+\fB\-\-json=pretty\fR
+if running on a terminal, and
+\fB\-\-json=short\fR
+otherwise\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
@@ -338,7 +418,7 @@ There are two sessions, 3 and 5\&. Session 3 is a graphical session, marked with
 .PP
 \fI$SYSTEMD_LOG_LEVEL\fR
 .RS 4
-The maximum log level of emitted messages (messages with a higher log level, i\&.e\&. less important ones, will be suppressed)\&. Either one of (in order of decreasing importance)
+The maximum log level of emitted messages (messages with a higher log level, i\&.e\&. less important ones, will be suppressed)\&. Takes a comma\-separated list of values\&. A value may be either one of (in order of decreasing importance)
 \fBemerg\fR,
 \fBalert\fR,
 \fBcrit\fR,
@@ -348,7 +428,15 @@ The maximum log level of emitted messages (messages with a higher log level, i\&
 \fBinfo\fR,
 \fBdebug\fR, or an integer in the range 0\&...7\&. See
 \fBsyslog\fR(3)
-for more information\&.
+for more information\&. Each value may optionally be prefixed with one of
+\fBconsole\fR,
+\fBsyslog\fR,
+\fBkmsg\fR
+or
+\fBjournal\fR
+followed by a colon to set the maximum log level for that specific log target (e\&.g\&.
+\fBSYSTEMD_LOG_LEVEL=debug,console:info\fR
+specifies to log at debug level except when logging to the console which should be at info level)\&. Note that the global maximum log level takes priority over any per target maximum log levels\&.
 .RE
 .PP
 \fI$SYSTEMD_LOG_COLOR\fR
@@ -403,6 +491,12 @@ The destination for log messages\&. One of
 (disable log output)\&.
 .RE
 .PP
+\fI$SYSTEMD_LOG_RATELIMIT_KMSG\fR
+.RS 4
+Whether to ratelimit kmsg or not\&. Takes a boolean\&. Defaults to
+"true"\&. If disabled, systemd will not ratelimit messages written to kmsg\&.
+.RE
+.PP
 \fI$SYSTEMD_PAGER\fR
 .RS 4
 Pager to use when
@@ -419,6 +513,13 @@ and
 "cat"
 is equivalent to passing
 \fB\-\-no\-pager\fR\&.
+.sp
+Note: if
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set,
+\fI$SYSTEMD_PAGER\fR
+(as well as
+\fI$PAGER\fR) will be silently ignored\&.
 .RE
 .PP
 \fI$SYSTEMD_LESS\fR
@@ -454,6 +555,12 @@ will be ignored by the executable, and needs to be handled by the pager\&.
 This option instructs the pager to not send termcap initialization and deinitialization strings to the terminal\&. It is set by default to allow command output to remain visible in the terminal even after the pager exits\&. Nevertheless, this prevents some pager functionality from working, in particular paged output cannot be scrolled with the mouse\&.
 .RE
 .sp
+Note that setting the regular
+\fI$LESS\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
+.sp
 See
 \fBless\fR(1)
 for more discussion\&.
@@ -465,6 +572,12 @@ Override the charset passed to
 \fBless\fR
 (by default
 "utf\-8", if the invoking terminal is determined to be UTF\-8 compatible)\&.
+.sp
+Note that setting the regular
+\fI$LESSCHARSET\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
 .RE
 .PP
 \fI$SYSTEMD_PAGERSECURE\fR
@@ -520,7 +633,4 @@ and other conditions\&.
 .RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemctl\fR(1),
-\fBsystemd-logind.service\fR(8),
-\fBlogind.conf\fR(5)
+\fBsystemd\fR(1), \fBsystemctl\fR(1), \fBsystemd-logind.service\fR(8), \fBlogind.conf\fR(5)

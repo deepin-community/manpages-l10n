@@ -1,27 +1,8 @@
+'\" t
 .\" Copyright 1993 Giorgio Ciucci (giorgio@crcc.it)
 .\" and Copyright 2004, 2005 Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" Modified Tue Oct 22 17:53:56 1996 by Eric S. Raymond <esr@thyrsus.com>
 .\" Modified Fri Jun 19 10:59:15 1998 by Andries Brouwer <aeb@cwi.nl>
@@ -39,32 +20,35 @@
 .\" 2005-08-02, mtk: Added IPC_INFO, SEM_INFO, SEM_STAT descriptions.
 .\" 2018-03-20, dbueso: Added SEM_STAT_ANY description.
 .\"
-.TH SEMCTL 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH semctl 2 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 semctl \- System V semaphore control operations
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/sem.h>
-.PP
-.BI "int semctl(int " semid ", int " semnum ", int " cmd ", ...);"
+.P
+.BI "int semctl(int " semid ", int " semnum ", int " op ", ...);"
 .fi
 .SH DESCRIPTION
 .BR semctl ()
 performs the control operation specified by
-.I cmd
+.I op
 on the System\ V semaphore set identified by
 .IR semid ,
 or on the
 .IR semnum -th
 semaphore of that set.
 (The semaphores in a set are numbered starting at 0.)
-.PP
+.P
 This function has three or four arguments, depending on
-.IR cmd .
+.IR op .
 When there are four, the fourth has the type
 .IR "union semun" .
 The \fIcalling program\fP must define this union as follows:
-.PP
+.P
 .in +4n
 .EX
 union semun {
@@ -76,11 +60,11 @@ union semun {
 };
 .EE
 .in
-.PP
+.P
 The
 .I semid_ds
 data structure is defined in \fI<sys/sem.h>\fP as follows:
-.PP
+.P
 .in +4n
 .EX
 struct semid_ds {
@@ -92,7 +76,7 @@ struct semid_ds {
 };
 .EE
 .in
-.PP
+.P
 The fields of the
 .I semid_ds
 structure are as follows:
@@ -114,7 +98,7 @@ Time of creation of semaphore set or time of last
 .BR IPCSET ,
 .BR SETVAL ,
 or
-.BR SETALL
+.B SETALL
 operation.
 .TP
 .I sem_nsems
@@ -124,13 +108,13 @@ ranging from
 .B 0
 to
 .IR sem_nsems\-1 .
-.PP
+.P
 The
 .I ipc_perm
 structure is defined as follows
 (the highlighted fields are settable using
 .BR IPC_SET ):
-.PP
+.P
 .in +4n
 .EX
 struct ipc_perm {
@@ -144,7 +128,7 @@ struct ipc_perm {
 };
 .EE
 .in
-.PP
+.P
 The least significant 9 bits of the
 .I mode
 field of the
@@ -160,12 +144,12 @@ l l.
 0004	Read by others
 0002	Write by others
 .TE
-.PP
+.P
 In effect, "write" means "alter" for a semaphore set.
 Bits 0100, 0010, and 0001 (the execute bits) are unused by the system.
-.PP
+.P
 Valid values for
-.I cmd
+.I op
 are:
 .TP
 .B IPC_STAT
@@ -301,9 +285,9 @@ structure as for
 However,
 .I sem_perm.mode
 is not checked for read access for
-.IR semid
+.I semid
 meaning that any user can employ this operation (just as any user may read
-.IR /proc/sysvipc/sem
+.I /proc/sysvipc/sem
 to obtain the same information).
 .TP
 .B GETALL
@@ -396,7 +380,7 @@ The calling process must have alter permission on the semaphore set.
 On success,
 .BR semctl ()
 returns a nonnegative value depending on
-.I cmd
+.I op
 as follows:
 .TP
 .B GETNCNT
@@ -436,11 +420,11 @@ the identifier of the semaphore set whose index was given in
 .B SEM_STAT_ANY
 as for
 .BR SEM_STAT .
-.PP
+.P
 All other
-.I cmd
+.I op
 values return 0 on success.
-.PP
+.P
 On failure,
 .BR semctl ()
 returns \-1 and sets
@@ -450,7 +434,7 @@ to indicate the error.
 .TP
 .B EACCES
 The argument
-.I cmd
+.I op
 has one of the values
 .BR GETALL ,
 .BR GETPID ,
@@ -480,7 +464,7 @@ The semaphore set was removed.
 .TP
 .B EINVAL
 Invalid value for
-.I cmd
+.I op
 or
 .IR semid .
 Or: for a
@@ -491,7 +475,7 @@ referred to an array slot that is currently unused.
 .TP
 .B EPERM
 The argument
-.I cmd
+.I op
 has the value
 .B IPC_SET
 or
@@ -509,7 +493,7 @@ capability.
 .TP
 .B ERANGE
 The argument
-.I cmd
+.I op
 has the value
 .B SETALL
 or
@@ -519,10 +503,7 @@ and the value to which
 is to be set (for some semaphore of the set) is less than 0
 or greater than the implementation limit
 .BR SEMVMX .
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, SVr4.
-.\" SVr4 documents more error conditions EINVAL and EOVERFLOW.
-.PP
+.SH VERSIONS
 POSIX.1 specifies the
 .\" POSIX.1-2001, POSIX.1-2008
 .I sem_nsems
@@ -534,54 +515,6 @@ and the field is so defined on most other systems.
 It was also so defined on Linux 2.2 and earlier,
 but, since Linux 2.4, the field has the type
 .IR "unsigned\ long" .
-.SH NOTES
-The
-.BR IPC_INFO ,
-.BR SEM_STAT ,
-and
-.B SEM_INFO
-operations are used by the
-.BR ipcs (1)
-program to provide information on allocated resources.
-In the future these may modified or moved to a
-.I /proc
-filesystem interface.
-.PP
-Various fields in a \fIstruct semid_ds\fP were typed as
-.I short
-under Linux 2.2
-and have become
-.I long
-under Linux 2.4.
-To take advantage of this,
-a recompilation under glibc-2.1.91 or later should suffice.
-(The kernel distinguishes old and new calls by an
-.B IPC_64
-flag in
-.IR cmd .)
-.PP
-In some earlier versions of glibc, the
-.I semun
-union was defined in \fI<sys/sem.h>\fP, but POSIX.1 requires
-.\" POSIX.1-2001, POSIX.1-2008
-that the caller define this union.
-On versions of glibc where this union is \fInot\fP defined,
-the macro
-.B _SEM_SEMUN_UNDEFINED
-is defined in \fI<sys/sem.h>\fP.
-.PP
-The following system limit on semaphore sets affects a
-.BR semctl ()
-call:
-.TP
-.B SEMVMX
-Maximum value for
-.BR semval :
-implementation dependent (32767).
-.PP
-For greater portability, it is best to always call
-.BR semctl ()
-with four arguments.
 .\"
 .SS The sempid value
 POSIX.1 defines
@@ -592,7 +525,7 @@ and explicitly notes that this value is set by a successful
 call, with the implication that no other interface affects the
 .I sempid
 value.
-.PP
+.P
 While some implementations conform to the behavior specified in POSIX.1,
 others do not.
 (The fault here probably lies with POSIX.1 inasmuch as it likely failed
@@ -610,21 +543,74 @@ on process termination as a consequence of the use of the
 .B SEM_UNDO
 flag (see
 .BR semop (2)).
-.PP
+.P
 Linux also updates
 .I sempid
 for
-.BR SETVAL
+.B SETVAL
 operations and semaphore adjustments.
 However, somewhat inconsistently, up to and including Linux 4.5,
 the kernel did not update
 .I sempid
 for
-.BR SETALL
+.B SETALL
 operations.
 This was rectified
 .\" commit a5f4db877177d2a3d7ae62a7bac3a5a27e083d7f
 in Linux 4.6.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, SVr4.
+.\" SVr4 documents more error conditions EINVAL and EOVERFLOW.
+.P
+Various fields in a \fIstruct semid_ds\fP were typed as
+.I short
+under Linux 2.2
+and have become
+.I long
+under Linux 2.4.
+To take advantage of this,
+a recompilation under glibc-2.1.91 or later should suffice.
+(The kernel distinguishes old and new calls by an
+.B IPC_64
+flag in
+.IR op .)
+.P
+In some earlier versions of glibc, the
+.I semun
+union was defined in \fI<sys/sem.h>\fP, but POSIX.1 requires
+.\" POSIX.1-2001, POSIX.1-2008
+that the caller define this union.
+On versions of glibc where this union is \fInot\fP defined,
+the macro
+.B _SEM_SEMUN_UNDEFINED
+is defined in \fI<sys/sem.h>\fP.
+.SH NOTES
+The
+.BR IPC_INFO ,
+.BR SEM_STAT ,
+and
+.B SEM_INFO
+operations are used by the
+.BR ipcs (1)
+program to provide information on allocated resources.
+In the future these may modified or moved to a
+.I /proc
+filesystem interface.
+.P
+The following system limit on semaphore sets affects a
+.BR semctl ()
+call:
+.TP
+.B SEMVMX
+Maximum value for
+.BR semval :
+implementation dependent (32767).
+.P
+For greater portability, it is best to always call
+.BR semctl ()
+with four arguments.
 .SH EXAMPLES
 See
 .BR shmop (2).

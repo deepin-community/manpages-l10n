@@ -1,0 +1,85 @@
+'\" t
+.\"     Title: pkgctl-release
+.\"    Author: [see the "AUTHOR(S)" section]
+.\" Generator: Asciidoctor 2.0.23
+.\"      Date: 2024-06-18
+.\"    Manual: \ \&
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "PKGCTL\-RELEASE" "1" "2024-06-18" "\ \&" "\ \&"
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.ss \n[.ss] 0
+.nh
+.ad l
+.de URL
+\fI\\$2\fP <\\$1>\\$3
+..
+.als MTO URL
+.if \n[.g] \{\
+.  mso www.tmac
+.  am URL
+.    ad l
+.  .
+.  am MTO
+.    ad l
+.  .
+.  LINKSTYLE blue R < >
+.\}
+.SH "NAME"
+pkgctl-release \- Release step to commit, tag and upload build artifacts
+.SH "SYNOPSIS"
+.sp
+pkgctl release [OPTIONS] [PATH...]
+.SH "DESCRIPTION"
+.sp
+Modified version controlled files will first be staged for commit,
+afterwards a Git tag matching the pkgver will be created and finally
+all build artifacts will be uploaded.
+.sp
+By default the target pacman repository will be auto\-detected by querying
+the repo it is currently released in. When initially adding a new package
+to the repositories, the target repo must be specified manually.
+.SH "OPTIONS"
+.sp
+\fB\-m, \-\-message\fP \fIMSG\fP
+.RS 4
+Use the given <msg> as the commit message
+.RE
+.sp
+\fB\-r, \-\-repo\fP \fIREPO\fP
+.RS 4
+Specify target repository for new packages not in any official repo.
+Using this option is disallowed if the package is already released, as it
+would circumvent the auto\-detection safeguard.
+.RE
+.sp
+\fB\-s, \-\-staging\fP
+.RS 4
+Build against the staging counterpart of the auto\-detected repo
+.RE
+.sp
+\fB\-t, \-\-testing\fP
+.RS 4
+Build against the testing counterpart of the auto\-detected repo
+.RE
+.sp
+\fB\-u, \-\-db\-update\fP
+.RS 4
+Automatically update the pacman database after uploading
+.RE
+.sp
+\fB\-h, \-\-help\fP
+.RS 4
+Show a help text
+.RE
+.SH "SEE ALSO"
+.sp
+pkgctl\-db\-update(1)
+.SH "HOMEPAGE"
+.sp
+\fI\c
+.URL "https://gitlab.archlinux.org/archlinux/devtools" "" "\fP"
+.sp
+Please report bugs and feature requests in the issue tracker. Please do your best to provide a reproducible test case for bugs.

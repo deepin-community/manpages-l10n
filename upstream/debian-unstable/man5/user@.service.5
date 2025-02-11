@@ -1,5 +1,5 @@
 '\" t
-.TH "USER@\&.SERVICE" "5" "" "systemd 247" "user@.service"
+.TH "USER@\&.SERVICE" "5" "" "systemd 257.1" "user@.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -27,7 +27,7 @@ user@\fIUID\fR\&.service
 .PP
 user\-runtime\-dir@\fIUID\fR\&.service
 .PP
-/lib/systemd/systemd\-user\-runtime\-dir
+/usr/lib/systemd/systemd\-user\-runtime\-dir
 .PP
 user\-\fIUID\fR\&.slice
 .SH "DESCRIPTION"
@@ -115,7 +115,7 @@ Control group /:
 │ │ │ │ └─2386 /usr/bin/pulseaudio \-\-daemonize=no
 │ │ │ └─gnome\-terminal\-server\&.service
 │ │ │   └─init\&.scope
-│ │ │     ├─ 4127 /libexec/gnome\-terminal\-server
+│ │ │     ├─ 4127 /usr/libexec/gnome\-terminal\-server
 │ │ │     └─ 4198 zsh
 │ │ \&...
 │ │ └─session\-4\&.scope
@@ -135,7 +135,7 @@ Control group /:
 │   │ └─6717 \-bash
 │   └─user@1001\&.service
 │     ├─init\&.scope
-│     │ ├─6680 /lib/systemd/systemd \-\-user
+│     │ ├─6680 /usr/lib/systemd/systemd \-\-user
 │     │ └─6688 (sd\-pam)
 │     └─sleep\&.service
 │       └─6706 /usr/bin/sleep 30
@@ -170,7 +170,7 @@ sleep\&.service)\&.
 .\}
 .nf
 $ systemctl cat user\-1000\&.slice
-# /lib/systemd/system/user\-\&.slice\&.d/10\-defaults\&.conf
+# /usr/lib/systemd/system/user\-\&.slice\&.d/10\-defaults\&.conf
 # \&...
 [Unit]
 Description=User Slice of UID %j
@@ -188,10 +188,4 @@ user\-\fIUID\fR\&.slice
 units by default don\*(Aqt have a unit file\&. The resource limits are set through a drop\-in, which can be easily replaced or extended following standard drop\-in mechanisms discussed in the first section\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd.service\fR(5),
-\fBsystemd.slice\fR(5),
-\fBsystemd.resource-control\fR(5),
-\fBsystemd.exec\fR(5),
-\fBsystemd.special\fR(7),
-\fBpam\fR(8)
+\fBsystemd\fR(1), \fBsystemd.service\fR(5), \fBsystemd.slice\fR(5), \fBsystemd.resource-control\fR(5), \fBsystemd.exec\fR(5), \fBsystemd.special\fR(7), \fBcapsule@.service\fR(5), \fBpam\fR(8)

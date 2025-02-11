@@ -1,0 +1,150 @@
+.\" -------------------------------------------------
+.\" Keterangan dibawah ini tidak akan diterjemahkan !
+.\" -------------------------------------------------
+.\" Copyright (c) 1980, 1991 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     from: @(#)fingerd.8	6.4 (Berkeley) 3/16/91
+.\"	$Id: fingerd.8,v 1.7 1997/02/01 22:39:46 dholland Exp $
+.\"
+.\" Section tambahan untuk header di RH 5.2
+.TH FINGERD 8 "August 29, 1996" "Linux NetKit 0.08" "UNIX System Manager's Manual"
+.Dd August 29, 1996
+.Dt FINGERD 8
+.Os "Linux NetKit 0.08"
+.Sh NAMA
+.Nm fingerd
+.Nd Informasi untuk user di remote server
+.Sh SINOPSIS
+.Nm fingerd
+.Op Fl wul
+.Op Fl pL Ar path
+.Sh PENJELASAN
+.Nm Fingerd
+adalah daemon simple yang berdasarkan
+.%T RFC1196
+yang menyediakan beberapa interface untuk program
+.Dq finger
+pada sebagian besar di jaringan.
+Program ini mengembalikan nilai yang benar secara sederhana,
+laporan status yang human-oriented dalam salah satu sistem
+atau keterangan - keterangan lain pada saat tertentu.
+.Pp
+Jika pilihan dari
+.Fl w
+diberikan, remote user akan mengambil banner tambahan
+.Dq Selamat datang ...
+yang mana juga menampilkan beberapa informasi (seperti berapa lama, nama dari
+sistem operasi dan rilis nya) terhadap sistem yang
+.Nm fingerd
+sedang berjalan. Beberapa tempat mungkin memperhitungkan terhadap
+resiko keamanan jika memberikan informasi ini keluar yang mungkin berguna
+untuk seorang cracker.
+.Pp
+Jika pilihan
+.Fl u
+diberikan, permintaan dari
+.Dq finger @host
+akan ditolak.
+.Pp
+Jika pilihan
+.Fl l
+diberikan, informasi yang keluar dari siapa saja yang log in. Pilihan ini
+mungkin akan melanggar kebebasan dari pemakai dan jangan dipergunakan pada
+sistem yang multiuser.
+.Pp
+Pilihan
+.Fl p
+memperbolehkan spesifikasi dari alternatif lokasi fingerd untuk mencari
+program
+.Dq finger
+.
+Pilihan
+.Fl L
+sama juga.
+.Pp
+Pilihan untuk fingerd diharapkan lebih spesifik pada
+.Pa /etc/inetd.conf .
+.Pp
+Protokol dari finger terdiri dari beberapa spesifikasi argumen perintah.
+Program
+.Dq super-server
+.Xr inetd 8
+menjalankan
+.Nm fingerd
+untuk menerima permintaan
+.Tn TCP
+pada port 79.
+Setelah tersambung
+.Nm fingerd
+membaca satu baris perintah yang dibatas oleh
+.Aq Tn CRLF
+yang mana berhasil untuk
+.Xr finger 1 .
+Ia akan menutup koneksi secepat mungkin setelah informasi seluruhnya keluar.
+.Pp
+Jika baris tersebut kosong (seperti hanya
+.Aq Tn CRLF
+saja yang dikirim) kemudian
+.Xr finger
+akan mengembalikan laporan
+.Dq default
+yang menampilkan seluruh pemakai yang masuk kedalam sistem pada saat itu.
+Fasilitas ini ditutup/ditahan oleh pilihan
+.Fl u .
+.Pp
+Jika nama pemakai disebutkan (seperti
+.Pf eric Aq Tn CRLF )
+maka permintaan tersebut informasinya lebih rinci hanya untuk keterangan -
+keterangan dari pemakai tersebut, meskipun sedang masuk ataupun tidak.
+.Dq Nama-nama
+yang diperbolehkan pada baris perintah kedua-duanya termasuk
+.Dq nama login
+dan
+.Dq nama pemakai .
+Jika keduanya itu memungkinkan, maka semua kemungkinan dari informasi tersebut
+akan dimunculkan.
+.Sh LIHAT JUGA
+.Xr finger 1 ,
+.Xr inetd 8
+.Sh DILARANG
+Hubungan langsung terhadap server dari program
+.Tn TIP
+atau yang sesuai dengan
+.Tn TELNET Ns \-protocol
+akan tidak berarti terhadap pilihan-pilihan yang dikirimkan
+ke server, yang mana akan menjadikan salah pengertian.
+.Sh SEJARAH
+Finger daemon ini dapat ditemukan di
+.Bx 4.3 .
+.Sh PENERJEMAH
+ Rachman M. Heryanto (manz@ibm.net)
+ Tanggal Terjemah : 25 Mei 1999 (Indonesia)

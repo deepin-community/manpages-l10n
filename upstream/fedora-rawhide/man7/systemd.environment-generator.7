@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.ENVIRONMENT\-GENERATOR" "7" "" "systemd 249" "systemd.environment-generator"
+.TH "SYSTEMD\&.ENVIRONMENT\-GENERATOR" "7" "" "systemd 257.1" "systemd.environment-generator"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -27,20 +27,31 @@ systemd.environment-generator \- systemd environment file generators
 .HP \w'\fB/usr/lib/systemd/user\-environment\-generators/some\-generator\fR\ 'u
 \fB/usr/lib/systemd/user\-environment\-generators/some\-generator\fR
 .PP
-.nf
+.RS 4
 /run/systemd/system\-environment\-generators/*
+.RE
+.RS 4
 /etc/systemd/system\-environment\-generators/*
+.RE
+.RS 4
 /usr/local/lib/systemd/system\-environment\-generators/*
+.RE
+.RS 4
 /usr/lib/systemd/system\-environment\-generators/*
-.fi
+.RE
 .PP
-.nf
+.RS 4
 /run/systemd/user\-environment\-generators/*
+.RE
+.RS 4
 /etc/systemd/user\-environment\-generators/*
+.RE
+.RS 4
 /usr/local/lib/systemd/user\-environment\-generators/*
+.RE
+.RS 4
 /usr/lib/systemd/user\-environment\-generators/*
-.fi
-.sp
+.RE
 .SH "DESCRIPTION"
 .PP
 Generators are small executables that live in
@@ -54,7 +65,8 @@ and before starting any units\&. Environment generators can override the environ
 Generators are loaded from a set of paths determined during compilation, as listed above\&. System and user environment generators are loaded from directories with names ending in
 system\-environment\-generators/
 and
-user\-environment\-generators/, respectively\&. Generators found in directories listed earlier override the ones with the same name in directories lower in the list\&. A symlink to
+user\-environment\-generators/, respectively\&. Generators found in directories listed earlier override the ones with the same name in directories lower in the list
+\&\s-2\u[1]\d\s+2\&. A symlink to
 /dev/null
 or an empty file can be used to mask a generator, thereby preventing it from running\&. Please note that the order of the two directories with the highest priority is reversed with respect to the unit load path, and generators in
 /run/
@@ -101,13 +113,14 @@ It is recommended to use numerical prefixes for generator names to simplify orde
 .nf
 # 50\-xdg\-data\-dirs\&.sh
 
-#!/bin/bash
+#!/bin/sh
+# SPDX\-License\-Identifier: MIT\-0
 
 # set the default value
 XDG_DATA_DIRS="${XDG_DATA_DIRS:\-/usr/local/share/:/usr/share}"
 
 # add a directory if it exists
-if [[ \-d /opt/foo/share ]]; then
+if [ \-d /opt/foo/share ]; then
     XDG_DATA_DIRS="/opt/foo/share:${XDG_DATA_DIRS}"
 fi
 
@@ -127,6 +140,7 @@ echo "XDG_DATA_DIRS=${XDG_DATA_DIRS}"
 # 90\-rearrange\-path\&.py
 
 #!/usr/bin/env python3
+# SPDX\-License\-Identifier: MIT\-0
 
 """
 
@@ -185,7 +199,10 @@ SYSTEMD_LOG_LEVEL=debug VAR_A=something VAR_B="something else" \e
 .\}
 .SH "SEE ALSO"
 .PP
-\fBsystemd-environment-d-generator\fR(8),
-\fBsystemd.generator\fR(7),
-\fBsystemd\fR(1),
-\fBsystemctl\fR(1)
+\fBsystemd-environment-d-generator\fR(8), \fBsystemd.generator\fR(7), \fBsystemd\fR(1), \fBsystemctl\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+💣💥🧨💥💥💣 Please note that those configuration files must be available at all times. If
+/usr/local/
+is a separate partition, it may not be available during early boot, and must not be used for configuration.
+

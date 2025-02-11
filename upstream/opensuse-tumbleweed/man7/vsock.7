@@ -1,35 +1,15 @@
 .\" Copyright (C) 2018, Stefan Hajnoczi <stefanha@redhat.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
-.\"
-.TH VSOCK 7 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH vsock 7 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 vsock \- Linux VSOCK address family
 .SH SYNOPSIS
 .nf
 .B #include <sys/socket.h>
 .B #include <linux/vm_sockets.h>
-.PP
+.P
 .IB stream_socket " = socket(AF_VSOCK, SOCK_STREAM, 0);"
 .IB datagram_socket " = socket(AF_VSOCK, SOCK_DGRAM, 0);"
 .fi
@@ -39,7 +19,7 @@ the host they are running on.
 This address family is used by guest agents and
 hypervisor services that need a communications channel that is independent of
 virtual machine network configuration.
-.PP
+.P
 Valid socket types are
 .B SOCK_STREAM
 and
@@ -51,26 +31,26 @@ provides a connectionless datagram packet service with best-effort delivery and
 best-effort ordering.
 Availability of these socket types is dependent on the
 underlying hypervisor.
-.PP
+.P
 A new socket is created with
-.PP
+.P
 .in +4n
 .EX
 socket(AF_VSOCK, socket_type, 0);
 .EE
 .in
-.PP
+.P
 When a process wants to establish a connection, it calls
 .BR connect (2)
 with a given destination socket address.
 The socket is automatically bound to a free port if unbound.
-.PP
+.P
 A process can listen for incoming connections by first binding to a socket
 address using
 .BR bind (2)
 and then calling
 .BR listen (2).
-.PP
+.P
 Data is transmitted using the
 .BR send (2)
 or
@@ -87,7 +67,7 @@ The CID identifies the source or destination,
 which is either a virtual machine or the host.
 The port number differentiates between multiple services running on
 a single machine.
-.PP
+.P
 .in +4n
 .EX
 struct sockaddr_vm {
@@ -103,7 +83,7 @@ struct sockaddr_vm {
 };
 .EE
 .in
-.PP
+.P
 .I svm_family
 is always set to
 .BR AF_VSOCK .
@@ -120,7 +100,7 @@ capability may
 to these port numbers.
 .I svm_zero
 must be zero-filled.
-.PP
+.P
 There are several special addresses:
 .B VMADDR_CID_ANY
 (\-1U)
@@ -132,7 +112,7 @@ means any address for binding;
 .B VMADDR_CID_HOST
 (2)
 is the well-known address of the host.
-.PP
+.P
 The special constant
 .B VMADDR_PORT_ANY
 (\-1U)
@@ -143,13 +123,13 @@ Connected
 .B SOCK_STREAM
 sockets become disconnected when the virtual machine migrates to a new host.
 Applications must reconnect when this happens.
-.PP
+.P
 The local CID may change across live migration if the old CID is
 not available on the new host.
 Bound sockets are automatically updated to the new CID.
 .SS Ioctls
 The following ioctls are available on the
-.IR /dev/vsock
+.I /dev/vsock
 device.
 .TP
 .B IOCTL_VM_SOCKETS_GET_LOCAL_CID
@@ -172,11 +152,11 @@ when binding instead of getting the local CID with
 (1) directs packets to the same host that generated them.
 This is useful
 for testing applications on a single host and for debugging.
-.PP
+.P
 The local CID obtained with
-.BR IOCTL_VM_SOCKETS_GET_LOCAL_CID
+.B IOCTL_VM_SOCKETS_GET_LOCAL_CID
 can be used for the same purpose, but it is preferable to use
-.B VMADDR_CID_LOCAL .
+.BR VMADDR_CID_LOCAL .
 .SH ERRORS
 .TP
 .B EACCES
@@ -235,7 +215,7 @@ are valid.
 Support for VMware (VMCI) has been available since Linux 3.9.
 KVM (virtio) is supported since Linux 4.8.
 Hyper-V is supported since Linux 4.14.
-.PP
+.P
 .B VMADDR_CID_LOCAL
 is supported since Linux 5.6.
 .\" commit ef343b35d46667668a099655fca4a5b2e43a5dfe

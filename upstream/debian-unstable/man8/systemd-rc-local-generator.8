@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-RC\-LOCAL\-GENERATOR" "8" "" "systemd 247" "systemd-rc-local-generator"
+.TH "SYSTEMD\-RC\-LOCAL\-GENERATOR" "8" "" "systemd 257.1" "systemd-rc-local-generator"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,28 +20,57 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-systemd-rc-local-generator \- Compatibility generator for starting /etc/rc\&.local during boot
+systemd-rc-local-generator, rc-local.service \- Compatibility generator and service to start /etc/rc\&.local during boot
 .SH "SYNOPSIS"
 .PP
-/lib/systemd/system\-generators/systemd\-rc\-local\-generator
+/usr/lib/systemd/system\-generators/systemd\-rc\-local\-generator
+.PP
+rc\-local\&.service
 .SH "DESCRIPTION"
 .PP
-systemd\-rc\-local\-generator
+\fBsystemd\-rc\-local\-generator\fR
 is a generator that checks whether
 /etc/rc\&.local
-exists and is executable, and if it is pulls the
+exists and is executable, and if it is, pulls the
 rc\-local\&.service
-unit into the boot process\&. This unit is responsible for running this script during late boot\&. Note that the script will be run with slightly different semantics than the original System V version, which was run "last" in the boot process, which is a concept that does not translate to systemd\&. The script is run after
+unit into the boot process\&. This unit is responsible for running this script during late boot\&. The script is run after
 network\&.target, but in parallel with most other regular system services\&.
+.PP
+Note that
+rc\-local\&.service
+runs with slightly different semantics than the original System V version, which was executed "last" in the boot process, which is a concept that does not translate to systemd\&.
+.PP
+Also note that
+rc\-local\&.service
+is ordered after
+network\&.target, which does not mean that the network is functional, see
+\fBsystemd.special\fR(7)\&. If the script requires a configured network connection, it may be desirable to pull in and order it after
+network\-online\&.target
+with a drop\-in:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# /etc/systemd/system/rc\-local\&.service\&.d/network\&.conf
+[Unit]
+Wants=network\-online\&.target
+After=network\-online\&.target
+.fi
+.if n \{\
+.RE
+.\}
 .PP
 Support for
 /etc/rc\&.local
-is provided for compatibility with specific System V systems only\&. However, it is strongly recommended to avoid making use of this script today, and instead provide proper unit files with appropriate dependencies for any scripts to run during the boot process\&. Note that the path to the script is set a compile time and varies between distributions\&.
+is provided for compatibility with specific System\ \&V systems only\&. However, it is strongly recommended to avoid using this script today, and instead provide proper unit files with appropriate dependencies for any scripts to run during the boot process\&. Note that the path to the script is set at compile time and varies between distributions\&.
 .PP
 systemd\-rc\-local\-generator
 implements
 \fBsystemd.generator\fR(7)\&.
+.SH "NOTES"
+.PP
+On systems with SELinux, when creating the file, make sure to set the appropriate context, e\&.g\&. with "\fBsudo restorecon \-v /etc/rc\&.local\fR"\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemctl\fR(1)
+\fBsystemd\fR(1), \fBsystemctl\fR(1)

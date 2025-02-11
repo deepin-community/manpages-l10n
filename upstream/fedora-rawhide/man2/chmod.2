@@ -1,27 +1,7 @@
 .\" Copyright (c) 1992 Drew Eckhardt (drew@cs.colorado.edu), March 28, 1992
 .\" and Copyright (C) 2006, 2014 Michael Kerrisk
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" Modified by Michael Haardt <michael@moria.de>
 .\" Modified 1993-07-21 by Rik Faith <faith@cs.unc.edu>
@@ -29,45 +9,48 @@
 .\"   <michael@cantor.informatik.rwth-aachen.de>: NFS details
 .\" Modified 2004-06-23 by Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.TH CHMOD 2 2021-08-27 "Linux" "Linux Programmer's Manual"
+.TH chmod 2 2024-06-13 "Linux man-pages 6.9.1"
 .SH NAME
 chmod, fchmod, fchmodat \- change permissions of a file
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/stat.h>
-.PP
+.P
 .BI "int chmod(const char *" pathname ", mode_t " mode );
 .BI "int fchmod(int " fd ", mode_t " mode );
-.PP
+.P
 .BR "#include <fcntl.h>" "           /* Definition of AT_* constants */"
 .B #include <sys/stat.h>
-.PP
+.P
 .BI "int fchmodat(int " dirfd ", const char *" pathname ", mode_t " \
 mode ", int " flags );
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .nf
 .BR fchmod ():
     Since glibc 2.24:
         _POSIX_C_SOURCE >= 199309L
 .\"        || (_XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED)
-    Glibc 2.19 to 2.23
+    glibc 2.19 to glibc 2.23
         _POSIX_C_SOURCE
-    Glibc 2.16 to 2.19:
+    glibc 2.16 to glibc 2.19:
         _BSD_SOURCE || _POSIX_C_SOURCE
-    Glibc 2.12 to 2.16:
+    glibc 2.12 to glibc 2.16:
         _BSD_SOURCE || _XOPEN_SOURCE >= 500
             || _POSIX_C_SOURCE >= 200809L
-    Glibc 2.11 and earlier:
+    glibc 2.11 and earlier:
         _BSD_SOURCE || _XOPEN_SOURCE >= 500
 .\"        || (_XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED)
 .fi
-.PP
+.P
 .BR fchmodat ():
 .nf
     Since glibc 2.10:
@@ -84,16 +67,16 @@ system calls change a file's mode bits.
 (The file mode consists of the file permission bits plus the set-user-ID,
 set-group-ID, and sticky bits.)
 These system calls differ only in how the file is specified:
-.IP * 2
+.IP \[bu] 3
 .BR chmod ()
 changes the mode of the file specified whose pathname is given in
 .IR pathname ,
 which is dereferenced if it is a symbolic link.
-.IP *
+.IP \[bu]
 .BR fchmod ()
 changes the mode of the file referred to by the open file descriptor
 .IR fd .
-.PP
+.P
 The new file mode is specified in
 .IR mode ,
 which is a bit mask created by ORing together zero or
@@ -144,12 +127,12 @@ write by others
 .TP
 .BR S_IXOTH "  (00001)"
 execute/search by others
-.PP
+.P
 The effective UID of the calling process must match the owner of the file,
 or the process must be privileged (Linux: it must have the
 .B CAP_FOWNER
 capability).
-.PP
+.P
 If the calling process is not privileged (Linux: does not have the
 .B CAP_FSETID
 capability), and the group of the file does not match
@@ -158,7 +141,7 @@ supplementary group IDs, the
 .B S_ISGID
 bit will be turned off,
 but this will not cause an error to be returned.
-.PP
+.P
 As a security measure, depending on the filesystem,
 the set-user-ID and set-group-ID execution bits
 may be turned off if a file is written.
@@ -170,7 +153,7 @@ which may have a special meaning.
 For the sticky bit, and for set-user-ID and set-group-ID bits on
 directories, see
 .BR inode (7).
-.PP
+.P
 On NFS filesystems, restricting the permissions will immediately influence
 already open files, because the access control is done on the server, but
 open files are maintained by the client.
@@ -184,7 +167,7 @@ The
 system call operates in exactly the same way as
 .BR chmod (),
 except for the differences described here.
-.PP
+.P
 If the pathname given in
 .I pathname
 is relative, then it is interpreted relative to the directory
@@ -194,7 +177,7 @@ referred to by the file descriptor
 the calling process, as is done by
 .BR chmod ()
 for a relative pathname).
-.PP
+.P
 If
 .I pathname
 is relative and
@@ -206,13 +189,13 @@ then
 is interpreted relative to the current working
 directory of the calling process (like
 .BR chmod ()).
-.PP
+.P
 If
 .I pathname
 is absolute, then
 .I dirfd
 is ignored.
-.PP
+.P
 .I flags
 can either be 0, or include the following flag:
 .TP
@@ -222,7 +205,7 @@ If
 is a symbolic link, do not dereference it:
 instead operate on the link itself.
 This flag is not currently implemented.
-.PP
+.P
 See
 .BR openat (2)
 for an explanation of the need for
@@ -235,7 +218,7 @@ is set to indicate the error.
 .SH ERRORS
 Depending on the filesystem,
 errors other than those listed below can be returned.
-.PP
+.P
 The more general errors for
 .BR chmod ()
 are listed below:
@@ -312,22 +295,11 @@ capability).
 .B EPERM
 The file is marked immutable or append-only.
 (See
-.BR ioctl_iflags (2).)
+.BR FS_IOC_SETFLAGS (2const).)
 .TP
 .B EROFS
 The named file resides on a read-only filesystem.
 .SH VERSIONS
-.BR fchmodat ()
-was added to Linux in kernel 2.6.16;
-library support was added to glibc in version 2.4.
-.SH CONFORMING TO
-.BR chmod (),
-.BR fchmod ():
-4.4BSD, SVr4, POSIX.1-2001i, POSIX.1-2008.
-.PP
-.BR fchmodat ():
-POSIX.1-2008.
-.SH NOTES
 .SS C library/kernel differences
 The GNU C library
 .BR fchmodat ()
@@ -338,7 +310,7 @@ This interface differs from the underlying Linux system call, which does
 have a
 .I flags
 argument.
-.SS Glibc notes
+.SS glibc notes
 On older kernels where
 .BR fchmodat ()
 is unavailable, the glibc wrapper function falls back to the use of
@@ -347,10 +319,23 @@ When
 .I pathname
 is a relative pathname,
 glibc constructs a pathname based on the symbolic link in
-.IR /proc/self/fd
+.I /proc/self/fd
 that corresponds to the
-.IR dirfd
+.I dirfd
 argument.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+.TP
+.BR chmod ()
+.TQ
+.BR fchmod ()
+4.4BSD, SVr4, POSIX.1-2001.
+.TP
+.BR fchmodat ()
+POSIX.1-2008.
+Linux 2.6.16,
+glibc 2.4.
 .SH SEE ALSO
 .BR chmod (1),
 .BR chown (2),
@@ -360,12 +345,3 @@ argument.
 .BR inode (7),
 .BR path_resolution (7),
 .BR symlink (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

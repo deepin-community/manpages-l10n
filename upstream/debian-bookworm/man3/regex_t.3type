@@ -1,0 +1,61 @@
+.\" Copyright (c) 2020-2022 by Alejandro Colomar <alx@kernel.org>
+.\" and Copyright (c) 2020 by Michael Kerrisk <mtk.manpages@gmail.com>
+.\"
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+.\"
+.\"
+.TH regex_t 3type 2022-10-30 "Linux man-pages 6.03"
+.SH NAME
+regex_t, regmatch_t, regoff_t
+\- regular expression matching
+.SH LIBRARY
+Standard C library
+.RI ( libc )
+.SH SYNOPSIS
+.EX
+.B #include <regex.h>
+.PP
+.B typedef struct {
+.BR "    size_t    re_nsub;" "  /* Number of parenthesized subexpressions */"
+.B } regex_t;
+.PP
+.B typedef struct {
+.BR "    regoff_t  rm_so;" "    /* Byte offset from start of string"
+                           to start of substring */
+.BR "    regoff_t  rm_eo;" "    /* Byte offset from start of string to"
+                           the first character after the end of
+                           substring */
+.B } regmatch_t;
+.PP
+.BR typedef " /* ... */  " regoff_t;
+.EE
+.SH DESCRIPTION
+.TP
+.I regex_t
+This is a structure type used in regular expression matching.
+It holds a compiled regular expression,
+compiled with
+.BR regcomp (3).
+.TP
+.I regmatch_t
+This is a structure type used in regular expression matching.
+.TP
+.I regoff_t
+It is a signed integer type
+capable of storing the largest value that can be stored in either an
+.I ptrdiff_t
+type or a
+.I ssize_t
+type.
+.SH VERSIONS
+Prior to POSIX.1-2008,
+the type was
+capable of storing the largest value that can be stored in either an
+.I off_t
+type or a
+.I ssize_t
+type.
+.SH STANDARDS
+POSIX.1-2001 and later.
+.SH SEE ALSO
+.BR regex (3)

@@ -2,27 +2,7 @@
 .\"  and Copyright (C) 1993 Michael Haardt, Ian Jackson.
 .\"  and Copyright (C) 2009-2015 Michael Kerrisk, <mtk.manpages.gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" Modified Sat Jul 24 00:06:00 1993 by Rik Faith <faith@cs.unc.edu>
 .\" Modified Wed Jan 17 16:02:32 1996 by Michael Haardt
@@ -33,14 +13,17 @@
 .\" Modified Sat Jul 12 20:45:39 1997 by Michael Haardt
 .\"   <michael@cantor.informatik.rwth-aachen.de>
 .\"
-.TH READ 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH read 2 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 read \- read from a file descriptor
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <unistd.h>
-.PP
-.BI "ssize_t read(int " fd ", void *" buf ", size_t " count );
+.P
+.BI "ssize_t read(int " fd ", void " buf [. count "], size_t " count );
 .fi
 .SH DESCRIPTION
 .BR read ()
@@ -50,7 +33,7 @@ bytes from file descriptor
 .I fd
 into the buffer starting at
 .IR buf .
-.PP
+.P
 On files that support seeking,
 the read operation commences at the file offset,
 and the file offset is incremented by the number of bytes read.
@@ -58,7 +41,7 @@ If the file offset is at or past the end of file,
 no bytes are read, and
 .BR read ()
 returns zero.
-.PP
+.P
 If
 .I count
 is zero,
@@ -73,7 +56,7 @@ does not check for errors, a
 with a
 .I count
 of 0 returns zero and has no other effects.
-.PP
+.P
 According to POSIX.1, if
 .I count
 is greater than
@@ -90,7 +73,7 @@ because we are reading from a pipe, or from a terminal), or because
 .BR read ()
 was interrupted by a signal.
 See also NOTES.
-.PP
+.P
 On error, \-1 is returned, and
 .I errno
 is set to indicate the error.
@@ -107,7 +90,7 @@ and the read would block.
 See
 .BR open (2)
 for further details on the
-.BR O_NONBLOCK
+.B O_NONBLOCK
 flag.
 .TP
 .BR EAGAIN " or " EWOULDBLOCK
@@ -177,19 +160,14 @@ for further details.
 .B EISDIR
 .I fd
 refers to a directory.
-.PP
+.P
 Other errors may occur, depending on the object connected to
 .IR fd .
-.SH CONFORMING TO
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
 SVr4, 4.3BSD, POSIX.1-2001.
 .SH NOTES
-The types
-.I size_t
-and
-.I ssize_t
-are, respectively,
-unsigned and signed integer data types specified by POSIX.1.
-.PP
 On Linux,
 .BR read ()
 (and similar system calls) will transfer at most
@@ -197,7 +175,7 @@ On Linux,
 returning the number of bytes actually transferred.
 .\" commit e28cc71572da38a5a12c1cfe4d7032017adccf69
 (This is true on both 32-bit and 64-bit systems.)
-.PP
+.P
 On NFS filesystems, reading small amounts of data will update the
 timestamp only the first time, subsequent calls may not do so.
 This is caused
@@ -216,20 +194,20 @@ increase server load and decrease performance.
 .SH BUGS
 According to POSIX.1-2008/SUSv4 Section XSI 2.9.7
 ("Thread Interactions with Regular File Operations"):
-.PP
+.P
 .RS 4
 All of the following functions shall be atomic with respect to
 each other in the effects specified in POSIX.1-2008 when they
 operate on regular files or symbolic links: ...
 .RE
-.PP
+.P
 Among the APIs subsequently listed are
 .BR read ()
 and
 .BR readv (2).
 And among the effects that should be atomic across threads (and processes)
 are updates of the file offset.
-However, on Linux before version 3.14,
+However, before Linux 3.14,
 this was not the case: if two processes that share
 an open file description (see
 .BR open (2))
@@ -238,7 +216,7 @@ perform a
 (or
 .BR readv (2))
 at the same time, then the I/O operations were not atomic
-with respect updating the file offset,
+with respect to updating the file offset,
 with the result that the reads in the two processes
 might (incorrectly) overlap in the blocks of data that they obtained.
 This problem was fixed in Linux 3.14.

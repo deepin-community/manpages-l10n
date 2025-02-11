@@ -2,12 +2,12 @@
 .\"     Title: paccache
 .\"    Author: [see the "Authors" section]
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2021-06-29
+.\"      Date: 2024-08-24
 .\"    Manual: Pacman-contrib Manual
-.\"    Source: Pacman-contrib 1.4.0
+.\"    Source: Pacman-contrib 1.10.6
 .\"  Language: English
 .\"
-.TH "PACCACHE" "8" "2021\-06\-29" "Pacman\-contrib 1\&.4\&.0" "Pacman\-contrib Manual"
+.TH "PACCACHE" "8" "2024\-08\-24" "Pacman\-contrib 1\&.10\&.6" "Pacman\-contrib Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,10 +31,10 @@
 paccache \- flexible pacman cache cleaning utility
 .SH "SYNOPSIS"
 .sp
-\fIpaccache\fR <operation> [options] [targets\&...]
+\fIpaccache\fR <operation> [options] [target \&...]
 .SH "DESCRIPTION"
 .sp
-Paccache removes old packages from the pacman cache directory\&. By default the last three versions of a package are kept\&.
+\fIpaccache\fR removes old packages from the pacman cache directory\&. By default the last three versions of a package are kept\&.
 .SH "OPERATIONS"
 .PP
 \fB\-d, \-\-dryrun\fR
@@ -59,16 +59,6 @@ Remove candidate packages from the cache directory\&.
 Scan for packages for a specific architecture\&. Default is to scan for all architectures\&.
 .RE
 .PP
-\fB\-\-min\-atime <age>\fR, \fB\-\-min\-mtime <age>\fR
-.RS 4
-Only consider packages for removal with atime respectively mtime older than specified\&. The age can be given as
-\fI10d\fR,
-\fI1m\fR,
-\fI1y\fR,
-\fI1y1m\fR
-etc\&.
-.RE
-.PP
 \fB\-c, \-\-cachedir <dir>\fR
 .RS 4
 Specify a different cache directory\&. This option can be used more than once\&. Default is to use the cache directory configured in
@@ -86,7 +76,7 @@ operations\&.
 .PP
 \fB\-h, \-\-help\fR
 .RS 4
-Display syntax and command line options\&.
+Display syntax and command\-line options\&.
 .RE
 .PP
 \fB\-i, \-\-ignore <pkgs>\fR
@@ -99,9 +89,23 @@ Specify packages to ignore, comma\-separated\&. Alternatively "\-" can be used t
 Specify how many versions of each package are kept in the cache directory, default is 3\&.
 .RE
 .PP
+\fB\-\-min\-atime <time>\fR, \fB\-\-min\-mtime <time>\fR
+.RS 4
+Keep packages with an atime/mtime that is not older than the time given, even if this means keeping more than specified through the
+\fI\-\-keep\fR
+option\&. Accepts arguments according to
+\fIinfo "Date input formats"\fR, e\&.g\&.
+\fI30 days ago\fR\&.
+.RE
+.PP
 \fB\-\-nocolor\fR
 .RS 4
-Remove color from the output\&.
+Do not colorize output\&.
+.RE
+.PP
+\fB\-z, \-\-null\fR
+.RS 4
+Use null delimiters for candidate names (only with \-v and \-vv)\&.
 .RE
 .PP
 \fB\-q, \-\-quiet\fR
@@ -119,9 +123,9 @@ Target uninstalled packages\&.
 Increase verbosity, can be specified up to 3 times\&.
 .RE
 .PP
-\fB\-z, \-\-null\fR
+\fB\-V, \-\-version\fR
 .RS 4
-Use null delimiters for candidate names (only with \-v and \-vv)\&.
+Display version information\&.
 .RE
 .SH "SYSTEMD TIMER"
 .sp
@@ -131,7 +135,7 @@ The package cache can be cleaned periodically using the systemd timer \fIpaccach
 \fBpacman\fR(8), \fBpacman.conf\fR(5), \fBsystemctl\fR(1)
 .SH "BUGS"
 .sp
-Bugs? You must be kidding; there are no bugs in this software\&. But if we happen to be wrong, send us an email with as much detail as possible to pacman\-contrib@lists\&.archlinux\&.org\&.
+Bugs? You must be kidding; there are no bugs in this software\&. But if we happen to be wrong, file an issue with as much detail as possible at https://gitlab\&.archlinux\&.org/pacman/pacman\-contrib/\-/issues/new\&.
 .SH "AUTHORS"
 .sp
 Current maintainers:

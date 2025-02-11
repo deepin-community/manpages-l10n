@@ -1,5 +1,5 @@
 '\" t
-.TH "MACHINE\-INFO" "5" "" "systemd 249" "machine-info"
+.TH "MACHINE\-INFO" "5" "" "systemd 255" "machine-info"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -30,9 +30,11 @@ The
 /etc/machine\-info
 file contains machine metadata\&.
 .PP
-The basic file format of
+The format of
 machine\-info
-is a newline\-separated list of environment\-like shell\-compatible variable assignments\&. It is possible to source the configuration from shell scripts, however, beyond mere variable assignments no shell features are supported, allowing applications to read the file without implementing a shell compatible execution engine\&.
+is a newline\-separated list of environment\-like shell\-compatible variable assignments, ignoring comments and empty lines\&. It is possible to source the configuration from shell scripts, however, beyond mere variable assignments no shell features are supported, allowing applications to read the file without implementing a shell compatible execution engine\&. See
+\fBos-release\fR(5)
+for a detailed description of the format\&.
 .PP
 /etc/machine\-info
 contains metadata about the machine that is set by the user or administrator\&. The settings configured here have the highest precedence\&. When not set, appropriate values may be determined automatically, based on the information about the hardware or other configuration files\&. It is thus completely fine for this file to not be present\&.
@@ -83,6 +85,8 @@ and
 for virtualized systems that lack an immediate physical chassis\&.
 .sp
 Note that most systems allow detection of the chassis type automatically (based on firmware information or suchlike)\&. This setting should only be used to override a misdetection or to manually configure the chassis type where automatic detection is not available\&.
+.sp
+Added in version 197\&.
 .RE
 .PP
 \fIDEPLOYMENT=\fR
@@ -92,6 +96,8 @@ Describes the system deployment environment\&. One of the following is suggested
 "integration",
 "staging",
 "production"\&.
+.sp
+Added in version 216\&.
 .RE
 .PP
 \fILOCATION=\fR
@@ -100,6 +106,26 @@ Describes the system location if applicable and known\&. Takes a human\-friendly
 "Berlin, Germany"
 or as specific as
 "Left Rack, 2nd Shelf"\&.
+.sp
+Added in version 216\&.
+.RE
+.PP
+\fIHARDWARE_VENDOR=\fR
+.RS 4
+Specifies the hardware vendor\&. If unspecified, the hardware vendor set in DMI or
+\fBhwdb\fR(7)
+will be used\&.
+.sp
+Added in version 251\&.
+.RE
+.PP
+\fIHARDWARE_MODEL=\fR
+.RS 4
+Specifies the hardware model\&. If unspecified, the hardware model set in DMI or
+\fBhwdb\fR(7)
+will be used\&.
+.sp
+Added in version 251\&.
 .RE
 .SH "EXAMPLE"
 .sp
@@ -127,5 +153,5 @@ DEPLOYMENT=production
 .IP " 1." 4
 XDG Icon Naming Specification
 .RS 4
-\%http://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+\%https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
 .RE

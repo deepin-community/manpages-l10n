@@ -1,27 +1,8 @@
+'\" t
 .\" Copyright 1993 David Metcalfe (david@prism.demon.co.uk)
 .\" and Copyright (C) 2004, 2007 Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" References consulted:
 .\"     Linux libc source code
@@ -34,27 +15,30 @@
 .\"     Noted nonstandard behavior of setenv() if name contains '='
 .\" 2005-08-12, mtk, glibc 2.3.4 fixed the "name contains '='" bug
 .\"
-.TH SETENV 3  2021-03-22 "GNU" "Linux Programmer's Manual"
+.TH setenv 3 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 setenv \- change or add an environment variable
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <stdlib.h>
-.PP
+.P
 .BI "int setenv(const char *" name ", const char *" value ", int " overwrite );
 .BI "int unsetenv(const char *" name );
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR setenv (),
 .BR unsetenv ():
 .nf
     _POSIX_C_SOURCE >= 200112L
-        || /* Glibc <= 2.19: */ _BSD_SOURCE
+        || /* glibc <= 2.19: */ _BSD_SOURCE
 .fi
 .SH DESCRIPTION
 The
@@ -72,12 +56,12 @@ If
 .I name
 does exist in the environment, then
 its value is changed to
-.IR value
+.I value
 if
 .I overwrite
 is nonzero;
 if
-.IR overwrite
+.I overwrite
 is zero, then the value of
 .I name
 is not changed (and
@@ -89,7 +73,7 @@ and
 .I value
 (by contrast with
 .BR putenv (3)).
-.PP
+.P
 The
 .BR unsetenv ()
 function deletes the variable
@@ -113,37 +97,30 @@ set to indicate the error.
 .B EINVAL
 .I name
 is NULL, points to a string of length 0,
-or contains an \(aq=\(aq character.
+or contains an \[aq]=\[aq] character.
 .TP
 .B ENOMEM
 Insufficient memory to add a new variable to the environment.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR setenv (),
 .BR unsetenv ()
 T}	Thread safety	MT-Unsafe const:env
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, 4.3BSD.
-.SH NOTES
-POSIX.1 does not require
-.BR setenv ()
-or
-.BR unsetenv ()
-to be reentrant.
-.PP
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, 4.3BSD.
+.P
 Prior to glibc 2.2.2,
 .BR unsetenv ()
 was prototyped
@@ -151,14 +128,20 @@ as returning
 .IR void ;
 more recent glibc versions follow the
 POSIX.1-compliant prototype shown in the SYNOPSIS.
+.SH CAVEATS
+POSIX.1 does not require
+.BR setenv ()
+or
+.BR unsetenv ()
+to be reentrant.
 .SH BUGS
 POSIX.1 specifies that if
 .I name
-contains an \(aq=\(aq character, then
+contains an \[aq]=\[aq] character, then
 .BR setenv ()
 should fail with the error
 .BR EINVAL ;
-however, versions of glibc before 2.3.4 allowed an \(aq=\(aq sign in
+however, versions of glibc before glibc 2.3.4 allowed an \[aq]=\[aq] sign in
 .IR name .
 .SH SEE ALSO
 .BR clearenv (3),

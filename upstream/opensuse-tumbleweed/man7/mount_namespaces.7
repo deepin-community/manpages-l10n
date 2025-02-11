@@ -1,73 +1,54 @@
+'\" t
 .\" Copyright (c) 2016, 2019, 2021 by Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\"
-.TH MOUNT_NAMESPACES 7 2021-08-27 "Linux" "Linux Programmer's Manual"
+.TH mount_namespaces 7 2024-06-15 "Linux man-pages (unreleased)"
 .SH NAME
 mount_namespaces \- overview of Linux mount namespaces
 .SH DESCRIPTION
 For an overview of namespaces, see
 .BR namespaces (7).
-.PP
+.P
 Mount namespaces provide isolation of the list of mounts seen
 by the processes in each namespace instance.
 Thus, the processes in each of the mount namespace instances
 will see distinct single-directory hierarchies.
-.PP
+.P
 The views provided by the
-.IR /proc/[pid]/mounts ,
-.IR /proc/[pid]/mountinfo ,
+.IR /proc/ pid /mounts ,
+.IR /proc/ pid /mountinfo ,
 and
-.IR /proc/[pid]/mountstats
+.IR /proc/ pid /mountstats
 files (all described in
 .BR proc (5))
 correspond to the mount namespace in which the process with the PID
-.IR [pid]
+.I pid
 resides.
 (All of the processes that reside in the same mount namespace
 will see the same view in these files.)
-.PP
+.P
 A new mount namespace is created using either
 .BR clone (2)
 or
 .BR unshare (2)
 with the
-.BR CLONE_NEWNS
+.B CLONE_NEWNS
 flag.
 When a new mount namespace is created,
 its mount list is initialized as follows:
-.IP * 3
+.IP \[bu] 3
 If the namespace is created using
 .BR clone (2),
 the mount list of the child's namespace is a copy
 of the mount list in the parent process's mount namespace.
-.IP *
+.IP \[bu]
 If the namespace is created using
 .BR unshare (2),
 the mount list of the new namespace is a copy of
 the mount list in the caller's previous mount namespace.
-.PP
+.P
 Subsequent modifications to the mount list
 .RB ( mount (2)
 and
@@ -85,74 +66,104 @@ available in all mount namespaces,
 a mount operation was required in each namespace.
 For this use case, and others,
 the shared subtree feature was introduced in Linux 2.6.15.
-This feature allows for automatic, controlled propagation of mount and unmount
+This feature allows for automatic, controlled propagation of
+.BR mount (2)
+and
+.BR umount (2)
 .I events
 between namespaces
 (or, more precisely, between the mounts that are members of a
-.IR "peer group"
+.I peer group
 that are propagating events to one another).
-.PP
+.P
 Each mount is marked (via
 .BR mount (2))
 as having one of the following
 .IR "propagation types" :
 .TP
-.BR MS_SHARED
+.B MS_SHARED
 This mount shares events with members of a peer group.
-Mount and unmount events immediately under this mount will propagate
+.BR mount (2)
+and
+.BR umount (2)
+events immediately under this mount will propagate
 to the other mounts that are members of the peer group.
 .I Propagation
-here means that the same mount or unmount will automatically occur
+here means that the same
+.BR mount (2)
+or
+.BR umount (2)
+will automatically occur
 under all of the other mounts in the peer group.
-Conversely, mount and unmount events that take place under
+Conversely,
+.BR mount (2)
+and
+.BR umount (2)
+events that take place under
 peer mounts will propagate to this mount.
 .TP
-.BR MS_PRIVATE
+.B MS_PRIVATE
 This mount is private; it does not have a peer group.
-Mount and unmount events do not propagate into or out of this mount.
+.BR mount (2)
+and
+.BR umount (2)
+events do not propagate into or out of this mount.
 .TP
-.BR MS_SLAVE
-Mount and unmount events propagate into this mount from
+.B MS_SLAVE
+.BR mount (2)
+and
+.BR umount (2)
+events propagate into this mount from
 a (master) shared peer group.
-Mount and unmount events under this mount do not propagate to any peer.
+.BR mount (2)
+and
+.BR umount (2)
+events under this mount do not propagate to any peer.
 .IP
 Note that a mount can be the slave of another peer group
-while at the same time sharing mount and unmount events
+while at the same time sharing
+.BR mount (2)
+and
+.BR umount (2)
+events
 with a peer group of which it is a member.
 (More precisely, one peer group can be the slave of another peer group.)
 .TP
-.BR MS_UNBINDABLE
+.B MS_UNBINDABLE
 This is like a private mount,
 and in addition this mount can't be bind mounted.
 Attempts to bind mount this mount
 .RB ( mount (2)
 with the
-.BR MS_BIND
+.B MS_BIND
 flag) will fail.
 .IP
 When a recursive bind mount
 .RB ( mount (2)
 with the
-.BR MS_BIND
+.B MS_BIND
 and
-.BR MS_REC
+.B MS_REC
 flags) is performed on a directory subtree,
 any bind mounts within the subtree are automatically pruned
 (i.e., not replicated)
 when replicating that subtree to produce the target subtree.
-.PP
+.P
 For a discussion of the propagation type assigned to a new mount,
 see NOTES.
-.PP
+.P
 The propagation type is a per-mount-point setting;
 some mounts may be marked as shared
 (with each shared mount being a member of a distinct peer group),
 while others are private
 (or slaved or unbindable).
-.PP
+.P
 Note that a mount's propagation type determines whether
-mounts and unmounts of mounts
-.I "immediately under"
+.BR mount (2)
+and
+.BR umount (2)
+of mounts
+.I immediately under
 the mount are propagated.
 Thus, the propagation type does not affect propagation of events for
 grandchildren and further removed descendant mounts.
@@ -160,32 +171,32 @@ What happens if the mount itself is unmounted is determined by
 the propagation type that is in effect for the
 .I parent
 of the mount.
-.PP
+.P
 Members are added to a
-.IR "peer group"
+.I peer group
 when a mount is marked as shared and either:
-.IP * 3
+.IP (a) 5
 the mount is replicated during the creation of a new mount namespace; or
-.IP *
+.IP (b)
 a new bind mount is created from the mount.
-.PP
+.P
 In both of these cases, the new mount joins the peer group
 of which the existing mount is a member.
-.PP
+.P
 A new peer group is also created when a child mount is created under
 an existing mount that is marked as shared.
 In this case, the new child mount is also marked as shared and
 the resulting peer group consists of all the mounts
 that are replicated under the peers of parent mounts.
-.PP
+.P
 A mount ceases to be a member of a peer group when either
 the mount is explicitly unmounted,
 or when the mount is implicitly unmounted because a mount namespace is removed
 (because it has no more member processes).
-.PP
+.P
 The propagation type of the mounts in a mount namespace
 can be discovered via the "optional fields" exposed in
-.IR /proc/[pid]/mountinfo .
+.IR /proc/ pid /mountinfo .
 (See
 .BR proc (5)
 for details of this file.)
@@ -210,128 +221,128 @@ This mount is a slave to shared peer group
 This mount is a slave and receives propagation from shared peer group
 .IR X .
 This tag will always appear in conjunction with a
-.IR master:X
+.I master:X
 tag.
 Here,
-.IR X
+.I X
 is the closest dominant peer group under the process's root directory.
 If
-.IR X
+.I X
 is the immediate master of the mount,
 or if there is no dominant peer group under the same root,
 then only the
-.IR master:X
+.I master:X
 field is present and not the
-.IR propagate_from:X
+.I propagate_from:X
 field.
 For further details, see below.
 .TP
-.IR unbindable
+.I unbindable
 This is an unbindable mount.
-.PP
+.P
 If none of the above tags is present, then this is a private mount.
 .SS MS_SHARED and MS_PRIVATE example
 Suppose that on a terminal in the initial mount namespace,
 we mark one mount as shared and another as private,
 and then view the mounts in
 .IR /proc/self/mountinfo :
-.PP
+.P
 .in +4n
 .EX
 sh1# \fBmount \-\-make\-shared /mntS\fP
 sh1# \fBmount \-\-make\-private /mntP\fP
-sh1# \fBcat /proc/self/mountinfo | grep \(aq/mnt\(aq | sed \(aqs/ \- .*//\(aq\fP
+sh1# \fBcat /proc/self/mountinfo | grep \[aq]/mnt\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 77 61 8:17 / /mntS rw,relatime shared:1
 83 61 8:15 / /mntP rw,relatime
 .EE
 .in
-.PP
+.P
 From the
-.IR /proc/self/mountinfo
+.I /proc/self/mountinfo
 output, we see that
-.IR /mntS
+.I /mntS
 is a shared mount in peer group 1, and that
-.IR /mntP
+.I /mntP
 has no optional tags, indicating that it is a private mount.
 The first two fields in each record in this file are the unique
 ID for this mount, and the mount ID of the parent mount.
 We can further inspect this file to see that the parent mount of
-.IR /mntS
+.I /mntS
 and
-.IR /mntP
+.I /mntP
 is the root directory,
 .IR / ,
 which is mounted as private:
-.PP
+.P
 .in +4n
 .EX
-sh1# \fBcat /proc/self/mountinfo | awk \(aq$1 == 61\(aq | sed \(aqs/ \- .*//\(aq\fP
+sh1# \fBcat /proc/self/mountinfo | awk \[aq]$1 == 61\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 61 0 8:2 / / rw,relatime
 .EE
 .in
-.PP
+.P
 On a second terminal,
 we create a new mount namespace where we run a second shell
 and inspect the mounts:
-.PP
+.P
 .in +4n
 .EX
-$ \fBPS1=\(aqsh2# \(aq sudo unshare \-m \-\-propagation unchanged sh\fP
-sh2# \fBcat /proc/self/mountinfo | grep \(aq/mnt\(aq | sed \(aqs/ \- .*//\(aq\fP
+$ \fBPS1=\[aq]sh2# \[aq] sudo unshare \-m \-\-propagation unchanged sh\fP
+sh2# \fBcat /proc/self/mountinfo | grep \[aq]/mnt\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 222 145 8:17 / /mntS rw,relatime shared:1
 225 145 8:15 / /mntP rw,relatime
 .EE
 .in
-.PP
+.P
 The new mount namespace received a copy of the initial mount namespace's
 mounts.
 These new mounts maintain the same propagation types,
 but have unique mount IDs.
 (The
-.IR \-\-propagation\ unchanged
+.I \-\-propagation\~unchanged
 option prevents
 .BR unshare (1)
 from marking all mounts as private when creating a new mount namespace,
 .\" Since util-linux 2.27
 which it does by default.)
-.PP
+.P
 In the second terminal, we then create submounts under each of
-.IR /mntS
+.I /mntS
 and
-.IR /mntP
+.I /mntP
 and inspect the set-up:
-.PP
+.P
 .in +4n
 .EX
 sh2# \fBmkdir /mntS/a\fP
 sh2# \fBmount /dev/sdb6 /mntS/a\fP
 sh2# \fBmkdir /mntP/b\fP
 sh2# \fBmount /dev/sdb7 /mntP/b\fP
-sh2# \fBcat /proc/self/mountinfo | grep \(aq/mnt\(aq | sed \(aqs/ \- .*//\(aq\fP
+sh2# \fBcat /proc/self/mountinfo | grep \[aq]/mnt\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 222 145 8:17 / /mntS rw,relatime shared:1
 225 145 8:15 / /mntP rw,relatime
 178 222 8:22 / /mntS/a rw,relatime shared:2
 230 225 8:23 / /mntP/b rw,relatime
 .EE
 .in
-.PP
+.P
 From the above, it can be seen that
-.IR /mntS/a
+.I /mntS/a
 was created as shared (inheriting this setting from its parent mount) and
-.IR /mntP/b
+.I /mntP/b
 was created as a private mount.
-.PP
+.P
 Returning to the first terminal and inspecting the set-up,
 we see that the new mount created under the shared mount
-.IR /mntS
+.I /mntS
 propagated to its peer mount (in the initial mount namespace),
 but the new mount created under the private mount
-.IR /mntP
+.I /mntP
 did not propagate:
-.PP
+.P
 .in +4n
 .EX
-sh1# \fBcat /proc/self/mountinfo | grep \(aq/mnt\(aq | sed \(aqs/ \- .*//\(aq\fP
+sh1# \fBcat /proc/self/mountinfo | grep \[aq]/mnt\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 77 61 8:17 / /mntS rw,relatime shared:1
 83 61 8:15 / /mntP rw,relatime
 179 77 8:22 / /mntS/a rw,relatime shared:2
@@ -340,60 +351,67 @@ sh1# \fBcat /proc/self/mountinfo | grep \(aq/mnt\(aq | sed \(aqs/ \- .*//\(aq\fP
 .\"
 .SS MS_SLAVE example
 Making a mount a slave allows it to receive propagated
-mount and unmount events from a master shared peer group,
+.BR mount (2)
+and
+.BR umount (2)
+events from a master shared peer group,
 while preventing it from propagating events to that master.
 This is useful if we want to (say) receive a mount event when
 an optical disk is mounted in the master shared peer group
 (in another mount namespace),
-but want to prevent mount and unmount events under the slave mount
+but want to prevent
+.BR mount (2)
+and
+.BR umount (2)
+events under the slave mount
 from having side effects in other namespaces.
-.PP
+.P
 We can demonstrate the effect of slaving by first marking
 two mounts as shared in the initial mount namespace:
-.PP
+.P
 .in +4n
 .EX
 sh1# \fBmount \-\-make\-shared /mntX\fP
 sh1# \fBmount \-\-make\-shared /mntY\fP
-sh1# \fBcat /proc/self/mountinfo | grep \(aq/mnt\(aq | sed \(aqs/ \- .*//\(aq\fP
+sh1# \fBcat /proc/self/mountinfo | grep \[aq]/mnt\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 132 83 8:23 / /mntX rw,relatime shared:1
 133 83 8:22 / /mntY rw,relatime shared:2
 .EE
 .in
-.PP
+.P
 On a second terminal,
 we create a new mount namespace and inspect the mounts:
-.PP
+.P
 .in +4n
 .EX
 sh2# \fBunshare \-m \-\-propagation unchanged sh\fP
-sh2# \fBcat /proc/self/mountinfo | grep \(aq/mnt\(aq | sed \(aqs/ \- .*//\(aq\fP
+sh2# \fBcat /proc/self/mountinfo | grep \[aq]/mnt\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 168 167 8:23 / /mntX rw,relatime shared:1
 169 167 8:22 / /mntY rw,relatime shared:2
 .EE
 .in
-.PP
+.P
 In the new mount namespace, we then mark one of the mounts as a slave:
-.PP
+.P
 .in +4n
 .EX
 sh2# \fBmount \-\-make\-slave /mntY\fP
-sh2# \fBcat /proc/self/mountinfo | grep \(aq/mnt\(aq | sed \(aqs/ \- .*//\(aq\fP
+sh2# \fBcat /proc/self/mountinfo | grep \[aq]/mnt\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 168 167 8:23 / /mntX rw,relatime shared:1
 169 167 8:22 / /mntY rw,relatime master:2
 .EE
 .in
-.PP
+.P
 From the above output, we see that
-.IR /mntY
+.I /mntY
 is now a slave mount that is receiving propagation events from
 the shared peer group with the ID 2.
-.PP
+.P
 Continuing in the new namespace, we create submounts under each of
-.IR /mntX
+.I /mntX
 and
 .IR /mntY :
-.PP
+.P
 .in +4n
 .EX
 sh2# \fBmkdir /mntX/a\fP
@@ -402,67 +420,67 @@ sh2# \fBmkdir /mntY/b\fP
 sh2# \fBmount /dev/sda5 /mntY/b\fP
 .EE
 .in
-.PP
+.P
 When we inspect the state of the mounts in the new mount namespace,
 we see that
-.IR /mntX/a
+.I /mntX/a
 was created as a new shared mount
 (inheriting the "shared" setting from its parent mount) and
-.IR /mntY/b
+.I /mntY/b
 was created as a private mount:
-.PP
+.P
 .in +4n
 .EX
-sh2# \fBcat /proc/self/mountinfo | grep \(aq/mnt\(aq | sed \(aqs/ \- .*//\(aq\fP
+sh2# \fBcat /proc/self/mountinfo | grep \[aq]/mnt\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 168 167 8:23 / /mntX rw,relatime shared:1
 169 167 8:22 / /mntY rw,relatime master:2
 173 168 8:3 / /mntX/a rw,relatime shared:3
 175 169 8:5 / /mntY/b rw,relatime
 .EE
 .in
-.PP
+.P
 Returning to the first terminal (in the initial mount namespace),
 we see that the mount
-.IR /mntX/a
+.I /mntX/a
 propagated to the peer (the shared
 .IR /mntX ),
 but the mount
-.IR /mntY/b
+.I /mntY/b
 was not propagated:
-.PP
+.P
 .in +4n
 .EX
-sh1# \fBcat /proc/self/mountinfo | grep \(aq/mnt\(aq | sed \(aqs/ \- .*//\(aq\fP
+sh1# \fBcat /proc/self/mountinfo | grep \[aq]/mnt\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 132 83 8:23 / /mntX rw,relatime shared:1
 133 83 8:22 / /mntY rw,relatime shared:2
 174 132 8:3 / /mntX/a rw,relatime shared:3
 .EE
 .in
-.PP
+.P
 Now we create a new mount under
-.IR /mntY
+.I /mntY
 in the first shell:
-.PP
+.P
 .in +4n
 .EX
 sh1# \fBmkdir /mntY/c\fP
 sh1# \fBmount /dev/sda1 /mntY/c\fP
-sh1# \fBcat /proc/self/mountinfo | grep \(aq/mnt\(aq | sed \(aqs/ \- .*//\(aq\fP
+sh1# \fBcat /proc/self/mountinfo | grep \[aq]/mnt\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 132 83 8:23 / /mntX rw,relatime shared:1
 133 83 8:22 / /mntY rw,relatime shared:2
 174 132 8:3 / /mntX/a rw,relatime shared:3
 178 133 8:1 / /mntY/c rw,relatime shared:4
 .EE
 .in
-.PP
+.P
 When we examine the mounts in the second mount namespace,
 we see that in this case the new mount has been propagated
 to the slave mount,
 and that the new mount is itself a slave mount (to peer group 4):
-.PP
+.P
 .in +4n
 .EX
-sh2# \fBcat /proc/self/mountinfo | grep \(aq/mnt\(aq | sed \(aqs/ \- .*//\(aq\fP
+sh2# \fBcat /proc/self/mountinfo | grep \[aq]/mnt\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 168 167 8:23 / /mntX rw,relatime shared:1
 169 167 8:22 / /mntY rw,relatime master:2
 173 168 8:3 / /mntX/a rw,relatime shared:3
@@ -476,26 +494,26 @@ One of the primary purposes of unbindable mounts is to avoid
 the "mount explosion" problem when repeatedly performing bind mounts
 of a higher-level subtree at a lower-level mount.
 The problem is illustrated by the following shell session.
-.PP
+.P
 Suppose we have a system with the following mounts:
-.PP
+.P
 .in +4n
 .EX
-# \fBmount | awk \(aq{print $1, $2, $3}\(aq\fP
+# \fBmount | awk \[aq]{print $1, $2, $3}\[aq]\fP
 /dev/sda1 on /
 /dev/sdb6 on /mntX
 /dev/sdb7 on /mntY
 .EE
 .in
-.PP
+.P
 Suppose furthermore that we wish to recursively bind mount
 the root directory under several users' home directories.
 We do this for the first user, and inspect the mounts:
-.PP
+.P
 .in +4n
 .EX
 # \fBmount \-\-rbind / /home/cecilia/\fP
-# \fBmount | awk \(aq{print $1, $2, $3}\(aq\fP
+# \fBmount | awk \[aq]{print $1, $2, $3}\[aq]\fP
 /dev/sda1 on /
 /dev/sdb6 on /mntX
 /dev/sdb7 on /mntY
@@ -504,14 +522,14 @@ We do this for the first user, and inspect the mounts:
 /dev/sdb7 on /home/cecilia/mntY
 .EE
 .in
-.PP
+.P
 When we repeat this operation for the second user,
 we start to see the explosion problem:
-.PP
+.P
 .in +4n
 .EX
 # \fBmount \-\-rbind / /home/henry\fP
-# \fBmount | awk \(aq{print $1, $2, $3}\(aq\fP
+# \fBmount | awk \[aq]{print $1, $2, $3}\[aq]\fP
 /dev/sda1 on /
 /dev/sdb6 on /mntX
 /dev/sdb7 on /mntY
@@ -526,23 +544,23 @@ we start to see the explosion problem:
 /dev/sdb7 on /home/henry/home/cecilia/mntY
 .EE
 .in
-.PP
+.P
 Under
 .IR /home/henry ,
 we have not only recursively added the
-.IR /mntX
+.I /mntX
 and
-.IR /mntY
+.I /mntY
 mounts, but also the recursive mounts of those directories under
-.IR /home/cecilia
+.I /home/cecilia
 that were created in the previous step.
 Upon repeating the step for a third user,
 it becomes obvious that the explosion is exponential in nature:
-.PP
+.P
 .in +4n
 .EX
 # \fBmount \-\-rbind / /home/otto\fP
-# \fBmount | awk \(aq{print $1, $2, $3}\(aq\fP
+# \fBmount | awk \[aq]{print $1, $2, $3}\[aq]\fP
 /dev/sda1 on /
 /dev/sdb6 on /mntX
 /dev/sdb7 on /mntY
@@ -569,50 +587,50 @@ it becomes obvious that the explosion is exponential in nature:
 /dev/sdb7 on /home/otto/home/henry/home/cecilia/mntY
 .EE
 .in
-.PP
+.P
 The mount explosion problem in the above scenario can be avoided
 by making each of the new mounts unbindable.
 The effect of doing this is that recursive mounts of the root
 directory will not replicate the unbindable mounts.
 We make such a mount for the first user:
-.PP
+.P
 .in +4n
 .EX
 # \fBmount \-\-rbind \-\-make\-unbindable / /home/cecilia\fP
 .EE
 .in
-.PP
+.P
 Before going further, we show that unbindable mounts are indeed unbindable:
-.PP
+.P
 .in +4n
 .EX
 # \fBmkdir /mntZ\fP
 # \fBmount \-\-bind /home/cecilia /mntZ\fP
 mount: wrong fs type, bad option, bad superblock on /home/cecilia,
        missing codepage or helper program, or other error
-
+\&
        In some cases useful info is found in syslog \- try
        dmesg | tail or so.
 .EE
 .in
-.PP
+.P
 Now we create unbindable recursive bind mounts for the other two users:
-.PP
+.P
 .in +4n
 .EX
 # \fBmount \-\-rbind \-\-make\-unbindable / /home/henry\fP
 # \fBmount \-\-rbind \-\-make\-unbindable / /home/otto\fP
 .EE
 .in
-.PP
+.P
 Upon examining the list of mounts,
 we see there has been no explosion of mounts,
 because the unbindable mounts were not replicated
 under each user's directory:
-.PP
+.P
 .in +4n
 .EX
-# \fBmount | awk \(aq{print $1, $2, $3}\(aq\fP
+# \fBmount | awk \[aq]{print $1, $2, $3}\[aq]\fP
 /dev/sda1 on /
 /dev/sdb6 on /mntX
 /dev/sdb7 on /mntY
@@ -631,7 +649,7 @@ under each user's directory:
 .SS Propagation type transitions
 The following table shows the effect that applying a new propagation type
 (i.e.,
-.IR "mount \-\-make\-xxxx")
+.IR mount\~\-\-make\-xxxx )
 has on the existing propagation type of a mount.
 The rows correspond to existing propagation types,
 and the columns are the new propagation settings.
@@ -648,9 +666,9 @@ slave+shared	slave+shared	slave	priv	unbind
 private	shared	priv [2]	priv	unbind
 unbindable	shared	unbind [2]	priv	unbind
 .TE
-.sp 1
+.P
 Note the following details to the table:
-.IP [1] 4
+.IP [1] 5
 If a shared mount is the only mount in its peer group,
 making it a slave automatically makes it private.
 .IP [2]
@@ -658,13 +676,13 @@ Slaving a nonshared mount has no effect on the mount.
 .\"
 .SS Bind (MS_BIND) semantics
 Suppose that the following command is performed:
-.PP
+.P
 .in +4n
 .EX
 mount \-\-bind A/a B/b
 .EE
 .in
-.PP
+.P
 Here,
 .I A
 is the source mount,
@@ -680,11 +698,11 @@ is a subdirectory path under the mount point
 The propagation type of the resulting mount,
 .IR B/b ,
 depends on the propagation types of the mounts
-.IR A
+.I A
 and
 .IR B ,
 and is summarized in the following table.
-.PP
+.P
 .TS
 lb2 lb1 lb2 lb2 lb2 lb0
 lb2 lb1 lb2 lb2 lb2 lb0
@@ -695,24 +713,24 @@ _
 dest(B)	shared	shared	shared	slave+shared	invalid
 	nonshared	shared	private	slave	invalid
 .TE
-.sp 1
+.P
 Note that a recursive bind of a subtree follows the same semantics
 as for a bind operation on each mount in the subtree.
 (Unbindable mounts are automatically pruned at the target mount point.)
-.PP
+.P
 For further details, see
-.I Documentation/filesystems/sharedsubtree.txt
+.I Documentation/filesystems/sharedsubtree.rst
 in the kernel source tree.
 .\"
 .SS Move (MS_MOVE) semantics
 Suppose that the following command is performed:
-.PP
+.P
 .in +4n
 .EX
 mount \-\-move A B/b
 .EE
 .in
-.PP
+.P
 Here,
 .I A
 is the source mount,
@@ -724,11 +742,11 @@ is a subdirectory path under the mount point
 The propagation type of the resulting mount,
 .IR B/b ,
 depends on the propagation types of the mounts
-.IR A
+.I A
 and
 .IR B ,
 and is summarized in the following table.
-.PP
+.P
 .TS
 lb2 lb1 lb2 lb2 lb2 lb0
 lb2 lb1 lb2 lb2 lb2 lb0
@@ -739,22 +757,22 @@ _
 dest(B)	shared	shared	shared	slave+shared	invalid
 	nonshared	shared	private	slave	unbindable
 .TE
-.sp 1
+.P
 Note: moving a mount that resides under a shared mount is invalid.
-.PP
+.P
 For further details, see
-.I Documentation/filesystems/sharedsubtree.txt
+.I Documentation/filesystems/sharedsubtree.rst
 in the kernel source tree.
 .\"
 .SS Mount semantics
 Suppose that we use the following command to create a mount:
-.PP
+.P
 .in +4n
 .EX
 mount device B/b
 .EE
 .in
-.PP
+.P
 Here,
 .I B
 is the destination mount, and
@@ -769,13 +787,13 @@ is considered always to be private.
 .\"
 .SS Unmount semantics
 Suppose that we use the following command to tear down a mount:
-.PP
+.P
 .in +4n
 .EX
-unmount A
+umount A
 .EE
 .in
-.PP
+.P
 Here,
 .I A
 is a mount on
@@ -794,17 +812,17 @@ on mounts that receive propagation from mount
 .I B
 and do not have submounts under them are unmounted.
 .\"
-.SS The /proc/[pid]/mountinfo "propagate_from" tag
+.SS The /proc/ pid /mountinfo "propagate_from" tag
 The
 .I propagate_from:X
 tag is shown in the optional fields of a
-.IR /proc/[pid]/mountinfo
+.IR /proc/ pid /mountinfo
 record in cases where a process can't see a slave's immediate master
 (i.e., the pathname of the master is not reachable from
 the filesystem root directory)
 and so cannot determine the
 chain of propagation between the mounts it can see.
-.PP
+.P
 In the following example, we first create a two-link master-slave chain
 between the mounts
 .IR /mnt ,
@@ -814,25 +832,25 @@ and
 Then the
 .BR chroot (1)
 command is used to make the
-.IR /tmp/etc
+.I /tmp/etc
 mount point unreachable from the root directory,
 creating a situation where the master of
-.IR /mnt/tmp/etc
+.I /mnt/tmp/etc
 is not reachable from the (new) root directory of the process.
-.PP
+.P
 First, we bind mount the root directory onto
-.IR /mnt
+.I /mnt
 and then bind mount
-.IR /proc
+.I /proc
 at
-.IR /mnt/proc
+.I /mnt/proc
 so that after the later
 .BR chroot (1)
 the
 .BR proc (5)
 filesystem remains visible at the correct location
 in the chroot-ed environment.
-.PP
+.P
 .in +4n
 .EX
 # \fBmkdir \-p /mnt/proc\fP
@@ -840,129 +858,129 @@ in the chroot-ed environment.
 # \fBmount \-\-bind /proc /mnt/proc\fP
 .EE
 .in
-.PP
+.P
 Next, we ensure that the
-.IR /mnt
+.I /mnt
 mount is a shared mount in a new peer group (with no peers):
-.PP
+.P
 .in +4n
 .EX
 # \fBmount \-\-make\-private /mnt\fP  # Isolate from any previous peer group
 # \fBmount \-\-make\-shared /mnt\fP
-# \fBcat /proc/self/mountinfo | grep \(aq/mnt\(aq | sed \(aqs/ \- .*//\(aq\fP
+# \fBcat /proc/self/mountinfo | grep \[aq]/mnt\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 239 61 8:2 / /mnt ... shared:102
 248 239 0:4 / /mnt/proc ... shared:5
 .EE
 .in
-.PP
+.P
 Next, we bind mount
-.IR /mnt/etc
+.I /mnt/etc
 onto
 .IR /tmp/etc :
-.PP
+.P
 .in +4n
 .EX
 # \fBmkdir \-p /tmp/etc\fP
 # \fBmount \-\-bind /mnt/etc /tmp/etc\fP
-# \fBcat /proc/self/mountinfo | egrep \(aq/mnt|/tmp/\(aq | sed \(aqs/ \- .*//\(aq\fP
+# \fBcat /proc/self/mountinfo | egrep \[aq]/mnt|/tmp/\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 239 61 8:2 / /mnt ... shared:102
 248 239 0:4 / /mnt/proc ... shared:5
 267 40 8:2 /etc /tmp/etc ... shared:102
 .EE
 .in
-.PP
+.P
 Initially, these two mounts are in the same peer group,
 but we then make the
-.IR /tmp/etc
+.I /tmp/etc
 a slave of
 .IR /mnt/etc ,
 and then make
-.IR /tmp/etc
+.I /tmp/etc
 shared as well,
 so that it can propagate events to the next slave in the chain:
-.PP
+.P
 .in +4n
 .EX
 # \fBmount \-\-make\-slave /tmp/etc\fP
 # \fBmount \-\-make\-shared /tmp/etc\fP
-# \fBcat /proc/self/mountinfo | egrep \(aq/mnt|/tmp/\(aq | sed \(aqs/ \- .*//\(aq\fP
+# \fBcat /proc/self/mountinfo | egrep \[aq]/mnt|/tmp/\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 239 61 8:2 / /mnt ... shared:102
 248 239 0:4 / /mnt/proc ... shared:5
 267 40 8:2 /etc /tmp/etc ... shared:105 master:102
 .EE
 .in
-.PP
+.P
 Then we bind mount
-.IR /tmp/etc
+.I /tmp/etc
 onto
 .IR /mnt/tmp/etc .
 Again, the two mounts are initially in the same peer group,
 but we then make
-.IR /mnt/tmp/etc
+.I /mnt/tmp/etc
 a slave of
 .IR /tmp/etc :
-.PP
+.P
 .in +4n
 .EX
 # \fBmkdir \-p /mnt/tmp/etc\fP
 # \fBmount \-\-bind /tmp/etc /mnt/tmp/etc\fP
 # \fBmount \-\-make\-slave /mnt/tmp/etc\fP
-# \fBcat /proc/self/mountinfo | egrep \(aq/mnt|/tmp/\(aq | sed \(aqs/ \- .*//\(aq\fP
+# \fBcat /proc/self/mountinfo | egrep \[aq]/mnt|/tmp/\[aq] | sed \[aq]s/ \- .*//\[aq]\fP
 239 61 8:2 / /mnt ... shared:102
 248 239 0:4 / /mnt/proc ... shared:5
 267 40 8:2 /etc /tmp/etc ... shared:105 master:102
 273 239 8:2 /etc /mnt/tmp/etc ... master:105
 .EE
 .in
-.PP
+.P
 From the above, we see that
-.IR /mnt
+.I /mnt
 is the master of the slave
 .IR /tmp/etc ,
 which in turn is the master of the slave
 .IR /mnt/tmp/etc .
-.PP
+.P
 We then
 .BR chroot (1)
 to the
-.IR /mnt
+.I /mnt
 directory, which renders the mount with ID 267 unreachable
 from the (new) root directory:
-.PP
+.P
 .in +4n
 .EX
 # \fBchroot /mnt\fP
 .EE
 .in
-.PP
+.P
 When we examine the state of the mounts inside the chroot-ed environment,
 we see the following:
-.PP
+.P
 .in +4n
 .EX
-# \fBcat /proc/self/mountinfo | sed \(aqs/ \- .*//\(aq\fP
+# \fBcat /proc/self/mountinfo | sed \[aq]s/ \- .*//\[aq]\fP
 239 61 8:2 / / ... shared:102
 248 239 0:4 / /proc ... shared:5
 273 239 8:2 /etc /tmp/etc ... master:105 propagate_from:102
 .EE
 .in
-.PP
+.P
 Above, we see that the mount with ID 273
 is a slave whose master is the peer group 105.
 The mount point for that master is unreachable, and so a
-.IR propagate_from
+.I propagate_from
 tag is displayed, indicating that the closest dominant peer group
 (i.e., the nearest reachable mount in the slave chain)
 is the peer group with the ID 102 (corresponding to the
-.IR /mnt
+.I /mnt
 mount point before the
 .BR chroot (1)
-was performed.
+was performed).
 .\"
-.SH VERSIONS
-Mount namespaces first appeared in Linux 2.4.19.
-.SH CONFORMING TO
-Namespaces are a Linux-specific feature.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 2.4.19.
 .\"
 .SH NOTES
 The propagation type assigned to a new mount depends
@@ -974,20 +992,20 @@ then the propagation type of the new mount is also
 .BR MS_SHARED .
 Otherwise, the propagation type of the new mount is
 .BR MS_PRIVATE .
-.PP
+.P
 Notwithstanding the fact that the default propagation type
 for new mount is in many cases
 .BR MS_PRIVATE ,
-.BR MS_SHARED
+.B MS_SHARED
 is typically more useful.
 For this reason,
 .BR systemd (1)
 automatically remounts all mounts as
-.BR MS_SHARED
+.B MS_SHARED
 on system startup.
 Thus, on most modern systems, the default propagation type is in practice
 .BR MS_SHARED .
-.PP
+.P
 Since, when one uses
 .BR unshare (1)
 to create a mount namespace,
@@ -995,25 +1013,25 @@ the goal is commonly to provide full isolation of the mounts
 in the new namespace,
 .BR unshare (1)
 (since
-.IR util\-linux
-version 2.27) in turn reverses the step performed by
+.I util\-linux
+2.27) in turn reverses the step performed by
 .BR systemd (1),
 by making all mounts private in the new namespace.
 That is,
 .BR unshare (1)
 performs the equivalent of the following in the new mount namespace:
-.PP
+.P
 .in +4n
 .EX
 mount \-\-make\-rprivate /
 .EE
 .in
-.PP
+.P
 To prevent this, one can use the
-.IR "\-\-propagation\ unchanged"
+.I \-\-propagation\~unchanged
 option to
 .BR unshare (1).
-.PP
+.P
 An application that creates a new mount namespace directly using
 .BR clone (2)
 or
@@ -1027,25 +1045,25 @@ mounts in the new namespace to either
 or
 .BR MS_PRIVATE ,
 using a call such as the following:
-.PP
+.P
 .in +4n
 .EX
 mount(NULL, "/", MS_SLAVE | MS_REC, NULL);
 .EE
 .in
-.PP
+.P
 For a discussion of propagation types when moving mounts
 .RB ( MS_MOVE )
 and creating bind mounts
 .RB ( MS_BIND ),
 see
-.IR Documentation/filesystems/sharedsubtree.txt .
+.IR Documentation/filesystems/sharedsubtree.rst .
 .\"
 .\" ============================================================
 .\"
 .SS Restrictions on mount namespaces
 Note the following points with respect to mount namespaces:
-.IP [1] 4
+.IP [1] 5
 Each mount namespace has an owner user namespace.
 As explained above, when a new mount namespace is created,
 its mount list is initialized as a copy of the mount list
@@ -1076,7 +1094,6 @@ In this context, "may not be separated" means that the mounts
 are locked so that they may not be individually unmounted.
 Consider the following example:
 .IP
-.RS
 .in +4n
 .EX
 $ \fBsudo sh\fP
@@ -1084,13 +1101,13 @@ $ \fBsudo sh\fP
 # \fBcat /etc/shadow\fP       # Produces no output
 .EE
 .in
-.RE
 .IP
 The above steps, performed in a more privileged mount namespace,
 have created a bind mount that
 obscures the contents of the shadow password file,
 .IR /etc/shadow .
-For security reasons, it should not be possible to unmount
+For security reasons, it should not be possible to
+.BR umount (2)
 that mount in a less privileged mount namespace,
 since that would reveal the contents of
 .IR /etc/shadow .
@@ -1101,21 +1118,21 @@ The new mount namespace will inherit copies of all of the mounts
 from the previous mount namespace.
 However, those mounts will be locked because the new mount namespace
 is less privileged.
-Consequently, an attempt to unmount the mount fails as show
+Consequently, an attempt to
+.BR umount (2)
+the mount fails as show
 in the following step:
 .IP
-.RS
 .in +4n
 .EX
-# \fBunshare \-\-user \-\-map\-root\-user \-\-mount \e\fP
-               \fBstrace \-o /tmp/log \e\fP
+# \fBunshare \-\-user \-\-map\-root\-user \-\-mount \[rs]\fP
+               \fBstrace \-o /tmp/log \[rs]\fP
                \fBumount /mnt/dir\fP
 umount: /etc/shadow: not mounted.
-# \fBgrep \(aq^umount\(aq /tmp/log\fP
+# \fBgrep \[aq]\[ha]umount\[aq] /tmp/log\fP
 umount2("/etc/shadow", 0)     = \-1 EINVAL (Invalid argument)
 .EE
 .in
-.RE
 .IP
 The error message from
 .BR mount (8)
@@ -1134,9 +1151,9 @@ less privileged mount namespace:
 .IP
 .in +4n
 .EX
-# \fBecho \(aqaaaaa\(aq > /tmp/a\fP    # File to mount onto /etc/shadow
-# \fBunshare \-\-user \-\-map\-root\-user \-\-mount \e\fP
-    \fBsh \-c \(aqmount \-\-bind /tmp/a /etc/shadow; cat /etc/shadow\(aq\fP
+# \fBecho \[aq]aaaaa\[aq] > /tmp/a\fP    # File to mount onto /etc/shadow
+# \fBunshare \-\-user \-\-map\-root\-user \-\-mount \[rs]\fP
+    \fBsh \-c \[aq]mount \-\-bind /tmp/a /etc/shadow; cat /etc/shadow\[aq]\fP
 aaaaa
 # \fBumount /etc/shadow\fP
 .EE
@@ -1150,7 +1167,9 @@ makes the original
 file once more visible in that namespace.
 .IP [4]
 Following on from point [3],
-note that it is possible to unmount an entire subtree of mounts that
+note that it is possible to
+.BR umount (2)
+an entire subtree of mounts that
 propagated as a unit into a less privileged mount namespace,
 as illustrated in the following example.
 .IP
@@ -1164,7 +1183,7 @@ and a small hierarchy of mounts underneath that mount.
 .IP
 .in +4n
 .EX
-$ \fBPS1=\(aqns1# \(aq sudo unshare \-\-user \-\-map\-root\-user \e\fP
+$ \fBPS1=\[aq]ns1# \[aq] sudo unshare \-\-user \-\-map\-root\-user \[rs]\fP
                        \fB\-\-mount \-\-propagation private bash\fP
 ns1# \fBecho $$\fP        # We need the PID of this shell later
 778501
@@ -1173,7 +1192,7 @@ ns1# \fBmkdir /mnt/x\fP
 ns1# \fBmount \-\-make\-private \-t tmpfs none /mnt/x\fP
 ns1# \fBmkdir /mnt/x/y\fP
 ns1# \fBmount \-\-make\-private \-t tmpfs none /mnt/x/y\fP
-ns1# \fBgrep /mnt /proc/self/mountinfo | sed \(aqs/ \- .*//\(aq\fP
+ns1# \fBgrep /mnt /proc/self/mountinfo | sed \[aq]s/ \- .*//\[aq]\fP
 986 83 8:5 /mnt /mnt rw,relatime shared:344
 989 986 0:56 / /mnt/x rw,relatime
 990 989 0:57 / /mnt/x/y rw,relatime
@@ -1188,9 +1207,9 @@ check the state of the propagated mounts rooted at
 .IP
 .in +4n
 .EX
-ns1# \fBPS1=\(aqns2# \(aq unshare \-\-user \-\-map\-root\-user \e\fP
+ns1# \fBPS1=\[aq]ns2# \[aq] unshare \-\-user \-\-map\-root\-user \[rs]\fP
                        \fB\-\-mount \-\-propagation unchanged bash\fP
-ns2# \fBgrep /mnt /proc/self/mountinfo | sed \(aqs/ \- .*//\(aq\fP
+ns2# \fBgrep /mnt /proc/self/mountinfo | sed \[aq]s/ \- .*//\[aq]\fP
 1239 1204 8:5 /mnt /mnt rw,relatime master:344
 1240 1239 0:56 / /mnt/x rw,relatime
 1241 1240 0:57 / /mnt/x/y rw,relatime
@@ -1208,15 +1227,15 @@ From a separate terminal window, we then use
 .BR nsenter (1)
 to enter the mount and user namespaces corresponding to "ns1".
 In that terminal window, we then recursively bind mount
-.IR /mnt/x
+.I /mnt/x
 at the location
 .IR /mnt/ppp .
 .IP
 .in +4n
 .EX
-$ \fBPS1=\(aqns3# \(aq sudo nsenter \-t 778501 \-\-user \-\-mount\fP
+$ \fBPS1=\[aq]ns3# \[aq] sudo nsenter \-t 778501 \-\-user \-\-mount\fP
 ns3# \fBmount \-\-rbind \-\-make\-private /mnt/x /mnt/ppp\fP
-ns3# \fBgrep /mnt /proc/self/mountinfo | sed \(aqs/ \- .*//\(aq\fP
+ns3# \fBgrep /mnt /proc/self/mountinfo | sed \[aq]s/ \- .*//\[aq]\fP
 986 83 8:5 /mnt /mnt rw,relatime shared:344
 989 986 0:56 / /mnt/x rw,relatime
 990 989 0:57 / /mnt/x/y rw,relatime
@@ -1235,7 +1254,7 @@ as can be verified by executing the following command in that shell session:
 .IP
 .in +4n
 .EX
-ns2# \fBgrep /mnt /proc/self/mountinfo | sed \(aqs/ \- .*//\(aq\fP
+ns2# \fBgrep /mnt /proc/self/mountinfo | sed \[aq]s/ \- .*//\[aq]\fP
 1239 1204 8:5 /mnt /mnt rw,relatime master:344
 1240 1239 0:56 / /mnt/x rw,relatime
 1241 1240 0:57 / /mnt/x/y rw,relatime
@@ -1244,17 +1263,21 @@ ns2# \fBgrep /mnt /proc/self/mountinfo | sed \(aqs/ \- .*//\(aq\fP
 .EE
 .in
 .IP
-While it is not possible to unmount a part of the propagated subtree
+While it is not possible to
+.BR umount (2)
+a part of the propagated subtree
 .RI ( /mnt/ppp/y )
 in "ns2",
-it is possible to unmount the entire subtree,
+it is possible to
+.BR umount (2)
+the entire subtree,
 as shown by the following commands:
 .IP
 .in +4n
 .EX
 ns2# \fBumount /mnt/ppp/y\fP
 umount: /mnt/ppp/y: not mounted.
-ns2# \fBumount \-l /mnt/ppp | sed \(aqs/ \- .*//\(aq\fP      # Succeeds...
+ns2# \fBumount \-l /mnt/ppp | sed \[aq]s/ \- .*//\[aq]\fP      # Succeeds...
 ns2# \fBgrep /mnt /proc/self/mountinfo\fP
 1239 1204 8:5 /mnt /mnt rw,relatime master:344
 1240 1239 0:56 / /mnt/x rw,relatime
@@ -1290,17 +1313,15 @@ For security reasons,
 it should not be possible to make the mount writable in
 a less privileged mount namespace, and indeed the kernel prevents this:
 .IP
-.RS
 .in +4n
 .EX
 $ \fBsudo mkdir /mnt/dir\fP
 $ \fBsudo mount \-\-bind \-o ro /some/path /mnt/dir\fP
-$ \fBsudo unshare \-\-user \-\-map\-root\-user \-\-mount \e\fP
+$ \fBsudo unshare \-\-user \-\-map\-root\-user \-\-mount \[rs]\fP
                \fBmount \-o remount,rw /mnt/dir\fP
 mount: /mnt/dir: permission denied.
 .EE
 .in
-.RE
 .IP [6]
 .\" (As of 3.18-rc1 (in Al Viro's 2014-08-30 vfs.git#for-next tree))
 A file or directory that is a mount point in one namespace that is not
@@ -1345,6 +1366,6 @@ See
 .BR pam_namespace (8),
 .BR pivot_root (8),
 .BR umount (8)
-.PP
-.IR Documentation/filesystems/sharedsubtree.txt
+.P
+.I Documentation/filesystems/sharedsubtree.rst
 in the kernel source tree.

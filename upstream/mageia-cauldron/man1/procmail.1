@@ -3,7 +3,7 @@
 .ds Rv \\$3
 .ds Dt \\$4
 ..
-.Id $Id: procmail.man,v 1.91 2001/08/27 08:44:04 guenther Exp $
+.Id $Id$
 .TH PROCMAIL 1 \*(Dt BuGless
 .rn SH Sh
 .de SH
@@ -73,7 +73,8 @@ procmail \- autonomous mail processor
 .I rcfile
 .if n .ti +0.5i
 .RI [ argument ]
-\&.\|.\|..br
+\&.\|.\|.
+.br
 .B procmail
 .B \-v
 .ad
@@ -163,7 +164,7 @@ will preset see the
 .BR procmailrc (5)
 man page.  If both \-p and \-m are specified, the
 list of preset environment variables shrinks to just: LOGNAME, HOME, SHELL,
-ORGMAIL and MAILDIR.
+USER_SHELL, ORGMAIL and MAILDIR.
 .TP
 .B \-t
 Make procmail fail softly, i.e., if procmail cannot deliver the mail to
@@ -218,7 +219,8 @@ If the rcfile is an absolute path starting with
 without backward references (i.e. the parent directory cannot be mentioned) procmail will, only if no security violations are found, take on the identity of the owner of the rcfile (or symbolic link).
 For some advanced usage of this option you should look in the
 .B EXAMPLES
-section below..SH ARGUMENTS
+section below.
+.SH ARGUMENTS
 Any arguments containing an '=' are considered to be environment variable
 assignments, they will
 .I all
@@ -290,7 +292,7 @@ be creating an endless mail loop.
 .SH FILES
 .TP 2.3i
 .B /etc/passwd
-to set the recipient's LOGNAME, HOME and SHELL variable defaults
+to set the recipient's LOGNAME, HOME and USER_SHELL variable defaults
 .TP
 .B /var/spool/mail/$LOGNAME
 system mailbox; both the system mailbox and the immediate directory
@@ -325,7 +327,6 @@ temporary `unique' zero-length files created by procmail
 .BR csh (1),
 .BR mail (1),
 .BR mailx (1),
-.BR binmail (1),
 .BR uucp (1),
 .BR aliases (5),
 .BR sendmail (8),
@@ -418,11 +419,12 @@ The specified item's full path, when expanded, was longer than LINEBUF
 or didn't start with a file separator.
 .TP
 Excessive output quenched from "x"
-The program or filter "x" tried to produce too much output for the current
-LINEBUF, the rest was discarded and PROCMAIL_OVERFLOW has been set.
+The backquoted expression "x" tried to produce too much output for
+the current LINEBUF; the rest was discarded and PROCMAIL_OVERFLOW
+has been set.
 .TP
 Extraneous x ignored
-The action line or other flags on this recipe makes flag x meaningless.
+The action line or other flags on this recipe make x meaningless.
 .TP
 Failed forking "x"
 Process table is full (and NORESRETRY has been exhausted).
@@ -713,7 +715,7 @@ procmail will proceed as if explicit delivery mode was not in effect.
 If not in explicit delivery mode and
 should the uid procmail is running under, have no corresponding /etc/passwd
 entry, then HOME will default to /, LOGNAME will default to #uid,
-SHELL will default to /bin/sh, and ORGMAIL will default to
+USER_SHELL will default to /bin/sh, and ORGMAIL will default to
 /tmp/dead.letter.
 .PP
 When in explicit delivery mode, procmail will generate a leading `From '
@@ -813,6 +815,15 @@ overoptimising sendmail programs\h'-\w' 'u' :
 .fi
 .ad
 .PP
+Some mailers (notably exim) do not currently accept the above syntax.
+In such case use this instead:
+.PP
+.na
+.nf
+|/usr/bin/procmail
+.fi
+.ad
+.PP
 Procmail can also be invoked to postprocess an already filled system
 mailbox.  This can be useful if you don't want to or can't use a
 $HOME/.forward file (in which case the following script could
@@ -844,7 +855,7 @@ exit 0
 .SS "A sample small $HOME/.procmailrc:"
 .na
 .nf
-PATH=/bin:/usr/bin:/usr/bin
+PATH=/usr/local/bin:/bin:/usr/bin
 MAILDIR=$HOME/Mail      #you'd better make sure it exists
 DEFAULT=$MAILDIR/mbox   #completely optional
 LOGFILE=$MAILDIR/from   #recommended
@@ -865,7 +876,7 @@ man page.
 .Sh SOURCE
 This program is part of the
 .I procmail mail-processing-package
-(v3.22) available at http://www.procmail.org/ or
+(v3.24) available at http://www.procmail.org/ or
 ftp.procmail.org in
 .BR pub/procmail/ .
 .Sh MAILINGLIST
@@ -892,10 +903,6 @@ procmail-announce-request@procmail.org
 Stephen R. van den Berg
 .RS
 <srb@cuci.nl>
-.RE
-Philip A. Guenther
-.RS
-<guenther@sendmail.com>
 .RE
 .\".if n .pl -(\n(.tu-1i)
 .rm SH

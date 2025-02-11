@@ -1,0 +1,39 @@
+.TH SYSTEM-AUTH 5 "2006 Feb 3" "Red Hat" "Linux-PAM Manual"
+.SH NAME
+
+system-auth \- Common configuration file for PAMified services
+
+.SH SYNOPSIS
+.B /etc/pam.d/system-auth
+.sp 2
+.SH DESCRIPTION
+
+The purpose of this configuration file is to provide common 
+configuration file for all applications and service daemons
+calling PAM library.
+
+.sp
+The \fBsystem-auth\fR configuration file is included from all individual service configuration
+files with the help of the \fBinclude\fR directive.
+
+.SH NOTES
+There should be no \fBsufficient\fR modules in the \fBsession\fR
+part of \fBsystem-auth\fR file because individual services may add session modules after
+\fBinclude\fR of the \fBsystem-auth\fR file. Execution of these modules would be skipped if there were sufficient
+modules in \fBsystem-auth\fR file.
+
+.sp
+Conversely there should not be any modules after
+\fBinclude\fR directive in the individual service files in
+\fBauth\fR, \fBaccount\fR and \fBpassword\fR
+sections otherwise they could be bypassed.
+
+.SH BUGS
+.sp 2
+None known.
+
+.SH "SEE ALSO"
+\fBpam\fR(8), \fBconfig-util\fR(5)
+
+The three \fBLinux-PAM\fR Guides, for \fBsystem administrators\fR,
+\fBmodule developers\fR, and \fBapplication developers\fR.

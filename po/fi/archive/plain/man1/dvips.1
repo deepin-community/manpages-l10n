@@ -1,0 +1,412 @@
+.\" $Id: $
+.\" Translated into Finnish by Marko Grˆnroos (magi@utu.fi)
+.\"
+.TH DVIPS 7 "" "K‰ytt‰j‰n sovellusohjelmat" ""
+.SH NIMI
+dvips \- muuntaa TeX DVI -tiedoston PostScriptiksi
+.SH "YLEISKATSAUS"
+.B dvips
+[
+.I optiot
+]
+.IR tiedosto [.dvi]
+.br
+.SH KUVAUS
+TƒMƒ MAN-SIVU ON VANHENTUNUT! Sit‰ ei en‰‰ yll‰pidet‰ ja se voi olla
+virheellinen tai puutteellinen. Katso komennon
+Texinfo-dokumentaatiota. Voit lukea sit‰ joko Emacsista tai k‰ytt‰en erillist‰
+.BR info -ohjelmaa,
+joka tulee GNU-texinfo -paketin mukana.
+.PP
+Ohjelma
+.B dvips
+ottaa DVI-tiedoston
+.IR tiedosto [.dvi]
+joka on TeX:in tuottama (tai jonkin muun, kuten GFtoDVI:n tuottama) ja
+muuntaa sen PostScriptiksi, l‰hett‰en tuloksen normaalisti suoraan
+laserkirjoittimelle. DVI-tiedoston voi antaa myˆs ilman
+.IR .dvi -loppuliitett‰.
+K‰ytett‰v‰t fontit voivat olla joko kirjoittimen omia
+tai m‰‰ritelty bittikarttoina PK-tiedostoissa, tai "virtuaalisena"
+yhdistelm‰n‰ molempia.
+
+Jos
+.BR MakeTeXPK -ohjelma
+on asennettu, kutsuu
+.B dvips
+automaattisesti METAFONT:ia luodakseen sellaiset fontit, joita ei ennest‰‰n ole olemassa.
+.PP
+Lis‰tietoja lˆytyy Texinfo-ohjeesta
+.IR dvips.texi ,
+jonka pit‰isi olla asennettuna j‰rjestelm‰ss‰si.
+.SH OPTIOT
+.TP
+.B -a
+S‰‰st‰‰ muistia k‰ym‰ll‰ .dvi-tiedoston l‰pi kolme kertaa tavallisen
+kahden sijaan ja lataamalla vain k‰ytett‰v‰t merkit. T‰m‰
+on hyˆdyllist‰ yleens‰ vain hyvin v‰h‰muistisissa koneissa, kuten
+joissain PC:iss‰.
+.TP
+.B -A
+Tulostetaan vain parittomat sivut (TeX-numeroidut sivut, ei koske numeroimattomia sivusarjoja).
+.TP
+.B -b lukum‰‰r‰
+Tehd‰‰n
+.I lukum‰‰r‰
+kopiota kustakin sivusta, mutta monistaen sivujen data sen sijaan ett‰
+k‰ytett‰isiin PostScriptin
+.I #numcopies
+-optiota.  T‰m‰ voi olla k‰yttˆkelpoista
+.I \ebop-hook
+-otsikkotiedostoasetuksen yhteydess‰ v‰rierottelujen tai muiden
+siistien jippojen aikaansaamisessa.
+.TP
+.B -B
+Tulostetaan vain parilliset sivut (TeX-numeroidut sivut, ei koske numeroimattomia sivusarjoja).
+.TP
+.B -c lukum‰‰r‰
+Tehd‰‰n
+.I lukum‰‰r‰
+kopiota kustakin sivusta. Saman sivun kopiot tulostetaan
+per‰kk‰in. Kaksipuolisen tulostuksen tapauksessa tulostus tehd‰‰n
+sivupari per‰kk‰in (ei tarvitse pel‰t‰ ett‰ sama sivu tulostettaisiin
+saman arkin molemmille puolille).  Katso myˆs
+.I -C
+-optiota alla kollationoiduille kopioille.
+.TP
+.B -C lukum‰‰r‰
+Tehd‰‰n
+.I lukum‰‰r‰
+kopiota, mutta kollationoituina (koko dokumentti tulostetaan useaan kertaan
+per‰kk‰in, ei sivu kerrallaan limitt‰in).  T‰m‰ on hitaampi kuin
+.I -c
+-optio, koska data monistetaan PostScript-tiedostossa, mutta nopeampaa
+kuin saman PostScript-tiedoston tulostaminen useaan
+kertaan. Tulosteiden k‰sittely kuitenkin helpottuu.
+.TP
+.B -d arvo
+Asettaa debuggauslippuja.  T‰m‰ on tarkoitettu vain h‰t‰tapauksia ja
+ep‰tavallisia kokeiluja varten; se toimii vain jos
+.I dvips
+on k‰‰nnetty DEBUG-optiolla.
+Lis‰tietoja lippujen mahdollisista arvoista saa
+.I dvips.tex:n
+luvusta 15.
+.TP
+.B -D tarkkuus
+Asettaa tulostuksen resoluution pistein‰ tuumalle arvoon
+.IR tarkkuus .
+T‰m‰ vaikuttaa sek‰ ladattavien bittikarttafonttien valintaan ett‰
+kirjoittimen omien PostScript-fonttien asetteluun. Tarkkuuden tulee
+olla v‰lilt‰ 10 ja 10000. Asetus vaikuttaa sek‰ vaaka- ett‰
+pystysuuntaiseen resoluutioon. Valittaessa korkea resoluutio (enemm‰n
+kuin vaikkapa 400 pistett‰ tuumalle) tulisi luultavasti k‰ytt‰‰ myˆs
+.I -Z
+-lippua.
+.TP
+.B -e lukum‰‰r‰
+Varmistetaan, ett‰ jokainen merkki asetetaan ainakin n‰in monta pikseli‰
+sen `todellisesta', resoluutiosta riippumattomasta paikasta,
+sivulla. Parametrin oletusarvo riippuu k‰ytett‰v‰st‰
+resoluutiosta. Antamalla yksitt‰isille merkeille mahdollisuus
+`ajelehtia' niiden oikein pyˆristetyist‰ paikoista muutaman pikselin
+verran, samalla kun pit‰ydyt‰‰n kunkin uuden sanan todellisesta
+alkamiskohdasta, parantaa sanojen kirjainten v‰listyst‰.
+.TP
+.B -E
+Saa aikaan, ett‰
+.I dvips
+yritt‰‰ luoda EPSF-tiedoston, jossa on tiukka rajausalue (nk. bounding
+box). T‰m‰ toimii vain yksisivuisilla tiedostoilla, ja se ottaa
+huomioon vain kirjainten ja rajauksten paikat, ei sis‰llytetty‰
+grafiikkaa. Lis‰ksi se hakee kirjasinten kokotiedot
+.IR tfm -tiedostosta,
+joten
+.IR tfm -alueensa
+ulkopuolella sijaitsevat merkit saattavat h‰irit‰ sit‰.
+Rajausalue voi lis‰ksi olla aavistuksen verran liian avara jos
+kirjaimella on merkitt‰v‰sti tyhj‰‰ vasemmalla ja oikealla
+puolellaan. T‰m‰ optio joka tapauksessa toimii hyvin luotaessa pieni‰
+EPSF-tiedostoja kaavoille, taulukoille tai vastaaville.  (Kannattaa
+tietysti huomata, ett‰
+.IR dvips :n
+tuloste riippuu resoluutiosta, eik‰ se siten tee kovin hyvi‰
+EPSF-tiedostoja, varsinkaan jos kuvia t‰ytyy skaalata; k‰yt‰
+EPSF-tiedostoja suurella varovaisuudella.)
+.TP
+.B -f
+Lue
+.IR .dvi -tiedosto
+oletussyˆtteest‰ ja kirjoita PostScript oletustulosteeseen.
+Oletussyˆtteen tulee olla osoitettava, joten se ei voi olla putki. Jos
+putken k‰ytt‰minen on v‰ltt‰m‰tˆnt‰, kirjoita komentotulkkiskripti,
+joka kopioi putken v‰liaikaistiedostoon ja sitten kehoittaa
+.I dvips
+k‰ytt‰m‰‰n t‰t‰ tiedostoa.  T‰m‰ optio est‰‰ lis‰ksi
+.I PRINTER
+-ymp‰ristˆmuuttujan automaattisen lukemisen ja aiheuttaa, ettei Control-D
+-merkki‰ l‰hetet‰ automaattisesti, jos sen l‰hett‰minen on asetettu
+.I -F
+-optiolla tai asetustiedostossa; k‰yt‰
+.I -F
+t‰m‰n option j‰lkeen mik‰li haluat molemmat.
+.TP
+.B -F
+Aiheuttaa ett‰ PostScript-tiedoston viimeiseksi merkiksi lis‰t‰‰n Control-D (ASCII-koodi 4).
+T‰m‰ on k‰yttˆkelpoista kun
+.I dvips
+tulostaa kirjoittimelle suoraan sen sijaan, ett‰ se k‰ytt‰isi
+tulostusjonoa, kuten on yleist‰ pieniss‰ j‰rjestelmiss‰.  HUOMIO! ƒLƒ
+KƒYTƒ TƒTƒ OPTIOTA!
+.TP
+.B -h tiedosto
+Lis‰t‰‰n parametrina annettu tiedosto ylim‰‰r‰iseksi otsikkotiedostoksi.
+T‰m‰ otikkotiedosto lis‰t‰‰n PostScriptin
+.IR userdict :iin
+(k‰ytt‰j‰n omiin ylim‰‰r‰isiin m‰‰rityksiin). (Jos nimi on kuitenkin
+`-', ei otsikkotiedostoja liitet‰ tulostukseen lainkaan.)
+.TP
+.B -i
+T‰m‰n option k‰ytt‰minen k‰skee
+.IR dvips :‰‰
+jakamaan dokumentin osiin ja asettamaan jokaisen osan erilliseen
+tiedostoon; uudet tiedostonimet luodaan korvaamalla annetun
+tulostiedoston loppuliite kolminumeroisella laskurilla. T‰m‰ tehd‰‰n
+yleens‰ muistin s‰‰st‰miseksi. T‰t‰ optiota k‰ytet‰‰n yleens‰
+.I -S
+-option yhteydess‰, joka asettaa osan sivujen maksimim‰‰r‰n.
+Esimerkiksi jotkin latojat eiv‰t voi tulostaa enemm‰n kuin noin
+kymmenen per‰tt‰ist‰ sivua ennen muistin loppumista; n‰iden optioiden
+avulla kirja voidaan automaattisesti jakaa kymmensivuisiin osiin,
+jokainen omaan tiedostoonsa.
+.TP
+.B -k
+Tulostetaan rajausmerkit. T‰m‰ optio kasvattaa paperikokoa (joka tulisi
+m‰‰ritt‰‰ joko erikoispaperikokona tai
+.I -T
+-optiolla) puolella tuumalla molempiin suuntiin.  Se siirt‰‰ jokaista
+sivua nelj‰nnestuumalla ja piirt‰‰ kulmiin ristim‰iset rajausmerkit.
+Se on k‰yttˆkelpoinen sellaisilla latojilla jotka voivat asettaa
+paperikoon automaattisesti.
+.TP
+.B -K
+Aiheuttaa kommenttien poistamisen PostScript-grafiikasta,
+fonttitiedostoista ja otsikoista. T‰m‰ on toisinaan tarpeellista
+tulostusjonoissa tai PostScriptin esik‰sittelyohjelmissa olevien
+ohjelmavirheiden ohittamiseksi. Erityisesti %%Page-kommentit saattavat
+aiheuttaa usein vaikeuksia. T‰m‰n lipun k‰ytt‰minen voi aiheuttaa ett‰
+jotkin sis‰llytetyt kuvat rikkoontuvat, sill‰ joidenkin
+ohjelmapakettien PostScript-otsikkomakrot lukevat syˆtevirtaa rivi
+rivilt‰, etsien tietty‰ kommenttia. T‰t‰ optiota ei oletuksena
+k‰ytet‰, koska PostScript-esikatseluohjelmat ja tulostusjonot ovat
+kehittyneet paremmiksi.
+.TP
+.B -l sivunumero
+M‰‰r‰‰. ett‰ viimeinen tulostettava sivu on ensimm‰inen, joka on
+numeroitu
+.I sivunumero.
+Oletuksena on dokumentin viimeinen sivu.  Jos
+.IR sivunumero n
+edess‰ on yht‰suuruusmerkki, k‰sitell‰ se (ja
+.I -p
+optiolle annettava parametri) laskurinumerona sen sijaan, ett‰ se
+k‰sitelt‰isiin dokumentin
+.I \ecount0
+-sivunumerolaskuriin vertailtavana lukuna.  K‰ytt‰m‰ll‰ esimerkiksi
+.I -l =9
+p‰‰ttyy tulostus dokumentin yhdeks‰nnell‰ sivulla, riippumatta
+siit‰ miten sivut on numeroitu.
+.TP
+.B -m
+Asettaa paperin k‰sinsyˆtˆn printterille.
+.TP
+.B -M
+K‰‰nt‰‰ pois automaattisen fonttien generoinnin. Jos joitain fontteja
+puuttuu, lis‰t‰‰n kyseisten fonttien luomiseksi tarvittavat komennot tiedostoon
+.I missfont.log
+oletushakemistossa; t‰m‰ tiedosto on sen j‰lkeen suoritettavissa
+puuttuvien fonttien luomiseksi, ja sen j‰lkeen tuhottavissa.
+.TP
+.B -n sivum‰‰r‰
+Tulostetaan korkeintaan
+.I sivum‰‰r‰
+sivua. Oletusarvo on 100000.
+.TP
+.B -N
+K‰‰nt‰‰ pois rakenteiset kommentit; t‰m‰ saattaa olla tarpeellista
+sellaisissa j‰rjestelmiss‰ tai kirjoittimissa jotka yritt‰v‰t tulkita
+PostScript-kommentteja oudoilla tavoilla.  Erityisesti vanhemmat
+TranScript:in versiot eiv‰t osaa k‰sitell‰ modernia sis‰llytetty‰
+(Encapsulated) PostScripti‰.
+.TP
+.B -o tiedosto
+Ohjaa tulostuksen tiedostoon
+.IR tiedosto .
+Jos tiedostonime‰ ei anneta, on oletusnimi
+.I tiedosto.ps
+, mik‰li .dvi-tiedosto oli
+.IR tiedosto.dvi .
+Jos t‰t‰ optiota ei anneta, k‰ytet‰‰n asetustiedostossa m‰‰ritelty‰
+oletusarvoa. Jos annetun tiedostonimen ensimm‰inen kirjain on
+huutomerkki, k‰ytet‰‰n loppuosaa parametrina
+.I popen
+-komennolle (putki), eli m‰‰ritt‰m‰ll‰
+.I !lpr
+ulostulotiedostoksi aiheuttaa tiedoston l‰hett‰misen automaattisesti tulostusjonoon.
+T‰m‰ optio est‰‰
+.IR PRINTER -ymp‰ristˆmuuttujan
+automaattisen lukemisen. Se est‰‰ myˆs automaattisen
+Control-D:n l‰hett‰misen, mik‰li se on sallittu
+.I -F
+-optiolla tai asetustiedostossa; mik‰li kuitenkin haluat sen, k‰yt‰
+.I -F
+-optiota t‰m‰n option j‰lkeen.
+.TP
+.B -O siirtym‰
+Siirt‰‰ tulostuksen origoa
+.IR siirtym‰ -parametrin
+verran, joka on pilkulla eroteltu x- ja y-suuntien m‰‰r‰, esimerkiksi
+.I .1in,-.3cm
+(k‰ytt‰en samaa merkint‰tapaa kuin
+.I erikoispaperikoon
+m‰‰rityksess‰). Sivun origoa siirret‰‰n annetun m‰‰r‰n verran
+oletuspaikasta, joka on yksi tuuma alas ja yksi oikealle paperin
+vasemmasta yl‰kulmasta.
+.TP
+.B -p sivunumero
+Ensimm‰isen tulostettavan sivun sivunumero. Oletus on dokumentin
+ensimm‰inen sivu. Jos sivunumeron eteen laitetaan yht‰suuruusmerkki,
+niin se (ja
+.I -l
+-optiolle annettu sivunumero) k‰sitell‰‰n laskurina sen sijaan, ett‰
+numeroa vertailtaisiin dokumentin omaan
+.I \ecount0
+-sivunumerolaskuriin.  K‰ytt‰m‰ll‰ esimerkiksi
+.I -p =3
+aiheuttaa tulostuksen alkamisen dokumentin kolmannelta sivulta,
+riippumatta siit‰ miten sivut on numeroitu.
+.TP
+.B -pp sivulista
+Pilkuilla eroteltu lista sivuja ja jaksoja (esimerkiksi
+1,5,10-20,42,43), jotka tulkitaan dokumentin
+.IR \ecount0 -sivunumeroina.
+Sivuja, joiden numeroita ei ole annettu, ei tulosteta. N‰it‰
+.B -pp
+-optioita voi antaa useita tai kaikki sivut ja sivujaksot voidaan m‰‰ritt‰‰ yhdell‰
+.B -pp
+-optiolla.
+.TP
+.B -P tulostinnimi
+Asettaa tulostuksen annetun nimiseen kirjoittimeen. T‰m‰ on toteutettu lukemalla
+.IR config.tulostinnimi ,
+joka voi asettaa tulostuskomennon (kuten
+.I !lpr -Ptulostinnimi)
+sek‰ fonttien polkuja tai muita kyseist‰ kirjoitinta koskevia
+.I config.ps
+oletusasetuksia.  Huomaa, ett‰
+.I config.ps
+luetaan ennen kuin
+.IR config.tulostinnimi .
+Lis‰ksi etsit‰‰n toista tiedostoa nimelt‰
+.I ~/.dvipsrc
+v‰littˆm‰sti
+.IR config.ps :n
+j‰lkeen. T‰m‰ tiedosto on tarkoitettu k‰ytt‰j‰kohtaisille oletusasetuksille.  Jos
+.I -P
+-komentoa ei anneta, tarkistetaan onko
+.IR PRINTER -ymp‰ristˆmuuttuja
+m‰‰ritelty.  Jos on, ja vastaava tulostinkohtainen
+asetustiedosto on olemassa, luetaan kyseinen asetustiedosto.
+.TP
+.B -q
+Toimitaan hiljaisesti.  Ei tulosteta tietoja muunnetuista sivuista,
+jne.; ei tulosteta muuta kuin virheet oletusvirheeseen.
+.TP
+.B -r
+Pinotaan sivut k‰‰nteisess‰ j‰rjestyksess‰. Tavallisesti tulostetaan sivu 1 ensimm‰isen‰.
+.TP
+.B -s
+Aiheuttaa koko tulosteen sulkemisen PostScriptin save/restore-pariin.
+T‰m‰ tekee tiedostosta ep‰standardin, eik‰ sit‰ siten suositeta, mutta
+se voi kuitenkin olla k‰yttˆkelpoinen, mik‰li tulostat kirjoittimelle
+suoraan, etk‰ v‰lit‰ tulosteen siirrett‰vyydest‰.
+.TP
+.B -S sivum‰‰r‰
+Asettaa sivujen maksimim‰‰r‰n kussakin `osassa'.  T‰t‰ optiota k‰ytet‰‰n yleens‰
+.I -i
+-option (kts. yll‰) yhteydess‰.
+.TP
+.B -t paperityyppi
+Asettaa paperityypin.
+.I paperityyppi
+tulisi olla m‰‰ritely jossain asetustiedostoista, sen koodin
+yhteydess‰, joka valitsee sen. (T‰ll‰ hetkell‰ tunnetut tyypit ovat:
+.I letter,
+.I legal,
+.I ledger,
+.I a4,
+.IR a3 ).
+Voit myˆs m‰‰ritt‰‰
+.I -t
+.IR landscape ,
+joka k‰‰nt‰‰ dokumenttia 90 astetta.  
+Voit k‰ytt‰‰
+.I -t
+-optiota kahdesti k‰‰nt‰‰ksesi dokumentin, jonka koko ei ole
+.IR letter :
+kerran paperikoolle ja toisen vaakatulostukselle. Kunkin
+.I .dvi
+-tiedostossa olevan sivun vasen yl‰kulma asetetaan yksi tuuma paperin
+sek‰ vasemmasta- ett‰ yl‰reunasta. T‰m‰n option k‰yttˆ riippuu
+suuresti asetustiedostosta. Huomaa, ett‰ paperikoon asettavien
+.I letter
+tai
+.I a4
+tai muiden PostScript-m‰‰ritysten tekeminen tekee dokumentista
+ep‰yhteensopivan ja voi aiheuttaa ongelmia joillain kirjoittimilla,
+joten sellaista ei mielell‰‰n saisi tehd‰.
+.TP
+.B -T koko
+Asettaa paperikoon annettuihin mittoihin. Option parametri on samankaltainen kuin
+.I -O,
+eli pilkulla erotettu mittapari (esimerkiksi 20.5cm,27.4cm). Asetus kumoaa
+dvi-tiedostossa m‰‰ritellyn paperikoon.
+.TP
+.B -U
+Poistaa PostScriptin n‰enn‰ismuistia s‰‰st‰v‰n optimoinnin, joka
+tallentaa kirjainten mittatietoja samaan merkkijonoon, jota k‰ytet‰‰n
+bittikartan kuvaamiseen. T‰m‰ on tarpeellista vain k‰ytett‰ess‰ Xerox
+4045 PostScript-tulkkia. Se johtuu ohjelmavirheest‰ kyseisess‰
+tulkissa, joka aiheuttaa `roskaa' jokaisen merkin alareunassa. Optiota
+ei suositell‰ mik‰li et k‰yt‰ kyseist‰ kirjoitinta.
+.TP
+.B -x suurennos
+Asettaa dokumentin suurennussuhteen arvoon
+.IR suurennos /1000.
+Asetus .dvi-tiedostossa m‰‰ritellyn suurennoksen. Arvon tulee olla
+v‰lill‰ 10 ja 100000.
+.TP
+.B -X resoluutio
+Asettaa vaakaresoluution pistein‰ tuumalle.
+.TP
+.B -Y resoluutio
+Asettaa pystyresoluution pistein‰ tuumalle.
+.TP
+.B -Z
+Aiheuttaa, ett‰ bittikarttafontit pakataan ennen kirjoittimelle
+siirt‰mist‰, v‰hent‰en siten fonttien siirtoon
+tarvittavan informaation m‰‰r‰‰.  Erityisen k‰yttˆkelpoista korkeilla
+resoluutioilla, tai jos k‰ytet‰‰n hyvin suuria fontteja. Hidastaa
+tulostusta jonkin verran, erityisesti vanhoilla 68000-pohjaisilla
+PostScript-kirjoittimilla.
+.SH DIAGNOSTIIKKA
+.LP
+.SH MERKINNƒT
+PostScript Adobe Systems Incorporated:in rekisterˆity tuotemerkki.
+.SH TEKIJƒ
+Tomas Rokicki <rokicki@cs.stanford.edu>; laajennettu k‰ytt‰m‰‰n
+virtuaalifontteja Don Knuth:in toimesta. Polunhaku- ja asetusmuutoksia
+karl@cs.umb.edu:n toimesta.
+.SH "KATSO MY÷S"
+mf(1) afm2tfm(1) tex(1) latex(1) lpr(1)
+.IR dvips.tex .

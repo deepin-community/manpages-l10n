@@ -1,27 +1,7 @@
 .\" Copyright 1993 Giorgio Ciucci <giorgio@crcc.it>
 .\" and Copyright 2015 Bill Pemberton <wfp5p@worldbroken.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" Modified Tue Oct 22 16:40:11 1996 by Eric S. Raymond <esr@thyrsus.com>
 .\" Modified Mon Jul 10 21:09:59 2000 by aeb
@@ -37,17 +17,20 @@
 .\"	Language and formatting clean-ups
 .\"	Added notes on /proc files
 .\"
-.TH MSGOP 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH MSGOP 2 2024-06-15 "Linux man-pages (unreleased)"
 .SH NAME
 msgrcv, msgsnd \- System V message queue operations
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/msg.h>
-.PP
-.BI "int msgsnd(int " msqid ", const void *" msgp ", size_t " msgsz \
-", int " msgflg );
-.PP
-.BI "ssize_t msgrcv(int " msqid ", void *" msgp ", size_t " msgsz \
+.P
+.BI "int msgsnd(int " msqid ", const void " msgp [. msgsz "], size_t " msgsz ,
+.BI "               int " msgflg );
+.P
+.BI "ssize_t msgrcv(int " msqid ", void " msgp [. msgsz "], size_t " msgsz \
 ", long " msgtyp ,
 .BI "               int " msgflg );
 .fi
@@ -60,12 +43,12 @@ system calls are used to send messages to,
 and receive messages from, a System\ V message queue.
 The calling process must have write permission on the message queue
 in order to send a message, and read permission to receive a message.
-.PP
+.P
 The
 .I msgp
 argument is a pointer to a caller-defined structure
 of the following general form:
-.PP
+.P
 .in +4n
 .EX
 struct msgbuf {
@@ -74,7 +57,7 @@ struct msgbuf {
 };
 .EE
 .in
-.PP
+.P
 The
 .I mtext
 field is an array (or other structure) whose size is specified by
@@ -99,7 +82,7 @@ system call appends a copy of the message pointed to by
 to the message queue whose identifier is specified
 by
 .IR msqid .
-.PP
+.P
 If sufficient space is available in the queue,
 .BR msgsnd ()
 succeeds immediately.
@@ -112,12 +95,12 @@ bytes, but this limit can be modified using
 .BR msgctl (2).
 A message queue is considered to be full if either of the following
 conditions is true:
-.IP \(bu 2
+.IP \[bu] 3
 Adding a new message to the queue would cause the total number of bytes
 in the queue to exceed the queue's maximum size (the
 .I msg_qbytes
 field).
-.IP \(bu
+.IP \[bu]
 Adding another message to the queue would cause the total number of messages
 in the queue to exceed the queue's maximum size (the
 .I msg_qbytes
@@ -126,7 +109,7 @@ This check is necessary to prevent an unlimited number of zero-length
 messages being placed on the queue.
 Although such messages contain no data,
 they nevertheless consume (locked) kernel memory.
-.PP
+.P
 If insufficient space is available in the queue, then the default
 behavior of
 .BR msgsnd ()
@@ -137,18 +120,18 @@ is specified in
 .IR msgflg ,
 then the call instead fails with the error
 .BR EAGAIN .
-.PP
+.P
 A blocked
 .BR msgsnd ()
 call may also fail if:
-.IP \(bu 2
+.IP \[bu] 3
 the queue is removed,
 in which case the system call fails with
 .I errno
 set to
 .BR EIDRM ;
 or
-.IP \(bu
+.IP \[bu]
 a signal is caught, in which case the system call fails
 with
 .I errno
@@ -160,16 +143,16 @@ is never automatically restarted after being interrupted by a
 signal handler, regardless of the setting of the
 .B SA_RESTART
 flag when establishing a signal handler.)
-.PP
+.P
 Upon successful completion the message queue data structure is updated
 as follows:
-.IP \(bu 2
+.IP \[bu] 3
 .I msg_lspid
 is set to the process ID of the calling process.
-.IP \(bu
+.IP \[bu]
 .I msg_qnum
 is incremented by 1.
-.IP \(bu
+.IP \[bu]
 .I msg_stime
 is set to the current time.
 .SS msgrcv()
@@ -180,7 +163,7 @@ system call removes a message from the queue specified by
 and places it in the buffer
 pointed to by
 .IR msgp .
-.PP
+.P
 The argument
 .I msgsz
 specifies the maximum size in bytes for the member
@@ -206,21 +189,21 @@ the system call fails returning \-1 with
 .I errno
 set to
 .BR E2BIG .
-.PP
+.P
 Unless
 .B MSG_COPY
 is specified in
-.IR msgflg
+.I msgflg
 (see below),
 the
 .I msgtyp
 argument specifies the type of message requested, as follows:
-.IP \(bu 2
+.IP \[bu] 3
 If
 .I msgtyp
 is 0,
 then the first message in the queue is read.
-.IP \(bu
+.IP \[bu]
 If
 .I msgtyp
 is greater than 0,
@@ -234,7 +217,7 @@ in which case
 the first message in the queue of type not equal to
 .I msgtyp
 will be read.
-.IP \(bu
+.IP \[bu]
 If
 .I msgtyp
 is less than 0,
@@ -242,7 +225,7 @@ then the first message in the queue with the lowest type less than or
 equal to the absolute value of
 .I msgtyp
 will be read.
-.PP
+.P
 The
 .I msgflg
 argument is a bit mask constructed by ORing together zero or more
@@ -270,14 +253,14 @@ the call fails immediately with the error
 Because they alter the meaning of
 .I msgtyp
 in orthogonal ways,
-.BR MSG_COPY
+.B MSG_COPY
 and
-.BR MSG_EXCEPT
+.B MSG_EXCEPT
 may not both be specified in
 .IR msgflg .
 .IP
 The
-.BR MSG_COPY
+.B MSG_COPY
 flag was added for the implementation of
 the kernel checkpoint-restore facility and
 is available only if the kernel was built with the
@@ -296,21 +279,21 @@ from
 To truncate the message text if longer than
 .I msgsz
 bytes.
-.PP
+.P
 If no message of the requested type is available and
 .B IPC_NOWAIT
 isn't specified in
 .IR msgflg ,
 the calling process is blocked until one of the following conditions occurs:
-.IP \(bu 2
+.IP \[bu] 3
 A message of the desired type is placed in the queue.
-.IP \(bu
+.IP \[bu]
 The message queue is removed from the system.
 In this case, the system call fails with
 .I errno
 set to
 .BR EIDRM .
-.IP \(bu
+.IP \[bu]
 The calling process catches a signal.
 In this case, the system call fails with
 .I errno
@@ -321,7 +304,7 @@ is never automatically restarted after being interrupted by a
 signal handler, regardless of the setting of the
 .B SA_RESTART
 flag when establishing a signal handler.)
-.PP
+.P
 Upon successful completion the message queue data structure is updated
 as follows:
 .IP
@@ -389,7 +372,7 @@ value (less than 0 or greater than the system value
 The system does not have enough memory to make a copy of the
 message pointed to by
 .IR msgp .
-.PP
+.P
 .BR msgrcv ()
 can fail with the following errors:
 .TP
@@ -437,7 +420,7 @@ but not
 .BR EINVAL " (since Linux 3.14)"
 .I msgflg
 specified both
-.BR MSG_COPY
+.B MSG_COPY
 and
 .BR MSG_EXCEPT .
 .TP
@@ -466,9 +449,9 @@ were specified in
 .IR msgflg ,
 and this kernel was configured without
 .BR CONFIG_CHECKPOINT_RESTORE .
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, SVr4.
-.PP
+.SH STANDARDS
+POSIX.1-2008.
+.P
 The
 .B MSG_EXCEPT
 and
@@ -478,14 +461,16 @@ their definitions can be obtained by defining the
 .B _GNU_SOURCE
 .\" MSG_COPY since glibc 2.18
 feature test macro.
-.SH NOTES
+.SH HISTORY
+POSIX.1-2001, SVr4.
+.P
 The
 .I msgp
 argument is declared as \fIstruct msgbuf\ *\fP in
 glibc 2.0 and 2.1.
 It is declared as \fIvoid\ *\fP
 in glibc 2.2 and later, as required by SUSv2 and SUSv3.
-.PP
+.SH NOTES
 The following limits on message queue resources affect the
 .BR msgsnd ()
 call:
@@ -510,7 +495,7 @@ using the
 .BR msgctl (2)
 .B IPC_SET
 operation.
-.PP
+.P
 The implementation has no intrinsic system-wide limits on the
 number of message headers
 .RB ( MSGTQL )
@@ -521,7 +506,7 @@ In Linux 3.13 and earlier,
 if
 .BR msgrcv ()
 was called with the
-.BR MSG_COPY
+.B MSG_COPY
 flag, but without
 .BR IPC_NOWAIT ,
 and the message queue contained less than
@@ -536,7 +521,7 @@ of whether that message was at the ordinal position
 This bug is fixed
 .\" commit 4f87dac386cc43d5525da7a939d4b4e7edbea22c
 in Linux 3.14.
-.PP
+.P
 Specifying both
 .B MSG_COPY
 and
@@ -557,138 +542,140 @@ The program below demonstrates the use of
 .BR msgsnd ()
 and
 .BR msgrcv ().
-.PP
+.P
 The example program is first run with the \fB\-s\fP option to send a
 message and then run again with the \fB\-r\fP option to receive a
 message.
-.PP
+.P
 The following shell session shows a sample run of the program:
-.PP
+.P
 .in +4n
 .EX
 .RB "$" " ./a.out \-s"
 sent: a message at Wed Mar  4 16:25:45 2015
-
+.P
 .RB "$" " ./a.out \-r"
 message received: a message at Wed Mar  4 16:25:45 2015
 .EE
 .in
 .SS Program source
 \&
+.\" SRC BEGIN (msgop.c)
 .EX
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <unistd.h>
-#include <errno.h>
-#include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
-
+#include <time.h>
+#include <unistd.h>
+\&
 struct msgbuf {
     long mtype;
     char mtext[80];
 };
-
+\&
 static void
 usage(char *prog_name, char *msg)
 {
     if (msg != NULL)
         fputs(msg, stderr);
-
-    fprintf(stderr, "Usage: %s [options]\en", prog_name);
-    fprintf(stderr, "Options are:\en");
-    fprintf(stderr, "\-s        send message using msgsnd()\en");
-    fprintf(stderr, "\-r        read message using msgrcv()\en");
-    fprintf(stderr, "\-t        message type (default is 1)\en");
-    fprintf(stderr, "\-k        message queue key (default is 1234)\en");
+\&
+    fprintf(stderr, "Usage: %s [options]\[rs]n", prog_name);
+    fprintf(stderr, "Options are:\[rs]n");
+    fprintf(stderr, "\-s        send message using msgsnd()\[rs]n");
+    fprintf(stderr, "\-r        read message using msgrcv()\[rs]n");
+    fprintf(stderr, "\-t        message type (default is 1)\[rs]n");
+    fprintf(stderr, "\-k        message queue key (default is 1234)\[rs]n");
     exit(EXIT_FAILURE);
 }
-
+\&
 static void
 send_msg(int qid, int msgtype)
 {
-    struct msgbuf msg;
-    time_t t;
-
+    time_t         t;
+    struct msgbuf  msg;
+\&
     msg.mtype = msgtype;
-
+\&
     time(&t);
     snprintf(msg.mtext, sizeof(msg.mtext), "a message at %s",
-            ctime(&t));
-
+             ctime(&t));
+\&
     if (msgsnd(qid, &msg, sizeof(msg.mtext),
-                IPC_NOWAIT) == \-1) {
+               IPC_NOWAIT) == \-1)
+    {
         perror("msgsnd error");
         exit(EXIT_FAILURE);
     }
-    printf("sent: %s\en", msg.mtext);
+    printf("sent: %s\[rs]n", msg.mtext);
 }
-
+\&
 static void
 get_msg(int qid, int msgtype)
 {
     struct msgbuf msg;
-
+\&
     if (msgrcv(qid, &msg, sizeof(msg.mtext), msgtype,
                MSG_NOERROR | IPC_NOWAIT) == \-1) {
         if (errno != ENOMSG) {
             perror("msgrcv");
             exit(EXIT_FAILURE);
         }
-        printf("No message available for msgrcv()\en");
-    } else
-        printf("message received: %s\en", msg.mtext);
+        printf("No message available for msgrcv()\[rs]n");
+    } else {
+        printf("message received: %s\[rs]n", msg.mtext);
+    }
 }
-
+\&
 int
 main(int argc, char *argv[])
 {
-    int qid, opt;
-    int mode = 0;               /* 1 = send, 2 = receive */
-    int msgtype = 1;
-    int msgkey = 1234;
-
+    int  qid, opt;
+    int  mode = 0;               /* 1 = send, 2 = receive */
+    int  msgtype = 1;
+    int  msgkey = 1234;
+\&
     while ((opt = getopt(argc, argv, "srt:k:")) != \-1) {
         switch (opt) {
-        case \(aqs\(aq:
+        case \[aq]s\[aq]:
             mode = 1;
             break;
-        case \(aqr\(aq:
+        case \[aq]r\[aq]:
             mode = 2;
             break;
-        case \(aqt\(aq:
+        case \[aq]t\[aq]:
             msgtype = atoi(optarg);
             if (msgtype <= 0)
-                usage(argv[0], "\-t option must be greater than 0\en");
+                usage(argv[0], "\-t option must be greater than 0\[rs]n");
             break;
-        case \(aqk\(aq:
+        case \[aq]k\[aq]:
             msgkey = atoi(optarg);
             break;
         default:
-            usage(argv[0], "Unrecognized option\en");
+            usage(argv[0], "Unrecognized option\[rs]n");
         }
     }
-
+\&
     if (mode == 0)
-        usage(argv[0], "must use either \-s or \-r option\en");
-
+        usage(argv[0], "must use either \-s or \-r option\[rs]n");
+\&
     qid = msgget(msgkey, IPC_CREAT | 0666);
-
+\&
     if (qid == \-1) {
         perror("msgget");
         exit(EXIT_FAILURE);
     }
-
+\&
     if (mode == 2)
         get_msg(qid, msgtype);
     else
         send_msg(qid, msgtype);
-
+\&
     exit(EXIT_SUCCESS);
 }
 .EE
+.\" SRC END
 .SH SEE ALSO
 .BR msgctl (2),
 .BR msgget (2),

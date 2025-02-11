@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-FSCK@\&.SERVICE" "8" "" "systemd 247" "systemd-fsck@.service"
+.TH "SYSTEMD\-FSCK@\&.SERVICE" "8" "" "systemd 257.1" "systemd-fsck@.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,40 +20,74 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-systemd-fsck@.service, systemd-fsck-root.service, systemd-fsck \- File system checker logic
+systemd-fsck@.service, systemd-fsck-root.service, systemd-fsck-usr.service, systemd-fsck \- File system checker logic
 .SH "SYNOPSIS"
 .PP
+.RS 4
 systemd\-fsck@\&.service
-.PP
+.RE
+.RS 4
 systemd\-fsck\-root\&.service
-.PP
-/lib/systemd/systemd\-fsck
+.RE
+.RS 4
+systemd\-fsck\-usr\&.service
+.RE
+.RS 4
+/usr/lib/systemd/systemd\-fsck
+.RE
 .SH "DESCRIPTION"
 .PP
-systemd\-fsck@\&.service
-and
-systemd\-fsck\-root\&.service
+systemd\-fsck@\&.service,
+systemd\-fsck\-root\&.service, and
+systemd\-fsck\-usr\&.service
 are services responsible for file system checks\&. They are instantiated for each device that is configured for file system checking\&.
 systemd\-fsck\-root\&.service
-is responsible for file system checks on the root file system, but only if the root filesystem was not checked in the initramfs\&.
+and
+systemd\-fsck\-usr\&.service
+are responsible for file system checks on the root and /usr file system, respectively, but only if the root filesystem was not checked in the initrd\&.
 systemd\-fsck@\&.service
-is used for all other file systems and for the root file system in the initramfs\&.
+is used for all other file systems and for the root file system in the initrd\&.
 .PP
 These services are started at boot if
 \fBpassno\fR
 in
 /etc/fstab
-for the file system is set to a value greater than zero\&. The file system check for root is performed before the other file systems\&. Other file systems may be checked in parallel, except when they are on the same rotating disk\&.
+for the file system is set to a value greater than zero, but only if it is also configured to be mounted at boot (i\&.e\&. without
+"noauto"
+option)\&. The file system check for root is performed before the other file systems\&. Other file systems may be checked in parallel, except when they are on the same rotating disk\&.
 .PP
 systemd\-fsck
-does not know any details about specific filesystems, and simply executes file system checkers specific to each filesystem type (/sbin/fsck\&.\fItype\fR)\&. These checkers will decide if the filesystem should actually be checked based on the time since last check, number of mounts, unclean unmount, etc\&.
+does not know any details about specific filesystems, and simply executes file system checkers specific to each filesystem type (fsck\&.\fItype\fR)\&. These checkers will decide if the filesystem should actually be checked based on the time since last check, number of mounts, unclean unmount, etc\&.
 .PP
-If a file system check fails for a service without
-\fBnofail\fR, emergency mode is activated, by isolating to
+systemd\-fsck\-root\&.service
+and
+systemd\-fsck\-usr\&.service
+will activate
+reboot\&.target
+if
+\fBfsck\fR(8)
+returns the "System should reboot" condition, or
+emergency\&.target
+if
+\fBfsck\fR
+returns the "Filesystem errors left uncorrected" condition\&.
+.PP
+systemd\-fsck@\&.service
+will fail if
+\fBfsck\fR
+returns with either "System should reboot" or "Filesystem errors left uncorrected" conditions\&. For filesystems listed in
+/etc/fstab
+without
+"nofail"
+or
+"noauto"
+options,
+"local\-fs\&.target"
+will then activate
 emergency\&.target\&.
 .SH "KERNEL COMMAND LINE"
 .PP
-systemd\-fsck
+\fBsystemd\-fsck\fR
 understands these kernel command line parameters:
 .PP
 \fIfsck\&.mode=\fR
@@ -67,6 +101,8 @@ One of
 unconditionally results in full file system checks\&.
 "skip"
 skips any file system checks\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 \fIfsck\&.repair=\fR
@@ -80,17 +116,9 @@ One of
 will answer yes to all questions by fsck and
 "no"
 will answer no to all questions\&.
+.sp
+Added in version 213\&.
 .RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBfsck\fR(8),
-\fBsystemd-quotacheck.service\fR(8),
-\fBfsck.btrfs\fR(8),
-\fBfsck.cramfs\fR(8),
-\fBfsck.ext4\fR(8),
-\fBfsck.fat\fR(8),
-\fBfsck.hfsplus\fR(8),
-\fBfsck.minix\fR(8),
-\fBfsck.ntfs\fR(8),
-\fBfsck.xfs\fR(8)
+\fBsystemd\fR(1), \fBfsck\fR(8), \fBsystemd-quotacheck.service\fR(8), \fBfsck.btrfs\fR(8), \fBfsck.cramfs\fR(8), \fBfsck.ext4\fR(8), \fBfsck.fat\fR(8), \fBfsck.hfsplus\fR(8), \fBfsck.minix\fR(8), \fBfsck.ntfs\fR(8), \fBfsck.xfs\fR(8)

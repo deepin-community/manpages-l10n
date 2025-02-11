@@ -1,0 +1,730 @@
+'\" t
+.TH "SYSTEMD\-VMSPAWN" "1" "" "systemd 257" "systemd-vmspawn"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-vmspawn \- Spawn an OS in a virtual machine
+.SH "SYNOPSIS"
+.HP \w'\fBsystemd\-vmspawn\fR\ 'u
+\fBsystemd\-vmspawn\fR [OPTIONS...] [ARGS...]
+.SH "DESCRIPTION"
+.PP
+\fBsystemd\-vmspawn\fR
+may be used to start a virtual machine from an OS image\&. In many ways it is similar to
+\fBsystemd-nspawn\fR(1), but launches a full virtual machine instead of using namespaces\&.
+.PP
+File descriptors for
+/dev/kvm
+and
+/dev/vhost\-vsock
+can be passed to
+\fBsystemd\-vmspawn\fR
+via systemd\*(Aqs native socket passing interface (see
+\fBsd_listen_fds\fR(3)
+for details about the precise protocol used and the order in which the file descriptors are passed), these file descriptors must be passed with the names
+"kvm"
+and
+"vhost\-vsock"
+respectively\&.
+.PP
+Note: on Ubuntu/Debian derivatives
+\fBsystemd\-vmspawn\fR
+requires the user to be in the
+"kvm"
+group to use the VSOCK options\&.
+.SH "OPTIONS"
+.PP
+The excess arguments are passed as extra kernel command line arguments using SMBIOS\&.
+.PP
+The following options are understood:
+.PP
+\fB\-q\fR, \fB\-\-quiet\fR
+.RS 4
+Turns off any status output by the tool itself\&. When this switch is used, the only output from vmspawn will be the console output of the Virtual Machine OS itself\&.
+.sp
+Added in version 256\&.
+.RE
+.SS "Image Options"
+.PP
+\fB\-D\fR, \fB\-\-directory=\fR
+.RS 4
+Directory to use as file system root for the virtual machine\&.
+.sp
+One of either
+\fB\-\-directory=\fR
+or
+\fB\-\-image=\fR
+must be specified\&. If neither are specified
+\fB\-\-directory=\&.\fR
+is assumed\&.
+.sp
+Note: If mounting a non\-root owned directory you may require
+\fB\-\-private\-users=\fR
+to map into the user\*(Aqs subuid namespace\&. An example of how to use
+\fB/etc/subuid\fR
+for this is given later\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fB\-i\fR, \fB\-\-image=\fR
+.RS 4
+Root file system disk image (or device node) for the virtual machine\&.
+.sp
+Added in version 255\&.
+.RE
+.SS "Host Configuration"
+.PP
+\fB\-\-cpus=\fR\fB\fICPUS\fR\fR
+.RS 4
+The number of CPUs to start the virtual machine with\&. Defaults to 1\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-ram=\fR\fB\fIBYTES\fR\fR
+.RS 4
+The amount of memory to start the virtual machine with\&. Defaults to 2G\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-kvm=\fR\fB\fIBOOL\fR\fR
+.RS 4
+If
+\fB\-\-kvm=\fR
+is not specified KVM support will be detected automatically\&. If true, KVM is always used, and if false, KVM is never used\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-vsock=\fR\fB\fIBOOL\fR\fR
+.RS 4
+If
+\fB\-\-vsock=\fR
+is not specified VSOCK networking support will be detected automatically\&. If true, VSOCK networking is always used, and if false, VSOCK networking is never used\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-vsock\-cid=\fR\fB\fICID\fR\fR
+.RS 4
+Sets the specific CID to use for the guest\&. Valid CIDs are in the range
+\fB3\fR
+to
+\fB4294967294\fR
+(\fB0xFFFF_FFFE\fR)\&. CIDs outside of this range are reserved\&. By default vmspawn will attempt to derive a CID for the guest derived from the machine name, falling back to a random CID if this CID is taken\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-tpm=\fR\fB\fIBOOL\fR\fR
+.RS 4
+If
+\fB\-\-tpm=\fR
+is not specified vmspawn will detect the presence of
+\fBswtpm\fR(8)
+and use it if available\&. If yes is specified
+\fBswtpm\fR(8)
+is always used, and if no is set
+\fBswtpm\fR(8)
+is never used\&.
+.sp
+Note: the virtual TPM used may change in future\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fB\-\-linux=\fR\fB\fIPATH\fR\fR
+.RS 4
+Set the linux kernel image to use for direct kernel boot\&. If a directory type image is used and
+\fB\-\-linux=\fR
+was omitted, vmspawn will search for boot loader entries according to the
+\m[blue]\fBBoot Loader Specification\fR\m[]\&\s-2\u[1]\d\s+2
+assuming XBOOTLDR to be located at /boot and ESP to be /efi respectively\&. If no kernel was installed into the image then the image will fail to boot\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fB\-\-initrd=\fR\fB\fIPATH\fR\fR
+.RS 4
+Set the initrd to use for direct kernel boot\&. If the
+\fB\-\-linux=\fR
+supplied is a
+\m[blue]\fBBoot Loader Specification\fR\m[]\&\s-2\u[1]\d\s+2
+Type #2 entry, then this argument is not required\&. If no initrd was installed into the image then the image will fail to boot\&.
+.sp
+\fB\-\-initrd=\fR
+can be specified multiple times and vmspawn will merge them together\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fB\-n\fR, \fB\-\-network\-tap\fR
+.RS 4
+Create a TAP device to network with the virtual machine\&.
+.sp
+Note: root privileges are required to use TAP networking\&. Additionally,
+\fBsystemd-networkd\fR(8)
+must be running and correctly set up on the host to provision the host interface\&. The relevant
+"\&.network"
+file can be found at
+/usr/lib/systemd/network/80\-vm\-vt\&.network\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-network\-user\-mode\fR
+.RS 4
+Use user mode networking\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-firmware=\fR\fB\fIPATH\fR\fR
+.RS 4
+Takes an absolute path, or a relative path beginning with
+\&./\&. Specifies a JSON firmware definition file, which allows selecting the firmware to boot in the VM\&. If not specified a suitable firmware is automatically discovered\&. If the special string
+"list"
+is specified lists all discovered firmwares\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fB\-\-discard\-disk=\fR\fB\fIBOOL\fR\fR
+.RS 4
+Controls whether qemu processes discard requests from the VM\&. This prevents long running VMs from using more disk space than required\&. This is enabled by default\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fB\-\-secure\-boot=\fR\fB\fIBOOL\fR\fR
+.RS 4
+Configure whether to search for firmware which supports Secure Boot\&.
+.sp
+If the option is not specified the first firmware which is detected will be used\&. If the option is set to yes then the first firmware with Secure Boot support will be selected\&. If no is specified then the first firmware without Secure Boot will be selected\&.
+.sp
+Added in version 255\&.
+.RE
+.SS "System Identity Options"
+.PP
+\fB\-M\fR, \fB\-\-machine=\fR
+.RS 4
+Sets the machine name for this virtual machine\&. This name may be used to identify this virtual machine during its runtime (for example in tools like
+\fBmachinectl\fR(1)
+and similar)\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-uuid=\fR
+.RS 4
+Set the specified UUID for the virtual machine\&. The init system will initialize
+/etc/machine\-id
+from this if this file is not set yet\&. Note that this option takes effect only if
+/etc/machine\-id
+in the virtual machine is unpopulated\&.
+.sp
+Added in version 256\&.
+.RE
+.SS "Property Options"
+.PP
+\fB\-\-register=\fR
+.RS 4
+Controls whether the virtual machine is registered with
+\fBsystemd-machined\fR(8)\&. Takes a boolean argument, which defaults to
+"yes"
+when running as root, and
+"no"
+when running as a regular user\&. This ensures that the virtual machine is accessible via
+\fBmachinectl\fR(1)\&.
+.sp
+Note: root privileges are required to use this option as registering with
+\fBsystemd-machined\fR(8)
+requires privileged D\-Bus method calls\&.
+.sp
+Added in version 256\&.
+.RE
+.SS "User Namespacing Options"
+.PP
+\fB\-\-private\-users=\fR\fB\fIUID_SHIFT[:UID_RANGE]\fR\fR
+.RS 4
+Controls user namespacing under
+\fB\-\-directory=\fR\&. If enabled,
+\fBvirtiofsd\fR(1)
+is instructed to map user and group ids (UIDs and GIDs)\&. This involves mapping the private UIDs/GIDs used in the virtual machine (starting with the virtual machine\*(Aqs root user 0 and up) to a range of UIDs/GIDs on the host that are not used for other purposes (usually in the range beyond the host\*(Aqs UID/GID 65536)\&.
+.sp
+If one or two colon\-separated numbers are specified, user namespacing is turned on\&.
+\fIUID_SHIFT\fR
+specifies the first host UID/GID to map,
+\fIUID_RANGE\fR
+is optional and specifies number of host UIDs/GIDs to assign to the virtual machine\&. If
+\fIUID_RANGE\fR
+is omitted, 65536 UIDs/GIDs are assigned\&.
+.sp
+When user namespaces are used, the GID range assigned to each virtual machine is always chosen identical to the UID range\&.
+.sp
+Added in version 256\&.
+.RE
+.SS "Mount Options"
+.PP
+\fB\-\-bind=\fR\fB\fIPATH\fR\fR, \fB\-\-bind\-ro=\fR\fB\fIPATH\fR\fR
+.RS 4
+Mount a directory from the host into the virtual machine\&. Takes one of: a path argument\ \&\(em in which case the specified path will be mounted from the host to the same path in the virtual machine, or a colon\-separated pair of paths\ \&\(em in which case the first specified path is the source in the host, and the second path is the destination in the virtual machine\&. If the source path is not absolute, it is resolved relative to the current working directory\&. The
+\fB\-\-bind\-ro=\fR
+option creates read\-only bind mounts\&. Backslash escapes are interpreted, so
+"\e:"
+may be used to embed colons in either path\&. This option may be specified multiple times for creating multiple independent bind mount points\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fB\-\-extra\-drive=\fR\fB\fIPATH\fR\fR
+.RS 4
+Takes a disk image or block device on the host and supplies it to the virtual machine as another drive\&.
+.sp
+Added in version 256\&.
+.RE
+.SS "Integration Options"
+.PP
+\fB\-\-forward\-journal=\fR\fB\fIFILE|DIR\fR\fR
+.RS 4
+Forward the virtual machine\*(Aqs journal to the host\&.
+\fBsystemd-journal-remote\fR(8)
+is currently used to receive the guest VM\*(Aqs forwarded journal entries\&. This option determines where this journal is saved on the host and has the same semantics as
+\fB\-o\fR/\fB\-\-output\fR
+described in
+\fBsystemd-journal-remote\fR(8)\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fB\-\-pass\-ssh\-key=\fR\fB\fIBOOL\fR\fR
+.RS 4
+By default an SSH key is generated to allow
+\fBsystemd\-vmspawn\fR
+to open a D\-Bus connection to the VM\*(Aqs systemd bus\&. Setting this to "no" will disable SSH key generation\&.
+.sp
+The generated keys are ephemeral\&. That is they are valid only for the current invocation of
+\fBsystemd\-vmspawn\fR, and are typically not persisted\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fB\-\-ssh\-key\-type=\fR\fB\fITYPE\fR\fR
+.RS 4
+Configures the type of SSH key to generate, see
+\fBssh-keygen\fR(1)
+for more information\&.
+.sp
+By default
+"ed25519"
+keys are generated, however
+"rsa"
+keys may also be useful if the VM has a particularly old version of
+\fBsshd\fR(8)\&.
+.sp
+Added in version 256\&.
+.RE
+.SS "Input/Output Options"
+.PP
+\fB\-\-console=\fR\fB\fIMODE\fR\fR
+.RS 4
+Configures how to set up the console of the VM\&. Takes one of
+"interactive",
+"read\-only",
+"native",
+"gui"\&. Defaults to
+"interactive"\&.
+"interactive"
+provides an interactive terminal interface to the VM\&.
+"read\-only"
+is similar, but is strictly read\-only, i\&.e\&. does not accept any input from the user\&.
+"native"
+also provides a TTY\-based interface, but uses qemu native implementation (which means the qemu monitor is available)\&.
+"gui"
+shows the qemu graphical UI\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fB\-\-background=\fR\fB\fICOLOR\fR\fR
+.RS 4
+Change the terminal background color to the specified ANSI color as long as the VM runs\&. The color specified should be an ANSI X3\&.64 SGR background color, i\&.e\&. strings such as
+"40",
+"41", \&...,
+"47",
+"48;2;\&...",
+"48;5;\&..."\&. See
+\m[blue]\fBANSI Escape Code (Wikipedia)\fR\m[]\&\s-2\u[2]\d\s+2
+for details\&. Assign an empty string to disable any coloring\&. This only has an effect in
+\fB\-\-console=interactive\fR
+and
+\fB\-\-console=read\-only\fR
+modes\&.
+.sp
+Added in version 256\&.
+.RE
+.SS "Credentials"
+.PP
+\fB\-\-load\-credential=\fR\fB\fIID\fR\fR\fB:\fR\fB\fIPATH\fR\fR, \fB\-\-set\-credential=\fR\fB\fIID\fR\fR\fB:\fR\fB\fIVALUE\fR\fR
+.RS 4
+Pass a credential to the virtual machine\&. These two options correspond to the
+\fILoadCredential=\fR
+and
+\fISetCredential=\fR
+settings in unit files\&. See
+\fBsystemd.exec\fR(5)
+for details about these concepts, as well as the syntax of the option\*(Aqs arguments\&.
+.sp
+In order to embed binary data into the credential data for
+\fB\-\-set\-credential=\fR, use C\-style escaping (i\&.e\&.
+"\en"
+to embed a newline, or
+"\ex00"
+to embed a
+\fBNUL\fR
+byte)\&. Note that the invoking shell might already apply unescaping once, hence this might require double escaping!
+.sp
+Added in version 255\&.
+.RE
+.SS "Other"
+.PP
+\fB\-\-no\-pager\fR
+.RS 4
+Do not pipe output into a pager\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SH "ENVIRONMENT"
+.PP
+\fI$SYSTEMD_LOG_LEVEL\fR
+.RS 4
+The maximum log level of emitted messages (messages with a higher log level, i\&.e\&. less important ones, will be suppressed)\&. Takes a comma\-separated list of values\&. A value may be either one of (in order of decreasing importance)
+\fBemerg\fR,
+\fBalert\fR,
+\fBcrit\fR,
+\fBerr\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR, or an integer in the range 0\&...7\&. See
+\fBsyslog\fR(3)
+for more information\&. Each value may optionally be prefixed with one of
+\fBconsole\fR,
+\fBsyslog\fR,
+\fBkmsg\fR
+or
+\fBjournal\fR
+followed by a colon to set the maximum log level for that specific log target (e\&.g\&.
+\fBSYSTEMD_LOG_LEVEL=debug,console:info\fR
+specifies to log at debug level except when logging to the console which should be at info level)\&. Note that the global maximum log level takes priority over any per target maximum log levels\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_COLOR\fR
+.RS 4
+A boolean\&. If true, messages written to the tty will be colored according to priority\&.
+.sp
+This setting is only useful when messages are written directly to the terminal, because
+\fBjournalctl\fR(1)
+and other tools that display logs will color messages based on the log level on their own\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TIME\fR
+.RS 4
+A boolean\&. If true, console log messages will be prefixed with a timestamp\&.
+.sp
+This setting is only useful when messages are written directly to the terminal or a file, because
+\fBjournalctl\fR(1)
+and other tools that display logs will attach timestamps based on the entry metadata on their own\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_LOCATION\fR
+.RS 4
+A boolean\&. If true, messages will be prefixed with a filename and line number in the source code where the message originates\&.
+.sp
+Note that the log location is often attached as metadata to journal entries anyway\&. Including it directly in the message text can nevertheless be convenient when debugging programs\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TID\fR
+.RS 4
+A boolean\&. If true, messages will be prefixed with the current numerical thread ID (TID)\&.
+.sp
+Note that the this information is attached as metadata to journal entries anyway\&. Including it directly in the message text can nevertheless be convenient when debugging programs\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TARGET\fR
+.RS 4
+The destination for log messages\&. One of
+\fBconsole\fR
+(log to the attached tty),
+\fBconsole\-prefixed\fR
+(log to the attached tty but with prefixes encoding the log level and "facility", see
+\fBsyslog\fR(3),
+\fBkmsg\fR
+(log to the kernel circular log buffer),
+\fBjournal\fR
+(log to the journal),
+\fBjournal\-or\-kmsg\fR
+(log to the journal if available, and to kmsg otherwise),
+\fBauto\fR
+(determine the appropriate log target automatically, the default),
+\fBnull\fR
+(disable log output)\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_RATELIMIT_KMSG\fR
+.RS 4
+Whether to ratelimit kmsg or not\&. Takes a boolean\&. Defaults to
+"true"\&. If disabled, systemd will not ratelimit messages written to kmsg\&.
+.RE
+.PP
+\fI$SYSTEMD_PAGER\fR
+.RS 4
+Pager to use when
+\fB\-\-no\-pager\fR
+is not given; overrides
+\fI$PAGER\fR\&. If neither
+\fI$SYSTEMD_PAGER\fR
+nor
+\fI$PAGER\fR
+are set, a set of well\-known pager implementations are tried in turn, including
+\fBless\fR(1)
+and
+\fBmore\fR(1), until one is found\&. If no pager implementation is discovered no pager is invoked\&. Setting this environment variable to an empty string or the value
+"cat"
+is equivalent to passing
+\fB\-\-no\-pager\fR\&.
+.sp
+Note: if
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set,
+\fI$SYSTEMD_PAGER\fR
+(as well as
+\fI$PAGER\fR) will be silently ignored\&.
+.RE
+.PP
+\fI$SYSTEMD_LESS\fR
+.RS 4
+Override the options passed to
+\fBless\fR
+(by default
+"FRSXMK")\&.
+.sp
+Users might want to change two options in particular:
+.PP
+\fBK\fR
+.RS 4
+This option instructs the pager to exit immediately when
+Ctrl+C
+is pressed\&. To allow
+\fBless\fR
+to handle
+Ctrl+C
+itself to switch back to the pager command prompt, unset this option\&.
+.sp
+If the value of
+\fI$SYSTEMD_LESS\fR
+does not include
+"K", and the pager that is invoked is
+\fBless\fR,
+Ctrl+C
+will be ignored by the executable, and needs to be handled by the pager\&.
+.RE
+.PP
+\fBX\fR
+.RS 4
+This option instructs the pager to not send termcap initialization and deinitialization strings to the terminal\&. It is set by default to allow command output to remain visible in the terminal even after the pager exits\&. Nevertheless, this prevents some pager functionality from working, in particular paged output cannot be scrolled with the mouse\&.
+.RE
+.sp
+Note that setting the regular
+\fI$LESS\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
+.sp
+See
+\fBless\fR(1)
+for more discussion\&.
+.RE
+.PP
+\fI$SYSTEMD_LESSCHARSET\fR
+.RS 4
+Override the charset passed to
+\fBless\fR
+(by default
+"utf\-8", if the invoking terminal is determined to be UTF\-8 compatible)\&.
+.sp
+Note that setting the regular
+\fI$LESSCHARSET\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
+.RE
+.PP
+\fI$SYSTEMD_PAGERSECURE\fR
+.RS 4
+Takes a boolean argument\&. When true, the "secure" mode of the pager is enabled; if false, disabled\&. If
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set at all, secure mode is enabled if the effective UID is not the same as the owner of the login session, see
+\fBgeteuid\fR(2)
+and
+\fBsd_pid_get_owner_uid\fR(3)\&. In secure mode,
+\fBLESSSECURE=1\fR
+will be set when invoking the pager, and the pager shall disable commands that open or create new files or start new subprocesses\&. When
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set at all, pagers which are not known to implement secure mode will not be used\&. (Currently only
+\fBless\fR(1)
+implements secure mode\&.)
+.sp
+Note: when commands are invoked with elevated privileges, for example under
+\fBsudo\fR(8)
+or
+\fBpkexec\fR(1), care must be taken to ensure that unintended interactive features are not enabled\&. "Secure" mode for the pager may be enabled automatically as describe above\&. Setting
+\fISYSTEMD_PAGERSECURE=0\fR
+or not removing it from the inherited environment allows the user to invoke arbitrary commands\&. Note that if the
+\fI$SYSTEMD_PAGER\fR
+or
+\fI$PAGER\fR
+variables are to be honoured,
+\fI$SYSTEMD_PAGERSECURE\fR
+must be set too\&. It might be reasonable to completely disable the pager using
+\fB\-\-no\-pager\fR
+instead\&.
+.RE
+.PP
+\fI$SYSTEMD_COLORS\fR
+.RS 4
+Takes a boolean argument\&. When true,
+\fBsystemd\fR
+and related utilities will use colors in their output, otherwise the output will be monochrome\&. Additionally, the variable can take one of the following special values:
+"16",
+"256"
+to restrict the use of colors to the base 16 or 256 ANSI colors, respectively\&. This can be specified to override the automatic decision based on
+\fI$TERM\fR
+and what the console is connected to\&.
+.RE
+.PP
+\fI$SYSTEMD_URLIFY\fR
+.RS 4
+The value must be a boolean\&. Controls whether clickable links should be generated in the output for terminal emulators supporting this\&. This can be specified to override the decision that
+\fBsystemd\fR
+makes based on
+\fI$TERM\fR
+and other conditions\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Run an Arch Linux VM image generated by mkosi\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ mkosi \-d arch \-p systemd \-p linux \-\-autologin \-o image\&.raw \-f build
+$ systemd\-vmspawn \-\-image=image\&.raw
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&2.\ \&Import and run a Fedora 41 Cloud image using machinectl\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ curl \-L \e
+       \-O https://download\&.fedoraproject\&.org/pub/fedora/linux/releases/41/Cloud/x86_64/images/Fedora\-Cloud\-Base\-41\-1\&.4\&.x86_64\&.raw\&.xz \e
+       \-O https://download\&.fedoraproject\&.org/pub/fedora/linux/releases/41/Cloud/x86_64/images/Fedora\-Cloud\-41\-1\&.4\-x86_64\-CHECKSUM \e
+       \-O https://fedoraproject\&.org/fedora\&.gpg
+$ gpgv \-\-keyring \&./fedora\&.gpg Fedora\-Cloud\-41\-1\&.4\-x86_64\-CHECKSUM
+$ sha256sum \-c Fedora\-Cloud\-41\-1\&.4\-x86_64\-CHECKSUM
+# machinectl import\-raw Fedora\-Cloud\-Base\-41\-1\&.4\&.x86_64\&.raw\&.xz fedora\-41\-cloud
+# systemd\-vmspawn \-M fedora\-41\-cloud
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&3.\ \&Build and run systemd\*(Aqs system image and forward the VM\*(Aqs journal to a local file\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ mkosi build
+$ systemd\-vmspawn \e
+    \-D mkosi\&.output/system \e
+    \-\-private\-users $(grep $(whoami) /etc/subuid | cut \-d: \-f2) \e
+    \-\-linux mkosi\&.output/system\&.efi \e
+    \-\-forward\-journal=vm\&.journal \e
+    enforcing=0
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Note: this example also uses a kernel command line argument to ensure SELinux isn\*(Aqt started in enforcing mode\&.
+.PP
+\fBExample\ \&4.\ \&SSH into a running VM using systemd\-ssh\-proxy\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ mkosi build
+$ my_vsock_cid=3735928559
+$ systemd\-vmspawn \e
+    \-D mkosi\&.output/system \e
+    \-\-private\-users $(grep $(whoami) /etc/subuid | cut \-d: \-f2) \e
+    \-\-linux mkosi\&.output/system\&.efi \e
+    \-\-vsock\-cid $my_vsock_cid \e
+    enforcing=0
+$ ssh root@vsock/$my_vsock_cid \-i /run/user/$UID/systemd/vmspawn/machine\-*\-system\-ed25519
+.fi
+.if n \{\
+.RE
+.\}
+.SH "EXIT STATUS"
+.PP
+If an error occurred the value errno is propagated to the return code\&. If EXIT_STATUS is supplied by the running image that is returned\&. Otherwise EXIT_SUCCESS is returned\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1), \fBmkosi\fR(1), \fBmachinectl\fR(1), \fBimportctl\fR(1), \m[blue]\fBBoot Loader Specification\fR\m[]\&\s-2\u[1]\d\s+2
+.SH "NOTES"
+.IP " 1." 4
+Boot Loader Specification
+.RS 4
+\%https://uapi-group.org/specifications/specs/boot_loader_specification
+.RE
+.IP " 2." 4
+ANSI Escape Code (Wikipedia)
+.RS 4
+\%https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters
+.RE

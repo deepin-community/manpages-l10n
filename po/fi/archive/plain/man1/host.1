@@ -1,0 +1,147 @@
+.\" ++Copyright++ 1993
+.\" -
+.\" Copyright (c) 1993
+.\"    The Regents of the University of California.  All rights reserved.
+.\" 
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\" 	This product includes software developed by the University of
+.\" 	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\" 
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\" -
+.\" Portions Copyright (c) 1993 by Digital Equipment Corporation.
+.\" 
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies, and that
+.\" the name of Digital Equipment Corporation not be used in advertising or
+.\" publicity pertaining to distribution of the document or software without
+.\" specific, written prior permission.
+.\" 
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND DIGITAL EQUIPMENT CORP. DISCLAIMS ALL
+.\" WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES
+.\" OF MERCHANTABILITY AND FITNESS.   IN NO EVENT SHALL DIGITAL EQUIPMENT
+.\" CORPORATION BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+.\" DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+.\" PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+.\" ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+.\" SOFTWARE.
+.\" -
+.\" --Copyright--
+.\" $Id: host.1,v 8.1 1994/12/15 06:24:10 vixie Exp $
+.\" Translated into Finnish by RenÈ Gauffin (rene.gauffin@dlc.fi)
+.\"
+.TH HOST 7 "" "Kıyttıjın sovellusohjelmat" ""
+.SH NIMI
+host \- etsii konenimen k‰ytt‰en verkkoalueen palvelinta
+.SH "YLEISKATSAUS" 
+host [-l] [-v] [-w] [-r] [-d] [-t querytype] [-a] host [ server ] 
+.SH KUVAUS 
+.I Host
+Hakee tietoja Internetin koneista (palvelimista) Se saa tietonsa toisiinsa
+liitettyjen, eri puolilla maata sijaitsevien palvelinten verkosta.
+Oletustoimintona ohjelma ainoastaan muuntaa konenimet Internet-osoitteiksi. 
+K‰ytt‰en valitsimia -t tai -a voidaan k‰skyn avulla kuitenkin hakea
+verkkoalueen palvelimelta kaikki haettua konetta koskevat tiedot. .PP
+Parametrien arvoina voidaan k‰ytt‰‰ joko koneen nime‰ tai sen numeroa 
+Ohjelma yritt‰‰ ensin tulkita tiedon koneen numeroksi, jos t‰m‰ ei onnistu,
+k‰sitell‰‰n tietoa koneen nimen‰. Koneen numero muodostuu nelj‰st‰ pisteill‰
+eroitetuista luvuista, esim.  128.6.4.194 Koneen nimi muodostuu pistein
+eroitelluista kirjainryhmist‰, esim. topaz.rutgers.edu.  Jos annettu nimi ei
+p‰‰ty pisteeseen, paikallisen alueen nimi liitet‰‰n annetun nimen jatkoksi.
+T‰ten  Rutgers k‰ytt‰j‰ voi kysy‰ "host topaz", jolloin toteutettu haku on
+"topaz.rutgers.edu". Jos t‰m‰ haku ei onnistu, kokeillaan hakua
+muuttamattomana (esimerkiss‰  "topaz"). Samaa k‰yt‰ntˆ‰ noudatetaan postiin ja
+muihin verkon palveluihin Parametrin loppuun liitett‰v‰ tieto haetaan
+k‰skyll‰  "hostname", jonka vastauksesta k‰ytet‰‰n kaikki alkaen ensimm‰isest‰
+pisteest‰. (Katso alempaa kuvausta miten muokata haetttava konenimi)  .PP
+Ensimm‰inen parametri on haettavan koneen nimi.  Jos parametri on luku,
+tehd‰‰n "k‰‰nteinen haku" eli aluepalvelin k‰ytt‰‰ erillisi‰ tietokantoja
+joiden avulla numerot muutetaan nimiksi .PP Toinen parametri on
+valintainen. Sen avulla voidaan m‰‰ritelll‰ palvelin, jolta kysyt‰‰n. Jos
+parametri‰ ei anneta, k‰ytet‰‰n oletusarvoa (tavallisesti paikallinen kone)
+.PP Jos nimi on annettu, on kolme eri tulostusvaihtoehtoa Alla esimerkki
+kustakin: .br    % host sun4 .br    sun4.rutgers.edu is a nickname for
+ATHOS.RUTGERS.EDU .br    ATHOS.RUTGERS.EDU has address 128.6.5.46 .br   
+ATHOS.RUTGERS.EDU has address 128.6.4.4 .br    ATHOS.RUTGERS.EDU mail is
+handled by ARAMIS.RUTGERS.EDU .br  K‰ytt‰j‰ om kirjoitanut k‰skyn "host
+sun4" Ensimm‰inen rivi kertoo, ett‰  "sun4.rutgers.edu" on lempinimi.
+koneen virallinen nimi on "ATHOS.RUTGERS.EDU'. Seuraavat kaksi rivi‰ ketovat osoitteen. Jos systeemil‰ on useampia varkkoliittymi‰, jokaisella on oma osoitteensa. Viimeiselt‰ rivilt‰ ilmenee, ettei ATHOS.RUTGERS.EDU vastaanota omaa postiaan, vaan sen hoitaa  ARAMIS.RUTGERS.EDU. N‰it‰ rivej‰ voi olla useita, koska joillakin systeemeill‰ on enemm‰n kuin yksi postipalveluj‰rjestelm‰.  Teknisesti on m‰‰ritelty, ett‰ jokaisen systeemin joka pystyyy vastaanottamaan postia, tulisi sis‰llytt‰‰ t‰llainen tieto j‰rjetselm‰‰ns‰.  Jos systeemi vastaanottaa oman postinsa, pit‰isi j‰rjestelm‰st‰ lˆyty‰ asiaaa koskeva tieto esim."XXX mail is handled by XXX".  T‰m‰n asian kuitenkin monet oman postinsa hoitavat systeemit j‰tt‰v‰t ilmoittamatta. Jos systeemiss‰ on tietorivi "mail is handled by" mutta rivill‰ ei ole osoitetta, t‰m‰ merkitsee, ett‰ systeemi ei ole todellinen Internetin osa mutta verkossa oleva toimen systeemi voi v‰litt‰‰ sille postia. Usenetin, Bitnetin ja monen muun verkon systeemeiss‰ on t‰llaiset tietorivit
+.PP
+Koneen nime‰ edelt‰vi‰ valitsimia on useita. Useimmat n‰ist‰ ovat mielekk‰it‰ vain sille henkilˆstˆlle, joka yll‰pit‰‰ alueellista tietokantaa.
+.PP
+Valitsin -w panee koneen odottamaan vastausta ikuisesti. Normaalisti odotus katkaistaan noin minuutin kuluttua
+.PP
+Valitsin -v muuttaa tulosteen "verbose"-muotoon.  T‰m‰ on viralinen aluepalvelimen master-tiedoston muoto, joka on dokumentoitu  "named"- k‰sitteen man-sivulla. Ilman t‰t‰ valitsintakin tuloste on suunilleen
+t‰m‰n muodon mukainen, mutta sit‰ on yritetty tehd‰ hieman luettavammaksi tavallisille k‰ytt‰jille. Ilman valitsinta  -v,
+"a", "mx", jad "cname" tietueet tulostetaan muodossas "has address", "mail is handled by", ja
+"is a nickname for", eik‰ TTL- ja luokka- kentti‰ tulosteta.
+.PP
+Valitsin -r poistaa udelleenhaun (recursion) hausta.
+T‰m‰ merkitsee, ett‰ nimipalvelin palauttaa vain oman tietokantansa tiedot eik‰ kysele muilta palvelimilta lis‰tietoja
+.PP
+Valitsin  -d k‰ynnist‰‰ debuggerin. Verkon tapahtumat n‰ytet‰‰n yksityiskohtaisesti
+.PP
+Valitsimen -t avulla voidaan m‰‰‰ritell‰ haettavan tiedon tyyppi
+Parametrit on n‰‰ritelty "named"-k‰sitteeen man-sivulla.
+T‰ll‰ hetkelll‰ seuraavat tyyypit toimivat: a, ns, md, mf, cname,
+soa, mb, mg, mr, null, wks, ptr, hinfo, minfo, mx, uinfo,
+uid, gid, unspec, ja jokeri, joka voidaan kirjoittaa joko  "any" tai "*".  Tyypit on kirjoitettava pienin kirjaimin.
+Huomaa, ett‰ oletuksena haetaan ensin "a" ja sitten "mx", paitsi jos on valittu verbose, jolloin oletukena on pelkkk‰ "a"
+.PP
+Valinta -a ( "all", kaikki) on sama kuin "-v -t any".
+.PP
+Valinta -l tulostaa koko alueen kaikki tiedot.  Esim.
+.br
+   host -l rutgers.edu
+.br
+tulostaa kaikki alueen rutgers.edu koneet.  Valitsimella -t
+suodatetaan tulostettava tieto.  Oletusarvona on osoitetiedot joihin kuuluvat myˆs PTR and NS tietueet.  K‰sky
+.br
+   host -l -v -t any rutgers.edu
+.br
+tulostaa t‰ydelliset tiedot alueelta  rutgers.edu,
+virallisessa master-muodossa.  (SOA tietue kuitenkin tulostetaan kahdesti
+suojaussyist‰ johtuen)  HUOMAA: -l  toteutetaaan tekem‰ll‰‰ t‰ysi alueem siirto ja siit‰ suodatetaan haluttu tieto. K‰sky‰ tulisi k‰yttt‰‰ vain ehdottoman pakon vaatiessa.
+.SH KONENIMEN MUOTOILU HAKUA VARTEN
+Yleens‰ jos k‰ytt‰j‰n amtamassa konenimess‰ ei ole pisteit‰, konenimeen liitet‰‰n jatkoksi oletusalue.T‰m‰ alue voidaan m‰‰ritell‰ tiedostossa /etc/resolv.conf, mutta otetaan yleens‰ paikallisen koneen nimest‰, sen ensimm‰isen pisteeen j‰lkeen. K‰ytt‰j‰ voi ohittaa t‰m‰n m‰‰ritt‰m‰lll‰ toisen oletusalueen k‰ytt‰en ymp‰ristˆmuutttujaa 
+.IR LOCALDOMAIN .
+Lis‰ksi k‰ytt‰j‰ voi luoda omia lyhenteit‰‰n konenimille.
+N‰iden tulee olla tiedostossa jossa on yksi rivi lyhennett‰ kohti
+Joka rivill‰ on lyhenne, v‰lilyˆnti jota seuraa t‰ydellinen konenimi 
+T‰h‰n tiedostoon on viitattava ymp‰roistˆmuuttujassa
+ .IR HOSTALIASES ,
+joka on tiedoston nimi.
+
+.SH BUGIT
+Odotamattomia voi tapahtua jos kirjoitat nimen, joka ei ole osa paikallisen aluepalvelimen nime‰.  Muista aina, ett‰ paikallisen aluepalvelimen nimi liitet‰‰n jokaisen konenimen per‰‰n, paitsi jos nimi p‰‰‰ttyy pisteeseen. 
+Vain t‰ss‰ tapauksessa nime‰ k‰ytet‰‰n sellaisenaan
+.PP
+Valitsin -l kysyy vain ensimm‰iselt‰ haetun alueen nimipalvelijoiden luettelossa olevalta nimipalvelimelta. Jos t‰m‰ palvelin on kuollut, voi olla tarpeen m‰‰ritelll‰ palvelin "k‰sin" seuraavasti:
+Halutaan tietoja  foo.edu:sta  kirjoitetaan  "host -t ns foo.edu" ja saadaan kaikkien foo.edu koneiden luettelo. T‰m‰n j‰lkeen kokeillaan "host -l foo.edu xxx"  jossa xxx on luettelossa olevan nimipalvelimien nimi, kunnes lˆytyy toimiva palvelin
+
+.SH "KATSO MYÕS"
+named(8)
+

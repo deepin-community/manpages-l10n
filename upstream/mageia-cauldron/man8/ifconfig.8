@@ -5,13 +5,6 @@ ifconfig \- configure a network interface
 .B "ifconfig [-v] [-a] [-s] [interface]"
 .br
 .B "ifconfig [-v] interface [aftype] options | address ..."
-
-.SH NOTE
-.P 
-This program is obsolete!
-For replacement check \fBip addr\fR and \fBip link\fR.
-For statistics use \fBip -s link\fR.
-
 .SH DESCRIPTION
 .B Ifconfig
 is used to configure the kernel-resident network interfaces.  It is
@@ -67,9 +60,9 @@ The name of the interface.  This is usually a driver name followed by
 a unit number, for example
 .B eth0
 for the first Ethernet interface. If your kernel supports alias interfaces,
-you can specify them with 
+you can specify them with syntax like
 .B eth0:0
-for the first alias of eth0. You can use them to assign a second address. To
+for the first alias of eth0. You can use them to assign more addresses. To
 delete an alias interface use
 .BR "ifconfig eth0:0 down" .
 Note: for every scope (i.e. same net with address/netmask combination) all
@@ -77,7 +70,13 @@ aliases are deleted, if you delete the first (primary).
 .TP
 .B up
 This flag causes the interface to be activated.  It is implicitly
-specified if an address is assigned to the interface.
+specified if an address is assigned to the interface; you can suppress this
+behavior when using an alias interface by appending an
+.BR "-"
+to the alias (e.g.
+.BR "eth0:0-" ).
+It is also suppressed when using the IPv4 0.0.0.0 address as the kernel will
+use this to implicitly delete alias interfaces.
 .TP
 .B down
 This flag causes the driver for this interface to be shut down.
@@ -192,6 +191,10 @@ Set the length of the transmit queue of the device. It is useful to set this
 to small values for slower devices with a high latency (modem links, ISDN)
 to prevent fast bulk transfers from disturbing interactive traffic like
 telnet too much. 
+.TP
+.B name \fInewname\fR
+Change the name of this interface to \fInewname\fR. The interface must be shut
+down first.
 .SH NOTES
 Since kernel release 2.2 there are no explicit interface statistics for
 alias interfaces anymore. The statistics printed for the original address
@@ -229,8 +232,13 @@ package to display link layer informations including the hardware address.
 While appletalk DDP and IPX addresses will be displayed they cannot be
 altered by this command.
 .SH SEE ALSO
-.BR ip(8),
-.BR iptables(8)
+.BR route (8),
+.BR netstat (8),
+.BR arp (8),
+.BR rarp (8),
+.BR iptables (8),
+.BR ifup (8),
+.BR interfaces (5)
 .br
 http://physics.nist.gov/cuu/Units/binary.html - Prefixes for binary multiples
 .SH AUTHORS

@@ -1,5 +1,5 @@
 '\" t
-.TH "LOCALE\&.CONF" "5" "" "systemd 249" "locale.conf"
+.TH "LOCALE\&.CONF" "5" "" "systemd 255" "locale.conf"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,9 +31,11 @@ The
 file configures system\-wide locale settings\&. It is read at early boot by
 \fBsystemd\fR(1)\&.
 .PP
-The basic file format of
+The format of
 locale\&.conf
-is a newline\-separated list of environment\-like shell\-compatible variable assignments\&. It is possible to source the configuration from shell scripts, however, beyond mere variable assignments, no shell features are supported, allowing applications to read the file without implementing a shell compatible execution engine\&.
+is a newline\-separated list of environment\-like shell\-compatible variable assignments, ignoring comments and empty lines\&. It is possible to source the configuration from shell scripts, however, beyond mere variable assignments, no shell features are supported, allowing applications to read the file without implementing a shell compatible execution engine\&. See
+\fBos-release\fR(5)
+for a detailed description of the format\&.
 .PP
 Note that the kernel command line options
 \fIlocale\&.LANG=\fR,
@@ -54,17 +56,17 @@ may be used to override the locale settings at boot\&.
 .PP
 The locale settings configured in
 /etc/locale\&.conf
-are system\-wide and are inherited by every service or user, unless overridden or unset by individual programs or individual users\&.
+are system\-wide and are inherited by every service or user, unless overridden or unset by individual programs or users\&.
 .PP
 Depending on the operating system, other configuration files might be checked for locale configuration as well, however only as fallback\&.
 .PP
 /etc/locale\&.conf
-is usually created and updated using
+can be updated using
 \fBsystemd-localed.service\fR(8)\&.
 \fBlocalectl\fR(1)
 may be used to alter the settings in this file during runtime from the command line\&. Use
 \fBsystemd-firstboot\fR(1)
-to initialize them on mounted (but not booted) system images\&.
+to customize them on mounted (but not booted) system images\&.
 .SH "OPTIONS"
 .PP
 The following locale settings may be set using
@@ -96,6 +98,8 @@ may not be configured in this file\&. For details about the meaning and semantic
 .RS 4
 .\}
 .nf
+# Custom settings
+
 LANG=de_DE\&.UTF\-8
 LC_MESSAGES=en_US\&.UTF\-8
 .fi

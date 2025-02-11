@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_REQUEST_NAME" "3" "" "systemd 249" "sd_bus_request_name"
+.TH "SD_BUS_REQUEST_NAME" "3" "" "systemd 257" "sd_bus_request_name"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -50,6 +50,8 @@ After acquiring the name successfully, permit other peers to take over the name 
 flag set\&. If
 \fBSD_BUS_NAME_ALLOW_REPLACEMENT\fR
 is not set on the original request, such a request by other peers will be denied\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fBSD_BUS_NAME_REPLACE_EXISTING\fR
@@ -57,11 +59,15 @@ is not set on the original request, such a request by other peers will be denied
 Take over the name if it was already acquired by another peer, and that other peer has permitted takeover by setting
 \fBSD_BUS_NAME_ALLOW_REPLACEMENT\fR
 while acquiring it\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fBSD_BUS_NAME_QUEUE\fR
 .RS 4
 Queue the acquisition of the name when the name is already taken\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fBsd_bus_request_name()\fR
@@ -147,12 +153,27 @@ The bus connection has been created in a different process than the current one\
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_request_name()\fR
+and
+\fBsd_bus_release_name()\fR
+were added in version 209\&.
+.PP
+\fBsd_bus_request_name_async()\fR
+and
+\fBsd_bus_release_name_async()\fR
+were added in version 237\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-bus\fR(3),
-\fBsd_bus_new\fR(3),
-\fBsd_bus_slot_unref\fR(3)
+\fBsystemd\fR(1), \fBsd-bus\fR(3), \fBsd_bus_new\fR(3), \fBsd_bus_slot_unref\fR(3)

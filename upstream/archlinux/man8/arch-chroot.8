@@ -1,0 +1,83 @@
+'\" t
+.\"     Title: arch-chroot
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 10/20/2024
+.\"    Manual: \ \&
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "ARCH\-CHROOT" "8" "10/20/2024" "\ \&" "\ \&"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+arch-chroot \- enhanced chroot command
+.SH "SYNOPSIS"
+.sp
+arch\-chroot [options] chroot\-dir [command] [arguments\&...]
+.SH "DESCRIPTION"
+.sp
+arch\-chroot wraps the \fBchroot\fR(1) command while ensuring that important functionality is available, e\&.g\&. mounting \fI/dev/\fR, \fI/proc\fR and other API filesystems, or exposing \fBresolv.conf\fR(5) to the chroot\&.
+.sp
+If \fIcommand\fR is unspecified, arch\-chroot will launch \fB/bin/bash\fR\&.
+.if n \{\
+.sp
+.\}
+.RS 4
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBNote\fR
+.ps -1
+.br
+.sp
+The target chroot\-dir \fBshould\fR be a mountpoint\&. This ensures that tools such as \fBpacman\fR(8) or \fBfindmnt\fR(8) have an accurate hierarchy of the mounted filesystems within the chroot\&. If your chroot target is not a mountpoint, you can bind mount the directory on itself to make it a mountpoint, i\&.e\&.:
+.sp
+\fImount \-\-bind /your/chroot /your/chroot\fR
+.sp .5v
+.RE
+.SH "OPTIONS"
+.PP
+\fB\-N\fR
+.RS 4
+Run in unshare mode\&. This will use
+\fBunshare\fR(1)
+to create a new mount and user namespace, allowing regular users to create new system installations\&.
+.RE
+.PP
+\fB\-u <user>[:group]\fR
+.RS 4
+Specify non\-root user and optional group to use\&.
+.RE
+.PP
+\fB\-r\fR
+.RS 4
+Do not change the resolv\&.conf within the chroot\&. This means that the resolver might not work in the chroot, which could be the required state\&.
+.RE
+.PP
+\fB\-h\fR
+.RS 4
+Output syntax and command line options\&.
+.RE
+.SH "SEE ALSO"
+.sp
+\fBpacman\fR(8)

@@ -2,12 +2,12 @@
 .\"     Title: pam_winbind.conf
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/25/2021
+.\"      Date: 11/25/2024
 .\"    Manual: 5
-.\"    Source: Samba 4.14.7
+.\"    Source: Samba 4.21.2
 .\"  Language: English
 .\"
-.TH "PAM_WINBIND\&.CONF" "5" "08/25/2021" "Samba 4\&.14\&.7" "5"
+.TH "PAM_WINBIND\&.CONF" "5" "11/25/2024" "Samba 4\&.21\&.2" "5"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -96,13 +96,13 @@ or
 \fIFILE\fR
 and
 \fIDIR\fR
-(when the DIR type is supported by the system\*(Aqs Kerberos library)\&. In case of FILE a credential cache in the form of /tmp/krb5cc_UID will be created \- in case of DIR you NEED to specify a directory\&. UID is replaced with the numeric user id\&. The UID directory is being created\&. The path up to the directory should already exist\&. Check the details of the Kerberos implmentation\&.
+(when the DIR type is supported by the system\*(Aqs Kerberos library)\&. In case of FILE a credential cache in the form of /tmp/krb5cc_UID will be created \- in case of DIR you NEED to specify a directory\&. UID is replaced with the numeric user id\&. The UID directory is being created\&. The path up to the directory should already exist\&. Check the details of the Kerberos implementation\&.
 .sp
 When using the KEYRING type, the supported mechanism is
-\(lqKEYRING:persistent:UID\(rq, which uses the Linux kernel keyring to store credentials on a per\-UID basis\&. The KEYRING has its limitations\&. As it is secure kernel memory, for example bulk sorage of credentils is for not possible\&.
+\(lqKEYRING:persistent:UID\(rq, which uses the Linux kernel keyring to store credentials on a per\-UID basis\&. The KEYRING has its limitations\&. As it is secure kernel memory, for example bulk storage of credentials is not possible\&.
 .sp
-When using th KCM type, the supported mechanism is
-\(lqKCM:UID\(rq, which uses a Kerberos credential manaager to store credentials on a per\-UID basis similar to KEYRING\&. This is the recommended choice on latest Linux distributions, offering a Kerberos Credential Manager\&. If not we suggest to use KEYRING as those are the most secure and predictable method\&.
+When using the KCM type, the supported mechanism is
+\(lqKCM:UID\(rq, which uses a Kerberos credential manager to store credentials on a per\-UID basis similar to KEYRING\&. This is the recommended choice on latest Linux distributions, offering a Kerberos Credential Manager\&. If not we suggest to use KEYRING as that is the most secure and predictable method\&.
 .sp
 It is also possible to define custom filepaths and use the "%u" pattern in order to substitute the numeric user id\&. Examples:
 .PP
@@ -140,6 +140,11 @@ warn_pwd_expire = days
 .RS 4
 Defines number of days before pam_winbind starts to warn about passwords that are going to expire\&. Defaults to 14 days\&.
 .RE
+.PP
+pwd_change_prompt = yes|no
+.RS 4
+Generate prompt for changing an expired password\&. Defaults to "no"\&.
+.RE
 .SH "SEE ALSO"
 .PP
 \fBpam_winbind\fR(8),
@@ -148,7 +153,7 @@ Defines number of days before pam_winbind starts to warn about passwords that ar
 \fBsmb.conf\fR(5)
 .SH "VERSION"
 .PP
-This man page is part of version 4\&.14\&.7 of Samba\&.
+This man page is part of version 4\&.21\&.2 of Samba\&.
 .SH "AUTHOR"
 .PP
 The original Samba software and related utilities were created by Andrew Tridgell\&. Samba is now developed by the Samba Team as an Open Source project similar to the way the Linux kernel is developed\&.

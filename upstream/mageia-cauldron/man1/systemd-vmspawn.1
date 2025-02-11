@@ -1,0 +1,411 @@
+'\" t
+.TH "SYSTEMD\-VMSPAWN" "1" "" "systemd 255" "systemd-vmspawn"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-vmspawn \- Spawn an OS in a virtual machine
+.SH "SYNOPSIS"
+.HP \w'\fBsystemd\-vmspawn\fR\ 'u
+\fBsystemd\-vmspawn\fR [OPTIONS...] [ARGS...]
+.SH "DESCRIPTION"
+.PP
+\fBsystemd\-vmspawn\fR
+may be used to start a virtual machine from an OS image\&. In many ways it is similar to
+\fBsystemd-nspawn\fR(1), but it launches a full virtual machine instead of using namespaces\&.
+.PP
+Note: on Ubuntu/Debian derivatives systemd\-vmspawn requires the user to be in the
+"kvm"
+group to use the VSock options\&.
+.SH "OPTIONS"
+.PP
+The excess arguments are passed as extra kernel command line arguments using SMBIOS\&.
+.PP
+The following options are understood:
+.SS "Image Options"
+.PP
+\fB\-D\fR, \fB\-\-directory=\fR
+.RS 4
+Directory to use as file system root for the virtual machine\&.
+.sp
+One of either
+\fB\-\-directory=\fR
+or
+\fB\-\-image=\fR
+must be specified\&. If neither are specified
+\fB\-\-directory=\&.\fR
+is assumed\&.
+.sp
+Note: If mounting a non\-root owned directory you may require
+\fB\-\-private\-users=\fR
+to map into the user\*(Aqs subuid namespace\&. An example of how to use
+\fB/etc/subuid\fR
+for this is given later\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fB\-i\fR, \fB\-\-image=\fR
+.RS 4
+Root file system disk image (or device node) for the virtual machine\&.
+.sp
+Added in version 255\&.
+.RE
+.SS "Host Configuration"
+.PP
+\fB\-\-qemu\-smp=\fR\fISMP\fR
+.RS 4
+Configures the number of CPUs to start the virtual machine with\&. Defaults to 1\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-qemu\-mem=\fR\fIMEM\fR
+.RS 4
+Configures the amount of memory to start the virtual machine with\&. Defaults to 2G\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-qemu\-kvm=\fR\fIBOOL\fR
+.RS 4
+Configures whether to use KVM\&. If the option is not specified KVM support will be detected automatically\&. If true, KVM is always used, and if false, KVM is never used\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-qemu\-vsock=\fR\fIBOOL\fR
+.RS 4
+Configure whether to use VSock networking\&.
+.sp
+If the option is not specified VSock support will be detected automatically\&. If yes is specified VSocks are always used, and vice versa if no is set VSocks are never used\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-vsock\-cid=\fR\fICID\fR
+.RS 4
+Configure vmspawn to use a specific CID for the guest\&.
+.sp
+If the option is not specified or an empty argument is supplied the guest will be assigned a random CID\&.
+.sp
+Valid CIDs are in the range
+\fB3\fR
+to
+\fB4294967294\fR
+(\fB0xFFFF_FFFE\fR)\&. CIDs outside of this range are reserved\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-qemu\-gui\fR
+.RS 4
+Start QEMU in graphical mode\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-secure\-boot=\fR\fIBOOL\fR
+.RS 4
+Configure whether to search for firmware which supports Secure Boot\&.
+.sp
+If the option is not specified the first firmware which is detected will be used\&. If the option is set to yes then the first firmware with Secure Boot support will be selected\&. If no is specified then the first firmware without Secure Boot will be selected\&.
+.sp
+Added in version 255\&.
+.RE
+.SS "System Identity Options"
+.PP
+\fB\-M\fR, \fB\-\-machine=\fR
+.RS 4
+Sets the machine name for this container\&. This name may be used to identify this container during its runtime (for example in tools like
+\fBmachinectl\fR(1)
+and similar)\&.
+.sp
+Added in version 255\&.
+.RE
+.SS "Credentials"
+.PP
+\fB\-\-load\-credential=\fR\fIID\fR:\fIPATH\fR, \fB\-\-set\-credential=\fR\fIID\fR:\fIVALUE\fR
+.RS 4
+Pass a credential to the container\&. These two options correspond to the
+\fILoadCredential=\fR
+and
+\fISetCredential=\fR
+settings in unit files\&. See
+\fBsystemd.exec\fR(5)
+for details about these concepts, as well as the syntax of the option\*(Aqs arguments\&.
+.sp
+In order to embed binary data into the credential data for
+\fB\-\-set\-credential=\fR, use C\-style escaping (i\&.e\&.
+"\en"
+to embed a newline, or
+"\ex00"
+to embed a
+\fBNUL\fR
+byte)\&. Note that the invoking shell might already apply unescaping once, hence this might require double escaping!
+.sp
+Added in version 255\&.
+.RE
+.SS "Other"
+.PP
+\fB\-\-no\-pager\fR
+.RS 4
+Do not pipe output into a pager\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SH "ENVIRONMENT"
+.PP
+\fI$SYSTEMD_LOG_LEVEL\fR
+.RS 4
+The maximum log level of emitted messages (messages with a higher log level, i\&.e\&. less important ones, will be suppressed)\&. Either one of (in order of decreasing importance)
+\fBemerg\fR,
+\fBalert\fR,
+\fBcrit\fR,
+\fBerr\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR, or an integer in the range 0\&...7\&. See
+\fBsyslog\fR(3)
+for more information\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_COLOR\fR
+.RS 4
+A boolean\&. If true, messages written to the tty will be colored according to priority\&.
+.sp
+This setting is only useful when messages are written directly to the terminal, because
+\fBjournalctl\fR(1)
+and other tools that display logs will color messages based on the log level on their own\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TIME\fR
+.RS 4
+A boolean\&. If true, console log messages will be prefixed with a timestamp\&.
+.sp
+This setting is only useful when messages are written directly to the terminal or a file, because
+\fBjournalctl\fR(1)
+and other tools that display logs will attach timestamps based on the entry metadata on their own\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_LOCATION\fR
+.RS 4
+A boolean\&. If true, messages will be prefixed with a filename and line number in the source code where the message originates\&.
+.sp
+Note that the log location is often attached as metadata to journal entries anyway\&. Including it directly in the message text can nevertheless be convenient when debugging programs\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TID\fR
+.RS 4
+A boolean\&. If true, messages will be prefixed with the current numerical thread ID (TID)\&.
+.sp
+Note that the this information is attached as metadata to journal entries anyway\&. Including it directly in the message text can nevertheless be convenient when debugging programs\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TARGET\fR
+.RS 4
+The destination for log messages\&. One of
+\fBconsole\fR
+(log to the attached tty),
+\fBconsole\-prefixed\fR
+(log to the attached tty but with prefixes encoding the log level and "facility", see
+\fBsyslog\fR(3),
+\fBkmsg\fR
+(log to the kernel circular log buffer),
+\fBjournal\fR
+(log to the journal),
+\fBjournal\-or\-kmsg\fR
+(log to the journal if available, and to kmsg otherwise),
+\fBauto\fR
+(determine the appropriate log target automatically, the default),
+\fBnull\fR
+(disable log output)\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_RATELIMIT_KMSG\fR
+.RS 4
+Whether to ratelimit kmsg or not\&. Takes a boolean\&. Defaults to
+"true"\&. If disabled, systemd will not ratelimit messages written to kmsg\&.
+.RE
+.PP
+\fI$SYSTEMD_PAGER\fR
+.RS 4
+Pager to use when
+\fB\-\-no\-pager\fR
+is not given; overrides
+\fI$PAGER\fR\&. If neither
+\fI$SYSTEMD_PAGER\fR
+nor
+\fI$PAGER\fR
+are set, a set of well\-known pager implementations are tried in turn, including
+\fBless\fR(1)
+and
+\fBmore\fR(1), until one is found\&. If no pager implementation is discovered no pager is invoked\&. Setting this environment variable to an empty string or the value
+"cat"
+is equivalent to passing
+\fB\-\-no\-pager\fR\&.
+.sp
+Note: if
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set,
+\fI$SYSTEMD_PAGER\fR
+(as well as
+\fI$PAGER\fR) will be silently ignored\&.
+.RE
+.PP
+\fI$SYSTEMD_LESS\fR
+.RS 4
+Override the options passed to
+\fBless\fR
+(by default
+"FRSXMK")\&.
+.sp
+Users might want to change two options in particular:
+.PP
+\fBK\fR
+.RS 4
+This option instructs the pager to exit immediately when
+Ctrl+C
+is pressed\&. To allow
+\fBless\fR
+to handle
+Ctrl+C
+itself to switch back to the pager command prompt, unset this option\&.
+.sp
+If the value of
+\fI$SYSTEMD_LESS\fR
+does not include
+"K", and the pager that is invoked is
+\fBless\fR,
+Ctrl+C
+will be ignored by the executable, and needs to be handled by the pager\&.
+.RE
+.PP
+\fBX\fR
+.RS 4
+This option instructs the pager to not send termcap initialization and deinitialization strings to the terminal\&. It is set by default to allow command output to remain visible in the terminal even after the pager exits\&. Nevertheless, this prevents some pager functionality from working, in particular paged output cannot be scrolled with the mouse\&.
+.RE
+.sp
+Note that setting the regular
+\fI$LESS\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
+.sp
+See
+\fBless\fR(1)
+for more discussion\&.
+.RE
+.PP
+\fI$SYSTEMD_LESSCHARSET\fR
+.RS 4
+Override the charset passed to
+\fBless\fR
+(by default
+"utf\-8", if the invoking terminal is determined to be UTF\-8 compatible)\&.
+.sp
+Note that setting the regular
+\fI$LESSCHARSET\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
+.RE
+.PP
+\fI$SYSTEMD_PAGERSECURE\fR
+.RS 4
+Takes a boolean argument\&. When true, the "secure" mode of the pager is enabled; if false, disabled\&. If
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set at all, secure mode is enabled if the effective UID is not the same as the owner of the login session, see
+\fBgeteuid\fR(2)
+and
+\fBsd_pid_get_owner_uid\fR(3)\&. In secure mode,
+\fBLESSSECURE=1\fR
+will be set when invoking the pager, and the pager shall disable commands that open or create new files or start new subprocesses\&. When
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set at all, pagers which are not known to implement secure mode will not be used\&. (Currently only
+\fBless\fR(1)
+implements secure mode\&.)
+.sp
+Note: when commands are invoked with elevated privileges, for example under
+\fBsudo\fR(8)
+or
+\fBpkexec\fR(1), care must be taken to ensure that unintended interactive features are not enabled\&. "Secure" mode for the pager may be enabled automatically as describe above\&. Setting
+\fISYSTEMD_PAGERSECURE=0\fR
+or not removing it from the inherited environment allows the user to invoke arbitrary commands\&. Note that if the
+\fI$SYSTEMD_PAGER\fR
+or
+\fI$PAGER\fR
+variables are to be honoured,
+\fI$SYSTEMD_PAGERSECURE\fR
+must be set too\&. It might be reasonable to completely disable the pager using
+\fB\-\-no\-pager\fR
+instead\&.
+.RE
+.PP
+\fI$SYSTEMD_COLORS\fR
+.RS 4
+Takes a boolean argument\&. When true,
+\fBsystemd\fR
+and related utilities will use colors in their output, otherwise the output will be monochrome\&. Additionally, the variable can take one of the following special values:
+"16",
+"256"
+to restrict the use of colors to the base 16 or 256 ANSI colors, respectively\&. This can be specified to override the automatic decision based on
+\fI$TERM\fR
+and what the console is connected to\&.
+.RE
+.PP
+\fI$SYSTEMD_URLIFY\fR
+.RS 4
+The value must be a boolean\&. Controls whether clickable links should be generated in the output for terminal emulators supporting this\&. This can be specified to override the decision that
+\fBsystemd\fR
+makes based on
+\fI$TERM\fR
+and other conditions\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Run an Arch Linux VM image generated by mkosi\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ mkosi \-d arch \-p systemd \-p linux \-\-autologin \-o image\&.raw \-f build
+$ systemd\-vmspawn \-\-image=image\&.raw
+      
+.fi
+.if n \{\
+.RE
+.\}
+.SH "EXIT STATUS"
+.PP
+If an error occurred the value errno is propagated to the return code\&. If EXIT_STATUS is supplied by the running image that is returned\&. Otherwise EXIT_SUCCESS is returned\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBmkosi\fR(1)

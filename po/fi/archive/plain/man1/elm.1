@@ -1,0 +1,192 @@
+.if n \{\
+.	ds ct "
+.\}
+.if t \{\
+.	ds ct \\(co
+.\}
+.\" Translated into Finnish by Jarno Elonen (elonen@iki.fi)
+.\"
+.TH ELM 1 "22. Heinäkuuta 1999" "USENET Community Trust" "Käyttäjän
+sovellusohjelmat"
+.SH NIMI
+elm - vuorovaikutteinen sähköpostiohjelma
+.SH "YLEISKATSAUS"
+.B elm
+[
+.B \-achkKmrtwz
+] [
+.B \-f
+.I "kansio"
+] [
+.B \-d
+.I debug-taso
+]
+.br
+.B elm 
+[
+.B \-s 
+.I "otsikko"
+]
+.I "osoite- tai aliaslista"
+.PP
+.SH KUVAUS
+.I Elm\^
+on vuorovaikutteinen, koko näytöllä toimiva sähköpostiohjelma joka korvaa
+(vanhemmat) ohjelmat 
+.I \fBmail\fR
+ja 
+.I \fBmailx\fR.
+.PP
+\fBElm\fR:iä käytetään yleensä kolmella eri tavalla.  Yksi tapa
+on antaa ohjelmalle osoitelista komentoriviparametreina käynnistyksen
+yhteydessä.  Tällä tavoin voi lähettää viestin haluamilleen
+vastaanottajille käyttäen kaikkia \fBelm\fR:istä normaalisti löytyviä
+asetuksia.  Esimerkiksi komento:
+.nf
+
+	elm -s testi joe
+
+.fi
+alustaa \fBelm\fR:in lähettämään viestin, jonka otsikko on "testi"
+aliakselle "joe" ja
+käynnistää tekstieditorin viestin rungon kirjoittamista varten.  Jos
+otsikkoa
+(englanniksi Subject, parametri -s) ei anneta, kysyy \fBelm\fR viestin
+otsikkoa
+erikseen. 
+.PP
+Toinen, yleensä tiedostojen lähettämisessä jne. käytetty tapa on kertoa
+otsikko ja
+vastaanottajat komentorivillä ja käskeä \fBelm\fR:iä lukemaan lähetettävä
+viesti
+vakiosyötevirrasta, jonne halutut tiedostot on komentotulkin
+uudelleenohjaus- ja
+putkitustoimintojen avulla ohjattu.  
+Esimerkiksi:
+.nf
+
+	elm -s testi joe < test.c 
+
+.fi
+lähettää "joe":lle kopion test.c-nimisestä tiedostosta. Viestin otsikoksi
+tulee jälleen 
+"testi".  Kuten edellisessäkin esimerkissä, otsikkoparametri -s on nytkin
+valinnainen.
+.PP
+Kolmas tapa käyttää \fBelm\fR:ä on olla antamatta sen paremmin otsikkoa,
+osoitteita kuin
+tiedostojakaan komentorivillä.  Tällöin \fBelm\fR käynnistyy
+vuorovaikutteiseen tilaan,
+jossa voi lukea uusia ja tallennettuja viestejä, vastata niihin,
+kirjoittaa uusia viestejä
+jne.
+
+.PP
+Komentorivivalitsimet:
+.TP 1.0i
+.B "  -a"
+Arrow, nuoli - näyttää nuolimaisen osoittimen yhden kirjaimen kokoisen
+ruudun sijasta.
+.TP
+.B "  -c"
+Checkalias - laajentaa annetut aliakset ja palaa heti.
+.TP
+.B "  -d \fItaso\fR  "
+Debug - asettaa debug-tason - tulostus tiedostoon "$HOME/ELM:debug.info"
+.TP
+.B "  -f \fIkansio\fR  "
+Folder, kansio - avaa parametrina annetun kansion normaalin uudet
+viestit-kansion (incoming mailbox) sijaan.
+.TP
+.B "  -h"
+Help, apua - listaa toimivat komentorivivalitsimet.
+.TP
+.B "  -i \fItiedosto\fR  "
+Include, liitä - liittää annetun tiedoston viestipuskuriin lähetettäväksi.
+.TP
+.B "  -?"
+Synonyymi komennolle "-h".
+.TP
+.B "  -k"
+Keypad, numeronäppäimet - pakottaa "HP terminal"-näppäimistön tunnistuksen
+päälle 
+NEXT-, PREV- ja HOME/SHIFT-HOME -näppäinten käyttöä varten.
+.TP
+.B "  -K"
+Keypad + softkeys - kytkee HP-päätteillä päälle softkey-tuen.
+.TP
+.B "  -m"
+Menu off, valikko pois - ei näytä valikkoa, vaan käyttää lisätilan
+ylimääräisten viestitunnisteiden (headers) näyttämiseen.
+.TP
+.B "  -s \fIotsikko\fR  "
+Subject, otsikko - määrittelee lähetettävän viestin otsikon.
+.TP
+.B "  -t"
+tite - poistaa käytöstä termcap/terminfo ti/te -sarjan.
+.TP
+.B "  -v"
+Version, versio - tulostaa version ja print version konfiguraatiotietoja.
+.TP
+.B "  -z"
+Zero, nolla - ei käynnistä \fBElm\fR:iä ellei laatikossa ole uutta postia.
+.SH TEKIJÄ
+Elm Development Group
+.SH "KATSO MYÖS"
+Elm dokumentaatio-paketti. Paketin sisältö:
+.I
+Elm Käyttöopas,
+Elm Hakuopas,
+Elm Alias System:in käyttöopas,
+Elm Forms Mode -opas,
+Elm Filter -opas,
+Elm konfigurointiopas\fR
+.sp 
+.br
+checkalias(1L), frm(1L), mail(1), mailx(1), newalias(1L), printmail(1L),
+readmsg(1L)
+.SH TIEDOSTOT
+/usr/local/lib/elm-help.*         aputiedostot
+.br
+/usr/local/lib/aliases.text       järjestelmän alias-tiedosto
+.br
+/usr/local/lib/aliases.dir        järjestelmän aliaksien dbz-hakemisto
+.br
+/usr/local/lib/aliases.pag        järjestelmän aliaksien dbz-hash-taulukko
+.br
+/usr/local/lib/aliases            järjestelmän aliaksien data-taulukko
+.br
+.br
+/usr/local/lib/aliases.hash       järjestelmän aliaksien hash-taulukko
+.br
+/usr/local/lib/aliases.data       järjestelmän aliaksien data-taulukko
+.br
+$HOME/.elm/aliases.text           käyttäjjän alias-tiedosto
+.br
+$HOME/.elm/aliases.dir            käyttäjän aliaksien dbz-hakemisto
+.br
+$HOME/.elm/aliases.pag            käyttäjän aliaksien dbz-hash-taulukko
+.br
+$HOME/.elm/aliases                käyttäjän aliaksien data-taulukko
+.br
+$HOME/.elm/elmrc                  itse muokatut ohjelmaparametrit
+.br
+$HOME/.elm/elmheaders             itse muokatut viestitunnisteet (headers)
+.br
+/tmp/snd.$$                       puskuri lähtevälle postille
+.br
+/tmp/mbox.\fIlogname\fR            väliaikainen postilaatikko
+.br
+$HOME/ELM:debug.info              Debug-tuloste (kun debug on päällä)
+.SH DIAGNOSTIIKKA
+Pitäisi tukea erikoisnäppäimistöjä/softkey:tä muillakin kuin HP:n
+päätteillä.  (Kunpa
+vain termcap olisi niin tehokas!)
+.SH VIRHEILMOITUKSET OSOITTEESEEN:
+Syd Weinstein	elm@DSI.COM	(dsinc!elm)
+.SH COPYRIGHTS
+\fB\*(ct\fRCopyright 1988-1992 by The USENET Community Trust
+.br
+Johdettu Elm 2.0:sta, \fB\*(ct\fR Copyright 1986, 1987 by Dave Taylor
+.SH "KATSO MYÖS"
+

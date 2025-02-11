@@ -1,37 +1,24 @@
 .\" Copyright (c) 2020 Stephen Kitt <steve@sk2.org>
 .\" and Copyright (c) 2021 Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
-.\"
-.TH CLOSE_RANGE 2 2021-08-27 "Linux" "Linux Programmer's Manual"
+.TH close_range 2 2024-06-15 "Linux man-pages (unreleased)"
 .SH NAME
 close_range \- close all file descriptors in a given range
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
-.B #include <linux/close_range.h>
-.PP
-.BI "int close_range(unsigned int " first ", unsigned int " last ,
-.BI "                unsigned int " flags );
+.BR "#define _GNU_SOURCE" "         /* See feature_test_macros(7) */"
+.B #include <unistd.h>
+.P
+.BR "#include <linux/close_range.h>" " /* Definition of " CLOSE_RANGE_*
+.BR "" "                                  constants */"
+.P
+.BI "int close_range(unsigned int " first ", unsigned int " last \
+", int " flags );
 .fi
 .SH DESCRIPTION
 The
@@ -41,9 +28,9 @@ system call closes all open file descriptors from
 to
 .I last
 (included).
-.PP
+.P
 Errors closing a given file descriptor are currently ignored.
-.PP
+.P
 .I flags
 is a bit mask containing 0 or more of the following:
 .TP
@@ -70,14 +57,14 @@ is not valid, or
 .I first
 is greater than
 .IR last .
-.PP
+.P
 The following can occur with
 .B CLOSE_RANGE_UNSHARE
 (when constructing the new descriptor table):
 .TP
 .B EMFILE
 The number of open file descriptors exceeds the limit specified in
-.IR /proc/sys/fs/nr_open
+.I /proc/sys/fs/nr_open
 (see
 .BR proc (5)).
 This error can occur in situations where that limit was lowered before
@@ -89,13 +76,12 @@ flag is specified.
 .TP
 .B ENOMEM
 Insufficient kernel memory was available.
-.SH VERSIONS
-.BR close_range ()
-first appeared in Linux 5.9.
-Library support was added in glibc in version 2.34.
-.SH CONFORMING TO
-.BR close_range ()
-is a nonstandard function that is also present on FreeBSD.
+.SH STANDARDS
+None.
+.SH HISTORY
+FreeBSD.
+Linux 5.9,
+glibc 2.34.
 .SH NOTES
 .SS Closing all open file descriptors
 .\" 278a5fbaed89dacd04e9d052f4594ffd0e0585de
@@ -115,32 +101,32 @@ which provides significant performance benefits.
 .SS Closing file descriptors before exec
 .\" 60997c3d45d9a67daf01c56d805ae4fec37e0bd8
 File descriptors can be closed safely using
-.PP
+.P
 .in +4n
 .EX
 /* we don't want anything past stderr here */
-close_range(3, ~0U, CLOSE_RANGE_UNSHARE);
+close_range(3, \[ti]0U, CLOSE_RANGE_UNSHARE);
 execve(....);
 .EE
 .in
-.PP
+.P
 .B CLOSE_RANGE_UNSHARE
 is conceptually equivalent to
-.PP
+.P
 .in +4n
 .EX
 unshare(CLONE_FILES);
 close_range(first, last, 0);
 .EE
 .in
-.PP
+.P
 but can be more efficient:
 if the unshared range extends past
 the current maximum number of file descriptors allocated
 in the caller's file descriptor table
 (the common case when
 .I last
-is ~0U),
+is \[ti]0U),
 the kernel will unshare a new file descriptor table for the caller up to
 .IR first ,
 copying as few file descriptors as possible.
@@ -186,7 +172,7 @@ uses
 to close all file descriptors greater than or equal to 3,
 and then once more displays the process's list of open files.
 The following example demonstrates the use of the program:
-.PP
+.P
 .in +4n
 .EX
 $ \fBtouch /tmp/a /tmp/b /tmp/c\fP
@@ -208,77 +194,84 @@ $ \fB./a.out /tmp/a /tmp/b /tmp/c\fP
 /proc/self/fd/3 ==> /proc/9005/fd
 .EE
 .in
-.PP
+.P
 Note that the lines showing the pathname
 .I /proc/9005/fd
 result from the calls to
 .BR opendir (3).
 .SS Program source
 \&
+.\" SRC BEGIN (close_range.c)
 .EX
 #define _GNU_SOURCE
+#include <dirent.h>
 #include <fcntl.h>
-#include <linux/close_range.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/syscall.h>
-#include <string.h>
+#include <sys/types.h>
 #include <unistd.h>
-#include <dirent.h>
-
+\&
 /* Show the contents of the symbolic links in /proc/self/fd */
-
+\&
 static void
 show_fds(void)
 {
-    DIR *dirp = opendir("/proc/self/fd");
+    DIR            *dirp;
+    char           path[PATH_MAX], target[PATH_MAX];
+    ssize_t        len;
+    struct dirent  *dp;
+\&
+    dirp = opendir("/proc/self/fd");
     if (dirp  == NULL) {
         perror("opendir");
         exit(EXIT_FAILURE);
     }
-
+\&
     for (;;) {
-        struct dirent *dp = readdir(dirp);
+        dp = readdir(dirp);
         if (dp == NULL)
             break;
-
+\&
         if (dp\->d_type == DT_LNK) {
-            char path[PATH_MAX], target[PATH_MAX];
             snprintf(path, sizeof(path), "/proc/self/fd/%s",
                      dp\->d_name);
-
-            ssize_t len = readlink(path, target, sizeof(target));
-            printf("%s ==> %.*s\en", path, (int) len, target);
+\&
+            len = readlink(path, target, sizeof(target));
+            printf("%s ==> %.*s\[rs]n", path, (int) len, target);
         }
     }
-
+\&
     closedir(dirp);
 }
-
+\&
 int
 main(int argc, char *argv[])
 {
-    for (int j = 1; j < argc; j++) {
-        int fd = open(argv[j], O_RDONLY);
+    int  fd;
+\&
+    for (size_t j = 1; j < argc; j++) {
+        fd = open(argv[j], O_RDONLY);
         if (fd == \-1) {
             perror(argv[j]);
             exit(EXIT_FAILURE);
         }
-        printf("%s opened as FD %d\en", argv[j], fd);
+        printf("%s opened as FD %d\[rs]n", argv[j], fd);
     }
-
+\&
     show_fds();
-
-    printf("========= About to call close_range() =======\en");
-
-    if (syscall(__NR_close_range, 3, \(ti0U, 0) == \-1) {
+\&
+    printf("========= About to call close_range() =======\[rs]n");
+\&
+    if (close_range(3, \[ti]0U, 0) == \-1) {
         perror("close_range");
         exit(EXIT_FAILURE);
     }
-
+\&
     show_fds();
     exit(EXIT_FAILURE);
 }
 .EE
+.\" SRC END
 .SH SEE ALSO
 .BR close (2)

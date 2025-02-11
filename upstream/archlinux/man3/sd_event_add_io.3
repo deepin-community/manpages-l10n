@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_EVENT_ADD_IO" "3" "" "systemd 249" "sd_event_add_io"
+.TH "SD_EVENT_ADD_IO" "3" "" "systemd 257" "sd_event_add_io"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -39,11 +39,11 @@ typedef struct sd_event_source sd_event_source;
 .HP \w'int\ sd_event_add_io('u
 .BI "int sd_event_add_io(sd_event\ *" "event" ", sd_event_source\ **" "source" ", int\ " "fd" ", uint32_t\ " "events" ", sd_event_io_handler_t\ " "handler" ", void\ *" "userdata" ");"
 .HP \w'int\ sd_event_source_get_io_events('u
-.BI "int sd_event_source_get_io_events(sd_event_source\ *" "source" ", uint32_t\ *" "events" ");"
+.BI "int sd_event_source_get_io_events(sd_event_source\ *" "source" ", uint32_t\ *" "ret" ");"
 .HP \w'int\ sd_event_source_set_io_events('u
 .BI "int sd_event_source_set_io_events(sd_event_source\ *" "source" ", uint32_t\ " "events" ");"
 .HP \w'int\ sd_event_source_get_io_revents('u
-.BI "int sd_event_source_get_io_revents(sd_event_source\ *" "source" ", uint32_t\ *" "revents" ");"
+.BI "int sd_event_source_get_io_revents(sd_event_source\ *" "source" ", uint32_t\ *" "ret" ");"
 .HP \w'int\ sd_event_source_get_io_fd('u
 .BI "int sd_event_source_get_io_fd(sd_event_source\ *" "source" ");"
 .HP \w'int\ sd_event_source_set_io_fd('u
@@ -71,19 +71,30 @@ parameter takes a bit mask of events to watch for, a combination of the followin
 \fBEPOLLPRI\fR, and
 \fBEPOLLET\fR, see
 \fBepoll_ctl\fR(2)
-for details\&. The
+for details\&. Note that not all file descriptors are compatible with epoll, for example regular file or directories are not\&. If this function is called with a file descriptor that does not support epoll,
+\fB\-EPERM\fR
+is returned (also see below)\&. In most cases such file descriptors may be treated as always\-readable or always\-writable, so that IO event watching is unnecessary\&.
+.PP
+The
 \fIhandler\fR
-shall reference a function to call when the event source is triggered\&. The
+is a function to call when the event source is triggered or
+\fBNULL\fR\&. The
 \fIuserdata\fR
 pointer will be passed to the handler function, and may be chosen freely by the caller\&. The handler will also be passed the file descriptor the event was seen on, as well as the actual event flags\&. It\*(Aqs generally a subset of the events watched, however may additionally include
 \fBEPOLLERR\fR
 and
-\fBEPOLLHUP\fR\&.
+\fBEPOLLHUP\fR\&. The handler may return negative to signal an error (see below), other return values are ignored\&. If
+\fIhandler\fR
+is
+\fBNULL\fR, a default handler that calls
+\fBsd_event_exit\fR(3)
+will be used\&.
 .PP
 By default, an event source will stay enabled continuously (\fBSD_EVENT_ON\fR), but this may be changed with
-\fBsd_event_source_set_enabled\fR(3)\&. If the handler function returns a negative error code, it will be disabled after the invocation, even if the
+\fBsd_event_source_set_enabled\fR(3)\&. If the handler function returns a negative error code, it will either be disabled after the invocation, even if the
 \fBSD_EVENT_ON\fR
-mode was requested before\&. Note that an event source set to
+mode was requested before, or it will cause the loop to terminate, see
+\fBsd_event_source_set_exit_on_failure\fR(3)\&. Note that an event source set to
 \fBSD_EVENT_ON\fR
 will fire continuously unless data is read from or written to the file descriptor to reset the mask of events seen\&.
 .PP
@@ -158,12 +169,14 @@ retrieves the UNIX file descriptor of an event source created previously with
 .PP
 \fBsd_event_source_set_io_fd()\fR
 changes the UNIX file descriptor of an I/O event source created previously with
-\fBsd_event_add_io()\fR\&. It takes the event source object and the new file descriptor\&.
+\fBsd_event_add_io()\fR\&. It takes the event source object and the new file descriptor as parameters\&. If the event source owned the previous file descriptor, that is if
+\fBsd_event_source_set_io_fd_own()\fR
+had been called for the event source with a non\-zero value, then the previous file descriptor will be closed and the event source will also take the ownership of the new file descriptor on success\&.
 .PP
 \fBsd_event_source_set_io_fd_own()\fR
-controls whether the file descriptor of the event source shall be closed automatically when the event source is freed, i\&.e\&. whether it shall be considered \*(Aqowned\*(Aq by the event source object\&. By default it is not closed automatically, and the application has to do this on its own\&. The
-\fIb\fR
-parameter is a boolean parameter: if zero, the file descriptor is not closed automatically when the event source is freed, otherwise it is closed\&.
+controls whether the file descriptor of the event source shall take ownership of the file descriptor\&. Takes a boolean parameter
+\fIb\fR\&. When true (nonzero), the file descriptor will be closed automatically when the event source is freed or when the file descriptor is replaced by
+\fBsd_event_source_set_io_fd()\fR\&. By default the descriptor is not owned by the event source, and the application has to do close it on its own if needed\&.
 .PP
 \fBsd_event_source_get_io_fd_own()\fR
 may be used to query the current setting of the file descriptor ownership boolean flag as set with
@@ -192,34 +205,51 @@ The event loop is already terminated\&.
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The event loop has been created in a different process\&.
+The event loop has been created in a different process, library or module instance\&.
 .RE
 .PP
 \fB\-EDOM\fR
 .RS 4
 The passed event source is not an I/O event source\&.
 .RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+The passed file descriptor does not support the
+\fBepoll\fR(7)
+API, for example because it is a regular file or directory\&. See
+\fBepoll_ctl\fR(2)
+for details\&.
+.sp
+Added in version 255\&.
+.RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_event_io_handler_t()\fR,
+\fBsd_event_add_io()\fR,
+\fBsd_event_source_get_io_events()\fR,
+\fBsd_event_source_set_io_events()\fR,
+\fBsd_event_source_get_io_revents()\fR,
+\fBsd_event_source_get_io_fd()\fR, and
+\fBsd_event_source_set_io_fd()\fR
+were added in version 229\&.
+.PP
+\fBsd_event_source_get_io_fd_own()\fR
+and
+\fBsd_event_source_set_io_fd_own()\fR
+were added in version 239\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-event\fR(3),
-\fBsd_event_new\fR(3),
-\fBsd_event_now\fR(3),
-\fBsd_event_add_time\fR(3),
-\fBsd_event_add_signal\fR(3),
-\fBsd_event_add_child\fR(3),
-\fBsd_event_add_inotify\fR(3),
-\fBsd_event_add_defer\fR(3),
-\fBsd_event_source_set_enabled\fR(3),
-\fBsd_event_source_set_priority\fR(3),
-\fBsd_event_source_set_userdata\fR(3),
-\fBsd_event_source_set_description\fR(3),
-\fBsd_event_source_get_pending\fR(3),
-\fBsd_event_source_set_floating\fR(3),
-\fBepoll_ctl\fR(2),
-\fBepoll\fR(7)
+\fBsystemd\fR(1), \fBsd-event\fR(3), \fBsd_event_new\fR(3), \fBsd_event_now\fR(3), \fBsd_event_add_time\fR(3), \fBsd_event_add_signal\fR(3), \fBsd_event_add_child\fR(3), \fBsd_event_add_inotify\fR(3), \fBsd_event_add_defer\fR(3), \fBsd_event_source_set_enabled\fR(3), \fBsd_event_source_set_priority\fR(3), \fBsd_event_source_set_userdata\fR(3), \fBsd_event_source_set_description\fR(3), \fBsd_event_source_get_pending\fR(3), \fBsd_event_source_set_floating\fR(3), \fBepoll_ctl\fR(2), \fBepoll\fR(7)

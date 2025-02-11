@@ -2,42 +2,30 @@
 .\"  Davide Libenzi <davidel@xmailserver.org>
 .\" and Copyright 2007, 2012, 2014, 2018 Michael Kerrisk <tk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(GPLv2+_SW_3_PARA)
-.\"  This program is free software; you can redistribute it and/or modify
-.\"  it under the terms of the GNU General Public License as published by
-.\"  the Free Software Foundation; either version 2 of the License, or
-.\"  (at your option) any later version.
-.\"
-.\"  This program is distributed in the hope that it will be useful,
-.\"  but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\"  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\"  GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
 .\" 2007-04-30: mtk, Added description of epoll_pwait()
 .\"
-.TH EPOLL_WAIT 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH epoll_wait 2 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
-epoll_wait, epoll_pwait, epoll_pwait2 \- wait for an I/O event on an epoll file descriptor
+epoll_wait, epoll_pwait, epoll_pwait2 \-
+wait for an I/O event on an epoll file descriptor
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/epoll.h>
-.PP
+.P
 .BI "int epoll_wait(int " epfd ", struct epoll_event *" events ,
 .BI "               int " maxevents ", int " timeout );
 .BI "int epoll_pwait(int " epfd ", struct epoll_event *" events ,
 .BI "               int " maxevents ", int " timeout ,
-.BI "               const sigset_t *" sigmask );
+.BI "               const sigset_t *_Nullable " sigmask );
 .BI "int epoll_pwait2(int " epfd ", struct epoll_event *" events ,
-.BI "               int " maxevents ", const struct timespec *" timeout ,
-.BI "               const sigset_t *" sigmask );
-.\" FIXME: Check if glibc has added a wrapper for epoll_pwait2(),
-.\"        and if so, check the prototype.
-.\"        https://sourceware.org/bugzilla/show_bug.cgi?id=27359
+.BI "               int " maxevents ", \
+const struct timespec *_Nullable " timeout ,
+.BI "               const sigset_t *_Nullable " sigmask );
 .fi
 .SH DESCRIPTION
 The
@@ -58,7 +46,7 @@ are returned by
 The
 .I maxevents
 argument must be greater than zero.
-.PP
+.P
 The
 .I timeout
 argument specifies the number of milliseconds that
@@ -67,17 +55,17 @@ will block.
 Time is measured against the
 .B CLOCK_MONOTONIC
 clock.
-.PP
+.P
 A call to
 .BR epoll_wait ()
 will block until either:
-.IP \(bu 2
+.IP \[bu] 3
 a file descriptor delivers an event;
-.IP \(bu
+.IP \[bu]
 the call is interrupted by a signal handler; or
-.IP \(bu
+.IP \[bu]
 the timeout expires.
-.PP
+.P
 Note that the
 .I timeout
 interval will be rounded up to the system clock granularity,
@@ -92,27 +80,12 @@ to block indefinitely, while specifying a
 equal to zero cause
 .BR epoll_wait ()
 to return immediately, even if no events are available.
-.PP
+.P
 The
 .I struct epoll_event
-is defined as:
-.PP
-.in +4n
-.EX
-typedef union epoll_data {
-    void    *ptr;
-    int      fd;
-    uint32_t u32;
-    uint64_t u64;
-} epoll_data_t;
-
-struct epoll_event {
-    uint32_t     events;    /* Epoll events */
-    epoll_data_t data;      /* User data variable */
-};
-.EE
-.in
-.PP
+is described in
+.BR epoll_event (3type).
+.P
 The
 .I data
 field of each returned
@@ -122,7 +95,7 @@ in the most recent call to
 .BR epoll_ctl (2)
 .RB ( EPOLL_CTL_ADD ", " EPOLL_CTL_MOD )
 for the corresponding open file descriptor.
-.PP
+.P
 The
 .I events
 field is a bit mask that indicates the events that have occurred for the
@@ -145,31 +118,31 @@ like
 .BR epoll_pwait ()
 allows an application to safely wait until either a file descriptor
 becomes ready or until a signal is caught.
-.PP
+.P
 The following
 .BR epoll_pwait ()
 call:
-.PP
+.P
 .in +4n
 .EX
 ready = epoll_pwait(epfd, &events, maxevents, timeout, &sigmask);
 .EE
 .in
-.PP
+.P
 is equivalent to
 .I atomically
 executing the following calls:
-.PP
+.P
 .in +4n
 .EX
 sigset_t origmask;
-
+\&
 pthread_sigmask(SIG_SETMASK, &sigmask, &origmask);
 ready = epoll_wait(epfd, &events, maxevents, timeout);
 pthread_sigmask(SIG_SETMASK, &origmask, NULL);
 .EE
 .in
-.PP
+.P
 The
 .I sigmask
 argument may be specified as NULL, in which case
@@ -234,25 +207,22 @@ is not an
 file descriptor, or
 .I maxevents
 is less than or equal to zero.
-.SH VERSIONS
+.SH STANDARDS
+Linux.
+.SH HISTORY
+.TP
 .BR epoll_wait ()
-was added to the kernel in version 2.6.
-.\" To be precise: kernel 2.5.44.
-.\" The interface should be finalized by Linux kernel 2.5.66.
-Library support is provided in glibc starting with version 2.3.2.
-.PP
+Linux 2.6,
+.\" To be precise: Linux 2.5.44.
+.\" The interface should be finalized by Linux 2.5.66.
+glibc 2.3.2.
+.TP
 .BR epoll_pwait ()
-was added to Linux in kernel 2.6.19.
-Library support is provided in glibc starting with version 2.6.
-.PP
+Linux 2.6.19,
+glibc 2.6.
+.TP
 .BR epoll_pwait2 ()
-was added to Linux in kernel 5.11.
-.SH CONFORMING TO
-.BR epoll_wait (),
-.BR epoll_pwait (),
-and
-.BR epoll_pwait2 ()
-are Linux-specific.
+Linux 5.11.
 .SH NOTES
 While one thread is blocked in a call to
 .BR epoll_wait (),
@@ -263,7 +233,7 @@ If the new file descriptor becomes ready,
 it will cause the
 .BR epoll_wait ()
 call to unblock.
-.PP
+.P
 If more than
 .I maxevents
 file descriptors are ready when
@@ -275,7 +245,7 @@ This behavior helps avoid starvation scenarios,
 where a process fails to notice that additional file descriptors
 are ready because it focuses on a set of file descriptors that
 are already known to be ready.
-.PP
+.P
 Note that it is possible to call
 .BR epoll_wait ()
 on an
@@ -293,7 +263,7 @@ and
 system calls have a sixth argument,
 .IR "size_t sigsetsize" ,
 which specifies the size in bytes of the
-.IR sigmask
+.I sigmask
 argument.
 The glibc
 .BR epoll_pwait ()
@@ -301,7 +271,7 @@ wrapper function specifies this argument as a fixed value
 (equal to
 .IR sizeof(sigset_t) ).
 .SH BUGS
-In kernels before 2.6.37, a
+Before Linux 2.6.37, a
 .I timeout
 value larger than approximately
 .I LONG_MAX / HZ
@@ -316,12 +286,3 @@ this means that timeouts greater than 35.79 minutes are treated as infinity.
 .BR epoll_create (2),
 .BR epoll_ctl (2),
 .BR epoll (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_UID_GET_STATE" "3" "" "systemd 249" "sd_uid_get_state"
+.TH "SD_UID_GET_STATE" "3" "" "systemd 257" "sd_uid_get_state"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,7 +20,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-sd_uid_get_state, sd_uid_is_on_seat, sd_uid_get_sessions, sd_uid_get_seats, sd_uid_get_display \- Determine login state of a specific Unix user ID
+sd_uid_get_state, sd_uid_is_on_seat, sd_uid_get_sessions, sd_uid_get_seats, sd_uid_get_display, sd_uid_get_login_time \- Determine login state of a specific Unix user ID
 .SH "SYNOPSIS"
 .sp
 .ft B
@@ -38,6 +38,8 @@ sd_uid_get_state, sd_uid_is_on_seat, sd_uid_get_sessions, sd_uid_get_seats, sd_u
 .BI "int sd_uid_get_seats(uid_t\ " "uid" ", int\ " "require_active" ", char\ ***" "seats" ");"
 .HP \w'int\ sd_uid_get_display('u
 .BI "int sd_uid_get_display(uid_t\ " "uid" ", char\ **" "session" ");"
+.HP \w'int\ sd_uid_get_login_time('u
+.BI "int sd_uid_get_login_time(uid_t\ " "uid" ", uint64_t\ *" "usec" ");"
 .SH "DESCRIPTION"
 .PP
 \fBsd_uid_get_state()\fR
@@ -63,7 +65,7 @@ parameter is a boolean value\&. If non\-zero (true), this function will test if 
 \fBsd_uid_get_sessions()\fR
 may be used to determine the current sessions of the specified user\&. Accepts a Unix user identifier as parameter\&. The
 \fIrequire_active\fR
-parameter controls whether the returned list shall consist of only those sessions where the user is currently active (> 0), where the user is currently online but possibly inactive (= 0), or logged in at all but possibly closing the session (< 0)\&. The call returns a
+parameter controls whether the returned list shall consist of only those sessions where the user is currently active (> 0), where the user is currently online but possibly inactive (= 0), or logged in but possibly closing the session (< 0)\&. The call returns a
 \fBNULL\fR
 terminated string array of session identifiers in
 \fIsessions\fR
@@ -81,10 +83,19 @@ may be used to determine the list of seats on which the user currently has sessi
 .PP
 \fBsd_uid_get_display()\fR
 returns the name of the "primary" session of a user\&. If the user has graphical sessions, it will be the oldest graphical session\&. Otherwise, it will be the oldest open session\&.
+.PP
+\fBsd_uid_get_login_time()\fR
+may be used to determine the time the user\*(Aqs service manager has been invoked, which is the time when the user\*(Aqs first active session, since which they stayed logged in continuously, began\&. The
+\fIusec\fR
+is in microseconds since the epoch (\fBCLOCK_REALTIME\fR)\&. This call will fail with
+\fB\-ENXIO\fR
+if the user is not currently logged in\&.
 .SH "RETURN VALUE"
 .PP
 On success,
 \fBsd_uid_get_state()\fR
+and
+\fBsd_uid_get_login_time()\fR
 returns 0 or a positive integer\&. If the test succeeds,
 \fBsd_uid_is_on_seat()\fR
 returns a positive integer; if it fails, 0\&.
@@ -123,11 +134,23 @@ Memory allocation failed\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_uid_get_display()\fR
+was added in version 213\&.
+.PP
+\fBsd_uid_get_login_time()\fR
+was added in version 254\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-login\fR(3),
-\fBsd_pid_get_owner_uid\fR(3)
+\fBsystemd\fR(1), \fBsd-login\fR(3), \fBsd_pid_get_owner_uid\fR(3)

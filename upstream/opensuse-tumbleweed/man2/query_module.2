@@ -1,29 +1,26 @@
 .\" Copyright (C) 1996 Free Software Foundation, Inc.
 .\"
-.\" %%%LICENSE_START(GPL_NOVERSION_ONELINE)
-.\" This file is distributed according to the GNU General Public License.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-1.0-or-later
 .\"
 .\" 2006-02-09, some reformatting by Luc Van Oostenryck; some
 .\" reformatting and rewordings by mtk
 .\"
-.TH QUERY_MODULE 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH query_module 2 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 query_module \- query the kernel for various bits pertaining to modules
 .SH SYNOPSIS
 .nf
 .B #include <linux/module.h>
-.PP
-.BI "int query_module(const char *" name ", int " which ", void *" buf ,
-.BI "                 size_t " bufsize ", size_t *" ret );
+.P
+.BI "[[deprecated]] int query_module(const char *" name ", int " which ,
+.BI "                                void " buf [. bufsize "], \
+size_t " bufsize ,
+.BI "                                size_t *" ret );
 .fi
-.PP
-.IR Note :
-No declaration of this system call is provided in glibc headers; see NOTES.
 .SH DESCRIPTION
 .IR Note :
-This system call is present only in kernels before Linux 2.6.
-.PP
+This system call is present only before Linux 2.6.
+.P
 .BR query_module ()
 requests information from the kernel about loadable modules.
 The returned information is placed in the buffer pointed to by
@@ -40,7 +37,7 @@ Some operations require
 to identify a currently loaded module, some allow
 .I name
 to be NULL, indicating the kernel proper.
-.PP
+.P
 The following values can be specified for
 .IR which :
 .TP
@@ -164,15 +161,13 @@ is set to the minimum size needed.
 .B ENOSYS
 .BR query_module ()
 is not supported in this version of the kernel
-(e.g., the kernel is version 2.6 or later).
+(e.g., Linux 2.6 or later).
+.SH STANDARDS
+Linux.
 .SH VERSIONS
-This system call is present on Linux only up until kernel 2.4;
-it was removed in Linux 2.6.
+Removed in Linux 2.6.
 .\" Removed in Linux 2.5.48
-.SH CONFORMING TO
-.BR query_module ()
-is Linux-specific.
-.SH NOTES
+.P
 Some of the information that was formerly available via
 .BR query_module ()
 can be obtained from
@@ -180,7 +175,7 @@ can be obtained from
 .IR /proc/kallsyms ,
 and the files under the directory
 .IR /sys/module .
-.PP
+.P
 The
 .BR query_module ()
 system call is not supported by glibc.

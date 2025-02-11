@@ -3,7 +3,7 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "Pstopnm User Manual" 0 "06 December 2013" "netpbm documentation"
+.TH "Pstopnm User Manual" 0 "21 February 2024" "netpbm documentation"
 
 .SH NAME
 pstopnm - convert a PostScript file to a PNM image
@@ -67,7 +67,7 @@ This program is part of
 .BR "Netpbm" (1)\c
 \&.
 .PP
-\fBpstopnm\fP reads a PostScript file as input and produces PBM,
+\fBpstopnm\fP reads a PostScript or PDF file as input and produces PBM,
 PGM, or PPM images as output.  This program simply uses GhostScript to
 render a PostScript file with its PNM device drivers.  If you don't
 have GhostScript installed or the version you have installed was not
@@ -280,6 +280,7 @@ If you're trying to do the equivalent of the naive
     $ pstopnm -xborder=0 -yborder=0 -xsize=\fIXSIZE\fP -ysize=\fIYSIZE\fP \e
         -portrait -stdout -quiet testimg.ps >testimg2.ppm
 \fP
+
 .fi
 
 \fIXSIZE\fP and \fIYSIZE\fP above are the image dimensions, which you can
@@ -302,11 +303,24 @@ wouldn't use those in a program).
 
     $ pstopnm -xborder=0 -yborder=0 $xysize -portrait ... testimg.ps
 \fP
+
 .fi
 .PP
 Note that Ghostscript bugs can keep this from doing a perfect
 reversible conversion.
-
+.PP
+PDF is a subset of Postscript, so \fBpstopnm\fP can convert from PDF to
+Netpbm format, but often produces the wrong size image because of
+\fBpstopnm\fP's reliance on a BoundingBox DSC statement, which PDF does
+not have.  With pure text PDFs, it works fine.  In other cases, you can get
+better results by converting to general Postscript with the \fBpdf2ps\fP
+program that comes with Ghostscript.  For more information about converting to
+and from PDF, see
+.UR index.html#document
+Document/Graphics Software
+.UE
+\&.
+  
 
 .UN options
 .SH OPTIONS
@@ -516,6 +530,7 @@ files, probably the best bet is to use the following options:
 
 .nf
     pstopnm -xborder 0 -yborder 0 -portrait -nocrop file.ps
+
 .fi
 .PP
 Additional options may be needed if the document is supposed to be

@@ -6,6 +6,7 @@ The following steps are taken to release a new version
 gbp import-orig --uscan
 # Do we need to do git tag this manually?
 
+export DEBFULLNAME="Dr. Helge Kreutzmann"
 dch -i # New upstream version
 
 # Check the following and after each dash commit (last line in block)
@@ -21,6 +22,8 @@ git commit -a
 # Build (source?) package → better done plain with debuild and friends
 gbp buildpackage
 
+# If new man page sections are used (or previous removed): Update manpages-….install AND control (match description)
+
 gbp buildpackage --git-tag-only
 git push --tags
 
@@ -32,24 +35,33 @@ The following steps are taken to backport a new version
 =======================================================
 # Check that base version reached testing
 
-# Switch to backport branch
-git checkout -b buster-backports origin/buster-backports
+# If this is the first backport:
+git checkout -b bookworm-backports
+
+# Adjust debian/rules:
+# dh_auto_configure -- --enable-distribution=debian-bookworm
+
+# Update path to links file in d/*.links
+
+# Otherwise switch to existing backport branch
+git checkout bookworm-backports
 git fetch
-# git checkout buster-backports
 
 # Merge Master into it and resolve conflicts
 git merge master
-# Turn all Breaks + Replaces (when l10n manpages moved to upstream and appeared there in Debian) to Conflicts
 
+export DEBFULLNAME="Dr. Helge Kreutzmann"
 vim debian/changelog
 git commit -a
+
+# Turn all Breaks + Replaces (when l10n manpages moved to upstream and appeared there in Debian) to Conflicts
 
 # Prepare the changelog
 dch --bpo
 git commit -a
 
 # Build (source?) package
-gbp buildpackage --git-debian-branch=buster-backports
+gbp buildpackage --git-debian-branch=bookworm-backports
 
 # Test and upload
 Download the .tar.gz from testing used as base (apt-get source should suffice)

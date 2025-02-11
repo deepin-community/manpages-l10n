@@ -1,0 +1,94 @@
+'\" t
+.\"     Title: offload-build
+.\"    Author: [see the "AUTHOR(S)" section]
+.\" Generator: Asciidoctor 2.0.23
+.\"      Date: 2024-06-18
+.\"    Manual: \ \&
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "OFFLOAD\-BUILD" "1" "2024-06-18" "\ \&" "\ \&"
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.ss \n[.ss] 0
+.nh
+.ad l
+.de URL
+\fI\\$2\fP <\\$1>\\$3
+..
+.als MTO URL
+.if \n[.g] \{\
+.  mso www.tmac
+.  am URL
+.    ad l
+.  .
+.  am MTO
+.    ad l
+.  .
+.  LINKSTYLE blue R < >
+.\}
+.SH "NAME"
+offload-build \- Build a PKGBUILD on a remote server using makechrootpkg
+.SH "SYNOPSIS"
+.sp
+offload\-build [OPTIONS] \(em [ARCHBUILD_OPTIONS]
+.SH "DESCRIPTION"
+.sp
+Build a PKGBUILD on a remote server using makechrootpkg. Requires a remote user
+that can run archbuild in a non\-interactive manner, e.g. must be able to
+elevate permissions using passwordless sudo.
+.SH "OPTIONS"
+.sp
+\fB\-r, \-\-repo\fP <reponame>
+.RS 4
+Build against a specific repository. The default is \f(CRextra\fP, to build packages using
+the stable repositories via extra\-x86_64\-build.
+.RE
+.sp
+\fB\-a, \-\-arch\fP <architecture>
+.RS 4
+Build against a specific architecture. The default is \f(CRx86_64\fP, the only
+architecture officially supported by Arch Linux.
+.RE
+.sp
+\fB\-s, \-\-server\fP <hostname>
+.RS 4
+Offload to a specific build server. The default is build.archlinux.org
+which is used as part of the build toolchain for the official Arch Linux
+repos.
+.RE
+.sp
+\fB\-h, \-\-help\fP
+.RS 4
+Show a help text.
+.RE
+.SH "PASSING OPTIONS TO ARCHBUILD"
+.sp
+Options after a delimiting \(em are passed on to archbuild on the remote.
+archbuild in turn supports passing arguments on to makechrootpkg, which in turn
+supports passing options to makepkg. Since each uses \(em to delimit options that
+are forwarded, make sure to escape them properly:
+.sp
+.if n .RS 4
+.nf
+.fam C
+`offload\-build offload\-args \-\- archbuild\-args \-\- makechrootpkg\-args \-\- makepkg\-args`
+.fam
+.fi
+.if n .RE
+.sp
+Example: To use a second \f(CRtesting\-x86_64\-build\fP instance with another copydir:
+.sp
+.if n .RS 4
+.nf
+.fam C
+`offload\-build \-r testing \-\- \-\- \-l <chroot_copy>`
+.fam
+.fi
+.if n .RE
+.SH "HOMEPAGE"
+.sp
+\fI\c
+.URL "https://gitlab.archlinux.org/archlinux/devtools" "" "\fP"
+.sp
+Please report bugs and feature requests in the issue tracker. Please do your best to provide a reproducible test case for bugs.

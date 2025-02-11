@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_PROCESS" "3" "" "systemd 249" "sd_bus_process"
+.TH "SD_BUS_PROCESS" "3" "" "systemd 255" "sd_bus_process"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -33,9 +33,9 @@ sd_bus_process \- Drive the connection
 .SH "DESCRIPTION"
 .PP
 \fBsd_bus_process()\fR
-drives the connection between the client and the message bus\&. That is, it handles connecting, authentication, and message processing\&. When invoked pending I/O work is executed, and queued incoming messages are dispatched to registered callbacks\&. Each time it is invoked a single operation is executed\&. It returns zero when no operations were pending and positive if a message was processed\&. When zero is returned the caller should synchronously poll for I/O events before calling into
+drives the connection between the client and the message bus\&. That is, it handles connecting, authentication, and processing of messages\&. When invoked, pending I/O work is executed, and queued incoming messages are dispatched to registered callbacks\&. Each time it is invoked a single operation is executed\&. It returns zero when no operations were pending and positive if a message was processed\&. When zero is returned the caller should poll for I/O events before calling into
 \fBsd_bus_process()\fR
-again\&. For that either use the simple, synchronous
+again\&. For that either use the simple, blocking
 \fBsd_bus_wait\fR(3)
 call, or hook up the bus connection object to an external or manual event loop using
 \fBsd_bus_get_fd\fR(3)\&.
@@ -101,9 +101,20 @@ has been called from a callback function that itself was called by
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_process()\fR
+was added in version 231\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

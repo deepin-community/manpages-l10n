@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_MESSAGE_READ" "3" "" "systemd 249" "sd_bus_message_read"
+.TH "SD_BUS_MESSAGE_READ" "3" "" "systemd 255" "sd_bus_message_read"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -114,7 +114,7 @@ T{
 T}:T{
 \fBSD_BUS_TYPE_BYTE\fR
 T}:T{
-8bit unsigned integer
+8\-bit unsigned integer
 T}:T{
 \fBuint8_t *\fR
 T}:T{
@@ -136,7 +136,7 @@ T{
 T}:T{
 \fBSD_BUS_TYPE_INT16\fR
 T}:T{
-16bit signed integer
+16\-bit signed integer
 T}:T{
 \fBint16_t *\fR
 T}:T{
@@ -147,7 +147,7 @@ T{
 T}:T{
 \fBSD_BUS_TYPE_UINT16\fR
 T}:T{
-16bit unsigned integer
+16\-bit unsigned integer
 T}:T{
 \fBuint16_t *\fR
 T}:T{
@@ -158,7 +158,7 @@ T{
 T}:T{
 \fBSD_BUS_TYPE_INT32\fR
 T}:T{
-32bit signed integer
+32\-bit signed integer
 T}:T{
 \fBint32_t *\fR
 T}:T{
@@ -169,7 +169,7 @@ T{
 T}:T{
 \fBSD_BUS_TYPE_UINT32\fR
 T}:T{
-32bit unsigned integer
+32\-bit unsigned integer
 T}:T{
 \fBuint32_t *\fR
 T}:T{
@@ -180,7 +180,7 @@ T{
 T}:T{
 \fBSD_BUS_TYPE_INT64\fR
 T}:T{
-64bit signed integer
+64\-bit signed integer
 T}:T{
 \fBint64_t *\fR
 T}:T{
@@ -191,7 +191,7 @@ T{
 T}:T{
 \fBSD_BUS_TYPE_UINT64\fR
 T}:T{
-64bit unsigned integer
+64\-bit unsigned integer
 T}:T{
 \fBuint64_t *\fR
 T}:T{
@@ -359,11 +359,25 @@ The message does not contain the specified type at current position\&.
 .RS 4
 The message cannot be parsed\&.
 .RE
+.PP
+\fB\-EBUSY\fR
+.RS 4
+When reading from a container, this error will be returned if unread elements are left in the container\&.
+.sp
+Added in version 251\&.
+.RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
 .SH "EXAMPLES"
 .PP
 Read a single basic type (a 64\-bit integer):
@@ -478,6 +492,15 @@ fd_copy = fcntl(fd, FD_DUPFD_CLOEXEC, 3);
 .if n \{\
 .RE
 .\}
+.SH "HISTORY"
+.PP
+\fBsd_bus_message_read()\fR
+and
+\fBsd_bus_message_readv()\fR
+were added in version 240\&.
+.PP
+\fBsd_bus_message_peek_type()\fR
+was added in version 246\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

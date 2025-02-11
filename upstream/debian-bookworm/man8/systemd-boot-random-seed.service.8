@@ -1,0 +1,114 @@
+'\" t
+.TH "SYSTEMD\-BOOT\-RANDOM\-SEED\&.SERVICE" "8" "" "systemd 254" "systemd-boot-random-seed.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-boot-random-seed.service \- Refresh boot loader random seed at boot
+.SH "SYNOPSIS"
+.PP
+systemd\-boot\-random\-seed\&.service
+.SH "DESCRIPTION"
+.PP
+systemd\-boot\-random\-seed\&.service
+is a system service that automatically refreshes the boot loader random seed stored in the EFI System Partition (ESP), from the Linux kernel entropy pool\&. The boot loader random seed is primarily consumed and updated by
+\fBsystemd-boot\fR(7)
+from the UEFI environment (or
+\fBsystemd-stub\fR(7)
+if the former is not used, but the latter is), and passed as initial RNG seed to the OS\&. It is an effective way to ensure the OS comes up with a random pool that is fully initialized\&.
+.PP
+The service also automatically generates a \*(Aqsystem token\*(Aq to store in an EFI variable in the system\*(Aqs NVRAM\&. The boot loader may then combine the on\-disk random seed and the system token by cryptographic hashing, and pass it to the OS it boots as initialization seed for its entropy pool\&. Note: the random seed stored in the ESP is refreshed on
+\fIevery\fR
+reboot ensuring that multiple subsequent boots will boot with different seeds\&. On the other hand, the system token is generated randomly
+\fIonce\fR, and then persistently stored in the system\*(Aqs EFI variable storage, ensuring the same disk image won\*(Aqt result in the same series of boot loader seed values if used on multiple systems in parallel\&.
+.PP
+The
+systemd\-boot\-random\-seed\&.service
+unit invokes the
+\fBbootctl random\-seed\fR
+command, which updates the random seed in the ESP, and initializes the system token if it\*(Aqs not initialized yet\&. The service is conditionalized so that it is run only when a boot loader is used that implements the
+\m[blue]\fBBoot Loader Interface\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.PP
+For further details see
+\fBbootctl\fR(1), regarding the command this service invokes\&.
+.PP
+Note the relationship between
+systemd\-boot\-random\-seed\&.service
+and
+\fBsystemd-random-seed\fR(8)\&. The former maintains the random seed consumed and updated by the boot environment (i\&.e\&. by
+\fBsystemd-boot\fR(7)
+or
+\fBsystemd-stub\fR(7)), the latter maintains a random seed consumed and updated by the OS itself\&. The former ensures that the OS has a filled entropy pool already during earliest boot when regular disk access is not available yet (i\&.e\&. when the OS random seed cannot be loaded yet)\&. The latter is processed much later, once writable disk access is available\&. Thus it cannot be used to seed the initial boot phase, but typically has much higher quality of entropy\&. Both files are consumed and updated at boot, but at different times\&. Specifically:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+In UEFI mode, the
+\fBsystemd-boot\fR(7)
+or
+\fBsystemd-stub\fR(7)
+components load the boot loader random seed from the ESP, hash it with available entropy and the system token, and then update it on disk\&. A derived seed is passed to the kernel which writes it to its entropy pool\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+In userspace the
+systemd\-random\-seed\&.service
+service loads the OS random seed, writes it to the kernel entropy pool, and then updates it on disk with a new value derived from the kernel entropy pool\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+In userspace the
+systemd\-boot\-random\-seed\&.service
+service updates the boot loader random seed with a new value derived from the kernel entropy pool\&.
+.RE
+.PP
+This logic should ensure that the kernel\*(Aqs entropy pool is seeded during earliest bool already, if possible, but the highest quality entropy is propagated back to both on\-disk seeds\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBrandom\fR(4),
+\fBbootctl\fR(1),
+\fBsystemd-boot\fR(7),
+\fBsystemd-stub\fR(7),
+\fBsystemd-random-seed.service\fR(8)
+.SH "NOTES"
+.IP " 1." 4
+Boot Loader Interface
+.RS 4
+\%https://systemd.io/BOOT_LOADER_INTERFACE
+.RE

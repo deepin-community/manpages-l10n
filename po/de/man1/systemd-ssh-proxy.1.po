@@ -1,0 +1,410 @@
+# German translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Helge Kreutzmann <debian@helgefjell.de>, 2024.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n 4.24.0\n"
+"POT-Creation-Date: 2024-12-22 07:44+0100\n"
+"PO-Revision-Date: 2024-12-02 20:26+0100\n"
+"Last-Translator: Helge Kreutzmann <debian@helgefjell.de>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "SYSTEMD-SSH-PROXY"
+msgstr "SYSTEMD-SSH-PROXY"
+
+#. type: TH
+#: archlinux
+#, no-wrap
+msgid "systemd 257"
+msgstr "systemd 257"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "systemd-ssh-proxy"
+msgstr "systemd-ssh-proxy"
+
+#.  -----------------------------------------------------------------
+#.  * MAIN CONTENT STARTS HERE *
+#.  -----------------------------------------------------------------
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr "BEZEICHNUNG"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"systemd-ssh-proxy - SSH client plugin for connecting to B<AF_VSOCK> and "
+"B<AF_UNIX> sockets"
+msgstr ""
+"systemd-ssh-proxy - SSH-Client-Erweiterung für Verbindung zu B<AF_VSOCK>- "
+"und B<AF_UNIX>-Sockets"
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "ÜBERSICHT"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"Host unix/* vsock/* vsock-mux/*\n"
+"    ProxyCommand /usr/lib/systemd/systemd-ssh-proxy %h %p\n"
+"    ProxyUseFdpass yes\n"
+msgstr ""
+"Host unix/* vsock/* vsock-mux/*\n"
+"    ProxyCommand /usr/lib/systemd/systemd-ssh-proxy %h %p\n"
+"    ProxyUseFdpass yes\n"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "B</usr/lib/systemd/systemd-ssh-proxy> [ADDRESS] [PORT]"
+msgstr "B</usr/lib/systemd/systemd-ssh-proxy> [ADRESSE] [PORT]"
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "BESCHREIBUNG"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"B<systemd-ssh-proxy> is a small \"proxy\" plugin for the B<ssh>(1)  tool "
+"that allows connecting to B<AF_UNIX> and B<AF_VSOCK> sockets\\&. It "
+"implements the interface defined by ssh\\*(Aqs I<ProxyCommand> configuration "
+"option\\&. It\\*(Aqs supposed to be used with an B<ssh_config>(5)  "
+"configuration fragment like the following:"
+msgstr ""
+"B<systemd-ssh-proxy> ist eine kleine »Proxy«-Erweiterung für das Werkzeug "
+"B<ssh>(1), die die Verbindung zu B<AF_UNIX>- und B<AF_VSOCK>-Sockets "
+"ermöglicht\\&. Sie implementiert die durch die Konfigurationsoption "
+"I<ProxyCommand> von B<ssh>(1) definierte Schnittstelle\\&. Sie ist dazu "
+"gedacht, mit einem B<ssh_config>(5)-Konfigurationsfragment der folgenden Art "
+"verwandt zu werden."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+#, no-wrap
+msgid ""
+"Host unix/* vsock/* vsock-mux/*\n"
+"    ProxyCommand /usr/lib/systemd/systemd-ssh-proxy %h %p\n"
+"    ProxyUseFdpass yes\n"
+"    CheckHostIP no\n"
+msgstr ""
+"Host unix/* vsock/* vsock-mux/*\n"
+"    ProxyCommand /usr/lib/systemd/systemd-ssh-proxy %h %p\n"
+"    ProxyUseFdpass yes\n"
+"    CheckHostIP no\n"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"Host \\&.host\n"
+"    ProxyCommand /usr/lib/systemd/systemd-ssh-proxy unix/run/ssh-unix-local/socket %p\n"
+"    ProxyUseFdpass yes\n"
+"    CheckHostIP no\n"
+msgstr ""
+"Host \\&.host\n"
+"    ProxyCommand /usr/lib/systemd/systemd-ssh-proxy unix/run/ssh-unix-local/socket %p\n"
+"    ProxyUseFdpass yes\n"
+"    CheckHostIP no\n"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"A configuration fragment along these lines is by default installed into /etc/"
+"ssh/ssh_config\\&.d/20-systemd-ssh-proxy\\&.conf\\&."
+msgstr ""
+"Ein Konfigurationsfragment dieser Art wird standardmäßig in /etc/ssh/"
+"ssh_config\\&.d/20-systemd-ssh-proxy\\&.conf installiert\\&."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"With this in place, SSH connections to host string \"unix/\" followed by an "
+"absolute B<AF_UNIX> file system path to a socket will be directed to the "
+"specified socket, which must be of type B<SOCK_STREAM>\\&. Similar, SSH "
+"connections to \"vsock/\" followed by an B<AF_VSOCK> CID will result in an "
+"SSH connection made to that CID\\&.  \"vsock-mux/\" followed by an absolute "
+"B<AF_UNIX> file system path to a socket is similar but for cloud-hypervisor/"
+"firecracker which don\\*(Aqt allow direct B<AF_VSOCK> communication between "
+"the host and guests, and provide their own multiplexer over B<AF_UNIX> "
+"sockets\\&. See \\m[blue]B<cloud-hypervisor VSOCK support>\\m[]"
+"\\&\\s-2\\u[1]\\d\\s+2 and \\m[blue]B<Using the Firecracker Virtio-vsock "
+"Device>\\m[]\\&\\s-2\\u[2]\\d\\s+2\\&."
+msgstr ""
+"Ist dieses vorhanden, werden SSH-Verbindungen mit der Rechnerzeichenkette "
+"»unix/« gefolgt von einem absoluten Dateisystempfad zu einem B<AF_UNIX>-"
+"Socket zu dem angegebenen Socket geleitet, der vom Typ B<SOCK_STREAM> sein "
+"muss\\&. Ähnlich werden SSH-Verbindungen zu »vsock/« gefolgt von einer "
+"B<AF_VSOCK>-CID dazu führen, dass eine SSH-Verbindung zu dieser CID "
+"aufgebaut wird\\&. »vsock-mux/« gefolgt von einem absoluten B<AF_UNIX>-"
+"Dateisystempfad zu einem Socket ist ähnlich, aber für Cloud-Hypervisor/"
+"Firecracker, die keine direkte B<AF_VSOCK>-Kommunikation zwischen dem Wirt "
+"und dem Gast erlauben und ihren eigenen Multiplexer über B<AF_UNIX>-Sockets "
+"bereitstellen\\&. Siehe \\m[blue]B<Cloud-hypervisor VSOCK-Unterstützung>\\m[]"
+"\\&\\s-2\\u[1]\\d\\s+2 and \\m[blue]B<Verwendung des Firecracker Virtio-"
+"Vsock-Gerätes>\\m[]\\&\\s-2\\u[2]\\d\\s+2\\&."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"Moreover connecting to \"\\&.host\" will connect to the local host via SSH, "
+"without involving networking\\&."
+msgstr ""
+"Desweiteren wird eine Verbindung zu »\\&.host« zu einer Verbindung zu der "
+"lokalen Maschine mittels SSH führen, ohne das Netzwerk zu verwenden\\&."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide opensuse-tumbleweed
+msgid ""
+"This tool is supposed to be used together with B<systemd-ssh-generator>(8)  "
+"which when run inside a VM or container will bind SSH to suitable "
+"addresses\\&.  B<systemd-ssh-generator> is supposed to run in the container "
+"or VM guest, and B<systemd-ssh-proxy> is run on the host, in order to "
+"connect to the container or VM guest\\&."
+msgstr ""
+"Dieses Werkzeug ist dazu gedacht, zusammen mit B<systemd-ssh-generator>(8) "
+"verwandt zu werden, das bei der Ausführung innerhalb einer VM oder eines "
+"Containers SSH an geeignete Adressen anbindet\\&. B<systemd-ssh-generator> "
+"ist dazu gedacht, innerhalb des Containers oder eines VM-Gastes verwandt zu "
+"werden und B<systemd-ssh-proxy> wird auf dem Wirt ausgeführt, damit zu dem "
+"Container oder VM-Gast verbunden wird\\&."
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "EXIT STATUS"
+msgstr "EXIT-STATUS"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "On success, 0 is returned, a non-zero failure code otherwise\\&."
+msgstr ""
+"Bei Erfolg wird 0 zurückgegeben, anderenfalls ein Fehlercode ungleich "
+"Null\\&."
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "EXAMPLES"
+msgstr "BEISPIELE"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "B<Example\\ \\&1.\\ \\&Talk to a local VM with CID 4711>"
+msgstr ""
+"B<Beispiel\\ \\&1.\\ \\&Kommunikation mit einer lokalen VM mit CID 4711>"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "ssh vsock/4711\n"
+msgstr "ssh vsock/4711\n"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"B<Example\\ \\&2.\\ \\&Talk to a VM guest hosted with cloud-hypervisor/"
+"firecracker>"
+msgstr ""
+"B<Beispiel\\ \\&2.\\ \\&Kommunikation mit einem VM-Gast, der mit Cloud-"
+"Hypervisor/Firecracker> betrieben wird"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+#, no-wrap
+msgid "ssh vsock-mux/run/vm-1234\\&.sock\n"
+msgstr "ssh vsock-mux/run/vm-1234\\&.sock\n"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid "B<Example\\ \\&3.\\ \\&Talk to the local host via ssh>"
+msgstr ""
+"B<Beispiel\\ \\&3.\\ \\&Kommunikation mit dem lokalen Rechner mittels ssh>"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "ssh \\&.host\n"
+msgstr "ssh \\&.host\n"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "or equivalent:"
+msgstr "oder äquivalent:"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "ssh unix/run/ssh-unix-local/socket\n"
+msgstr "ssh unix/run/ssh-unix-local/socket\n"
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "SIEHE AUCH"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"B<systemd>(1), B<systemd-ssh-generator>(8), B<vsock>(7), B<unix>(7), "
+"B<ssh>(1), B<sshd>(8)"
+msgstr ""
+"B<systemd>(1), B<systemd-ssh-generator>(8), B<vsock>(7), B<unix>(7), "
+"B<ssh>(1), B<sshd>(8)"
+
+#. type: SH
+#: archlinux debian-unstable fedora-rawhide
+#, no-wrap
+msgid "NOTES"
+msgstr "ANMERKUNGEN"
+
+#. type: IP
+#: archlinux debian-unstable fedora-rawhide
+#, no-wrap
+msgid " 1."
+msgstr " 1."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid "cloud-hypervisor VSOCK support"
+msgstr "Cloud-Hypervisor VSOCK-Unterstützung"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"\\%https://github.com/cloud-hypervisor/cloud-hypervisor/blob/main/docs/"
+"vsock.md"
+msgstr ""
+"\\%https://github.com/cloud-hypervisor/cloud-hypervisor/blob/main/docs/"
+"vsock.md"
+
+#. type: IP
+#: archlinux debian-unstable fedora-rawhide
+#, no-wrap
+msgid " 2."
+msgstr " 2."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid "Using the Firecracker Virtio-vsock Device"
+msgstr "Verwendung des Firecracker Virtio-Vsock-Gerätes"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"\\%https://github.com/firecracker-microvm/firecracker/blob/main/docs/vsock.md"
+msgstr ""
+"\\%https://github.com/firecracker-microvm/firecracker/blob/main/docs/vsock.md"
+
+#. type: TH
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "systemd 257.1"
+msgstr "systemd 257.1"
+
+#. type: TH
+#: fedora-41
+#, no-wrap
+msgid "systemd 256.7"
+msgstr "systemd 256.7"
+
+#. type: Plain text
+#: fedora-41 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"Host unix/* vsock/*\n"
+"    ProxyCommand /usr/lib/systemd/systemd-ssh-proxy %h %p\n"
+"    ProxyUseFdpass yes\n"
+msgstr ""
+"Host unix/* vsock/*\n"
+"    ProxyCommand /usr/lib/systemd/systemd-ssh-proxy %h %p\n"
+"    ProxyUseFdpass yes\n"
+
+#. type: Plain text
+#: fedora-41 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"Host unix/* vsock/*\n"
+"    ProxyCommand /usr/lib/systemd/systemd-ssh-proxy %h %p\n"
+"    ProxyUseFdpass yes\n"
+"    CheckHostIP no\n"
+msgstr ""
+"Host unix/* vsock/*\n"
+"    ProxyCommand /usr/lib/systemd/systemd-ssh-proxy %h %p\n"
+"    ProxyUseFdpass yes\n"
+"    CheckHostIP no\n"
+
+#. type: Plain text
+#: fedora-41 opensuse-tumbleweed
+msgid ""
+"A configuration fragment along these lines is by default installed into /etc/"
+"ssh/ssh_config\\&.d/20-systemd-ssh-proxy\\&.conf\\&.in\\&."
+msgstr ""
+"Ein Konfigurationsfragment dieser Art wird standardmäßig in /etc/ssh/"
+"ssh_config\\&.d/20-systemd-ssh-proxy\\&.conf\\&.in installiert\\&."
+
+#. type: Plain text
+#: fedora-41 opensuse-tumbleweed
+msgid ""
+"With this in place, SSH connections to host string \"unix/\" followed by an "
+"absolute B<AF_UNIX> file system path to a socket will be directed to the "
+"specified socket, which must be of type B<SOCK_STREAM>\\&. Similar, SSH "
+"connections to \"vsock/\" followed by an B<AF_VSOCK> CID will result in an "
+"SSH connection made to that CID\\&. Moreover connecting to \"\\&.host\" will "
+"connect to the local host via SSH, without involving networking\\&."
+msgstr ""
+"Ist dieses vorhanden, werden SSH-Verbindungen mit der Rechnerzeichenkette "
+"»unix/« gefolgt von einem absoluten Dateisystempfad zu einem B<AF_UNIX>-"
+"Socket zu dem angegebenen Socket geleitet, der vom Typ B<SOCK_STREAM> sein "
+"muss\\&. Ähnlich werden SSH-Verbindungen zu »vsock/« gefolgt von einer "
+"B<AF_VSOCK>-CID dazu führen, dass eine SSH-Verbindung zu dieser CID "
+"aufgebaut wird\\&. Desweiteren wird eine Verbindung zu »\\&.host« zu einer "
+"Verbindung zu der lokalen Maschine mittels SSH führen, ohne das Netzwerk zu "
+"verwenden\\&."
+
+# FIXME of VM guest → or VM guest?
+#. type: Plain text
+#: fedora-41
+msgid ""
+"This tool is supposed to be used together with B<systemd-ssh-generator>(8)  "
+"which when run inside a VM or container will bind SSH to suitable "
+"addresses\\&.  B<systemd-ssh-generator> is supposed to run in the container "
+"of VM guest, and B<systemd-ssh-proxy> is run on the host, in order to "
+"connect to the container or VM guest\\&."
+msgstr ""
+"Dieses Werkzeug ist dazu gedacht, zusammen mit B<systemd-ssh-generator>(8) "
+"verwandt zu werden, das bei der Ausführung innerhalb einer VM oder eines "
+"Containers SSH an geeignete Adressen anbindet\\&. B<systemd-ssh-generator> "
+"ist dazu gedacht, innerhalb des Containers oder eines VM-Gastes verwandt zu "
+"werden und B<systemd-ssh-proxy> wird auf dem Wirt ausgeführt, damit zu dem "
+"Container oder VM-Gast verbunden wird\\&."
+
+#. type: Plain text
+#: fedora-41 opensuse-tumbleweed
+msgid "B<Example\\ \\&2.\\ \\&Talk to the local host via ssh>"
+msgstr ""
+"B<Beispiel\\ \\&2.\\ \\&Kommunikation mit dem lokalen Rechner mittels ssh>"
+
+#. type: TH
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "systemd 256.8"
+msgstr "systemd 256.8"

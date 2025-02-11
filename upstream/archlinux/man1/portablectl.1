@@ -1,5 +1,5 @@
 '\" t
-.TH "PORTABLECTL" "1" "" "systemd 249" "portablectl"
+.TH "PORTABLECTL" "1" "" "systemd 257" "portablectl"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,9 +38,10 @@ or
 \fIRootImage=\fR
 assignments (in case of service units) pointing to the image file or directory, ensuring the services will run within the file system context of the image\&.
 .PP
-Portable service images are an efficient way to bundle multiple related services and other units together, and transfer them as a whole between systems\&. When these images are attached the local system the contained units may run in most ways like regular system\-provided units, either with full privileges or inside strict sandboxing, depending on the selected configuration\&.
+Portable service images are an efficient way to bundle multiple related services and other units together, and transfer them as a whole between systems\&. When these images are attached to the local system, the contained units may run in most ways like regular system\-provided units, either with full privileges or inside strict sandboxing, depending on the selected configuration\&. For more details, see
+\m[blue]\fBPortable Services\fR\m[]\&\s-2\u[1]\d\s+2\&.
 .PP
-Specifically portable service images may be of the following kind:
+Portable service images may be of the following kinds:
 .sp
 .RS 4
 .ie n \{\
@@ -85,6 +86,8 @@ The following commands are understood:
 \fBlist\fR
 .RS 4
 List available portable service images\&. This will list all portable service images discovered in the portable image search paths (see below), along with brief metadata and state information\&. Note that many of the commands below may both operate on images inside and outside of the search paths\&. This command is hence mostly a convenience option, the commands are generally not restricted to what this list shows\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fBattach\fR \fIIMAGE\fR [\fIPREFIX\&...\fR]
@@ -116,7 +119,7 @@ directory (or
 /run/systemd/system\&.attached/
 \(em depending whether
 \fB\-\-runtime\fR
-is specified, see above), which is included in the built\-in unit search path of the system service manager\&.
+is specified, see below), which is included in the built\-in unit search path of the system service manager\&.
 .RE
 .sp
 .RS 4
@@ -184,15 +187,29 @@ will be considered\&. It\*(Aqs possible to override the matching prefix: all str
 .sp
 By default, after the unit files are attached the service manager\*(Aqs configuration is reloaded, except when
 \fB\-\-no\-reload\fR
-is specified (see above)\&. This ensures that the new units made available to the service manager are seen by it\&.
+is specified (see below)\&. This ensures that the new units made available to the service manager are seen by it\&.
 .sp
 If
 \fB\-\-now\fR
 and/or
 \fB\-\-enable\fR
-are passed, the portable service(s) are immediately started (blocking operation unless
+are passed, the portable services are immediately started (blocking operation unless
 \fB\-\-no\-block\fR
 is passed) and/or enabled after attaching the image\&.
+.sp
+In place of the image path a
+"\&.v/"
+versioned directory may be specified, see
+\fBsystemd.v\fR(7)
+for details\&.
+.sp
+In place of the directory path a
+"\&.v/"
+versioned directory may be specified, see
+\fBsystemd.v\fR(7)
+for details\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fBdetach\fR \fIIMAGE\fR [\fIPREFIX\&...\fR]
@@ -203,13 +220,15 @@ command above, and removes the unit file copies, drop\-ins and image symlink aga
 \fBattach\fR
 also to
 \fBdetach\fR\&.
-.PP
+.sp
 If
 \fB\-\-now\fR
 and/or
 \fB\-\-enable\fR
-are passed, the portable service(s) are immediately stopped (blocking operation) and/or disabled before detaching the image\&. Prefix(es) are also accepted, to be used in case the unit names do not match the image name as described in the
+are passed, the portable services are immediately stopped (blocking operation) and/or disabled before detaching the image\&. Prefix(es) are also accepted, to be used in case the unit names do not match the image name as described in the
 \fBattach\fR\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fBreattach\fR \fIIMAGE\fR [\fIPREFIX\&...\fR]
@@ -219,14 +238,16 @@ Detaches an existing portable service image from the host, and immediately attac
 character has to match\&. If the new image doesn\*(Aqt exist, the existing one will not be detached\&. The parameters follow the same syntax as the
 \fBattach\fR
 command\&.
-.PP
+.sp
 If
 \fB\-\-now\fR
 and/or
 \fB\-\-enable\fR
-are passed, the portable service(s) are immediately stopped if removed, started and/or enabled if added, or restarted if updated\&. Prefixes are also accepted, in the same way as described in the
+are passed, the portable services are immediately stopped if removed, started and/or enabled if added, or restarted if updated\&. Prefixes are also accepted, in the same way as described in the
 \fBattach\fR
 case\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fBinspect\fR \fIIMAGE\fR [\fIPREFIX\&...\fR]
@@ -242,6 +263,8 @@ os\-release
 data and the units files\*(Aq contents is displayed unprocessed\&. This command is useful to determine whether an image qualifies as portable service image, and which unit files are included\&. This command expects the path to the image as parameter, optionally followed by a list of unit file prefixes to consider, similar to the
 \fBattach\fR
 command described above\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fBis\-attached\fR \fIIMAGE\fR
@@ -308,16 +331,21 @@ The image is currently attached transiently, and at least one unit file associat
 T}
 .TE
 .sp 1
+Added in version 239\&.
 .RE
 .PP
 \fBread\-only\fR \fIIMAGE\fR [\fIBOOL\fR]
 .RS 4
 Marks or (unmarks) a portable service image read\-only\&. Takes an image name, followed by a boolean as arguments\&. If the boolean is omitted, positive is implied, i\&.e\&. the image is marked read\-only\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fBremove\fR \fIIMAGE\fR\&...
 .RS 4
 Removes one or more portable service images\&. Note that this command will only remove the specified image path itself \(em it refers to a symbolic link then the symbolic link is removed and not the image it points to\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fBset\-limit\fR [\fIIMAGE\fR] \fIBYTES\fR
@@ -329,6 +357,8 @@ as size\&.
 Note that per\-image size limits are only supported on btrfs file systems\&. Also, depending on
 \fIBindPaths=\fR
 settings in the portable service\*(Aqs unit files directories from the host might be visible in the image environment during runtime which are not affected by this setting, as only the image itself is counted against this limit\&.
+.sp
+Added in version 239\&.
 .RE
 .SH "OPTIONS"
 .PP
@@ -337,24 +367,32 @@ The following options are understood:
 \fB\-q\fR, \fB\-\-quiet\fR
 .RS 4
 Suppresses additional informational output while running\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
-\fB\-p\fR \fIPROFILE\fR, \fB\-\-profile=\fR\fIPROFILE\fR
+\fB\-p\fR \fIPROFILE\fR, \fB\-\-profile=\fR\fB\fIPROFILE\fR\fR
 .RS 4
 When attaching an image, select the profile to use\&. By default the
 "default"
 profile is used\&. For details about profiles, see below\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-\-copy=\fR
 .RS 4
 When attaching an image, select whether to prefer copying or symlinking of files installed into the host system\&. Takes one of
 "copy"
-(to prefer copying of files),
+(files will be copied),
 "symlink"
-(to prefer creation of symbolic links) or
+(to prefer creation of symbolic links),
 "auto"
-for an intermediary mode where security profile drop\-ins are symlinked while unit files are copied\&. Note that this option expresses a preference only, in cases where symbolic links cannot be created \(em for example when the image operated on is a raw disk image, and hence not directly referentiable from the host file system \(em copying of files is used unconditionally\&.
+for an intermediary mode where security profile drop\-ins and images are symlinked while unit files are copied, or
+"mixed"
+(since v256) where security profile drop\-ins are symlinked while unit files and images are copied\&. Note that this option expresses a preference only, in cases where symbolic links cannot be created \(em for example when the image operated on is a raw disk image, and hence not directly referentiable from the host file system \(em copying of files is used unconditionally\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-\-runtime\fR
@@ -363,11 +401,15 @@ When specified the unit and drop\-in files are placed in
 /run/systemd/system\&.attached/
 instead of
 /etc/systemd/system\&.attached/\&. Images attached with this option set hence remain attached only until the next reboot, while they are normally attached persistently\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-\-no\-reload\fR
 .RS 4
 Don\*(Aqt reload the service manager after attaching or detaching a portable service image\&. Normally the service manager is reloaded to ensure it is aware of added or removed unit files\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-\-cat\fR
@@ -375,24 +417,39 @@ Don\*(Aqt reload the service manager after attaching or detaching a portable ser
 When inspecting portable service images, show the (unprocessed) contents of the metadata files pulled from the image, instead of brief summaries\&. Specifically, this will show the
 \fBos-release\fR(5)
 and unit file contents of the image\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-\-enable\fR
 .RS 4
 Immediately enable/disable the portable service after attaching/detaching\&.
+.sp
+Added in version 245\&.
 .RE
 .PP
 \fB\-\-now\fR
 .RS 4
 Immediately start/stop/restart the portable service after attaching/before detaching/after upgrading\&.
+.sp
+Added in version 245\&.
 .RE
 .PP
 \fB\-\-no\-block\fR
 .RS 4
 Don\*(Aqt block waiting for attach \-\-now to complete\&.
+.sp
+Added in version 245\&.
 .RE
 .PP
-\fB\-\-extension=\fR\fIPATH\fR
+\fB\-\-clean\fR
+.RS 4
+When detaching ensure the configuration, state, logs, cache, and runtime data directories of the portable service are removed from the host system\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fB\-\-extension=\fR\fB\fIPATH\fR\fR
 .RS 4
 Add an additional image
 \fIPATH\fR
@@ -402,9 +459,45 @@ when attaching/detaching\&. This argument can be specified multiple times, in wh
 \fBsystemd.exec\fR(5)
 for the
 \fIExtensionImages=\fR
-directive\&.
+directive and for the
+\fBsystemd-sysext\fR(8)
+and
+\fBsystemd-confext\fR(8)
+tools\&. The images must contain an
+extension\-release
+file with metadata that matches what is defined in the
+os\-release
+of
+\fIIMAGE\fR\&. See:
+\fBos-release\fR(5)\&. Images can be block images, btrfs subvolumes or directories\&. For more information on portable services with extensions, see the
+"Extension Images"
+paragraph on
+\m[blue]\fBPortable Services\fR\m[]\&\s-2\u[1]\d\s+2\&.
 .sp
 Note that the same extensions have to be specified, in the same order, when attaching and detaching\&.
+.sp
+In place of the image path a
+"\&.v/"
+versioned directory may be specified, see
+\fBsystemd.v\fR(7)
+for details\&.
+.sp
+In place of the directory path a
+"\&.v/"
+versioned directory may be specified, see
+\fBsystemd.v\fR(7)
+for details\&.
+.sp
+Added in version 249\&.
+.RE
+.PP
+\fB\-\-force\fR
+.RS 4
+Skip safety checks and attach or detach images (with extensions) without first ensuring that the units are not running, and do not insist that the
+extension\-release\&.\fINAME\fR
+file in the extension image has to match the image filename\&.
+.sp
+Added in version 252\&.
 .RE
 .PP
 \fB\-H\fR, \fB\-\-host=\fR
@@ -532,7 +625,7 @@ On success, 0 is returned, a non\-zero failure code otherwise\&.
 .PP
 \fI$SYSTEMD_LOG_LEVEL\fR
 .RS 4
-The maximum log level of emitted messages (messages with a higher log level, i\&.e\&. less important ones, will be suppressed)\&. Either one of (in order of decreasing importance)
+The maximum log level of emitted messages (messages with a higher log level, i\&.e\&. less important ones, will be suppressed)\&. Takes a comma\-separated list of values\&. A value may be either one of (in order of decreasing importance)
 \fBemerg\fR,
 \fBalert\fR,
 \fBcrit\fR,
@@ -542,7 +635,15 @@ The maximum log level of emitted messages (messages with a higher log level, i\&
 \fBinfo\fR,
 \fBdebug\fR, or an integer in the range 0\&...7\&. See
 \fBsyslog\fR(3)
-for more information\&.
+for more information\&. Each value may optionally be prefixed with one of
+\fBconsole\fR,
+\fBsyslog\fR,
+\fBkmsg\fR
+or
+\fBjournal\fR
+followed by a colon to set the maximum log level for that specific log target (e\&.g\&.
+\fBSYSTEMD_LOG_LEVEL=debug,console:info\fR
+specifies to log at debug level except when logging to the console which should be at info level)\&. Note that the global maximum log level takes priority over any per target maximum log levels\&.
 .RE
 .PP
 \fI$SYSTEMD_LOG_COLOR\fR
@@ -597,6 +698,12 @@ The destination for log messages\&. One of
 (disable log output)\&.
 .RE
 .PP
+\fI$SYSTEMD_LOG_RATELIMIT_KMSG\fR
+.RS 4
+Whether to ratelimit kmsg or not\&. Takes a boolean\&. Defaults to
+"true"\&. If disabled, systemd will not ratelimit messages written to kmsg\&.
+.RE
+.PP
 \fI$SYSTEMD_PAGER\fR
 .RS 4
 Pager to use when
@@ -613,6 +720,13 @@ and
 "cat"
 is equivalent to passing
 \fB\-\-no\-pager\fR\&.
+.sp
+Note: if
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set,
+\fI$SYSTEMD_PAGER\fR
+(as well as
+\fI$PAGER\fR) will be silently ignored\&.
 .RE
 .PP
 \fI$SYSTEMD_LESS\fR
@@ -648,6 +762,12 @@ will be ignored by the executable, and needs to be handled by the pager\&.
 This option instructs the pager to not send termcap initialization and deinitialization strings to the terminal\&. It is set by default to allow command output to remain visible in the terminal even after the pager exits\&. Nevertheless, this prevents some pager functionality from working, in particular paged output cannot be scrolled with the mouse\&.
 .RE
 .sp
+Note that setting the regular
+\fI$LESS\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
+.sp
 See
 \fBless\fR(1)
 for more discussion\&.
@@ -659,6 +779,12 @@ Override the charset passed to
 \fBless\fR
 (by default
 "utf\-8", if the invoking terminal is determined to be UTF\-8 compatible)\&.
+.sp
+Note that setting the regular
+\fI$LESSCHARSET\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
 .RE
 .PP
 \fI$SYSTEMD_PAGERSECURE\fR
@@ -714,6 +840,10 @@ and other conditions\&.
 .RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBorg.freedesktop.portable1\fR(5),
-\fBsystemd-portabled.service\fR(8)
+\fBsystemd\fR(1), \fBsystemd-sysext\fR(8), \fBorg.freedesktop.portable1\fR(5), \fBsystemd-portabled.service\fR(8), \fBimportctl\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+Portable Services
+.RS 4
+\%https://systemd.io/PORTABLE_SERVICES
+.RE

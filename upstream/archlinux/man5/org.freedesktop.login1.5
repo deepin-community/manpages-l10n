@@ -1,5 +1,5 @@
 '\" t
-.TH "ORG\&.FREEDESKTOP\&.LOGIN1" "5" "" "systemd 249" "org.freedesktop.login1"
+.TH "ORG\&.FREEDESKTOP\&.LOGIN1" "5" "" "systemd 257" "org.freedesktop.login1"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -50,9 +50,11 @@ node /org/freedesktop/login1 {
       GetSeat(in  s seat_id,
               out o object_path);
       ListSessions(out a(susso) sessions);
+      ListSessionsEx(out a(sussussbto) sessions);
       ListUsers(out a(uso) users);
       ListSeats(out a(so) seats);
       ListInhibitors(out a(ssssuu) inhibitors);
+      @org\&.freedesktop\&.systemd1\&.Privileged("true")
       CreateSession(in  u uid,
                     in  u pid,
                     in  s service,
@@ -75,6 +77,30 @@ node /org/freedesktop/login1 {
                     out s seat_id,
                     out u vtnr,
                     out b existing);
+      @org\&.freedesktop\&.systemd1\&.Privileged("true")
+      CreateSessionWithPIDFD(in  u uid,
+                             in  h pidfd,
+                             in  s service,
+                             in  s type,
+                             in  s class,
+                             in  s desktop,
+                             in  s seat_id,
+                             in  u vtnr,
+                             in  s tty,
+                             in  s display,
+                             in  b remote,
+                             in  s remote_user,
+                             in  s remote_host,
+                             in  t flags,
+                             in  a(sv) properties,
+                             out s session_id,
+                             out o object_path,
+                             out s runtime_path,
+                             out h fifo_fd,
+                             out u uid,
+                             out s seat_id,
+                             out u vtnr,
+                             out b existing);
       ReleaseSession(in  s session_id);
       ActivateSession(in  s session_id);
       ActivateSessionOnSeat(in  s session_id,
@@ -84,7 +110,7 @@ node /org/freedesktop/login1 {
       LockSessions();
       UnlockSessions();
       KillSession(in  s session_id,
-                  in  s who,
+                  in  s whom,
                   in  i signal_number);
       KillUser(in  u uid,
                in  i signal_number);
@@ -112,6 +138,7 @@ node /org/freedesktop/login1 {
       HybridSleepWithFlags(in  t flags);
       SuspendThenHibernate(in  b interactive);
       SuspendThenHibernateWithFlags(in  t flags);
+      Sleep(in  t flags);
       CanPowerOff(out s result);
       CanReboot(out s result);
       CanHalt(out s result);
@@ -119,6 +146,7 @@ node /org/freedesktop/login1 {
       CanHibernate(out s result);
       CanHybridSleep(out s result);
       CanSuspendThenHibernate(out s result);
+      CanSleep(out s result);
       ScheduleShutdown(in  s type,
                        in  t usec);
       CancelScheduledShutdown(out b cancelled);
@@ -138,6 +166,8 @@ node /org/freedesktop/login1 {
       SetWallMessage(in  s wall_message,
                      in  b enable);
     signals:
+      SecureAttentionKey(s seat_id,
+                         o object_path);
       SessionNew(s session_id,
                  o object_path);
       SessionRemoved(s session_id,
@@ -151,6 +181,8 @@ node /org/freedesktop/login1 {
       SeatRemoved(s seat_id,
                   o object_path);
       PrepareForShutdown(b start);
+      PrepareForShutdownWithMetadata(b start,
+                                     a{sv} metadata);
       PrepareForSleep(b start);
     properties:
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
@@ -181,23 +213,38 @@ node /org/freedesktop/login1 {
       readonly t IdleSinceHint = \&.\&.\&.;
       readonly t IdleSinceHintMonotonic = \&.\&.\&.;
       readonly s BlockInhibited = \*(Aq\&.\&.\&.\*(Aq;
+      readonly s BlockWeakInhibited = \*(Aq\&.\&.\&.\*(Aq;
       readonly s DelayInhibited = \*(Aq\&.\&.\&.\*(Aq;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly t InhibitDelayMaxUSec = \&.\&.\&.;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly t UserStopDelayUSec = \&.\&.\&.;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly as SleepOperation = [\*(Aq\&.\&.\&.\*(Aq, \&.\&.\&.];
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly s HandlePowerKey = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s HandlePowerKeyLongPress = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s HandleRebootKey = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s HandleRebootKeyLongPress = \*(Aq\&.\&.\&.\*(Aq;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly s HandleSuspendKey = \*(Aq\&.\&.\&.\*(Aq;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s HandleSuspendKeyLongPress = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly s HandleHibernateKey = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s HandleHibernateKeyLongPress = \*(Aq\&.\&.\&.\*(Aq;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly s HandleLidSwitch = \*(Aq\&.\&.\&.\*(Aq;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly s HandleLidSwitchExternalPower = \*(Aq\&.\&.\&.\*(Aq;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly s HandleLidSwitchDocked = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s HandleSecureAttentionKey = \*(Aq\&.\&.\&.\*(Aq;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly t HoldoffTimeoutUSec = \&.\&.\&.;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
@@ -207,12 +254,14 @@ node /org/freedesktop/login1 {
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
       readonly b PreparingForShutdown = \&.\&.\&.;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
-      readonly b PreparingForSleep = \&.\&.\&.;
+      readonly a{sv} PreparingForShutdownWithMetadata = [\&.\&.\&.];
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly b PreparingForSleep = \&.\&.\&.;
       readonly (st) ScheduledShutdown = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s DesignatedMaintenanceTime = \*(Aq\&.\&.\&.\*(Aq;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
       readonly b Docked = \&.\&.\&.;
-      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
       readonly b LidClosed = \&.\&.\&.;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
       readonly b OnExternalPower = \&.\&.\&.;
@@ -230,16 +279,34 @@ node /org/freedesktop/login1 {
       readonly t SessionsMax = \&.\&.\&.;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
       readonly t NCurrentSessions = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly t StopIdleSessionUSec = \&.\&.\&.;
   };
   interface org\&.freedesktop\&.DBus\&.Peer { \&.\&.\&. };
   interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
   interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
 };
-    
 .fi
 .if n \{\
 .RE
 .\}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -361,7 +428,30 @@ and
 get the session/user object the specified PID belongs to if there is any\&.
 .PP
 \fBListSessions()\fR
-returns an array of all current sessions\&. The structures in the array consist of the following fields: session id, user id, user name, seat id, session object path\&. If a session does not have a seat attached, the seat id field will be an empty string\&.
+returns an array of all current sessions\&. The structures in the array consist of the following fields:
+\fIsession id\fR,
+\fIuser id\fR,
+\fIuser name\fR,
+\fIseat id\fR, and
+\fIsession object path\fR\&. If a session does not have a seat attached, the seat id field will be an empty string\&.
+.PP
+\fBListSessionsEx()\fR
+returns an array of all current sessions with more metadata than
+\fBListSessions()\fR\&. The structures in the array consist of the following fields:
+\fIsession id\fR,
+\fIuser id\fR,
+\fIuser name\fR,
+\fIseat id\fR,
+\fIleader pid\fR,
+\fIsession class\fR,
+\fItty name\fR,
+\fIidle hint\fR,
+\fIidle hint monotonic timestamp\fR, and
+\fIsession object path\fR\&.
+\fItty\fR
+and
+\fIseat id\fR
+fields could be empty, if the session has no associated tty or session has no seat attached, respectively\&.
 .PP
 \fBListUsers()\fR
 returns an array of all currently logged in users\&. The structures in the array consist of the following fields: user id, user name, user object path\&.
@@ -380,8 +470,8 @@ lists all currently active inhibitors\&. It returns an array of structures consi
 \fIpid\fR
 (process ID)\&.
 .PP
-\fBCreateSession()\fR
-and
+\fBCreateSession()\fR,
+\fBCreateSessionWithPIDFD()\fR, and
 \fBReleaseSession()\fR
 may be used to open or close login sessions\&. These calls should
 \fInever\fR
@@ -454,16 +544,21 @@ results in the system entering a hybrid\-sleep mode, i\&.e\&. the system is both
 \fBSuspendThenHibernate()\fR
 results in the system being suspended, then later woken using an RTC timer and hibernated\&. The only argument is the polkit interactivity boolean
 \fIinteractive\fR
-(see below)\&. The main purpose of these calls is that they enforce polkit policy and hence allow powering off/rebooting/suspending/hibernating even by unprivileged users\&. They also enforce inhibition locks for non\-privileged users\&. UIs should expose these calls as the primary mechanism to poweroff/reboot/suspend/hibernate the machine\&. Methods
+(see below)\&. The main purpose of these calls is that they enforce polkit policy and hence allow powering off/rebooting/suspending/hibernating even by unprivileged users\&. They also enforce inhibition locks for non\-privileged users\&.
+\fBSleep()\fR
+automatically selects the most suitable sleep operation supported by the machine\&. The candidate sleep operations to check for support can be configured through
+\fISleepOperation=\fR
+setting in
+\fBlogind.conf\fR(5)\&. UIs should expose these calls as the primary mechanism to poweroff/reboot/suspend/hibernate the machine\&. Methods
 \fBPowerOffWithFlags()\fR,
 \fBRebootWithFlags()\fR,
 \fBHaltWithFlags()\fR,
 \fBSuspendWithFlags()\fR,
 \fBHibernateWithFlags()\fR,
-\fBHybridSleepWithFlags()\fR
-and
-\fBSuspendThenHibernateWithFlags()\fR
-add
+\fBHybridSleepWithFlags()\fR,
+\fBSuspendThenHibernateWithFlags()\fR, and
+\fBSleep()\fR
+take
 \fIflags\fR
 to allow for extendability, defined as follows:
 .sp
@@ -471,9 +566,11 @@ to allow for extendability, defined as follows:
 .RS 4
 .\}
 .nf
-#define SD_LOGIND_ROOT_CHECK_INHIBITORS  (UINT64_C(1) << 0)
-#define SD_LOGIND_KEXEC_REBOOT           (UINT64_C(1) << 1)
-      
+#define SD_LOGIND_ROOT_CHECK_INHIBITORS          (UINT64_C(1) << 0)
+#define SD_LOGIND_KEXEC_REBOOT                   (UINT64_C(1) << 1)
+#define SD_LOGIND_SOFT_REBOOT                    (UINT64_C(1) << 2)
+#define SD_LOGIND_SOFT_REBOOT_IF_NEXTROOT_SET_UP (UINT64_C(1) << 3)
+#define SD_LOGIND_SKIP_INHIBITORS                (UINT64_C(1) << 4)
 .fi
 .if n \{\
 .RE
@@ -481,13 +578,26 @@ to allow for extendability, defined as follows:
 .PP
 When the
 \fIflags\fR
-is 0 then these methods behave just like the versions without flags\&. When
+is 0 then these methods behave just like the versions without flags\&. Since systemd version 257 active inhibitors are honoured by default for privileged users too\&.
 \fBSD_LOGIND_ROOT_CHECK_INHIBITORS\fR
-(0x01) is set, active inhibitors are honoured for privileged users too\&. When
+(0x01) now only applies to weak inhibitors, to request that they honoured for privileged users too, since they ignore them by default\&. A new flag
+\fBSD_LOGIND_SKIP_INHIBITORS\fR
+(0x04) can be specified to bypass all types of inhibitors\&. When
 \fBSD_LOGIND_KEXEC_REBOOT\fR
 (0x02) is set, then
 \fBRebootWithFlags()\fR
-perform kexec reboot if kexec kernel is loaded\&.
+performs a kexec reboot if kexec kernel is loaded\&. When
+\fBSD_LOGIND_SOFT_REBOOT\fR
+(0x04) is set, or
+\fBSD_LOGIND_SOFT_REBOOT_IF_NEXTROOT_SET_UP\fR
+(0x08) is set and a new root file system has been set up on
+"/run/nextroot/", then
+\fBRebootWithFlags()\fR
+performs a userspace reboot only\&.
+\fBSD_LOGIND_SOFT_REBOOT_IF_NEXTROOT_SET_UP\fR
+and
+\fBSD_LOGIND_KEXEC_REBOOT\fR
+can be combined, with soft\-reboot having precedence\&.
 .PP
 \fBSetRebootParameter()\fR
 sets a parameter for a subsequent reboot operation\&. See the description of
@@ -512,6 +622,7 @@ for the corresponding command line interface\&.
 \fBCanHibernate()\fR,
 \fBCanHybridSleep()\fR,
 \fBCanSuspendThenHibernate()\fR,
+\fBCanSleep()\fR,
 \fBCanRebootParameter()\fR,
 \fBCanRebootToFirmwareSetup()\fR,
 \fBCanRebootToBootLoaderMenu()\fR, and
@@ -535,7 +646,12 @@ schedules a shutdown operation
 \fItype\fR
 at time
 \fIusec\fR
-in microseconds since the UNIX epoch\&.
+in microseconds since the UNIX epoch\&. Alternatively, if
+\fIusec\fR
+"UINT64_MAX"
+and a maintenance window is configured,
+systemd\-logind
+will use the next time of the maintenance window instead\&.
 \fItype\fR
 can be one of
 "poweroff",
@@ -584,7 +700,9 @@ is either
 "block"
 or
 "delay"
-which encodes whether the inhibit shall be consider mandatory or whether it should just delay the operation to a certain maximum time\&. The method returns a file descriptor\&. The lock is released the moment this file descriptor and all its duplicates are closed\&. For more information on the inhibition logic see
+which encodes whether the inhibit shall be consider mandatory or whether it should just delay the operation to a certain maximum time, while the
+"block\-weak"
+and variants will create an inhibitor that is automatically ignored in some circumstances\&. The method returns a file descriptor\&. The lock is released the moment this file descriptor and all its duplicates are closed\&. For more information on the inhibition logic see
 \m[blue]\fBInhibitor Locks\fR\m[]\&\s-2\u[2]\d\s+2\&.
 .SS "Signals"
 .PP
@@ -593,22 +711,38 @@ Whenever the inhibition state or idle hint changes,
 signals are sent out to which clients can subscribe\&.
 .PP
 The
-\fBSessionNew\fR,
-\fBSessionRemoved\fR,
-\fBUserNew\fR,
-\fBUserRemoved\fR,
-\fBSeatNew\fR, and
-\fBSeatRemoved\fR
+\fBSecureAttentionKey()\fR
+signal is sent when the user presses Ctrl+Alt+Shift+Esc to request the login manager to display the greeter, for instance in the case of a deadlocked compositor\&.
+.PP
+The
+\fBSessionNew()\fR,
+\fBSessionRemoved()\fR,
+\fBUserNew()\fR,
+\fBUserRemoved()\fR,
+\fBSeatNew()\fR, and
+\fBSeatRemoved()\fR
 signals are sent each time a session is created or removed, a user logs in or out, or a seat is added or removed\&. They each contain the ID of the object plus the object path\&.
 .PP
 The
-\fBPrepareForShutdown()\fR
-and
+\fBPrepareForShutdown()\fR,
+\fBPrepareForShutdownWithMetadata()\fR, and
 \fBPrepareForSleep()\fR
 signals are sent right before (with the argument
 "true") or after (with the argument
 "false") the system goes down for reboot/poweroff and suspend/hibernate, respectively\&. This may be used by applications to save data on disk, release memory, or do other jobs that should be done shortly before shutdown/sleep, in conjunction with delay inhibitor locks\&. After completion of this work they should release their inhibition locks in order to not delay the operation any further\&. For more information see
-\m[blue]\fBInhibitor Locks\fR\m[]\&\s-2\u[2]\d\s+2\&.
+\m[blue]\fBInhibitor Locks\fR\m[]\&\s-2\u[2]\d\s+2\&. The
+\fBPrepareForShutdownWithMetadata()\fR
+signal additionally sends a list of key/value pair metadata fields\&. Currently it sends a
+\fItype\fR
+string which defines the type of shutdown\&. The type can be one of
+"power\-off",
+"reboot",
+"halt",
+"kexec"
+or
+"soft\-reboot"\&. This signal is sent first, followed by
+\fBPrepareForShutdown()\fR
+(for backward compatibility)\&.
 .SS "Properties"
 .PP
 Most properties simply reflect the configuration, see
@@ -649,8 +783,8 @@ and
 timestamps, respectively, in microseconds since the epoch\&.
 .PP
 The
-\fIBlockInhibited\fR
-and
+\fIBlockInhibited\fR,
+\fIBlockWeakInhibited\fR, and
 \fIDelayInhibited\fR
 properties encode the currently active locks of the respective modes\&. They are colon separated lists of
 "shutdown",
@@ -674,10 +808,24 @@ The
 and
 \fIPreparingForSleep\fR
 boolean properties are true during the interval between the two
-\fBPrepareForShutdown\fR
+\fBPrepareForShutdown()\fR
 and
-\fBPrepareForSleep\fR
-signals respectively\&. Note that these properties do not send out
+\fBPrepareForSleep()\fR
+signals respectively\&. The
+\fIPreparingForShutdownWithMetadata\fR
+property provides a list of key/value pair metadata fields\&. Currently it lists a
+\fIpreparing\fR
+boolean that corresponds to the
+\fIPreparingForShutdown\fR
+property, and, if a shutdown is being prepared, it will also contain a
+\fItype\fR
+string which defines the type of shutdown\&. The type can be one of
+"power\-off",
+"reboot",
+"halt",
+"kexec"
+or
+"soft\-reboot"\&. Note that these properties do not send out
 \fBPropertyChanged\fR
 signals\&.
 .PP
@@ -696,9 +844,9 @@ method described above\&.
 \fIRebootToBootLoaderMenu\fR, and
 \fIRebootToBootLoaderEntry\fR
 are true when the resprective post\-reboot operation was selected with
-\fBSetRebootToFirmwareSetup\fR,
-\fBSetRebootToBootLoaderMenu\fR, or
-\fBSetRebootToBootLoaderEntry\fR\&.
+\fBSetRebootToFirmwareSetup()\fR,
+\fBSetRebootToBootLoaderMenu()\fR, or
+\fBSetRebootToBootLoaderEntry()\fR\&.
 .PP
 The
 \fIWallMessage\fR
@@ -754,23 +902,25 @@ and
 \fBSuspendThenHibernate()\fR
 use the same privileges as
 \fBHibernate()\fR\&.
+\fBSleep()\fR
+uses the inhibits of the auto\-selected sleep operation\&.
 \fBSetRebootParameter()\fR
 requires
 org\&.freedesktop\&.login1\&.set\-reboot\-parameter\&.
 .PP
-\fBSetRebootToFirmwareSetup\fR
+\fBSetRebootToFirmwareSetup()\fR
 requires
 org\&.freedesktop\&.login1\&.set\-reboot\-to\-firmware\-setup\&.
-\fBSetRebootToBootLoaderMenu\fR
+\fBSetRebootToBootLoaderMenu()\fR
 requires
 org\&.freedesktop\&.login1\&.set\-reboot\-to\-boot\-loader\-menu\&.
-\fBSetRebootToBootLoaderEntry\fR
+\fBSetRebootToBootLoaderEntry()\fR
 requires
 org\&.freedesktop\&.login1\&.set\-reboot\-to\-boot\-loader\-entry\&.
 .PP
-\fBScheduleShutdown\fR
+\fBScheduleShutdown()\fR
 and
-\fBCancelScheduledShutdown\fR
+\fBCancelScheduledShutdown()\fR
 require the same privileges (listed above) as the immediate poweroff/reboot/halt operations\&.
 .PP
 \fBInhibit()\fR
@@ -820,7 +970,6 @@ node /org/freedesktop/login1/seat/seat0 {
   interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
   interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
 };
-    
 .fi
 .if n \{\
 .RE
@@ -844,7 +993,11 @@ node /org/freedesktop/login1/seat/seat0 {
 \fBTerminate()\fR
 and
 \fBActivateSession()\fR
-work similar to TerminateSeat(), ActivationSessionOnSeat() on the Manager object\&.
+work similarly to
+\fBTerminateSeat()\fR
+and
+\fBActivationSessionOnSeat()\fR
+on the Manager object\&.
 .PP
 \fBSwitchTo()\fR
 switches to the session on the virtual terminal
@@ -884,7 +1037,7 @@ The
 \fIIdleHint\fR,
 \fIIdleSinceHint\fR, and
 \fIIdleSinceHintMonotonic\fR
-properties encode the idle state, similar to the ones exposed on the
+properties encode the idle state, similarly to the ones exposed on the
 Manager
 object, but specific for this seat\&.
 .SH "USER OBJECTS"
@@ -930,7 +1083,6 @@ node /org/freedesktop/login1/user/_1000 {
   interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
   interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
 };
-    
 .fi
 .if n \{\
 .RE
@@ -958,7 +1110,7 @@ node /org/freedesktop/login1/user/_1000 {
 \fBTerminate()\fR
 and
 \fBKill()\fR
-work similar to the
+work similarly to the
 \fBTerminateUser()\fR
 and
 \fBKillUser()\fR
@@ -1023,7 +1175,7 @@ The
 \fIIdleHint\fR,
 \fIIdleSinceHint\fR, and
 \fIIdleSinceHintMonotonic\fR
-properties encode the idle hint state of the user, similar to the
+properties encode the idle hint state of the user, similarly to the
 Manager\*(Aqs properties, but specific for this user\&.
 .PP
 The
@@ -1044,11 +1196,14 @@ node /org/freedesktop/login1/session/1 {
       Unlock();
       SetIdleHint(in  b idle);
       SetLockedHint(in  b locked);
-      Kill(in  s who,
+      Kill(in  s whom,
            in  i signal_number);
       TakeControl(in  b force);
       ReleaseControl();
       SetType(in  s type);
+      SetClass(in  s class);
+      SetDisplay(in  s display);
+      SetTTY(in  h tty_fd);
       TakeDevice(in  u major,
                  in  u minor,
                  out h fd,
@@ -1084,9 +1239,7 @@ node /org/freedesktop/login1/session/1 {
       readonly u VTNr = \&.\&.\&.;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly (so) Seat = \&.\&.\&.;
-      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly s TTY = \*(Aq\&.\&.\&.\*(Aq;
-      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly s Display = \*(Aq\&.\&.\&.\*(Aq;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly b Remote = \&.\&.\&.;
@@ -1105,24 +1258,31 @@ node /org/freedesktop/login1/session/1 {
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly u Audit = \&.\&.\&.;
       readonly s Type = \*(Aq\&.\&.\&.\*(Aq;
-      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly s Class = \*(Aq\&.\&.\&.\*(Aq;
       readonly b Active = \&.\&.\&.;
       readonly s State = \*(Aq\&.\&.\&.\*(Aq;
       readonly b IdleHint = \&.\&.\&.;
       readonly t IdleSinceHint = \&.\&.\&.;
       readonly t IdleSinceHintMonotonic = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly b CanIdle = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly b CanLock = \&.\&.\&.;
       readonly b LockedHint = \&.\&.\&.;
   };
   interface org\&.freedesktop\&.DBus\&.Peer { \&.\&.\&. };
   interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
   interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
 };
-    
 .fi
 .if n \{\
 .RE
 .\}
+
+
+
+
+
 
 
 
@@ -1201,6 +1361,28 @@ or closing the D\-Bus connection\&. This should help prevent a session from ente
 \fItype\fR
 is the new session type\&.
 .PP
+\fBSetClass()\fR
+allows the caller to change the class of the session dynamically\&. It may only be called by session\*(Aqs owening user\&. Currently, this call may be exclusively used to change the class from
+"user\-incomplete"
+to
+"user"\&. The call is synchronous, and will return only once the user\*(Aqs service manager has successfully been started, if necessary\&. The only argument
+\fItype\fR
+is the new session type\&.
+.PP
+\fBSetDisplay()\fR
+allows the display name of the graphical session to be changed\&. This is useful if the display server is started as part of the session\&. It can only be called by session\*(Aqs current controller\&. If
+\fBTakeControl()\fR
+has not been called, this method will fail\&. The only argument
+\fIdisplay\fR
+is the new display name\&.
+.PP
+\fBSetTTY()\fR
+allows the device name of the session to be changed\&. This is useful if the tty device is only known after authentication\&. It can only be called by session\*(Aqs current controller\&. If
+\fBTakeControl()\fR
+has not been called, this method will fail\&. The only argument
+\fItty_fd\fR
+is a file handle to the new tty device\&.
+.PP
 \fBTakeDevice()\fR
 allows a session controller to get a file descriptor for a specific device\&. Pass in the major and minor numbers of the character device and
 systemd\-logind
@@ -1247,23 +1429,23 @@ parameter specifies the brightness\&. The range is defined by individual drivers
 .SS "Signals"
 .PP
 The active session controller exclusively gets
-\fBPauseDevice\fR
+\fBPauseDevice()\fR
 and
-\fBResumeDevice\fR
+\fBResumeDevice()\fR
 events for any device it requested via
 \fBTakeDevice()\fR\&. They notify the controller whenever a device is paused or resumed\&. A device is never resumed if its session is inactive\&. Also note that
-\fBPauseDevice\fR
+\fBPauseDevice()\fR
 signals are sent before the
 \fBPropertyChanged\fR
 signal for the
 \fBActive\fR
 state\&. The inverse is true for
-\fBResumeDevice\fR\&. A device may remain paused for unknown reasons even though the
+\fBResumeDevice()\fR\&. A device may remain paused for unknown reasons even though the
 Session
 is active\&.
 .PP
 A
-\fBPauseDevice\fR
+\fBPauseDevice()\fR
 signal carries the major and minor numbers and a string describing the type as arguments\&.
 \fBforce\fR
 means the device was already paused by
@@ -1276,7 +1458,7 @@ grants you a limited amount of time to pause the device\&. You must respond to t
 \fBPauseDeviceComplete()\fR\&. This synchronous pausing mechanism is used for backwards\-compatibility to VTs and
 systemd\-logind
 is free to not make use of it\&. It is also free to send a forced
-\fBPauseDevice\fR
+\fBPauseDevice()\fR
 if you don\*(Aqt respond in a timely manner (or for any other reason)\&.
 \fBgone\fR
 means the device was unplugged from the system and you will no longer get any notifications about it\&. There is no need to call
@@ -1284,7 +1466,7 @@ means the device was unplugged from the system and you will no longer get any no
 \fBTakeDevice()\fR
 again if a new device is assigned the major+minor combination\&.
 .PP
-\fBResumeDevice\fR
+\fBResumeDevice()\fR
 is sent whenever a session is active and a device is resumed\&. It carries the major/minor numbers as arguments and provides a new open file descriptor\&. You should switch to the new descriptor and close the old one\&. They are not guaranteed to have the same underlying open file descriptor in the kernel (except for a limited set of device types)\&.
 .PP
 Whenever
@@ -1293,7 +1475,7 @@ or the idle state changes,
 \fBPropertyChanged\fR
 signals are sent out to which clients can subscribe\&.
 .PP
-\fBLock\fR/\fBUnlock\fR
+\fBLock()\fR/\fBUnlock()\fR
 is sent when the session is asked to be screen\-locked/unlocked\&. A session manager of the session should listen to this signal and act accordingly\&. This signal is sent out as a result of the
 \fBLock()\fR
 and
@@ -1358,7 +1540,9 @@ encodes the session type\&. It\*(Aqs one of
 "unspecified"
 (for cron PAM sessions and suchlike),
 "tty"
-(for text logins) or
+(for text logins),
+"web"
+(for web\-based logins), or
 "x11"/"mir"/"wayland"
 (for graphical logins)\&.
 .PP
@@ -1392,9 +1576,14 @@ encapsulate the idle hint state of this session, similarly to how the respective
 shows the locked hint state of this session, as set by the
 \fBSetLockedHint()\fR
 method described above\&.
+.PP
+\fICanIdle\fR
+indicates whether the session supports the idle hint concept\&. Similarly,
+\fICanLock\fR
+indicates whether the session supports the screen lock concept\&.
 .SH "EXAMPLES"
 .PP
-\fBExample\ \&1.\ \&Introspect org\&.freedesktop\&.login1\&.Manager on the bus\fR
+\fBExample\ \&1.\ \&Introspect the logind manager on the bus\fR
 .sp
 .if n \{\
 .RS 4
@@ -1402,13 +1591,24 @@ method described above\&.
 .nf
 $ gdbus introspect \-\-system \-\-dest org\&.freedesktop\&.login1 \e
   \-\-object\-path /org/freedesktop/login1
-      
 .fi
 .if n \{\
 .RE
 .\}
 .PP
-\fBExample\ \&2.\ \&Introspect org\&.freedesktop\&.login1\&.Seat on the bus\fR
+or
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ busctl introspect org\&.freedesktop\&.login1 /org/freedesktop/login1
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&2.\ \&Introspect the default seat on the bus\fR
 .sp
 .if n \{\
 .RS 4
@@ -1416,13 +1616,29 @@ $ gdbus introspect \-\-system \-\-dest org\&.freedesktop\&.login1 \e
 .nf
 $ gdbus introspect \-\-system \-\-dest org\&.freedesktop\&.login1 \e
  \-\-object\-path /org/freedesktop/login1/seat/seat0
-      
 .fi
 .if n \{\
 .RE
 .\}
 .PP
-\fBExample\ \&3.\ \&Introspect org\&.freedesktop\&.login1\&.User on the bus\fR
+or
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ busctl introspect org\&.freedesktop\&.login1 /org/freedesktop/login1/seat/seat0
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Seat
+"seat0"
+is the default seat, so it\*(Aqll be present unless local configuration is made to reassign all devices to a different seat\&. The list of seats and users can be acquired with
+\fBloginctl list\-sessions\fR\&.
+.PP
+\fBExample\ \&3.\ \&Introspect a single user on the bus\fR
 .sp
 .if n \{\
 .RS 4
@@ -1430,7 +1646,18 @@ $ gdbus introspect \-\-system \-\-dest org\&.freedesktop\&.login1 \e
 .nf
 $ gdbus introspect \-\-system \-\-dest org\&.freedesktop\&.login1 \e
   \-\-object\-path /org/freedesktop/login1/user/_1000
-      
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+or
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ busctl introspect org\&.freedesktop\&.login1 /org/freedesktop/login1/user/_1000
 .fi
 .if n \{\
 .RE
@@ -1444,7 +1671,18 @@ $ gdbus introspect \-\-system \-\-dest org\&.freedesktop\&.login1 \e
 .nf
 $ gdbus introspect \-\-system \-\-dest org\&.freedesktop\&.login1 \e
   \-\-object\-path /org/freedesktop/login1/session/45
-      
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+or
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ busctl introspect org\&.freedesktop\&.login1 /org/freedesktop/login1/session/45
 .fi
 .if n \{\
 .RE
@@ -1453,6 +1691,51 @@ $ gdbus introspect \-\-system \-\-dest org\&.freedesktop\&.login1 \e
 .PP
 These D\-Bus interfaces follow
 \m[blue]\fBthe usual interface versioning guidelines\fR\m[]\&\s-2\u[4]\d\s+2\&.
+.SH "HISTORY"
+.SS "The Manager Object"
+.PP
+\fIHandlePowerKeyLongPress\fR,
+\fIHandleRebootKey\fR,
+\fIHandleRebootKeyLongPress\fR,
+\fIHandleSuspendKeyLongPress\fR, and
+\fIHandleHibernateKeyLongPress\fR
+were added in version 251\&.
+.PP
+\fIStopIdleSessionUSec\fR
+was added in version 252\&.
+.PP
+\fBPrepareForShutdownWithMetadata()\fR
+and
+\fBCreateSessionWithPIDFD()\fR
+were added in version 255\&.
+.PP
+\fBSleep()\fR,
+\fBCanSleep()\fR,
+\fISleepOperation\fR, and
+\fBListSessionsEx()\fR
+were added in version 256\&.
+.PP
+\fIHandleSecureAttentionKey\fR,
+\fBSecureAttentionKey()\fR,
+\fIPreparingForShutdownWithMetadata\fR,
+\fIDesignatedMaintenanceTime\fR,
+\fICanIdle\fR,
+\fICanLock\fR, and
+\fIBlockWeakInhibited\fR
+were added in version 257\&.
+.SS "Session Objects"
+.PP
+\fBSetDisplay()\fR
+was added in version 252\&.
+.PP
+\fBSetTTY()\fR
+was added in version 254\&.
+.PP
+\fBSetClass()\fR
+was added in version 256\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1), \fBsystemd-logind.service\fR(8), \fBloginctl\fR(1)
 .SH "NOTES"
 .IP " 1." 4
 polkit
@@ -1462,7 +1745,7 @@ polkit
 .IP " 2." 4
 Inhibitor Locks
 .RS 4
-\%http://www.freedesktop.org/wiki/Software/systemd/inhibit
+\%https://systemd.io/INHIBITOR_LOCKS
 .RE
 .IP " 3." 4
 XDG Basedir Specification
@@ -1472,5 +1755,5 @@ XDG Basedir Specification
 .IP " 4." 4
 the usual interface versioning guidelines
 .RS 4
-\%http://0pointer.de/blog/projects/versioning-dbus.html
+\%https://0pointer.de/blog/projects/versioning-dbus.html
 .RE

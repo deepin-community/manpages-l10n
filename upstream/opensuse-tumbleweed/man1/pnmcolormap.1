@@ -3,7 +3,7 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "Pnmcolormap User Manual" 0 "09 February 2019" "netpbm documentation"
+.TH "Pnmcolormap User Manual" 0 "21 February 2023" "netpbm documentation"
 
 .SH NAME
 
@@ -23,6 +23,10 @@ pnmcolormap - create quantization color map for a Netpbm image
 [\fB-sort\fP]
 
 [\fB-square\fP] 
+
+[\fB-verbose\fP] 
+
+[\fB-debug\fP] 
 
 \fIncolors\fP|\fBall\fP
 
@@ -80,7 +84,7 @@ different colors.  Before Netpbm 10.31 (December 2005), \fBpnmcolormap\fP
 ignored any image after the first.
 .PP
 If you want to create a colormap without basing it on the colors in
-an input image, \fBpamseq\fP, \fBppmmake\fP, and \fBpnmcat\fP can
+an input image, \fBpamseq\fP, \fBppmmake\fP, and \fBpamcat\fP can
 be useful.
 
 .UN parameters
@@ -131,6 +135,14 @@ almost-perfect square.
 \fB-verbose\fP
 This option causes \fBpnmcolormap\fP to display messages to
 Standard Error about the quantization..TP
+\fB-center\fP
+
+.TP
+\fB-debug\fP
+This option causes \fBpnmcolormap\fP to display messages to
+Standard Error about internal workings.
+
+.TP
 \fB-center\fP
 
 .TP
@@ -208,9 +220,14 @@ luminosity of the color.  E.g. red is weighted much more than blue.  Select
 among these with the \fB-spreadbrightness\fP and \fB-spreadluminosity\fP
 options.  The default is \fB-spreadbrightness\fP.  Where there are multiple
 colors of the median magnitude, they are distributed arbitrarily among between
-the subboxes.  This arbitrary distribution depends upon what the system's
-\fBqsort\fP function does with multiple equal values, so \fBpnmcolormap\fP
-may produce slightly different results on different systems.
+the subboxes.
+
+This arbitrary distribution is repeatable, though, for a given Netpbm version
+-- every invocation of \fBpnmcolormap\fP generates the same color map.
+Before Netpbm 11.03 (June 2023), the distribution would depend upon what the
+system's \fBqsort\fP function does with multiple equal values, so
+\fBpnmcolormap\fP may produce slightly different results on different
+systems.
 .PP
 \fBpnmcolormap\fP provides three ways of choosing a color to represent a
 box: 1) the center color - the color halfway between the greatest and least
@@ -259,7 +276,7 @@ SIGGRAPH '82 Proceedings, page 297.
 \&,
 .BR "ppmmake" (1)\c
 \&,
-.BR "pnmcat" (1)\c
+.BR "pamcat" (1)\c
 \&,
 .BR "ppm" (5)\c
 \&

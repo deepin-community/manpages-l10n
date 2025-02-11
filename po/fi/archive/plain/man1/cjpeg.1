@@ -1,0 +1,281 @@
+.\" $Id: $
+.\" Translated into finnish by Jan Lipponen (lippis@rieska.oulu.fi)
+.\"
+.TH CJPEG 7 "" "Käyttäjän sovellusohjelmat" ""
+.SH NIMI
+cjpeg \- pakkaa kuvatiedoston JPEG-formaattiin
+.SH "YLEISKATSAUS"
+.B cjpeg
+[
+.I optiot
+]
+[
+.I tiedosto
+]
+.LP
+.SH KUVAUS
+.LP
+.B cjpeg
+pakkaa kuvatiedoston tai kuvatiedoston nimen puuttuessa vakiosyötteen ja
+tuottaa vakiotulosteena JPEG/JFIF-muotoisen kuvatiedoston.
+Tällä hetkellä tuettuja kuvaformaatteja ovat: PPM (PBMPLUS värikuvat),
+PGM (PBMPLUS harmaansävykuvat), BMP, GIF, Targa, ja RLE (Utah Raster
+Toolkit -formaatti).  (RLE:tä tuetaan vain jos URT-kirjasto on käytettävissä.)
+.SH OPTIOT
+Kaikkien optioiden nimet ovat lyhennettävissä; Esim.
+.B \-grayscale
+voidaan kirjoittaa muodossa
+.B \-gray
+tai
+.BR \-gr .
+Yleisimmät perusoptioista voidaan lyhentää jopa yksimerkkisiksi.
+Suurten ja pienten kirjainten välillä ei tehdä eroa (
+.B \-GIF
+on siis sama kuin
+.BR \-gif ).
+My#s englantilaistyylisesti kirjoitetut sanat hyväksytään (esim.
+.BR \-greyscale ),
+tilan säästämiseksi näitä ei kuitenkaan ole lueteltu.
+.PP
+Perusoptiot ovat:
+.TP
+.BI \-quality " N"
+Säätää kuvan laadusta määrävää kvantifiointitaulua.  Laatu voi olla väliltä
+0 (huonoin) ja 100 (paras); Laatu on oletuksena 75.  (lisätietoja alla.)
+.TP
+.B \-grayscale
+Tekee syötteestä harmaansävyjä käyttävän JPEG-kuvan. Optiota suositellaan käytettäväksi
+harmaansävyistä koostuvaa GIF-kuvaa pakattaessa, koska
+.B cjpeg
+ei itse pysty päättelemään milloin GIF-kuvassa on käytetty ainoastaan harmaansävyjä.
+Käyttämällä
+.BR \-grayscale ,
+-optiota saat aikaan pienempiä JPEG-kuvia lyhyemmässä ajassa.
+.TP
+.B \-optimize
+Optimoi kuvan entropian koodausparametrit.  Jos tätä optiota ei ole annettu
+käytetään oletusparametreja.
+.B \-optimize
+tekee JPEG-kuvatiedostoista yleensä hieman pienempiä, mutta
+.B cjpeg
+toimii silloin hieman hitaammin ja käyttää huomattavasti enemmän muistia.
+.B \-optimize
+-option käyttö ei vaikuta kuvan laatuun tai nopeuteen kuvan purkamisen yhtydessä.
+.TP
+.B \-progressive
+Luo progressiivisen (asteittain tarkentuvan) JPEG-tiedoston (ks. alle).
+.TP
+.B \-targa
+Syöte on Targa-kuvaformaatissa.  Targa-tiedostot sisältävät tunnistuskentän, jota
+.B cjpeg
+ei tunnista automaattisesti.
+.B \-targa
+-optiota tulee käyttää tällaisille tiedostoille, jotta
+.B cjpeg
+käsittelee syötettä Targa-formaatissa.
+Useimmat Targa-muotoiset tiedostot eivät tarvitse tätä optiota.
+.PP
+.B \-quality
+-optiolla voidaan säätää tasapainoa pakatun tiedoston koon ja kuvan laadun välillä.
+Mitä suuremmaksi säädät kuvan laadun sitä suurempia tiedostoja saat aikaiseksi, mutta
+tuloksena on kuva, joka vastaa paremmin alkuperäistä kuvaa.  Aivan pienimpiä
+laatuasetuksia (tuottavat siis myös pienimpiä tiedostoja) käytetään sellaisten kuvien
+luomiseen, joita ei purettaessa tunnista alkuperäisiksi.  Tavalliseen käyttöön
+käyttökelpoisimpia ovat arvot 50:n ja 95:n välillä.  Oletusarvona käytettävä 75
+sopii useimpiin tarkoituksiin.  Jos kuvan laatu
+.B \-quality
+75:llä ei tyydytä kannattaa kokeilla arvon kasvattamista 5:llä tai 10:llä kunnes
+olet tyytyväinen tulokseen.  (Eri tyyppisillä kuvilla on erilaiset optimiasetukset.)
+.PP
+.B \-quality
+100 tuottaa kvantifiontitaulukon, jonka kaikki arvot ovat ykkösiä. Joka
+kvantifiointiaskeleella menetetään tällöin vähiten kuvainformaatiota, mutta tälläkin
+asetuksella tapahtuu pienenpientä hävikkiä.  Arvoa 100 käytetään lähinnä
+kokeilutarkoitukessa eikä normaalikäyttöön suositella arvoja, jotka ovat yli 95:n.
+Pakatun tiedoston koko kasvaa silloi suhteettomasti verrattuna laadussa saatavaan
+hyötyyn. 
+.PP
+Toisaalta alle 50:n arvot tuottavat hyvin pieniä kuvatiedostoja, joiden laatu
+on huono. Arvot 5:n ja 10:n väliltä voivat olla käyttökelpoisia esimerkiksi
+silloin, kun halutaan luoda selailuun käytetävää hakemistoa suuresta kuvakirjastosta.
+Voit huviksesi kokeilla
+.B \-quality
+:ä arvolla 2 hauskojen kubistisien efektien luomiseksi.  (Huom. alle 25:n laatuarvot
+tuottavat kaksitavuisen kvantifiointitaulun, jonka toteuttaminen JPEG-standardissa
+ei ole pakollista.
+.B cjpeg
+antaa varoituksen käytettäessä näin pientä kuvanlaatua, koska eräät JPEG-ohjelmat
+eivät osaa purkaa tällaisia kuvatiedostoja.  Käytä
+.B \-baseline
+-optiota jos haluat varmistua yhteensopivuudesta pienimmillä kuvanlaaduilla.)
+.PP
+.B \-progressive
+-optio luo progressiivisen JPEG-tiedoston. Tämäntyyppisessä kuvatiedostossa
+kuvainformaatio talletetaan useammassa pyyhkäisyssä tarkentaen kuvan laatua
+joka kerralla.  Tästä on se hyöty, että kun kuvaa välitetään hitaan yhteyden
+kautta voi purkaja näyttää ensimmäisestä pyyhkäisystä saatavan epäselvän
+kuvan varsin nopeasti ja sen jälkeen parantaa kuvan laatua seuraavien
+pyyhkäisyjen aikana.  Lopullinen kuva on täsmälleen samanlainen laadultaan
+kuin standardi JPEG-kuva ja myös tiedoston koko on suunnilleen sama -- joskus
+jopa hieman pienempi.
+.B Varoitus:
+kaikki JPEG-purkajat eivät osaa lukea tällä tavalla koodattua kuvaa.
+.PP
+Optiot edistyneille käyttäjille:
+.TP
+.B \-dct int
+Käytä DCT-kokonaislukumetodia (oletus).
+.TP
+.B \-dct fast
+Käytä nopeaa DCT-kokonaislukumetodia (epätarkempi).
+.TP
+.B \-dct float
+Käytä DCT-liukulukumetodia.
+Liukulukumetodi on hieman tarkempi kuin kokonaislukumetodi, mutta huomattavasti
+hitaampi jos koneessasi ei ole erittäin nopeaa liukulukuyksikköä. Huomaa myös,
+että liukulukumetodilla tuloksena saatavissa tiedostoissa voi olla pienenpieniä
+eroja erityyppisten koneiden välillä. Kokonaislukumetodin pitäisi tuottaa täsmälleen
+sama tulos konetyypistä riippumatta. Nopea kokonaislukumetodi on näitä molempia 
+huomattavasti epätarkempi.
+.TP
+.BI \-restart " N"
+Lähettää JPEG-uudelleenaloitusmerkin joka N:nen MCU rivin jälkeen tai joka
+N:nen MCU blokin jälkeen jos numeron perään on liitettynä B-kirjain.
+.B \-restart 0
+(oletus) ei lähetä uudelleenaloitusmerkkejä.
+.TP
+.BI \-smooth " N"
+Pehmentää syötekuvaa vähentämällä siinä esiintyvää kohinaa. N, joka voi saada
+arvon väliltä 0 ja 100, ilmaisee pehmennyksen voimakkuuden. 0 ei pehmennä kuvaa
+lainkaan (oletus).
+.TP
+.BI \-maxmemory " N"
+Asettaa suurten kuvien käsittelyssä käytettävän muistin enimmäismäärän. Luku
+tarkoittaa tuhatta tavua tai miljoonaa jos luvun perään on liitetty M-kirjain.
+Esim.
+.B \-max 4m
+tarkoittaa 4000000 tavua.  Jos annettu muistimäärä ei riitä käytetään apuna
+tilapäistiedostoja.
+.TP
+.BI \-outfile " nimi"
+Kirjoittaa tuloksena saatavan kuvan vakiosyötteen sijasta nimettyyn tiedostoon.
+.TP
+.B \-verbose
+Näyttää debuggaustietoja. Useamman
+.BR \-v
+-option käyttö lisää näytettävien debuggaustietojen määrää.  Debuggaustietojen
+alussa näytetään ohjelman versionumero.
+.TP
+.B \-debug
+Sama kuin
+.BR \-verbose .
+.PP
+.B \-restart
+-optio lisää ylimääräisiä merkkejä, joka auttaa JPEG-purkajaa tahdistuksessa
+siirtovirheen sattuessa.  Jos uudelleenaloitusmerkkejä ei käytetä, niin yksikin
+pakatussa tiedostossa oleva virhe pilaa useimmiten koko loppukuvan; merkkien avulla
+voidaan vaurio saada rajoitettua seuraavaan uudelleenaloitusmerkkiin. Merkit
+kasvattavat luonnollisestikin hieman tiedostokokoa.  Luotettavien verkkojen
+kautta (esim. Usenet) välitettäville kuville suositellaan käytetäväksi optiota 
+.B \-restart 1
+.PP
+.B \-smooth
+-optio suodattaa syötteestä pois hienojakoista kohinaa.  Tätä käytetään
+useimmiten GIF-kuvien muunnoksen yhteydessa.  Kohtuullinen pehmennyskerroin
+10:stä 50:een poistaa syötteestä rasteroinnin ja pienentää siten tiedoston
+kokoa ja parantaa kuvan ulkonäköä.  Liian suuren pehmennyskertoimen käyttö
+kiutenkin sumentaa kuvaa.
+.PP
+Optioita velhoille:
+.TP
+.B \-baseline
+Luo baseline:ä käyttävän JPEG-tiedoston.  Kvantifioinnissa käytettävät arvot
+supistetaan kahdeksaan bittiin myös pienimmillä laatuasetuksilla.
+.TP
+.BI \-qtables " tiedosto"
+Käyttää määrätystä tekstitiedostosta löytyvää kvantifiointitaulua.
+.TP
+.BI \-qslots " N[,...]"
+Valitsee käytettävän kvantifiointitaulun jokaiselle värikomponentille.
+.TP
+.BI \-sample " HxV[,...]"
+Asettaa JPEG-n_ytteenottokertoimet jokaiselle värikomponentille.
+.TP
+.BI \-scans " tiedosto"
+Käyttää määrätystä tekstitiedostosta löytyvää pyyhkäisyskriptiä.
+.PP
+"Velho-opiot" on tarkoitettu kokeiluun. Jos et ole aivan varma mitä optioilla
+tehdään, niin \fBälä käytä niitä\fR.  Lisätietoa näistä optioista löytyy
+tiedostosta wizard.doc.
+.SH ESIMERKIT
+.LP
+Tämä esimerkki pakkaa foo.ppm-nimisen PPM-tiedoston laatuasetuksella 60 ja
+tallettaa sen tiedostoon foo.jpg:
+.IP
+.B cjpeg \-quality
+.I 60 foo.ppm
+.B >
+.I foo.jpg
+.SH VINKIT
+Värilliset GIF-kuvat eivät ole aivan parhaimpia mahdollisia JPEG-kandidaatteja;
+JPEG on tarkoitettu täysvärikuvien (24-bittisten kuvien) pakkaamiseen.
+Aivan erityisesti kannattaa välttää sarjakuvien, viivapiirrosten ja muiden
+sellaisten kuvien muuntamista, jotka käyttävät vain muutamaa väriä.  GIF sopii
+tähän tarkoitukseen huomattavasti paremmin kuin JPEG.  Jos haluat muuntaa
+GIF-kuvia JPEG-formaattiin kannattaa kokeilla
+.BR cjpeg :n
+.B \-quality
+ja
+.B \-smooth
+-optioilla tyydyttävän lopputuloksen aikaansaamiseksi.
+.B \-smooth 10
+on usein käyttökelpoinen.
+.PP
+Vältä kuvien ajamista useiden peräkkäisten JPEG pakkaus/purku-toimenpiteen läpi.
+Kuvasta häviää joka kerralla informaatiota ja kymmenennen kierroksen paikkeilla
+kuvan laatu on jo selkeästi huonompi kuin ensimmäisen kierroksen jälkeen.
+Kuvaa muokattaessa kannattaa käyttää hävikitöntä tiedostoformaattia ja suorittaa
+JPEG-muunnos vasta lopulliselle kuvalle.
+.PP
+.B \-optimize
+-optiota kannattaa käyttää silloin, kun olet tekemässä kuvasta "lopullista"
+versiota eteenpäin lähetettäväksi tai varastoitavaksi.  Optio on hyödyksi
+myös käytettäessä huonompaa kuvanlaatua erittäin pienten JPEG-tiedostojen
+luomiseksi. Saatava prosentuaalinen hyöty on usein suurempi kuin suurempia
+tiedostoja luotaessa.  (Tällä hetkellä
+.B \-optimize
+-moodi on aina valittuna progressiivisia JPEG-tiedostoja generoitaessa.)
+.SH YMPÄRISTÖMUUTTUJAT
+.TP
+.B JPEGMEM
+Tämän ympäristömuuttujan arvoa käytetään oletuksena varattavan muistin ylärajana.
+Arvoa käytetään samoin kuin
+.B \-maxmemory
+-optiota.
+.B JPEGMEM
+korvaa käännöksen yhteydessä annetun käytettävän muistin enimmäismäärän. Se itse
+voidaan korvata antamalla uusi arvo
+.BR \-maxmemory -optiolla.
+.SH "KATSO MYÖS"
+.BR djpeg (1),
+.BR jpegtran (1),
+.BR rdjpgcom (1),
+.BR wrjpgcom (1)
+.br
+.BR ppm (5),
+.BR pgm (5)
+.br
+Wallace, Gregory K.  "The JPEG Still Picture Compression Standard",
+Communications of the ACM, April 1991 (vol. 34, no. 4), pp. 30-44.
+.SH TEKIJÄ
+Independent JPEG Group
+.SH BUGIT
+Aritmeettista koodausta ei ole tuettu lakisyistä.
+.PP
+Kaikkia BMP- ja Targa-formaattien muunnelmia ei tueta.
+.PP
+.B \-targa
+-optio ei ole bugi, se on ominaisuus. (Se olisi kyllä ollut bugi elleivät
+Targa-formaatin suunnittelijat olisi olleet niin pihalla.)
+.PP
+Ei ole vieläkään niin nopea kuin haluaisimme sen olevan.

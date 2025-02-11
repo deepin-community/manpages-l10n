@@ -1,5 +1,5 @@
 '\" t
-.TH "NSS\-RESOLVE" "8" "" "systemd 249" "nss-resolve"
+.TH "NSS\-RESOLVE" "8" "" "systemd 257.1" "nss-resolve"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -76,7 +76,63 @@ is not running\&.
 Please keep in mind that
 \fBnss\-myhostname\fR
 (and
-\fBnss\-resolve\fR) also resolve in the other direction \(em from locally attached IP adresses to hostnames\&. If you rely on that lookup being provided by DNS, you might want to order things differently\&.
+\fBnss\-resolve\fR) also resolve in the other direction \(em from locally attached IP addresses to hostnames\&. If you rely on that lookup being provided by DNS, you might want to order things differently\&.
+.PP
+Communication between
+\fBnss\-resolve\fR
+and
+systemd\-resolved\&.service
+takes place via the
+/run/systemd/resolve/io\&.systemd\&.Resolve
+\fBAF_UNIX\fR
+socket\&.
+.SH "ENVIRONMENT VARIABLES"
+.PP
+\fI$SYSTEMD_NSS_RESOLVE_VALIDATE\fR
+.RS 4
+Takes a boolean argument\&. When false, cryptographic validation of resource records via DNSSEC will be disabled\&. This may be useful for testing, or when system time is known to be unreliable\&.
+.sp
+Added in version 250\&.
+.RE
+.PP
+\fI$SYSTEMD_NSS_RESOLVE_SYNTHESIZE\fR
+.RS 4
+Takes a boolean argument\&. When false, synthetic records, e\&.g\&. for the local host name, will not be returned\&. See section SYNTHETIC RECORDS in
+\fBsystemd-resolved.service\fR(8)
+for more information\&. This may be useful to query the "public" resource records, independent of the configuration of the local machine\&.
+.sp
+Added in version 250\&.
+.RE
+.PP
+\fI$SYSTEMD_NSS_RESOLVE_CACHE\fR
+.RS 4
+Takes a boolean argument\&. When false, the cache of previously queried records will not be used by
+\fBsystemd-resolved\fR(8)\&.
+.sp
+Added in version 250\&.
+.RE
+.PP
+\fI$SYSTEMD_NSS_RESOLVE_ZONE\fR
+.RS 4
+Takes a boolean argument\&. When false, answers using locally registered public LLMNR/mDNS resource records will not be returned\&.
+.sp
+Added in version 250\&.
+.RE
+.PP
+\fI$SYSTEMD_NSS_RESOLVE_TRUST_ANCHOR\fR
+.RS 4
+Takes a boolean argument\&. When false, answers using locally configured trust anchors will not be used\&.
+.sp
+Added in version 250\&.
+.RE
+.PP
+\fI$SYSTEMD_NSS_RESOLVE_NETWORK\fR
+.RS 4
+Takes a boolean argument\&. When false, answers will be returned without using the network, i\&.e\&. either from local sources or the cache in
+\fBsystemd-resolved\fR(8)\&.
+.sp
+Added in version 250\&.
+.RE
 .SH "EXAMPLE"
 .PP
 Here is an example
@@ -89,9 +145,9 @@ correctly:
 .RS 4
 .\}
 .nf
-passwd:         compat systemd
-group:          compat [SUCCESS=merge] systemd
-shadow:         compat systemd
+passwd:         files systemd
+group:          files [SUCCESS=merge] systemd
+shadow:         files systemd
 gshadow:        files systemd
 
 hosts:          mymachines \fBresolve [!UNAVAIL=return]\fR files myhostname dns
@@ -109,9 +165,4 @@ netgroup:       nis
 .\}
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd-resolved\fR(8),
-\fBnss-systemd\fR(8),
-\fBnss-myhostname\fR(8),
-\fBnss-mymachines\fR(8),
-\fBnsswitch.conf\fR(5)
+\fBsystemd\fR(1), \fBsystemd-resolved\fR(8), \fBnss-systemd\fR(8), \fBnss-myhostname\fR(8), \fBnss-mymachines\fR(8), \fBnsswitch.conf\fR(5), \fBsystemd.syntax\fR(7)

@@ -1,182 +1,227 @@
-.\"/* Copyright 1988,1990,1993 by Paul Vixie
-.\" * All rights reserved
-.\" *
-.\" * Distribute freely, except: don't remove my name from the source or
-.\" * documentation (don't take credit for my work), mark your changes (don't
-.\" * get me blamed for your possible bugs), don't alter or remove this
-.\" * notice.  May be sold if buildable source is provided to buyer.  No
-.\" * warrantee of any kind, express or implied, is included with this
-.\" * software; use at your own risk, responsibility for damages (if any) to
-.\" * anyone resulting from the use of this software rests entirely with the
-.\" * user.
-.\" *
-.\" * Send bug reports, bug fixes, enhancements, requests, flames, etc., and
-.\" * I'll try to keep a version up to date.  I can be reached as follows:
-.\" * Paul Vixie          <paul@vix.com>          uunet!decwrl!vixie!paul
-.\" */
+'\" t
+.\"     Title: Crontab
+.\"    Author: Paul Vixie <paul@vix.com>
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 03/26/2024
+.\"    Manual: crontab User Manual
+.\"    Source: crontab
+.\"  Language: English
 .\"
-.\" $Id: crontab.1,v 2.4 1993/12/31 10:47:33 vixie Exp $
-.\"
-.TH CRONTAB 1 "19 April 2010"
-.UC 4
-.SH NAME
+.TH "CRONTAB" "1" "03/26/2024" "crontab" "crontab User Manual"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
 crontab \- maintain crontab files for individual users (Vixie Cron)
-.SH SYNOPSIS
-crontab [ \-u user ] file
-.br
-crontab [ \-u user ] [ \-i ] { \-e | \-l | \-r }
-.SH DESCRIPTION
-.I crontab
-is the program used to install, deinstall or list the tables
-used to drive the
-.IR cron (8)
-daemon in Vixie Cron.  Each user can have their own crontab, and though
-these are files in /var/spool/cron/crontabs,
-they are not intended to be edited directly.
+.SH "SYNOPSIS"
+.HP \w'\fBcrontab\fR\ 'u
+\fBcrontab\fR [\fB\-h\fR]
+.HP \w'\fBcrontab\fR\ 'u
+\fBcrontab\fR [\fB\-u\ \fR\fB\fIuser\fR\fR] [\fB\-n\fR] \fB\fIfile\fR\fR
+.HP \w'\fBcrontab\fR\ 'u
+\fBcrontab\fR [\fB\-u\ \fR\fB\fIuser\fR\fR] [\fB\-i\fR] {\fB\-e\fR\ |\ \fB\-l\fR\ |\ \fB\-r\fR}
+.SH "DESCRIPTION"
+.PP
+\fBcrontab\fR
+is the program used to install, deinstall or list the tables used to drive the
+\fBcron\fR(8)
+daemon in Vixie Cron\&. Each user can have their own crontab, and though these are files in
+/var/spool/cron/crontabs, they are not intended to be edited directly\&.
 .PP
 If the
-.I /etc/cron.allow
-file exists, then you must be listed (one user per line) therein in order to be
-allowed to use this command.  If the
-.I /etc/cron.allow
+\fI/etc/cron\&.allow\fR
+file exists, then you must be listed (one user per line) therein in order to be allowed to use this command\&. If the
+\fI/etc/cron\&.allow\fR
 file does not exist but the
-.I /etc/cron.deny
-file does exist, then you must \fBnot\fR be listed in the
-.I /etc/cron.deny
-file in order to use this command.
+\fI/etc/cron\&.deny\fR
+file does exist, then you must not be listed in the
+\fI/etc/cron\&.deny\fR
+file in order to use this command\&.
 .PP
-If neither of these files exists, then depending on site-dependent
-configuration parameters, only the super user will be allowed to use this
-command, or all users will be able to use this command.
+If neither of these files exists, then depending on site\-dependent configura\(hy tion parameters, only the super user will be allowed to use this command, or all users will be able to use this command\&.
 .PP
 If both files exist then
-.I /etc/cron.allow
-takes precedence.  Which means that
-.I /etc/cron.deny
+\fI/etc/cron\&.allow\fR
+takes precedence\&. Which means that
+\fI/etc/cron\&.deny\fR
 is not considered and your user must be listed in
-.I /etc/cron.allow
-in order to be able to use the crontab.
+\fI/etc/cron\&.allow\fR
+in order to be able to use the crontab\&.
 .PP
-Regardless of the existence of any of these files, the root administrative
-user is always allowed to setup a crontab.  For standard Debian systems, all
-users may use this command.
+Regardless of the existence of any of these files, the root administrative user is always allowed to setup a crontab\&. For standard Debian systems, all users may use this command\&.
 .PP
 If the
-.I \-u
-option is given, it specifies the name of the user whose crontab is to be
-used (when listing) or modified (when editing).  If this option is not given,
-.I crontab
-examines "your" crontab, i.e., the crontab of the person executing the
-command.  Note that
-.IR su (8)
-can confuse
-.I crontab
-and that if you are running inside of
-.IR su (8)
+\fI\-h\fR
+option is given,
+\fBcrontab\fR
+shows a help message and quits immediately\&.
+.PP
+If the
+\fI\-u\fR
+option is given, it specifies the name of the user whose crontab is to be used (when listing) or modified (when editing)\&. If this option is not given,
+\fBcrontab\fR
+examines "your" crontab, i\&.e\&., the crontab of the person executing the command\&. Note that
+\fBsu\fR(8)
+can confuse crontab and that if you are running inside of
+\fBsu\fR(8)
 you should always use the
-.I \-u
-option for safety's sake.
+\fI\-u\fR
+option for safety\*(Aqs sake\&.
 .PP
-The first form of this command is used to install a new crontab from some
-named file or standard input if the pseudo-filename ``-'' is given.
+The first form of this command is used to install a new crontab from some named file or standard input if the pseudo\-filename ``\-\*(Aq\*(Aq is given\&.
 .PP
-The
-.I \-l
-option causes the current crontab to be displayed on standard output.  See
-the note under
-.B DEBIAN SPECIFIC
-below.
+If the
+\fI\-n\fR
+option is given, it means "dry run": crontab examines "your" crontab for its syntax, and outputs a success message if this syntax is correct, but nothing is written to any crontab\&.
 .PP
 The
-.I \-r
-option causes the current crontab to be removed.
+\fI\-l\fR
+option causes the current crontab to be displayed on standard output\&. See the note under
+the section called \(lqDEBIAN SPECIFIC\(rq
+below\&.
 .PP
 The
-.I \-e
-option is used to edit the current crontab using the editor specified by
-the \s-1VISUAL\s+1 or \s-1EDITOR\s+1 environment variables.
-After you exit
-from the editor, the modified crontab will be installed automatically.  If
-neither of the environment variables is defined, then the
-default editor /usr/bin/editor is used.
+\fI\-r\fR
+option causes the current crontab to be removed\&.
 .PP
 The
-.I \-i
-option modifies the \-r option to prompt the user for a 'y/Y' response
-before actually removing the crontab.
-.SH DEBIAN SPECIFIC
-The "out-of-the-box" behaviour for
-.I crontab \-l
-is to display the three line "DO NOT EDIT THIS FILE" header
-that is placed at the
-beginning of the crontab when it is installed.  The problem is that
-it makes the sequence
+\fI\-e\fR
+option is used to edit the current crontab using the editor specified by the VISUAL or EDITOR environment variables\&. After you exit from the editor, the modified crontab will be installed automatically\&. If neither of the environment variables is defined, then the default editor
+/usr/bin/editor
+is used\&.
 .PP
-crontab \-l | crontab \-
+The
+\fI\-i\fR
+option modifies the
+\fI\-r\fR
+option to prompt the user for a \*(Aqy/Y\*(Aq response before actually removing the crontab\&.
+.SH "DEBIAN SPECIFIC"
 .PP
-non-idempotent \(em you keep adding copies of the header.  This causes
-pain to scripts that use sed to edit a crontab.  Therefore, the default
-behaviour of the
-.B \-l
-option has been changed to not output such header.  You may obtain the
-original behaviour by setting the environment variable
-.B CRONTAB_NOHEADER
-to 'N', which will cause the
-.I crontab \-l
-command to emit the extraneous header.
+The "out\-of\-the\-box" behaviour for
+\fBcrontab \-l\fR
+is to display the three line "DO NOT EDIT THIS FILE" header that is placed at the beginning of the crontab when it is installed\&. The problem is that it makes the sequence
+.PP
+\fBcrontab \-l | crontab \-\fR
+.PP
+non\-idempotent \(em you keep adding copies of the header\&. This causes pain to scripts that use sed to edit a crontab\&. Therefore, the default behaviour of the
+\fI\-l\fR
+option has been changed to not output such header\&. You may obtain the original behaviour by setting the environment variable
+\fBCRONTAB_NOHEADER\fR
+to \*(AqN\*(Aq, which will cause the
+\fBcrontab \-l\fR
+command to emit the extraneous header\&.
+.SH "HIGHLIGHTING THE OUTPUT OF CRONTAB \-L"
+.PP
+The command
+\fBcrontab \-l\fR
+outputs plain text\&. When a tty can support ANSI sequences to colourise this text, one can highlight the output, by calling:
+\fBcrontab \-l | spc \-t crontab\fR
+when the ttybackground is dark, or
+\fBcrontab \-l | spc \-t crontab\-light\fR
+when this background is light\&.
+.PP
+The highlighting scheme can be modified by using customised versions of files
+\fI/etc/supercat/spcrc\-crontab*\fR
+.PP
+One can also colourise this text with the program
+\fBbatcat\fR
+provided by the package
+\fBbat\fR(), here is an example:
+.PP
+\fBcrontab \-l | batcat \-\-language Crontab\fR
 .SH "SEE ALSO"
-crontab(5), cron(8)
-.SH FILES
-.nf
-/etc/cron.allow
-/etc/cron.deny
-/var/spool/cron/crontabs
-.fi
 .PP
+\fBcrontab\fR(5),
+\fBcron\fR(8),
+\fBspc\fR(1)
+.SH "FILES"
+.PP
+/etc/cron\&.allow, /etc/cron\&.deny
+.RS 4
 The files
-.I /etc/cron.allow
+\fI/etc/cron\&.allow\fR
 and
-.I /etc/cron.deny
-if, they exist, must be either world-readable, or readable by group
-``crontab''. If they are not, then cron will deny access to all users until the
-permissions are fixed.
+\fI/etc/cron\&.deny\fR
+if they exist, must be either world\-readable, or readable by group ``crontab\*(Aq\*(Aq\&. If they are not, then
+\fBcron\fR
+will deny access to all users until the permissions are fixed\&.
+.RE
 .PP
-There is one file for each user's crontab under the /var/spool/cron/crontabs
-directory.  Users are not allowed to edit the files under that directory
-directly to ensure that only users allowed by the system to run periodic tasks
-can add them, and only syntactically correct crontabs will be written there.
-This is enforced by having the directory writable only by the
-.I crontab
-group and configuring
-.I crontab
-command with the setgid bid set for that specific group.
-.SH STANDARDS
-The
-.I crontab
-command conforms to IEEE Std1003.2-1992 (``POSIX'').  This new command syntax
-differs from previous versions of Vixie Cron, as well as from the classic
-SVR3 syntax.
-
-.SH DIAGNOSTICS
-A fairly informative usage message appears if you run it with a bad command
-line.
-
-cron requires that each entry in a crontab end in a newline character.  If the
-last entry in a crontab is missing the newline, cron will consider the crontab
-(at least partially) broken and refuse to install it.
-
-The files under
-.I
 /var/spool/cron/crontabs
-are named based on the user's account name.
-Crontab jobs will not be run for users whose accounts have been
-renamed either due to changes in the local system or because they are
-managed through a central user database (external to the system, for
-example an LDAP directory).
-
-
-.SH AUTHOR
-Paul Vixie <paul@vix.com> is the author of
-.I cron
-and original creator of this manual page.  This page has also been modified for
-Debian by Steve Greenland, Javier Fernandez-Sanguino and Christian Kastner.
+.RS 4
+There is one file for each user\*(Aqs crontab under the
+/var/spool/cron/crontabs
+directory\&. Users are not allowed to edit the files under that directory directly to ensure that only users allowed by the system to run periodic tasks can add them, and only syntactically correct crontabs will be written there\&. This is enforced by having the directory writable only by the ``crontab\*(Aq\*(Aq group and configuring
+\fBcrontab\fR
+command with the setgid bid set for that specific group\&.
+.RE
+.SH "STANDARDS"
+.PP
+The
+\fBcrontab\fR
+command conforms to IEEE Std1003\&.2\-1992 (``POSIX\*(Aq\*(Aq)\&. This new command syntax differs from previous versions of Vixie Cron, as well as from the classic SVR3 syntax\&.
+.SH "DIAGNOSTICS"
+.PP
+A fairly informative usage message appears if you run it with a bad command line\&.
+.PP
+\fBcron\fR
+requires that each entry in a crontab end in a newline character\&. If the last entry in a crontab is missing the newline,
+\fBcron\fR
+will consider the crontab (at least partially) broken and refuse to install it\&.
+.PP
+The files under
+\fI/var/spool/cron/crontabs\fR
+are named based on the user\*(Aqs account name\&. Crontab jobs will not be run for users whose accounts have been renamed either due to changes in the local system or because they are managed through a central user database (external to the system, for example an LDAP directory)\&.
+.SH "AUTHORS"
+.PP
+\fBPaul Vixie\fR <\&paul@vix\&.com\&>
+.RS 4
+Wrote this manpage (1994)\&.
+.RE
+.PP
+\fBSteve Greenland\fR <\&stevegr@debian\&.org\&>
+.RS 4
+Maintained the package (1996\-2005)\&.
+.RE
+.PP
+\fBJavier Fern\('andez\-Sanguino Pe\(~na\fR <\&jfs@debian\&.org\&>
+.RS 4
+Maintained the package (2005\-2014)\&.
+.RE
+.PP
+\fBChristian Kastner\fR <\&ckk@debian\&.org\&>
+.RS 4
+Maintained the package (2010\-2016)\&.
+.RE
+.PP
+\fBGeorges Khaznadar\fR <\&georgesk@debian\&.org\&>
+.RS 4
+Maintained the package (2022\-2024)\&.
+.RE
+.SH "COPYRIGHT"
+.br
+Copyright \(co 1994 Paul Vixie
+.br
+.PP
+Distribute freely, except: don\*(Aqt remove my name from the source or documentation (don\*(Aqt take credit for my work), mark your changes (don\*(Aqt get me blamed for your possible bugs), don\*(Aqt alter or remove this notice\&. May be sold if buildable source is provided to buyer\&. No warranty of any kind, express or implied, is included with this software; use at your own risk, responsibility for damages (if any) to anyone resulting from the use of this software rests entirely with the user\&.
+.PP
+Since year 1994, many modifications were made in this manpage, authored by Debian Developers which maintained
+cron; above is a short list, more information can be found in the file
+/usr/share/doc/cron/copyright\&.
+.sp

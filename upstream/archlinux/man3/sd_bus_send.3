@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_SEND" "3" "" "systemd 249" "sd_bus_send"
+.TH "SD_BUS_SEND" "3" "" "systemd 257" "sd_bus_send"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -100,22 +100,30 @@ The input parameter
 \fIm\fR
 is
 \fBNULL\fR\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-EOPNOTSUPP\fR
 .RS 4
 The bus connection does not support sending file descriptors\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ECHILD\fR
 .RS 4
 The bus connection was allocated in a parent process and is being reused in a child process after
 \fBfork()\fR\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOBUFS\fR
 .RS 4
 The bus connection\*(Aqs write queue is full\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOTCONN\fR
@@ -125,27 +133,41 @@ The input parameter
 is
 \fBNULL\fR
 or the bus is not connected\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ECONNRESET\fR
 .RS 4
 The bus connection was closed while waiting for the response\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOMEM\fR
 .RS 4
 Memory allocation failed\&.
+.sp
+Added in version 246\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_send()\fR
+and
+\fBsd_bus_send_to()\fR
+were added in version 246\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-bus\fR(3),
-\fBsd_bus_call_method\fR(3),
-\fBsd_bus_message_set_destination\fR(3),
-\fBsd_bus_reply_method_return\fR(3),
-\fBsd_bus_process\fR(3)
+\fBsystemd\fR(1), \fBsd-bus\fR(3), \fBsd_bus_call_method\fR(3), \fBsd_bus_message_set_destination\fR(3), \fBsd_bus_reply_method_return\fR(3), \fBsd_bus_process\fR(3)

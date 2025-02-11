@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_MESSAGE_NEW_METHOD_CALL" "3" "" "systemd 249" "sd_bus_message_new_method_call"
+.TH "SD_BUS_MESSAGE_NEW_METHOD_CALL" "3" "" "systemd 255" "sd_bus_message_new_method_call"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -137,9 +137,16 @@ message does not have a cookie\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
 .SH "EXAMPLES"
 .PP
 \fBExample\ \&1.\ \&Make a call to a D\-Bus method that takes a single parameter\fR
@@ -148,36 +155,43 @@ file\&.
 .RS 4
 .\}
 .nf
-#include <stdio\&.h>
-#include <string\&.h>
-#include <unistd\&.h>
-#include <sys/types\&.h>
-
-#include <systemd/sd\-bus\&.h>
-#define _cleanup_(f) __attribute__((cleanup(f)))
+/* SPDX\-License\-Identifier: MIT\-0 */
 
 /* This is equivalent to:
  * busctl call org\&.freedesktop\&.systemd1 /org/freedesktop/systemd1 \e
  *       org\&.freedesktop\&.systemd1\&.Manager GetUnitByPID $$
  *
- * Compile with \*(Aqcc \-lsystemd print\-unit\-path\&.c\*(Aq
+ * Compile with \*(Aqcc print\-unit\-path\&.c \-lsystemd\*(Aq
  */
 
+#include <errno\&.h>
+#include <stdio\&.h>
+#include <sys/types\&.h>
+#include <unistd\&.h>
+
+#include <systemd/sd\-bus\&.h>
+
+#define _cleanup_(f) __attribute__((cleanup(f)))
 #define DESTINATION "org\&.freedesktop\&.systemd1"
 #define PATH        "/org/freedesktop/systemd1"
 #define INTERFACE   "org\&.freedesktop\&.systemd1\&.Manager"
 #define MEMBER      "GetUnitByPID"
 
 static int log_error(int error, const char *message) {
-  fprintf(stderr, "%s: %s\en", message, strerror(\-error));
+  errno = \-error;
+  fprintf(stderr, "%s: %m\en", message);
   return error;
 }
 
-static int print_unit_path(sd_bus *bus) {
-  _cleanup_(sd_bus_message_unrefp) sd_bus_message *m = NULL;
+int main(int argc, char **argv) {
+  _cleanup_(sd_bus_flush_close_unrefp) sd_bus *bus = NULL;
   _cleanup_(sd_bus_error_free) sd_bus_error error = SD_BUS_ERROR_NULL;
-  _cleanup_(sd_bus_message_unrefp) sd_bus_message *reply = NULL;
+  _cleanup_(sd_bus_message_unrefp) sd_bus_message *reply = NULL, *m = NULL;
   int r;
+
+  r = sd_bus_open_system(&bus);
+  if (r < 0)
+    return log_error(r, "Failed to acquire bus");
 
   r = sd_bus_message_new_method_call(bus, &m,
                                      DESTINATION, PATH, INTERFACE, MEMBER);
@@ -190,7 +204,7 @@ static int print_unit_path(sd_bus *bus) {
 
   r = sd_bus_call(bus, m, \-1, &error, &reply);
   if (r < 0)
-    return log_error(r, "Call failed");
+    return log_error(r, MEMBER " call failed");
 
   const char *ans;
   r = sd_bus_message_read(reply, "o", &ans);
@@ -201,23 +215,18 @@ static int print_unit_path(sd_bus *bus) {
 
   return 0;
 }
-
-int main(int argc, char **argv) {
-  _cleanup_(sd_bus_flush_close_unrefp) sd_bus *bus = NULL;
-  int r;
-
-  r = sd_bus_open_system(&bus);
-  if (r < 0)
-    return log_error(r, "Failed to acquire bus");
-
-  print_unit_path(bus);
-}
 .fi
 .if n \{\
 .RE
 .\}
 .PP
 This defines a minimally useful program that will open a connection to the bus, create a message object, send it, wait for the reply, and finally extract and print the answer\&. It does error handling and proper memory management\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_message_new_method_call()\fR
+and
+\fBsd_bus_message_new_method_return()\fR
+were added in version 246\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

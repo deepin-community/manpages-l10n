@@ -1,20 +1,20 @@
-.\" sar manual page - (C) 1999-2020 Sebastien Godard (sysstat <at> orange.fr)
-.TH SAR 1 "AUGUST 2020" Linux "Linux User's Manual" \-*\- nroff \-*\-
+.\" sar manual page - (C) 1999-2023 Sebastien Godard (sysstat <at> orange.fr)
+.TH SAR 1 "NOVEMBER 2023" Linux "Linux User's Manual" -*- nroff -*-
 .SH NAME
 sar \- Collect, report, or save system activity information.
 
 .SH SYNOPSIS
 .B sar [ \-A ] [ \-B ] [ \-b ] [ \-C ] [ \-D ] [ \-d ] [ \-F [ MOUNT ] ] [ \-H ] [ \-h ] [ \-p ]
-.B [ \-r [ ALL ] ] [ \-S ] [ \-t ] [ \-u [ ALL ] ] [ \-V ] [ \-v ] [ \-W ] [ \-w ] [ \-y ] [ \-z ]
+.B [ \-r [ ALL ] ] [ \-S ] [ \-t ] [ \-u [ ALL ] ] [ \-V ] [ \-v ] [ \-W ] [ \-w ] [ \-x ] [ \-y ] [ \-z ]
 .B [ \-\-dec={ 0 | 1 | 2 } ]
 .BI "[ \-\-dev=" "dev_list " "] [ \-\-fs=" "fs_list " "] [ \-\-help ] [ \-\-human ] [ \-\-iface=" "iface_list"
-.BI "] [ \-\-pretty ] [ \-\-sadc ] [ \-I { " "int_list " "| SUM | ALL } ] [ \-P { " "cpu_list"
+.BI "] [ \-\-int=" "int_list " "] [ \-\-pretty ] [ \-\-sadc ] [ \-I [ SUM | ALL ] ] [ \-P { " "cpu_list"
 .B | ALL } ] [ \-m {
 .IB "keyword" "[,...] | ALL } ] [ \-n { " "keyword" "[,...] | ALL } ] [ \-q [ " "keyword" "[,...] | ALL ] ]"
 .B [ \-j { SID | ID | LABEL | PATH | UUID | ... } ]
 .BI "[ \-f [ " "filename " "] | \-o [ " "filename " "] | \-[0\-9]+ ]"
-.BI "[ \-i " "interval " "] [ \-s [ " "hh" ":" "mm" "[:" "ss" "]"
-.BI "] ] [ \-e [ " "hh" ":" "mm" "[:" "ss" "] ] ] [ " "interval " "[ " "count " "] ]"
+.BI "[ \-i " "interval " "] [ \-s [ " "start_time "
+.BI "] ] [ \-e [ " "end_time " "] ] ] [ " "interval " "[ " "count " "] ]"
 
 .SH DESCRIPTION
 .RB "The " "sar"
@@ -78,7 +78,7 @@ with options
 then it will be considered as the directory containing the data files.
 .PP
 .RB "Without the " "\-P " "flag, the " "sar"
-command reports system\-wide (global among all processors) statistics,
+command reports system-wide (global among all processors) statistics,
 which are calculated as averages for values expressed as percentages,
 and as sums otherwise. If the
 .BR "\-P " "flag is given, the " "sar"
@@ -99,7 +99,7 @@ The default version of the
 command (CPU utilization report) might be one of the first facilities
 the user runs to begin system activity investigation, because it
 monitors major system resources. If CPU utilization is near 100 percent
-(user + nice + system), the workload sampled is CPU\-bound.
+(user + nice + system), the workload sampled is CPU-bound.
 
 If multiple samples and multiple reports are desired, it is convenient
 to specify an output file for the
@@ -125,7 +125,7 @@ command only reports on local activities.
 .TP
 .B \-A
 This is equivalent to specifying
-.BR "\-bBdFHSvwWy \-I SUM \-m ALL \-n ALL \-q ALL \-r ALL \-u ALL" "."
+.BR "\-bBdFHISvwWy \-m ALL \-n ALL \-q ALL \-r ALL \-u ALL" "."
 This option also implies specifying
 .B \-I ALL \-P ALL
 unless these options are explicitly set on the command line.
@@ -154,13 +154,12 @@ Number of pages scanned directly per second.
 .IP pgsteal/s
 Number of pages the system has reclaimed from cache (pagecache and
 swapcache) per second to satisfy its memory demands.
-.IP %vmeff
-Calculated as pgsteal / pgscan, this is a metric of the efficiency of
-page reclaim. If it is near 100% then almost every page coming off the
-tail of the inactive list is being reaped. If it gets too low (e.g. less
-than 30%) then the virtual memory is having some difficulty.
-This field is displayed as zero if no pages have been scanned during the
-interval of time.
+.IP pgprom/s
+Number of pages promoted (i.e. migrated from slow to fast memory types)
+by the system per second.
+.IP pgdem/s
+Number of pages demoted (i.e. migrated from fast to slow memory types)
+by the system per second.
 .RE
 .TP
 .B \-b
@@ -252,17 +251,23 @@ Specify the number of decimal places to use (0 to 2, default value is 2).
 .BI "\-\-dev=" "dev_list"
 Specify the block devices for which statistics are to be displayed by
 .BR "sar" "."
-.IR "dev_list " "is a list of comma\-separated device names."
-.TP
+.IR "dev_list " "is a list of comma-separated device names."
+.RE
+.PP
 .BI "\-e [ " "hh" ":" "mm" "[:" "ss" "] ]"
+.br
+.BI "\-e [ " "seconds_since_the_epoch " "]"
+.RS
 Set the ending time of the report. The default ending time is
-18:00:00. Hours must be given in 24\-hour format.
+18:00:00. Hours must be given in 24-hour format, or as the number of seconds
+since the epoch (given as a 10 digit number).
 This option can be used when data are read from
 or written to a file (options
 .BR "\-f " "or " "\-o" ")."
+.RE
 .TP
 .B \-F [ MOUNT ]
-Display statistics for currently mounted filesystems. Pseudo\-filesystems are
+Display statistics for currently mounted filesystems. Pseudo-filesystems are
 ignored. At the end of the report,
 .B sar
 will display a summary of all those filesystems. Use of the
@@ -310,7 +315,7 @@ located. Option
 Specify the filesystems for which statistics are to be displayed by
 .BR "sar" "."
 .I fs_list
-is a list of comma\-separated filesystem names or mountpoints.
+is a list of comma-separated filesystem names or mountpoints.
 .TP
 .B \-H
 Report hugepages utilization statistics.
@@ -340,17 +345,19 @@ Print sizes in human readable format (e.g. 1.0k, 1.2M, etc.)
 The units displayed with this option supersede any other default units (e.g.
 kilobytes, sectors...) associated with the metrics.
 .TP
-.BI "\-I { " "int_list " "| SUM | ALL }"
-Report statistics for interrupts.
-.I int_list
-is a list of comma\-separated values or range of values (e.g.,
-.BR "0\-16,35,400\-" "). The " "SUM"
+.BI "\-I [ SUM | ALL ]"
+Report statistics for interrupts. The values displayed are the number of interrupts
+per second for the given processor or among all processors.
+A list of interrupts can be specified using
+.B \-\-int=
+(see this option). The
+.B SUM
 keyword indicates that the total number of interrupts received per second
 is to be displayed. The
 .B ALL
-keyword indicates that statistics from all interrupts, including potential
-APIC interrupt sources, are to be reported.
-Note that interrupt statistics depend on
+keyword indicates that statistics from all interrupts are to be reported
+(this is the default).
+Note that interrupts statistics depend on
 .BR "sadc" "'s option " "\-S INT"
 to be collected.
 .TP
@@ -362,7 +369,14 @@ Select data records at seconds as close as possible to the number specified
 Specify the network interfaces for which statistics are to be displayed by
 .BR "sar" "."
 .I iface_list
-is a list of comma\-separated interface names.
+is a list of comma-separated interface names.
+.TP
+.BI "\-\-int=" "int_list"
+Specify the interrupts names for which statistics are to be displayed by
+.BR "sar" "."
+.I int_list
+is a list of comma-separated values or range of values (e.g.,
+.BR "0\-16,35,40\-" ").
 .TP
 .B \-j { SID | ID | LABEL | PATH | UUID | ... }
 Display persistent device names. Use this option in conjunction with option
@@ -382,8 +396,21 @@ Note that these statistics depend on
 .BR "sadc" "'s option " "\-S POWER " "to be collected."
 
 Possible keywords are
-.BR "CPU" ", " "FAN" ", " "FREQ" ", " "IN" ", " "TEMP " "and " "USB" "."
+.BR "BAT" ", " "CPU" ", " "FAN" ", " "FREQ" ", " "IN" ", " "TEMP " "and " "USB" "."
 
+.RB "With the " "BAT"
+keyword, statistics about batteries capacity are reported.
+The following values are displayed:
+.RS
+.IP %cap
+Battery capacity.
+.IP cap/min
+Capacity lost or gained per minute by the battery.
+.IP status
+Charging status of the battery: ↑ (full), ↗ (charging), → (not charging), ↘ (discharging), ? (unknown).
+.RE
+
+.IP
 .RB "With the " "CPU"
 keyword, statistics about CPU are reported.
 The following value is displayed:
@@ -413,7 +440,7 @@ The following value is displayed:
 .RS
 .IP wghMHz
 Weighted average CPU clock frequency in MHz.
-Note that the cpufreq\-stats driver must be compiled in the
+Note that the cpufreq-stats driver must be compiled in the
 kernel for this option to work.
 .RE
 
@@ -506,9 +533,9 @@ Number of compressed packets transmitted per second.
 .IP rxmcst/s
 Number of multicast packets received per second.
 .IP %ifutil
-Utilization percentage of the network interface. For half\-duplex interfaces,
+Utilization percentage of the network interface. For half-duplex interfaces,
 utilization is calculated using the sum of rxkB/s and txkB/s as a percentage
-of the interface speed. For full\-duplex, this is the greater of rxkB/S or txkB/s.
+of the interface speed. For full-duplex, this is the greater of rxkB/S or txkB/s.
 .RE
 
 .IP
@@ -533,7 +560,7 @@ Number of received packets dropped per second because of a lack of space in linu
 .IP txdrop/s
 Number of transmitted packets dropped per second because of a lack of space in linux buffers.
 .IP txcarr/s
-Number of carrier\-errors that happened per second while transmitting packets.
+Number of carrier-errors that happened per second while transmitting packets.
 .IP rxfram/s
 Number of frame alignment errors that happened per second on received packets.
 .IP rxfifo/s
@@ -616,7 +643,7 @@ square brackets):
 .RS
 .IP ierr/s
 The number of ICMP messages per second which the entity received but
-determined as having ICMP\-specific errors (bad ICMP
+determined as having ICMP-specific errors (bad ICMP
 checksums, bad length, etc.) [icmpInErrors].
 .IP oerr/s
 The number of ICMP messages per second which this entity did not send
@@ -730,7 +757,7 @@ square brackets):
 .RS
 .IP ierr6/s
 The number of ICMP messages per second which the interface
-received but determined as having ICMP\-specific
+received but determined as having ICMP-specific
 errors (bad ICMP checksums, bad length, etc.)
 [ipv6IfIcmpInErrors]
 .IP idtunr6/s
@@ -794,16 +821,16 @@ was made to find a route to forward them to that final
 destination [ipForwDatagrams].
 .IP idel/s
 The total number of input datagrams successfully delivered per second
-to IP user\-protocols (including ICMP) [ipInDelivers].
+to IP user-protocols (including ICMP) [ipInDelivers].
 .IP orq/s
-The total number of IP datagrams which local IP user\-protocols (including ICMP)
+The total number of IP datagrams which local IP user-protocols (including ICMP)
 supplied per second to IP in requests for transmission [ipOutRequests].
 Note that this counter does not include any datagrams counted in fwddgm/s.
 .IP asmrq/s
 The number of IP fragments received per second which needed to be
 reassembled at this entity [ipReasmReqds].
 .IP asmok/s
-The number of IP datagrams successfully re\-assembled per second [ipReasmOKs].
+The number of IP datagrams successfully re-assembled per second [ipReasmOKs].
 .IP fragok/s
 The number of IP datagrams that have been successfully
 fragmented at this entity per second [ipFragOKs].
@@ -824,7 +851,7 @@ square brackets):
 .IP ihdrerr/s
 The number of input datagrams discarded per second due to errors in
 their IP headers, including bad checksums, version number
-mismatch, other format errors, time\-to\-live exceeded, errors
+mismatch, other format errors, time-to-live exceeded, errors
 discovered in processing their IP options, etc. [ipInHdrErrors]
 .IP iadrerr/s
 The number of input datagrams discarded per second because the IP
@@ -836,7 +863,7 @@ not IP routers and therefore do not forward datagrams, this
 counter includes datagrams discarded because the destination
 address was not a local address [ipInAddrErrors].
 .IP iukwnpr/s
-The number of locally\-addressed datagrams received
+The number of locally-addressed datagrams received
 successfully but discarded per second because of an unknown or
 unsupported protocol [ipInUnknownProtos].
 .IP idisc/s
@@ -844,7 +871,7 @@ The number of input IP datagrams per second for which no problems were
 encountered to prevent their continued processing, but which
 were discarded (e.g., for lack of buffer space) [ipInDiscards].
 Note that this counter does not include any datagrams discarded while
-awaiting re\-assembly.
+awaiting re-assembly.
 .IP odisc/s
 The number of output IP datagrams per second for which no problem was
 encountered to prevent their transmission to their
@@ -857,11 +884,11 @@ this (discretionary) discard criterion.
 The number of IP datagrams discarded per second because no route could
 be found to transmit them to their destination [ipOutNoRoutes].
 Note that this counter includes any packets counted in fwddgm/s
-which meet this 'no\-route' criterion.
+which meet this 'no-route' criterion.
 Note that this includes any datagrams which a host cannot route because all
 of its default routers are down.
 .IP asmf/s
-The number of failures detected per second by the IP re\-assembly
+The number of failures detected per second by the IP re-assembly
 algorithm (for whatever reason: timed out, errors, etc) [ipReasmFails].
 Note that this is not necessarily a count of discarded IP
 fragments since some algorithms can lose track of the number of
@@ -891,11 +918,11 @@ entity received and forwarded to their final
 destinations [ipv6IfStatsOutForwDatagrams].
 .IP idel6/s
 The total number of datagrams successfully
-delivered per second to IPv6 user\-protocols (including ICMP)
+delivered per second to IPv6 user-protocols (including ICMP)
 [ipv6IfStatsInDelivers].
 .IP orq6/s
 The total number of IPv6 datagrams which local IPv6
-user\-protocols (including ICMP) supplied per second to IPv6 in
+user-protocols (including ICMP) supplied per second to IPv6 in
 requests for transmission [ipv6IfStatsOutRequests].
 Note that this counter
 does not include any datagrams counted in fwddgm6/s.
@@ -948,7 +975,7 @@ do not forward datagrams, this counter includes
 datagrams discarded because the destination address
 was not a local address [ipv6IfStatsInAddrErrors].
 .IP iukwnp6/s
-The number of locally\-addressed datagrams
+The number of locally-addressed datagrams
 received successfully but discarded per second because of an
 unknown or unsupported protocol [ipv6IfStatsInUnknownProtos].
 .IP i2big6/s
@@ -962,7 +989,7 @@ continued processing, but which were discarded
 (e.g., for lack of buffer space)
 [ipv6IfStatsInDiscards]. Note that this
 counter does not include any datagrams discarded
-while awaiting re\-assembly.
+while awaiting re-assembly.
 .IP odisc6/s
 The number of output IPv6 datagrams per second for which no
 problem was encountered to prevent their
@@ -982,7 +1009,7 @@ because no route could be found to transmit them to their
 destination [unknown formal SNMP name].
 .IP asmf6/s
 The number of failures detected per second by the IPv6
-re\-assembly algorithm (for whatever reason: timed
+re-assembly algorithm (for whatever reason: timed
 out, errors, etc.) [ipv6IfStatsReasmFails].
 Note that this is not necessarily a count of discarded
 IPv6 fragments since some algorithms
@@ -1088,7 +1115,7 @@ Number of IPv6 fragments currently in use.
 
 .IP
 .RB "With the " "SOFT"
-keyword, statistics about software\-based network processing are reported.
+keyword, statistics about software-based network processing are reported.
 The following values are displayed:
 .RS
 .IP total/s
@@ -1102,13 +1129,15 @@ because its budget was consumed or the time limit was reached, but more
 work could have been done.
 .IP rx_rps/s
 The number of times the CPU has been woken up per second
-to process packets via an inter\-processor interrupt.
+to process packets via an inter-processor interrupt.
 .IP flw_lim/s
 The number of times the flow limit has been reached per second.
 Flow limiting is an optional RPS feature that can be used to limit the number of
 packets queued to the backlog for each flow to a certain amount.
 This can help ensure that smaller flows are processed even though
 much larger flows are pushing packets in.
+.IP blg_len
+The length of the network backlog.
 .RE
 
 .IP
@@ -1156,7 +1185,7 @@ The number of times per second TCP connections have made a direct
 transition to the CLOSED state from either the ESTABLISHED
 state or the CLOSE\-WAIT state [tcpEstabResets].
 .IP retrans/s
-The total number of segments retransmitted per second \- that is, the
+The total number of segments retransmitted per second - that is, the
 number of TCP segments transmitted containing one or more
 previously transmitted octets [tcpRetransSegs].
 .IP isegerr/s
@@ -1231,9 +1260,9 @@ All the data available from the kernel are saved in the file (in fact,
 .RB "See " "sadc" "(8) manual page)."
 .TP
 .BI "\-P { " "cpu_list " "| ALL }"
-Report per\-processor statistics for the specified processor or processors.
+Report per-processor statistics for the specified processor or processors.
 .I cpu_list
-is a list of comma\-separated values or range of values (e.g.,
+is a list of comma-separated values or range of values (e.g.,
 .BR "0,2,4\-7,12\-" ")."
 Note that processor 0 is the first processor, and processor
 .B all
@@ -1249,10 +1278,10 @@ This option may be especially useful when displaying e.g., network interfaces
 or block devices statistics.
 .TP
 .BI "\-q [ " "keyword" "[,...] | ALL ]"
-Report system load and pressure\-stall statistics.
+Report system load and pressure-stall statistics.
 
 Possible keywords are
-.BR "CPU" ", " "IO" ", " "LOAD" ", " "MEM " "and "PSI" "."
+.BR "CPU" ", " "IO" ", " "LOAD" ", " "MEM " "and " "PSI" "."
 
 .RB "With the " "CPU"
 keyword, CPU pressure statistics are reported.
@@ -1290,16 +1319,16 @@ over the last 300 second window.
 Percentage of the time that at least some tasks lost waiting for I/O,
 over the last time interval.
 .IP %fio\-10
-Percentage of the time during which all non\-idle tasks were stalled
+Percentage of the time during which all non-idle tasks were stalled
 waiting for I/O, over the last 10 second window.
 .IP %fio\-60
-Percentage of the time during which all non\-idle tasks were stalled
+Percentage of the time during which all non-idle tasks were stalled
 waiting for I/O, over the last 60 second window.
 .IP %fio\-300
-Percentage of the time during which all non\-idle tasks were stalled
+Percentage of the time during which all non-idle tasks were stalled
 waiting for I/O, over the last 300 second window.
 .IP %fio
-Percentage of the time during which all non\-idle tasks were stalled
+Percentage of the time during which all non-idle tasks were stalled
 waiting for I/O, over the last time interval.
 .RE
 
@@ -1343,23 +1372,23 @@ for memory resources, over the last 300 second window.
 Percentage of the time during which at least some tasks were waiting
 for memory resources, over the last time interval.
 .IP %fmem\-10
-Percentage of the time during which all non\-idle tasks were stalled
+Percentage of the time during which all non-idle tasks were stalled
 waiting for memory resources, over the last 10 second window.
 .IP %fmem\-60
-Percentage of the time during which all non\-idle tasks were stalled
+Percentage of the time during which all non-idle tasks were stalled
 waiting for memory resources, over the last 60 second window.
 .IP %fmem\-300
-Percentage of the time during which all non\-idle tasks were stalled
+Percentage of the time during which all non-idle tasks were stalled
 waiting for memory resources, over the last 300 second window.
 .IP %fmem
-Percentage of the time during which all non\-idle tasks were stalled
+Percentage of the time during which all non-idle tasks were stalled
 waiting for memory resources, over the last time interval.
 .RE
 
 .IP
 .RB "The " "PSI"
 keyword is equivalent to specifying CPU, IO and MEM keywords together
-and therefore all the pressure\-stall statistics are reported.
+and therefore all the pressure-stall statistics are reported.
 
 .RB "The " "ALL"
 keyword is equivalent to specifying all the keywords above
@@ -1406,7 +1435,7 @@ used. It is more eligible to be reclaimed for other purposes).
 .IP kbdirty
 Amount of memory in kilobytes waiting to get written back to the disk.
 .IP kbanonpg
-Amount of non\-file backed pages in kilobytes mapped into userspace page tables.
+Amount of non-file backed pages in kilobytes mapped into userspace page tables.
 .IP kbslab
 Amount of memory in kilobytes used by the kernel to cache data structures
 for its own use.
@@ -1436,15 +1465,20 @@ again because it is already in the swap area. This saves I/O).
 .IP %swpcad
 Percentage of cached swap memory in relation to the amount of used swap space.
 .RE
-.TP
+.PP
 .BI "\-s [ " "hh" ":" "mm" "[:" "ss" "] ]"
+.br
+.BI "\-s [ " "seconds_since_the_epoch " "]"
+.RS
 Set the starting time of the data, causing the
 .B sar
-command to extract records time\-tagged at, or following, the time
+command to extract records time-tagged at, or following, the time
 specified. The default starting time is 08:00:00.
-Hours must be given in 24\-hour format. This option can be
+Hours must be given in 24-hour format, or as the number of seconds
+since the epoch (given as a 10 digit number). This option can be
 used only when data are read from a file (option
 .BR "\-f" ")."
+.RE
 .TP
 .B \-\-sadc
 Indicate which data collector is called by
@@ -1459,7 +1493,7 @@ When reading data from a daily data file, indicate that
 should display the timestamps in the original local time of
 the data file creator. Without this option, the
 .B sar
-command displays the timestamps in the user's locale time.
+command displays the timestamps in the user's local time.
 .TP
 .B \-u [ ALL ]
 Report CPU utilization. The
@@ -1519,7 +1553,7 @@ Number of file handles used by the system.
 .IP inode\-nr
 Number of inode handlers used by the system.
 .IP pty\-nr
-Number of pseudo\-terminals used by the system.
+Number of pseudo-terminals used by the system.
 .RE
 .TP
 .B \-W
@@ -1540,6 +1574,10 @@ Total number of tasks created per second.
 .IP cswch/s
 Total number of context switches per second.
 .RE
+.TP
+.B \-x
+Extended reports: Display minimum and maximum values in addition to
+average ones at the end of the report.
 .TP
 .B \-y
 Report TTY devices activity. The following values are displayed:
@@ -1580,9 +1618,9 @@ is not indicative of any kind of issue simply because of the color. It only indi
 ranges of values.
 .TP
 .B S_COLORS_SGR
-Specify the colors and other attributes used to display statistics on the terminal. 
-Its value is a colon\-separated list of capabilities that defaults to
-.BR "C=33;22:H=31;1:I=32;22:M=35;1:N=34;1:R=31;22:Z=34;22" "."
+Specify the colors and other attributes used to display statistics on the terminal.
+Its value is a colon-separated list of capabilities that defaults to
+.BR "C=33;22:I=32;22:N=34;1:R=31;22:W=35;1:X=31;1:Z=34;22" "."
 Supported capabilities are:
 .RS
 .TP
@@ -1590,24 +1628,34 @@ Supported capabilities are:
 SGR (Select Graphic Rendition) substring for comments inserted in the binary daily
 data files.
 .TP
-.B H=
-SGR substring for percentage values greater than or equal to 75%.
-.TP
 .B I=
 SGR substring for item names or values (eg. network interfaces, CPU number...)
 .TP
-.B M=
-SGR substring for percentage values in the range from 50% to 75%.
-.TP
 .B N=
-SGR substring for non\-zero statistics values.
+SGR substring for non-zero statistics values.
 .TP
 .B R=
 SGR substring for restart messages.
 .TP
+.BR "W=" " (or " "M=" ")"
+SGR substring for percentage values in the range from 75% to 90% (or in the range 10% to 25%
+depending on the metric's meaning).
+It is also used for negative values in the range from \-10 to \-5.
+.TP
+.BR "X=" " (or " "H=" ")"
+SGR substring for percentage values greater than or equal to 90% (or lower than or equal to 10%
+depending on the metric's meaning).
+It is also used for negative values lower than or equal to \-10.
+.TP
 .B Z=
 SGR substring for zero values.
 .RE
+.TP
+.B S_REPEAT_HEADER
+This variable contains the maximum number of lines after which a header has to be
+displayed by
+.B sar
+when the output is not a terminal.
 .TP
 .B S_TIME_DEF_TIME
 If this variable exists and its value is
@@ -1625,7 +1673,7 @@ If this variable exists and its value is
 .B ISO
 then the current locale will be ignored when printing the date in the report header.
 .RB "The " "sar"
-command will use the ISO 8601 format (YYYY\-MM\-DD) instead.
+command will use the ISO 8601 format (YYYY-MM-DD) instead.
 The timestamp will also be compliant with ISO 8601 format.
 
 .SH EXAMPLES
@@ -1633,7 +1681,7 @@ The timestamp will also be compliant with ISO 8601 format.
 .B sar \-u 2 5
 Report CPU utilization for each 2 seconds. 5 lines are displayed.
 .TP
-.B sar \-I 14 \-o int14.file 2 10
+.B sar \-I \-\-int=14 \-o int14.file 2 10
 Report statistics on IRQ 14 for each 2 seconds. 10 lines are displayed.
 Data are stored in a file called
 .IR "int14.file" "."
@@ -1677,4 +1725,4 @@ Sebastien Godard (sysstat <at> orange.fr)
 .PP
 .I https://github.com/sysstat/sysstat
 .br
-.I http://pagesperso\-orange.fr/sebastien.godard/
+.I https://sysstat.github.io/

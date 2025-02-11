@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.ENVIRONMENT\-GENERATOR" "7" "" "systemd 247" "systemd.environment-generator"
+.TH "SYSTEMD\&.ENVIRONMENT\-GENERATOR" "7" "" "systemd 257.1" "systemd.environment-generator"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -22,29 +22,40 @@
 .SH "NAME"
 systemd.environment-generator \- systemd environment file generators
 .SH "SYNOPSIS"
-.HP \w'\fB/lib/systemd/system\-environment\-generators/some\-generator\fR\ 'u
-\fB/lib/systemd/system\-environment\-generators/some\-generator\fR
+.HP \w'\fB/usr/lib/systemd/system\-environment\-generators/some\-generator\fR\ 'u
+\fB/usr/lib/systemd/system\-environment\-generators/some\-generator\fR
 .HP \w'\fB/usr/lib/systemd/user\-environment\-generators/some\-generator\fR\ 'u
 \fB/usr/lib/systemd/user\-environment\-generators/some\-generator\fR
 .PP
-.nf
+.RS 4
 /run/systemd/system\-environment\-generators/*
+.RE
+.RS 4
 /etc/systemd/system\-environment\-generators/*
+.RE
+.RS 4
 /usr/local/lib/systemd/system\-environment\-generators/*
-/lib/systemd/system\-environment\-generators/*
-.fi
+.RE
+.RS 4
+/usr/lib/systemd/system\-environment\-generators/*
+.RE
 .PP
-.nf
+.RS 4
 /run/systemd/user\-environment\-generators/*
+.RE
+.RS 4
 /etc/systemd/user\-environment\-generators/*
+.RE
+.RS 4
 /usr/local/lib/systemd/user\-environment\-generators/*
+.RE
+.RS 4
 /usr/lib/systemd/user\-environment\-generators/*
-.fi
-.sp
+.RE
 .SH "DESCRIPTION"
 .PP
 Generators are small executables that live in
-/lib/systemd/system\-environment\-generators/
+/usr/lib/systemd/system\-environment\-generators/
 and other directories listed above\&.
 \fBsystemd\fR(1)
 will execute those binaries very early at the startup of each manager and at configuration reload time, before running the generators described in
@@ -54,7 +65,8 @@ and before starting any units\&. Environment generators can override the environ
 Generators are loaded from a set of paths determined during compilation, as listed above\&. System and user environment generators are loaded from directories with names ending in
 system\-environment\-generators/
 and
-user\-environment\-generators/, respectively\&. Generators found in directories listed earlier override the ones with the same name in directories lower in the list\&. A symlink to
+user\-environment\-generators/, respectively\&. Generators found in directories listed earlier override the ones with the same name in directories lower in the list
+\&\s-2\u[1]\d\s+2\&. A symlink to
 /dev/null
 or an empty file can be used to mask a generator, thereby preventing it from running\&. Please note that the order of the two directories with the highest priority is reversed with respect to the unit load path, and generators in
 /run/
@@ -101,18 +113,19 @@ It is recommended to use numerical prefixes for generator names to simplify orde
 .nf
 # 50\-xdg\-data\-dirs\&.sh
 
-#!/bin/bash
+#!/bin/sh
+# SPDX\-License\-Identifier: MIT\-0
 
 # set the default value
 XDG_DATA_DIRS="${XDG_DATA_DIRS:\-/usr/local/share/:/usr/share}"
 
 # add a directory if it exists
-if [[ \-d /opt/foo/share ]]; then
-    XDG_DATA_DIRS=/opt/foo/share:${XDG_DATA_DIRS}
+if [ \-d /opt/foo/share ]; then
+    XDG_DATA_DIRS="/opt/foo/share:${XDG_DATA_DIRS}"
 fi
 
 # write our output
-echo XDG_DATA_DIRS=$XDG_DATA_DIRS
+echo "XDG_DATA_DIRS=${XDG_DATA_DIRS}"
 .fi
 .if n \{\
 .RE
@@ -127,6 +140,7 @@ echo XDG_DATA_DIRS=$XDG_DATA_DIRS
 # 90\-rearrange\-path\&.py
 
 #!/usr/bin/env python3
+# SPDX\-License\-Identifier: MIT\-0
 
 """
 
@@ -162,7 +176,7 @@ def rearrange_bin_sbin(path):
 
 if __name__ == \*(Aq__main__\*(Aq:
     path = os\&.environ[\*(AqPATH\*(Aq] # This should be always set\&.
-                              # If it\*(Aqs not, we\*(Aqll just crash, we is OK too\&.
+                              # If it\*(Aqs not, we\*(Aqll just crash, which is OK too\&.
     new = rearrange_bin_sbin(path)
     if new != path:
         print(\*(AqPATH={}\*(Aq\&.format(new))
@@ -178,14 +192,17 @@ if __name__ == \*(Aq__main__\*(Aq:
 .\}
 .nf
 SYSTEMD_LOG_LEVEL=debug VAR_A=something VAR_B="something else" \e
-/lib/systemd/system\-environment\-generators/path\-to\-generator
+/usr/lib/systemd/system\-environment\-generators/path\-to\-generator
 .fi
 .if n \{\
 .RE
 .\}
 .SH "SEE ALSO"
 .PP
-\fBsystemd-environment-d-generator\fR(8),
-\fBsystemd.generator\fR(7),
-\fBsystemd\fR(1),
-\fBsystemctl\fR(1)
+\fBsystemd-environment-d-generator\fR(8), \fBsystemd.generator\fR(7), \fBsystemd\fR(1), \fBsystemctl\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+💣💥🧨💥💥💣 Please note that those configuration files must be available at all times. If
+/usr/local/
+is a separate partition, it may not be available during early boot, and must not be used for configuration.
+

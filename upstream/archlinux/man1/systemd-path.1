@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-PATH" "1" "" "systemd 249" "systemd-path"
+.TH "SYSTEMD\-PATH" "1" "" "systemd 257" "systemd-path"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -34,6 +34,11 @@ available for querying\&.
 When invoked without arguments, a list of known paths and their current values is shown\&. When at least one argument is passed, the path with this name is queried and its value shown\&. The variables whose name begins with
 "search\-"
 do not refer to individual paths, but instead to a list of colon\-separated search paths, in their order of precedence\&.
+.PP
+Note that paths which depend on environment variables are computed with
+\fBsystemd\-path\fR\*(Aqs invoked environment, and not the system or user manager\*(Aqs environment\&. As such, the output of
+\fBsystemd\-path\fR
+may not reflect the behavior of manager processes\&.
 .SH "OPTIONS"
 .PP
 The following options are understood:
@@ -41,6 +46,13 @@ The following options are understood:
 \fB\-\-suffix=\fR
 .RS 4
 Printed paths are suffixed by the specified string\&.
+.sp
+Added in version 215\&.
+.RE
+.PP
+\fB\-\-no\-pager\fR
+.RS 4
+Do not pipe output into a pager\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
@@ -57,5 +69,4 @@ Print a short version string and exit\&.
 On success, 0 is returned, a non\-zero failure code otherwise\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBfile-hierarchy\fR(7)
+\fBsystemd\fR(1), \fBfile-hierarchy\fR(7)

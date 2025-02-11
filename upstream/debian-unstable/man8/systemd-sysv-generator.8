@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-SYSV\-GENERATOR" "8" "" "systemd 247" "systemd-sysv-generator"
+.TH "SYSTEMD\-SYSV\-GENERATOR" "8" "" "systemd 257.1" "systemd-sysv-generator"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -23,15 +23,17 @@
 systemd-sysv-generator \- Unit generator for SysV init scripts
 .SH "SYNOPSIS"
 .PP
-/lib/systemd/system\-generators/systemd\-sysv\-generator
+/usr/lib/systemd/system\-generators/systemd\-sysv\-generator
 .SH "DESCRIPTION"
+.PP
+\fINote: this component is deprecated and scheduled for removal\&. Please replace remaining SysV init scripts with native unit files\&.\fR
 .PP
 systemd\-sysv\-generator
 is a generator that creates wrapper \&.service units for
-\m[blue]\fBSysV init\fR\m[]\&\s-2\u[1]\d\s+2
+\m[blue]\fBSystem V init\fR\m[]\&\s-2\u[1]\d\s+2
 scripts in
 /etc/init\&.d/*
-at boot and when configuration of the system manager is reloaded\&. This will allow
+at boot and when configuration of the system manager is reloaded\&. This allows
 \fBsystemd\fR(1)
 to support them similarly to native units\&.
 .PP
@@ -46,6 +48,9 @@ are supported and will be turned into dependencies on specific native systemd ta
 \fBsystemd.special\fR(7)
 for more details\&.
 .PP
+Note that compatibility is quite comprehensive but not 100%, for more details see
+\m[blue]\fBCompatibility with SysV\fR\m[]\&\s-2\u[3]\d\s+2\&.
+.PP
 SysV runlevels have corresponding systemd targets (runlevel\fIX\fR\&.target)\&. The wrapper unit that is generated will be wanted by those targets which correspond to runlevels for which the script is enabled\&.
 .PP
 \fBsystemd\fR
@@ -57,12 +62,10 @@ implements
 \fBsystemd.generator\fR(7)\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd.service\fR(5),
-\fBsystemd.target\fR(5)
+\fBsystemd\fR(1), \fBsystemd.service\fR(5), \fBsystemd.target\fR(5)
 .SH "NOTES"
 .IP " 1." 4
-SysV init
+System V init
 .RS 4
 \%https://savannah.nongnu.org/projects/sysvinit
 .RE
@@ -70,4 +73,9 @@ SysV init
 LSB headers
 .RS 4
 \%http://refspecs.linuxbase.org/LSB_3.1.1/LSB-Core-generic/LSB-Core-generic/iniscrptact.html
+.RE
+.IP " 3." 4
+Compatibility with SysV
+.RS 4
+\%https://systemd.io/INCOMPATIBILITIES
 .RE

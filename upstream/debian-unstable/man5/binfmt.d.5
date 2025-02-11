@@ -1,5 +1,5 @@
 '\" t
-.TH "BINFMT\&.D" "5" "" "systemd 247" "binfmt.d"
+.TH "BINFMT\&.D" "5" "" "systemd 257.1" "binfmt.d"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -23,11 +23,18 @@
 binfmt.d \- Configure additional binary formats for executables at boot
 .SH "SYNOPSIS"
 .PP
+.RS 4
 /etc/binfmt\&.d/*\&.conf
-.PP
+.RE
+.RS 4
 /run/binfmt\&.d/*\&.conf
-.PP
+.RE
+.RS 4
+/usr/local/lib/binfmt\&.d/*\&.conf
+.RE
+.RS 4
 /usr/lib/binfmt\&.d/*\&.conf
+.RE
 .SH "DESCRIPTION"
 .PP
 At boot,
@@ -36,24 +43,28 @@ reads configuration files from the above directories to register in the kernel a
 .SH "CONFIGURATION FORMAT"
 .PP
 Each file contains a list of binfmt_misc kernel binary format rules\&. Consult the kernel\*(Aqs
-\m[blue]\fBbinfmt\-misc\&.rst\fR\m[]\&\s-2\u[1]\d\s+2
+\m[blue]\fBKernel Support for miscellaneous Binary Formats (binfmt_misc)\fR\m[]\&\s-2\u[1]\d\s+2
 documentation file for more information on registration of additional binary formats and how to write rules\&.
 .PP
-Empty lines and lines beginning with ; and # are ignored\&. Note that this means you may not use ; and # as delimiter in binary format rules\&.
+Empty lines and lines beginning with
+";"
+and
+"#"
+are ignored\&. Note that this means you may not use those symbols as the delimiter in binary format rules\&.
 .SH "CONFIGURATION DIRECTORIES AND PRECEDENCE"
 .PP
 Configuration files are read from directories in
 /etc/,
 /run/,
 /usr/local/lib/, and
-/lib/, in order of precedence, as listed in the SYNOPSIS section above\&. Files must have the
+/usr/lib/, in order of precedence, as listed in the SYNOPSIS section above\&. Files must have the
 "\&.conf"
 extension\&. Files in
 /etc/
 override files with the same name in
 /run/,
 /usr/local/lib/, and
-/lib/\&. Files in
+/usr/lib/\&. Files in
 /run/
 override files with the same name under
 /usr/\&.
@@ -64,9 +75,17 @@ Packages should install their configuration files in
 /usr/lib/
 (distribution packages) or
 /usr/local/lib/
-(local installs)\&. Files in
+(local installs)
+\&\s-2\u[2]\d\s+2\&. Files in
 /etc/
-are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. It is recommended to prefix all filenames with a two\-digit number and a dash, to simplify the ordering of the files\&.
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&.
+.PP
+It is recommended to prefix all filenames with a two\-digit number and a dash to simplify the ordering\&. It is recommended to use the range 10\-40 for configuration files in
+/usr/
+and the range 60\-90 for configuration files in
+/etc/
+and
+/run/, to make sure that local and transient configuration files will always take priority over configuration files shipped by the OS vendor\&.
 .PP
 If the administrator wants to disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
 /dev/null
@@ -88,13 +107,15 @@ in the configuration directory in
 .\}
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd-binfmt.service\fR(8),
-\fBsystemd-delta\fR(1),
-\fBwine\fR(8)
+\fBsystemd\fR(1), \fBsystemd-binfmt.service\fR(8), \fBsystemd-delta\fR(1), \fBwine\fR(8)
 .SH "NOTES"
 .IP " 1." 4
-binfmt-misc.rst
+Kernel Support for miscellaneous Binary Formats (binfmt_misc)
 .RS 4
-\%https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html
+\%https://docs.kernel.org/admin-guide/binfmt-misc.html
 .RE
+.IP " 2." 4
+💣💥🧨💥💥💣 Please note that those configuration files must be available at all times. If
+/usr/local/
+is a separate partition, it may not be available during early boot, and must not be used for configuration.
+

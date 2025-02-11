@@ -1,29 +1,9 @@
 .\" Copyright (c) 2017 by Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\"
-.TH IOCTL_NS 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH ioctl_ns 2 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 ioctl_ns \- ioctl() operations for Linux namespaces
 .SH DESCRIPTION
@@ -37,17 +17,17 @@ operations are provided to allow discovery of namespace relationships (see
 and
 .BR pid_namespaces (7)).
 The form of the calls is:
-.PP
+.P
 .in +4n
 .EX
 new_fd = ioctl(fd, request);
 .EE
 .in
-.PP
+.P
 In each case,
 .I fd
 refers to a
-.IR /proc/[pid]/ns/*
+.IR /proc/ pid /ns/*
 file.
 Both operations return a new file descriptor on success.
 .TP
@@ -66,18 +46,18 @@ the namespace referred to by
 This operation is valid only for hierarchical namespaces
 (i.e., PID and user namespaces).
 For user namespaces,
-.BR NS_GET_PARENT
+.B NS_GET_PARENT
 is synonymous with
 .BR NS_GET_USERNS .
-.PP
+.P
 The new file descriptor returned by these operations is opened with the
-.BR O_RDONLY
+.B O_RDONLY
 and
-.BR O_CLOEXEC
+.B O_CLOEXEC
 (close-on-exec; see
 .BR fcntl (2))
 flags.
-.PP
+.P
 By applying
 .BR fstat (2)
 to the returned file descriptor, one obtains a
@@ -88,9 +68,9 @@ structure whose
 .I st_ino
 (inode number) fields together identify the owning/parent namespace.
 This inode number can be matched with the inode number of another
-.IR /proc/[pid]/ns/{pid,user}
+.IR /proc/ pid /ns/ { pid , user }
 file to determine whether that is the owning/parent namespace.
-.PP
+.P
 Either of these
 .BR ioctl (2)
 operations can fail with the following errors:
@@ -104,7 +84,7 @@ user or PID namespace.
 .TP
 .B ENOTTY
 The operation is not supported by this kernel version.
-.PP
+.P
 Additionally, the
 .B NS_GET_PARENT
 operation can fail with the following error:
@@ -112,7 +92,7 @@ operation can fail with the following error:
 .B EINVAL
 .I fd
 refers to a nonhierarchical namespace.
-.PP
+.P
 See the EXAMPLES section for an example of the use of these operations.
 .\" ============================================================
 .\"
@@ -123,20 +103,20 @@ The
 operation (available since Linux 4.11) can be used to discover
 the type of namespace referred to by the file descriptor
 .IR fd :
-.PP
+.P
 .in +4n
 .EX
 nstype = ioctl(fd, NS_GET_NSTYPE);
 .EE
 .in
-.PP
+.P
 .I fd
 refers to a
-.IR /proc/[pid]/ns/*
+.IR /proc/ pid /ns/*
 file.
-.PP
+.P
 The return value is one of the
-.BR CLONE_NEW*
+.B CLONE_NEW*
 values that can be specified to
 .BR clone (2)
 or
@@ -152,23 +132,23 @@ operation (available since Linux 4.11) can be used to discover
 the owner user ID of a user namespace (i.e., the effective user ID
 of the process that created the user namespace).
 The form of the call is:
-.PP
+.P
 .in +4n
 .EX
 uid_t uid;
 ioctl(fd, NS_GET_OWNER_UID, &uid);
 .EE
 .in
-.PP
+.P
 .I fd
 refers to a
-.IR /proc/[pid]/ns/user
+.IR /proc/ pid /ns/user
 file.
-.PP
+.P
 The owner user ID is returned in the
 .I uid_t
 pointed to by the third argument.
-.PP
+.P
 This operation can fail with the following error:
 .TP
 .B EINVAL
@@ -182,10 +162,10 @@ operations can return the following errors:
 .B ENOTTY
 .I fd
 does not refer to a
-.I /proc/[pid]/ns/*
+.IR /proc/ pid /ns/ *
 file.
-.SH CONFORMING TO
-Namespaces and the operations described on this page are a Linux-specific.
+.SH STANDARDS
+Linux.
 .SH EXAMPLES
 The example shown below uses the
 .BR ioctl (2)
@@ -193,22 +173,22 @@ operations described above to perform simple
 discovery of namespace relationships.
 The following shell sessions show various examples of the use
 of this program.
-.PP
+.P
 Trying to get the parent of the initial user namespace fails,
 since it has no parent:
-.PP
+.P
 .in +4n
 .EX
 $ \fB./ns_show /proc/self/ns/user p\fP
 The parent namespace is outside your namespace scope
 .EE
 .in
-.PP
+.P
 Create a process running
 .BR sleep (1)
 that resides in new user and UTS namespaces,
 and show that the new UTS namespace is associated with the new user namespace:
-.PP
+.P
 .in +4n
 .EX
 $ \fBunshare \-Uu sleep 1000 &\fP
@@ -219,10 +199,10 @@ $ \fBreadlink /proc/23235/ns/user\fP
 user:[4026532448]
 .EE
 .in
-.PP
+.P
 Then show that the parent of the new user namespace in the preceding
 example is the initial user namespace:
-.PP
+.P
 .in +4n
 .EX
 $ \fBreadlink /proc/self/ns/user\fP
@@ -231,13 +211,13 @@ $ \fB./ns_show /proc/23235/ns/user p\fP
 Device/Inode of parent namespace is: [0,3] / 4026531837
 .EE
 .in
-.PP
+.P
 Start a shell in a new user namespace, and show that from within
 this shell, the parent user namespace can't be discovered.
 Similarly, the UTS namespace
 (which is associated with the initial user namespace)
 can't be discovered.
-.PP
+.P
 .in +4n
 .EX
 $ \fBPS1="sh2$ " unshare \-U bash\fP
@@ -249,126 +229,114 @@ The owning user namespace is outside your namespace scope
 .in
 .SS Program source
 \&
+.\" SRC BEGIN (ns_show.c)
 .EX
 /* ns_show.c
-
+\&
    Licensed under the GNU General Public License v2 or later.
 */
-#include <stdint.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/ioctl.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <linux/nsfs.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
 #include <sys/sysmacros.h>
-
-#ifndef NS_GET_USERNS
-#define NSIO    0xb7
-#define NS_GET_USERNS   _IO(NSIO, 0x1)
-#define NS_GET_PARENT   _IO(NSIO, 0x2)
-#endif
-
+#include <unistd.h>
+\&
 int
 main(int argc, char *argv[])
 {
-    int fd, userns_fd, parent_fd;
-    struct stat sb;
-
+    int          fd, userns_fd, parent_fd;
+    struct stat  sb;
+\&
     if (argc < 2) {
         fprintf(stderr, "Usage: %s /proc/[pid]/ns/[file] [p|u]\en",
                 argv[0]);
         fprintf(stderr, "\enDisplay the result of one or both "
                 "of NS_GET_USERNS (u) or NS_GET_PARENT (p)\en"
                 "for the specified /proc/[pid]/ns/[file]. If neither "
-                "\(aqp\(aq nor \(aqu\(aq is specified,\en"
+                "\[aq]p\[aq] nor \[aq]u\[aq] is specified,\en"
                 "NS_GET_USERNS is the default.\en");
         exit(EXIT_FAILURE);
     }
-
-    /* Obtain a file descriptor for the \(aqns\(aq file specified
+\&
+    /* Obtain a file descriptor for the \[aq]ns\[aq] file specified
        in argv[1]. */
-
+\&
     fd = open(argv[1], O_RDONLY);
     if (fd == \-1) {
         perror("open");
         exit(EXIT_FAILURE);
     }
-
+\&
     /* Obtain a file descriptor for the owning user namespace and
        then obtain and display the inode number of that namespace. */
-
-    if (argc < 3 || strchr(argv[2], \(aqu\(aq)) {
+\&
+    if (argc < 3 || strchr(argv[2], \[aq]u\[aq])) {
         userns_fd = ioctl(fd, NS_GET_USERNS);
-
+\&
         if (userns_fd == \-1) {
             if (errno == EPERM)
                 printf("The owning user namespace is outside "
-                        "your namespace scope\en");
+                       "your namespace scope\en");
             else
                perror("ioctl\-NS_GET_USERNS");
             exit(EXIT_FAILURE);
          }
-
+\&
         if (fstat(userns_fd, &sb) == \-1) {
             perror("fstat\-userns");
             exit(EXIT_FAILURE);
         }
         printf("Device/Inode of owning user namespace is: "
-                "[%jx,%jx] / %ju\en",
-                (uintmax_t) major(sb.st_dev),
-                (uintmax_t) minor(sb.st_dev),
-                (uintmax_t) sb.st_ino);
-
+               "[%x,%x] / %ju\en",
+               major(sb.st_dev),
+               minor(sb.st_dev),
+               (uintmax_t) sb.st_ino);
+\&
         close(userns_fd);
     }
-
+\&
     /* Obtain a file descriptor for the parent namespace and
        then obtain and display the inode number of that namespace. */
-
-    if (argc > 2 && strchr(argv[2], \(aqp\(aq)) {
+\&
+    if (argc > 2 && strchr(argv[2], \[aq]p\[aq])) {
         parent_fd = ioctl(fd, NS_GET_PARENT);
-
+\&
         if (parent_fd == \-1) {
             if (errno == EINVAL)
-                printf("Can\(aq get parent namespace of a "
-                        "nonhierarchical namespace\en");
+                printf("Can\[aq] get parent namespace of a "
+                       "nonhierarchical namespace\en");
             else if (errno == EPERM)
                 printf("The parent namespace is outside "
-                        "your namespace scope\en");
+                       "your namespace scope\en");
             else
                 perror("ioctl\-NS_GET_PARENT");
             exit(EXIT_FAILURE);
         }
-
+\&
         if (fstat(parent_fd, &sb) == \-1) {
             perror("fstat\-parentns");
             exit(EXIT_FAILURE);
         }
-        printf("Device/Inode of parent namespace is: [%jx,%jx] / %ju\en",
-                (uintmax_t) major(sb.st_dev),
-                (uintmax_t) minor(sb.st_dev),
-                (uintmax_t) sb.st_ino);
-
+        printf("Device/Inode of parent namespace is: [%x,%x] / %ju\en",
+               major(sb.st_dev),
+               minor(sb.st_dev),
+               (uintmax_t) sb.st_ino);
+\&
         close(parent_fd);
     }
-
+\&
     exit(EXIT_SUCCESS);
 }
 .EE
+.\" SRC END
 .SH SEE ALSO
 .BR fstat (2),
 .BR ioctl (2),
 .BR proc (5),
 .BR namespaces (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

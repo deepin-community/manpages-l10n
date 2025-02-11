@@ -1,5 +1,5 @@
 '\" t
-.TH "UDEV\&.CONF" "5" "" "systemd 247" "udev.conf"
+.TH "UDEV\&.CONF" "5" "" "systemd 257~rc3" "udev.conf"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,15 +20,41 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-udev.conf \- Configuration for device event managing daemon
+udev.conf, udev.conf.d \- Configuration for device event managing daemon
 .SH "SYNOPSIS"
 .PP
+.RS 4
 /etc/udev/udev\&.conf
+.RE
+.RS 4
+/run/udev/udev\&.conf
+.RE
+.RS 4
+/usr/local/lib/udev/udev\&.conf
+.RE
+.RS 4
+/usr/lib/udev/udev\&.conf
+.RE
+.RS 4
+/etc/udev/udev\&.conf\&.d/*\&.conf
+.RE
+.RS 4
+/run/udev/udev\&.conf\&.d/*\&.conf
+.RE
+.RS 4
+/usr/local/lib/udev/udev\&.conf\&.d/*\&.conf
+.RE
+.RS 4
+/usr/lib/udev/udev\&.conf\&.d/*\&.conf
+.RE
 .SH "DESCRIPTION"
 .PP
-\fBsystemd-udevd\fR(8)
-expects its main configuration file at
-/etc/udev/udev\&.conf\&. It consists of a set of variables allowing the user to override default udev values\&. All empty lines or lines beginning with \*(Aq#\*(Aq are ignored\&. The following variables can be set:
+These files contain configuration options for
+\fBsystemd-udevd\fR(8)\&. The syntax of these files is very simple: a list of assignments, one per line\&. All empty lines or lines beginning with
+"#"
+are ignored\&.
+.PP
+The following options can be set:
 .PP
 \fIudev_log=\fR
 .RS 4
@@ -37,15 +63,34 @@ The log level\&. Valid values are the numerical syslog priorities or their textu
 \fBinfo\fR
 and
 \fBdebug\fR\&.
+.if n \{\
+.sp
+.\}
+.RS 4
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBNote\fR
+.ps -1
+.br
+This option is also honored by
+\fBudevadm\fR(8)\&.
+.sp .5v
+.RE
+Added in version 216\&.
 .RE
 .PP
 \fIchildren_max=\fR
 .RS 4
-An integer\&. The maximum number of events executed in parallel\&.
+An integer\&. The maximum number of events executed in parallel\&. When unspecified or 0 is specified, the maximum is determined based on the system resources\&.
 .sp
 This is the same as the
 \fB\-\-children\-max=\fR
 option\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fIexec_delay=\fR
@@ -57,6 +102,8 @@ parameter by the given number of seconds\&. This option might be useful when deb
 This is the same as the
 \fB\-\-exec\-delay=\fR
 option\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fIevent_timeout=\fR
@@ -66,6 +113,8 @@ An integer\&. The number of seconds to wait for events to finish\&. After this t
 This is the same as the
 \fB\-\-event\-timeout=\fR
 option\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fIresolve_names=\fR
@@ -79,6 +128,8 @@ Specifies when systemd\-udevd should resolve names of users and groups\&. When s
 This is the same as the
 \fB\-\-resolve\-names=\fR
 option\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fItimeout_signal=\fR
@@ -87,6 +138,8 @@ Specifies a signal that
 systemd\-udevd
 will send on worker timeouts\&. Note that both workers and spawned processes will be killed using this signal\&. Defaults to
 \fBSIGKILL\fR\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 In addition,
@@ -95,6 +148,4 @@ can be configured by command line options and the kernel command line (see
 \fBsystemd-udevd\fR(8))\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd-udevd\fR(8),
-\fBudev\fR(7),
-\fBudevadm\fR(8)
+\fBsystemd-udevd\fR(8), \fBudev\fR(7), \fBudevadm\fR(8)

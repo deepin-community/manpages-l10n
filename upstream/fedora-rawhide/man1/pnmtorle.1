@@ -3,7 +3,7 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "Pnmtorle User Manual" 0 "31 March 1994" "netpbm documentation"
+.TH "Pnmtorle User Manual" 0 "07 March 2022" "netpbm documentation"
 
 .SH NAME
 
@@ -14,11 +14,17 @@ pnmtorle - convert a Netpbm image file into an RLE image file.
 
 \fBpnmtorle\fP
 
-[\fB-h\fP]
-[\fB-v\fP]
-[\fB-a\fP]
-[\fB-o\fP \fIoutfile\fP]
+[\fB-header\fP]
+[\fB-verbose\fP]
+[\fB-alpha\fP]
+[\fB-outfile=\fP\fIoutfile\fP]
 [\fIpnmfile\fP]
+.PP
+Minimum unique abbreviation of option is acceptable.  You may use
+double hyphens instead of single hyphen to denote options.  You may use
+white space in place of the equals sign to separate an option name
+from its value.
+
 
 .UN description
 .SH DESCRIPTION
@@ -31,61 +37,67 @@ This program converts Netpbm image files into Utah RLE image files.
 You can include a transparency mask.  If the input is a multiple image file,
 the output consists of several concatenated RLE images.
 .PP
-The RLE file will contain either a three channel color image (24
-bits) or a single channel grayscale image (8 bits) depending upon the
-pnm file depth.  If a converted ppm is displayed on an 8 bit display,
-the image must be dithered.  In order to produce a better looking
-image (on 8 bit displays), it is recommended that the image be
-quantizing (to 8 bit mapped color) prior to its display.  This may be
-done by piping the output of this program into the Utah \fBmcut\fP or
-\fBrlequant\fP utilities.  We show an example of this later.
+\fIpnmfile\fP is the name of the Netpbm image input file.  If you don't
+specify this argument, input is from Standard Input.
+.PP
+The RLE file will contain either a three channel color image (24 bits) or a
+single channel grayscale image (8 bits) depending upon the type of Netpbm
+input.  If the Netpbm input is color, the RLE output is 3 channel 24 bit
+color.  If the Netpbm input is grayscale or black and white, the RLE output is
+single channel grayscale.
+
 
 .UN options
 .SH OPTIONS
 .PP
-In addition to the options common to all programs based on libnetpbm
-(most notably \fB-quiet\fP, see 
+In addition to the options common to all programs based on libnetpbm (most
+notably \fB-quiet\fP, see 
 .UR index.html#commonoptions
  Common Options
 .UE
-\&), \fBpnmtorle\fP recognizes the following
-command line options:
+\&), \fBpnmtorle\fP recognizes the following command line options:
 
 
 .TP
-\fB-v\fP
-This option will cause \fBpnmtorle\fP to operate in verbose mode.  The header
-information is written to "stderr".  Actually, there is not much header
-information stored in a Netpbm file, so this information is minimal.
+\fB-verbose\fP
+  This option will cause \fBpnmtorle\fP to operate in verbose mode.  The
+  program writes header information to Standard Error.  Actually, there is not
+  much header information stored in a Netpbm file, so this information is
+  minimal.
+.sp
+Before Netpbm 10.98 (March 2022), this option is just \fB-v\fP.
+
 .TP
-\fB-h\fP
-This option allows the header of the Netpbm image to be dumped to "stderr"
-without converting the file.  It is equivalent to using the -v option except
-that no file conversion takes place.
+\fB-header\fP
+This option causes the program to dump the header of the Netpbm image to be
+Standard Error without converting the file.  It is equivalent to using
+the \fB-verbose\fP option except that no file conversion takes place.
+.sp
+Before Netpbm 10.98 (March 2022), this option is just \fB-h\fP.
+
 .TP
-\fB-a\fP
-This option causes \fBpnmtorle\fP to include an transparency channel in the
+\fB-alpha\fP
+This option causes \fBpnmtorle\fP to include a transparency channel in the
 output image.  The transparency channel is based on the image: Wherever a
 pixel is black, the corresponding trasparency value is transparent.
 Everywhere else, the transparency value is fully opaque.
 
 .TP
-\fB-o\fP \fIoutfile\fP
+\fB-outfile\fP \fIoutfile\fP
 If you specify this option, \fBpnmtorle\fP writes the output to
 this file.  If \fIoutfile\fP is \fB-\fP or you don't specify
-\fB-o\fP, \fBpnmtorle\fP writes the output to Standard Output.
+\fB-outfile\fP, \fBpnmtorle\fP writes the output to Standard Output.
+.sp
+Before Netpbm 10.98 (March 2022), this option is just \fB-o\fP.and
+    must be separated from its value by a space, not an equal sign.
 
-.TP
-\fIpnmfile\fP
-The name of the Netpbm image data file to be converted.  If not specified,
-standard input is assumed.
 
 
 .UN examples
 .SH EXAMPLES
 
 .nf
-   pnmtorle -v file.ppm -o file.rle
+   pnmtorle -verbose file.ppm -outfile=file.rle
 
 .fi
 .PP
@@ -93,7 +105,7 @@ While running in verbose mode, convert file.ppm to RLE format and store
 resulting data in file.rle.
 
 .nf
-   pnmtorle -h file.pgm
+   pnmtorle -header file.pgm
 
 .fi
 .PP

@@ -3,7 +3,7 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "Pamtogif User Manual" 0 "22 March 2007" "netpbm documentation"
+.TH "Pamtogif User Manual" 0 "09 June 2021" "netpbm documentation"
 
 .SH NAME
 pamtogif - convert a Netpbm image to a GIF image
@@ -56,24 +56,37 @@ multiple GIF images into an animated GIF, use
 \& (not part of
 the Netpbm package).
 .PP
-\fBpamtogif\fP creates either an original GIF87 format GIF file or
-the newer GIF89 format.  It creates GIF89 when you request features
-that were new with GIF89, to wit the \fB-transparent\fP or
-\fB-comment\fP options.  Otherwise, it creates GIF87.  Really old GIF
-readers conceivably could not recognize GIF89.
+\fBpamtogif\fP creates either an original GIF87 format GIF file or the
+  newer GIF89 format.  It creates GIF89 when the output needs to have features
+  that were new with GIF89, to wit transparency or comments.  Otherwise, it
+  creates GIF87.  Really old GIF readers conceivably could not recognize
+  GIF89.  The output needs to have transparency when either the input has a
+  transparency information or you specify the \fB-transparent\fP option.  It
+  needs to have comments when you specify the
+  \fB-comment\fP option.
 .PP
-The GIF format is not capable of representing an image with more than
-256 colors in it (it contains a color map with a maximum size of 256).
-If the image you want to convert has more colors than that (\fBppmhist\fP
-can tell you), you can use \fBpnmquant\fP to reduce it to 256.  Or
-use the more complex but faster method described under the \fB-mapfile\fP
-option.
+\fBpamtogif\fP generates a GIF image with a single image block, which
+means the image cannot have more than 256 colors in it (it contains a single
+color map with a maximum size of 256).  If the image you want to convert has
+more colors than that (\fBppmhist\fP can tell you), you can
+use \fBpnmquant\fP to reduce it to 256.  Or use the more complex but faster
+method described under the \fB-mapfile\fP option.
 .PP
-If your input image is a PAM with transparency information, \fBppmtogif\fP
+If your input image is a PAM with transparency information, \fBpamtogif\fP
 uses one entry in the GIF colormap specifically for the transparent pixels,
 so you can have at most 255 opaque colors.  In contrast, if you use the
 \fB-transparent\fP option, one of the colors from the input becomes
 transparent, so the limit is still 256.
+.PP
+\fBpamtogif\fP recognizes transparency information in the input by the
+  tuple type being \fBRGB_ALPHA\fP, \fBGRAYSCALE_ALPHA\fP, or
+  \fBBLACKANDWHITE_ALPHA\fP.  This is the case for any image that has
+  transparency information and was created by a Netpbm program that
+  manipulates visual images.  If, on the other hand, you have a PAM generated
+  some other way, but you know the planes have the same meaning as implied by
+  these tuple types, you can make \fBpamtogif\fP process the transparency
+  information by changing the tuple type accordingly before you pass it
+  to \fBpamtogif\fP.  You can use \fBpamstack\fP to change the tuple type.
 .PP
 \fBpamtogif\fP was new in Netpbm 10.37 (December 2006).  In older Netpbm,
 use \fBppmtogif\fP.
@@ -150,6 +163,7 @@ once:
     $ pnmcolormap 256 myimage.ppm >/tmp/colormap.ppm
     $ pamtogif myimage.ppm -mapfile=/tmp/colormap.ppm >output.gif
 \fP
+
 .fi
 
 
@@ -174,7 +188,7 @@ in RGB space.  If multiple colors are equidistant, \fBpamtogif\fP
 chooses one of them arbitrarily.
 .sp
 However, if you prefix your color specification with "=",
-e.g.  \fB-transparent==red\fP, only the exact color you specify will
+e.g. \fB-transparent==red\fP, only the exact color you specify will
 be transparent.  If that color does not appear in the image, there
 will be no transparency.  \fBpamtogif\fP issues an information
 message when this is the case.
@@ -182,30 +196,6 @@ message when this is the case.
 When you specify \fB-transparent\fP, \fBpamtogif\fP ignores
 explicit transparency information (the "alpha channel") in
 the input image.
-
-.TP
-\fB-alpha=\fP\fIpgmfile\fP
-There is no \fB-alpha\fP option.  \fBpamtogif\fP's predecessor had
-such an option because it was not capable of taking PAM input that contains
-a transparency (alpha) plane, so one used this option to supply a
-transparency plane as a separate PGM file.
-
- This option names a PGM file that contains a transparency mask for the
-image.  \fBpamtogif\fP creates fully transparent pixels wherever the
-transparency mask indicates transparency greater than 50%.  The color of
-those pixels is that specified by the \fB-alphacolor\fP
-option, or black by default.
-.sp
-To do this, \fBpamtogif\fP creates an entry in the GIF colormap in
-addition to the entries for colors that are actually in the image.  It
-marks that colormap entry as transparent and uses that colormap index
-in the output image to create a transparent pixel.
-.sp
- The transparency image must be the same dimensions as the input
-image, but may have any maxval.  White means opaque and black means
-transparent.
-.sp
- You cannot specify both \fB-transparent\fP and \fB-alpha\fP.  
 
 .TP
 \fB-alphacolor=\fP\fIcolor\fP
@@ -240,6 +230,7 @@ Note that in a command shell, you'll have to use quotation marks around
 think it is multiple arguments:
 .nf
 $ pamtogif -comment "this is a comment" <xxx.ppm >xxx.gif
+
 .fi
 
 .TP

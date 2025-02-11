@@ -1,10 +1,10 @@
 .\" mpstat manual page - (C) 2000-2020 Sebastien Godard (sysstat <at> orange.fr)
-.TH MPSTAT 1 "AUGUST 2020" Linux "Linux User's Manual" \-*\- nroff \-*\-
+.TH MPSTAT 1 "AUGUST 2023" Linux "Linux User's Manual" -*- nroff -*-
 .SH NAME
 mpstat \- Report processors related statistics.
 
 .SH SYNOPSIS
-.B mpstat [ \-A ] [ \-\-dec={ 0 | 1 | 2 } ] [ \-n ] [ \-u ] [ \-T ] [ \-V ] [ \-I {
+.B mpstat [ \-A ] [ \-\-dec={ 0 | 1 | 2 } ] [ \-H ] [ \-n ] [ \-u ] [ \-T ] [ \-V ] [ \-I {
 .IB "keyword" "[,...] | ALL } ] [ \-N { " "node_list " "| ALL } ] [ \-o JSON ] [ \-P {"
 .IB "cpu_list " "| ALL } ] [ " "interval " "[ " "count " "] ]"
 
@@ -44,6 +44,9 @@ unless these options are explicitly set on the command line.
 .B \-\-dec={ 0 | 1 | 2 }
 Specify the number of decimal places to use (0 to 2, default value is 2).
 .TP
+.B \-H
+Also detect and display statistics for physically hotplugged vCPUs.
+.TP
 .BI "\-I { " "keyword" "[,...] | ALL }"
 Report interrupts statistics.
 .RI "Possible " "keywords " "are"
@@ -82,7 +85,7 @@ therefore all the interrupts statistics are displayed.
 .BI "\-N { " "node_list " "| ALL }"
 Indicate the NUMA nodes for which statistics are to be reported.
 .I node_list
-is a list of comma\-separated values or range of values (e.g.,
+is a list of comma-separated values or range of values (e.g.,
 .BR "0,2,4\-7,12\-" "). Note that node " "all"
 is the global average among all nodes. The
 .B ALL
@@ -102,14 +105,14 @@ All the other fields are the same as those displayed with option
 .BR "\-u " "(see below)."
 .TP
 .B \-o JSON
-Display the statistics in JSON (Javascript Object Notation) format.
+Display the statistics in JSON (JavaScript Object Notation) format.
 JSON output field order is undefined, and new fields may be added
 in the future.
 .TP
 .BI "\-P { " "cpu_list " "| ALL }"
 Indicate the processors for which statistics are to be reported.
 .I cpu_list
-is a list of comma\-separated values or range of values (e.g.,
+is a list of comma-separated values or range of values (e.g.,
 .BR "0,2,4\-7,12\-" ")."
 Note that processor 0 is the first processor, and processor
 .B all
@@ -186,22 +189,24 @@ ranges of values.
 .TP
 .B S_COLORS_SGR
 Specify the colors and other attributes used to display statistics on the terminal.
-Its value is a colon\-separated list of capabilities that defaults to
-.BR "H=31;1:I=32;22:M=35;1:N=34;1:Z=34;22" "."
+Its value is a colon-separated list of capabilities that defaults to
+.BR "I=32;22:N=34;1:W=35;1:X=31;1:Z=34;22" "."
 Supported capabilities are:
 .RS
 .TP
-.B H=
-SGR (Select Graphic Rendition) substring for percentage values greater than or equal to 75%.
-.TP
 .B I=
-SGR substring for CPU number.
-.TP
-.B M=
-SGR substring for percentage values in the range from 50% to 75%.
+SGR (Select Graphic Rendition) substring for CPU number.
 .TP
 .B N=
-SGR substring for non\-zero statistics values.
+SGR substring for non-zero statistics values.
+.TP
+.BR "W=" " (or " "M=" ")"
+SGR substring for percentage values in the range from 75% to 90% (or in the range 10% to 25% depending on the
+metric's meaning).
+.TP
+.BR "X=" " (or " "H=" ")"
+SGR substring for percentage values greater than or equal to 90% (or lower than or equal to 10% depending on the
+metric's meaning).
 .TP
 .B Z=
 SGR substring for zero values.
@@ -212,7 +217,7 @@ If this variable exists and its value is
 .BR ISO
 then the current locale will be ignored when printing the date in the report header.
 .RB "The " "mpstat"
-command will use the ISO 8601 format (YYYY\-MM\-DD) instead.
+command will use the ISO 8601 format (YYYY-MM-DD) instead.
 The timestamp will also be compliant with ISO 8601 format.
 
 .SH EXAMPLES
@@ -238,4 +243,4 @@ Sebastien Godard (sysstat <at> orange.fr)
 .PP
 .I https://github.com/sysstat/sysstat
 .br
-.I http://pagesperso\-orange.fr/sebastien.godard/
+.I https://sysstat.github.io/

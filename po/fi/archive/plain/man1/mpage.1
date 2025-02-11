@@ -1,0 +1,506 @@
+.\" $Id: $
+.\" Translated into Finnish by Jaakko Puurunen (jaakko.puurunen@iki.fi)
+.\" TERM concatenate tulosta,liitä
+.\"
+.TH MPAGE 1 "15. toukokuuta 1998" "" "Käyttäjän sovellusohjelmat"
+
+.SH NIMI
+mpage \- tulosta useita sivuja yhdelle arkille Postscript-tulostimella
+
+.SH "YLEISKATSAUS"
+\fBmpage [\-1248cfovlaAHOERSUXrt] [\-p[tulostusohjelma]]
+[\-B[tekstialuemarginaalit]] [\-da|p] [\-m[arkkimarginaalit]]
+[\-M[sivumarginaalit]] [\-Lrivimäärä] [\-Wleveys]
+[\-C[merkkikartta] [\-hylätunniste] [\-P[tulostin]]
+[\-j ensimmäinen[\-viimeinen][%väli]
+[\-ssarkain] [\-Fmerkkilaji] [\-ztulostuskomento]
+[\-Ztulostuskomennon_argumentit]
+[\-Dpvm-muoto] [\-bpaperikoko] [tiedostot...]
+
+
+
+.SH KUVAUS
+.I Mpage
+lukee puhtaita tekstitiedostoja tai PostScript-dokumentteja
+ja tulostaa ne PostScript-tulostimella pienentäen tekstiä niin,
+että useita sivuja mahtuu yhdelle paperiarkille.
+Näin suuria tulostemääriä voi sovittaa pienelle määrälle paperia.
+Käyttää 8-bittisten merkkien tulostamiseen ISO 8859.1:tä.
+
+.PP
+Seuraavat optiot ovat käytössä (huomaa, että optioiden argumentit
+voidaan erottaa optiosta välilyönneillä, paitsi optiolla -B, -m,
+-M, -p ja -P):
+
+.TP
+.B -8
+Tulosta 8 normaalia sivua arkille.
+
+.TP
+.B -4
+Tulosta 4 normaalia sivua arkille
+.IR (oletusarvo) .
+
+.TP
+.B -2
+Tulosta 2 normaalia sivua arkille.
+
+.TP
+.B -1
+Tulosta 1 normaali sivu arkille (mukana symmetrian vuoksi).
+
+.TP
+.B -O
+Tulosta 2 normaalia sivua arkille. Tämä optio tulostaa joka
+ensimmäisen ja neljännen sivun jokaisesta neljän sivun ryhmästä;
+ei huomioi
+.B -a
+ja
+.B -l
+optioita.
+
+.TP
+.B -E
+Tulosta 2 normaalia sivua arkille. Tämä optio tulostaa joka
+toisen ja kolmannen sivun jokaisesta neljän sivun ryhmästä;
+ei huomioi
+.B -a
+ja
+.B -l
+optioita.
+
+.TP
+.BI -p [tulostusohjelma]
+Suodata syöte komennon
+.I tulostusohjelma
+läpi (mukaanlukien annetut optiot) ennen tulostusta
+(olettaa syötteen olevan tekstitiedoston).
+Ilman komentoa käytetään oletusarvoa
+.BR pr ( 1 ).
+
+.TP
+.B -c
+Tulosta (concatenate)/älä tulosta erillisten tiedostojen
+sivuja samalle arkille.
+.RI ( oletusarvona
+älä tulosta).
+
+.TP
+.BI -C [merkkikarttatiedosto]
+Määrittele merkkikarttatiedosto. Oletusarvona tyhjä.
+Tiedoston tulisi sijaita ohjelman kirjastohakemistossa
+(/usr/local/lib/mpage).
+Ohjelman sisäinen merkkikartan oletusarvo on
+joko Latin-1 tai IBM 850 koodisivu.
+Riippuen käännöshetkellä valituista optiosta tämä
+merkkikartan määrittely on joko valittu tai ei.
+Jättämällä merkkikarttatiedosto määrittelemättä
+ohjelma ottaa käyttöön vaihtoehtoisen sisäisen merkkikartan.
+
+.TP
+.BI -D pvm-muoto
+Aseta päiväyksen muoto kuten funktiossa
+.I strftime(3)
+käytettäväksi päiväyksen/ajan esittämiseen (esim. otsikoissa).
+
+.TP
+.B -o
+Tulosta/älä tulosta kehyksiä jokaisen pienennetyn sivun ympärille
+.RI ( oletusarvona
+tulosta).
+
+.TP
+.B -v
+Tulosta/älä tulosta tulostusta varten tuotettujen arkkien lukumäärä
+.RI ( oletusarvona
+älä tulosta).
+
+.TP
+.B -f
+Jaa/älä jaa sivun leveyttä pitemmät rivit useammalle riville
+.RI ( oletusarvona
+älä jaa).
+
+.TP
+.BI -F merkkilaji
+Määrittele merkkilaji. Oletusarvona on Courier.
+
+.TP
+.B -l
+Tulosta vaaka-/pystyasennossa.
+Vaaka-asennossa sivut ovat oletusarvona 55 riviä pitkiä ja
+132 merkkiä leveitä.
+Pystyasennossa sivut ovat oletusarvona 66 riviä pitkiä ja
+80 merkkiä leveitä.
+.RI ( oletusarvona
+pystyasento).
+
+.TP
+.B -R
+Tulosta vasemmalta oikealle, alkaen vasemmasta alanurkasta.
+Tämä saattaisi sopia vaaka-asennossa tulostetuille
+postscript-tiedostoille.
+(Huomaa, että option
+.B -l
+käyttö option
+.B -R
+jälkeen kumoaa -R:n vaikutuksen,
+ja valitsee normaalin vaakatulostuksen.
+
+.TP
+.BI -B [<arvo>[lrtb]*]
+Aseta tekstialueen marginaalit ja viivanleveys.
+Oletusarvona on 0 saraketta (viivaa)
+molemmille vasemmalle ja oikealle
+(ylä- ja ala-) marginaalille ja viivanleveydelle 0.
+Asettamalla yksinään
+.B -B
+tulostetaan tekstialueen rajat.
+.IR l ,
+.IR r ,
+.I t
+tai
+.I b
+asettavat vasemmaksi, oikeaksi, ylä- tai alamarginaaliksi vastaavasti
+.I <arvo>
+saraketta (viivaa).
+Marginaalien määrittelemättä jättäminen asettaa viivanleveyden, kun
+.I <arvo>
+on annettu. Esimerkiksi
+.BI -B 1
+asettaa viivanleveydeksi arvon 1.
+Negatiivisia marginaaleja ei tulosteta.
+
+.TP
+.BI -m [<arvo>[lrtb]*]
+Aseta arkin marginaalit. Oletusarvona on 20 pistettä.
+Asettamalla yksinään
+.B -m
+asettaa vasemmaksi marginaaliksi 40 pistettä.
+.IR l ,
+.IR r ,
+.I t
+tai
+.I b
+asettavat vasemmaksi, oikeaksi, ylä- tai alamarginaaliksi vastaavasti
+.I <arvo>
+pistettä.
+Marginaalien määrittelemättä jättäminen asettaa kaikki reunat, kun
+.I <arvo>
+on annettu. Oletusarvona
+.I <arvo>
+on 40 pistettä. Esimerkiksi
+.BI -m 10
+asettaa kaikki marginaalit 10 pisteeseen.
+.BI -m l50tb
+asettaa vasemmaksi marginaaliksi oletusarvon 40 pistettä ja ylä-
+ja alamarginaaliksi 50 pistettä.
+.BI -m 50l25bt30r
+asettaa ala- ja ylämarginaaliksi 25, vasemmaksi marginaaliksi 50
+ja oikeaksi marginaaliksi 30 pistettä.
+Maginaalit voivat olla negatiivisia arvoja.
+Hyvin suuret arvot johtavat hauskoihin ilmiöihin.
+Tämä jätetään käyttäjälle harjoitustehtäväksi.
+
+.TP
+.BI -M [<arvo>[lrtb]*]
+Aseta sivun loogiset marginaalit. Katso syntaksin kuvaus
+.B -m
+optiosta.
+Oletusarvoina ovat 4 optiolle
+.B -M
+yksinään ja 8
+.IR <arvolle> .
+Marginaalit voivat olla negatiivisia.
+Tällä tavoin (postscript) dokumenttiesi suuria valkoisia
+reunuksia voidaan pienentää.
+Hyvin suuret arvot johtavat hauskoihin ilmiöihin.
+Tämä jätetään käyttäjälle harjoitustehtäväksi.
+
+.TP
+.B -a
+Tulosta peräkkäin numeroidut sivut ylhäältä alas/vasemmalta oikealle
+.RI ( oletusarvona
+ylhäältä alas).
+
+.TP
+.BI -d a|p
+Pakota syötteen käsittely joko ascii- (a) tai postscript-tekstiksi (p).
+Näin voit tulostaa postscript-koodisi tekstinä,
+tai tulostaa postscript-koodia, jota mpage ei tunnista.
+Kun käytät optiota \fB-dp\fR,
+varmista, että postscript-koodi sisältää
+.I %Page
+sivunvaihdot tai muuten asiat todennäköisesti näyttävät oudolta.
+
+.TP
+.B -A
+.BR Ei
+.BR suositella
+.BR käytettäväksi ,
+katso optio \fB-b\fP. Muotoile tuloste sopivaksi
+eurooppalaiselle A4-kokoiselle paperille.
+Katso oletusarvo komennolla 'mpage -x'.
+
+.TP
+.B -U
+.BR Ei
+.BR suositella
+.BR käytettäväksi ,
+katso optio \fB-b\fP. Muotoile tuloste sopivaksi
+US Letter -kokoiselle paperille.
+Katso oletusarvo komennolla 'mpage -x'.
+
+.TP
+.BI -b paperikoko
+Muotoile tuloste sopivaksi valitulle paperikoolle.
+Paperikoko voi olla \fIA4\fP eurooppalaiselle A4-paperille,
+\fILetter\fP US Letter -paperille tai \fILegal\fP 
+Legal-kokoiselle paperille.
+Katso oletusarvo komennolla 'mpage -x'.
+
+.TP
+.B -S
+Hyväksy sivujen pienennys eri suhteissa.
+Oletusarvona sivut pienennetään X- ja Y-suunnassa
+samassa suhteessa, vaikka tämä tuhlaa arkilta
+jonkin verran tilaa. 
+Käyttämällä optiota \fB\-S\fP,
+pienennetyt sivut ovat suurempia,
+mutta hieman vääristyneitä.
+(Käytetään vain postscript-tiedostojen tulostamiseen).
+
+.TP
+.B -r
+Käänteinen tulostusjärjestys.
+Viimeinen arkki tulostetaan ensimmäisenä.
+Ei vaikuta pienennettyjen sivujen järjestykseen arkeilla.
+
+.TP
+.B -t
+Tulosta/älä tulosta kaksipuoleisena.
+Tämä kytkee tulostimen kaksipuoleisen tulostuksen päälle.
+Käytä tätä optiota vain,
+jos tulostimesi pystyy kaksipuoleiseen tulostukseen
+.RI ( oletusarvona
+älä tulosta).
+
+.TP
+.B -T
+Tulosta kaksipuoleisena niin,
+että teksti on seuraavalla arkilla
+luettavissa ylhäältä alas/vasemmalta oikealle.
+Käytä tätä optiota vain,
+jos tulostimesi pystyy kaksipuoleiseen tulostukseen
+ja yhdessä option
+.B -t
+kanssa.
+
+.TP
+.BI -j ensimmäinen[-viimeinen][%väli]
+Tulosta vain valitut arkit,
+määritelty numeroin alkaen yhdestä.
+Tässä \fIviimeisen\fP oletusarvo on viimeinen arkki,
+\fIvälin\fP yksi.
+Näin ollen \fB-j\fI1\-10\fR tulostaa kymmenen ensimmäistä arkkia,
+kun taas \fB-j\fI 1%2\fR tulostaa vain parittomat arkit
+ja \fB-j\fI 2%2\fR vain parilliset arkit.
+
+.sp
+Voit tulostaa kaksipuoleisena, kahdessa vaiheessa seuraavasti.
+Jos käytät kolmireikäistä paperia,
+laita se tulostimeen niin,
+että reiät vastaavat sivun yläreunaa  -- meidän 
+Laser writer II NTX -tulostimessamme
+paperikaukalossa reiät oikealle.
+Tulosta parittomat arkit komennolla
+.sp
+.ti +5
+mpage ... -j 1%2 ...
+.sp
+Pane merkille ohjelman ilmoittama sivumäärä.
+(Vain puolet tästä määrästä todella tulostetaan).
+Kun tulostus on suoritettu, jos ohjelma ilmoittaa
+\fIparittoman\fP sivumäärän,
+poista viimeinen sivu pinosta,
+sillä kyseiselle sivulle ei löydy parillista vastinetta.
+Järjestä sitten paperipino arkin toiselle puolelle tulostamista varten.
+(Jos paperissa on reiät, niiden tulee olla nyt vasemmalla).
+Meidän II NTX -tulostimellamme paperi tulee tyhjä puoli näkyvissä ulos;
+aseta se paperikaukaloon edelleen tyhjä puoli näkyvissä,
+mutta 180 astetta pyöritettynä.
+Muiden tulostimien kohdalla selvitä asia itse.
+Tulosta nyt parilliset sivut käännetyssä järjestyksessä komennolla
+.sp
+.ti +5
+mpage ... -r -j 2%2 ...
+.sp
+ja toivo, ettei kukaan muu ehdi tulostaa ennen sinua.
+
+
+.TP
+.BI -P [tulostin]
+Määrittele tulostin, jolle PostScript-tuloste lähetetään
+(esim. lpr -Ptulostin). Käyttäen optiota
+.B -P
+ilman määriteltyä tulostinta lähettää tulosteen oletustulostusjonoon
+(esim. lpr).
+Käyttäen optiota muodossa -P-
+palautetaan tuloste vakiotulosteeseen,
+joka on hyödyllinen yhdessä MPAGE-ympäristömuuttujan kanssa.
+Ilman optiota
+.B -P
+tuloste lähetetään vakiotulosteeseen.
+
+.TP
+.BI -L rivimäärä
+Muuta sivunpienennysparametreja niin, että
+.I rivimäärä
+rivejä mahtuu yhden sivun tilaan.
+Tämä ohittaa normaalit oletusarvot.
+(Katso optio \fB-l\fP).
+Käytettynä yhdessä 
+.B -p
+option kanssa tämä arvo välitetään myös ohjelmalle pr.
+
+.TP
+.BI -W leveys
+Muuta sivunpienennysparametrejä niin,
+että rivi, joka on 
+.I leveys
+merkkiä pitkä, sopii yhden sivun tilaan.
+Tämä ohittaa normaalit oletusarvot.
+(Katso optio \fB-l\fP).
+Käytettynä yhdessä 
+.B -p
+option kanssa tämä arvo välitetään myös ohjelmalle pr.
+
+.TP
+.BI -I sisennys
+Sisennä tekstiä
+.I sisennys
+merkkiä.
+
+.TP
+.BI -s sarkain
+Aseta sarkaimen leveys (oletusarvo 8 merkkiä). Tulisi olla >=2.
+
+.TP
+.BI -h ylätunniste
+Tätä käytetään vain, kun optiota
+.B -p
+tai
+.B -H
+on käytetty ja se välitetään "\fB-h\fI\ ylätunniste\fR" optiona ohjelmalle
+.BR pr ( 1 )
+tai ylätunnisteena optiolle \fB-H\fR.
+
+.TP
+.B -H
+Tee vaakasuoralla viivalla sivun tekstistä erotettu ylätunnisterivi
+jokaiselle loogiselle sivulle.
+Ellei optiota
+.B -h
+ole käytetty,
+ylätunniste muodostuu tiedoston viimesestä muuttamisajankohdasta,
+tiedostonimestä ja sivunumerosta,
+jotka kaikki tulostetaan lihavoituna ja hieman suurempana.
+Tämä optio on käytössä vain ei-postscript-tiedostojen kanssa.
+
+.TP
+.B -X [ylätunniste]
+Tulosta ylätunniste keskitettynä jokaiselle fyysiselle sivulle (arkille).
+Mikäli ylätunnistetta ei ole annettu,
+oletusarvona on senhetkinen tiedostonimi vasemmalla
+(huomaa optio \fB-c\fR) ja sivunumero oikealla.
+
+.TP
+.BI -z tulostuskomento
+Määrittele komento, jolla tuloste lähetetään. Oletusarvona on
+.B lpr
+UCB-tyypin tulostusjonolle ja
+.B lp
+ATT-tyypin jonolle.
+Voit määrittää komentorivioptioita, mutta katso optio
+.B -Z .
+Esimerkiksi \fB-zlp\fR system V Unixille.
+
+.TP
+.BI -Z tulostusohjelman_jonon_argumentti
+Määrittelee, mitä optiota käytetään "\fB-z\fI\ tulostuskomennolle\fR"
+tulostusjonon määrittelemiseksi.
+Esimerkiksi \fB-zlp -Z-d\fR system V Unixille.
+Oletusarvona on 
+.B -P
+UCB-tyypin jonolle ja
+.B -d
+ATT-tyypin jonolle.
+
+.PP
+
+.SH YMPÄRISTÖMUUTTUJAT
+.I Mpage
+tutkii ympäristömuuttujan
+.B PRINTER
+(tai
+.B LPDEST
+ATT-tyypin jonolle)
+ohittaakseen oletustulostimensa.
+
+.PP
+Ympäristömuuttujaa
+.B MPAGE_LIB
+voidaan käyttää merkkikarttojen (\fB-C\fR) sijainnin asettamiseen.
+
+.PP
+.ne 10
+.I Mpage
+tutkii myös ympäristömuuttujan
+.B MPAGE
+optioiden oletusarvojen selvittämiseksi.
+Mikä tahansa optio tai optioiden yhdistelmä
+voidaan asettaa ympäristömuuttujassa
+\fBMPAGE\fR.
+Jos esimerkiksi MPAGE on asetettu merkkijonoksi
+.in +1i
+.B -2oPqms -L60
+.br
+.in -1i
+se tulostaisi (ilman muita komentorivioptiota) 2 sivua arkille,
+60 riviä sivulle ilman kehyksiä, tulostimelle nimeltä
+.B "qms"
+(ohittaen
+.B PRINTER\fR/\fBLPDEST
+ympäristömuuttujan, jos se olisi olemassa).
+Ympäristömuuttujassa erotetaan optiot tyhjämerkein,
+eikä lainausmerkkejä huomioida.
+
+.PP
+Mikä tahansa komentorivioptio ohittaa molemmat
+.B PRINTER
+ja
+.B MPAGE
+ympäristömuuttujat.
+
+.SH TIEDOSTOT
+/bin/pr /bin/fold
+.br
+/usr/tmp/mpageXXXXXX
+
+.SH BUGIT
+.PP
+Kärsii ylettömän monien optioiden taakasta.  (Mutta
+.B minä
+tahdon valintoja!)
+.PP
+Paljon muitakin, olemme varmoja.
+.SH VERSIO
+Versio 2.4, julkaistu syyskuussa 1996.
+.SH TEKIJÄT
+Mark P. Hahn (uunet!pyrdc!mark), Pyramid Technology Corporation
+
+Marcel Mol <marcel@mesa.nl>. Paljon muita muutoksia. 
+Enemmän tai vähemmän ohjelman päätekijä nykyisin.
+
+Monet muut ovat avustaneet,
+ole hyvä ja katso tiedosto CHANGES.

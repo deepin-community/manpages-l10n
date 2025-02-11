@@ -1,58 +1,42 @@
+'\" t
 .\" Copyright 2008, Linux Foundation, written by Michael Kerrisk
 .\"	<mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
-.\"
-.TH GETRPCENT_R 3  2021-03-22 "GNU" "Linux Programmer's Manual"
+.TH getrpcent_r 3 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 getrpcent_r, getrpcbyname_r, getrpcbynumber_r \- get
 RPC entry (reentrant)
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <netdb.h>
-.PP
-.BI "int getrpcent_r(struct rpcent *" result_buf ", char *" buf ,
+.P
+.BI "int getrpcent_r(struct rpcent *" result_buf ", char " buf [. buflen ],
 .BI "                size_t " buflen ", struct rpcent **" result );
 .BI "int getrpcbyname_r(const char *" name ,
-.BI "                struct rpcent *" result_buf ", char *" buf ,
+.BI "                struct rpcent *" result_buf ", char " buf [. buflen ],
 .BI "                size_t " buflen ", struct rpcent **" result );
 .BI "int getrpcbynumber_r(int " number ,
-.BI "                struct rpcent *" result_buf ", char *" buf ,
+.BI "                struct rpcent *" result_buf ", char " buf [. buflen ],
 .BI "                size_t " buflen ", struct rpcent **" result );
-.PP
+.P
 .fi
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR getrpcent_r (),
 .BR getrpcbyname_r (),
 .BR getrpcbynumber_r ():
 .nf
     Since glibc 2.19:
         _DEFAULT_SOURCE
-    Glibc 2.19 and earlier:
+    glibc 2.19 and earlier:
         _BSD_SOURCE || _SVID_SOURCE
 .fi
 .SH DESCRIPTION
@@ -72,13 +56,13 @@ structure is returned,
 and in the function calling signature and return value.
 This manual page describes just the differences from
 the nonreentrant functions.
-.PP
+.P
 Instead of returning a pointer to a statically allocated
 .I rpcent
 structure as the function result,
 these functions copy the structure into the location pointed to by
 .IR result_buf .
-.PP
+.P
 The
 .I buf
 array is used to store the string fields pointed to by the returned
@@ -95,7 +79,7 @@ and the caller must try again with a larger buffer.
 (A buffer of length 1024 bytes should be sufficient for most applications.)
 .\" I can find no information on the required/recommended buffer size;
 .\" the nonreentrant functions use a 1024 byte buffer -- mtk.
-.PP
+.P
 If the function call successfully obtains an RPC record, then
 .I *result
 is set pointing to
@@ -106,7 +90,7 @@ is set to NULL.
 .SH RETURN VALUE
 On success, these functions return 0.
 On error, they return one of the positive error numbers listed in ERRORS.
-.PP
+.P
 On error, record not found
 .RB ( getrpcbyname_r (),
 .BR getrpcbynumber_r ()),
@@ -129,35 +113,24 @@ Try again with a larger buffer
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR getrpcent_r (),
 .BR getrpcbyname_r (),
 .BR getrpcbynumber_r ()
 T}	Thread safety	MT-Safe locale
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
-These functions are GNU extensions.
+.SH VERSIONS
 Functions with similar names exist on some other systems,
 though typically with different calling signatures.
+.SH STANDARDS
+GNU.
 .SH SEE ALSO
 .BR getrpcent (3),
 .BR rpc (5)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

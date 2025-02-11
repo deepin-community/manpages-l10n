@@ -3,7 +3,7 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "Pamaddnoise User Manual" 0 "12 December 2020" "netpbm documentation"
+.TH "Pamaddnoise User Manual" 0 "21 August 2023" "netpbm documentation"
 
 .SH NAME
 
@@ -13,41 +13,31 @@ pamaddnoise - add noise to a Netpbm image
 .SH SYNOPSIS
 
 \fBpamaddnoise\fP
-
-[\fB-type\fP \fInoise_type\fP]
-
-[\fB-seed\fP \fIint\fP]
-\fBpamaddnoise\fP \fB-type\fP \fBgaussian\fP
+{
+[\fB-type\fP \fBgaussian\fP]
 
 [\fB-sigma1\fP \fIvalue\fP]
 
 [\fB-sigma2\fP \fIvalue\fP]
-[\fB-seed\fP \fIint\fP]
-
-[\fInetpbmfile\fP]
-\fBpamaddnoise\fP \fB-type \fP \fBmultiplicative_gaussian\fP
+|
+\fB-type \fP \fBmultiplicative_gaussian\fP
 
 [\fB-mgsigma\fP \fIvalue\fP]
-[\fB-seed\fP \fIint\fP]
-
-[\fInetpbmfile\fP]
-\fBpamaddnoise\fP \fB-type\fP \fBimpulse\fP
+|
+\fB-type\fP \fBimpulse\fP
 
 [\fB-tolerance\fP \fIratio\fP]
-
-[\fB-seed\fP \fIint\fP]
-[\fInetpbmfile\fP]
-\fBpamaddnoise\fP \fB-type \fP \fBlaplacian\fP
+|
+\fB-type \fP \fBlaplacian\fP
 
 [\fB-lsigma\fP \fIvalue\fP]
-
-[\fB-seed\fP \fIint\fP]
-[\fInetpbmfile\fP]
-\fBpamaddnoise\fP \fB-type \fP \fBpoisson\fP
+|
+\fB-type \fP \fBpoisson\fP
 
 [\fB-lambda\fP \fIvalue\fP]
-
+}
 [\fB-seed\fP \fIint\fP]
+
 [\fInetpbmfile\fP]
 
 .UN description
@@ -74,44 +64,6 @@ command line options:
 
 
 .TP
-\fB-lambda\fP \fIvalue\fP
-This is the expected value of the Poisson distribution for a sample value
-  of mximum intensity.  The expected value for other intensities is
-  proportional; e.g. for half intensity, it is half this value.
-.sp
-This is meaningful only with \fB-type=poisson\fP.
-.sp
-The default value is 12.
-
-.TP
-\fB-lsigma\fP \fIvalue\fP
-Used for laplacian noise only.  The default value is 10.0.
-
-.TP
-\fB-mgsigma\fP \fIvalue\fP
-Used for multiplicative gaussian noise only.  The default value is
-0.5.
-
-.TP
-\fB-seed\fP \fIint\fP
-Used for all noise types.  Set the initial random number generator
-seed value.
-
-.TP
-\fB-sigma1\fP \fIvalue\fP
-Used for gaussian noise only.  The default value is 4.0.
-
-.TP
-\fB-sigma2\fP \fIvalue\fP
-Used for gaussian noise only.  The default value is 20.0.
-
-.TP
-\fB-tolerance\fP \fIratio\fP
-Used for impulse noise only.  The default value is 0.10.  This means
-that 5% of all pixel values will be set to 0 and 5% will be set to
-the maxval
-
-.TP
 \fB-type\fP \fInoise_type\fP
 Select type of noise by name.  The following noise types are
 available: gaussian, multiplicative_gaussian, impulse, laplacian,
@@ -119,17 +71,96 @@ poisson.  Only enough letters to be unique are required for the noise
 type option.  The default noise type is \fBgaussian\fP.
 
 
-.IP \(bu
+.TP
 \fBgaussian\fP
-.IP \(bu
+  
+To each sample value is added the value of a two Gaussian random variables.
+    The variance of one is independent of the sample value, while the variance
+    of the other is proportional to the sample value.  You control these
+    variances with options \fB-sigma1\fP and \fB-sigma2\fP (and can eliminate
+    either by setting the variance to 0).  The mean of the Gaussian
+    distributions is 0.
+
+.TP
 \fBmultiplicative_gaussian\fP
-.IP \(bu
+.TP
 \fBimpulse\fP
-.IP \(bu
+  
+This is 'salt and pepper' noise.  Samples are changed randomly
+    to zero or full brightness or left alone.  This is also know as salt and
+    pepper noise, as in a grayscale picture, it adds white pixels and black
+    pixels, which look like salt and pepper, respectively.  Control this with
+    options \fB-tolerance\fP and \fB-salt\fP.
+
+.TP
 \fBlaplacian\fP
-.IP \(bu
+
+.TP
 \fBpoisson\fP
 
+
+.TP
+\fB-lambda\fP \fIvalue\fP
+This is valid only with \fB-type=poisson\fP.  It is the expected value
+of the Poisson distribution for a sample value of maximum intensity.  The
+expected value for other intensities is proportional; e.g. for half intensity,
+it is half this value.
+.sp
+The default value is 12.
+
+.TP
+\fB-lsigma\fP \fIvalue\fP
+This is meaningful only for laplacian noise.
+.sp
+The default value is 10.0.
+
+.TP
+\fB-mgsigma\fP \fIvalue\fP
+This is valid only for multiplicative gaussian noise.
+.sp
+The default value is 0.5.
+
+.TP
+\fB-seed\fP \fIint\fP
+This is the random number generator seed value.  Use this to get
+  repeatable results.
+
+.TP
+\fB-sigma1\fP \fIvalue\fP
+This is valid only for gaussian noise.  It is the standard deviation
+  of the Gaussian random variable that is multiplied by the square root of
+  each sample value and added to that sample value.
+.sp
+    The default value is 4.0.
+
+.TP
+\fB-sigma2\fP \fIvalue\fP
+This is valid only for gaussian noise.
+  It is the standard deviation of the Gaussian random variable that is
+  added directly to each sample value.
+.sp
+The default value is 20.0.
+
+.TP
+\fB-tolerance\fP \fIfraction\fP
+This is valid only for impulse noise.
+  \fIfraction\fP is the fraction of samples that are changed
+  in the output.  Whether each is changed to salt or pepper is controlled by
+  \fB-salt\fP.
+.sp
+The default value is 0.10.
+
+.TP
+\fB-salt=\fIfraction\fP\fP
+  
+This is valid only for impulse noise.  \fIfraction\fP is the
+    fraction of the pixels that are changed that are changed to salt (maxval);
+    the rest are changed to pepper (0).
+.sp
+The default is 0.5 (half salt, half pepper).
+.sp
+This option was new in Netpbm 11.04 (September 2023).  Before that, the
+  noise is always half salt and half pepper.
 
 
 

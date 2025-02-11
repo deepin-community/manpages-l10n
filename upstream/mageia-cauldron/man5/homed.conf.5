@@ -1,5 +1,5 @@
 '\" t
-.TH "HOMED\&.CONF" "5" "" "systemd 249" "homed.conf"
+.TH "HOMED\&.CONF" "5" "" "systemd 255" "homed.conf"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -36,9 +36,14 @@ These configuration files control default parameters for home areas/user account
 \fBsystemd-homed.service\fR(8)\&.
 .SH "CONFIGURATION DIRECTORIES AND PRECEDENCE"
 .PP
-The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. Initially, the main configuration file in
+The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. The main configuration file is either in
+/usr/lib/systemd/
+or
 /etc/systemd/
-contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by editing this file or by creating drop\-ins, as described below\&. Using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
+and contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by creating drop\-ins, as described below\&. The main configuration file can also be edited for this purpose (or a copy in
+/etc/
+if it\*(Aqs shipped in
+/usr/) however using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
 .PP
 In addition to the "main" configuration file, drop\-in configuration snippets are read from
 /usr/lib/systemd/*\&.conf\&.d/,
@@ -50,7 +55,7 @@ configuration subdirectories are sorted by their filename in lexicographic order
 When packages need to customize the configuration, they can install drop\-ins under
 /usr/\&. Files in
 /etc/
-are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&.
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&. This also defined a concept of drop\-in priority to allow distributions to ship drop\-ins within a specific range lower than the range used by users\&. This should lower the risk of package drop\-ins overriding accidentally drop\-ins defined by users\&.
 .PP
 To disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
 /dev/null
@@ -80,6 +85,8 @@ is on a btrfs file system, and
 otherwise\&. Note that the storage selected on the
 \fBhomectl\fR
 command line always takes precedence\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fIDefaultFileSystemType=\fR
@@ -94,6 +101,8 @@ or
 "btrfs"\&. This setting has no effect if a different storage mechanism is used\&. The file system type selected on the
 \fBhomectl\fR
 command line always takes precedence\&.
+.sp
+Added in version 246\&.
 .RE
 .SH "SEE ALSO"
 .PP

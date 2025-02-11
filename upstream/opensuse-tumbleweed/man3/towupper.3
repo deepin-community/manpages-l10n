@@ -1,11 +1,7 @@
+'\" t
 .\" and Copyright (C) 2014 Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_ONEPARA)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
 .\" References consulted:
 .\"   GNU glibc-2 source code and manual
@@ -13,22 +9,25 @@
 .\"   OpenGroup's Single UNIX specification http://www.UNIX-systems.org/online.html
 .\"   ISO/IEC 9899:1999
 .\"
-.TH TOWUPPER 3  2021-03-22 "GNU" "Linux Programmer's Manual"
+.TH towupper 3 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 towupper, towupper_l \- convert a wide character to uppercase
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <wctype.h>
-.PP
+.P
 .BI "wint_t towupper(wint_t " wc );
 .BI "wint_t towupper_l(wint_t " wc ", locale_t " locale );
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR towupper_l ():
 .nf
     Since glibc 2.10:
@@ -51,7 +50,7 @@ it returns the uppercase equivalent of
 In all other cases,
 .I wc
 is returned unchanged.
-.PP
+.P
 The
 .BR towupper_l ()
 function performs the same task,
@@ -67,7 +66,7 @@ is the special locale object
 (see
 .BR duplocale (3))
 or is not a valid locale object handle.
-.PP
+.P
 The argument
 .I wc
 must be representable as a
@@ -82,42 +81,46 @@ was convertible to uppercase,
 returns its uppercase equivalent;
 otherwise it returns
 .IR wc .
-.SH VERSIONS
-The
-.BR towupper_l ()
-function first appeared in glibc 2.3.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR towupper ()
 T}	Thread safety	MT-Safe locale
 T{
+.na
+.nh
 .BR towupper_l ()
 T}	Thread safety	MT-Safe
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
-.BR towupper ():
-C99, POSIX.1-2001 (XSI);
-present as an XSI extension in POSIX.1-2008, but marked obsolete.
-.PP
-.BR towupper_l ():
+.SH STANDARDS
+.TP
+.BR towupper ()
+C11, POSIX.1-2008 (XSI).
+.TP
+.BR towupper_l ()
 POSIX.1-2008.
+.SH HISTORY
+.TP
+.BR towupper ()
+C99, POSIX.1-2001 (XSI).
+Obsolete in POSIX.1-2008 (XSI).
+.TP
+.BR towupper_l ()
+POSIX.1-2008.
+glibc 2.3.
 .SH NOTES
 The behavior of these functions depends on the
 .B LC_CTYPE
 category of the locale.
-.PP
+.P
 These functions are not very appropriate for dealing with Unicode characters,
 because Unicode knows about three cases: upper, lower, and title case.
 .SH SEE ALSO

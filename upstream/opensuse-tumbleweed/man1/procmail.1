@@ -3,7 +3,7 @@
 .ds Rv \\$3
 .ds Dt \\$4
 ..
-.Id $Id: procmail.man,v 1.91 2001/08/27 08:44:04 guenther Exp $
+.Id $Id$
 .TH PROCMAIL 1 \*(Dt BuGless
 .rn SH Sh
 .de SH
@@ -169,7 +169,7 @@ will preset see the
 .BR procmailrc (5)
 man page.  If both \-p and \-m are specified, the
 list of preset environment variables shrinks to just: LOGNAME, HOME, SHELL,
-ORGMAIL and MAILDIR.
+USER_SHELL, ORGMAIL and MAILDIR.
 .TP
 .B \-t
 Make procmail fail softly, i.e., if procmail cannot deliver the mail to
@@ -308,9 +308,9 @@ be creating an endless mail loop.
 .SH FILES
 .TP 2.3i
 .B /etc/passwd
-to set the recipient's LOGNAME, HOME and SHELL variable defaults
+to set the recipient's LOGNAME, HOME and USER_SHELL variable defaults
 .TP
-.B /var/mail/$LOGNAME
+.B /var/spool/mail/$LOGNAME
 system mailbox; both the system mailbox and the immediate directory
 it is in will be created every time procmail starts and either one is
 not present
@@ -324,9 +324,9 @@ special privileges path for rcfiles
 .B $HOME/.procmailrc
 default rcfile
 .TP
-.B /var/mail/$LOGNAME.lock
+.B /var/spool/mail/$LOGNAME.lock
 lockfile for the system mailbox (not automatically used by procmail, unless
-$DEFAULT equals /var/mail/$LOGNAME and procmail is delivering to $DEFAULT)
+$DEFAULT equals /var/spool/mail/$LOGNAME and procmail is delivering to $DEFAULT)
 .TP
 .B /usr/sbin/sendmail
 default mail forwarder
@@ -435,11 +435,12 @@ The specified item's full path, when expanded, was longer than LINEBUF
 or didn't start with a file separator.
 .TP
 Excessive output quenched from "x"
-The program or filter "x" tried to produce too much output for the current
-LINEBUF, the rest was discarded and PROCMAIL_OVERFLOW has been set.
+The backquoted expression "x" tried to produce too much output for
+the current LINEBUF; the rest was discarded and PROCMAIL_OVERFLOW
+has been set.
 .TP
 Extraneous x ignored
-The action line or other flags on this recipe makes flag x meaningless.
+The action line or other flags on this recipe make x meaningless.
 .TP
 Failed forking "x"
 Process table is full (and NORESRETRY has been exhausted).
@@ -727,7 +728,7 @@ procmail will proceed as if explicit delivery mode was not in effect.
 If not in explicit delivery mode and
 should the uid procmail is running under, have no corresponding /etc/passwd
 entry, then HOME will default to /, LOGNAME will default to #uid,
-SHELL will default to /bin/sh, and ORGMAIL will default to
+USER_SHELL will default to /bin/sh, and ORGMAIL will default to
 /tmp/dead.letter.
 .PP
 When in explicit delivery mode, procmail will generate a leading `From '
@@ -742,7 +743,7 @@ world writable, and the directory it is contained in is not world
 writable.  The $HOME/.procmailrc file has the additional constraint of not
 being group-writable or in a group-writable directory.
 .PP
-If /var/mail/$LOGNAME is a bogus mailbox (i.e., does not belong to the
+If /var/spool/mail/$LOGNAME is a bogus mailbox (i.e., does not belong to the
 recipient, is unwritable, is a symbolic link or is a hard link), procmail will
 upon startup try to rename it into a file starting
 with `BOGUS.$LOGNAME.' and
@@ -752,7 +753,7 @@ will have
 .I no
 initial value, and hence will inhibit delivery without a proper rcfile.
 .PP
-If /var/mail/$LOGNAME already is a valid mailbox, but has got too loose
+If /var/spool/mail/$LOGNAME already is a valid mailbox, but has got too loose
 permissions on it, procmail will correct this.  To prevent procmail from doing
 this make sure the u+x bit is set.
 .PP
@@ -841,7 +842,7 @@ or whenever you start reading mail):
 .Sx 17
 #!/bin/sh
 
-ORGMAIL=/var/mail/$LOGNAME
+ORGMAIL=/var/spool/mail/$LOGNAME
 
 if cd $HOME &&
  test \-s $ORGMAIL &&
@@ -863,7 +864,7 @@ exit 0
 .SS "A sample small $HOME/.procmailrc:"
 .na
 .nf
-PATH=/usr/local/bin:/usr/bin:/bin
+PATH=/usr/local/bin:/bin:/usr/bin
 MAILDIR=$HOME/Mail      #you'd better make sure it exists
 DEFAULT=$MAILDIR/mbox   #completely optional
 LOGFILE=$MAILDIR/from   #recommended
@@ -884,7 +885,7 @@ man page.
 .Sh SOURCE
 This program is part of the
 .I procmail mail-processing-package
-(v3.22) available at http://www.procmail.org/ or
+(v3.24) available at http://www.procmail.org/ or
 ftp.procmail.org in
 .BR pub/procmail/ .
 .Sh MAILINGLIST
@@ -911,10 +912,6 @@ procmail-announce-request@procmail.org
 Stephen R. van den Berg
 .RS
 <srb@cuci.nl>
-.RE
-Philip A. Guenther
-.RS
-<guenther@sendmail.com>
 .RE
 .\".if n .pl -(\n(.tu-1i)
 .rm SH

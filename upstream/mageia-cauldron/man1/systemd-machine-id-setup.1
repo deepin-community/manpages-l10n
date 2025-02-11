@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-MACHINE\-ID\-SETUP" "1" "" "systemd 249" "systemd-machine-id-setup"
+.TH "SYSTEMD\-MACHINE\-ID\-SETUP" "1" "" "systemd 255" "systemd-machine-id-setup"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -37,7 +37,7 @@ If the tool is invoked without the
 \fB\-\-commit\fR
 switch,
 /etc/machine\-id
-is initialized with a valid, new machined ID if it is missing or empty\&. The new machine ID will be acquired in the following fashion:
+is initialized with a valid, new machine ID if it is missing or empty\&. The new machine ID will be acquired in the following fashion:
 .sp
 .RS 4
 .ie n \{\
@@ -105,6 +105,8 @@ Takes a directory path as argument\&. All paths operated on will be prefixed wit
 path, including the path for
 /etc/machine\-id
 itself\&.
+.sp
+Added in version 212\&.
 .RE
 .PP
 \fB\-\-image=\fR\fB\fIpath\fR\fR
@@ -112,6 +114,17 @@ itself\&.
 Takes a path to a device node or regular file as argument\&. This is similar to
 \fB\-\-root=\fR
 as described above, but operates on a disk image instead of a directory tree\&.
+.sp
+Added in version 249\&.
+.RE
+.PP
+\fB\-\-image\-policy=\fR\fB\fIpolicy\fR\fR
+.RS 4
+Takes an image policy string as argument, as per
+\fBsystemd.image-policy\fR(7)\&. The policy is enforced when operating on the disk image specified via
+\fB\-\-image=\fR, see above\&. If not specified defaults to the
+"*"
+policy, i\&.e\&. all recognized file systems in the image are used\&.
 .RE
 .PP
 \fB\-\-commit\fR
@@ -134,11 +147,15 @@ mount point in a race\-free manner to ensure that this file is always valid and 
 This command is primarily used by the
 \fBsystemd-machine-id-commit.service\fR(8)
 early boot service\&.
+.sp
+Added in version 227\&.
 .RE
 .PP
 \fB\-\-print\fR
 .RS 4
 Print the machine ID generated or committed after the operation is complete\&.
+.sp
+Added in version 231\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR

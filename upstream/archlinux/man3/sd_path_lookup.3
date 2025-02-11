@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_PATH_LOOKUP" "3" "" "systemd 249" "sd_path_lookup"
+.TH "SD_PATH_LOOKUP" "3" "" "systemd 257" "sd_path_lookup"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -58,6 +58,7 @@ enum {
 
         \fBSD_PATH_USER_CONFIGURATION\fR,
         \fBSD_PATH_USER_RUNTIME\fR,
+        \fBSD_PATH_USER_STATE_PRIVATE\fR,
         \fBSD_PATH_USER_STATE_CACHE\fR,
 
         \fBSD_PATH_USER\fR,
@@ -103,6 +104,11 @@ enum {
         \fBSD_PATH_CATALOG\fR,
 
         \fBSD_PATH_SYSTEMD_SEARCH_NETWORK\fR,
+
+        \fBSD_PATH_SYSTEMD_SYSTEM_ENVIRONMENT_GENERATOR\fR,
+        \fBSD_PATH_SYSTEMD_USER_ENVIRONMENT_GENERATOR\fR,
+        \fBSD_PATH_SYSTEMD_SEARCH_SYSTEM_ENVIRONMENT_GENERATOR\fR,
+        \fBSD_PATH_SYSTEMD_SEARCH_USER_ENVIRONMENT_GENERATOR\fR,
 };
 .fi
 .ft
@@ -164,12 +170,16 @@ Returned errors may indicate the following problems:
 .RS 4
 Unknown identifier
 \fItype\fR\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-EINVAL\fR
 .RS 4
 Output argument is
 \fBNULL\fR\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENXIO\fR
@@ -179,11 +189,15 @@ Query failed because of an undefined environment variable (e\&.g\&. for
 when
 \fI$XDG_RUNTIME_DIR\fR
 is not defined)\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOMEM\fR
 .RS 4
 Memory allocation failed\&.
+.sp
+Added in version 246\&.
 .RE
 .SH "EXAMPLES"
 .SS "Look up the location of ~/Documents"
@@ -192,14 +206,24 @@ Memory allocation failed\&.
 .RS 4
 .\}
 .nf
+/* SPDX\-License\-Identifier: MIT\-0 */
+
 #include <stdio\&.h>
-#include <sd\-path\&.h>
+#include <stdlib\&.h>
+#include <systemd/sd\-path\&.h>
 
 int main(void) {
+  int r;
   char *t;
 
-  sd_path_lookup(SD_PATH_USER_DOCUMENTS, NULL, &t);
+  r = sd_path_lookup(SD_PATH_USER_DOCUMENTS, NULL, &t);
+  if (r < 0)
+    return EXIT_FAILURE;
+
   printf("~/Documents: %s\en", t);
+  free(t);
+
+  return EXIT_SUCCESS;
 }
 .fi
 .if n \{\
@@ -214,12 +238,25 @@ or
 \fI$XDG_DOCUMENTS_DIR\fR\&.
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_path_lookup()\fR
+and
+\fBsd_path_lookup_strv()\fR
+were added in version 246\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd-path\fR(1)
+\fBsystemd\fR(1), \fBsd-path\fR(3), \fBsystemd-path\fR(1)
 .SH "NOTES"
 .IP " 1." 4
 XDG Base Directory Specification

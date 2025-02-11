@@ -3,10 +3,10 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "Pamcut User Manual" 0 "04 October 2019" "netpbm documentation"
+.TH "Pamcut User Manual" 0 "26 February 2024" "netpbm documentation"
 
 .SH NAME
-pamcut - cut a rectangle out of a PAM, PBM, PGM, or PPM image
+pamcut - select a rectangular region of a PAM, PBM, PGM, or PPM image
 
 .UN synopsis
 .SH SYNOPSIS
@@ -34,6 +34,8 @@ pamcut - cut a rectangle out of a PAM, PBM, PGM, or PPM image
 [\fB-croptop \fP\fInumrows\fP]
 
 [\fB-cropbottom \fP\fInumrows\fP]
+
+[\fB-reportonly\fP]
 
 [\fB-verbose\fP]
 
@@ -71,13 +73,14 @@ To specify the rectangle to keep, use \fB-left\fP, \fB-right\fP,
 \fB-top\fP, \fB-bottom\fP, \fB-width\fP, \fB-height\fP, and \fB-pad\fP
 options.
 .PP
-For example, \fB-left=50 -right=200\fP means to keep the 150 columns
+For example, \fB-left=50 -right=200\fP means to keep the 151 columns
 between Columns 50 and 200 inclusive.
 .PP
 You can code any mixture of the options.  What you don't specify defaults.
 Those defaults are in favor of minimal cutting and in favor of cutting the
-right and bottom edges off.  It is an error to overspecify, i.e. to specify
-all three of \fB-left\fP, \fB-right\fP, and \fB-width\fP or \fB-top\fP,
+right and bottom edges off and (with \fB-pad\fP) minimal padding and padding
+on the right and bottom.  It is an error to overspecify, i.e. to specify all
+three of \fB-left\fP, \fB-right\fP, and \fB-width\fP or \fB-top\fP,
 \fB-bottom\fP, and \fB-height\fP or \fBright\fP as well as
 \fB-cropright\fP.
 .PP
@@ -86,8 +89,8 @@ arguments.  Arguments were the only way available before July 2000, but you
 should not use them in new applications.  Options are easier to remember and
 read, more expressive, and allow you to use defaults.
 .PP
-If you use both options and arguments, the two specifications get
-mixed in an unspecified way.
+If you use both options and arguments, the two specifications get mixed in
+an unspecified way.
 .PP
 To use arguments, specify all four of the \fIleft\fP, \fItop\fP,
 \fIwidth\fP, and \fIheight\fP arguments.  \fIleft\fP and \fItop\fP have
@@ -200,6 +203,57 @@ the frame or against any edge and make the padding any color (the padding
 color is the color of the background image).
 
 .TP
+\fB-reportonly\fP
+  This causes \fBpamcut\fP to write to Standard Output a description of the
+  cutting it would have done instead of producing an output image.  See
+  
+.UR #reportonly
+below
+.UE
+\& for a description of this output and ways
+  to use it.
+.sp
+That description is one line of text, containing 8 decimal numbers of
+  pixels, separated by spaces:
+
+
+.IP \(bu
+column number of left cut
+.IP \(bu
+column number of right cut
+.IP \(bu
+row number of top cut
+.IP \(bu
+row number of bottom cut
+.IP \(bu
+width of input image
+.IP \(bu
+height of input image
+.IP \(bu
+width of output image
+.IP \(bu
+height of output image
+
+.sp
+The column number of the left cut is the column number in the input image
+of the leftmost column of the output image.  for the right cut, it is for
+the rightmost column of the output.  Top and bottom are analogous.
+.sp
+\fIThe column and row numbers can be negative\fP if you
+specified \fB-pad\fP and \fBpamcut\fP would have added padding.  Likewise,
+they can be beyond the right and bottom edge of the input image.
+.sp
+Example:
+.nf
+    
+      10 109 -1 98 150 80 100 100
+    
+
+.fi
+.sp
+This option was new in Netpbm 11.06 (March 2024).
+
+.TP
 \fB-verbose\fP
 Print information about the processing to Standard Error.
 
@@ -214,7 +268,7 @@ Print information about the processing to Standard Error.
 \&,
 .BR "pnmpad" (1)\c
 \&,
-.BR "pnmcat" (1)\c
+.BR "pamcat" (1)\c
 \&,
 .BR "pgmslice" (1)\c
 \&,

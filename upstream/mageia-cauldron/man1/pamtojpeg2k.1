@@ -3,7 +3,7 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "Pamtojpeg2k User Manual" 0 "31 January 2014" "netpbm documentation"
+.TH "Pamtojpeg2k User Manual" 0 "1 November 2022" "netpbm documentation"
 
 .SH NAME
 pamtojpeg2k - convert PAM/PNM image to a JPEG-2000 code stream
@@ -24,7 +24,8 @@ pamtojpeg2k - convert PAM/PNM image to a JPEG-2000 code stream
 [\fB-cblkheight=\fP\fIrows\fP]
 [\fB-mode=\fP{\fBinteger\fP|\fBint\fP|\fBreal\fP}]
 [\fB-compression=\fP\fIratio\fP]
-[\fB-ilyrrates=\fP\fIratestring\fP]
+[\fB-size=\fP\fIbytes\fP]
+[\fB-ilyrrates=\fP[\fIrealnumber\fP[,\fIrealnumber\fP, ...]]
 [\fB-numrlvls=\fP\fInumber\fP]
 [\fB-progression=\fP{\fBlrcp\fP|\fBrlcp\fP|\fBrpcl\fP|\fBpcrl\fP|\fBcprl\fP}]
 [\fB-numgbits=\fP\fInumber\fP]
@@ -164,7 +165,7 @@ for details.
 .TP
 \fB-mode=\fP{\fBinteger\fP|\fBint\fP|\fBreal\fP}
 .TP
-\fB-ilyrrates=\fP\fIratestring\fP
+\fB-ilyrrates=\fP[\fIrealnumber\fP[,\fIrealnumber\fP, ...]]
 .TP
 \fB-numrlvls=\fP\fInumber\fP
 .TP
@@ -190,6 +191,17 @@ for details.
 .TP
 \fB-resetprob\fP
 
+.PP
+\fB-ilyrrates\fP ('intermediate layer rates') lets you control
+  the compression at each layer.  The compressed image is arranged in layers,
+  so if you transmit it somewhere serially, enough information to make a low
+  quality image arrives soon, then later more information arrives to improve
+  the quality of the image, and so on until the entire image arrives.  The
+  value of this option is a list of ascending fractions, such as
+  '.1,.3,.5'.  Each fraction says the size of the layers up to and
+  including that layer should add up to that fraction of the size of the input
+  image.  If the size of the entire image is limited by \fB-compression\fP
+  or \fB-size\fP, none of these numbers may exceed that limit.
 
 .UN otheropts
 .SS Other Options
@@ -215,15 +227,36 @@ If you don't specify this option, \fBpamtojpeg2k\fP gives you the best
 compression it can without losing any quality.  Because of the metadata issue
 described above, this may mean, for a small image, the image actually expands.
 .sp
-Note that though the Jasper library takes a compression factor, this
-option specifies a compression ratio.  The compression factor is the
-multiplicative inverse of (1 divided by) the compression ratio.
+This option controls the 'rate' option of the Jasper library.
+Note that though the Jasper library takes a compression factor, this option
+specifies a compression ratio.  The compression factor is the multiplicative
+inverse of (1 divided by) the compression ratio.
+.sp
+You may not specify this with \fB-size\fP.
 .sp
 Before Netpbm 10.61 (December 2012), the default was a compression ratio
 of 1, and if \fBpamtojpeg2k\fP could not make the output that small, it just
 made it as small as it could, with zero quality.  You know this is happening
 when you see the warning message, "empty layer generated."
 
+.TP
+\fB-size=\fP\fIbytes\fP
+This option specifies the maximum size in bytes you want the output image
+to have.  This size is all-in, including headers and trailers and other
+metadata.  \fBpamtojpeg2k\fP will omit as much information as necessary to
+get under this limit.
+.sp
+It is possible to specify a value impossibly small, for example a value
+that doesn&apos;t even leave room for the image header.  If you do this, the
+program fails with an explanatory message.
+.sp
+This option controls the 'rate' option of the Jasper library.
+.sp
+You may not specify this with \fB-compression\fP.
+.sp
+This option was new in Netpbm 11.1 (December 2022).
+  
+  
 .TP
 \fB-verbose\fP
 This option causes \fBpamtojpeg2k\fP to issue informational messages about
@@ -244,6 +277,7 @@ This example compresses losslessly.
 
 .nf
   pamtojpeg2k myimg.ppm >myimg.jpc
+
 .fi
 
 \fBjpeg2ktopam\fP will recreate myimg.ppm exactly.
@@ -253,6 +287,7 @@ away information as necessary.
 
 .nf
   pamtojpeg2k -compression=10 myimg.pgm >myimg.jpc
+
 .fi
 
 

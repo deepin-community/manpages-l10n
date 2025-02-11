@@ -1,0 +1,159 @@
+'\" t
+.\" Copyright 2022 Alejandro Colomar <alx@kernel.org>
+.\"
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+.\"
+.TH stpncpy 3 2023-01-26 "Linux man-pages 6.03"
+.SH NAME
+stpncpy, strncpy
+\- zero a fixed-width buffer and
+copy a string into a character sequence with truncation
+and zero the rest of it
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
+.SH SYNOPSIS
+.nf
+.B #include <string.h>
+.PP
+.BI "char *stpncpy(char " dst "[restrict ." sz "], \
+const char *restrict " src ,
+.BI "               size_t " sz );
+.BI "char *strncpy(char " dst "[restrict ." sz "], \
+const char *restrict " src ,
+.BI "               size_t " sz );
+.fi
+.PP
+.RS -4
+Feature Test Macro Requirements for glibc (see
+.BR feature_test_macros (7)):
+.RE
+.PP
+.BR stpncpy ():
+.nf
+    Since glibc 2.10:
+        _POSIX_C_SOURCE >= 200809L
+    Before glibc 2.10:
+        _GNU_SOURCE
+.fi
+.SH DESCRIPTION
+These functions copy the string pointed to by
+.I src
+into a null-padded character sequence at the fixed-width buffer pointed to by
+.IR dst .
+If the destination buffer,
+limited by its size,
+isn't large enough to hold the copy,
+the resulting character sequence is truncated.
+For the difference between the two functions, see RETURN VALUE.
+.PP
+An implementation of these functions might be:
+.PP
+.in +4n
+.EX
+char *
+stpncpy(char *restrict dst, const char *restrict src, size_t sz)
+{
+    bzero(dst, sz);
+    return mempcpy(dst, src, strnlen(src, sz));
+}
+
+char *
+strncpy(char *restrict dst, const char *restrict src, size_t sz)
+{
+    stpncpy(dst, src, sz);
+    return dst;
+}
+.EE
+.in
+.SH RETURN VALUE
+.TP
+.BR stpncpy ()
+returns a pointer to
+one after the last character in the destination character sequence.
+.TP
+.BR strncpy ()
+returns
+.IR dst .
+.SH ATTRIBUTES
+For an explanation of the terms used in this section, see
+.BR attributes (7).
+.ad l
+.nh
+.TS
+allbox;
+lbx lb lb
+l l l.
+Interface	Attribute	Value
+T{
+.BR stpncpy (),
+.BR strncpy ()
+T}	Thread safety	MT-Safe
+.TE
+.hy
+.ad
+.sp 1
+.SH STANDARDS
+.TP
+.BR stpncpy ()
+POSIX.1-2008.
+.\" Before that, it was a GNU extension.
+.\" It first appeared in glibc 1.07 in 1993.
+.TP
+.BR strncpy ()
+POSIX.1-2001, POSIX.1-2008, C99, SVr4, 4.3BSD.
+.SH CAVEATS
+The name of these functions is confusing.
+These functions produce a null-padded character sequence,
+not a string (see
+.BR string_copying (7)).
+.PP
+It's impossible to distinguish truncation by the result of the call,
+from a character sequence that just fits the destination buffer;
+truncation should be detected by
+comparing the length of the input string
+with the size of the destination buffer.
+.PP
+If you're going to use this function in chained calls,
+it would be useful to develop a similar function that accepts
+a pointer to the end (one after the last element) of the destination buffer
+instead of its size.
+.SH EXAMPLES
+.\" SRC BEGIN (stpncpy.c)
+.EX
+#include <err.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int
+main(void)
+{
+    char    *p;
+    char    buf1[20];
+    char    buf2[20];
+    size_t  len;
+
+    if (sizeof(buf1) < strlen("Hello world!"))
+        warnx("stpncpy: truncating character sequence");
+    p = stpncpy(buf1, "Hello world!", sizeof(buf1));
+    len = p \- buf1;
+
+    printf("[len = %zu]: ", len);
+    printf("%.*s\en", (int) len, buf1);  // "Hello world!"
+
+    if (sizeof(buf2) < strlen("Hello world!"))
+        warnx("strncpy: truncating character sequence");
+    strncpy(buf2, "Hello world!", sizeof(buf2));
+    len = strnlen(buf2, sizeof(buf2));
+
+    printf("[len = %zu]: ", len);
+    printf("%.*s\en", (int) len, buf2);  // "Hello world!"
+
+    exit(EXIT_SUCCESS);
+}
+.EE
+.\" SRC END
+.SH SEE ALSO
+.BR wcpncpy (3),
+.BR string_copying (7)

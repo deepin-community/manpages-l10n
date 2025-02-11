@@ -1,0 +1,349 @@
+# Romanian translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>, 2023.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n 4.19.0\n"
+"POT-Creation-Date: 2024-12-06 18:14+0100\n"
+"PO-Revision-Date: 2023-09-09 23:55+0200\n"
+"Last-Translator: Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>\n"
+"Language-Team: Romanian <translation-team-ro@lists.sourceforge.net>\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2;\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#. type: TH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "sigreturn"
+msgstr "sigreturn"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-leap-16-0
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "2024-05-02"
+msgstr "2 mai 2024"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+#, no-wrap
+msgid "Linux man-pages 6.9.1"
+msgstr "Pagini de manual de Linux 6.9.1"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr "NUME"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"sigreturn, rt_sigreturn - return from signal handler and cleanup stack frame"
+msgstr ""
+"sigreturn, rt_sigreturn, rt_sigreturn - returnează de la gestionarul de "
+"semnal și curăță cadrul stivei"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "LIBRARY"
+msgstr "BIBLIOTECA"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "Standard C library (I<libc>, I<-lc>)"
+msgstr "Biblioteca C standard (I<libc>, I<-lc>)"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "SINOPSIS"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<int sigreturn(...);>\n"
+msgstr "B<int sigreturn(...);>\n"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "DESCRIERE"
+
+#.  See arch/x86/kernel/signal.c::__setup_frame() [in Linux 3.17 source code]
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If the Linux kernel determines that an unblocked signal is pending for a "
+"process, then, at the next transition back to user mode in that process "
+"(e.g., upon return from a system call or when the process is rescheduled "
+"onto the CPU), it creates a new frame on the user-space stack where it saves "
+"various pieces of process context (processor status word, registers, signal "
+"mask, and signal stack settings)."
+msgstr ""
+"Dacă nucleul Linux determină că un semnal deblocat este în așteptare pentru "
+"un semnal de proces, atunci, la următoarea tranziție înapoi la modul "
+"utilizator în acel proces (de ex. de exemplu, la revenirea de la un apel de "
+"sistem sau atunci când procesul este reprogramat pe CPU), acesta creează un "
+"nou cadru pe stiva din spațiul de utilizator în care salvează diferite "
+"elemente ale contextului procesului (cuvânt de stare al procesorului, "
+"registre, semnal mască și parametrii stivei de semnale)."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The kernel also arranges that, during the transition back to user mode, the "
+"signal handler is called, and that, upon return from the handler, control "
+"passes to a piece of user-space code commonly called the \"signal "
+"trampoline\".  The signal trampoline code in turn calls B<sigreturn>()."
+msgstr ""
+"De asemenea, nucleul face în așa fel încât, în timpul tranziției înapoi la "
+"modul utilizator, să fie apelat gestionarul de semnal și, la revenirea de la "
+"gestionarul de semnal, controlul să treacă la o bucată de cod din spațiul "
+"utilizatorului, numită în mod obișnuit „trambulina de semnal”.  La rândul "
+"său, codul de trambulină de semnal apelează B<sigreturn>()."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"This B<sigreturn>()  call undoes everything that was done\\[em]changing the "
+"process's signal mask, switching signal stacks (see B<sigaltstack>(2))\\"
+"[em]in order to invoke the signal handler.  Using the information that was "
+"earlier saved on the user-space stack B<sigreturn>()  restores the process's "
+"signal mask, switches stacks, and restores the process's context (processor "
+"flags and registers, including the stack pointer and instruction pointer), "
+"so that the process resumes execution at the point where it was interrupted "
+"by the signal."
+msgstr ""
+"Acest apel B<sigreturn>() anulează tot ceea ce s-a făcut\\[em]modificarea "
+"măștii de semnal a procesului, comutarea stivei de semnale (a se vedea "
+"B<sigaltstack>(2))\\[em]\\[em]pentru a invoca gestionarul de semnal.  "
+"Utilizând informațiile care au fost salvate anterior pe stiva din spațiul "
+"utilizatorului, B<sigreturn>() restabilește masca de semnal a procesului, "
+"schimbă stivele și restabilește contextul procesului (fanioanele și "
+"registrele procesorului, inclusiv indicatorul de stivă și indicatorul de "
+"instrucțiuni), astfel încât procesul își reia execuția în punctul în care a "
+"fost întrerupt de semnal."
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "RETURN VALUE"
+msgstr "VALOAREA RETURNATĂ"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<sigreturn>()  never returns."
+msgstr "B<sigreturn>() nu returnează niciodată."
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "VERSIONS"
+msgstr "VERSIUNI"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Many UNIX-type systems have a B<sigreturn>()  system call or near "
+"equivalent.  However, this call is not specified in POSIX, and details of "
+"its behavior vary across systems."
+msgstr ""
+"Multe sisteme de tip UNIX au un apel de sistem B<sigreturn>() sau aproape "
+"echivalent.  Cu toate acestea, acest apel nu este specificat în POSIX, iar "
+"detaliile privind comportamentul său variază de la un sistem la altul."
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "STANDARDS"
+msgstr "STANDARDE"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+msgid "None."
+msgstr "Niciunul."
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr "NOTE"
+
+#.  See sysdeps/unix/sysv/linux/sigreturn.c and
+#.  signal/sigreturn.c in the glibc source
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"B<sigreturn>()  exists only to allow the implementation of signal handlers.  "
+"It should B<never> be called directly.  (Indeed, a simple B<sigreturn>()  "
+"wrapper in the GNU C library simply returns -1, with I<errno> set to "
+"B<ENOSYS>.)  Details of the arguments (if any) passed to B<sigreturn>()  "
+"vary depending on the architecture.  (On some architectures, such as x86-64, "
+"B<sigreturn>()  takes no arguments, since all of the information that it "
+"requires is available in the stack frame that was previously created by the "
+"kernel on the user-space stack.)"
+msgstr ""
+"B<sigreturn>() există doar pentru a permite implementarea gestionarilor de "
+"semnal.  Nu ar trebui B<niciodată> să fie apelat direct.  (Într-adevăr, un "
+"simplu B<sigretreturn>() din biblioteca GNU C returnează pur și simplu -1, "
+"cu I<errno> configurată la B<ENOSYS>).  Detaliile privind argumentele (dacă "
+"există) transmise către B<sigretreturn>() variază în funcție de "
+"arhitectură.  (Pe unele arhitecturi, cum ar fi x86-64, B<sigretreturn>() nu "
+"acceptă niciun argument, deoarece toate informațiile de care are nevoie sunt "
+"disponibile în cadrul stivei care a fost creată anterior de către nucleu pe "
+"stiva din spațiul utilizatorului)."
+
+#.  See, for example, sysdeps/unix/sysv/linux/i386/sigaction.c and
+#.  sysdeps/unix/sysv/linux/x86_64/sigaction.c in the glibc (2.20) source.
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Once upon a time, UNIX systems placed the signal trampoline code onto the "
+"user stack.  Nowadays, pages of the user stack are protected so as to "
+"disallow code execution.  Thus, on contemporary Linux systems, depending on "
+"the architecture, the signal trampoline code lives either in the B<vdso>(7)  "
+"or in the C library.  In the latter case, the C library's B<sigaction>(2)  "
+"wrapper function informs the kernel of the location of the trampoline code "
+"by placing its address in the I<sa_restorer> field of the I<sigaction> "
+"structure, and sets the B<SA_RESTORER> flag in the I<sa_flags> field."
+msgstr ""
+"Mai demult, sistemele UNIX plasau codul de trambulină de semnal pe stiva "
+"utilizatorului.  În prezent, paginile din stiva utilizatorului sunt "
+"protejate astfel încât să nu permită executarea de cod.  Astfel, pe "
+"sistemele Linux contemporane, în funcție de arhitectură, codul de trambulină "
+"de semnal se află fie în B<vdso>(7), fie în biblioteca C.  În acest din urmă "
+"caz, funcția de învăluire B<sigaction>(2) a bibliotecii C informează nucleul "
+"cu privire la locația codului de trambulină prin plasarea adresei sale în "
+"câmpul I<sa_restorer> al structurii I<sigaction> și activează fanionul "
+"B<SA_RESTORER> în câmpul I<sa_flags>."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The saved process context information is placed in a I<ucontext_t> structure "
+"(see I<E<lt>sys/ucontext.hE<gt>>).  That structure is visible within the "
+"signal handler as the third argument of a handler established via "
+"B<sigaction>(2)  with the B<SA_SIGINFO> flag."
+msgstr ""
+"Informațiile salvate despre contextul procesului sunt plasate într-o "
+"structură I<ucontext_t> (a se vedea I<E<lt>sys/ucontext.hE<gt>>).  Această "
+"structură este vizibilă în cadrul gestionarului de semnal ca al treilea "
+"argument al unui gestionar stabilit prin B<sigaction>(2) cu fanionul "
+"B<SA_SIGINFO>."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"On some other UNIX systems, the operation of the signal trampoline differs a "
+"little.  In particular, on some systems, upon transitioning back to user "
+"mode, the kernel passes control to the trampoline (rather than the signal "
+"handler), and the trampoline code calls the signal handler (and then calls "
+"B<sigreturn>()  once the handler returns)."
+msgstr ""
+"Pe alte sisteme UNIX, funcționarea trambulinei de semnal diferă puțin.  În "
+"special, pe unele sisteme, la revenirea la modul utilizator, nucleul "
+"transmite controlul către trambulină (mai degrabă decât către gestionarul de "
+"semnal), iar codul trambulinei apelează gestionarul de semnal (și apoi "
+"apelează B<sigreturn>() odată ce gestionarul returnează)."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "C library/kernel differences"
+msgstr "Diferențe între biblioteca C și nucleu"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The original Linux system call was named B<sigreturn>().  However, with the "
+"addition of real-time signals in Linux 2.2, a new system call, "
+"B<rt_sigreturn>()  was added to support an enlarged I<sigset_t> type.  The "
+"GNU C library hides these details from us, transparently employing "
+"B<rt_sigreturn>()  when the kernel provides it."
+msgstr ""
+"Apelul de sistem original din Linux a fost numit B<sigreturn>().  Cu toate "
+"acestea, odată cu adăugarea semnalelor în timp real în Linux 2.2, a fost "
+"adăugat un nou apel de sistem, B<rt_sigreturn>(), pentru a suporta un tip "
+"I<sigset_t> extins.  Biblioteca GNU C ne ascunde aceste detalii, utilizând "
+"în mod transparent B<rt_sigreturn>() atunci când nucleul îl furnizează."
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "CONSULTAȚI ȘI"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"B<kill>(2), B<restart_syscall>(2), B<sigaltstack>(2), B<signal>(2), "
+"B<getcontext>(3), B<signal>(7), B<vdso>(7)"
+msgstr ""
+"B<kill>(2), B<restart_syscall>(2), B<sigaltstack>(2), B<signal>(2), "
+"B<getcontext>(3), B<signal>(7), B<vdso>(7)"
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "2023-02-05"
+msgstr "5 februarie 2023"
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "Linux man-pages 6.03"
+msgstr "Pagini de manual de Linux 6.03"
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "2023-10-31"
+msgstr "31 octombrie 2023"
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "Linux man-pages 6.06"
+msgstr "Pagini de manual de Linux 6.06"
+
+#. type: TH
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux man-pages (unreleased)"
+msgstr "Pagini de manual Linux (nepublicate)"

@@ -1,4 +1,4 @@
-.TH iptables-extensions 8 "" "iptables 1.8.7" "iptables 1.8.7"
+.TH iptables-extensions 8 "" "iptables 1.8.10" "iptables 1.8.10"
 .SH NAME
 iptables-extensions \(em list of extensions in the standard iptables distribution
 .SH SYNOPSIS
@@ -492,10 +492,10 @@ multiqueue NICs to spread network traffic on different queues.
 Example:
 .PP
 iptables \-t nat \-A PREROUTING \-p tcp \-\-dport 80 \-m cpu \-\-cpu 0 
-\-j REDIRECT \-\-to\-port 8080
+\-j REDIRECT \-\-to\-ports 8080
 .PP
 iptables \-t nat \-A PREROUTING \-p tcp \-\-dport 80 \-m cpu \-\-cpu 1 
-\-j REDIRECT \-\-to\-port 8081
+\-j REDIRECT \-\-to\-ports 8081
 .PP
 Available since Linux 2.6.36.
 .SS dccp
@@ -512,7 +512,7 @@ list of packet types.  Packet types are:
 [\fB!\fP] \fB\-\-dccp\-option\fP \fInumber\fP
 Match if DCCP option set.
 .SS devgroup
-Match device group of a packets incoming/outgoing interface.
+Match device group of a packet's incoming/outgoing interface.
 .TP
 [\fB!\fP] \fB\-\-src\-group\fP \fIname\fP
 Match device group of incoming device
@@ -909,7 +909,7 @@ nfacct get http\-traffic
 .PP
 You can obtain
 .B nfacct(8)
-from http://www.netfilter.org or, alternatively, from the git.netfilter.org
+from https://www.netfilter.org or, alternatively, from the git.netfilter.org
 repository.
 .SS osf
 The osf module does passive operating system fingerprinting. This module
@@ -1370,11 +1370,24 @@ This module matches Stream Control Transmission Protocol headers.
 The flag letter in upper case indicates that the flag is to match if set,
 in the lower case indicates to match if unset.
 
-Chunk types: DATA INIT INIT_ACK SACK HEARTBEAT HEARTBEAT_ACK ABORT SHUTDOWN SHUTDOWN_ACK ERROR COOKIE_ECHO COOKIE_ACK ECN_ECNE ECN_CWR SHUTDOWN_COMPLETE ASCONF ASCONF_ACK FORWARD_TSN
+Match types:
+.TP
+all
+Match if all given chunk types are present and flags match.
+.TP
+any
+Match if any of the given chunk types is present with given flags.
+.TP
+only
+Match if only the given chunk types are present with given flags and none are missing.
+
+Chunk types: DATA INIT INIT_ACK SACK HEARTBEAT HEARTBEAT_ACK ABORT SHUTDOWN SHUTDOWN_ACK ERROR COOKIE_ECHO COOKIE_ACK ECN_ECNE ECN_CWR SHUTDOWN_COMPLETE I_DATA RE_CONFIG PAD ASCONF ASCONF_ACK FORWARD_TSN I_FORWARD_TSN
 
 chunk type            available flags      
 .br
 DATA                  I U B E i u b e
+.br
+I_DATA                I U B E i u b e
 .br
 ABORT                 T t                 
 .br
@@ -1563,6 +1576,21 @@ iptables \-A INPUT \-p tcp \-\-dport 80 \-m string \-\-algo bm \-\-string 'GET /
 # The hex string pattern can be used for non-printable characters, like |0D 0A| or |0D0A|.
 .br
 iptables \-p udp \-\-dport 53 \-m string \-\-algo bm \-\-from 40 \-\-to 57 \-\-hex\-string '|03|www|09|netfilter|03|org|00|'
+.P
+Note: Since Boyer-Moore (BM) performs searches for matches from right to left and
+the kernel may store a packet in multiple discontiguous blocks, it's possible
+that a match could be spread over multiple blocks, in which case this algorithm
+won't find it.
+.P
+If you wish to ensure that such thing won't ever happen, use the
+Knuth-Pratt-Morris (KMP) algorithm instead.  In conclusion, choose the proper
+string search algorithm depending on your use-case.
+.P
+For example, if you're using the module for filtering, NIDS or any similar
+security-focused purpose, then choose KMP. On the other hand, if you really care
+about performance \(em for example, you're classifying packets to apply Quality
+of Service (QoS) policies \(em and you don't mind about missing possible matches
+spread over multiple fragments, then choose BM.
 .SS tcp
 These extensions can be used if `\-\-protocol tcp' is specified. It
 provides the following options:
@@ -2078,7 +2106,7 @@ should be modified (and all future packets in this connection will
 also be mangled), and rules should cease being examined.  It takes the
 following options:
 .TP
-\fB\-\-to\-destination\fP [\fIipaddr\fP[\fB\-\fP\fIipaddr\fP]][\fB:\fP\fIport\fP[\fB\-\fP\fIport\fP]]
+\fB\-\-to\-destination\fP [\fIipaddr\fP[\fB\-\fP\fIipaddr\fP]][\fB:\fP\fIport\fP[\fB\-\fP\fIport\fP[\fB/\fIbaseport\fP]]]
 which can specify a single new destination IP address, an inclusive
 range of IP addresses. Optionally a port range,
 if the rule also specifies one of the following protocols:
@@ -2086,17 +2114,14 @@ if the rule also specifies one of the following protocols:
 If no port range is specified, then the destination port will never be
 modified. If no IP address is specified then only the destination port
 will be modified.
-In Kernels up to 2.6.10 you can add several \-\-to\-destination options. For
-those kernels, if you specify more than one destination address, either via an
-address range or multiple \-\-to\-destination options, a simple round-robin (one
-after another in cycle) load balancing takes place between these addresses.
-Later Kernels (>= 2.6.11-rc1) don't have the ability to NAT to multiple ranges
-anymore.
+If \fBbaseport\fP is given, the difference of the original destination port and
+its value is used as offset into the mapping port range. This allows to create
+shifted portmap ranges and is available since kernel version 4.18.
+For a single port or \fIbaseport\fP, a service name as listed in
+\fB/etc/services\fP may be used.
 .TP
 \fB\-\-random\fP
-If option
-\fB\-\-random\fP
-is used then port mapping will be randomized (kernel >= 2.6.22).
+Randomize source port mapping (kernel >= 2.6.22).
 .TP
 \fB\-\-persistent\fP
 Gives a client the same source-/destination-address for each connection.
@@ -2317,6 +2342,9 @@ Log options from the IP/IPv6 packet header.
 .TP
 \fB\-\-log\-uid\fP
 Log the userid of the process which generated the packet.
+.TP
+\fB\-\-log\-macdecode\fP
+Log MAC addresses and protocol.
 .SS MARK
 This target is used to set the Netfilter mark value associated with the packet.
 It can, for example, be used in conjunction with routing based on fwmark (needs
@@ -2368,17 +2396,11 @@ if the rule also specifies one of the following protocols:
 \fBtcp\fP, \fBudp\fP, \fBdccp\fP or \fBsctp\fP.
 .TP
 \fB\-\-random\fP
-Randomize source port mapping
-If option
-\fB\-\-random\fP
-is used then port mapping will be randomized (kernel >= 2.6.21).
+Randomize source port mapping (kernel >= 2.6.21).
 Since kernel 5.0, \fB\-\-random\fP is identical to \fB\-\-random-fully\fP.
 .TP
 \fB\-\-random-fully\fP
-Full randomize source port mapping
-If option
-\fB\-\-random-fully\fP
-is used then port mapping will be fully randomized (kernel >= 3.13).
+Fully randomize source port mapping (kernel >= 3.13).
 .TP
 IPv6 support available since Linux kernels >= 3.7.
 .SS NETMAP
@@ -2447,6 +2469,8 @@ This specifies a range of queues to use. Packets are then balanced across the gi
 This is useful for multicore systems: start multiple instances of the userspace program on
 queues x, x+1, .. x+n and use "\-\-queue\-balance \fIx\fP\fB:\fP\fIx+n\fP".
 Packets belonging to the same connection are put into the same nfqueue.
+Due to implementation details, a lower range value of 0 limits the higher range
+value to 65534, i.e. one can only balance between at most 65535 queues.
 .PP
 .TP
 \fB\-\-queue\-bypass\fP
@@ -2496,11 +2520,10 @@ This specifies a destination port or range of ports to use: without
 this, the destination port is never altered.  This is only valid
 if the rule also specifies one of the following protocols:
 \fBtcp\fP, \fBudp\fP, \fBdccp\fP or \fBsctp\fP.
+For a single port, a service name as listed in \fB/etc/services\fP may be used.
 .TP
 \fB\-\-random\fP
-If option
-\fB\-\-random\fP
-is used then port mapping will be randomized (kernel >= 2.6.22).
+Randomize source port mapping (kernel >= 2.6.22).
 .TP
 IPv6 support available starting Linux kernels >= 3.7.
 .SS REJECT (IPv6-specific)
@@ -2689,22 +2712,12 @@ If no port range is specified, then source ports below 512 will be
 mapped to other ports below 512: those between 512 and 1023 inclusive
 will be mapped to ports below 1024, and other ports will be mapped to
 1024 or above. Where possible, no port alteration will occur.
-In Kernels up to 2.6.10, you can add several \-\-to\-source options. For those
-kernels, if you specify more than one source address, either via an address
-range or multiple \-\-to\-source options, a simple round-robin (one after another
-in cycle) takes place between these addresses.
-Later Kernels (>= 2.6.11-rc1) don't have the ability to NAT to multiple ranges
-anymore.
 .TP
 \fB\-\-random\fP
-If option
-\fB\-\-random\fP
-is used then port mapping will be randomized through a hash-based algorithm (kernel >= 2.6.21).
+Randomize source port mapping through a hash-based algorithm (kernel >= 2.6.21).
 .TP
 \fB\-\-random-fully\fP
-If option
-\fB\-\-random-fully\fP
-is used then port mapping will be fully randomized through a PRNG (kernel >= 3.14).
+Fully randomize source port mapping through a PRNG (kernel >= 3.14).
 .TP
 \fB\-\-persistent\fP
 Gives a client the same source-/destination-address for each connection.

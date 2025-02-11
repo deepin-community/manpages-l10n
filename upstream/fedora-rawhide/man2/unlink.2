@@ -2,27 +2,7 @@
 .\"             and Copyright (C) 1993 Ian Jackson
 .\"             and Copyright (C) 2006, 2014 Michael Kerrisk.
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" Modified 1993-07-24 by Rik Faith <faith@cs.unc.edu>
 .\" Modified 1996-09-08 by Arnt Gulbrandsen <agulbra@troll.no>
@@ -30,26 +10,29 @@
 .\" Modified 2001-05-17 by aeb
 .\" Modified 2004-06-23 by Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.TH UNLINK 2 2021-08-27 "Linux" "Linux Programmer's Manual"
+.TH unlink 2 2024-06-13 "Linux man-pages 6.9.1"
 .SH NAME
 unlink, unlinkat \- delete a name and possibly the file it refers to
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <unistd.h>
-.PP
+.P
 .BI "int unlink(const char *" pathname );
-.PP
+.P
 .BR "#include <fcntl.h>           " "/* Definition of " AT_* " constants */"
 .B #include <unistd.h>
-.PP
+.P
 .BI "int unlinkat(int " dirfd ", const char *" pathname ", int " flags );
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR unlinkat ():
 .nf
     Since glibc 2.10:
@@ -63,13 +46,13 @@ deletes a name from the filesystem.
 If that name was the
 last link to a file and no processes have the file open, the file is
 deleted and the space it was using is made available for reuse.
-.PP
+.P
 If the name was the last link to a file but any processes still have
 the file open, the file will remain in existence until the last file
 descriptor referring to it is closed.
-.PP
+.P
 If the name referred to a symbolic link, the link is removed.
-.PP
+.P
 If the name referred to a socket, FIFO, or device, the name for it is
 removed but processes which have the object open may continue to use
 it.
@@ -86,7 +69,7 @@ includes the
 .B AT_REMOVEDIR
 flag)
 except for the differences described here.
-.PP
+.P
 If the pathname given in
 .I pathname
 is relative, then it is interpreted relative to the directory
@@ -98,7 +81,7 @@ the calling process, as is done by
 and
 .BR rmdir (2)
 for a relative pathname).
-.PP
+.P
 If the pathname given in
 .I pathname
 is relative and
@@ -112,13 +95,13 @@ directory of the calling process (like
 .BR unlink ()
 and
 .BR rmdir (2)).
-.PP
+.P
 If the pathname given in
 .I pathname
 is absolute, then
 .I dirfd
 is ignored.
-.PP
+.P
 .I flags
 is a bit mask that can either be specified as 0, or by ORing
 together flag values that control the operation of
@@ -134,12 +117,12 @@ on
 .IR pathname .
 If the
 .B AT_REMOVEDIR
-flag is specified, then
+flag is specified, it
 performs the equivalent of
 .BR rmdir (2)
 on
 .IR pathname .
-.PP
+.P
 See
 .BR openat (2)
 for an explanation of the need for
@@ -161,7 +144,7 @@ did not allow search permission.
 (See also
 .BR path_resolution (7).)
 .TP
-.BR EBUSY
+.B EBUSY
 The file
 .I pathname
 cannot be unlinked because it is being used by the system
@@ -180,7 +163,7 @@ An I/O error occurred.
 .B EISDIR
 .I pathname
 refers to a directory.
-(This is the non-POSIX value returned by Linux since 2.1.132.)
+(This is the non-POSIX value returned since Linux 2.1.132.)
 .TP
 .B ELOOP
 Too many symbolic links were encountered in translating
@@ -230,12 +213,12 @@ capability).
 .B EPERM
 The file to be unlinked is marked immutable or append-only.
 (See
-.BR ioctl_iflags (2).)
+.BR FS_IOC_SETFLAGS (2const).)
 .TP
 .B EROFS
 .I pathname
 refers to a file on a read-only filesystem.
-.PP
+.P
 The same errors that occur for
 .BR unlink ()
 and
@@ -269,20 +252,20 @@ was not specified in
 is relative and
 .I dirfd
 is a file descriptor referring to a file other than a directory.
-.SH VERSIONS
-.BR unlinkat ()
-was added to Linux in kernel 2.6.16;
-library support was added to glibc in version 2.4.
-.SH CONFORMING TO
-.BR unlink ():
-SVr4, 4.3BSD, POSIX.1-2001, POSIX.1-2008.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+.TP
+.BR unlink ()
+SVr4, 4.3BSD, POSIX.1-2001.
 .\" SVr4 documents additional error
 .\" conditions EINTR, EMULTIHOP, ETXTBSY, ENOLINK.
-.PP
-.BR unlinkat ():
+.TP
+.BR unlinkat ()
 POSIX.1-2008.
-.SH NOTES
-.SS Glibc notes
+Linux 2.6.16,
+glibc 2.4.
+.SS glibc
 On older kernels where
 .BR unlinkat ()
 is unavailable, the glibc wrapper function falls back to the use of
@@ -293,9 +276,9 @@ When
 .I pathname
 is a relative pathname,
 glibc constructs a pathname based on the symbolic link in
-.IR /proc/self/fd
+.I /proc/self/fd
 that corresponds to the
-.IR dirfd
+.I dirfd
 argument.
 .SH BUGS
 Infelicities in the protocol underlying NFS can cause the unexpected
@@ -313,12 +296,3 @@ disappearance of files which are still being used.
 .BR remove (3),
 .BR path_resolution (7),
 .BR symlink (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

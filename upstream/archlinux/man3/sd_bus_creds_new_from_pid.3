@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_CREDS_NEW_FROM_PID" "3" "" "systemd 249" "sd_bus_creds_new_from_pid"
+.TH "SD_BUS_CREDS_NEW_FROM_PID" "3" "" "systemd 257" "sd_bus_creds_new_from_pid"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,7 +20,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-sd_bus_creds_new_from_pid, sd_bus_creds_get_mask, sd_bus_creds_get_augmented_mask, sd_bus_creds_ref, sd_bus_creds_unref, sd_bus_creds_unrefp \- Retrieve credentials object for the specified PID
+sd_bus_creds_new_from_pid, sd_bus_creds_new_from_pidfd, sd_bus_creds_get_mask, sd_bus_creds_get_augmented_mask, sd_bus_creds_ref, sd_bus_creds_unref, sd_bus_creds_unrefp \- Retrieve credentials object for the specified PID
 .SH "SYNOPSIS"
 .sp
 .ft B
@@ -30,6 +30,8 @@ sd_bus_creds_new_from_pid, sd_bus_creds_get_mask, sd_bus_creds_get_augmented_mas
 .ft
 .HP \w'int\ sd_bus_creds_new_from_pid('u
 .BI "int sd_bus_creds_new_from_pid(pid_t\ " "pid" ", uint64_t\ " "creds_mask" ", sd_bus_creds\ **" "ret" ");"
+.HP \w'int\ sd_bus_creds_new_from_pidfd('u
+.BI "int sd_bus_creds_new_from_pidfd(int\ " "pidfd" ", uint64_t\ " "creds_mask" ", sd_bus_creds\ **" "ret" ");"
 .HP \w'uint64_t\ sd_bus_creds_get_mask('u
 .BI "uint64_t sd_bus_creds_get_mask(sd_bus_creds\ *" "c" ");"
 .HP \w'uint64_t\ sd_bus_creds_get_augmented_mask('u
@@ -75,6 +77,7 @@ sd_bus_creds_new_from_pid, sd_bus_creds_get_mask, sd_bus_creds_get_augmented_mas
 \fBSD_BUS_CREDS_UNIQUE_NAME\fR,
 \fBSD_BUS_CREDS_WELL_KNOWN_NAMES\fR,
 \fBSD_BUS_CREDS_DESCRIPTION\fR,
+\fBSD_BUS_CREDS_PIDFD\fR,
 \fBSD_BUS_CREDS_AUGMENT\fR,
 \fB_SD_BUS_CREDS_ALL\fR
 .SH "DESCRIPTION"
@@ -88,6 +91,11 @@ pointer\&. Note that credential objects may also be created and retrieved via
 \fBsd_bus_get_owner_creds\fR(3)
 and
 \fBsd_bus_message_get_creds\fR(3)\&.
+.PP
+\fBsd_bus_creds_new_from_pidfd()\fR
+is identical to
+\fBsd_bus_creds_new_from_pid()\fR, but takes a PID file descriptor rather than a numeric PID as reference to the process\&. See
+\fBpidfd_open\fR(2)\&.
 .PP
 The information that will be stored is determined by
 \fIcreds_mask\fR\&. It may contain a subset of ORed constants
@@ -123,13 +131,16 @@ The information that will be stored is determined by
 \fBSD_BUS_CREDS_AUDIT_LOGIN_UID\fR,
 \fBSD_BUS_CREDS_TTY\fR,
 \fBSD_BUS_CREDS_UNIQUE_NAME\fR,
-\fBSD_BUS_CREDS_WELL_KNOWN_NAMES\fR, and
-\fBSD_BUS_CREDS_DESCRIPTION\fR\&. Use the special value
+\fBSD_BUS_CREDS_WELL_KNOWN_NAMES\fR,
+\fBSD_BUS_CREDS_DESCRIPTION\fR, and
+\fBSD_BUS_CREDS_PIDFD\fR\&. Use the special value
 \fB_SD_BUS_CREDS_ALL\fR
 to request all supported fields\&. The
 \fBSD_BUS_CREDS_AUGMENT\fR
 constant may not be ORed into the mask for invocations of
-\fBsd_bus_creds_new_from_pid()\fR\&.
+\fBsd_bus_creds_new_from_pid()\fR
+or
+\fBsd_bus_creds_new_from_pidfd()\fR\&.
 .PP
 Fields can be retrieved from the credentials object using
 \fBsd_bus_creds_get_pid\fR(3)
@@ -137,14 +148,18 @@ and other functions which correspond directly to the constants listed above\&.
 .PP
 A mask of fields which were actually successfully retrieved can be retrieved with
 \fBsd_bus_creds_get_mask()\fR\&. If the credentials object was created with
-\fBsd_bus_creds_new_from_pid()\fR, this will be a subset of fields requested in
+\fBsd_bus_creds_new_from_pid()\fR
+or
+\fBsd_bus_creds_new_from_pidfd()\fR, this will be a subset of fields requested in
 \fIcreds_mask\fR\&.
 .PP
 Similar to
 \fBsd_bus_creds_get_mask()\fR, the function
 \fBsd_bus_creds_get_augmented_mask()\fR
 returns a bitmask of field constants\&. The mask indicates which credential fields have been retrieved in a non\-atomic fashion\&. For credential objects created via
-\fBsd_bus_creds_new_from_pid()\fR, this mask will be identical to the mask returned by
+\fBsd_bus_creds_new_from_pid()\fR
+or
+\fBsd_bus_creds_new_from_pidfd()\fR, this mask will be identical to the mask returned by
 \fBsd_bus_creds_get_mask()\fR\&. However, for credential objects retrieved via
 \fBsd_bus_get_name_creds()\fR, this mask will be set for the credential fields that could not be determined atomically at peer connection time, and which were later added by reading augmenting credential data from
 /proc/\&. Similarly, for credential objects retrieved via
@@ -189,7 +204,9 @@ execute no operation if the passed in bus credentials object is
 .PP
 On success,
 \fBsd_bus_creds_new_from_pid()\fR
-returns 0 or a positive integer\&. On failure, it returns a negative errno\-style error code\&.
+and
+\fBsd_bus_creds_new_from_pidfd()\fR
+return 0 or a positive integer\&. On failure, they return a negative errno\-style error code\&.
 .PP
 \fBsd_bus_creds_get_mask()\fR
 returns the mask of successfully acquired fields\&.
@@ -206,9 +223,11 @@ always returns
 \fBNULL\fR\&.
 .SH "REFERENCE OWNERSHIP"
 .PP
-Function
+The functions
 \fBsd_bus_creds_new_from_pid()\fR
-creates a new object and the caller owns the sole reference\&. When not needed anymore, this reference should be destroyed with
+and
+\fBsd_bus_creds_new_from_pidfd()\fR
+create a new object and the caller owns the sole reference\&. When not needed anymore, this reference should be destroyed with
 \fBsd_bus_creds_unref\fR(3)\&.
 .SS "Errors"
 .PP
@@ -238,17 +257,33 @@ One of the requested fields is unknown to the local system\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_creds_new_from_pid()\fR,
+\fBsd_bus_creds_get_mask()\fR,
+\fBsd_bus_creds_ref()\fR,
+\fBsd_bus_creds_unref()\fR, and
+\fBsd_bus_creds_get_augmented_mask()\fR
+were added in version 221\&.
+.PP
+\fBsd_bus_creds_unrefp()\fR
+was added in version 229\&.
+.PP
+\fBsd_bus_creds_new_from_pidfd()\fR
+was added in version 256\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-bus\fR(3),
-\fBsd_bus_creds_get_pid\fR(3),
-\fBsd_bus_get_name_creds\fR(3),
-\fBsd_bus_get_owner_creds\fR(3),
-\fBsd_bus_message_get_creds\fR(3)
+\fBsystemd\fR(1), \fBsd-bus\fR(3), \fBsd_bus_creds_get_pid\fR(3), \fBsd_bus_get_name_creds\fR(3), \fBsd_bus_get_owner_creds\fR(3), \fBsd_bus_message_get_creds\fR(3)
 .SH "NOTES"
 .IP " 1." 4
 Clean-up Variable Attribute

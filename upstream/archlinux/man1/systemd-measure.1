@@ -1,0 +1,467 @@
+'\" t
+.TH "SYSTEMD\-MEASURE" "1" "" "systemd 257" "systemd-measure"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-measure \- Pre\-calculate and sign expected TPM2 PCR 11 values for booted unified kernel images
+.SH "SYNOPSIS"
+.HP \w'\fB/usr/lib/systemd/systemd\-measure\fR\ 'u
+\fB/usr/lib/systemd/systemd\-measure\fR [OPTIONS...]
+.SH "DESCRIPTION"
+.PP
+Note: this command is experimental for now\&. While it is likely to become a regular component of systemd, it might still change in behaviour and interface\&.
+.PP
+\fBsystemd\-measure\fR
+is a tool that may be used to pre\-calculate and sign the expected TPM2 PCR 11 values that should be seen when a Linux
+\m[blue]\fBUnified Kernel Image (UKI)\fR\m[]\&\s-2\u[1]\d\s+2
+based on
+\fBsystemd-stub\fR(7)
+is booted up\&. It accepts paths to the ELF kernel image file, initrd image file, devicetree file, kernel command line file,
+\fBos-release\fR(5)
+file, boot splash file, and TPM2 PCR PEM public key file that make up the unified kernel image, and determines the PCR values expected to be in place after booting the image\&. Calculation starts with a zero\-initialized PCR 11, and is executed in a fashion compatible with what
+systemd\-stub
+does at boot\&. The result may optionally be signed cryptographically, to allow TPM2 policies that can only be unlocked if a certain set of kernels is booted, for which such a PCR signature can be provided\&.
+.PP
+It usually doesn\*(Aqt make sense to call this tool directly when constructing a UKI\&. Instead,
+\fBukify\fR(1)
+should be used; it will invoke
+\fBsystemd\-measure\fR
+and take care of embedding the resulting measurements into the UKI\&.
+.SH "COMMANDS"
+.PP
+The following commands are understood:
+.PP
+\fBstatus\fR
+.RS 4
+This is the default command if none is specified\&. This queries the local system\*(Aqs TPM2 PCR 11 values and displays them\&. The data is written in a similar format as the
+\fBcalculate\fR
+command below, and may be used to quickly compare expectation with reality\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+\fBcalculate\fR
+.RS 4
+Pre\-calculate the expected values seen in PCR register 11 after boot\-up of a unified kernel image consisting of the components specified with
+\fB\-\-linux=\fR,
+\fB\-\-osrel=\fR,
+\fB\-\-cmdline=\fR,
+\fB\-\-initrd=\fR,
+\fB\-\-ucode=\fR,
+\fB\-\-splash=\fR,
+\fB\-\-dtb=\fR,
+\fB\-\-uname=\fR,
+\fB\-\-sbat=\fR,
+\fB\-\-pcrpkey=\fR,
+\fB\-\-profile=\fR,
+\fB\-\-dtbauto=\fR,
+\fB\-\-hwids=\fR, see below\&. Only
+\fB\-\-linux=\fR
+is mandatory\&. (Alternatively, specify
+\fB\-\-current\fR
+to use the current values of PCR register 11 instead\&.)
+.sp
+Added in version 252\&.
+.RE
+.PP
+\fBsign\fR
+.RS 4
+As with the
+\fBcalculate\fR
+command, pre\-calculate the expected value seen in TPM2 PCR register 11 after boot\-up of a unified kernel image\&. Then, cryptographically sign the resulting values with the private/public key pair (RSA) configured via
+\fB\-\-private\-key=\fR
+and
+\fB\-\-public\-key=\fR\&. This will write a JSON object to standard output that contains signatures for all specified PCR banks (see the
+\fB\-\-bank=\fR
+option below), which may be used to unlock encrypted credentials (see
+\fBsystemd-creds\fR(1)) or LUKS volumes (see
+\fBsystemd-cryptsetup@.service\fR(8))\&. This allows binding secrets to a set of kernels for which such PCR 11 signatures can be provided\&.
+.sp
+Note that a TPM2 device must be available for this signing to take place, even though the result is not tied to any TPM2 device or its state\&.
+.sp
+Added in version 252\&.
+.RE
+.SH "OPTIONS"
+.PP
+The following options are understood:
+.PP
+\fB\-\-linux=\fR\fB\fIPATH\fR\fR, \fB\-\-osrel=\fR\fB\fIPATH\fR\fR, \fB\-\-cmdline=\fR\fB\fIPATH\fR\fR, \fB\-\-initrd=\fR\fB\fIPATH\fR\fR, \fB\-\-ucode=\fR\fB\fIPATH\fR\fR, \fB\-\-splash=\fR\fB\fIPATH\fR\fR, \fB\-\-dtb=\fR\fB\fIPATH\fR\fR, \fB\-\-uname=\fR\fB\fIPATH\fR\fR, \fB\-\-sbat=\fR\fB\fIPATH\fR\fR, \fB\-\-pcrpkey=\fR\fB\fIPATH\fR\fR, \fB\-\-profile=\fR\fB\fIPATH\fR\fR, \fB\-\-dtbauto=\fR\fB\fIPATH\fR\fR, \fB\-\-hwids=\fR\fB\fIPATH\fR\fR
+.RS 4
+When used with the
+\fBcalculate\fR
+or
+\fBsign\fR
+verb, configures the files to read the unified kernel image components from\&. Each option corresponds with the equally named section in the unified kernel PE file\&. The
+\fB\-\-linux=\fR
+switch expects the path to the ELF kernel file that the unified PE kernel will wrap\&. All switches except
+\fB\-\-linux=\fR
+are optional\&. Each option may be used at most once\&.
+.sp
+Added in version 252\&.
+.sp
+With the exception of
+\fB\-\-profile=\fR,
+\fB\-\-dtbauto=\fR
+and
+\fB\-\-hwids=\fR, which have been added in version 257\&.
+.RE
+.PP
+\fB\-\-current\fR
+.RS 4
+When used with the
+\fBcalculate\fR
+or
+\fBsign\fR
+verb, takes the PCR 11 values currently in effect for the system (which should typically reflect the hashes of the currently booted kernel)\&. This can be used in place of
+\fB\-\-linux=\fR
+and the other switches listed above\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+\fB\-\-bank=\fR\fB\fIDIGEST\fR\fR
+.RS 4
+Controls the PCR banks to pre\-calculate the PCR values for \(en in case
+\fBcalculate\fR
+or
+\fBsign\fR
+is invoked \(en, or the banks to show in the
+\fBstatus\fR
+output\&. May be used more then once to specify multiple banks\&. If not specified, defaults to the four banks
+"sha1",
+"sha256",
+"sha384",
+"sha512"\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+\fB\-\-private\-key=\fR\fB\fIPATH\fR\fR, \fB\-\-public\-key=\fR\fB\fIPATH\fR\fR, \fB\-\-certificate=\fR\fB\fIPATH\fR\fR
+.RS 4
+These switches take paths to a pair of PEM encoded RSA key files, for use with the
+\fBsign\fR
+command\&.
+.sp
+Note the difference between the
+\fB\-\-pcrpkey=\fR
+and
+\fB\-\-public\-key=\fR
+switches\&. The former selects the data to include in the
+"\&.pcrpkey"
+PE section of the unified kernel image, the latter picks the public key of the key pair used to sign the resulting PCR 11 values\&. The former is the key that the booted system will likely use to lock disk and credential encryption to, the latter is the key used for unlocking such resources again\&. Hence, typically the same PEM key should be supplied in both cases\&.
+.sp
+If the
+\fB\-\-public\-key=\fR
+is not specified but
+\fB\-\-private\-key=\fR
+is specified the public key is automatically derived from the private key\&.
+.sp
+\fB\-\-certificate=\fR
+can be used to specify an X\&.509 certificate as an alternative to
+\fB\-\-public\-key=\fR
+since v256\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+\fB\-\-private\-key=\fR\fB\fIPATH/URI\fR\fR, \fB\-\-private\-key\-source=\fR\fB\fITYPE\fR\fR\fB[:\fR\fB\fINAME\fR\fR\fB]\fR, \fB\-\-certificate=\fR\fB\fIPATH/URI\fR\fR, \fB\-\-certificate\-source=\fR\fB\fITYPE\fR\fR\fB[:\fR\fB\fINAME\fR\fR\fB]\fR
+.RS 4
+As an alternative to
+\fB\-\-public\-key=\fR
+for the
+\fBsign\fR
+command, these switches can be used to sign with an hardware token\&. The private key option can take a path or a URI that will be passed to the OpenSSL engine or provider, as specified by
+\fB\-\-private\-key\-source=\fR
+as a type:name tuple, such as engine:pkcs11\&. The specified OpenSSL signing engine or provider will be used to sign\&.
+.sp
+The
+\fB\-\-certificate=\fR
+option also takes a path or a URI that will be passed to the OpenSSL provider, as specified by
+\fB\-\-certificate\-source=\fR
+as a
+"type:name"
+tuple, such as
+"provider:pkcs11"\&. Note that unlike
+\fB\-\-private\-key\-source=\fR
+this option only supports providers and not engines\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fB\-\-tpm2\-device=\fR\fB\fIPATH\fR\fR
+.RS 4
+Controls which TPM2 device to use\&. Expects a device node path referring to the TPM2 chip (e\&.g\&.
+/dev/tpmrm0)\&. Alternatively the special value
+"auto"
+may be specified, in order to automatically determine the device node of a suitable TPM2 device (of which there must be exactly one)\&. The special value
+"list"
+may be used to enumerate all suitable TPM2 devices currently discovered\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+\fB\-\-phase=\fR\fB\fIPHASE\fR\fR
+.RS 4
+Controls which boot phases to calculate expected PCR 11 values for\&. This takes a series of colon\-separated strings that encode boot "paths" for entering a specific phase of the boot process\&. Each of the specified strings is measured by the
+systemd\-pcrphase\-initrd\&.service,
+systemd\-pcrphase\-sysinit\&.service, and
+\fBsystemd-pcrphase.service\fR(8)
+into PCR 11 during different milestones of the boot process\&. This switch may be specified multiple times to calculate PCR values for multiple boot phases at once\&. If not used defaults to
+"enter\-initrd",
+"enter\-initrd:leave\-initrd",
+"enter\-initrd:leave\-initrd:sysinit",
+"enter\-initrd:leave\-initrd:sysinit:ready", i\&.e\&. calculates expected PCR values for the boot phase in the initrd, during early boot, during later boot, and during system runtime, but excluding the phases before the initrd or when shutting down\&. This setting is honoured both by
+\fBcalculate\fR
+and
+\fBsign\fR\&. When used with the latter it\*(Aqs particularly useful for generating PCR signatures that can only be used for unlocking resources during specific parts of the boot process\&.
+.sp
+For further details about PCR boot phases, see
+\fBsystemd-pcrphase.service\fR(8)\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+\fB\-\-append=\fR\fB\fIPATH\fR\fR
+.RS 4
+When generating a PCR JSON signature (via the
+\fBsign\fR
+command), combine it with a previously generated PCR JSON signature, and output it as one\&. The specified path must refer to a regular file that contains a valid JSON PCR signature object\&. The specified file is not modified\&. It will be read first, then the newly generated signature appended to it, and the resulting object is written to standard output\&. Use this to generate a single JSON object consisting from signatures made with a number of signing keys (for example, to have one key per boot phase)\&. The command will suppress duplicates: if a specific signature is already included in a JSON signature object it is not added a second time\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fB\-\-json=\fR\fB\fIMODE\fR\fR
+.RS 4
+Shows output formatted as JSON\&. Expects one of
+"short"
+(for the shortest possible output without any redundant whitespace or line breaks),
+"pretty"
+(for a pretty version of the same, with indentation and line breaks) or
+"off"
+(to turn off JSON output, the default)\&.
+.RE
+.PP
+\fB\-\-no\-pager\fR
+.RS 4
+Do not pipe output into a pager\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Generate a unified kernel image, and calculate the expected TPM PCR 11 value\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ ukify build \e
+     \-\-linux=vmlinux \e
+     \-\-initrd=initrd\&.cpio \e
+     \-\-os\-release=@os\-release\&.txt \e
+     \-\-cmdline=@cmdline\&.txt \e
+     \-\-splash=splash\&.bmp \e
+     \-\-devicetree=devicetree\&.dtb \e
+     \-\-measure \e
+     \-\-output=vmlinux\&.efi
+11:sha1=d775a7b4482450ac77e03ee19bda90bd792d6ec7
+11:sha256=bc6170f9ce28eb051ab465cd62be8cf63985276766cf9faf527ffefb66f45651
+11:sha384=1cf67dff4757e61e5\&.\&.\&.7f49ad720be02fd07263e1f93061243aec599d1ee4b4
+11:sha512=8e79acd3ddbbc8282\&.\&.\&.0c3e8ec0c714821032038f525f744960bcd082d937da
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBukify\fR(1)
+internally calls
+\fBsystemd\-measure\fR\&. The output with hashes is from
+\fBsystemd\-measure\fR\&.
+.PP
+\fBExample\ \&2.\ \&Generate a private/public key pair, a unified kernel image, and a TPM PCR 11 signature for it, and embed the signature and the public key in the image\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ openssl genpkey \-algorithm RSA \-pkeyopt rsa_keygen_bits:2048 \-out tpm2\-pcr\-private\-key\&.pem
+\&.\&.+\&.+++++++++\&.\&.\&.\&.\&.\&.+\&.\&.\&.\&.\&.\&.\&.\&.\&.+\&.\&.\&.\&.\&.\&.+\&.\&.\&.\&.\&.\&.\&.+\&.\&.\&.\&.+\&.\&.\&.\&.\&.+\&.+\&.\&.\&.+\&.\&.\&.\&.\&.\&.\&.\&.\&.\&.
+$ openssl rsa \-pubout \-in tpm2\-pcr\-private\-key\&.pem \-out tpm2\-pcr\-public\-key\&.pem
+$ systemd\-measure sign \e
+     \-\-linux=vmlinux \e
+     \-\-osrel=os\-release\&.txt \e
+     \-\-cmdline=cmdline\&.txt \e
+     \-\-initrd=initrd\&.cpio \e
+     \-\-splash=splash\&.bmp \e
+     \-\-dtb=devicetree\&.dtb \e
+     \-\-pcrpkey=tpm2\-pcr\-public\-key\&.pem \e
+     \-\-bank=sha1 \e
+     \-\-bank=sha256 \e
+     \-\-private\-key=tpm2\-pcr\-private\-key\&.pem \e
+     \-\-public\-key=tpm2\-pcr\-public\-key\&.pem >tpm2\-pcr\-signature\&.json
+$ ukify build \e
+     \-\-linux=vmlinux \e
+     \-\-initrd=initrd\&.cpio \e
+     \-\-os\-release=@os\-release\&.txt \e
+     \-\-cmdline=@cmdline\&.txt \e
+     \-\-splash=splash\&.bmp \e
+     \-\-devicetree=devicetree\&.dtb \e
+     \-\-pcr\-private\-key=tpm2\-pcr\-private\-key\&.pem \e
+     \-\-pcr\-public\-key=tpm2\-pcr\-public\-key\&.pem \e
+     \-\-pcr\-banks=sha1,sha256 \e
+     \-\-output=vmlinuz\&.efi
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Later on, enroll the signed PCR policy on a LUKS volume:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# systemd\-cryptenroll \-\-tpm2\-device=auto \e
+     \-\-tpm2\-public\-key=tpm2\-pcr\-public\-key\&.pem \e
+     \-\-tpm2\-signature=tpm2\-pcr\-signature\&.json \e
+     /dev/sda5
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+And then unlock the device with the signature:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# systemd\-cryptsetup attach \e
+     volume5 /dev/sda5 \- \e
+     tpm2\-device=auto,tpm2\-signature=/path/to/tpm2\-pcr\-signature\&.json
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Note that when the generated unified kernel image
+vmlinux\&.efi
+is booted, the signature and public key files will be placed at locations
+\fBsystemd\-cryptenroll\fR
+and
+\fBsystemd\-cryptsetup\fR
+will look for anyway, and thus these paths do not actually need to be specified\&.
+.PP
+\fBExample\ \&3.\ \&Introduce a second public key, signing the same kernel PCR measurements, but only for the initrd boot phase\fR
+.PP
+This example extends the previous one, but we now introduce a second signing key that is only used to sign PCR policies restricted to the initrd boot phase\&. This can be used to lock down root volumes in a way that they can only be unlocked before the transition to the host system\&. Thus we have two classes of secrets or credentials: one that can be unlocked during the entire runtime, and the other that can only be used in the initrd\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ openssl genpkey \-algorithm RSA \-pkeyopt rsa_keygen_bits:2048 \-out tpm2\-pcr\-private\-key\&.pem
+\&.+\&.\&.\&.\&.\&.\&.\&.\&.+\&.+\&.\&.\&.\&.\&.\&.\&.\&.+\&.\&.\&.\&.\&.\&.\&.+\&.\&.\&.+\&.\&.\&.+\&.\&.\&.\&.\&.\&.\&.\&.+\&.\&.\&.\&.+\&.\&.\&.\&.\&.\&.+\&.\&.+\&.\&.\&.\&.\&.\&.\&.\&.\&.\&.
+$ openssl rsa \-pubout \-in tpm2\-pcr\-private\-key\&.pem \-out tpm2\-pcr\-public\-key\&.pem
+$ openssl genpkey \-algorithm RSA \-pkeyopt rsa_keygen_bits:2048 \-out tpm2\-pcr\-private\-key\-initrd\&.pem
+\&.\&.+\&.\&.\&.\&.\&.\&.\&.++\&.\&.\&.\&.\&.\&.\&.\&.+\&.\&.\&.\&.\&.\&.\&.\&.+\&.\&.\&.\&.\&.\&.+\&.\&.\&.\&.\&.\&.\&.\&.+\&.\&.\&.\&.+\&.\&.\&.\&.\&.+\&.+\&.\&.+\&.\&.\&.\&.\&.\&.\&.\&.\&.\&.
+$ openssl rsa \-pubout \-in tpm2\-pcr\-private\-key\-initrd\&.pem \-out tpm2\-pcr\-public\-key\-initrd\&.pem
+$ ukify build \e
+     \-\-linux=vmlinux\-1\&.2\&.3 \e
+     \-\-initrd=initrd\&.cpio \e
+     \-\-os\-release=@os\-release\&.txt \e
+     \-\-cmdline=@cmdline\&.txt \e
+     \-\-splash=splash\&.bmp \e
+     \-\-devicetree=devicetree\&.dtb \e
+     \-\-pcr\-private\-key=tpm2\-pcr\-private\-key\&.pem \e
+     \-\-pcr\-public\-key=tpm2\-pcr\-public\-key\&.pem \e
+     \-\-phases=enter\-initrd,enter\-initrd:leave\-initrd,enter\-initrd:leave\-initrd:sysinit,enter\-initrd:leave\-initrd:sysinit:ready \e
+     \-\-pcr\-banks=sha1,sha256 \e
+     \-\-pcr\-private\-key=tpm2\-pcr\-private\-key\-initrd\&.pem \e
+     \-\-pcr\-public\-key=tpm2\-pcr\-public\-key\-initrd\&.pem \e
+     \-\-phases=enter\-initrd \e
+     \-\-uname=1\&.2\&.3 \e
+     \-\-output=vmlinux\-1\&.2\&.3\&.efi
++ /usr/lib/systemd/systemd\-measure sign \-\-linux=vmlinux\-1\&.2\&.3 \e
+\-\-osrel=os\-release\&.txt \-\-cmdline=cmdline\&.txt \-\-dtb=devicetree\&.dtb \e
+\-\-splash=splash\&.bmp \-\-initrd=initrd\&.cpio \-\-bank=sha1 \-\-bank=sha256 \e
+\-\-private\-key=tpm2\-pcr\-private\-key\&.pem \-\-public\-key=tpm2\-pcr\-public\-key\&.pem \e
+\-\-phase=enter\-initrd \-\-phase=enter\-initrd:leave\-initrd \e
+\-\-phase=enter\-initrd:leave\-initrd:sysinit \e
+\-\-phase=enter\-initrd:leave\-initrd:sysinit:ready
++ /usr/lib/systemd/systemd\-measure sign \-\-linux=vmlinux\-1\&.2\&.3 \e
+\-\-osrel=os\-release\&.txt \-\-cmdline=cmdline\&.txt \-\-dtb=devicetree\&.dtb \e
+\-\-splash=splash\&.bmp \-\-initrd=initrd\&.cpio \-\-bank=sha1 \-\-bank=sha256 \e
+\-\-private\-key=tpm2\-pcr\-private\-key\-initrd\&.pem \e
+\-\-public\-key=tpm2\-pcr\-public\-key\-initrd\&.pem \e
+\-\-phase=enter\-initrd
+Wrote unsigned vmlinux\-1\&.2\&.3\&.efi
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBukify\fR
+prints out both invocations of
+\fBsystemd\-measure\fR
+as informative output (the lines starting with
+"+"); this allows us to see how
+\fBsystemd\-measure\fR
+is called\&. It then merges the output of both invocations into the
+"\&.pcrsig"
+section\&.
+\fBsystemd\-measure\fR
+may also do this merge itself using the
+\fB\-\-append=\fR
+option\&.
+.PP
+Note that in this example the
+"\&.pcrpkey"
+PE section contains the key specified by the first
+\fB\-\-pcr\-private\-key=\fR
+option, covering all boot phases\&. The
+"\&.pcrpkey"
+section is used in the default policies of
+\fBsystemd\-cryptenroll\fR
+and
+\fBsystemd\-creds\fR\&. To use the stricter policy bound to
+tpm2\-pcr\-public\-key\-initrd\&.pem, specify
+\fB\-\-tpm2\-public\-key=\fR
+on the command line of those tools\&.
+.SH "EXIT STATUS"
+.PP
+On success, 0 is returned, a non\-zero failure code otherwise\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1), \fBsystemd-stub\fR(7), \fBukify\fR(1), \fBsystemd-creds\fR(1), \fBsystemd-cryptsetup@.service\fR(8), \fBsystemd-pcrphase.service\fR(8)
+.SH "NOTES"
+.IP " 1." 4
+Unified Kernel Image (UKI)
+.RS 4
+\%https://uapi-group.org/specifications/specs/unified_kernel_image/
+.RE

@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_JOURNAL_GET_DATA" "3" "" "systemd 249" "sd_journal_get_data"
+.TH "SD_JOURNAL_GET_DATA" "3" "" "systemd 255" "sd_journal_get_data"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -111,11 +111,15 @@ Returned errors may indicate the following problems:
 One of the required parameters is
 \fBNULL\fR
 or invalid\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The journal object was created in a different process\&.
+The journal object was created in a different process, library or module instance\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-EADDRNOTAVAIL\fR
@@ -123,47 +127,63 @@ The journal object was created in a different process\&.
 The read pointer is not positioned at a valid entry;
 \fBsd_journal_next\fR(3)
 or a related call has not been called at least once\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOENT\fR
 .RS 4
 The current entry does not include the specified field\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOMEM\fR
 .RS 4
 Memory allocation failed\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOBUFS\fR
 .RS 4
 A compressed entry is too large\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-E2BIG\fR
 .RS 4
 The data field is too large for this computer architecture (e\&.g\&. above 4 GB on a 32\-bit architecture)\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-EPROTONOSUPPORT\fR
 .RS 4
 The journal is compressed with an unsupported method or the journal uses an unsupported feature\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-EBADMSG\fR
 .RS 4
 The journal is corrupted (possibly just the entry being iterated over)\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-EIO\fR
 .RS 4
 An I/O error was reported by the kernel\&.
+.sp
+Added in version 246\&.
 .RE
 .SH "NOTES"
 .PP
 All functions listed here are thread\-agnostic and only a single specific thread may operate on a given object during its entire lifetime\&. It\*(Aqs safe to allocate multiple independent objects and use each from a specific thread in parallel\&. However, it\*(Aqs not safe to allocate such an object in one thread, and operate or free it from any other, even if locking is used to ensure these threads don\*(Aqt operate on it at the very same time\&.
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
 .SH "EXAMPLES"
@@ -193,6 +213,21 @@ int print_fields(sd_journal *j) {
 .if n \{\
 .RE
 .\}
+.SH "HISTORY"
+.PP
+\fBsd_journal_get_data()\fR,
+\fBsd_journal_enumerate_data()\fR,
+\fBsd_journal_restart_data()\fR, and
+\fBSD_JOURNAL_FOREACH_DATA()\fR
+were added in version 187\&.
+.PP
+\fBsd_journal_set_data_threshold()\fR
+and
+\fBsd_journal_get_data_threshold()\fR
+were added in version 196\&.
+.PP
+\fBsd_journal_enumerate_available_data()\fR
+was added in version 246\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

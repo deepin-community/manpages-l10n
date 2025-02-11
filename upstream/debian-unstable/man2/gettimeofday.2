@@ -1,26 +1,6 @@
 .\" Copyright (c) 1992 Drew Eckhardt (drew@cs.colorado.edu), March 28, 1992
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" Modified by Michael Haardt (michael@moria.de)
 .\" Modified 1993-07-23 by Rik Faith (faith@cs.unc.edu)
@@ -37,43 +17,48 @@
 .\" Modified, 2004-05-27 by Michael Kerrisk <mtk.manpages@gmail.com>
 .\"   Added notes on capability requirement.
 .\"
-.TH GETTIMEOFDAY 2 2019-03-06 "Linux" "Linux Programmer's Manual"
+.TH gettimeofday 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 gettimeofday, settimeofday \- get / set time
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/time.h>
-.PP
-.BI "int gettimeofday(struct timeval *" tv ", struct timezone *" tz );
-.PP
-.BI "int settimeofday(const struct timeval *" tv \
-", const struct timezone *" tz );
+.P
+.BI "int gettimeofday(struct timeval *restrict " tv ,
+.BI "                 struct timezone *_Nullable restrict " tz );
+.BI "int settimeofday(const struct timeval *" tv ,
+.BI "                 const struct timezone *_Nullable " tz );
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR settimeofday ():
+.nf
     Since glibc 2.19:
         _DEFAULT_SOURCE
-    Glibc 2.19 and earlier:
+    glibc 2.19 and earlier:
         _BSD_SOURCE
+.fi
 .SH DESCRIPTION
 The functions
 .BR gettimeofday ()
 and
 .BR settimeofday ()
 can get and set the time as well as a timezone.
-.PP
+.P
 The
 .I tv
 argument is a
 .I struct timeval
 (as specified in
 .IR <sys/time.h> ):
-.PP
+.P
 .in +4n
 .EX
 struct timeval {
@@ -82,15 +67,15 @@ struct timeval {
 };
 .EE
 .in
-.PP
+.P
 and gives the number of seconds and microseconds since the Epoch (see
 .BR time (2)).
-.PP
+.P
 The
 .I tz
 argument is a
 .IR "struct timezone" :
-.PP
+.P
 .in +4n
 .EX
 struct timezone {
@@ -99,29 +84,29 @@ struct timezone {
 };
 .EE
 .in
-.PP
+.P
 If either
 .I tv
 or
 .I tz
 is NULL, the corresponding structure is not set or returned.
-.\" FIXME . The compilation warning looks to be going away in 2.17
+.\" FIXME . The compilation warning looks to be going away in glibc 2.17
 .\" see glibc commit 4b7634a5e03b0da6f8875de9d3f74c1cf6f2a6e8
 (However, compilation warnings will result if
 .I tv
 is NULL.)
 .\" The following is covered under EPERM below:
-.\" .PP
+.\" .P
 .\" Only the superuser may use
 .\" .BR settimeofday ().
-.PP
+.P
 The use of the
 .I timezone
 structure is obsolete; the
 .I tz
 argument should normally be specified as NULL.
 (See NOTES below.)
-.PP
+.P
 Under Linux, there are some peculiar "warp clock" semantics associated
 with the
 .BR settimeofday ()
@@ -144,9 +129,10 @@ No doubt it is a bad idea to use this feature.
 .BR gettimeofday ()
 and
 .BR settimeofday ()
-return 0 for success, or \-1 for failure (in which case
+return 0 for success.
+On error, \-1 is returned and
 .I errno
-is set appropriately).
+is set to indicate the error.
 .SH ERRORS
 .TP
 .B EFAULT
@@ -166,7 +152,7 @@ is invalid.
 .I tv.tv_sec
 is negative or
 .I tv.tv_usec
-is outside the range [0..999,999].
+is outside the range [0, 999,999].
 .TP
 .BR EINVAL " (since Linux 4.3)"
 .\" commit e1d7ba8735551ed79c7a0463a042353574b96da3
@@ -183,7 +169,31 @@ The calling process has insufficient privilege to call
 under Linux the
 .B CAP_SYS_TIME
 capability is required.
-.SH CONFORMING TO
+.SH VERSIONS
+.SS C library/kernel differences
+On some architectures, an implementation of
+.BR gettimeofday ()
+is provided in the
+.BR vdso (7).
+.P
+The kernel accepts NULL for both
+.I tv
+and
+.IR tz .
+The timezone argument is ignored by glibc and musl,
+and not passed to/from the kernel.
+Android's bionic passes the timezone argument to/from the kernel,
+but Android does not update the kernel timezone
+based on the device timezone in Settings,
+so the kernel's timezone is typically UTC.
+.SH STANDARDS
+.TP
+.BR gettimeofday ()
+POSIX.1-2008 (obsolete).
+.TP
+.BR settimeofday ()
+None.
+.SH HISTORY
 SVr4, 4.3BSD.
 POSIX.1-2001 describes
 .BR gettimeofday ()
@@ -194,30 +204,11 @@ POSIX.1-2008 marks
 as obsolete, recommending the use of
 .BR clock_gettime (2)
 instead.
-.SH NOTES
-The time returned by
-.BR gettimeofday ()
-.I is
-affected by discontinuous jumps in the system time
-(e.g., if the system administrator manually changes the system time).
-If you need a monotonically increasing clock, see
-.BR clock_gettime (2).
-.PP
-Macros for operating on
-.I timeval
-structures are described in
-.BR timeradd (3).
-.PP
+.P
 Traditionally, the fields of
 .I struct timeval
 were of type
 .IR long .
-.\"
-.SS C library/kernel differences
-On some architectures, an implementation of
-.BR gettimeofday ()
-is provided in the
-.BR vdso (7).
 .\"
 .SS The tz_dsttime field
 On a non-Linux kernel, with glibc, the
@@ -244,7 +235,7 @@ or
 .\" Each and every occurrence of this field in the kernel source
 .\" (other than the declaration) is a bug.
 Thus, the following is purely of historical interest.
-.PP
+.P
 On old systems, the field
 .I tz_dsttime
 contains a symbolic constant (values are given below)
@@ -254,7 +245,7 @@ is in force.
 it does not indicate that DST is in force, it just selects an
 algorithm.)
 The daylight saving time algorithms defined are as follows:
-.PP
+.P
 .in +4n
 .EX
 \fBDST_NONE\fP     /* not on DST */
@@ -270,7 +261,7 @@ The daylight saving time algorithms defined are as follows:
 \fBDST_AUSTALT\fP  /* Australian style with shift in 1986 */
 .EE
 .in
-.PP
+.P
 Of course it turned out that the period in which
 Daylight Saving Time is in force cannot be given
 by a simple algorithm, one per country; indeed,
@@ -278,6 +269,19 @@ this period is determined by unpredictable political
 decisions.
 So this method of representing timezones
 has been abandoned.
+.SH NOTES
+The time returned by
+.BR gettimeofday ()
+.I is
+affected by discontinuous jumps in the system time
+(e.g., if the system administrator manually changes the system time).
+If you need a monotonically increasing clock, see
+.BR clock_gettime (2).
+.P
+Macros for operating on
+.I timeval
+structures are described in
+.BR timeradd (3).
 .SH SEE ALSO
 .BR date (1),
 .BR adjtimex (2),
@@ -290,12 +294,3 @@ has been abandoned.
 .BR time (7),
 .BR vdso (7),
 .BR hwclock (8)
-.SH COLOPHON
-This page is part of release 5.10 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

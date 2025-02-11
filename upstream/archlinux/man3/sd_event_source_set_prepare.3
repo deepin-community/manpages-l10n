@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_EVENT_SOURCE_SET_PREPARE" "3" "" "systemd 249" "sd_event_source_set_prepare"
+.TH "SD_EVENT_SOURCE_SET_PREPARE" "3" "" "systemd 257" "sd_event_source_set_prepare"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -79,7 +79,7 @@ Not enough memory\&.
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The event loop has been created in a different process\&.
+The event loop has been created in a different process, library or module instance\&.
 .RE
 .PP
 \fB\-EDOM\fR
@@ -89,18 +89,22 @@ The specified event source has been created with
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_event_source_set_prepare()\fR
+and
+\fBsd_event_handler_t()\fR
+were added in version 229\&.
 .SH "SEE ALSO"
 .PP
-\fBsd-event\fR(3),
-\fBsd_event_add_io\fR(3),
-\fBsd_event_add_time\fR(3),
-\fBsd_event_add_signal\fR(3),
-\fBsd_event_add_child\fR(3),
-\fBsd_event_add_inotify\fR(3),
-\fBsd_event_add_defer\fR(3),
-\fBsd_event_source_set_enabled\fR(3),
-\fBsd_event_source_set_priority\fR(3),
-\fBsd_event_source_set_userdata\fR(3)
+\fBsd-event\fR(3), \fBsd_event_add_io\fR(3), \fBsd_event_add_time\fR(3), \fBsd_event_add_signal\fR(3), \fBsd_event_add_child\fR(3), \fBsd_event_add_inotify\fR(3), \fBsd_event_add_defer\fR(3), \fBsd_event_source_set_enabled\fR(3), \fBsd_event_source_set_priority\fR(3), \fBsd_event_source_set_userdata\fR(3)

@@ -36,7 +36,6 @@ netstat \- Print network connections, routing tables, interface statistics, masq
 .RB [ \-\-verbose | \-v ]
 .RB [ \-\-continuous | \-c]
 .RB [ \-\-wide | \-W ]
-.RB [delay]
 .P
 .B netstat 
 .RB { \-\-route | \-r }
@@ -46,25 +45,22 @@ netstat \- Print network connections, routing tables, interface statistics, masq
 .RB [ \-\-numeric | \-n ]
 .RB [ \-\-numeric\-hosts "] [" \-\-numeric\-ports "] [" \-\-numeric\-users ]
 .RB [ \-\-continuous | \-c ]
-.RB [delay]
 .P
 .B netstat
-.RB { \-\-interfaces | \-I | \-i }
+.RB { \-\-interfaces | \-i }
 .RB [ \-\-all | \-a ]
-.RB [ \-\-extend | \-e  ]
+.RB [ \-\-extend | \-e  [ \-\-extend | \-e] ]
 .RB [ \-\-verbose | \-v ]
 .RB [ \-\-program | \-p ]
 .RB [ \-\-numeric | \-n ]
 .RB [ \-\-numeric-hosts "] [" \-\-numeric-ports "] [" \-\-numeric-users ]
 .RB [ \-\-continuous | \-c ]
-.RB [delay]
 .P
 .B netstat
 .RB { \-\-groups | \-g }
 .RB [ \-\-numeric | \-n ]
 .RB [ \-\-numeric\-hosts "] [" \-\-numeric\-ports "] [" \-\-numeric\-users ]
 .RB [ \-\-continuous | \-c ]
-.RB [delay]
 .P
 .B netstat
 .RB { \-\-masquerade | \-M }
@@ -72,7 +68,6 @@ netstat \- Print network connections, routing tables, interface statistics, masq
 .RB [ \-\-numeric | \-n ]
 .RB [ \-\-numeric\-hosts "] [" \-\-numeric\-ports "] [" \-\-numeric\-users ]
 .RB [ \-\-continuous | \-c ]
-.RB [delay]
 .P
 .B netstat
 .RB { \-\-statistics | -s }
@@ -81,7 +76,6 @@ netstat \- Print network connections, routing tables, interface statistics, masq
 .RB [ \-\-udplite | \-U ]
 .RB [ \-\-sctp | \-S ]
 .RB [ \-\-raw | \-w ]
-.RB [delay]
 .P
 .B netstat 
 .RB { \-\-version | \-V }
@@ -134,8 +128,8 @@ and
 produce the same output.
 .SS "\-\-groups, \-g"
 Display multicast group membership information for IPv4 and IPv6.
-.SS "\-\-interfaces=\fIiface \fR, \fB\-I=\fIiface \fR, \fB\-i"
-Display a table of all network interfaces, or the specified \fIiface\fR.
+.SS "\-\-interfaces, \-i"
+Display a table of all network interfaces.
 .SS "\-\-masquerade, \-M"
 Display a list of masqueraded connections.
 .SS "\-\-statistics, \-s"
@@ -204,21 +198,18 @@ Display additional information.  Use this option twice for maximum detail.
 Include information related to networking timers.
 .SS "\-p, \-\-program"
 Show the PID and name of the program to which each socket belongs.
+A hyphen is shown if the socket belongs to the kernel (e.g. a kernel service,
+or the process has exited but the socket hasn't finished closing yet).
 .SS "\-l, \-\-listening"
 Show only listening sockets.  (These are omitted by default.)
 .SS "\-a, \-\-all"
-Show both listening and non-listening (for TCP this means established
-connections) sockets.  With the
+Show both listening and non-listening sockets.  With the
 .B \-\-interfaces
 option, show interfaces that are not up
 .SS "\-F"
 Print routing information from the FIB.  (This is the default.)
 .SS "\-C"
 Print routing information from the route cache.
-.SS delay
-Netstat will cycle printing through statistics every 
-.B delay 
-seconds.
 .P
 .SH OUTPUT
 .P
@@ -311,7 +302,38 @@ causes this column to be included.  You will also need
 privileges to see this information on sockets you don't own.  This
 identification information is not yet available for IPX sockets.
 .SS "Timer"
-(this needs to be written)
+TCP timer associated with this socket. The format is timer(a/b/c).
+The timer is one of the following values:
+.TP
+.I
+off
+There is no timer set for this socket.
+.TP
+.I
+on
+The retransmission timer is active for the socket.
+.TP
+.I
+keepalive
+The keepalive timer is active for the socket.
+.TP
+.I
+timewait
+The connection is closing and the timewait timer is active for the socket.
+.P
+The values in the brackets:
+.TP
+.I
+a
+Timer value.
+.TP
+.I
+b
+Number of retransmissions sent.
+.TP
+.I
+c
+Number of keepalives sent.
 .P
 .SS Active UNIX domain Sockets
 .SS "Proto" 
@@ -478,11 +500,11 @@ status information via the following files.
 .fi
 .P
 .SH SEE ALSO
-.BR route (8), 
-.BR ifconfig (8), 
+.BR route (8),
+.BR ifconfig (8),
 .BR iptables (8),
-.BR proc (5)
-.BR ss (8)
+.BR proc (5),
+.BR ss (8),
 .BR ip (8)
 .P
 .SH BUGS

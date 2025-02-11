@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_ERROR_ADD_MAP" "3" "" "systemd 249" "sd_bus_error_add_map"
+.TH "SD_BUS_ERROR_ADD_MAP" "3" "" "systemd 255" "sd_bus_error_add_map"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,12 +38,20 @@ typedef struct {
 } sd_bus_error_map;
 .fi
 .ft
-.PP
+.sp
+.ft B
+.nf
 \fBSD_BUS_ERROR_MAP(\fR\fB\fIname\fR\fR\fB, \fR\fB\fIcode\fR\fR\fB)\fR
-.PP
+.fi
+.ft
+.sp
+.ft B
+.nf
 \fBSD_BUS_ERROR_MAP_END\fR
+.fi
+.ft
 .HP \w'int\ sd_bus_error_add_map('u
-.BI "int sd_bus_error_add_map(const\ sd_bus_map\ *" "map" ");"
+.BI "int sd_bus_error_add_map(const\ sd_bus_error_map\ *" "map" ");"
 .SH "DESCRIPTION"
 .PP
 The
@@ -89,9 +97,20 @@ Memory allocation failed\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_error_add_map()\fR
+was added in version 223\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

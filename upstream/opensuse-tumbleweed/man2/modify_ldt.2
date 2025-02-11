@@ -1,40 +1,24 @@
 .\" Copyright (c) 1995 Michael Chastain (mec@duracef.shout.net), 22 July 1995.
 .\" Copyright (c) 2015 Andrew Lutomirski
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
-.\" The GNU General Public License's references to "object code"
-.\" and "executables" are to be interpreted as the output of any
-.\" document formatting or typesetting system, including
-.\" intermediate and printed output.
-.\"
-.\" This manual is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
-.\"
-.TH MODIFY_LDT 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH modify_ldt 2 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 modify_ldt \- get or set a per-process LDT entry
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .BR "#include <asm/ldt.h>" "         /* Definition of " "struct user_desc" " */"
 .BR "#include <sys/syscall.h>" "     /* Definition of " SYS_* " constants */"
 .B #include <unistd.h>
-.PP
-.BI "int syscall(SYS_modify_ldt, int " func ", void *" ptr ,
+.P
+.BI "int syscall(SYS_modify_ldt, int " func ", void " ptr [. bytecount ],
 .BI "            unsigned long " bytecount );
 .fi
-.PP
+.P
 .IR Note :
 glibc provides no wrapper for
 .BR modify_ldt (),
@@ -48,7 +32,7 @@ is an array of segment descriptors that can be referenced by user code.
 Linux allows processes to configure a per-process (actually per-mm) LDT.
 For more information about the LDT, see the Intel Software Developer's
 Manual or the AMD Architecture Programming Manual.
-.PP
+.P
 When
 .I func
 is 0,
@@ -62,7 +46,7 @@ the LDT is padded with additional trailing zero bytes.
 On success,
 .BR modify_ldt ()
 will return the number of bytes read.
-.PP
+.P
 When
 .I func
 is 1 or 0x11,
@@ -76,11 +60,11 @@ structure
 and
 .I bytecount
 must equal the size of this structure.
-.PP
+.P
 The
 .I user_desc
 structure is defined in \fI<asm/ldt.h>\fP as:
-.PP
+.P
 .in +4n
 .EX
 struct user_desc {
@@ -96,10 +80,10 @@ struct user_desc {
 };
 .EE
 .in
-.PP
+.P
 In Linux 2.4 and earlier, this structure was named
 .IR modify_ldt_ldt_s .
-.PP
+.P
 The
 .I contents
 field is the segment type (data, expand-down data, non-conforming code, or
@@ -107,7 +91,7 @@ conforming code).
 The other fields match their descriptions in the CPU manual, although
 .BR modify_ldt ()
 cannot set the hardware-defined "accessed" bit described in the CPU manual.
-.PP
+.P
 A
 .I user_desc
 is considered "empty" if
@@ -124,7 +108,7 @@ is 1, by setting both
 and
 .I limit
 to 0.
-.PP
+.P
 A conforming code segment (i.e., one with
 .IR contents==3 )
 will be rejected if
@@ -133,7 +117,7 @@ func
 is 1 or if
 .I seg_not_present
 is 0.
-.PP
+.P
 When
 .I func
 is 2,
@@ -172,9 +156,8 @@ is 1 or 0x11 and the new LDT entry has invalid values.
 .B ENOSYS
 .I func
 is neither 0, 1, 2, nor 0x11.
-.SH CONFORMING TO
-This call is Linux-specific and should not be used in programs intended
-to be portable.
+.SH STANDARDS
+Linux.
 .SH NOTES
 .BR modify_ldt ()
 should not be used for thread-local storage, as it slows down context
@@ -185,24 +168,24 @@ or
 .BR arch_prctl (2)
 instead, except on extremely old kernels that do not support those system
 calls.
-.PP
+.P
 The normal use for
 .BR modify_ldt ()
 is to run legacy 16-bit or segmented 32-bit code.
 Not all kernels allow 16-bit segments to be installed, however.
-.PP
+.P
 Even on 64-bit kernels,
 .BR modify_ldt ()
 cannot be used to create a long mode (i.e., 64-bit) code segment.
 The undocumented field "lm" in
-.IR user_desc
+.I user_desc
 is not useful, and, despite its name,
 does not result in a long mode segment.
 .SH BUGS
 On 64-bit kernels before Linux 3.19,
 .\" commit e30ab185c490e9a9381385529e0fd32f0a399495
 setting the "lm" bit in
-.IR user_desc
+.I user_desc
 prevents the descriptor from being considered empty.
 Keep in mind that the
 "lm" bit does not exist in the 32-bit headers, but these buggy kernels

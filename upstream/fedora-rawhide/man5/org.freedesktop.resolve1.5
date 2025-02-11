@@ -1,5 +1,5 @@
 '\" t
-.TH "ORG\&.FREEDESKTOP\&.RESOLVE1" "5" "" "systemd 248" "org.freedesktop.resolve1"
+.TH "ORG\&.FREEDESKTOP\&.RESOLVE1" "5" "" "systemd 257.1" "org.freedesktop.resolve1"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -94,7 +94,7 @@ node /org/freedesktop/resolve1 {
       SetLinkDNSSECNegativeTrustAnchors(in  i ifindex,
                                         in  as names);
       RevertLink(in  i ifindex);
-      RegisterService(in  s name,
+      RegisterService(in  s id,
                       in  s name_template,
                       in  s type,
                       in  q service_port,
@@ -145,7 +145,6 @@ node /org/freedesktop/resolve1 {
   interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
   interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
 };
-    
 .fi
 .if n \{\
 .RE
@@ -247,9 +246,19 @@ systemd\-resolved
 parses and validates resource records of many types, it is crucial that clients using this API understand that the RR data originates from the network and should be thoroughly validated before use\&.
 .PP
 \fBResolveService()\fR
-may be used to resolve a DNS SRV service record, as well as the hostnames referenced in it, and possibly an accompanying DNS\-SD TXT record containing additional service metadata\&. The primary benefit of using this method over
+may be used to resolve a DNS
+\fBSRV\fR
+service record, as well as the hostnames referenced in it, and possibly an accompanying DNS\-SD
+\fBTXT\fR
+record containing additional service metadata\&. The primary benefit of using this method over
 \fBResolveRecord()\fR
-specifying the SRV type is that it will resolve the SRV and TXT RRs as well as the hostnames referenced in the SRV in a single operation\&. As parameters it takes a Linux network interface index, a service name, a service type and a service domain\&. This method may be invoked in three different modes:
+specifying the
+\fBSRV\fR
+type is that it will resolve the
+\fBSRV\fR
+and
+\fBTXT\fR
+RRs as well as the hostnames referenced in the SRV in a single operation\&. As parameters it takes a Linux network interface index, a service name, a service type and a service domain\&. This method may be invoked in three different modes:
 .sp
 .RS 4
 .ie n \{\
@@ -273,7 +282,9 @@ To resolve a DNS\-SD service, specify the service name (e\&.g\&.
 .sp -1
 .IP "  2." 4.2
 .\}
-To resolve a plain SRV record, set the service name parameter to the empty string and set the service type and domain properly\&. (IDNA conversion is applied to the domain, if necessary\&.)
+To resolve a plain
+\fBSRV\fR
+record, set the service name parameter to the empty string and set the service type and domain properly\&. (IDNA conversion is applied to the domain, if necessary\&.)
 .RE
 .sp
 .RS 4
@@ -284,7 +295,9 @@ To resolve a plain SRV record, set the service name parameter to the empty strin
 .sp -1
 .IP "  3." 4.2
 .\}
-Alternatively, leave both the service name and type empty and specify the full domain name of the SRV record (i\&.e\&. prefixed with the service type) in the domain parameter\&. (No IDNA conversion is applied in this mode\&.)
+Alternatively, leave both the service name and type empty and specify the full domain name of the
+\fBSRV\fR
+record (i\&.e\&. prefixed with the service type) in the domain parameter\&. (No IDNA conversion is applied in this mode\&.)
 .RE
 .PP
 The
@@ -302,7 +315,13 @@ parameter takes a couple of flags that may be used to alter the resolver operati
 .PP
 On completion,
 \fBResolveService()\fR
-returns an array of SRV record structures\&. Each items consisting of the priority, weight and port fields as well as the hostname to contact, as encoded in the SRV record\&. Immediately following is an array of the addresses of this hostname, with each item consisting of the interface index, the address family and the address data in a byte array\&. This address array is followed by the canonicalized hostname\&. After this array of SRV record structures an array of byte arrays follows that encodes the TXT RR strings, in case DNS\-SD look\-ups are enabled\&. The next parameters are the canonical service name, type and domain\&. This may or may not be identical to the parameters passed in\&. Finally, a
+returns an array of
+\fBSRV\fR
+record structures\&. Each items consisting of the priority, weight and port fields as well as the hostname to contact, as encoded in the
+\fBSRV\fR
+record\&. Immediately following is an array of the addresses of this hostname, with each item consisting of the interface index, the address family and the address data in a byte array\&. This address array is followed by the canonicalized hostname\&. After this array of
+\fBSRV\fR
+record structures an array of byte arrays follows that encodes the TXT RR strings, in case DNS\-SD look\-ups are enabled\&. The next parameters are the canonical service name, type and domain\&. This may or may not be identical to the parameters passed in\&. Finally, a
 \fIflags\fR
 field is returned that contains information about the resolver operation performed\&.
 .PP
@@ -400,6 +419,32 @@ set) so that all settings take effect during the full time the network interface
 The
 \fBRevertLink()\fR
 method may be used to revert all per\-link settings described above to the defaults\&.
+.PP
+The
+\fBFlushCaches()\fR
+flushes all resource record caches maintained by the resolver, and ensures that any subsequent lookups re\-request their responses from their sources\&.
+.PP
+The
+\fBResetServerFeatures()\fR
+flushes any feature information learned about remote DNS servers\&. This ensures that subsequent lookups will be initially attempted at the highest DNS protocol feature level again, possibly requiring a (potentially slow) downgrade cycle to recognize the supported feature level again\&.
+.PP
+The
+\fBRegisterService()\fR
+method may be used to register a DNS\-SD service on the host\&. This functionality is closely related to the functionality provided by
+\fBsystemd.dnssd\fR(5)
+files\&. It takes a server identifier string as first parameter (this is just a local identifier, and should be chosen so that it neither collides with the basename of
+*\&.dnssd
+files nor with names chosen by other IPC clients)\&. It also takes a name template string for the DNS\-SD service name visible on the network\&. This string is subject to specifier expansation, as documented for the
+\fIName=\fR
+setting in
+*\&.dnssd
+files\&. It also takes a service type string containing the DNS\-SD service type, as well as an IP port, a priority/weight pair for the DNS\-SD SRV record\&. Finally, it takes an array of TXT record data\&. It returns an object path which may be used as handle to the registered service\&.
+.PP
+The
+\fBUnregisterService()\fR
+method undoes the effect of
+\fBRegisterService()\fR
+and deletes a DNS\-SD service previously created via IPC again\&.
 .sp
 .it 1 an-trap
 .nr an-no-space-flag 1
@@ -415,17 +460,37 @@ The four methods above accept and return a 64\-bit flags value\&. In most cases 
 .RS 4
 .\}
 .nf
-#define SD_RESOLVED_DNS           (UINT64_C(1) << 0)
-#define SD_RESOLVED_LLMNR_IPV4    (UINT64_C(1) << 1)
-#define SD_RESOLVED_LLMNR_IPV6    (UINT64_C(1) << 2)
-#define SD_RESOLVED_MDNS_IPV4     (UINT64_C(1) << 3)
-#define SD_RESOLVED_MDNS_IPV6     (UINT64_C(1) << 4)
-#define SD_RESOLVED_NO_CNAME      (UINT64_C(1) << 5)
-#define SD_RESOLVED_NO_TXT        (UINT64_C(1) << 6)
-#define SD_RESOLVED_NO_ADDRESS    (UINT64_C(1) << 7)
-#define SD_RESOLVED_NO_SEARCH     (UINT64_C(1) << 8)
-#define SD_RESOLVED_AUTHENTICATED (UINT64_C(1) << 9)
-        
+/* Input+Output: Protocol/scope */
+#define SD_RESOLVED_DNS                (UINT64_C(1) <<  0)
+#define SD_RESOLVED_LLMNR_IPV4         (UINT64_C(1) <<  1)
+#define SD_RESOLVED_LLMNR_IPV6         (UINT64_C(1) <<  2)
+#define SD_RESOLVED_MDNS_IPV4          (UINT64_C(1) <<  3)
+#define SD_RESOLVED_MDNS_IPV6          (UINT64_C(1) <<  4)
+
+/* Input: Restrictions */
+#define SD_RESOLVED_NO_CNAME           (UINT64_C(1) <<  5)
+#define SD_RESOLVED_NO_TXT             (UINT64_C(1) <<  6)
+#define SD_RESOLVED_NO_ADDRESS         (UINT64_C(1) <<  7)
+#define SD_RESOLVED_NO_SEARCH          (UINT64_C(1) <<  8)
+#define SD_RESOLVED_NO_VALIDATE        (UINT64_C(1) << 10)
+#define SD_RESOLVED_NO_SYNTHESIZE      (UINT64_C(1) << 11)
+#define SD_RESOLVED_NO_CACHE           (UINT64_C(1) << 12)
+#define SD_RESOLVED_NO_ZONE            (UINT64_C(1) << 13)
+#define SD_RESOLVED_NO_TRUST_ANCHOR    (UINT64_C(1) << 14)
+#define SD_RESOLVED_NO_NETWORK         (UINT64_C(1) << 15)
+#define SD_RESOLVED_NO_STALE           (UINT64_C(1) << 24)
+#define SD_RESOLVED_RELAX_SINGLE_LABEL (UINT64_C(1) << 25)
+
+/* Output: Security */
+#define SD_RESOLVED_AUTHENTICATED      (UINT64_C(1) <<  9)
+#define SD_RESOLVED_CONFIDENTIAL       (UINT64_C(1) << 18)
+
+/* Output: Origin */
+#define SD_RESOLVED_SYNTHETIC          (UINT64_C(1) << 19)
+#define SD_RESOLVED_FROM_CACHE         (UINT64_C(1) << 20)
+#define SD_RESOLVED_FROM_ZONE          (UINT64_C(1) << 21)
+#define SD_RESOLVED_FROM_TRUST_ANCHOR  (UINT64_C(1) << 22)
+#define SD_RESOLVED_FROM_NETWORK       (UINT64_C(1) << 23)
 .fi
 .if n \{\
 .RE
@@ -443,19 +508,29 @@ The NO_CNAME flag controls whether CNAME/DNAME resource records shall be followe
 .PP
 The NO_TXT and NO_ADDRESS flags only influence operation of the
 \fBResolveService()\fR
-method\&. They are only defined for input, not output\&. If NO_TXT set, the DNS\-SD TXT RR look\-up is not done in the same operation\&. If NO_ADDRESS is specified, the hostnames discovered are not implicitly translated to their addresses\&.
+method\&. They are only defined for input, not output\&. If NO_TXT is set, the DNS\-SD TXT RR look\-up is not done in the same operation\&. If NO_ADDRESS is set, the discovered hostnames are not implicitly translated to their addresses\&.
 .PP
 The NO_SEARCH flag turns off the search domain logic\&. It is only defined for input in
 \fBResolveHostname()\fR\&. When specified, single\-label hostnames are not qualified using defined search domains, if any are configured\&. Note that
 \fBResolveRecord()\fR
 will never qualify single\-label domain names using search domains\&. Also note that multi\-label hostnames are never subject to search list expansion\&.
 .PP
+NO_VALIDATE can be set to disable validation via DNSSEC even if it would normally be used\&.
+.PP
+The next six flags allow disabling certain sources during resolution\&. NO_SYNTHESIZE disables synthetic records, e\&.g\&. the local host name, see section SYNTHETIC RECORDS in
+\fBsystemd-resolved.service\fR(8)
+for more information\&. NO_CACHE disables the use of the cache of previously resolved records\&. NO_ZONE disables answers using locally registered public LLMNR/mDNS resource records\&. NO_TRUST_ANCHOR disables answers using locally configured trust anchors\&. NO_NETWORK requires all answers to be provided without using the network, i\&.e\&. either from local sources or the cache\&. NO_STALE flag can be set to disable answering request with stale records\&.
+.PP
 The AUTHENTICATED bit is defined only in the output flags of the four functions\&. If set, the returned data has been fully authenticated\&. Specifically, this bit is set for all DNSSEC\-protected data for which a full trust chain may be established to a trusted domain anchor\&. It is also set for locally synthesized data, such as
 "localhost"
 or data from
 /etc/hosts\&. Moreover, it is set for all LLMNR or mDNS RRs which originate from the local host\&. Applications that require authenticated RR data for operation should check this flag before trusting the data\&. Note that
 systemd\-resolved
-will never return invalidated data, hence this flag simply allows to discern the cases where data is known to be trustable, or where there is proof that the data is "rightfully" unauthenticated (which includes cases where the underlying protocol or server does not support authenticating data)\&.
+will never return invalidated data, hence this flag simply allows one to discern the cases where data is known to be trusted, or where there is proof that the data is "rightfully" unauthenticated (which includes cases where the underlying protocol or server does not support authenticating data)\&.
+.PP
+CONFIDENTIAL means the query was resolved via encrypted channels or never left this system\&.
+.PP
+The next five bits flags are used in output and provide information about the origin of the answer\&. FROM_SYNTHETIC means the query was (at least partially) synthesized locally\&. FROM_CACHE means the query was answered (at least partially) using the cache\&. FROM_ZONE means the query was answered (at least partially) based on public, locally registered records\&. FROM_TRUST_ANCHOR means the query was answered (at least partially) using local trust anchors\&. FROM_NETWORK means the query was answered (at least partially) using the network\&.
 .RE
 .SS "Properties"
 .PP
@@ -555,7 +630,7 @@ in
 .PP
 The
 \fIDNSSECStatistics\fR
-property contains information about the DNSSEC validations executed so far\&. It contains four 64\-bit counters: the number of secure, insecure, bogus, and indeterminate DNSSEC validations so far\&. The counters are increased for each validated RRset, and each non\-existance proof\&. The secure counter is increased for each operation that successfully verified a signed reply, the insecure counter is increased for each operation that successfully verified that an unsigned reply is rightfully unsigned\&. The bogus counter is increased for each operation where the validation did not check out and the data is likely to have been tempered with\&. Finally the indeterminate counter is increased for each operation which did not complete because the necessary keys could not be acquired or the cryptographic algorithms were unknown\&.
+property contains information about the DNSSEC validations executed so far\&. It contains four 64\-bit counters: the number of secure, insecure, bogus, and indeterminate DNSSEC validations so far\&. The counters are increased for each validated RRset, and each non\-existence proof\&. The secure counter is increased for each operation that successfully verified a signed reply, the insecure counter is increased for each operation that successfully verified that an unsigned reply is rightfully unsigned\&. The bogus counter is increased for each operation where the validation did not check out and the data is likely to have been tempered with\&. Finally the indeterminate counter is increased for each operation which did not complete because the necessary keys could not be acquired or the cryptographic algorithms were unknown\&.
 .PP
 The
 \fIDNSSECSupported\fR
@@ -597,6 +672,10 @@ property reports whether the stub listener on port 53 is enabled\&. Possible val
 (only the UDP listener is enabled), and
 "tcp"
 (only the TCP listener is enabled)\&.
+.PP
+The
+\fIDNSSECNegativeTrustAnchors\fR
+property contains a list of recognized DNSSEC negative trust anchors and contains a list of domains\&.
 .SH "LINK OBJECT"
 .sp
 .if n \{\
@@ -648,7 +727,6 @@ node /org/freedesktop/resolve1/link/_1 {
   interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
   interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
 };
-    
 .fi
 .if n \{\
 .RE
@@ -732,68 +810,96 @@ interface) may return some of the following errors:
 \fBorg\&.freedesktop\&.resolve1\&.NoNameServers\fR
 .RS 4
 No suitable DNS servers were found to resolve a request\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBorg\&.freedesktop\&.resolve1\&.InvalidReply\fR
 .RS 4
 A response from the selected DNS server was not understood\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBorg\&.freedesktop\&.resolve1\&.NoSuchRR\fR
 .RS 4
 The requested name exists, but there is no resource record of the requested type for it\&. (This is the DNS NODATA case)\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBorg\&.freedesktop\&.resolve1\&.CNameLoop\fR
 .RS 4
 The look\-up failed because a CNAME or DNAME loop was detected\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBorg\&.freedesktop\&.resolve1\&.Aborted\fR
 .RS 4
 The look\-up was aborted because the selected protocol became unavailable while the operation was ongoing\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBorg\&.freedesktop\&.resolve1\&.NoSuchService\fR
 .RS 4
-A service look\-up was successful, but the SRV record reported that the service is not available\&.
+A service look\-up was successful, but the
+\fBSRV\fR
+record reported that the service is not available\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBorg\&.freedesktop\&.resolve1\&.DnssecFailed\fR
 .RS 4
 The acquired response did not pass DNSSEC validation\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBorg\&.freedesktop\&.resolve1\&.NoTrustAnchor\fR
 .RS 4
 No chain of trust could be established for the response to a configured DNSSEC trust anchor\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBorg\&.freedesktop\&.resolve1\&.ResourceRecordTypeUnsupported\fR
 .RS 4
 The requested resource record type is not supported on the selected DNS servers\&. This error is generated for example when an RRSIG record is requested from a DNS server that does not support DNSSEC\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBorg\&.freedesktop\&.resolve1\&.NoSuchLink\fR
 .RS 4
 No network interface with the specified network interface index exists\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBorg\&.freedesktop\&.resolve1\&.LinkBusy\fR
 .RS 4
 The requested configuration change could not be made because
 \fBsystemd-networkd\fR(8), already took possession of the interface and supplied configuration data for it\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBorg\&.freedesktop\&.resolve1\&.NetworkDown\fR
 .RS 4
 The requested look\-up failed because the system is currently not connected to any suitable network\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBorg\&.freedesktop\&.resolve1\&.DnsError\&.NXDOMAIN\fR, \fBorg\&.freedesktop\&.resolve1\&.DnsError\&.REFUSED\fR, \&.\&.\&.
 .RS 4
 The look\-up failed with a DNS return code reporting a failure\&. The error names used as suffixes here are defined in by IANA in
 \m[blue]\fBDNS\ \&RCODEs\fR\m[]\&\s-2\u[4]\d\s+2\&.
+.sp
+Added in version 246\&.
 .RE
 .SH "EXAMPLES"
 .PP
@@ -806,7 +912,6 @@ The look\-up failed with a DNS return code reporting a failure\&. The error name
 $ gdbus introspect \-\-system \e
   \-\-dest org\&.freedesktop\&.resolve1 \e
   \-\-object\-path /org/freedesktop/resolve1
-      
 .fi
 .if n \{\
 .RE
@@ -821,7 +926,6 @@ $ gdbus introspect \-\-system \e
 $ gdbus introspect \-\-system \e
   \-\-dest org\&.freedesktop\&.resolve1 \e
   \-\-object\-path /org/freedesktop/resolve1/link/_11
-      
 .fi
 .if n \{\
 .RE
@@ -830,6 +934,9 @@ $ gdbus introspect \-\-system \e
 .PP
 These D\-Bus interfaces follow
 \m[blue]\fBthe usual interface versioning guidelines\fR\m[]\&\s-2\u[5]\d\s+2\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1), \fBsystemd-resolved.service\fR(8), \fBresolvectl\fR(1)
 .SH "NOTES"
 .IP " 1." 4
 Writing Network Configuration Managers
@@ -854,5 +961,5 @@ DNS\ \&RCODEs
 .IP " 5." 4
 the usual interface versioning guidelines
 .RS 4
-\%http://0pointer.de/blog/projects/versioning-dbus.html
+\%https://0pointer.de/blog/projects/versioning-dbus.html
 .RE

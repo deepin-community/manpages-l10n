@@ -1,10 +1,10 @@
-.TH "libalpm_cb" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.TH "libalpm_cb" 3 "libalpm" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 libalpm_cb \- Callbacks
 .PP
- \- Functions and structures for libalpm's callbacks\&.  
+ \- Functions and structures for libalpm's callbacks  
 
 .SH SYNOPSIS
 .br
@@ -117,11 +117,11 @@ libalpm_cb \- Callbacks
 
 .in +1c
 .ti -1c
-.RI "typedef void(* \fBalpm_cb_event\fP) (void *ctx, \fBalpm_event_t\fP *)"
+.RI "typedef void(* \fBalpm_cb_event\fP) (void *ctx, \fBalpm_event_t\fP *event)"
 .br
 .RI "Event callback\&. "
 .ti -1c
-.RI "typedef void(* \fBalpm_cb_question\fP) (void *ctx, \fBalpm_question_t\fP *)"
+.RI "typedef void(* \fBalpm_cb_question\fP) (void *ctx, \fBalpm_question_t\fP *question)"
 .br
 .RI "Question callback\&. "
 .ti -1c
@@ -167,7 +167,7 @@ libalpm_cb \- Callbacks
 .in -1c
 .SH "Detailed Description"
 .PP 
-Functions and structures for libalpm's callbacks\&. 
+Functions and structures for libalpm's callbacks 
 
 
 .SH "Data Structure Documentation"
@@ -540,13 +540,16 @@ Should a key be imported?
 .PP
 \fBData Fields:\fP
 .RS 4
+const char * \fIfingerprint\fP Fingerprint the key to import\&. 
+.br
+.PP
 int \fIimport\fP Answer: whether or not to import key\&. 
 .br
 .PP
-\fBalpm_pgpkey_t\fP * \fIkey\fP The key to import\&. 
+\fBalpm_question_type_t\fP \fItype\fP Type of question\&. 
 .br
 .PP
-\fBalpm_question_type_t\fP \fItype\fP Type of question\&. 
+const char * \fIuid\fP UID of the key to import\&. 
 .br
 .PP
 .RE
@@ -661,7 +664,7 @@ Type of download progress callbacks\&.
 .RE
 .PP
 
-.SS "typedef void(* alpm_cb_event) (void *ctx, \fBalpm_event_t\fP *)"
+.SS "typedef void(* alpm_cb_event) (void *ctx, \fBalpm_event_t\fP *event)"
 
 .PP
 Event callback\&. Called when an event occurs 
@@ -717,7 +720,7 @@ Progress callback\&. Alert the front end about the progress of certain events\&.
 .RE
 .PP
 
-.SS "typedef void(* alpm_cb_question) (void *ctx, \fBalpm_question_t\fP *)"
+.SS "typedef void(* alpm_cb_question) (void *ctx, \fBalpm_question_t\fP *question)"
 
 .PP
 Question callback\&. This callback allows user to give input and decide what to do during certain events 
@@ -740,16 +743,16 @@ File download events\&. These events are reported by ALPM via download callback\
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIALPM_DOWNLOAD_INIT \fP\fP
+\f(BIALPM_DOWNLOAD_INIT \fP
 A download was started\&. 
 .TP
-\fB\fIALPM_DOWNLOAD_PROGRESS \fP\fP
+\f(BIALPM_DOWNLOAD_PROGRESS \fP
 A download made progress\&. 
 .TP
-\fB\fIALPM_DOWNLOAD_RETRY \fP\fP
+\f(BIALPM_DOWNLOAD_RETRY \fP
 Download will be retried\&. 
 .TP
-\fB\fIALPM_DOWNLOAD_COMPLETED \fP\fP
+\f(BIALPM_DOWNLOAD_COMPLETED \fP
 A download completed\&. 
 .SS "enum \fBalpm_event_type_t\fP"
 
@@ -759,115 +762,115 @@ Type of events\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIALPM_EVENT_CHECKDEPS_START \fP\fP
+\f(BIALPM_EVENT_CHECKDEPS_START \fP
 Dependencies will be computed for a package\&. 
 .TP
-\fB\fIALPM_EVENT_CHECKDEPS_DONE \fP\fP
+\f(BIALPM_EVENT_CHECKDEPS_DONE \fP
 Dependencies were computed for a package\&. 
 .TP
-\fB\fIALPM_EVENT_FILECONFLICTS_START \fP\fP
+\f(BIALPM_EVENT_FILECONFLICTS_START \fP
 File conflicts will be computed for a package\&. 
 .TP
-\fB\fIALPM_EVENT_FILECONFLICTS_DONE \fP\fP
+\f(BIALPM_EVENT_FILECONFLICTS_DONE \fP
 File conflicts were computed for a package\&. 
 .TP
-\fB\fIALPM_EVENT_RESOLVEDEPS_START \fP\fP
+\f(BIALPM_EVENT_RESOLVEDEPS_START \fP
 Dependencies will be resolved for target package\&. 
 .TP
-\fB\fIALPM_EVENT_RESOLVEDEPS_DONE \fP\fP
+\f(BIALPM_EVENT_RESOLVEDEPS_DONE \fP
 Dependencies were resolved for target package\&. 
 .TP
-\fB\fIALPM_EVENT_INTERCONFLICTS_START \fP\fP
+\f(BIALPM_EVENT_INTERCONFLICTS_START \fP
 Inter-conflicts will be checked for target package\&. 
 .TP
-\fB\fIALPM_EVENT_INTERCONFLICTS_DONE \fP\fP
+\f(BIALPM_EVENT_INTERCONFLICTS_DONE \fP
 Inter-conflicts were checked for target package\&. 
 .TP
-\fB\fIALPM_EVENT_TRANSACTION_START \fP\fP
+\f(BIALPM_EVENT_TRANSACTION_START \fP
 Processing the package transaction is starting\&. 
 .TP
-\fB\fIALPM_EVENT_TRANSACTION_DONE \fP\fP
+\f(BIALPM_EVENT_TRANSACTION_DONE \fP
 Processing the package transaction is finished\&. 
 .TP
-\fB\fIALPM_EVENT_PACKAGE_OPERATION_START \fP\fP
+\f(BIALPM_EVENT_PACKAGE_OPERATION_START \fP
 Package will be installed/upgraded/downgraded/re-installed/removed; See \fBalpm_event_package_operation_t\fP for arguments\&. 
 .TP
-\fB\fIALPM_EVENT_PACKAGE_OPERATION_DONE \fP\fP
+\f(BIALPM_EVENT_PACKAGE_OPERATION_DONE \fP
 Package was installed/upgraded/downgraded/re-installed/removed; See \fBalpm_event_package_operation_t\fP for arguments\&. 
 .TP
-\fB\fIALPM_EVENT_INTEGRITY_START \fP\fP
+\f(BIALPM_EVENT_INTEGRITY_START \fP
 Target package's integrity will be checked\&. 
 .TP
-\fB\fIALPM_EVENT_INTEGRITY_DONE \fP\fP
+\f(BIALPM_EVENT_INTEGRITY_DONE \fP
 Target package's integrity was checked\&. 
 .TP
-\fB\fIALPM_EVENT_LOAD_START \fP\fP
+\f(BIALPM_EVENT_LOAD_START \fP
 Target package will be loaded\&. 
 .TP
-\fB\fIALPM_EVENT_LOAD_DONE \fP\fP
+\f(BIALPM_EVENT_LOAD_DONE \fP
 Target package is finished loading\&. 
 .TP
-\fB\fIALPM_EVENT_SCRIPTLET_INFO \fP\fP
+\f(BIALPM_EVENT_SCRIPTLET_INFO \fP
 Scriptlet has printed information; See \fBalpm_event_scriptlet_info_t\fP for arguments\&. 
 .TP
-\fB\fIALPM_EVENT_DB_RETRIEVE_START \fP\fP
+\f(BIALPM_EVENT_DB_RETRIEVE_START \fP
 Database files will be downloaded from a repository\&. 
 .TP
-\fB\fIALPM_EVENT_DB_RETRIEVE_DONE \fP\fP
+\f(BIALPM_EVENT_DB_RETRIEVE_DONE \fP
 Database files were downloaded from a repository\&. 
 .TP
-\fB\fIALPM_EVENT_DB_RETRIEVE_FAILED \fP\fP
+\f(BIALPM_EVENT_DB_RETRIEVE_FAILED \fP
 Not all database files were successfully downloaded from a repository\&. 
 .TP
-\fB\fIALPM_EVENT_PKG_RETRIEVE_START \fP\fP
+\f(BIALPM_EVENT_PKG_RETRIEVE_START \fP
 Package files will be downloaded from a repository\&. 
 .TP
-\fB\fIALPM_EVENT_PKG_RETRIEVE_DONE \fP\fP
+\f(BIALPM_EVENT_PKG_RETRIEVE_DONE \fP
 Package files were downloaded from a repository\&. 
 .TP
-\fB\fIALPM_EVENT_PKG_RETRIEVE_FAILED \fP\fP
+\f(BIALPM_EVENT_PKG_RETRIEVE_FAILED \fP
 Not all package files were successfully downloaded from a repository\&. 
 .TP
-\fB\fIALPM_EVENT_DISKSPACE_START \fP\fP
+\f(BIALPM_EVENT_DISKSPACE_START \fP
 Disk space usage will be computed for a package\&. 
 .TP
-\fB\fIALPM_EVENT_DISKSPACE_DONE \fP\fP
+\f(BIALPM_EVENT_DISKSPACE_DONE \fP
 Disk space usage was computed for a package\&. 
 .TP
-\fB\fIALPM_EVENT_OPTDEP_REMOVAL \fP\fP
+\f(BIALPM_EVENT_OPTDEP_REMOVAL \fP
 An optdepend for another package is being removed; See \fBalpm_event_optdep_removal_t\fP for arguments\&. 
 .TP
-\fB\fIALPM_EVENT_DATABASE_MISSING \fP\fP
+\f(BIALPM_EVENT_DATABASE_MISSING \fP
 A configured repository database is missing; See \fBalpm_event_database_missing_t\fP for arguments\&. 
 .TP
-\fB\fIALPM_EVENT_KEYRING_START \fP\fP
+\f(BIALPM_EVENT_KEYRING_START \fP
 Checking keys used to create signatures are in keyring\&. 
 .TP
-\fB\fIALPM_EVENT_KEYRING_DONE \fP\fP
+\f(BIALPM_EVENT_KEYRING_DONE \fP
 Keyring checking is finished\&. 
 .TP
-\fB\fIALPM_EVENT_KEY_DOWNLOAD_START \fP\fP
+\f(BIALPM_EVENT_KEY_DOWNLOAD_START \fP
 Downloading missing keys into keyring\&. 
 .TP
-\fB\fIALPM_EVENT_KEY_DOWNLOAD_DONE \fP\fP
+\f(BIALPM_EVENT_KEY_DOWNLOAD_DONE \fP
 Key downloading is finished\&. 
 .TP
-\fB\fIALPM_EVENT_PACNEW_CREATED \fP\fP
+\f(BIALPM_EVENT_PACNEW_CREATED \fP
 A \&.pacnew file was created; See \fBalpm_event_pacnew_created_t\fP for arguments\&. 
 .TP
-\fB\fIALPM_EVENT_PACSAVE_CREATED \fP\fP
+\f(BIALPM_EVENT_PACSAVE_CREATED \fP
 A \&.pacsave file was created; See \fBalpm_event_pacsave_created_t\fP for arguments\&. 
 .TP
-\fB\fIALPM_EVENT_HOOK_START \fP\fP
+\f(BIALPM_EVENT_HOOK_START \fP
 Processing hooks will be started\&. 
 .TP
-\fB\fIALPM_EVENT_HOOK_DONE \fP\fP
+\f(BIALPM_EVENT_HOOK_DONE \fP
 Processing hooks is finished\&. 
 .TP
-\fB\fIALPM_EVENT_HOOK_RUN_START \fP\fP
+\f(BIALPM_EVENT_HOOK_RUN_START \fP
 A hook is starting\&. 
 .TP
-\fB\fIALPM_EVENT_HOOK_RUN_DONE \fP\fP
+\f(BIALPM_EVENT_HOOK_RUN_DONE \fP
 A hook has finished running\&. 
 .SS "enum \fBalpm_hook_when_t\fP"
 
@@ -881,19 +884,19 @@ An enum over the kind of package operations\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIALPM_PACKAGE_INSTALL \fP\fP
+\f(BIALPM_PACKAGE_INSTALL \fP
 Package (to be) installed\&. (No oldpkg) 
 .TP
-\fB\fIALPM_PACKAGE_UPGRADE \fP\fP
+\f(BIALPM_PACKAGE_UPGRADE \fP
 Package (to be) upgraded\&. 
 .TP
-\fB\fIALPM_PACKAGE_REINSTALL \fP\fP
+\f(BIALPM_PACKAGE_REINSTALL \fP
 Package (to be) re-installed\&. 
 .TP
-\fB\fIALPM_PACKAGE_DOWNGRADE \fP\fP
+\f(BIALPM_PACKAGE_DOWNGRADE \fP
 Package (to be) downgraded\&. 
 .TP
-\fB\fIALPM_PACKAGE_REMOVE \fP\fP
+\f(BIALPM_PACKAGE_REMOVE \fP
 Package (to be) removed (No newpkg) 
 .SS "enum \fBalpm_progress_t\fP"
 
@@ -903,34 +906,34 @@ An enum over different kinds of progress alerts\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIALPM_PROGRESS_ADD_START \fP\fP
+\f(BIALPM_PROGRESS_ADD_START \fP
 Package install\&. 
 .TP
-\fB\fIALPM_PROGRESS_UPGRADE_START \fP\fP
+\f(BIALPM_PROGRESS_UPGRADE_START \fP
 Package upgrade\&. 
 .TP
-\fB\fIALPM_PROGRESS_DOWNGRADE_START \fP\fP
+\f(BIALPM_PROGRESS_DOWNGRADE_START \fP
 Package downgrade\&. 
 .TP
-\fB\fIALPM_PROGRESS_REINSTALL_START \fP\fP
+\f(BIALPM_PROGRESS_REINSTALL_START \fP
 Package reinstall\&. 
 .TP
-\fB\fIALPM_PROGRESS_REMOVE_START \fP\fP
+\f(BIALPM_PROGRESS_REMOVE_START \fP
 Package removal\&. 
 .TP
-\fB\fIALPM_PROGRESS_CONFLICTS_START \fP\fP
+\f(BIALPM_PROGRESS_CONFLICTS_START \fP
 Conflict checking\&. 
 .TP
-\fB\fIALPM_PROGRESS_DISKSPACE_START \fP\fP
+\f(BIALPM_PROGRESS_DISKSPACE_START \fP
 Diskspace checking\&. 
 .TP
-\fB\fIALPM_PROGRESS_INTEGRITY_START \fP\fP
+\f(BIALPM_PROGRESS_INTEGRITY_START \fP
 Package Integrity checking\&. 
 .TP
-\fB\fIALPM_PROGRESS_LOAD_START \fP\fP
+\f(BIALPM_PROGRESS_LOAD_START \fP
 Loading packages from disk\&. 
 .TP
-\fB\fIALPM_PROGRESS_KEYRING_START \fP\fP
+\f(BIALPM_PROGRESS_KEYRING_START \fP
 Checking signatures of packages\&. 
 .SS "enum \fBalpm_question_type_t\fP"
 
@@ -940,25 +943,25 @@ Type of question\&. Unlike the events or progress enumerations, this enum has bi
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIALPM_QUESTION_INSTALL_IGNOREPKG \fP\fP
+\f(BIALPM_QUESTION_INSTALL_IGNOREPKG \fP
 Should target in ignorepkg be installed anyway? 
 .TP
-\fB\fIALPM_QUESTION_REPLACE_PKG \fP\fP
+\f(BIALPM_QUESTION_REPLACE_PKG \fP
 Should a package be replaced? 
 .TP
-\fB\fIALPM_QUESTION_CONFLICT_PKG \fP\fP
+\f(BIALPM_QUESTION_CONFLICT_PKG \fP
 Should a conflicting package be removed? 
 .TP
-\fB\fIALPM_QUESTION_CORRUPTED_PKG \fP\fP
+\f(BIALPM_QUESTION_CORRUPTED_PKG \fP
 Should a corrupted package be deleted? 
 .TP
-\fB\fIALPM_QUESTION_REMOVE_PKGS \fP\fP
+\f(BIALPM_QUESTION_REMOVE_PKGS \fP
 Should unresolvable targets be removed from the transaction? 
 .TP
-\fB\fIALPM_QUESTION_SELECT_PROVIDER \fP\fP
+\f(BIALPM_QUESTION_SELECT_PROVIDER \fP
 Provider selection\&. 
 .TP
-\fB\fIALPM_QUESTION_IMPORT_KEY \fP\fP
+\f(BIALPM_QUESTION_IMPORT_KEY \fP
 Should a key be imported? 
 .SH "Author"
 .PP 

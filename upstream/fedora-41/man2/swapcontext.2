@@ -1,0 +1,63 @@
+.\" Copyright (C) 2004 IBM Corporation
+.\" This file is distributed according to the GNU General Public License.
+.\" See the file COPYING in the top level source directory for details.
+.\"
+ 
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "SWAPCONTEXT" 2 "2004-March-12" "Linux 2.6" "Linux 2.6 Programmer's Guide"
+.SH NAME
+swapcontext \- Swap out old context with new context
+.SH "SYNOPSIS"
+.ad l
+.hy 0
+.HP 21
+int\ \fBsys_swapcontext\fR\ (struct\ ucontext\ \fI*old_ctx\fR, struct\ ucontext\ \fI*new_ctx\fR, int\ \fIr5\fR, int\ \fIr6\fR, int\ \fIr7\fR, int\ \fIr8\fR, struct\ pt_regs\ \fI*regs\fR);
+.ad
+.hy
+
+.SH "DESCRIPTION"
+
+.PP
+\fBswapcontext\fR swaps out context \fIold_ctx\fR with new context \fInew_ctx\fR. The \fIint r#\fR values have no place in the system call functionality. The \fIregs\fR value indicates the current user register values from the user stack.
+
+.SH "RETURN VALUE"
+
+.PP
+\fBswapcontext\fR returns 0 on success; otherwise, \fBswapcontext\fR returns one of the errors listed in the "Errors" section.
+
+.SH "ERRORS"
+
+.TP
+-EFAULT
+\fIswapcontext\fR could not verify that the memory area pointed to by \fIold_ctx\fR or \fInew_ctx\fR was accessible for the operation.
+
+.TP
+-SIGSEGV
+A fault occurred when the context was being copied into the kernel's image of the user's registers. The should only occur in an out-of-memory situation.
+
+.SH "SEE ALSO"
+.BR getcontext(2),
+.BR sigaction(2),
+.BR sigaltstack(2),
+.BR sigprocmask(2)
+\fB\fR 
+
+.SH AUTHOR
+Niki Rahimi 

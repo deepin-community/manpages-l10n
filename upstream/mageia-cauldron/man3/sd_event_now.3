@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_EVENT_NOW" "3" "" "systemd 249" "sd_event_now"
+.TH "SD_EVENT_NOW" "3" "" "systemd 255" "sd_event_now"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -48,7 +48,7 @@ parameter specifies the clock to retrieve the timestamp for, and is one of
 \fBclock_gettime\fR(2)
 for more information on the various clocks\&. The retrieved timestamp is stored in the
 \fIusec\fR
-parameter, in \(mcs since the clock\*(Aqs epoch\&. If this function is invoked before the first event loop iteration, the current time is returned, as reported by
+parameter, in μs since the clock\*(Aqs epoch\&. If this function is invoked before the first event loop iteration, the current time is returned, as reported by
 \fBclock_gettime()\fR\&. To distinguish this case from a regular invocation the return value will be positive, and zero when the returned timestamp refers to an actual event loop iteration\&.
 .SH "RETURN VALUE"
 .PP
@@ -75,13 +75,24 @@ Unsupported clock type\&.
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The event loop object was created in a different process\&.
+The event loop object was created in a different process, library or module instance\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_event_now()\fR
+was added in version 229\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

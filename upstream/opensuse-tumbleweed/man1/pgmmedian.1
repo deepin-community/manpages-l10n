@@ -3,7 +3,7 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "Pgmmedian User Manual" 0 "28 August 2005" "netpbm documentation"
+.TH "Pgmmedian User Manual" 0 "20 January 2022" "netpbm documentation"
 
 .SH NAME
 pgmmedian - apply a median filter to a PGM file
@@ -43,6 +43,12 @@ the output is the median of a certain set of pixels in the neighborhood of the
 corresponding input pixel.  The effect is to eliminate locally extreme values.
 Such pixels typically show up as speckles.
 .PP
+Pixels at the edges of the image, pixels where the convolution kernel would
+go off the edge of the image, are just copied.  For example, if \fB-height\fP
+is 9, the first 4 and last 4 rows of the input image are just copied to the
+output.
+  
+.PP
 See the \fB-type\fP and \fB-cutoff\fP options for information on
 how \fBpgmmedian\fP chooses between the two methods.
 
@@ -79,11 +85,15 @@ The default is 250
 \fB-width=\fP\fIn\fP
 Width of the median mask to apply.
 .sp
+Maximum allowed is the width of the input image.
+.sp
 Default is 3.
 
 .TP
 \fB-height=\fP\fIn\fP
 Height of the median mask to apply.
+.sp
+Maximum allowed is the height of the input image.
 .sp
 Default is 3.
 

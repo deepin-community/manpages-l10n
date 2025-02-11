@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_PROCESS" "3" "" "systemd 249" "sd_bus_process"
+.TH "SD_BUS_PROCESS" "3" "" "systemd 257" "sd_bus_process"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -33,9 +33,9 @@ sd_bus_process \- Drive the connection
 .SH "DESCRIPTION"
 .PP
 \fBsd_bus_process()\fR
-drives the connection between the client and the message bus\&. That is, it handles connecting, authentication, and message processing\&. When invoked pending I/O work is executed, and queued incoming messages are dispatched to registered callbacks\&. Each time it is invoked a single operation is executed\&. It returns zero when no operations were pending and positive if a message was processed\&. When zero is returned the caller should synchronously poll for I/O events before calling into
+drives the connection between the client and the message bus\&. That is, it handles connecting, authentication, and processing of messages\&. When invoked, pending I/O work is executed, and queued incoming messages are dispatched to registered callbacks\&. Each time it is invoked a single operation is executed\&. It returns zero when no operations were pending and positive if a message was processed\&. When zero is returned the caller should poll for I/O events before calling into
 \fBsd_bus_process()\fR
-again\&. For that either use the simple, synchronous
+again\&. For that either use the simple, blocking
 \fBsd_bus_wait\fR(3)
 call, or hook up the bus connection object to an external or manual event loop using
 \fBsd_bus_get_fd\fR(3)\&.
@@ -52,10 +52,16 @@ is set to this message\&. The caller owns a reference to this message and should
 when the message is no longer needed\&. If
 \fIret\fR
 is not
-\fBNULL\fR, progress was made, but no message was processed,
+\fBNULL\fR
+and progress was made, but no message was processed,
 \fI*ret\fR
 is set to
-\fBNULL\fR\&.
+\fBNULL\fR\&. Note that only messages not already handled by the various types of registered message handlers (i\&.e\&. by filters registered via
+\fBsd_bus_add_filter\fR(3), object handlers registered via
+\fBsd_bus_add_object\fR(3), matches registered via
+\fBsd_bus_add_match\fR(3), and related) will be returned through this parameter\&. Also note that if such a message handler returns a zero return value (as opposed to some value > 0) an incoming message will not be considered handled, and be passed to other suitable handlers (until one returns > > 0), or returned by
+\fBsd_bus_process()\fR
+(in case none returns > 0)\&.
 .PP
 If the bus object is connected to an
 \fBsd-event\fR(3)
@@ -101,15 +107,20 @@ has been called from a callback function that itself was called by
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_process()\fR
+was added in version 221\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-bus\fR(3),
-\fBsd_bus_wait\fR(3),
-\fBsd_bus_get_fd\fR(3),
-\fBsd_bus_message_unref\fR(3),
-\fBsd-event\fR(3),
-\fBsd_bus_attach_event\fR(3)
+\fBsystemd\fR(1), \fBsd-bus\fR(3), \fBsd_bus_wait\fR(3), \fBsd_bus_get_fd\fR(3), \fBsd_bus_message_unref\fR(3), \fBsd-event\fR(3), \fBsd_bus_attach_event\fR(3)

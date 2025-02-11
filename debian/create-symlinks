@@ -1,0 +1,183 @@
+#!/bin/bash
+
+function compare_and_link() 
+{
+    if [ ! $1 == $2 ]; then
+	echo ln -s $1 $2
+	ln -s $1 $2
+	mv -iv $2 ../../../../../../../$3/
+    fi
+}
+
+function determine_pairs()
+{
+    pushd debian/tmp/usr/share/man/$1/
+    if [ $1 == "pt_BR" ]; then
+	lang="pt-br"
+    else
+	lang=$1
+    fi
+    tdir=debian/manpages-$lang/usr/share/man/$1/
+    tdevdir=debian/manpages-$lang-dev/usr/share/man/$1/
+
+
+#for md in $(find . -name "man*" -type d); do
+for mn in $(seq 1 8); do
+    md=man$mn
+    if [ -d $md ]; then
+	cd $md
+	if [ $mn == "2" ] || [ $mn == "3" ]; then
+	    targetdir=$tdevdir/$md
+	else
+	    targetdir=$tdir/$md
+	fi
+    #echo $md
+	for mp in $(find . -name "*.gz"); do
+	    zgrep -A4 " $2" $mp | tail -n+2 | sed 's/\\-/-/g' | sed 's/\.Nm//'| sed 's/\.Nd/-/' | sed 's/\\(em/-/' | tr '\n' ' '|sed 's/ - .*//'|sed 's/ — .*//' |grep "," | sed 's/ *,/,/g' > /tmp/lbar
+	    if [ -s /tmp/lbar ]; then
+		mpb=$(basename $mp)
+		while IFS="," read -r f01 f02 f03 f04 f05 f06 f07 f08 f09 f10 f11 f12 f13 f14 f15 f16 f17 f18 f19 f20 f21 f22 f23 f24 f25 f26 f27 f28 f29 f30
+		do
+		    #echo $mp $f01.$mn."gz"
+		    compare_and_link $mpb $f01.$mn."gz" $targetdir
+		    #echo $mp $f02.$mn."gz"
+		    compare_and_link $mpb $f02.$mn."gz" $targetdir
+		    if [ ! $f03 == "" ]; then
+			#echo $mp $f03.$mn."gz"
+			compare_and_link $mpb $f03.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f04 == "" ]; then
+			#echo $mp $f04.$mn."gz"
+			compare_and_link $mpb $f04.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f05 == "" ]; then
+			#echo $mp $f05.$mn."gz"
+			compare_and_link $mpb $f05.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f06 == "" ]; then
+			#echo $mp $f06.$mn."gz"
+			compare_and_link $mpb $f06.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f07 == "" ]; then
+			#echo $mp $f07.$mn."gz"
+			compare_and_link $mpb $f07.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f08 == "" ]; then
+			#echo $mp $f08.$mn."gz"
+			compare_and_link $mpb $f08.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f09 == "" ]; then
+			#echo $mp $f09.$mn."gz"
+			compare_and_link $mpb $f09.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f10 == "" ]; then
+			#echo $mp $f10.$mn."gz"
+			compare_and_link $mpb $f10.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f11 == "" ]; then
+			#echo $mp $f11.$mn."gz"
+			compare_and_link $mpb $f11.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f12 == "" ]; then
+			#echo $mp $f12.$mn."gz"
+			compare_and_link $mpb $f12.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f13 == "" ]; then
+			#echo $mp $f13.$mn."gz"
+			compare_and_link $mpb $f13.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f14 == "" ]; then
+			#echo $mp $f14.$mn."gz"
+			compare_and_link $mpb $f14.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f15 == "" ]; then
+			#echo $mp $f15.$mn."gz"
+			compare_and_link $mpb $f15.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f16 == "" ]; then
+			#echo $mp $f16.$mn."gz"
+			compare_and_link $mpb $f16.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f17 == "" ]; then
+			#echo $mp $f17.$mn."gz"
+			compare_and_link $mpb $f17.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f18 == "" ]; then
+			#echo $mp $f18.$mn."gz"
+			compare_and_link $mpb $f18.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f19 == "" ]; then
+			#echo $mp $f19.$mn."gz"
+			compare_and_link $mpb $f19.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f20 == "" ]; then
+			#echo $mp $f20.$mn."gz"
+			compare_and_link $mpb $f20.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f21 == "" ]; then
+			#echo $mp $f21.$mn."gz"
+			compare_and_link $mpb $f21.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f22 == "" ]; then
+			#echo $mp $f22.$mn."gz"
+			compare_and_link $mpb $f22.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f23 == "" ]; then
+			#echo $mp $f23.$mn."gz"
+			compare_and_link $mpb $f23.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f24 == "" ]; then
+			#echo $mp $f24.$mn."gz"
+			compare_and_link $mpb $f24.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f25 == "" ]; then
+			#echo $mp $f25.$mn."gz"
+			compare_and_link $mpb $f25.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f26 == "" ]; then
+			#echo $mp $f26.$mn."gz"
+			compare_and_link $mpb $f26.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f27 == "" ]; then
+			#echo $mp $f27.$mn."gz"
+			compare_and_link $mpb $f27.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f28 == "" ]; then
+			#echo $mp $f28.$mn."gz"
+			compare_and_link $mpb $f28.$mn."gz" $targetdir
+		    fi
+		    if [ ! $f29 == "" ]; then
+			#echo $mp $f29.$mn."gz"
+			compare_and_link $mpb $f29.$mn."gz" $targetdir
+		    fi
+		done < /tmp/lbar
+	    fi
+	done
+	cd ..
+    fi
+done
+popd
+rm -f /tmp/lbar
+}
+
+determine_pairs cs JMÉNO
+determine_pairs da NAVN
+determine_pairs de BEZEICHNUNG
+determine_pairs el ONOMA
+determine_pairs es NOMBRE
+# determine_pairs fa // So far no multi name man pages
+determine_pairs fi NIMI
+determine_pairs fr NOM
+determine_pairs hu NÉV
+determine_pairs id NAMA
+determine_pairs it NOME
+# determine_pairs mk // So far no multi name man pages
+determine_pairs nb NAVN
+determine_pairs nl NAAM
+determine_pairs pl NAZWA
+determine_pairs pt_BR NOME
+determine_pairs ro NUME
+# determine_pairs sr // So far no multi name man pages
+determine_pairs sv NAMN
+determine_pairs uk НАЗВА
+# determine_pairs vi // So far no multi name man pages

@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-INHIBIT" "1" "" "systemd 249" "systemd-inhibit"
+.TH "SYSTEMD\-INHIBIT" "1" "" "systemd 255" "systemd-inhibit"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -48,7 +48,7 @@ Takes a colon\-separated list of one or more operations to inhibit:
 "handle\-power\-key",
 "handle\-suspend\-key",
 "handle\-hibernate\-key",
-"handle\-lid\-switch", for inhibiting reboot/power\-off/halt/kexec, suspending/hibernating, the automatic idle detection, or the low\-level handling of the power/sleep key and the lid switch, respectively\&. If omitted, defaults to
+"handle\-lid\-switch", for inhibiting reboot/power\-off/halt/kexec/soft\-reboot, suspending/hibernating, the automatic idle detection, or the low\-level handling of the power/sleep key and the lid switch, respectively\&. If omitted, defaults to
 "idle:sleep:shutdown"\&.
 .RE
 .PP
@@ -193,6 +193,12 @@ The destination for log messages\&. One of
 (disable log output)\&.
 .RE
 .PP
+\fI$SYSTEMD_LOG_RATELIMIT_KMSG\fR
+.RS 4
+Whether to ratelimit kmsg or not\&. Takes a boolean\&. Defaults to
+"true"\&. If disabled, systemd will not ratelimit messages written to kmsg\&.
+.RE
+.PP
 \fI$SYSTEMD_PAGER\fR
 .RS 4
 Pager to use when
@@ -209,6 +215,13 @@ and
 "cat"
 is equivalent to passing
 \fB\-\-no\-pager\fR\&.
+.sp
+Note: if
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set,
+\fI$SYSTEMD_PAGER\fR
+(as well as
+\fI$PAGER\fR) will be silently ignored\&.
 .RE
 .PP
 \fI$SYSTEMD_LESS\fR
@@ -244,6 +257,12 @@ will be ignored by the executable, and needs to be handled by the pager\&.
 This option instructs the pager to not send termcap initialization and deinitialization strings to the terminal\&. It is set by default to allow command output to remain visible in the terminal even after the pager exits\&. Nevertheless, this prevents some pager functionality from working, in particular paged output cannot be scrolled with the mouse\&.
 .RE
 .sp
+Note that setting the regular
+\fI$LESS\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
+.sp
 See
 \fBless\fR(1)
 for more discussion\&.
@@ -255,6 +274,12 @@ Override the charset passed to
 \fBless\fR
 (by default
 "utf\-8", if the invoking terminal is determined to be UTF\-8 compatible)\&.
+.sp
+Note that setting the regular
+\fI$LESSCHARSET\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
 .RE
 .PP
 \fI$SYSTEMD_PAGERSECURE\fR

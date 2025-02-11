@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_JOURNAL_NEXT" "3" "" "systemd 249" "sd_journal_next"
+.TH "SD_JOURNAL_NEXT" "3" "" "systemd 257" "sd_journal_next"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,7 +20,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-sd_journal_next, sd_journal_previous, sd_journal_next_skip, sd_journal_previous_skip, SD_JOURNAL_FOREACH, SD_JOURNAL_FOREACH_BACKWARDS \- Advance or set back the read pointer in the journal
+sd_journal_next, sd_journal_previous, sd_journal_step_one, sd_journal_next_skip, sd_journal_previous_skip, SD_JOURNAL_FOREACH, SD_JOURNAL_FOREACH_BACKWARDS \- Advance or set back the read pointer in the journal
 .SH "SYNOPSIS"
 .sp
 .ft B
@@ -32,6 +32,8 @@ sd_journal_next, sd_journal_previous, sd_journal_next_skip, sd_journal_previous_
 .BI "int sd_journal_next(sd_journal\ *" "j" ");"
 .HP \w'int\ sd_journal_previous('u
 .BI "int sd_journal_previous(sd_journal\ *" "j" ");"
+.HP \w'int\ sd_journal_step_one('u
+.BI "int sd_journal_step_one(sd_journal\ *" "j" ", int\ " "advanced" ");"
 .HP \w'int\ sd_journal_next_skip('u
 .BI "int sd_journal_next_skip(sd_journal\ *" "j" ", uint64_t\ " "skip" ");"
 .HP \w'int\ sd_journal_previous_skip('u
@@ -51,6 +53,25 @@ Similarly,
 \fBsd_journal_previous()\fR
 sets the read pointer back one entry\&.
 .PP
+\fBsd_journal_step_one()\fR
+also moves the read pointer\&. If the current location is the head of the journal, e\&.g\&. when this is called following
+\fBsd_journal_seek_head()\fR, then this is equivalent to
+\fBsd_journal_next()\fR, and the argument
+\fIadvanced\fR
+will be ignored\&. Similarly, if the current location is the tail of the journal, e\&.g\&. when this is called following
+\fBsd_journal_seek_tail()\fR, then this is equivalent to
+\fBsd_journal_previous()\fR, and
+\fIadvanced\fR
+will be ignored\&. Otherwise, this is equivalent to
+\fBsd_journal_next()\fR
+when
+\fIadvanced\fR
+is non\-zero, and
+\fBsd_journal_previous()\fR
+when
+\fIadvanced\fR
+is zero\&.
+.PP
 \fBsd_journal_next_skip()\fR
 and
 \fBsd_journal_previous_skip()\fR
@@ -58,7 +79,7 @@ advance/set back the read pointer by multiple entries at once, as specified in t
 \fIskip\fR
 parameter\&. The
 \fIskip\fR
-parameter must be less than or equal to 2147483647 (2^31\-1)\&.
+parameter must be less than or equal to 2147483647 (2\(S3\(S1\-1)\&.
 .PP
 The journal is strictly ordered by reception time, and hence advancing to the next entry guarantees that the entry then pointing to is later in time than then previous one, or has the same timestamp\&.
 .PP
@@ -88,7 +109,7 @@ reach the end/beginning of the journal they will return 0, instead of 1 when the
 .PP
 All functions listed here are thread\-agnostic and only a single specific thread may operate on a given object during its entire lifetime\&. It\*(Aqs safe to allocate multiple independent objects and use each from a specific thread in parallel\&. However, it\*(Aqs not safe to allocate such an object in one thread, and operate or free it from any other, even if locking is used to ensure these threads don\*(Aqt operate on it at the very same time\&.
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
 .SH "EXAMPLES"
@@ -99,13 +120,16 @@ Iterating through the journal:
 .RS 4
 .\}
 .nf
+/* SPDX\-License\-Identifier: MIT\-0 */
+
+#include <errno\&.h>
 #include <stdio\&.h>
-#include <string\&.h>
 #include <systemd/sd\-journal\&.h>
 
 int main(int argc, char *argv[]) {
   int r;
   sd_journal *j;
+
   r = sd_journal_open(&j, SD_JOURNAL_LOCAL_ONLY);
   if (r < 0) {
     fprintf(stderr, "Failed to open journal: %s\en", strerror(\-r));
@@ -130,11 +154,18 @@ int main(int argc, char *argv[]) {
 .if n \{\
 .RE
 .\}
+.SH "HISTORY"
+.PP
+\fBsd_journal_next()\fR,
+\fBsd_journal_previous()\fR,
+\fBsd_journal_next_skip()\fR,
+\fBsd_journal_previous_skip()\fR,
+\fBSD_JOURNAL_FOREACH()\fR, and
+\fBSD_JOURNAL_FOREACH_BACKWARDS()\fR
+were added in version 187\&.
+.PP
+\fBsd_journal_step_one()\fR
+was added in version 254\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-journal\fR(3),
-\fBsd_journal_open\fR(3),
-\fBsd_journal_get_data\fR(3),
-\fBsd_journal_get_realtime_usec\fR(3),
-\fBsd_journal_get_cursor\fR(3)
+\fBsystemd\fR(1), \fBsd-journal\fR(3), \fBsd_journal_open\fR(3), \fBsd_journal_get_data\fR(3), \fBsd_journal_get_realtime_usec\fR(3), \fBsd_journal_get_cursor\fR(3)

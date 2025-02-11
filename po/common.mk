@@ -23,7 +23,7 @@ MOSTLYCLEANFILES = $(manpages)
 
 # Common rules for all manpage sections
 $(distribution)/%: %.po
-	$(srcdir)/generate-manpage.sh $(distribution) $<
+	$(srcdir)/../generate-manpage.sh $(distribution) $<
 
 # Generate all localized manpages for given distribution
 all-local: $(manpages)
@@ -62,11 +62,11 @@ uninstall-hook:
 # Reformat all .po files and commit changes
 .PHONY: reformat
 reformat:
-	$(srcdir)/format-po.sh ; \
+	$(srcdir)/../format-po.sh ; \
 	git commit -m "Reformat .po files, no content changes" . || true
 
 # Reformat all .po files and commit changes
 .PHONY: update-po
 update-po: reformat
-	$(srcdir)/update-translations.sh ; \
+	$(srcdir)/../update-translations.sh ; \
 	git commit -m "Update .po files from templates and common messages" . || true

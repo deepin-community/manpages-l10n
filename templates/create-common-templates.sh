@@ -40,7 +40,7 @@ for step in $steps; do
 # Common msgids
 msgid ""
 msgstr ""
-"Project-Id-Version: manpages-de\n"
+"Project-Id-Version: manpages-l10n\n"
 "POT-Creation-Date: CURRENT_DATE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"

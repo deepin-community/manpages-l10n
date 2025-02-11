@@ -1,28 +1,9 @@
+'\" t
 .\" Copyright 1993 David Metcalfe (david@prism.demon.co.uk)
 .\" and Copyright 2008, Linux Foundation, written by Michael Kerrisk
 .\"     <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" References consulted:
 .\"     Linux libc source code
@@ -32,31 +13,32 @@
 .\" Modified 2002-07-27 by Walter Harms
 .\" 	(walter.harms@informatik.uni-oldenburg.de)
 .\"
-.TH FMOD 3  2021-03-22 "" "Linux Programmer's Manual"
+.TH fmod 3 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 fmod, fmodf, fmodl \- floating-point remainder function
+.SH LIBRARY
+Math library
+.RI ( libm ", " \-lm )
 .SH SYNOPSIS
 .nf
 .B #include <math.h>
-.PP
+.P
 .BI "double fmod(double " x ", double " y );
 .BI "float fmodf(float " x ", float " y );
 .BI "long double fmodl(long double " x ", long double " y );
 .fi
-.PP
-Link with \fI\-lm\fP.
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR fmodf (),
 .BR fmodl ():
 .nf
     _ISOC99_SOURCE || _POSIX_C_SOURCE >= 200112L
         || /* Since glibc 2.19: */ _DEFAULT_SOURCE
-        || /* Glibc <= 2.19: */ _BSD_SOURCE || _SVID_SOURCE
+        || /* glibc <= 2.19: */ _BSD_SOURCE || _SVID_SOURCE
 .fi
 .SH DESCRIPTION
 These functions compute the floating-point remainder of dividing
@@ -64,7 +46,7 @@ These functions compute the floating-point remainder of dividing
 by
 .IR y .
 The return value is
-.IR x
+.I x
 \-
 .I n
 *
@@ -76,6 +58,23 @@ is the quotient of
 /
 .IR y ,
 rounded toward zero to an integer.
+.P
+To obtain the modulus, more specifically, the Least Positive Residue,
+you will need to adjust the result from fmod like so:
+.P
+.in +4n
+.nf
+z = fmod(x, y);
+if (z < 0)
+	z += y;
+.fi
+.in
+.P
+An alternate way to express this is with
+.IR "fmod(fmod(x, y) + y, y)" ,
+but the second
+.BR fmod ()
+usually costs way more than the one branch.
 .SH RETURN VALUE
 On success, these
 functions return the value \fIx\fP\ \-\ \fIn\fP*\fIy\fP,
@@ -85,25 +84,25 @@ such that the returned value has the same sign as
 .I x
 and a magnitude less than the magnitude of
 .IR y .
-.PP
+.P
 If
 .I x
 or
 .I y
 is a NaN, a NaN is returned.
-.PP
+.P
 If
 .I x
 is an infinity,
 a domain error occurs, and
 a NaN is returned.
-.PP
+.P
 If
 .I y
 is zero,
 a domain error occurs, and
 a NaN is returned.
-.PP
+.P
 If
 .I x
 is +0 (\-0), and
@@ -114,13 +113,13 @@ See
 .BR math_error (7)
 for information on how to determine whether an error has occurred
 when calling these functions.
-.PP
+.P
 The following errors can occur:
 .TP
 Domain error: \fIx\fP is an infinity
 .I errno
 is set to
-.BR EDOM
+.B EDOM
 (but see BUGS).
 An invalid floating-point exception
 .RB ( FE_INVALID )
@@ -138,45 +137,47 @@ is raised.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR fmod (),
 .BR fmodf (),
 .BR fmodl ()
 T}	Thread safety	MT-Safe
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
-C99, POSIX.1-2001, POSIX.1-2008.
-.PP
+.SH STANDARDS
+C11, POSIX.1-2008.
+.SH HISTORY
+C99, POSIX.1-2001.
+.P
 The variant returning
 .I double
 also conforms to
 SVr4, 4.3BSD, C89.
 .SH BUGS
-Before version 2.10, the glibc implementation did not set
-.\" http://sources.redhat.com/bugzilla/show_bug.cgi?id=6784
+Before glibc 2.10, the glibc implementation did not set
+.\" https://www.sourceware.org/bugzilla/show_bug.cgi?id=6784
 .I errno
 to
 .B EDOM
 when a domain error occurred for an infinite
 .IR x .
+.SH EXAMPLES
+The call
+.I fmod(372, 360)
+returns 348.
+.P
+The call
+.I fmod(-372, 360)
+returns -12.
+.P
+The call
+.I fmod(-372, -360)
+also returns -12.
 .SH SEE ALSO
 .BR remainder (3)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

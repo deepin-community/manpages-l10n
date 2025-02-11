@@ -1,0 +1,143 @@
+'\" t
+.\" Copyright 2022 Alejandro Colomar <alx@kernel.org>
+.\" SPDX-License-Identifier:  Linux-man-pages-copyleft
+.\"
+.TH scanf 3 2022-12-29 "Linux man-pages 6.03"
+.SH NAME
+scanf, fscanf, vscanf, vfscanf \- input FILE format conversion
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
+.SH SYNOPSIS
+.nf
+.B #include <stdio.h>
+.PP
+.BI "int scanf(const char *restrict " format ", ...);"
+.BI "int fscanf(FILE *restrict " stream ,
+.BI "           const char *restrict " format ", ...);"
+.PP
+.B #include <stdarg.h>
+.PP
+.BI "int vscanf(const char *restrict " format ", va_list " ap );
+.BI "int vfscanf(FILE *restrict " stream ,
+.BI "           const char *restrict " format ", va_list " ap );
+.fi
+.PP
+.RS -4
+Feature Test Macro Requirements for glibc (see
+.BR feature_test_macros (7)):
+.RE
+.PP
+.BR vscanf (),
+.BR vfscanf ():
+.nf
+    _ISOC99_SOURCE || _POSIX_C_SOURCE >= 200112L
+.fi
+.SH DESCRIPTION
+The
+.BR scanf ()
+family of functions scans input like
+.BR sscanf (3),
+but read from a
+.IR FILE .
+It is very difficult to use these functions correctly,
+and it is preferable to read entire lines with
+.BR fgets (3)
+or
+.BR getline (3)
+and parse them later with
+.BR sscanf (3)
+or more specialized functions such as
+.BR strtol (3).
+.PP
+The
+.BR scanf ()
+function reads input from the standard input stream
+.I stdin
+and
+.BR fscanf ()
+reads input from the stream pointer
+.IR stream .
+.PP
+The
+.BR vfscanf ()
+function is analogous to
+.BR vfprintf (3)
+and reads input from the stream pointer
+.I stream
+using a variable argument list of pointers (see
+.BR stdarg (3).
+The
+.BR vscanf ()
+function is analogous to
+.BR vprintf (3)
+and reads from the standard input.
+.SH RETURN VALUE
+On success, these functions return the number of input items
+successfully matched and assigned;
+this can be fewer than provided for,
+or even zero, in the event of an early matching failure.
+.PP
+The value
+.B EOF
+is returned if the end of input is reached before either the first
+successful conversion or a matching failure occurs.
+.B EOF
+is also returned if a read error occurs,
+in which case the error indicator for the stream (see
+.BR ferror (3))
+is set, and
+.I errno
+is set to indicate the error.
+.SH ERRORS
+.TP
+.B EAGAIN
+The file descriptor underlying
+.I stream
+is marked nonblocking, and the read operation would block.
+.TP
+.B EBADF
+The file descriptor underlying
+.I stream
+is invalid, or not open for reading.
+.TP
+.B EILSEQ
+Input byte sequence does not form a valid character.
+.TP
+.B EINTR
+The read operation was interrupted by a signal; see
+.BR signal (7).
+.TP
+.B EINVAL
+Not enough arguments; or
+.I format
+is NULL.
+.TP
+.B ENOMEM
+Out of memory.
+.SH ATTRIBUTES
+For an explanation of the terms used in this section, see
+.BR attributes (7).
+.ad l
+.nh
+.TS
+allbox;
+lbx lb lb
+l l l.
+Interface	Attribute	Value
+T{
+.BR scanf (),
+.BR fscanf (),
+.BR vscanf (),
+.BR vfscanf ()
+T}	Thread safety	MT-Safe locale
+.TE
+.hy
+.ad
+.sp 1
+.SH STANDARDS
+These functions conform to C99 and POSIX.1-2001.
+.SH SEE ALSO
+.BR fgets (3),
+.BR getline (3),
+.BR sscanf (3)

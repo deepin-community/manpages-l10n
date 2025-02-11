@@ -1,20 +1,6 @@
 .\" Copyright (c) International Business Machines Corp., 2006
 .\"
-.\" %%%LICENSE_START(GPLv2+_SW_3_PARA)
-.\" This program is free software; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
-.\"
-.\" This program is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-.\" the GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
 .\" HISTORY:
 .\" 2005-09-28, created by Arnd Bergmann <arndb@de.ibm.com>
@@ -23,18 +9,22 @@
 .\" 2007-09-28, updates for newer kernels, added example
 .\"             by Jeremy Kerr <jk@ozlabs.org>
 .\"
-.TH SPU_RUN 2 2021-03-22 Linux "Linux Programmer's Manual"
+.TH spu_run 2 2024-06-15 "Linux man-pages (unreleased)"
 .SH NAME
 spu_run \- execute an SPU context
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .BR "#include <sys/spu.h>" "          /* Definition of " SPU_* " constants */"
 .BR "#include <sys/syscall.h>" "      /* Definition of " SYS_* " constants */"
 .B #include <unistd.h>
-.PP
-.BI "int spu_run(int " fd ", uint32_t *" npc ", uint32_t *" event );
+.P
+.BI "int syscall(SYS_spu_run, int " fd ", uint32_t *" npc \
+", uint32_t *" event );
 .fi
-.PP
+.P
 .IR Note :
 glibc provides no wrapper for
 .BR spu_run (),
@@ -54,7 +44,7 @@ that refers to a specific SPU context.
 When the context gets scheduled to a physical SPU,
 it starts execution at the instruction pointer passed in
 .IR npc .
-.PP
+.P
 Execution of SPU code happens synchronously, meaning that
 .BR spu_run ()
 blocks while the SPU is still running.
@@ -63,7 +53,7 @@ to execute SPU code in parallel with other code on either the
 main CPU or other SPUs, a new thread of execution must be created
 first (e.g., using
 .BR pthread_create (3)).
-.PP
+.P
 When
 .BR spu_run ()
 returns, the current value of the SPU program counter is written to
@@ -73,7 +63,7 @@ so successive calls to
 can use the same
 .I npc
 pointer.
-.PP
+.P
 The
 .I event
 argument provides a buffer for an extended status code.
@@ -83,7 +73,7 @@ context was created with the
 flag, then this buffer is populated by the Linux kernel before
 .BR spu_run ()
 returns.
-.PP
+.P
 The status code may be one (or more) of the following constants:
 .TP
 .B SPE_EVENT_DMA_ALIGNMENT
@@ -99,7 +89,7 @@ A DMA storage error occurred.
 .TP
 .B SPE_EVENT_SPE_ERROR
 An illegal instruction was executed.
-.PP
+.P
 NULL
 is a valid value for the
 .I event
@@ -114,24 +104,24 @@ register.
 On failure, it returns \-1 and sets
 .I errno
 is set to indicate the error.
-.PP
+.P
 The
 .I spu_status
 register value is a bit mask of status codes and
 optionally a 14-bit code returned from the
-.BR stop-and-signal
+.B stop-and-signal
 instruction on the SPU.
 The bit masks for the status codes
 are:
 .TP
 .B 0x02
 SPU was stopped by a
-.BR stop-and-signal
+.B stop-and-signal
 instruction.
 .TP
 .B 0x04
 SPU was stopped by a
-.BR halt
+.B halt
 instruction.
 .TP
 .B 0x08
@@ -148,10 +138,10 @@ SPU has tried to access an invalid channel.
 .TP
 .B 0x3fff0000
 The bits masked with this value contain the code returned from a
-.BR stop-and-signal
+.B stop-and-signal
 instruction.
 These bits are valid only if the 0x02 bit is set.
-.PP
+.P
 If
 .BR spu_run ()
 has not returned an error, one or more bits among the lower eight
@@ -191,14 +181,10 @@ resulting from a Memory Flow Controller (MFC) direct memory access.
 The functionality is not provided by the current system, because
 either the hardware does not provide SPUs or the spufs module is not
 loaded.
-.SH VERSIONS
-The
-.BR spu_run ()
-system call was added to Linux in kernel 2.6.16.
-.SH CONFORMING TO
-This call is Linux-specific and implemented only by the PowerPC
-architecture.
-Programs using this system call are not portable.
+.SH STANDARDS
+Linux on PowerPC.
+.SH HISTORY
+Linux 2.6.16.
 .SH NOTES
 .BR spu_run ()
 is meant to be used from libraries that implement a more abstract
@@ -212,59 +198,59 @@ The following is an example of running a simple, one-instruction SPU
 program with the
 .BR spu_run ()
 system call.
-.PP
+.P
+.\" SRC BEGIN (spu_run.c)
 .EX
-#include <stdlib.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <sys/types.h>
+#include <err.h>
 #include <fcntl.h>
-
-#define handle_error(msg) \e
-    do { perror(msg); exit(EXIT_FAILURE); } while (0)
-
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+\&
 int main(void)
 {
-    int context, fd, spu_status;
-    uint32_t instruction, npc;
-
-    context = spu_create("/spu/example\-context", 0, 0755);
+    int       context, fd, spu_status;
+    uint32_t  instruction, npc;
+\&
+    context = syscall(SYS_spu_create, "/spu/example\-context", 0, 0755);
     if (context == \-1)
-        handle_error("spu_create");
-
+        err(EXIT_FAILURE, "spu_create");
+\&
     /*
-     * Write a \(aqstop 0x1234\(aq instruction to the SPU\(aqs
+     * Write a \[aq]stop 0x1234\[aq] instruction to the SPU\[aq]s
      * local store memory.
      */
     instruction = 0x00001234;
-
+\&
     fd = open("/spu/example\-context/mem", O_RDWR);
     if (fd == \-1)
-        handle_error("open");
+        err(EXIT_FAILURE, "open");
     write(fd, &instruction, sizeof(instruction));
-
+\&
     /*
      * set npc to the starting instruction address of the
      * SPU program. Since we wrote the instruction at the
      * start of the mem file, the entry point will be 0x0.
      */
     npc = 0;
-
-    spu_status = spu_run(context, &npc, NULL);
+\&
+    spu_status = syscall(SYS_spu_run, context, &npc, NULL);
     if (spu_status == \-1)
-        handle_error("open");
-
+        err(EXIT_FAILURE, "open");
+\&
     /*
-     * We should see a status code of 0x1234002:
+     * We should see a status code of 0x12340002:
      *   0x00000002 (spu was stopped due to stop\-and\-signal)
      * | 0x12340000 (the stop\-and\-signal code)
      */
-    printf("SPU Status: %#08x\en", spu_status);
-
+    printf("SPU Status: %#08x\[rs]n", spu_status);
+\&
     exit(EXIT_SUCCESS);
 }
 .EE
+.\" SRC END
 .\" .SH AUTHORS
 .\" Arnd Bergmann <arndb@de.ibm.com>, Jeremy Kerr <jk@ozlabs.org>
 .SH SEE ALSO

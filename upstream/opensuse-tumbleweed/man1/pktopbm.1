@@ -3,7 +3,7 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "Pktopbm User Manual" 0 "06 August 1990" "netpbm documentation"
+.TH "Pktopbm User Manual" 0 "15 September 2023" "netpbm documentation"
 
 .SH NAME
 
@@ -12,7 +12,7 @@ pktopbm - convert packed (PK) format font into PBM
 .UN synopsis
 .SH SYNOPSIS
 
-pktopbm pkfile[.pk] [ -x width ] [ -y height ] [-c num] pbmfile ...
+pktopbm pkfile [ -x width ] [ -y height ] [-c num] pbmfile ...
 
 .UN description
 .SH DESCRIPTION
@@ -44,18 +44,32 @@ command line options:
 
 
 .TP
-\fB-c\fP \fInum\fP
-Sets the character number of the next bitmap written to \fInum\fP.
+\fB-character\fP \fInum\fP
+  
+    This is the code point (character number) to which the first
+    specified output file pertains.  Ergo, there is no output for any
+    code point lower than this.
 
 .TP
 \fB-x\fP \fIwidth\fP
-Sets the width of the image in columns.
+  The width of the image in columns.
+
+  The default is what is specified in the font file.
 
 .TP
 \fB-y\fP \fIwidth\fP
-Sets the height of the image in rows.
+The height of the image in rows.  
+
+The default is what is specified in the font file.
 
 
+.UN history
+.SH HISTORY
+.PP
+Before Netpbm 11.04 (September 2023), the program would sometimes add
+  the suffix '.pk' to the specified input file name.  It also
+  let you specify multiple \fB-c\fP options, with each applying to the
+  output file names that came after it.
 
 .UN seealso
 .SH SEE ALSO

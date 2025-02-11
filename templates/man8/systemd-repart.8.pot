@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2021-08-15 11:15+0200\n"
+"POT-Creation-Date: 2024-12-22 07:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. type: TH
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 #, no-wrap
 msgid "SYSTEMD-REPART"
 msgstr ""
 
 #. type: TH
-#: archlinux mageia-cauldron
+#: archlinux
 #, no-wrap
-msgid "systemd 249"
+msgid "systemd 257"
 msgstr ""
 
 #. type: TH
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 #, no-wrap
 msgid "systemd-repart"
 msgstr ""
@@ -38,90 +40,106 @@ msgstr ""
 #.  * MAIN CONTENT STARTS HERE *
 #.  -----------------------------------------------------------------
 #. type: SH
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 #, no-wrap
 msgid "NAME"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-rawhide
 msgid ""
 "systemd-repart, systemd-repart.service - Automatically grow and add "
-"partitions"
+"partitions, and generate disk images (DDIs)\\&."
 msgstr ""
 
 #. type: SH
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 #, no-wrap
 msgid "SYNOPSIS"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<systemd-repart> [OPTIONS...] [I<[BLOCKDEVICE]>...]"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "systemd-repart\\&.service"
 msgstr ""
 
 #. type: SH
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 #, no-wrap
 msgid "DESCRIPTION"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
 msgid ""
-"B<systemd-repart> grows and adds partitions to a partition table, based on "
-"the configuration files described in B<repart.d>(5)\\&."
+"B<systemd-repart> creates partition tables, and adds or grows partitions, "
+"based on the configuration files described in B<repart.d>(5)\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
 msgid ""
-"If invoked with no arguments, it operates on the block device backing the "
-"root file system partition of the running OS, thus growing and adding "
-"partitions of the booted OS image itself\\&. If I<--image=> is used it will "
-"operate on the specified image file\\&. When called in the \"initrd\" it "
+"B<systemd-repart> is used when I<building> OS images, and also when "
+"I<deploying> images to automatically adjust them, during boot, to the system "
+"they are running on\\&. This way the image can be minimal in size and may be "
+"augmented automatically at boot, taking possession of the disk space "
+"available\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"If invoked with no arguments, B<systemd-repart> operates on the block device "
+"backing the root file system partition of the running OS, thus adding and "
+"growing partitions of the booted OS itself\\&. When called in the initrd, it "
 "operates on the block device backing /sysroot/ instead, i\\&.e\\&. on the "
-"block device the system will soon transition into\\&. The systemd-repart\\&."
-"service service is generally run at boot in the initial RAM disk, in order "
-"to augment the partition table of the OS before its partitions are mounted"
-"\\&.  B<systemd-repart> (mostly) operates in a purely incremental mode: it "
-"only grows existing and adds new partitions; it does not shrink, delete or "
-"move existing partitions\\&. The service is intended to be run on every "
-"boot, but when it detects that the partition table already matches the "
-"installed repart\\&.d/*\\&.conf configuration files, it executes no operation"
-"\\&."
+"block device the system will soon transition into\\&. If I<--image=> is "
+"used, it will operate on the specified device or image file\\&. The systemd-"
+"repart\\&.service service is generally run at boot in the initrd, in order "
+"to augment the partition table of the OS before its partitions are "
+"mounted\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
 msgid ""
-"B<systemd-repart> is intended to be used when deploying OS images, to "
-"automatically adjust them to the system they are running on, during first "
-"boot\\&. This way the deployed image can be minimal in size and may be "
-"augmented automatically at boot when needed, taking possession of disk space "
-"available but not yet used\\&. Specifically the following use cases are "
-"among those covered:"
+"B<systemd-repart> operations are mostly incremental: it grows existing "
+"partitions or adds new ones, but does not shrink, delete, or move existing "
+"partitions\\&. The service is intended to be run on every boot, but when it "
+"detects that the partition table already matches the installed repart\\&.d/"
+"*\\&.conf configuration files, it executes no operation\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "The following use cases are among those covered:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "The root partition may be grown to cover the whole available disk space\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
-msgid "A /home/, swap or /srv/ partition can be added\\&."
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "A /home/, swap, or /srv/ partition can be added\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "A second (or third, \\&...) root partition may be added, to cover A/B style "
 "setups where a second version of the root file system is alternatingly used "
@@ -131,113 +149,123 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "The algorithm executed by B<systemd-repart> is roughly as follows:"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
 msgid ""
 "The repart\\&.d/*\\&.conf configuration files are loaded and parsed, and "
-"ordered by filename (without the directory prefix)\\&."
+"ordered by filename (without the directory prefix)\\&. For each "
+"configuration file, drop-in files are loaded from directories with same name "
+"as the configuration file with the suffix \"\\&.d\" added\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
 msgid ""
-"The partition table already existing on the block device is loaded and parsed"
-"\\&."
+"The partition table on the block device is loaded and parsed, if present\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
 msgid ""
-"The existing partitions in the partition table are matched up with the repart"
-"\\&.d/*\\&.conf files by GPT partition type UUID\\&. The first existing "
-"partition of a specific type is assigned the first configuration file "
-"declaring the same type\\&. The second existing partition of a specific type "
-"is then assigned the second configuration file declaring the same type, and "
-"so on\\&. After this iterative assigning is complete any left-over existing "
-"partitions that have no matching configuration file are considered \"foreign"
-"\" and left as they are\\&. And any configuration files for which no "
-"partition currently exists are understood as a request to create such a "
-"partition\\&."
+"The existing partitions in the partition table are matched with the "
+"repart\\&.d/*\\&.conf files by GPT partition type UUID\\&. The first "
+"existing partition of a specific type is assigned the first configuration "
+"file declaring the same type\\&. The second existing partition of a specific "
+"type is then assigned the second configuration file declaring the same type, "
+"and so on\\&. After this iterative assigning is complete, any existing "
+"partitions that have no matching configuration file are considered "
+"\"foreign\" and left as they are\\&. And any configuration files for which "
+"no partition was matched are treated as requests to create a partition\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
-"Taking the size constraints and weights declared in the configuration files "
-"into account, all partitions that shall be created are now allocated to the "
-"disk, taking up all free space, always respecting the size and padding "
-"requests\\&. Similar, existing partitions that are determined to grow are "
-"grown\\&. New partitions are always appended to the end of the existing "
-"partition table, taking the first partition table slot whose index is "
-"greater than the indexes of all existing partitions\\&. Partition table "
-"slots are never reordered and thus partition numbers are ensured to remain "
-"stable\\&. Note that this allocation happens in RAM only, the partition "
-"table on disk is not updated yet\\&."
+"Partitions that shall be created are now allocated on the disk, taking the "
+"size constraints and weights declared in the configuration files into "
+"account\\&. Free space is used within the limits set by size and padding "
+"requests\\&. In addition, existing partitions that should be grown are "
+"grown\\&. New partitions are always appended to the end of the partition "
+"table, taking the first partition table slot whose index is greater than the "
+"indexes of all existing partitions\\&. Partitions are never reordered and "
+"thus partition numbers remain stable\\&. When partitions are created, they "
+"are placed in the smallest area of free space that is large enough to "
+"satisfy the size and padding limits\\&. This means that partitions might "
+"have different order on disk than in the partition table\\&. Note that this "
+"allocation happens in memory only, the partition table on disk is not "
+"updated yet\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "All existing partitions for which configuration files exist and which "
 "currently have no GPT partition label set will be assigned a label, either "
-"explicitly configured in the configuration or (if that\\*(Aqs missing) "
-"derived automatically from the partition type\\&. The same is done for all "
-"partitions that are newly created\\&. These assignments are done in RAM "
-"only, too, the disk is not updated yet\\&."
+"explicitly configured in the configuration or \\(em if that\\*(Aqs missing \\"
+"(em derived automatically from the partition type\\&. The same is done for "
+"all partitions that are newly created\\&. These assignments are done in "
+"memory only, too, the disk is not updated yet\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Similarly, all existing partitions for which configuration files exist and "
-"which currently have an all-zero identifying UUID will be assigned a new UUID"
-"\\&. This UUID is cryptographically hashed from a common seed value together "
-"with the partition type UUID (and a counter in case multiple partitions of "
-"the same type are defined), see below\\&. The same is done for all "
-"partitions that are created anew\\&. These assignments are done in RAM only, "
-"too, the disk is not updated yet\\&."
+"which currently have an all-zero identifying UUID will be assigned a new "
+"UUID\\&. This UUID is cryptographically hashed from a common seed value "
+"together with the partition type UUID (and a counter in case multiple "
+"partitions of the same type are defined), see below\\&. The same is done for "
+"all partitions that are created anew\\&. These assignments are done in "
+"memory only, too, the disk is not updated yet\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Similarly, if the disk\\*(Aqs volume UUID is all zeroes it is also "
-"initialized, also cryptographically hashed from the same common seed value"
-"\\&. Also, in RAM only, too\\&."
+"initialized, also cryptographically hashed from the same common seed "
+"value\\&. This is done in memory only too\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "The disk space assigned to new partitions (i\\&.e\\&. what was previously "
-"considered free space but is no longer) is now erased\\&. Specifically, all "
-"file system signatures are removed, and if the device supports it the "
-"B<BLKDISCARD> I/O control command is issued to inform the hardware that the "
-"space is empty now\\&. In addition any \"padding\" between partitions and at "
-"the end of the device is similarly erased\\&."
+"free space) is now erased\\&. Specifically, all file system signatures are "
+"removed, and if the device supports it, the B<BLKDISCARD> I/O control "
+"command is issued to inform the hardware that the space is now empty\\&. In "
+"addition any \"padding\" between partitions and at the end of the device is "
+"similarly erased\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "The new partition table is finally written to disk\\&. The kernel is asked "
 "to reread the partition table\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
 msgid ""
-"As exception to the normally strictly incremental operation, when called in "
-"a special \"factory reset\" mode, B<systemd-repart> may also be used to "
-"erase existing partitions to reset an installation back to vendor defaults"
-"\\&. This mode of operation is used when either the B<--factory-reset=yes> "
-"switch is passed on the tool\\*(Aqs command line, or the B<systemd\\&."
-"factory_reset=yes> option specified on the kernel command line, or the "
-"I<FactoryReset> EFI variable (vendor UUID "
+"As an exception to the normal incremental operation, when called in a "
+"special \"factory reset\" mode, B<systemd-repart> may be used to erase "
+"existing partitions to reset an installation back to vendor defaults\\&. "
+"This mode of operation is used when either the B<--factory-reset=yes> switch "
+"is passed on the tool\\*(Aqs command line, or the "
+"B<systemd\\&.factory_reset=yes> option is specified on the kernel command "
+"line, or the I<FactoryReset> EFI variable (vendor UUID "
 "B<8cf2644b-4b0b-428f-9387-6d876050dc67>) is set to \"yes\"\\&. It alters the "
 "algorithm above slightly: between the 3rd and the 4th step above any "
 "partition marked explicitly via the I<FactoryReset=> boolean is deleted, and "
@@ -246,16 +274,18 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
 msgid ""
-"Note that B<systemd-repart> only changes partition tables, it does not "
-"create or resize any file systems within these partitions\\&. A separate "
-"mechanism should be used for that, for example B<systemd-growfs>(8)  and "
-"B<systemd-makefs>\\&."
+"Note that B<systemd-repart> by default only changes partition tables, it "
+"does not create or resize any file systems within these partitions, unless "
+"the I<Format=> configuration option is specified\\&. Also note that there "
+"are also separate mechanisms available for this purpose, for example "
+"B<systemd-growfs>(8)  and B<systemd-makefs>\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "The UUIDs identifying the new partitions created (or assigned to existing "
 "partitions that have no UUID yet), as well as the disk as a whole are hashed "
@@ -271,34 +301,36 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
 msgid ""
-"The positional argument should specify the block device to operate on\\&. "
-"Instead of a block device node path a regular file may be specified too, in "
-"which case the command operates on it like it would if a loopback block "
-"device node was specified with the file attached\\&. If B<--empty=create> is "
-"specified the specified path is created as regular file, which is useful for "
-"generating disk images from scratch\\&."
+"The positional argument should specify the block device or a regular file to "
+"operate on\\&. If B<--empty=create> is specified, the specified path is "
+"created as regular file, which is useful for generating disk images from "
+"scratch\\&."
 msgstr ""
 
 #. type: SH
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 #, no-wrap
 msgid "OPTIONS"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "The following options are understood:"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--dry-run=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Takes a boolean\\&. If this switch is not specified B<--dry-run=yes> is the "
 "implied default\\&. Controls whether systemd-repart executes the requested "
@@ -308,12 +340,19 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 245\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--empty=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Takes one of \"refuse\", \"allow\", \"require\", \"force\" or \"create\"\\&. "
 "Controls how to operate on block devices that are entirely empty, i\\&.e\\&. "
@@ -322,7 +361,8 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "If \"refuse\" B<systemd-repart> requires that the block device it shall "
 "operate on already carries a partition table and refuses operation if none "
@@ -338,12 +378,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--discard=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Takes a boolean\\&. If this switch is not specified B<--discard=yes> is the "
 "implied default\\&. Controls whether to issue the B<BLKDISCARD> I/O control "
@@ -355,12 +397,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--size=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Takes a size in bytes, using the usual K, M, G, T suffixes, or the special "
 "value \"auto\"\\&. If used the specified device node path must refer to a "
@@ -372,12 +416,13 @@ msgid ""
 "node is a block device\\&. This switch has no effect if the file is already "
 "as large as the specified size or larger\\&. The specified size is "
 "implicitly rounded up to multiples of 4096\\&. When used with B<--"
-"empty=create> this specifies the initial size of the loopback file to create"
-"\\&."
+"empty=create> this specifies the initial size of the loopback file to "
+"create\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "The B<--size=auto> option takes the sizes of pre-existing partitions into "
 "account\\&. However, it does not accommodate for partition tables that are "
@@ -388,7 +433,8 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Also note that the automatic size determination does not take files or "
 "directories specified with B<CopyFiles=> into account: operation might fail "
@@ -397,12 +443,19 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 246\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--factory-reset=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Takes boolean\\&. If this switch is not specified B<--factory=reset=no> is "
 "the implied default\\&. Controls whether to operate in \"factory reset\" "
@@ -417,56 +470,93 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--can-factory-reset>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "If this switch is specified the disk is not re-partitioned\\&. Instead it is "
 "determined if any existing partitions are marked with I<FactoryReset=>\\&. "
-"If there are the tool will exit with exit status zero, otherwise non-zero"
-"\\&. This switch may be used to quickly determine whether the running system "
-"supports a factory reset mechanism built on B<systemd-repart>\\&."
+"If there are the tool will exit with exit status zero, otherwise non-"
+"zero\\&. This switch may be used to quickly determine whether the running "
+"system supports a factory reset mechanism built on B<systemd-repart>\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--root=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Takes a path to a directory to use as root file system when searching for "
 "repart\\&.d/*\\&.conf files, for the machine ID file to use as seed and for "
 "the I<CopyFiles=> and I<CopyBlocks=> source files and directories\\&. By "
 "default when invoked on the regular system this defaults to the host\\*(Aqs "
-"root file system /\\&. If invoked from the initial RAM disk this defaults "
-"to /sysroot/, so that the tool operates on the configuration and machine ID "
+"root file system /\\&. If invoked from the initrd this defaults to /"
+"sysroot/, so that the tool operates on the configuration and machine ID "
 "stored in the root file system later transitioned into itself\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"See B<--copy-source=> for a more restricted option that only affects "
+"I<CopyFiles=>\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--image=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Takes a path to a disk image file or device to mount and use in a similar "
 "fashion to B<--root=>, see above\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 249\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
+msgid "B<--image-policy=>I<policy>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
+msgid ""
+"Takes an image policy string as argument, as per B<systemd.image-"
+"policy>(7)\\&. The policy is enforced when operating on the disk image "
+"specified via B<--image=>, see above\\&. If not specified defaults to the "
+"\"*\" policy, i\\&.e\\&. all recognized file systems in the image are "
+"used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--seed=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Takes a UUID as argument or the special value B<random>\\&. If a UUID is "
 "specified the UUIDs to assign to partitions and the partition table itself "
@@ -479,12 +569,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--pretty=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Takes a boolean argument\\&. If this switch is not specified, it defaults to "
 "on when called from an interactive terminal and off otherwise\\&. Controls "
@@ -493,25 +585,35 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--definitions=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Takes a file system path\\&. If specified the *\\&.conf files are read from "
-"the specified directory instead of searching in /usr/lib/repart\\&.d/*\\&."
-"conf, /etc/repart\\&.d/*\\&.conf, /run/repart\\&.d/*\\&.conf\\&."
+"the specified directory instead of searching in /usr/lib/repart\\&.d/"
+"*\\&.conf, /etc/repart\\&.d/*\\&.conf, /run/repart\\&.d/*\\&.conf\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
+msgid "This parameter can be specified multiple times\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--key-file=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Takes a file system path\\&. Configures the encryption key to use when "
 "setting up LUKS2 volumes configured with the I<Encrypt=key-file> setting in "
@@ -524,12 +626,93 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 247\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
+msgid "B<--private-key=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"Takes a file system path or an engine or provider specific designation\\&. "
+"Configures the signing key to use when creating verity signature partitions "
+"with the I<Verity=signature> setting in partition files\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 252\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid "B<--private-key-source=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"Takes one of \"file\", \"engine\" or \"provider\"\\&. In the latter two "
+"cases, it is followed by the name of a provider or engine, separated by "
+"colon, that will be passed to OpenSSL\\*(Aqs \"engine\" or \"provider\" "
+"logic\\&. Configures how to load the private key to use when creating verity "
+"signature partitions with the I<Verity=signature> setting in partition "
+"files\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid "Added in version 256\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
+msgid "B<--certificate=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"Takes a file system path or a provider specific designation\\&. Configures "
+"the PEM encoded X\\&.509 certificate to use when creating verity signature "
+"partitions with the I<Verity=signature> setting in partition files\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid "B<--certificate-source=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"Takes one of \"file\", or \"provider\"\\&. In the latter case, it is "
+"followed by the name of a provider, separated by colon, that will be passed "
+"to OpenSSL\\*(Aqs \"provider\" logic\\&. Configures how to load the X\\&.509 "
+"certificate to use when creating verity signature partitions with the "
+"I<Verity=signature> setting in partition files\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid "Added in version 257\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--tpm2-device=>, B<--tpm2-pcrs=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Configures the TPM2 device and list of PCRs to use for LUKS2 volumes "
 "configured with the I<Encrypt=tpm2> option\\&. These options take the same "
@@ -538,54 +721,371 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 248\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid "B<--tpm2-device-key=>I<PATH>, B<--tpm2-seal-key-handle=>I<HANDLE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Configures a TPM2 SRK key to bind encryption to\\&. See B<systemd-"
+"cryptenroll>(1)  for details on this option\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 255\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid ""
+"B<--tpm2-public-key=>I<PATH>, B<--tpm2-public-key-pcrs=>I<PCR>I<[+PCR\\&.\\&."
+"\\&.]>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
+msgid ""
+"Configures a TPM2 signed PCR policy to bind encryption to\\&. See B<systemd-"
+"cryptenroll>(1)  for details on these two options\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid "B<--tpm2-pcrlock=>I<PATH>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Configures a TPM2 pcrlock policy to bind encryption to\\&. See B<systemd-"
+"cryptenroll>(1)  for details on this option\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid "B<--split=>I<BOOL>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
+msgid ""
+"Enables generation of split artifacts from partitions configured with "
+"I<SplitName=>\\&. If enabled, for each partition with I<SplitName=> set, a "
+"separate output file containing just the contents of that partition is "
+"generated\\&. The output filename consists of the loopback filename suffixed "
+"with the name configured with I<SplitName=>\\&. If the loopback filename "
+"ends with \"\\&.raw\", the suffix is inserted before the \"\\&.raw\" "
+"extension instead\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
+msgid ""
+"Note that B<--split> is independent from B<--dry-run>\\&. Even if B<--dry-"
+"run> is enabled, split artifacts will still be generated from an existing "
+"image if B<--split> is enabled\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid ""
+"B<--include-partitions=>I<PARTITIONS>, B<--exclude-partitions=>I<PARTITIONS>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
+msgid ""
+"These options specify which partition types B<systemd-repart> should operate "
+"on\\&. If B<--include-partitions=> is used, all partitions that aren\\*(Aqt "
+"specified are excluded\\&. If B<--exclude-partitions=> is used, all "
+"partitions that are specified are excluded\\&. Both options take a comma "
+"separated list of GPT partition type UUIDs or identifiers (see I<Type=> in "
+"B<repart.d>(5))\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 253\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid "B<--defer-partitions=>I<PARTITIONS>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
+msgid ""
+"This option specifies for which partition types B<systemd-repart> should "
+"defer\\&. All partitions that are deferred using this option are still taken "
+"into account when calculating the sizes and offsets of other partitions, but "
+"aren\\*(Aqt actually written to the disk image\\&. The net effect of this "
+"option is that if you run B<systemd-repart> again without this option, the "
+"missing partitions will be added as if they had not been deferred the first "
+"time B<systemd-repart> was executed\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid "B<--sector-size=>I<BYTES>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
+msgid ""
+"This option allows configuring the sector size of the image produced by "
+"B<systemd-repart>\\&. It takes a value that is a power of \"2\" between "
+"\"512\" and \"4096\"\\&. This option is useful when building images for "
+"disks that use a different sector size as the disk on which the image is "
+"produced\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid "B<--architecture=>I<ARCH>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
+msgid ""
+"This option allows overriding the architecture used for architecture "
+"specific partition types\\&. For example, if set to \"arm64\" a partition "
+"type of \"root-x86-64\" referenced in repart\\&.d/ drop-ins will be patched "
+"dynamically to refer to \"root-arm64\" instead\\&. Takes one of \"alpha\", "
+"\"arc\", \"arm\", \"arm64\", \"ia64\", \"loongarch64\", \"mips-le\", "
+"\"mips64-le\", \"parisc\", \"ppc\", \"ppc64\", \"ppc64-le\", \"riscv32\", "
+"\"riscv64\", \"s390\", \"s390x\", \"tilegx\", \"x86\" or \"x86-64\"\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 254\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid "B<--offline=>I<BOOL>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
+msgid ""
+"Instructs B<systemd-repart> to build the image offline\\&. Takes a boolean "
+"or \"auto\"\\&. Defaults to \"auto\"\\&. If enabled, the image is built "
+"without using loop devices\\&. This is useful to build images unprivileged "
+"or when loop devices are not available\\&. If disabled, the image is always "
+"built using loop devices\\&. If \"auto\", B<systemd-repart> will build the "
+"image online if possible and fall back to building the image offline if loop "
+"devices are not available or cannot be accessed due to missing "
+"permissions\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid "B<--copy-from=>I<IMAGE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Instructs B<systemd-repart> to synthesize partition definitions from the "
+"partition table in the given image\\&. This option can be specified multiple "
+"times to synthesize definitions from each of the given images\\&. The "
+"generated definitions will copy the partitions into the destination "
+"partition table\\&. The copied partitions will have the same size, metadata "
+"and contents but might have a different partition number and might be "
+"located at a different offset in the destination partition table\\&. These "
+"definitions can be combined with partition definitions read from regular "
+"partition definition files\\&. The synthesized definitions take precedence "
+"over the definitions read from partition definition files\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "B<--copy-source=>I<PATH>, B<-s> I<PATH>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Specifies a source directory all I<CopyFiles=> source paths shall be "
+"considered relative to\\&. This is similar to B<--root=>, but exclusively "
+"applies to the I<CopyFiles=> setting\\&. If B<--root=> and B<--copy-source=> "
+"are used in combination the former applies as usual, except for "
+"I<CopyFiles=> where the latter takes precedence\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "B<--make-ddi=>I<TYPE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"Takes one of \"sysext\", \"confext\" or \"portable\"\\&. Generates a "
+"Discoverable Disk Image (DDI) for a system extension (sysext, see B<systemd-"
+"sysext>(8)  for details), configuration extension (confext) or "
+"\\m[blue]B<Portable Services>\\m[]\\&\\s-2\\u[1]\\d\\s+2\\&. The generated "
+"image will consist of a signed Verity \"erofs\" file system as root "
+"partition\\&. In this mode of operation the partition definitions in /usr/"
+"lib/repart\\&.d/*\\&.conf and related directories are not read, and B<--"
+"definitions=> is not supported, as appropriate definitions for the selected "
+"DDI class will be chosen automatically\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Must be used in conjunction with B<--copy-source=> to specify the file "
+"hierarchy to populate the DDI with\\&. The specified directory should "
+"contain an etc/ subdirectory if \"confext\" is selected\\&. If \"sysext\" is "
+"selected it should contain either a usr/ or opt/ directory, or both\\&. If "
+"\"portable\" is used a full OS file hierarchy can be provided\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"This option implies B<--empty=create>, B<--size=auto> and B<--seed=random> "
+"(the latter two can be overridden)\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"The private key and certificate for signing the DDI must be specified via "
+"the B<--private-key=> and B<--certificate=> switches\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "B<-S>, B<-C>, B<-P>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Shortcuts for B<--make-ddi=sysext>, B<--make-ddi=confext>, B<--make-"
+"ddi=portable>, respectively\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid "B<--generate-fstab=>I<PATH>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"Specifies a path where to write B<fstab>(5)  entries for the mountpoints "
+"configured with B<MountPoint=> in the root directory specified with B<--copy-"
+"source=> or B<--root=> or in the host\\*(Aqs root directory if neither is "
+"specified\\&. Disabled by default\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid "B<--generate-crypttab=>I<PATH>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid ""
+"Specifies a path where to write crypttab entries for the encrypted volumes "
+"configured with B<EncryptedVolume=> in the root directory specified with B<--"
+"copy-source=> or B<--root=> or in the host\\*(Aqs root directory if neither "
+"is specified\\&. Disabled by default\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid "B<--list-devices>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"Show a list of candidate block devices this command may operate on\\&. "
+"Specifically, this enumerates block devices currently present that support "
+"partition tables, and shows their device node paths along with any of their "
+"symlinks\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<-h>, B<--help>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "Print a short help text and exit\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--version>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "Print a short version string and exit\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--no-pager>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "Do not pipe output into a pager\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--no-legend>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
-"Do not print the legend, i\\&.e\\&. column headers and the footer with hints"
-"\\&."
+"Do not print the legend, i\\&.e\\&. column headers and the footer with "
+"hints\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid "B<--json=>I<MODE>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 msgid ""
 "Shows output formatted as JSON\\&. Expects one of \"short\" (for the "
 "shortest possible output without any redundant whitespace or line breaks), "
@@ -594,24 +1094,409 @@ msgid ""
 msgstr ""
 
 #. type: SH
-#: archlinux mageia-cauldron
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 #, no-wrap
 msgid "EXIT STATUS"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
-msgid "On success, 0 is returned, a non-zero failure code otherwise\\&."
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "On success, 0 is returned, and a non-zero failure code otherwise\\&."
 msgstr ""
 
 #. type: SH
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#, no-wrap
+msgid "EXAMPLE"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "B<Example\\ \\&1.\\ \\&Generate a configuration extension image>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"The following creates a configuration extension DDI (confext) for an /etc/"
+"motd update:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#, no-wrap
+msgid ""
+"mkdir -p tree/etc/extension-release\\&.d\n"
+"echo \"Hello World\" E<gt>tree/etc/motd\n"
+"cat E<gt>tree/etc/extension-release\\&.d/extension-release\\&.my-motd E<lt>E<lt>EOF\n"
+"ID=fedora\n"
+"VERSION_ID=38\n"
+"IMAGE_ID=my-motd\n"
+"IMAGE_VERSION=7\n"
+"EOF\n"
+"systemd-repart -C \\e\n"
+"  --private-key=privkey\\&.pem \\e\n"
+"  --certificate=cert\\&.crt \\e\n"
+"  -s tree/ \\e\n"
+"  /var/lib/confexts/my-motd\\&.confext\\&.raw\n"
+"systemd-confext refresh\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"The DDI generated that way may be applied to the system with B<systemd-"
+"confext>(1)\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid ""
+"B<Example\\ \\&2.\\ \\&Generate a system extension image and sign it via "
+"PKCS11>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"The following creates a system extension DDI (sysext) for an /usr/foo update "
+"and signs it with a hardware token via PKCS11:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+#, no-wrap
+msgid ""
+"mkdir -p tree/usr/lib/extension-release\\&.d\n"
+"echo \"Hello World\" E<gt>tree/usr/foo\n"
+"cat E<gt>tree/usr/lib/extension-release\\&.d/extension-release\\&.my-foo E<lt>E<lt>EOF\n"
+"ID=fedora\n"
+"VERSION_ID=38\n"
+"IMAGE_ID=my-foo\n"
+"IMAGE_VERSION=7\n"
+"EOF\n"
+"systemd-repart --make-ddi=sysext \\e\n"
+"  --private-key-source=engine:pkcs11 \\e\n"
+"  --private-key=\"pkcs11:model=PKCS%2315%20emulated;manufacturer=piv_II;serial=0123456789abcdef;token=Some%20Cert\" \\e\n"
+"  --certificate=cert\\&.crt \\e\n"
+"  -s tree/ \\e\n"
+"  /var/lib/extensions/my-foo\\&.sysext\\&.raw\n"
+"systemd-sysext refresh\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"The DDI generated that way may be applied to the system with B<systemd-"
+"sysext>(8)\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0
 #, no-wrap
 msgid "SEE ALSO"
 msgstr ""
 
 #. type: Plain text
-#: archlinux mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"B<systemd>(1), B<repart.d>(5), B<machine-id>(5), B<systemd-cryptenroll>(1), "
+"B<portablectl>(1), B<systemd-sysext>(8)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#, no-wrap
+msgid "NOTES"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#, no-wrap
+msgid " 1."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid "Portable Services"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "\\%https://systemd.io/PORTABLE_SERVICES"
+msgstr ""
+
+#. type: TH
+#: debian-bookworm opensuse-leap-16-0
+#, no-wrap
+msgid "systemd 254"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm fedora-41 mageia-cauldron opensuse-leap-16-0
+msgid ""
+"systemd-repart, systemd-repart.service - Automatically grow and add "
+"partitions"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm opensuse-leap-16-0
+msgid ""
+"B<systemd-repart> grows and adds partitions to a partition table, based on "
+"the configuration files described in B<repart.d>(5)\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm opensuse-leap-16-0
+msgid ""
+"If invoked with no arguments, it operates on the block device backing the "
+"root file system partition of the running OS, thus growing and adding "
+"partitions of the booted OS image itself\\&. If I<--image=> is used it will "
+"operate on the specified image file\\&. When called in the initrd it "
+"operates on the block device backing /sysroot/ instead, i\\&.e\\&. on the "
+"block device the system will soon transition into\\&. The systemd-"
+"repart\\&.service service is generally run at boot in the initrd, in order "
+"to augment the partition table of the OS before its partitions are "
+"mounted\\&.  B<systemd-repart> (mostly) operates in a purely incremental "
+"mode: it only grows existing and adds new partitions; it does not shrink, "
+"delete or move existing partitions\\&. The service is intended to be run on "
+"every boot, but when it detects that the partition table already matches the "
+"installed repart\\&.d/*\\&.conf configuration files, it executes no "
+"operation\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm opensuse-leap-16-0
+msgid ""
+"B<systemd-repart> is intended to be used when deploying OS images, to "
+"automatically adjust them to the system they are running on, during first "
+"boot\\&. This way the deployed image can be minimal in size and may be "
+"augmented automatically at boot when needed, taking possession of disk space "
+"available but not yet used\\&. Specifically the following use cases are "
+"among those covered:"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm opensuse-leap-16-0
+msgid "A /home/, swap or /srv/ partition can be added\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm opensuse-leap-16-0
+msgid ""
+"The repart\\&.d/*\\&.conf configuration files are loaded and parsed, and "
+"ordered by filename (without the directory prefix)\\&. For each "
+"configuration file, drop-in files are looked for in directories with same "
+"name as the configuration file with a suffix \"\\&.d\" added\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm opensuse-leap-16-0
+msgid ""
+"The partition table already existing on the block device is loaded and "
+"parsed\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm opensuse-leap-16-0
+msgid ""
+"The existing partitions in the partition table are matched up with the "
+"repart\\&.d/*\\&.conf files by GPT partition type UUID\\&. The first "
+"existing partition of a specific type is assigned the first configuration "
+"file declaring the same type\\&. The second existing partition of a specific "
+"type is then assigned the second configuration file declaring the same type, "
+"and so on\\&. After this iterative assigning is complete any left-over "
+"existing partitions that have no matching configuration file are considered "
+"\"foreign\" and left as they are\\&. And any configuration files for which "
+"no partition currently exists are understood as a request to create such a "
+"partition\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm opensuse-leap-16-0
+msgid ""
+"As exception to the normally strictly incremental operation, when called in "
+"a special \"factory reset\" mode, B<systemd-repart> may also be used to "
+"erase existing partitions to reset an installation back to vendor "
+"defaults\\&. This mode of operation is used when either the B<--factory-"
+"reset=yes> switch is passed on the tool\\*(Aqs command line, or the "
+"B<systemd\\&.factory_reset=yes> option specified on the kernel command line, "
+"or the I<FactoryReset> EFI variable (vendor UUID "
+"B<8cf2644b-4b0b-428f-9387-6d876050dc67>) is set to \"yes\"\\&. It alters the "
+"algorithm above slightly: between the 3rd and the 4th step above any "
+"partition marked explicitly via the I<FactoryReset=> boolean is deleted, and "
+"the algorithm restarted, thus immediately re-creating these partitions anew "
+"empty\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm opensuse-leap-16-0
+msgid ""
+"Note that B<systemd-repart> only changes partition tables, it does not "
+"create or resize any file systems within these partitions\\&. A separate "
+"mechanism should be used for that, for example B<systemd-growfs>(8)  and "
+"B<systemd-makefs>\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm opensuse-leap-16-0
+msgid ""
+"The positional argument should specify the block device to operate on\\&. "
+"Instead of a block device node path a regular file may be specified too, in "
+"which case the command operates on it like it would if a loopback block "
+"device node was specified with the file attached\\&. If B<--empty=create> is "
+"specified the specified path is created as regular file, which is useful for "
+"generating disk images from scratch\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm fedora-41 mageia-cauldron opensuse-leap-16-0
+msgid ""
+"Takes a file system path\\&. Configures the signing key to use when creating "
+"verity signature partitions with the I<Verity=signature> setting in "
+"partition files\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm fedora-41 mageia-cauldron opensuse-leap-16-0
+msgid ""
+"Takes a file system path\\&. Configures the PEM encoded X\\&.509 certificate "
+"to use when creating verity signature partitions with the "
+"I<Verity=signature> setting in partition files\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron opensuse-leap-16-0
+msgid "B<--tpm2-public-key=> [PATH], B<--tpm2-public-key-pcrs=> [PCR...]"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron opensuse-leap-16-0
+msgid "B<--split=> [BOOL]"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron opensuse-leap-16-0
+msgid ""
+"B<--include-partitions=> [PARTITION...], B<--exclude-partitions=> "
+"[PARTITION...]"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron opensuse-leap-16-0
+msgid "B<--defer-partitions=> [PARTITION...]"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron opensuse-leap-16-0
+msgid "B<--sector-size=> [BYTES]"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron opensuse-leap-16-0
+msgid "B<--architecture=> [ARCH]"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron opensuse-leap-16-0
+msgid "B<--offline=> [BOOL]"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm opensuse-leap-16-0
+msgid "On success, 0 is returned, a non-zero failure code otherwise\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm opensuse-leap-16-0
 msgid ""
 "B<systemd>(1), B<repart.d>(5), B<machine-id>(5), B<systemd-cryptenroll>(1)"
+msgstr ""
+
+#. type: TH
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "systemd 257.1"
+msgstr ""
+
+#. type: TH
+#: fedora-41
+#, no-wrap
+msgid "systemd 256.7"
+msgstr ""
+
+#. type: Plain text
+#: fedora-41
+msgid ""
+"Takes one of \"file\", \"engine\" or \"provider\"\\&. In the latter two "
+"cases, it is followed by the name of a provider or engine, separated by "
+"colon, that will be passed to OpenSSL\\*(Aqs \"engine\" or \"provider\" "
+"logic\\&. Configures the signing mechanism to use when creating verity "
+"signature partitions with the I<Verity=signature> setting in partition "
+"files\\&."
+msgstr ""
+
+#. type: Plain text
+#: fedora-41 mageia-cauldron
+msgid ""
+"Takes one of \"sysext\", \"confext\" or \"portable\"\\&. Generates a "
+"Discoverable Disk Image (DDI) for a system extension (sysext, see B<systemd-"
+"sysext>(8)  for details), configuration extension (confext) or "
+"\\m[blue]B<portable service>\\m[]\\&\\s-2\\u[1]\\d\\s+2\\&. The generated "
+"image will consist of a signed Verity \"erofs\" file system as root "
+"partition\\&. In this mode of operation the partition definitions in /usr/"
+"lib/repart\\&.d/*\\&.conf and related directories are not read, and B<--"
+"definitions=> is not supported, as appropriate definitions for the selected "
+"DDI class will be chosen automatically\\&."
+msgstr ""
+
+#. type: Plain text
+#: fedora-41
+msgid ""
+"Specifies a path where to write fstab entries for the mountpoints configured "
+"with B<MountPoint=> in the root directory specified with B<--copy-source=> "
+"or B<--root=> or in the host\\*(Aqs root directory if neither is "
+"specified\\&. Disabled by default\\&."
+msgstr ""
+
+#. type: Plain text
+#: fedora-41
+msgid ""
+"The following creates a system extension DDI (sysext) for an /usr/foo update "
+"and signs it with a hardware token via PKCS11\\&."
+msgstr ""
+
+#. type: Plain text
+#: fedora-41
+msgid ""
+"The DDI generated that way may be applied to the system with B<systemd-"
+"sysext>(1)\\&."
+msgstr ""
+
+#. type: Plain text
+#: fedora-41 mageia-cauldron
+msgid "portable service"
+msgstr ""
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "systemd 255"
+msgstr ""
+
+#. type: Plain text
+#: mageia-cauldron
+msgid "B<--tpm2-device-key=> [PATH], B<--tpm2-seal-key-handle=> [HANDLE]"
+msgstr ""
+
+#. type: Plain text
+#: mageia-cauldron
+msgid "B<--tpm2-pcrlock=> [PATH]"
+msgstr ""
+
+#. type: Plain text
+#: mageia-cauldron
+msgid "B<--copy-from=> [IMAGE]"
 msgstr ""

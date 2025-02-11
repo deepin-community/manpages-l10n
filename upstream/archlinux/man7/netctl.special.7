@@ -1,0 +1,126 @@
+'\" t
+.\"     Title: netctl.special
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 10/09/2023
+.\"    Manual: \ \&
+.\"    Source: \ \& 1.29
+.\"  Language: English
+.\"
+.TH "NETCTL\&.SPECIAL" "7" "10/09/2023" "\ \& 1\&.29" "\ \&"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+netctl.special \- Special netctl systemd units
+.SH "SYNOPSIS"
+.sp
+netctl\&.service, netctl\-auto\&.service, netctl\-ifplugd\&.service, netctl\-wait\-online\&.service
+.SH "DESCRIPTION"
+.sp
+Bundled with netctl come a few systemd units that are not controlled through the netctl command\&. They can be used through the systemctl utility of systemd\&.
+.SH "SPECIAL UNITS"
+.PP
+netctl\&.service
+.RS 4
+When started, this unit tries to start the profiles that were running when the unit was last stopped\&. In some cases, the interface a profile binds to might not be available yet, when
+\fInetctl\&.service\fR
+tries to bring a profile up\&. A simple, hackish, solution is to do:
+.RE
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+echo "[[ \-t 0 ]] || sleep 3" > /etc/netctl/interfaces/<interface>
+chmod 755 /etc/netctl/interfaces/<interface>
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+A more concise solution is to first enable a profile through netctl
+and then disable it again through systemctl:
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+netctl enable <profile>
+systemctl disable netctl@<profile>
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+This way the unit configuration file for the profile remains in
+existence, while the profile is not enabled\&.
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+netctl\-sleep\&.service
+.RS 4
+When enabled, this unit stores and stops the active network profiles before the machine is put to sleep\&. After the system is resumed, previously stored profiles are restarted\&.
+.RE
+.PP
+netctl\-auto@<interface>\&.service
+.RS 4
+This unit issues a scan on the interface it is used for and tries to start a profile for a network it finds\&. It is targeted at wireless interfaces\&. Profile specific values for
+\fIWPADriver\fR
+are ignored, but it is possible to specify
+\fIWPADriver=\fR
+in an interface hook (\fI/etc/netctl/interfaces/<interface>\fR)\&.
+
+Use
+\fBnetctl\-auto\fR(1) instead of
+\fBnetctl(1)\fR
+to control the automatic profile selection when using this unit\&.
+.RE
+.PP
+netctl\-ifplugd@<interface>\&.service
+.RS 4
+This unit starts ifplugd on the interface it is used for\&. It will try to start a netctl profile whenever a cable is plugged into the interface and stop the profile when the cable is unplugged\&. Note that this unit does not provide
+\fInetwork\&.target\fR\&.
+.RE
+.PP
+netctl\-wait\-online\&.service
+.RS 4
+When activated, this unit waits for all enabled netctl profiles to come online\&. Enabling this unit causes
+\fInetwork\-online\&.target\fR
+to only be reached once all enabled netctl profiles are fully connected\&. The maximum time, in seconds, to wait for profiles can be passed to this unit via
+\fITIMEOUT_ONLINE=\fR\&. The default value is
+120\&. If a timeout occurs, the service enters a failed state\&.
+.RE
+.SH "SEE ALSO"
+.sp
+\fBnetctl\fR(1), \fBnetctl\-auto\fR(1), \fBnetctl\&.profile\fR(5)

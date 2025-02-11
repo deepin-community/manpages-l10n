@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.JOURNAL\-FIELDS" "7" "" "systemd 249" "systemd.journal-fields"
+.TH "SYSTEMD\&.JOURNAL\-FIELDS" "7" "" "systemd 255" "systemd.journal-fields"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -24,14 +24,16 @@ systemd.journal-fields \- Special journal fields
 .SH "DESCRIPTION"
 .PP
 Entries in the journal (as written by
-\fBsystemd-journald.service\fR(8)) resemble a UNIX process environment block in syntax but with fields that may include binary data\&. Primarily, fields are formatted UTF\-8 text strings, and binary encoding is used only where formatting as UTF\-8 text strings makes little sense\&. New fields may freely be defined by applications, but a few fields have special meanings\&. All fields with special meanings are optional\&. In some cases, fields may appear more than once per entry\&.
+\fBsystemd-journald.service\fR(8)) resemble a UNIX process environment block in syntax but with field values that may include binary data, and with non\-unique field names permitted\&. Primarily, field values are formatted UTF\-8 text strings \(em binary encoding is used only where formatting as UTF\-8 text strings makes little sense\&. New fields may freely be defined by applications, but a few fields have special meanings, which are listed below\&. Typically, fields may only appear once per log entry, however there are special exceptions: some fields may appear more than once per entry, in which case this is explicitly mentioned below\&. Even though the logging subsystem makes no restrictions on which fields to accept non\-unique values for, it is strongly recommended to avoid relying on this for the fields listed below (except where listed otherwise, as mentioned) in order to avoid unnecessary incompatibilities with other applications\&.
 .SH "USER JOURNAL FIELDS"
 .PP
 User fields are fields that are directly passed from clients and stored in the journal\&.
 .PP
 \fIMESSAGE=\fR
 .RS 4
-The human\-readable message string for this entry\&. This is supposed to be the primary text shown to the user\&. It is usually not translated (but might be in some cases), and is not supposed to be parsed for metadata\&.
+The human\-readable message string for this entry\&. This is supposed to be the primary text shown to the user\&. It is usually not translated (but might be in some cases), and is not supposed to be parsed for metadata\&. In order to encode multiple lines in a single log entry, separate them by newline characters (ASCII code 10), but encode them as a single
+\fIMESSAGE=\fR
+field\&. Do not add multiple values of this field type to the same entry (also see above), as consuming applications generally do not expect this and are unlikely to show all values in that case\&.
 .RE
 .PP
 \fIMESSAGE_ID=\fR
@@ -55,6 +57,8 @@ The code location generating this message, if known\&. Contains the source filen
 The low\-level Unix error number causing this entry, if any\&. Contains the numeric value of
 \fBerrno\fR(3)
 formatted as a decimal string\&.
+.sp
+Added in version 188\&.
 .RE
 .PP
 \fIINVOCATION_ID=\fR, \fIUSER_INVOCATION_ID=\fR
@@ -62,6 +66,8 @@ formatted as a decimal string\&.
 A randomized, unique 128\-bit ID identifying each runtime cycle of the unit\&. This is different from
 \fI_SYSTEMD_INVOCATION_ID\fR
 in that it is only used for messages coming from systemd code (e\&.g\&. logs from the system/user manager or from forked processes performing systemd\-related setup)\&.
+.sp
+Added in version 245\&.
 .RE
 .PP
 \fISYSLOG_FACILITY=\fR, \fISYSLOG_IDENTIFIER=\fR, \fISYSLOG_PID=\fR, \fISYSLOG_TIMESTAMP=\fR
@@ -79,7 +85,7 @@ Note that the journal service does not validate the values of any structured jou
 The original contents of the syslog line as received in the syslog datagram\&. This field is only included if the
 \fIMESSAGE=\fR
 field was modified compared to the original payload or the timestamp could not be located properly and is not included in
-\fISYSLOG_TIMESTAMP=\fR\&. Message truncation occurs when when the message contains leading or trailing whitespace (trailing and leading whitespace is stripped), or it contains an embedded
+\fISYSLOG_TIMESTAMP=\fR\&. Message truncation occurs when the message contains leading or trailing whitespace (trailing and leading whitespace is stripped), or it contains an embedded
 \fBNUL\fR
 byte (the
 \fBNUL\fR
@@ -87,13 +93,15 @@ byte and anything after it is not included)\&. Thus, the original syslog line is
 \fISYSLOG_RAW=\fR
 or it can be recreated based on the stored priority and facility, timestamp, identifier, and the message payload in
 \fIMESSAGE=\fR\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fIDOCUMENTATION=\fR
 .RS 4
 A documentation URL with further information about the topic of the log message\&. Tools such as
 \fBjournalctl\fR
-will include a hyperlink to an URL specified this way in their output\&. Should be a
+will include a hyperlink to a URL specified this way in their output\&. Should be an
 "http://",
 "https://",
 "file:/",
@@ -101,11 +109,33 @@ will include a hyperlink to an URL specified this way in their output\&. Should 
 or
 "info:"
 URL\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fITID=\fR
 .RS 4
 The numeric thread ID (TID) the log message originates from\&.
+.sp
+Added in version 247\&.
+.RE
+.PP
+\fIUNIT=\fR, \fIUSER_UNIT=\fR
+.RS 4
+The name of a unit\&. Used by the system and user managers when logging about specific units\&.
+.sp
+When
+\fB\-\-unit=\fR\fB\fIname\fR\fR
+or
+\fB\-\-user\-unit=\fR\fB\fIname\fR\fR
+are used with
+\fBjournalctl\fR(1), a match pattern that includes
+"UNIT=\fIname\fR\&.service"
+or
+"USER_UNIT=\fIname\fR\&.service"
+will be generated\&.
+.sp
+Added in version 251\&.
 .RE
 .SH "TRUSTED JOURNAL FIELDS"
 .PP
@@ -131,6 +161,8 @@ The name, the executable path, and the command line of the process the journal e
 The effective
 \fBcapabilities\fR(7)
 of the process the journal entry originates from\&.
+.sp
+Added in version 206\&.
 .RE
 .PP
 \fI_AUDIT_SESSION=\fR, \fI_AUDIT_LOGINUID=\fR
@@ -170,6 +202,8 @@ The invocation ID for the runtime cycle of the unit the message was generated in
 \fI$INVOCATION_ID\fR
 (see
 \fBsystemd.exec\fR(5))\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fI_HOSTNAME=\fR
@@ -184,31 +218,43 @@ How the entry was received by the journal service\&. Valid transports are:
 \fBaudit\fR
 .RS 4
 for those read from the kernel audit subsystem
+.sp
+Added in version 227\&.
 .RE
 .PP
 \fBdriver\fR
 .RS 4
 for internally generated messages
+.sp
+Added in version 205\&.
 .RE
 .PP
 \fBsyslog\fR
 .RS 4
 for those received via the local syslog socket with the syslog protocol
+.sp
+Added in version 205\&.
 .RE
 .PP
 \fBjournal\fR
 .RS 4
 for those received via the native journal protocol
+.sp
+Added in version 205\&.
 .RE
 .PP
 \fBstdout\fR
 .RS 4
 for those read from a service\*(Aqs standard output or error output
+.sp
+Added in version 205\&.
 .RE
 .PP
 \fBkernel\fR
 .RS 4
 for those read from the kernel
+.sp
+Added in version 205\&.
 .RE
 .RE
 .PP
@@ -216,7 +262,9 @@ for those read from the kernel
 .RS 4
 Only applies to
 "_TRANSPORT=stdout"
-records: specifies a randomized 128bit ID assigned to the stream connection when it was first created\&. This ID is useful to reconstruct individual log streams from the log records: all log records carrying the same stream ID originate from the same stream\&.
+records: specifies a randomized 128\-bit ID assigned to the stream connection when it was first created\&. This ID is useful to reconstruct individual log streams from the log records: all log records carrying the same stream ID originate from the same stream\&.
+.sp
+Added in version 235\&.
 .RE
 .PP
 \fI_LINE_BREAK=\fR
@@ -237,6 +285,8 @@ in
 (if this was the last log record of a stream and the stream ended without a final newline character), or
 \fBpid\-change\fR
 (if the process which generated the log output changed in the middle of a line)\&. Note that this record is not generated when a normal newline character was used for marking the log line end\&.
+.sp
+Added in version 235\&.
 .RE
 .PP
 \fI_NAMESPACE=\fR
@@ -246,6 +296,17 @@ If this file was written by a
 instance managing a journal namespace that is not the default, this field contains the namespace identifier\&. See
 \fBsystemd-journald.service\fR(8)
 for details about journal namespaces\&.
+.sp
+Added in version 245\&.
+.RE
+.PP
+\fI_RUNTIME_SCOPE=\fR
+.RS 4
+A string field that specifies the runtime scope in which the message was logged\&. If
+"initrd", the log message was processed while the system was running inside the initrd\&. If
+"system", the log message was generated after the system switched execution to the host root filesystem\&.
+.sp
+Added in version 252\&.
 .RE
 .SH "KERNEL JOURNAL FIELDS"
 .PP
@@ -261,29 +322,39 @@ and prefixed by
 "n"\&. For all other devices, this is the subsystem name prefixed by
 "+", followed by
 ":", followed by the kernel device name\&.
+.sp
+Added in version 189\&.
 .RE
 .PP
 \fI_KERNEL_SUBSYSTEM=\fR
 .RS 4
 The kernel subsystem name\&.
+.sp
+Added in version 189\&.
 .RE
 .PP
 \fI_UDEV_SYSNAME=\fR
 .RS 4
 The kernel device name as it shows up in the device tree below
 /sys/\&.
+.sp
+Added in version 189\&.
 .RE
 .PP
 \fI_UDEV_DEVNODE=\fR
 .RS 4
 The device node path of this device in
 /dev/\&.
+.sp
+Added in version 189\&.
 .RE
 .PP
 \fI_UDEV_DEVLINK=\fR
 .RS 4
 Additional symlink names pointing to the device node in
 /dev/\&. This field is frequently set more than once per entry\&.
+.sp
+Added in version 189\&.
 .RE
 .SH "FIELDS TO LOG ON BEHALF OF A DIFFERENT PROGRAM"
 .PP
@@ -297,6 +368,8 @@ coredump kernel helper:
 .RS 4
 Used to annotate messages containing coredumps from system and session units\&. See
 \fBcoredumpctl\fR(1)\&.
+.sp
+Added in version 198\&.
 .RE
 .PP
 Privileged programs (currently UID 0) may attach
@@ -308,6 +381,8 @@ to attach additional fields on behalf of the caller:
 \fIOBJECT_PID=\fR\fI\fIPID\fR\fR
 .RS 4
 PID of the program that this message pertains to\&.
+.sp
+Added in version 205\&.
 .RE
 .PP
 \fIOBJECT_UID=\fR, \fIOBJECT_GID=\fR, \fIOBJECT_COMM=\fR, \fIOBJECT_EXE=\fR, \fIOBJECT_CMDLINE=\fR, \fIOBJECT_AUDIT_SESSION=\fR, \fIOBJECT_AUDIT_LOGINUID=\fR, \fIOBJECT_SYSTEMD_CGROUP=\fR, \fIOBJECT_SYSTEMD_SESSION=\fR, \fIOBJECT_SYSTEMD_OWNER_UID=\fR, \fIOBJECT_SYSTEMD_UNIT=\fR, \fIOBJECT_SYSTEMD_USER_UNIT=\fR
@@ -329,6 +404,17 @@ These are additional fields added automatically by
 as described above, except that the process identified by
 \fIPID\fR
 is described, instead of the process which logged the message\&.
+.sp
+Added in version 205\&.
+.RE
+.PP
+\fIOBJECT_SYSTEMD_INVOCATION_ID=\fR
+.RS 4
+An additional field added automatically by
+\fBsystemd\-journald\fR\&. The meaning is mostly the same as
+\fI_SYSTEMD_INVOCATION_ID=\fR, with the difference described above\&.
+.sp
+Added in version 235\&.
 .RE
 .SH "ADDRESS FIELDS"
 .PP
@@ -355,6 +441,15 @@ The wallclock time (\fBCLOCK_REALTIME\fR) at the point in time the entry was rec
 The monotonic time (\fBCLOCK_MONOTONIC\fR) at the point in time the entry was received by the journal in microseconds, formatted as a decimal string\&. To be useful as an address for the entry, this should be combined with the boot ID in
 "_BOOT_ID="\&.
 .RE
+.PP
+\fI__SEQNUM=\fR, \fI__SEQNUM_ID=\fR
+.RS 4
+The sequence number (and associated sequence number ID) of this journal entry in the journal file it originates from\&. See
+\fBsd_journal_get_seqnum\fR(3)
+for details\&.
+.sp
+Added in version 254\&.
+.RE
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),
@@ -368,10 +463,10 @@ The monotonic time (\fBCLOCK_MONOTONIC\fR) at the point in time the entry was re
 .IP " 1." 4
 Journal Export Format
 .RS 4
-\%https://www.freedesktop.org/wiki/Software/systemd/export
+\%https://systemd.io/JOURNAL_EXPORT_FORMATS#journal-export-format
 .RE
 .IP " 2." 4
 Journal JSON Format
 .RS 4
-\%https://www.freedesktop.org/wiki/Software/systemd/json
+\%https://systemd.io/JOURNAL_EXPORT_FORMATS#journal-json-format
 .RE

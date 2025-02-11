@@ -1,0 +1,91 @@
+'\" t
+.\" Copyright (c) Bruno Haible <haible@clisp.cons.org>
+.\"
+.\" SPDX-License-Identifier: GPL-2.0-or-later
+.\"
+.\" References consulted:
+.\"   GNU glibc-2 source code and manual
+.\"   Dinkumware C library reference http://www.dinkumware.com/
+.\"   OpenGroup's Single UNIX specification http://www.UNIX-systems.org/online.html
+.\"   ISO/IEC 9899:1999
+.\"
+.TH iswpunct 3 2022-12-15 "Linux man-pages 6.03"
+.SH NAME
+iswpunct \- test for punctuation or symbolic wide character
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
+.SH SYNOPSIS
+.nf
+.B #include <wctype.h>
+.PP
+.BI "int iswpunct(wint_t " wc );
+.fi
+.SH DESCRIPTION
+The
+.BR iswpunct ()
+function is the wide-character equivalent of the
+.BR ispunct (3)
+function.
+It tests whether
+.I wc
+is a wide character
+belonging to the wide-character class "punct".
+.PP
+The wide-character class "punct" is a subclass of the wide-character class
+"graph", and therefore also a subclass of the wide-character class "print".
+.PP
+The wide-character class "punct" is disjoint from the wide-character class
+"alnum" and therefore also disjoint from its subclasses "alpha", "upper",
+"lower", "digit", "xdigit".
+.PP
+Being a subclass of the wide-character class "print",
+the wide-character class
+"punct" is disjoint from the wide-character class "cntrl".
+.PP
+Being a subclass of the wide-character class "graph",
+the wide-character class
+"punct" is disjoint from the wide-character class "space" and its subclass
+"blank".
+.SH RETURN VALUE
+The
+.BR iswpunct ()
+function returns nonzero
+if
+.I wc
+is a wide-character
+belonging to the wide-character class "punct".
+Otherwise, it returns zero.
+.SH ATTRIBUTES
+For an explanation of the terms used in this section, see
+.BR attributes (7).
+.ad l
+.nh
+.TS
+allbox;
+lbx lb lb
+l l l.
+Interface	Attribute	Value
+T{
+.BR iswpunct ()
+T}	Thread safety	MT-Safe locale
+.TE
+.hy
+.ad
+.sp 1
+.SH STANDARDS
+POSIX.1-2001, POSIX.1-2008, C99.
+.SH NOTES
+The behavior of
+.BR iswpunct ()
+depends on the
+.B LC_CTYPE
+category of the
+current locale.
+.PP
+This function's name is a misnomer when dealing with Unicode characters,
+because the wide-character class "punct" contains both punctuation characters
+and symbol (math, currency, etc.) characters.
+.SH SEE ALSO
+.BR ispunct (3),
+.BR iswctype (3)

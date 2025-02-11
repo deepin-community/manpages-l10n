@@ -1,4 +1,4 @@
-.\"	$OpenBSD: inetd.8,v 1.39 2015/10/18 15:28:03 deraadt Exp $
+.\"	$OpenBSD: inetd.8,v 1.41 2017/10/04 19:52:26 jca Exp $
 .\" Copyright (c) 1985, 1991 The Regents of the University of California.
 .\" All rights reserved.
 .\"
@@ -28,7 +28,7 @@
 .\"
 .\"     from: @(#)inetd.8	6.7 (Berkeley) 3/16/91
 .\"
-.Dd $Mdocdate: November 14 2015 $
+.Dd $Mdocdate: February 10 2020 $
 .Dt INETD 8
 .Os
 .Sh NAME
@@ -195,14 +195,10 @@ sockets this field specifies the path name of the socket.
 The
 .Em socket type
 should be one of
-.Dq stream ,
-.Dq dgram ,
-.Dq raw ,
-.Dq rdm ,
+.Dq stream
 or
-.Dq seqpacket ,
-depending on whether the socket is a stream, datagram, raw,
-reliably delivered message, or sequenced packet socket.
+.Dq dgram ,
+depending on whether the socket is a stream or datagram socket.
 .Pp
 The
 .Em protocol
@@ -222,8 +218,7 @@ service type.
 and
 .Dq udp
 will be recognized as
-.Dq TCP or UDP over default IP version .
-This is currently IPv4, but in the future it will be IPv6.
+.Dq TCP or UDP over both IPv4 and IPv6.
 If you need to specify IPv4 or IPv6 explicitly, use something like
 .Dq tcp4
 or
@@ -367,8 +362,7 @@ These services are
 in the form of the number of seconds since midnight, January
 1, 1900).
 All of these services are TCP based.
-For details of these services, consult the appropriate
-.Tn RFC
+For details of these services, consult the appropriate RFC
 from the Network Information Center.
 .Pp
 .Nm inetd
@@ -394,9 +388,9 @@ and
 for access control facility configurations, as described in
 .Xr hosts_access 5 .
 .Ss IPv6 TCP/UDP behavior
-If you wish to run a server for IPv4 and IPv6 traffic,
-you'll need to run two separate processes for the same server program,
-specified as two separate lines in
+The default is to run two servers: one for IPv4 and one for IPv6 traffic.
+If you have different requirements then you may specify one or two
+separate lines in
 .Pa inetd.conf ,
 for
 .Dq tcp4
@@ -419,8 +413,11 @@ and
 .Dq tcp6 ,
 IPv4 traffic will be routed to the server on
 .Dq tcp4 ,
-and IPv6 traffic will go to server on
-.Dq tcp6 .
+and IPv6 traffic will go to the server on
+.Dq tcp6 ,
+which is identical to the default behaviour when only
+.Dq tcp
+is specified.
 .It
 If you have only one server on
 .Dq tcp6 ,
@@ -430,6 +427,10 @@ The special
 .Dq tcp46
 parameter can be used for obsolete servers which require to receive IPv4
 connections mapped in an IPv6 socket. Its usage is discouraged.
+.El
+.Sh FILES
+.Bl -tag -width /etc/inetd.conf -compact
+.It Pa /etc/inetd.conf
 .El
 .Sh SEE ALSO
 .Xr fingerd 8 ,

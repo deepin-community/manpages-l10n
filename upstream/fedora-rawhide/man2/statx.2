@@ -1,3 +1,4 @@
+'\" t
 .\" Copyright (c) 2017 David Howells <dhowells@redhat.com>
 .\"
 .\" Derived from the stat.2 manual page:
@@ -5,36 +6,20 @@
 .\"   Parts Copyright (c) 1995 Nicolai Langfeldt (janl@ifi.uio.no), 1/1/95
 .\"   and Copyright (c) 2006, 2007, 2014 Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
-.\"
-.TH STATX 2 2021-08-27 "Linux" "Linux Programmer's Manual"
+.TH statx 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 statx \- get file status (extended)
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
+.BR "#define _GNU_SOURCE          " "/* See feature_test_macros(7) */"
 .BR "#include <fcntl.h>           " "/* Definition of " AT_* " constants */"
 .B #include <sys/stat.h>
-.PP
+.P
 .BI "int statx(int " dirfd ", const char *restrict " pathname ", int " flags ,
 .BI "          unsigned int " mask ", struct statx *restrict " statxbuf );
 .fi
@@ -43,7 +28,7 @@ This function returns information about a file, storing it in the buffer
 pointed to by
 .IR statxbuf .
 The returned buffer is a structure of the following type:
-.PP
+.P
 .in +4n
 .EX
 struct statx {
@@ -59,31 +44,36 @@ struct statx {
     __u64 stx_size;        /* Total size in bytes */
     __u64 stx_blocks;      /* Number of 512B blocks allocated */
     __u64 stx_attributes_mask;
-                           /* Mask to show what\(aqs supported
+                           /* Mask to show what\[aq]s supported
                               in stx_attributes */
-
+\&
     /* The following fields are file timestamps */
     struct statx_timestamp stx_atime;  /* Last access */
     struct statx_timestamp stx_btime;  /* Creation */
     struct statx_timestamp stx_ctime;  /* Last status change */
     struct statx_timestamp stx_mtime;  /* Last modification */
-
+\&
     /* If this file represents a device, then the next two
        fields contain the ID of the device */
     __u32 stx_rdev_major;  /* Major ID */
     __u32 stx_rdev_minor;  /* Minor ID */
-
+\&
     /* The next two fields contain the ID of the device
        containing the filesystem where the file resides */
     __u32 stx_dev_major;   /* Major ID */
     __u32 stx_dev_minor;   /* Minor ID */
+\&
     __u64 stx_mnt_id;      /* Mount ID */
+\&
+    /* Direct I/O alignment restrictions */
+    __u32 stx_dio_mem_align;
+    __u32 stx_dio_offset_align;
 };
 .EE
 .in
-.PP
+.P
 The file timestamps are structures of the following type:
-.PP
+.P
 .in +4n
 .EX
 struct statx_timestamp {
@@ -92,7 +82,7 @@ struct statx_timestamp {
 };
 .EE
 .in
-.PP
+.P
 (Note that reserved space and padding is omitted.)
 .SS
 Invoking \fBstatx\fR():
@@ -103,13 +93,13 @@ with a pathname,
 execute (search) permission is required on all of the directories in
 .I pathname
 that lead to the file.
-.PP
+.P
 .BR statx ()
 uses
 .IR pathname ,
 .IR dirfd ,
 and
-.IR flags
+.I flags
 to identify the target file in one of the following ways:
 .TP
 An absolute pathname
@@ -125,7 +115,7 @@ A relative pathname
 If
 .I pathname
 is a string that begins with a character other than a slash and
-.IR dirfd
+.I dirfd
 is
 .BR AT_FDCWD ,
 then
@@ -149,27 +139,27 @@ for an explanation of why this is useful.)
 .TP
 By file descriptor
 If
-.IR pathname
+.I pathname
 is an empty string and the
 .B AT_EMPTY_PATH
 flag is specified in
-.IR flags
+.I flags
 (see below),
 then the target file is the one referred to by the file descriptor
 .IR dirfd .
-.PP
+.P
 .I flags
 can be used to influence a pathname-based lookup.
 A value for
 .I flags
 is constructed by ORing together zero or more of the following constants:
 .TP
-.BR AT_EMPTY_PATH
+.B AT_EMPTY_PATH
 .\" commit 65cfc6722361570bfe255698d9cd4dccaf47570d
 If
 .I pathname
 is an empty string, operate on the file referred to by
-.IR dirfd
+.I dirfd
 (which may have been obtained using the
 .BR open (2)
 .B O_PATH
@@ -183,27 +173,28 @@ If
 is
 .BR AT_FDCWD ,
 the call operates on the current working directory.
-.IP
-This flag is Linux-specific; define
-.B _GNU_SOURCE
-.\" Before glibc 2.16, defining _ATFILE_SOURCE sufficed
-to obtain its definition.
 .TP
-.BR AT_NO_AUTOMOUNT
+.B AT_NO_AUTOMOUNT
 Don't automount the terminal ("basename") component of
 .I pathname
 if it is a directory that is an automount point.
 This allows the caller to gather attributes of an automount point
 (rather than the location it would mount).
-This flag can be used in tools that scan directories
-to prevent mass-automounting of a directory of automount points.
+This flag has no effect if the mount point has already been mounted over.
+.IP
 The
 .B AT_NO_AUTOMOUNT
-flag has no effect if the mount point has already been mounted over.
-This flag is Linux-specific; define
-.B _GNU_SOURCE
-.\" Before glibc 2.16, defining _ATFILE_SOURCE sufficed
-to obtain its definition.
+flag can be used in tools that scan directories
+to prevent mass-automounting of a directory of automount points.
+.IP
+All of
+.BR stat (2),
+.BR lstat (2),
+and
+.BR fstatat (2)
+act as though
+.B AT_NO_AUTOMOUNT
+was set.
 .TP
 .B AT_SYMLINK_NOFOLLOW
 If
@@ -211,7 +202,7 @@ If
 is a symbolic link, do not dereference it:
 instead return information about the link itself, like
 .BR lstat (2).
-.PP
+.P
 .I flags
 can also be used to control what sort of synchronization the kernel will do
 when querying a file on a remote filesystem.
@@ -234,7 +225,7 @@ the system has cached if possible.
 This may mean that the information returned is approximate, but,
 on a network filesystem, it may not involve a round trip to the server - even
 if no lease is held.
-.PP
+.P
 The
 .I mask
 argument to
@@ -242,12 +233,12 @@ argument to
 is used to tell the kernel which fields the caller is interested in.
 .I mask
 is an ORed combination of the following constants:
-.PP
+.P
 .in +4n
 .TS
 lB l.
 STATX_TYPE	Want stx_mode & S_IFMT
-STATX_MODE	Want stx_mode & \(tiS_IFMT
+STATX_MODE	Want stx_mode & \[ti]S_IFMT
 STATX_NLINK	Want stx_nlink
 STATX_UID	Want stx_uid
 STATX_GID	Want stx_gid
@@ -259,11 +250,14 @@ STATX_SIZE	Want stx_size
 STATX_BLOCKS	Want stx_blocks
 STATX_BASIC_STATS	[All of the above]
 STATX_BTIME	Want stx_btime
+STATX_ALL	The same as STATX_BASIC_STATS | STATX_BTIME.
+	It is deprecated and should not be used.
 STATX_MNT_ID	Want stx_mnt_id (since Linux 5.8)
-STATX_ALL	[All currently available fields]
+STATX_DIOALIGN	Want stx_dio_mem_align and stx_dio_offset_align
+	(since Linux 6.1; support varies by filesystem)
 .TE
 .in
-.PP
+.P
 Note that, in general, the kernel does
 .I not
 reject values in
@@ -299,7 +293,7 @@ has the same format as the
 .I mask
 argument and bits are set in it to indicate
 which fields have been filled in.
-.PP
+.P
 It should be noted that the kernel may return fields that weren't
 requested and may fail to return fields that were requested,
 depending on what the backing filesystem supports.
@@ -308,7 +302,7 @@ In either case,
 .I stx_mask
 will not be equal
 .IR mask .
-.PP
+.P
 If a filesystem does not support a field or if it has
 an unrepresentable value (for instance, a file with an exotic type),
 then the mask bit corresponding to that field will be cleared in
@@ -316,12 +310,12 @@ then the mask bit corresponding to that field will be cleared in
 even if the user asked for it and a dummy value will be filled in for
 compatibility purposes if one is available (e.g., a dummy UID and GID may be
 specified to mount under some circumstances).
-.PP
+.P
 A filesystem may also fill in fields that the caller didn't ask for if it has
 values for them available and the information is available at no extra cost.
 If this happens, the corresponding bits will be set in
 .IR stx_mask .
-.PP
+.P
 .\" Background: inode attributes are modified with i_mutex held, but
 .\" read by stat() without taking the mutex.
 .IR Note :
@@ -330,9 +324,9 @@ for performance and simplicity reasons, different fields in the
 structure may contain state information from different moments
 during the execution of the system call.
 For example, if
-.IR stx_mode
+.I stx_mode
 or
-.IR stx_uid
+.I stx_uid
 is changed by another process by calling
 .BR chmod (2)
 or
@@ -346,7 +340,7 @@ or the old
 .I stx_uid
 together with the new
 .IR stx_mode .
-.PP
+.P
 Apart from
 .I stx_mask
 (which is described above), the fields in the
@@ -392,7 +386,7 @@ when the file has holes.)
 .TP
 .I stx_attributes_mask
 A mask indicating which bits in
-.IR stx_attributes
+.I stx_attributes
 are supported by the VFS and the filesystem.
 .TP
 .I stx_atime
@@ -421,7 +415,31 @@ This is the same number reported by
 .BR name_to_handle_at (2)
 and corresponds to the number in the first field in one of the records in
 .IR /proc/self/mountinfo .
-.PP
+.TP
+.I stx_dio_mem_align
+The alignment (in bytes) required for user memory buffers for direct I/O
+.RB ( O_DIRECT )
+on this file,
+or 0 if direct I/O is not supported on this file.
+.IP
+.B STATX_DIOALIGN
+.RI ( stx_dio_mem_align
+and
+.IR stx_dio_offset_align )
+is supported on block devices since Linux 6.1.
+The support on regular files varies by filesystem;
+it is supported by ext4, f2fs, and xfs since Linux 6.1.
+.TP
+.I stx_dio_offset_align
+The alignment (in bytes) required for file offsets and I/O segment lengths
+for direct I/O
+.RB ( O_DIRECT )
+on this file,
+or 0 if direct I/O is not supported on this file.
+This will only be nonzero if
+.I stx_dio_mem_align
+is nonzero, and vice versa.
+.P
 For further information on the above fields, see
 .BR inode (7).
 .\"
@@ -437,7 +455,7 @@ The bits in
 .I stx_attributes_mask
 correspond bit-by-bit to
 .IR stx_attributes .
-.PP
+.P
 The flags are as follows:
 .TP
 .B STATX_ATTR_COMPRESSED
@@ -503,6 +521,10 @@ without an explicit
 See
 .BR mmap (2)
 for more information.
+.TP
+.BR STATX_ATTR_MOUNT_ROOT " (since Linux 5.8)"
+.\" commit 80340fe3605c0e78cfe496c3b3878be828cfdbfe
+The file is the root of a mount.
 .SH RETURN VALUE
 On success, zero is returned.
 On error, \-1 is returned, and
@@ -571,12 +593,11 @@ is not a directory or
 is relative and
 .I dirfd
 is a file descriptor referring to a file other than a directory.
-.SH VERSIONS
-.BR statx ()
-was added to Linux in kernel 4.11; library support was added in glibc 2.28.
-.SH CONFORMING TO
-.BR statx ()
-is Linux-specific.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 4.11,
+glibc 2.28.
 .SH SEE ALSO
 .BR ls (1),
 .BR stat (1),
@@ -591,12 +612,3 @@ is Linux-specific.
 .BR capabilities (7),
 .BR inode (7),
 .BR symlink (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.
