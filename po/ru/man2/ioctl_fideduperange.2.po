@@ -1,0 +1,510 @@
+# Russian translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Azamat Hackimov <azamat.hackimov@gmail.com>, 2013-2014, 2017.
+# Dmitriy S. Seregin <dseregin@59.ru>, 2013.
+# Yuri Kozlov <yuray@komyakino.ru>, 2011-2019.
+# Иван Павлов <pavia00@gmail.com>, 2017, 2019.
+# Kirill Rekhov <krekhov.dev@gmail.com>, 2024.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n\n"
+"POT-Creation-Date: 2024-12-06 18:01+0100\n"
+"PO-Revision-Date: 2024-12-21 19:49+0300\n"
+"Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
+"Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#. type: TH
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "ioctl_fideduperange"
+msgstr "ioctl_fideduperange"
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "2022-10-30"
+msgstr "30 октября 2022 г."
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "Linux man-pages 6.03"
+msgstr "Справочные страницы Linux 6.03"
+
+#. type: SH
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "NAME"
+msgstr "НАИМЕНОВАНИЕ"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid "ioctl_fideduperange - share some the data of one file with another file"
+msgstr ""
+"ioctl_ficlonerange - сделать некоторые данные одного файла общими с другим "
+"файлом"
+
+#. type: SH
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "LIBRARY"
+msgstr "БИБЛИОТЕКА"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid "Standard C library (I<libc>, I<-lc>)"
+msgstr "Стандартная библиотека языка C (I<libc>, I<-lc>)"
+
+#. type: SH
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "ОБЗОР"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+#, fuzzy, no-wrap
+#| msgid ""
+#| "B<#include E<lt>fcntl.hE<gt>           >/* Definition of AT_* constants */\n"
+#| "B<#include E<lt>sys/stat.hE<gt>>\n"
+msgid ""
+"B<#include E<lt>linux/fs.hE<gt>>      /* Definition of B<FIDEDUPERANGE> and\n"
+"B<                              FILE_DEDUPE_* >constantsB<*/>\n"
+"B<#include E<lt>sys/ioctl.hE<gt>>\n"
+msgstr ""
+"B<#include E<lt>fcntl.hE<gt>           >/* определения констант AT_* */\n"
+"B<#include E<lt>sys/stat.hE<gt>>\n"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "B<int ioctl(int >I<src_fd>B<, FIDEDUPERANGE, struct file_dedupe_range *>I<arg>B<);>\n"
+msgstr "B<int ioctl(int >I<src_fd>B<, FIDEDUPERANGE, struct file_dedupe_range *>I<arg>B<);>\n"
+
+#. type: SH
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "ОПИСАНИЕ"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid ""
+"If a filesystem supports files sharing physical storage between multiple "
+"files, this B<ioctl>(2)  operation can be used to make some of the data in "
+"the B<src_fd> file appear in the B<dest_fd> file by sharing the underlying "
+"storage if the file data is identical (\"deduplication\").  Both files must "
+"reside within the same filesystem.  This reduces storage consumption by "
+"allowing the filesystem to store one shared copy of the data.  If a file "
+"write should occur to a shared region, the filesystem must ensure that the "
+"changes remain private to the file being written.  This behavior is commonly "
+"referred to as \"copy on write\"."
+msgstr ""
+"Если файловая система поддерживает общее файловое физическое хранилище между "
+"несколькими файлами, то эту операцию B<ioctl>(2) можно использовать для "
+"того, чтобы часть данных файла I<src_fd> появилась в файле I<dest_fd> в виде "
+"общего пространства на носителе, если данные файлов одинаковы "
+"(«дедупликация», deduplication). Оба файла должны располагаться в одной "
+"файловой системе. Это сокращает затраты на место, позволяя хранить в "
+"файловой системе только одну копию данных.Если выполняется запись в эту "
+"общую область, то файловая система должна гарантировать, что изменения будут "
+"видны только в файле, в который производится запись. Такое поведение часто "
+"называют как «копирование при записи» (copy on write)."
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid ""
+"This ioctl performs the \"compare and share if identical\" operation on up "
+"to I<src_length> bytes from file descriptor I<src_fd> at offset "
+"I<src_offset>.  This information is conveyed in a structure of the following "
+"form:"
+msgstr ""
+"Данный ioctl выполняет операцию «сравнения и создания общей области при "
+"совпадении» с не более I<src_length> байт из файлового дескриптора I<src_fd> "
+"по смещению I<src_offset>. Данная информация передаётся в структуре "
+"следующего вида:"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid ""
+"struct file_dedupe_range {\n"
+"    __u64 src_offset;\n"
+"    __u64 src_length;\n"
+"    __u16 dest_count;\n"
+"    __u16 reserved1;\n"
+"    __u32 reserved2;\n"
+"    struct file_dedupe_range_info info[0];\n"
+"};\n"
+msgstr ""
+"struct file_dedupe_range {\n"
+"    __u64 src_offset;\n"
+"    __u64 src_length;\n"
+"    __u16 dest_count;\n"
+"    __u16 reserved1;\n"
+"    __u32 reserved2;\n"
+"    struct file_dedupe_range_info info[0];\n"
+"};\n"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid ""
+"Deduplication is atomic with regards to concurrent writes, so no locks need "
+"to be taken to obtain a consistent deduplicated copy."
+msgstr ""
+"Дедупликация атомарна для одновременной записи, поэтому для получения "
+"корректной дедуплицированной копии не нужно получать блокировки."
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid "The fields I<reserved1> and I<reserved2> must be zero."
+msgstr "Поля I<reserved1> и I<reserved2> должны быть равны нулю."
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid ""
+"Destinations for the deduplication operation are conveyed in the array at "
+"the end of the structure.  The number of destinations is given in "
+"I<dest_count>, and the destination information is conveyed in the following "
+"form:"
+msgstr ""
+"Назначения для операции дедупликации передаются в массиве в конце структуры. "
+"Количество назначений задаётся в I<dest_count>, а информация о назначении "
+"задаётся в следующем виде:"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid ""
+"struct file_dedupe_range_info {\n"
+"    __s64 dest_fd;\n"
+"    __u64 dest_offset;\n"
+"    __u64 bytes_deduped;\n"
+"    __s32 status;\n"
+"    __u32 reserved;\n"
+"};\n"
+msgstr ""
+"struct file_dedupe_range_info {\n"
+"    __s64 dest_fd;\n"
+"    __u64 dest_offset;\n"
+"    __u64 bytes_deduped;\n"
+"    __s32 status;\n"
+"    __u32 reserved;\n"
+"};\n"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+#, fuzzy
+#| msgid ""
+#| "Each deduplication operation targets I<src_length> bytes in file "
+#| "descriptor I<dest_fd> at offset I<dest_offset>.  The field I<reserved> "
+#| "must be zero.  During the call, I<src_fd> must be open for reading and "
+#| "I<dest_fd> must be open for writing.  The combined size of the struct "
+#| "I<file_dedupe_range> and the struct I<file_dedupe_range_info> array must "
+#| "not exceed the system page size.  The maximum size of I<src_length> is "
+#| "filesystem dependent and is typically 16\\~MiB.  This limit will be "
+#| "enforced silently by the filesystem.  By convention, the storage used by "
+#| "I<src_fd> is mapped into I<dest_fd> and the previous contents in "
+#| "I<dest_fd> are freed."
+msgid ""
+"Each deduplication operation targets I<src_length> bytes in file descriptor "
+"I<dest_fd> at offset I<dest_offset>.  The field I<reserved> must be zero.  "
+"During the call, I<src_fd> must be open for reading and I<dest_fd> must be "
+"open for writing.  The combined size of the struct I<file_dedupe_range> and "
+"the struct I<file_dedupe_range_info> array must not exceed the system page "
+"size.  The maximum size of I<src_length> is filesystem dependent and is "
+"typically 16\\ MiB.  This limit will be enforced silently by the "
+"filesystem.  By convention, the storage used by I<src_fd> is mapped into "
+"I<dest_fd> and the previous contents in I<dest_fd> are freed."
+msgstr ""
+"Целью каждой операции дедупликации является I<src_length> байт в файловом "
+"дескрипторе I<dest_fd> со смещением I<logical_offset>. Поле I<reserved> "
+"должно быть равно нулю.На момент вызова I<src_fd> должен быть открыт на "
+"чтение и, I<dest_fd> должен быть открыт на запись. Сумма размеров структуры "
+"I<file_dedupe_range> и массива структур I<file_dedupe_range_info> не должна "
+"превышать системный размер страницы. Максимальный размер I<src_length> "
+"зависит от файловой системы и, обычно равен 16\\~МиБ. Это ограничение будет "
+"невидимо соблюдаться файловой системой. По соглашению, хранилище, "
+"используемое I<src_fd>, отображается в I<dest_fd>, а предыдущее содержимое в "
+"I<dest_fd> освобождается."
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid ""
+"Upon successful completion of this ioctl, the number of bytes successfully "
+"deduplicated is returned in I<bytes_deduped> and a status code for the "
+"deduplication operation is returned in I<status>.  If even a single byte in "
+"the range does not match, the deduplication request will be ignored and "
+"I<status> set to B<FILE_DEDUPE_RANGE_DIFFERS>.  The I<status> code is set to "
+"B<FILE_DEDUPE_RANGE_SAME> for success, a negative error code in case of "
+"error, or B<FILE_DEDUPE_RANGE_DIFFERS> if the data did not match."
+msgstr ""
+"При успешном выполнении ioctl в I<bytes_deduped> возвращается количество "
+"дедуплицированных байт, а в I<status> — код состояния операции дедупликации. "
+"Если не совпадает даже один байт из диапазона, то запрос дедупликации будет "
+"проигнорирован и I<status> будет присвоено B<FILE_DEDUPE_RANGE_DIFFERS>. При "
+"успешном выполнении код I<status> изменяется на B<FILE_DEDUPE_RANGE_SAME>, "
+"при ошибке — отрицательное значение кода, или B<FILE_DEDUPE_RANGE_DIFFERS>, "
+"если данные не совпадают."
+
+#. type: SH
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "RETURN VALUE"
+msgstr "ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid "On error, -1 is returned, and I<errno> is set to indicate the error."
+msgstr ""
+"В случае ошибки возвращается -1, а I<errno> устанавливается в значение "
+"ошибки."
+
+#. type: SH
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "ERRORS"
+msgstr "ОШИБКИ"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid "Possible errors include (but are not limited to) the following:"
+msgstr "Возможные ошибки включают (но не ограничиваются) следующее:"
+
+#. type: TP
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "B<EBADF>"
+msgstr "B<EBADF>"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid ""
+"I<src_fd> is not open for reading; I<dest_fd> is not open for writing or is "
+"open for append-only writes; or the filesystem which I<src_fd> resides on "
+"does not support deduplication."
+msgstr ""
+"Дескриптор I<src_fd> не открыт на чтение; I<dest_fd> не открыт на запись или "
+"открыт только для добавления; файловая система, в которой находится "
+"I<src_fd>, не поддерживает дедупликацию."
+
+#. type: TP
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "B<EINVAL>"
+msgstr "B<EINVAL>"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid ""
+"The filesystem does not support deduplicating the ranges of the given "
+"files.  This error can also appear if either file descriptor represents a "
+"device, FIFO, or socket.  Disk filesystems generally require the offset and "
+"length arguments to be aligned to the fundamental block size.  Neither Btrfs "
+"nor XFS support overlapping deduplication ranges in the same file."
+msgstr ""
+"Файловая система не поддерживает дедупликацию диапазонов в заданных файлах. "
+"Эта ошибка также может возникнуть, если файловый дескриптор представляет "
+"устройство, FIFO или сокет. Обычно, для дисковых файловых систем требуются, "
+"чтобы аргументы смещения и длины были выровнены по основному размеру блока. "
+"В XFS и Btrfs нет поддержки дедупликации перекрывающихся диапазонов в одном "
+"и том же файле."
+
+#. type: TP
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "B<EISDIR>"
+msgstr "B<EISDIR>"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid ""
+"One of the files is a directory and the filesystem does not support shared "
+"regions in directories."
+msgstr ""
+"Один из файлов является каталогом и файловая система не поддерживает "
+"диапазоны для каталогов."
+
+#. type: TP
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "B<ENOMEM>"
+msgstr "B<ENOMEM>"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid ""
+"The kernel was unable to allocate sufficient memory to perform the operation "
+"or I<dest_count> is so large that the input argument description spans more "
+"than a single page of memory."
+msgstr ""
+"Ядро не смогло выделить достаточно памяти для выполнения операции или размер "
+"I<dest_count> слишком большой из-за того, что описание входного аргумента "
+"занимает больше одной страницы в памяти."
+
+#. type: TP
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "B<EOPNOTSUPP>"
+msgstr "B<EOPNOTSUPP>"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid ""
+"This can appear if the filesystem does not support deduplicating either file "
+"descriptor, or if either file descriptor refers to special inodes."
+msgstr ""
+"Может возникать, если файловая система не поддерживает дедупликацию для "
+"файловых дескрипторов или когда файловый дескриптор ссылается на специальные "
+"иноды."
+
+#. type: TP
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "B<EPERM>"
+msgstr "B<EPERM>"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid "I<dest_fd> is immutable."
+msgstr "Дескриптор I<dest_fd> является неизменным."
+
+#. type: TP
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "B<ETXTBSY>"
+msgstr "B<ETXTBSY>"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid "One of the files is a swap file.  Swap files cannot share storage."
+msgstr ""
+"Один из файлов является файлом подкачки. Файлы подкачки не могут содержаться "
+"в совместных хранилищах."
+
+#. type: TP
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "B<EXDEV>"
+msgstr "B<EXDEV>"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid "I<dest_fd> and I<src_fd> are not on the same mounted filesystem."
+msgstr ""
+"Дескрипторы I<dest_fd> и I<src_fd> находятся на разных смонтированных "
+"файловых системах."
+
+#. type: SH
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "VERSIONS"
+msgstr "ВЕРСИИ"
+
+#. type: Plain text
+#: debian-bookworm
+msgid ""
+"This ioctl operation first appeared in Linux 4.5.  It was previously known "
+"as B<BTRFS_IOC_FILE_EXTENT_SAME> and was private to Btrfs."
+msgstr ""
+"Данная операция ioctl появилась в Linux 4.5. Раньше она называлась "
+"B<BTRFS_IOC_FILE_EXTENT_SAME> и работала только в Btrfs."
+
+#. type: SH
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "STANDARDS"
+msgstr "СТАНДАРТЫ"
+
+#. type: Plain text
+#: debian-bookworm
+msgid "This API is Linux-specific."
+msgstr "Данный программный интерфейс существует только в Linux."
+
+#. type: SH
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "NOTES"
+msgstr "ПРИМЕЧАНИЯ"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid ""
+"Because a copy-on-write operation requires the allocation of new storage, "
+"the B<fallocate>(2)  operation may unshare shared blocks to guarantee that "
+"subsequent writes will not fail because of lack of disk space."
+msgstr ""
+"Так как для операции копирования-при-записи требуется выделение нового "
+"пространства в хранилище, операция B<fallocate>(2) может отменить совместное "
+"использование общих блоков для гарантии того, что последующие операции "
+"записи не завершатся ошибкой из-за нехватки места на диске."
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid ""
+"Some filesystems may limit the amount of data that can be deduplicated in a "
+"single call."
+msgstr ""
+"Некоторые файловые системы имеют ограничение на количество данных, которое "
+"может быть дедуплицировано за один вызов."
+
+#. type: SH
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "СМОТРИТЕ ТАКЖЕ"
+
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid "B<ioctl>(2)"
+msgstr "B<ioctl>(2)"
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "2023-10-31"
+msgstr "31 октября 2023 г."
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "Linux man-pages 6.06"
+msgstr "Справочные страницы Linux 6.06"
+
+#. type: Plain text
+#: mageia-cauldron
+msgid "Linux."
+msgstr "Linux."
+
+#. type: SH
+#: mageia-cauldron
+#, no-wrap
+msgid "HISTORY"
+msgstr "ИСТОРИЯ"
+
+#. type: Plain text
+#: mageia-cauldron
+msgid "Linux 4.5."
+msgstr "Linux 4.5."
+
+#. type: Plain text
+#: mageia-cauldron
+#, fuzzy
+#| msgid ""
+#| "This ioctl operation first appeared in Linux 4.5.  It was previously "
+#| "known as B<BTRFS_IOC_FILE_EXTENT_SAME> and was private to Btrfs."
+msgid ""
+"It was previously known as B<BTRFS_IOC_FILE_EXTENT_SAME> and was private to "
+"Btrfs."
+msgstr ""
+"Данная операция ioctl появилась в Linux 4.5. Раньше она называлась "
+"B<BTRFS_IOC_FILE_EXTENT_SAME> и работала только в Btrfs."

@@ -62,13 +62,16 @@ of Linux manpages. The list is sorted alphabetically.
 * Petr Sykora <petrsykora@jabber.tecka.cz>
 * Stinovlas <stinovlas@gmail.com>
 * Tomáš Andrle <tomas.andrle@pslib.cz>
+* Tomáš Řezáč <tomas.rezac@pslib.cz>
 * Václav Doubek <vaclav.doubek@pslib.cz>
+* Vojtěch Zeisek <vojtech.zeisek@opensuse.org>
 * Zdeněk Pytela <letty@mrakoplas.phil.muni.cz>
 
 
 ## Danish:
 
 * Byrial Ole Jensen <byrial@vip.cybercity.dk>
+* Joe Hansen <joedalton2@yahoo.dk>
 * Kenneth Rohde Christiansen <kenneth@gnu.org>
 * Peter Makholm <peter@makholm.net>
 
@@ -81,21 +84,70 @@ of Linux manpages. The list is sorted alphabetically.
 * Mario Blättermann <mario.blaettermann@gmail.com>
 
 
+## Finnish:
+
+* Antti Salmela <asap@lyseo.edu.ouka.fi>
+* Edvard Majakari <ed@lodge.ton.tut.fi>
+* Esa Toivonen <esa.toivonen@helia.fi>
+* Heikki Kultala <hkultala@sci.fi>
+* Jaakko Puurunen <jaakko.puurunen@iki.fi>
+* Jani Frilander <jani.frilander@mail.wwnet.fi>
+* Janne Viitala <janne.viitala@cc.tut.fi>
+* Jari Antikainen <shogun@sci.fi>
+* Jari Kivirinta <jkivirin@ratol.fi>
+* Jarno Elonen <elonen@iki.fi>
+* Joose Vettenranta <joose@iki.fi>
+* Juha Manninen <juha.manninen@vip.fi>
+* Juhani Rantanen <misty@sgic.fi>
+* Juha-Pekka Syrjälä <jsyrjala@iki.fi>
+* Jukka Zitting <jukka.zitting@iki.fi>
+* Jussi Larjo <larjo@cc.tut.fi>
+* Lauri Manner <lauri.manner@pp.inet.fi>
+* Lauri Nurmi <lanurmi@kauhajoki.fi>
+* Marko Viirelä <mviirela@paju.oulu.fi>
+* Markus Valtokari <mkv@iki.fi>
+* Mikko Hurskainen <mikko.hurskainen@utanet.fi>
+* Petri Aerikkala <paerikka@turkuamk.fi>
+* Rami Koivunen <rkoivu@utu.fi>
+* René Gauffin <rene.gauffin@dlc.fi>
+* Risto Levänen <rike@freenet.hut.fi>
+* Sami Kuhmonen <sami@iqs.fi>
+* Sami Louko <slouko@dlc.fi>
+* Samuli Sorvakko <galaxy@cedunet.com>
+* Santeri Kannisto <sk@sot.com>
+* Santeri Säkäjärvi <ss@sot.com>
+* Simo Muinonen <smm@iki.fi>
+* Teppo Kankaanpää <photon@clinet.fi>
+* Tero Heikkilä <Tero.T.Heikkila@hut.fi>
+* Thomas Raivio <tjraivio@cc.hut.fi>
+* Timo Tiirikka <tht801@GNWmail.com>
+* Tommi Vainikainen <mucus@pcuf.fi>
+* Tuomas Angervuori <tumppi@icon.fi>
+* Tuomo Pyhälä <tuomo@lesti.kpnet.fi>
+* Tuukka Forssell <taf@jytol.fi>
+* Tuukka Urpi <tuukka@wakkanet.fi>
+* Ville Karjalainen <duet@sci.fi>
+
+
 ## French:
 
 * Alain Portal <aportal@univ-montp2.fr>
 * Alexandre Kuoch <alex.kuoch@gmail.com>
 * Alexandre Normand <aj.normand@free.fr>
 * Amand Tihon <amand@alrj.org>
+* arne
 * Aymeric Nys <aymeric AT nnx POINT com>
+* Baptiste Mélès <baptiste.meles@ens.fr>
 * Bastien Scher <bastien0705@gmail.com>
 * Bernard Siaud
+* bubu <bubub@no-log.org>
 * carmie
 * Cédric Boutillier <cedric.boutillier@gmail.com>
 * Cédric Lucantis <omer@no-log.org>
+* Celia Boudjemai <celisou2008@gmail.com>
 * Christophe Blaess <ccb@club-internet.fr>
 * Christophe Blaess <https://www.blaess.fr/christophe/>
-* Christophe Blaess <http://www.blaess.fr/christophe/>
+* Christophe Donnier
 * Christophe Sauthier <christophe@sauthier.com>
 * Cyril Guilloud <guilloud@lautre.net>
 * Danny <dannybrain@noos.fr>
@@ -112,11 +164,14 @@ of Linux manpages. The list is sorted alphabetically.
 * Frederic Daniel Luc Lehobey <Frederic@Lehobey.net>
 * Frédéric Delanoy <delanoy_f@yahoo.com>
 * Frédéric Hantrais <fhantrais@gmail.com>
+* Frédéric Henry
 * Frédéric Zulian <zulian@free.fr>
 * Gérard Delafond <gerard@delafond.org>
+* G. Gracian
 * Grégoire Scano <gregoire.scano@malloc.fr>
 * Grégory Colpart <reg@evolix.fr>
 * Guilhelm Panaget <guilhelm.panaget@free.fr>
+* Guillaume Audirac
 * Guillaume Bour
 * Guillaume Delacour <guillaume.delacour@gmail.com>
 * Jade Alglave <jade.alglave@ens-lyon.org>
@@ -124,6 +179,7 @@ of Linux manpages. The list is sorted alphabetically.
 * Jean-Baptiste Holcroft <jean-baptiste@holcroft.fr>
 * Jean-Jacques Brioist <jean.brioist@numericable.fr>
 * Jean-Luc Coulon (f5ibh) <jean-luc.coulon@wanadoo.fr>
+* Jean-Luc DUFLOT
 * Jean-Marc Chaton <chaton@debian.org>
 * Jean-Paul Guillonneau <guillonneau.jeanpaul@free.fr>
 * Jean-Philippe Guérard <fevrier@tigreraye.org>
@@ -133,30 +189,37 @@ of Linux manpages. The list is sorted alphabetically.
 * José JORGE
 * Julien Cristau <jcristau@debian.org>
 * Julien Rosal <albator.deb@gmail.com>
+* KDE Simon Depiets <2df_CHEZ_tuxfamily_POINT_org>
+* Laurent Gautrot <l dot gautrot at free dot fr>
+* Laurent Hugé
 * Luc Froidefond <luc.froidefond@free.fr>
 * Lucien Gentis <lucien.gentis@waika9.com>
 * Lyes Zemmouche <iliaas@hotmail.fr>
 * Marc Poiroud <marci1@archlinux.fr>
 * Mattéo Rossillol‑‑Laruelle <beatussum@protonmail.com>
 * Michel Quercia <quercia AT cal DOT enst DOT fr>
+* Michel Robitaille <robitail@iro.umontreal.ca>
+* Montanes David <montanes.david@gmail.com>
 * Nicolas François <nicolas.francois@centraliens.net>
 * Nicolas Haller <nicolas@boiteameuh.org>
 * Nicolas Sauzède <nsauzede@free.fr>
 * Philippe Batailler
 * Philippe Piette <foudre-blanche@skynet.be>
+* Pierre Souchay <pierre.souchay@free.fr>
 * Romain Doumenc <rd6137@gmail.com>
 * Sébastien Blanchet
-* Simon Depiets
 * Simon Paillard <simon.paillard@resel.enst-bretagne.fr>
 * Stephane Blondon <stephane.blondon@gmail.com>
 * Stéphan Rafin <stephan.rafin@laposte.net>
 * Steve Petruzzello <dlist@bluewin.ch>
+* stolck
 * Sylvain Archenault <sylvain.archenault@laposte.net>
 * Sylvain Cherrier <sylvain.cherrier@free.fr>
 * Thierry Vignaud <tvignaud@mandriva.com>
 * Thomas Blein <tblein@tblein.eu>
 * Thomas Huriaux <thomas.huriaux@gmail.com>
 * Thomas Vincent <tvincent@debian.org>
+* tv
 * Valéry Perrin <valery.perrin.debian@free.fr>
 * Yves Rütschlé <l10n@rutschle.net>
 
@@ -167,8 +230,10 @@ of Linux manpages. The list is sorted alphabetically.
 * Alexander Bachmer <alex.bachmer@t-online.de>
 * Andreas Braukmann <andy@abra.de>
 * Andreas D. Preissig <andreas@sanix.ruhr.de>
+* Bernd Storck <berndstorck@jpberlin.de>
 * Chris Leick <c.leick@vollbio.de>
 * Christian Schmidt <c.schmidt@ius.gun.de>
+* Christoph Brinkhaus <c.brinkhaus@t-online.de>
 * Daniel Kobras <kobras@linux.de>
 * David Thamm <dthamm@bfs.de>
 * Dennis Stampfer <kontakt@dstampfer.de>
@@ -186,10 +251,12 @@ of Linux manpages. The list is sorted alphabetically.
 * Jens Püschel <jepu0000@stud.uni-sb.de>
 * Jens Rohler <jkcr@rohler.de>
 * Jens Seidel <tux-master@web.de>
+* Joachim Schnitter <joachim.schnitter@software-logistik.de>
 * Jochen Hein <jochen@jochen.org>
 * Joern Vehoff <joern@vehoff.net>
 * Johnny Teveßen <j.tevessen@gmx.de>
 * Jonas Rovan <jonas@blitz.de>
+* Jonas Smedegaard <dr@jones.dk>
 * Karl Eichwalder <ke@suse.de>
 * Lars J. Brandt <ljbrandt@jorma.ping.de>
 * Lutz Behnke <lutz.behnke@gmx.de>
@@ -200,7 +267,6 @@ of Linux manpages. The list is sorted alphabetically.
 * Markus Kaufmann <markus.kaufmann@gmx.de>
 * Markus Schmitt <fw@math.uni-sb.de>
 * Martin Eberhard Schauer <Martin.E.Schauer@gmx.de>
-* Martin Okrslar <okrslar@informatik.uni-muenchen.de>
 * Martin Schmitt <martin@schmitt.li>
 * Martin Schulze <joey@infodrom.org>
 * Michaela Hohenner <mhohenne@techfak.uni-bielefeld.de>
@@ -223,9 +289,16 @@ of Linux manpages. The list is sorted alphabetically.
 * Sebastian Rittau <srittau@jroger.in-berlin.de>
 * Stefan Janke <gonzo@burg.studfb.unibw-muenchen.de>
 * Stephan Beck <tlahcuilo@gmx.net>
+* Thomas Hoffmann
 * Thomas Koenig <ig25@rz.uni-karlsruhe.de>
+* Tobias Burnus <burnus@gmx.de>
 * Walter Harms <walter.harms@informatik.uni-oldenburg.de>
 * Wolfgang Jung <woju@keep.in-berlin.de>
+* Wolfram Quester <wolfi@mittelerde.physik.uni-kostanz.de>
+
+
+## Greek:
+
 
 
 ## Hungarian:
@@ -284,6 +357,19 @@ of Linux manpages. The list is sorted alphabetically.
 * Zelena Endre <ezelena@lme.linux.hu>
 
 
+## Indonesian:
+
+* Andika Triwidada <andika@gmail.com>
+* Decy Sophan Aryanto <decy.sophan@upg.siemens.co.id>
+* I Made Wiryana <mwiryana@gunadarma.ac.id>
+* I. Musthafa <i.musthafa66@gmail.com>
+* Johan Efendi <johan-efendi@iname.com>
+* Priyadi Iman Nurcahyo <priyadi@priyadi.id.org>
+* Rachman M. Heryanto <manz@ibm.net>
+* Rizqy Syarief <rizqy@rad.net.id>
+* Teguh Adhi A. <adicom@thepentagon.com>
+
+
 ## Italian:
 
 * Alessandro Rubini <rubini@linux.it>
@@ -298,6 +384,7 @@ of Linux manpages. The list is sorted alphabetically.
 * Giovanni Bortolozzo <borto@dei.unipd.it>
 * Giulio Daprelà <giulio@pluto.it>
 * Giuseppe Guerrini <giusguerrini@racine.ra.it>
+* Giuseppe Sacco <eppesuig@debian.org>
 * Goffredo Baroncelli <kreijack@usa.net>
 * Hugh Hartmann <hhartmann@libero.it>
 * Marco Curreli <marcocurreli@tiscali.it>
@@ -308,9 +395,36 @@ of Linux manpages. The list is sorted alphabetically.
 * Vieri Giugni <v.giugni@gmail.com>
 
 
+## Korean:
+
+* ASPLINUX <man@asp-linux.co.kr>
+* 장범수 <Boxcar0001@aol.com>
+* 류정욱 <compiler@kldp.org>
+* 정동현 <dhjung@serome.co.kr>
+* <freeyong@soback.kornet.nm.kr>
+* 이 만 용 <geoman@nownuri.nowcom.co.kr>
+* 임종균 <hermes44@secsm.org>
+* 윤현호 <hhyoon@kldp.org>
+* 이준기 <joongee@nownuri.net>
+* 한글 Manpage 프로젝트 <http://man.kldp.org>
+* Man-Yong Lee <yong@korealinux.co.kr>
+* 최윤용 <markboy@secsm.org>
+* 배성훈 <plodder@kldp.org>
+* 서성용 <pooh@kldp.org>
+* 서본근 <scoby@hanmail.net>
+* 정강훈 <skyeyes@soback.kornet.net>
+* 김상기 <teodeul@chollian.dacom.co.kr>
+* 한우섭 <wshan@samsung.com>
+* 이승식 <zican@freechal.com>
+
+
 ## Macedonian:
 
 * Kristijan Velkovski <me@krisfremen.com>
+
+
+## Norwegian bokmål:
+
 
 
 ## Persian:
@@ -328,6 +442,7 @@ of Linux manpages. The list is sorted alphabetically.
 * Bartosz Jakubski <B.Jakubski@supernet.com.pl>
 * Damian Szeluga <damjanek@gentoo.pl>
 * Daniel Koć <kocio@linuxnews.pl>
+* Daria Danieluk <daria.danieluk@gmail.com>
 * Grzegorz Goławski <grzegol@pld.org.pl>
 * Gwidon S. Naskrent <naskrent@hoth.amu.edu.pl>
 * Jakub Bogusz (eglibc) <qboosh@pld-linux.org>
@@ -338,7 +453,6 @@ of Linux manpages. The list is sorted alphabetically.
 * Leszek Krupiński <d@z.pl>
 * Łukasz Kowalczyk <lukow@tempac.okwf.fuw.edu.pl>
 * Maciej Wojciechowski <wojciech@staszic.waw.pl>
-* Marcin Garski <mgarski@post.pl>
 * Marcin Mazurek <mazek@capella.ae.poznan.pl>
 * Michał Górny <zrchos+manpagespl@gmail.com>
 * Michał Kułach <michal.kulach@gmail.com>
@@ -367,6 +481,49 @@ of Linux manpages. The list is sorted alphabetically.
 * Florentina Mușat <florentina.musat.28@gmail.com>
 * Laurențiu Buzdugan <lbuz@rolix.org>
 * Mihai Cristescu <mihai.cristescu@gmail.com>
+* Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>
+
+
+## Russian:
+
+* aereiae <aereiae@gmail.com>
+* Aleksander N.Gorohovski <angel@feht.dgtu.donetsk.ua>
+* Aleksandr Felda <isk8da@gmail.com>
+* Aleksandr Felda (редактор) <isk8da@gmail.com>
+* Alexander Golubev <fatzer2@gmail.com>
+* Alexey
+* Alexey <a.chepugov@gmail.com>
+* Alex Nik <rage.iz.me@gmail.com>
+* aliger aliger <aliger14@mail.ru>
+* Anton Artsiushkevich <htovver@gmail.com>
+* Artyom Kunyov <artkun@guitarplayer.ru>
+* Azamat Hackimov <azamat.hackimov@gmail.com>
+* Darima Kogan <silverdk99@gmail.com>
+* Dmitriy Ovchinnikov <dmitriyxt5@gmail.com>
+* Dmitriy S. Seregin <dseregin@59.ru>
+* Dmitry Bolkhovskikh <d20052005@yandex.ru>
+* Hotellook
+* ITriskTI <ITriskTI@gmail.com>
+* Katrin Kutepova <blackkatelv@gmail.com>
+* Kirill Rekhov <krekhov.dev@gmail.com>
+* kogamatranslator49 <r.podarov@yandex.ru>
+* Konstantin Shvaykovskiy <kot.shv@gmail.com>
+* Lockal <lockalsash@gmail.com>
+* Max Is <ismax799@gmail.com>
+* Nikita <zxcvbnm3230@mail.ru>
+* Spiros Georgaras <sng@hellug.gr>
+* Vladislav <ivladislavefimov@gmail.com>
+* Yuri Kozlov <yuray@komyakino.ru>
+* Андрей Догадкин <adogadkin@outlook.com>
+* Баринов Владимир
+* Виктор Вислобоков <corochoone@perm.ru>
+* Иван Павлов <pavia00@gmail.com>
+* Малянов Евгений Викторович <maljanow@outlook.com>
+* Сухичев Михаил Иванович <sukhichev@yandex.ru>
+
+
+## Serbian:
+
 
 
 ## Spanish:
@@ -381,11 +538,13 @@ of Linux manpages. The list is sorted alphabetically.
 * Claudio S. Suárez <csuarez@ctv.es>
 * David García a.k.a. PowR <powr@thepentagon.com>
 * Diego Novillo <diego@cs.ualberta.ca>
+* Diego Sevilla Ruiz <dsevilla@ditec.um.es>
 * Enrique Ferrero Puchades <enferpuc@olemail.com>
 * Fidel García <fidelgq@dinamic.net>
 * fmarzoa <fmarzoa@globalnet.es>
 * Gerardo Aburruzaga García <gerardo.aburruzaga@uca.es>
 * Ignacio Arenaza <Ignacio.Arenaza@studi.epfl.ch>
+* Ivan Robles <navitux@disroot.org>
 * Javi Diaz <javid@si.upc.es>
 * Javi Polo <javipolo@cyberjunkie.com>
 * Jordi Gili <jordi@enterprise.udg.es>
@@ -421,3 +580,26 @@ of Linux manpages. The list is sorted alphabetically.
 * Urko Lusa <ulusa@lacueva.ddns.org>
 * Vicente Pastor Gómez <vpastorg@santandersupernet.com>
 * Victor Moral <victor@venexma.es>
+
+
+## Swedish:
+
+* Anders Jonsson <anders.jonsson@norsjovallen.se>
+* Göran Uddeborg <goeran@uddeborg.se>
+
+
+## Ukrainian:
+
+* Andrij Mizyk <andm1zyk@proton.me>
+* Andrij Mizyk <andmizyk@gmail.com>
+* Andriy Rysin <arysin@gmail.com>
+* lxlalexlxl <lxlalexlxl@ukr.net>
+* Maxim V. Dziumanenko <mvd@mylinux.com.ua>
+* Olex Denkin <ks_alexandr@ukr.net>
+* Sergey Poznyakoff <gray@gnu.org>
+* Yuri Chornoivan <yurchor@ukr.net>
+
+
+## Vietnamese:
+
+* Mario Blättermann <mario.blaettermann@gmail.com>

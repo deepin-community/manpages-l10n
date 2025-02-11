@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.TIME" "7" "" "systemd 249" "systemd.time"
+.TH "SYSTEMD\&.TIME" "7" "" "systemd 256.8" "systemd.time"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -51,7 +51,7 @@ When parsing, systemd will accept the same time span syntax\&. Separating spaces
 .sp -1
 .IP \(bu 2.3
 .\}
-usec, us, \(mcs
+usec, us, μs
 .RE
 .sp
 .RS 4
@@ -201,16 +201,44 @@ timezone specifier in the output\&.
 In some cases timestamps are shown with microsecond granularity\&. In this case the sub\-second remainder is separated by a full stop from the seconds component\&.
 .SH "PARSING TIMESTAMPS"
 .PP
-When parsing, systemd will accept a similar syntax, but expects no timezone specification, unless it is given as the literal string
-"UTC"
-(for the UTC timezone), or is specified to be the locally configured timezone, or the timezone name in the IANA timezone database format\&. The complete list of timezones supported on your system can be obtained using the
-"timedatectl list\-timezones"
+When parsing, systemd will accept a similar syntax, but some fields can be omitted, and the space between the date and time can be replaced with a
+"T"
+(à la the
+\m[blue]\fBRFC 3339\fR\m[]\&\s-2\u[1]\d\s+2
+profile of ISO 8601); thus, in CET, the following are all identical:
+"Fri 2012\-11\-23 23:02:15 CET",
+"Fri 2012\-11\-23T23:02:15",
+"2012\-11\-23T23:02:15 CET",
+"2012\-11\-23 23:02:15"\&.
+.PP
+The timezone defaults to the current timezone if not specified explicitly\&. It may be given after a space, like above, in which case it can be:
+"UTC", an entry in the installed IANA timezone database (e\&.g\&.
+"CET",
+"Asia/Tokyo", where the complete list can be obtained with
+\fBtimedatectl list\-timezones\fR
 (see
-\fBtimedatectl\fR(1))\&. Using IANA format is recommended over local timezone names, as less prone to errors (e\&.g\&. with local timezone it\*(Aqs possible to specify daylight saving time in winter, even though that is not correct)\&. The weekday specification is optional, but when the weekday is specified, it must either be in the abbreviated ("Wed") or non\-abbreviated ("Wednesday") English language form (case does not matter), and is not subject to the locale choice of the user\&. Either the date, or the time part may be omitted, in which case the current date or 00:00:00, respectively, is assumed\&. The seconds component of the time may also be omitted, in which case ":00" is assumed\&. Year numbers may be specified in full or may be abbreviated (omitting the century)\&.
+\fBtimedatectl\fR(1))), or
+"\(+-\fI05\fR",
+"\(+-\fI05\fR\fI30\fR",
+"\(+-\fI05\fR:\fI30\fR",
+"Z"\&.
 .PP
-A timestamp is considered invalid if a weekday is specified and the date does not match the specified day of the week\&.
+It may also be affixed directly to the timestamp, in which case it must correspond to one of the formats defined in the
+\m[blue]\fBRFC 3339\fR\m[]\&\s-2\u[1]\d\s+2
+profile of ISO 8601:
+"\(+-\fI05\fR:\fI30\fR"
+or
+"Z"\&. Thus, the following are also identical to the above:
+"2012\-11\-23T23:02:15+01:00",
+"2012\-11\-23 22:02:15Z"\&.
 .PP
-When parsing, systemd will also accept a few special placeholders instead of timestamps:
+A timestamp can start with a field containing a weekday, which can be in an abbreviated ("Wed") or non\-abbreviated ("Wednesday") English language form (case does not matter), regardless of the locale\&. However, if a weekday
+\fIis\fR
+specified and doesn\*(Aqt match the date, the timestamp is rejected\&.
+.PP
+If the date is omitted, it defaults to today\&. If the time is omitted, it defaults to 00:00:00\&. Fractional seconds can be specified down to 1\(mcs precision\&. The seconds field can also be omitted, defaulting to 0\&.
+.PP
+There are special tokens that can be used in place of timestamps:
 "now"
 may be used to refer to the current time (or of the invocation of the command that is currently executed)\&.
 "today",
@@ -218,7 +246,7 @@ may be used to refer to the current time (or of the invocation of the command th
 "tomorrow"
 refer to 00:00:00 of the current day, the day before, or the next day, respectively\&.
 .PP
-When parsing, systemd will also accept relative time specifications\&. A time span (see above) that is prefixed with
+Relative times are also accepted: a time span (see above) prefixed with
 "+"
 is evaluated to the current time plus the specified time span\&. Correspondingly, a time span that is prefixed with
 "\-"
@@ -230,9 +258,9 @@ or
 or
 "ago"\&.
 .PP
-Finally, a timespan prefixed with
+Finally, an integer prefixed with
 "@"
-is evaluated relative to the UNIX time epoch 1st Jan, 1970, 00:00\&.
+is evaluated relative to the UNIX epoch \(en 1970\-01\-01 00:00:00 UTC\&.
 .PP
 Examples for valid timestamps and their normalized form (assuming the current time was 2012\-11\-23 18:15:22 and the timezone was UTC+8, for example
 "TZ=:Asia/Shanghai"):
@@ -244,6 +272,8 @@ Examples for valid timestamps and their normalized form (assuming the current ti
   Fri 2012\-11\-23 11:12:13 → Fri 2012\-11\-23 11:12:13
       2012\-11\-23 11:12:13 → Fri 2012\-11\-23 11:12:13
   2012\-11\-23 11:12:13 UTC → Fri 2012\-11\-23 19:12:13
+     2012\-11\-23T11:12:13Z → Fri 2012\-11\-23 19:12:13
+   2012\-11\-23T11:12+02:00 → Fri 2012\-11\-23 17:12:00
                2012\-11\-23 → Fri 2012\-11\-23 00:00:00
                  12\-11\-23 → Fri 2012\-11\-23 00:00:00
                  11:12:13 → Fri 2012\-11\-23 11:12:13
@@ -333,7 +363,7 @@ and a repetition value, in which case the expression matches all times starting 
 .PP
 A date specification may use
 "~"
-to indicate the last day(s) in a month\&. For example,
+to indicate the last day in a month\&. For example,
 "*\-02~03"
 means "the third last day in February," and
 "Mon *\-05~07/1"
@@ -341,7 +371,7 @@ means "the last Monday in May\&."
 .PP
 The seconds component may contain decimal fractions both in the value and the repetition\&. All fractions are rounded to 6 decimal places\&.
 .PP
-Either time or date specification may be omitted, in which case the current day and 00:00:00 is implied, respectively\&. If the second component is not specified,
+Either time or date specification may be omitted, in which case *\-*\-* and 00:00:00 is implied, respectively\&. If the seconds component is not specified,
 ":00"
 is assumed\&.
 .PP
@@ -362,7 +392,6 @@ The following special expressions may be used as shorthands for longer normalize
       yearly → *\-01\-01\ \&00:00:00
    quarterly → *\-01,04,07,10\-01 00:00:00
 semiannually → *\-01,07\-01 00:00:00
-   
 .fi
 .if n \{\
 .RE
@@ -423,9 +452,10 @@ command of
 to validate and normalize calendar time specifications for testing purposes\&. The tool also calculates when a specified calendar event would occur next\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBjournalctl\fR(1),
-\fBsystemd.timer\fR(5),
-\fBsystemd.unit\fR(5),
-\fBsystemd.directives\fR(7),
-\fBsystemd-analyze\fR(1)
+\fBsystemd\fR(1), \fBjournalctl\fR(1), \fBsystemd.timer\fR(5), \fBsystemd.unit\fR(5), \fBsystemd.directives\fR(7), \fBsystemd-analyze\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+RFC 3339
+.RS 4
+\%https://tools.ietf.org/html/rfc3339
+.RE

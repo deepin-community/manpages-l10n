@@ -1,29 +1,12 @@
 .\" Copyright (C) 2019 Aleksa Sarai <cyphar@cyphar.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
-.TH OPENAT2 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+.TH openat2 2 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 openat2 \- open and possibly create a file (extended)
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .BR "#include <fcntl.h>" \
@@ -31,11 +14,11 @@ openat2 \- open and possibly create a file (extended)
 .BR "#include <linux/openat2.h>" "  /* Definition of " RESOLVE_* " constants */"
 .BR "#include <sys/syscall.h>" "    /* Definition of " SYS_* " constants */"
 .B #include <unistd.h>
-.PP
+.P
 .BI "long syscall(SYS_openat2, int " dirfd ", const char *" pathname ,
 .BI "             struct open_how *" how ", size_t " size );
 .fi
-.PP
+.P
 .IR Note :
 glibc provides no wrapper for
 .BR openat2 (),
@@ -47,7 +30,7 @@ The
 system call is an extension of
 .BR openat (2)
 and provides a superset of its functionality.
-.PP
+.P
 The
 .BR openat2 ()
 system call opens the file specified by
@@ -57,7 +40,7 @@ If the specified file does not exist, it may optionally (if
 is specified in
 .IR how.flags )
 be created.
-.PP
+.P
 As with
 .BR openat (2),
 if
@@ -81,7 +64,7 @@ in which case
 .I pathname
 is resolved relative to
 .IR dirfd ).
-.PP
+.P
 Rather than taking a single
 .I flags
 argument, an extensible structure (\fIhow\fP) is passed to allow for
@@ -97,27 +80,22 @@ The
 argument specifies how
 .I pathname
 should be opened, and acts as a superset of the
-.IR flags
+.I flags
 and
-.IR mode
+.I mode
 arguments to
 .BR openat (2).
-This argument is a pointer to a structure of the following form:
-.PP
-.in +4n
-.EX
-struct open_how {
-    u64 flags;    /* O_* flags */
-    u64 mode;     /* Mode for O_{CREAT,TMPFILE} */
-    u64 resolve;  /* RESOLVE_* flags */
-    /* ... */
-};
-.EE
-.in
-.PP
+This argument is a pointer to an
+.I open_how
+structure,
+described in
+.BR open_how (2type).
+.P
 Any future extensions to
 .BR openat2 ()
-will be implemented as new fields appended to the above structure,
+will be implemented as new fields appended to the
+.I open_how
+structure,
 with a zero value in a new field resulting in the kernel behaving
 as though that extension field was not present.
 Therefore, the caller
@@ -127,7 +105,7 @@ initialization.
 (See the "Extensibility" section of the
 .B NOTES
 for more detail on why this is necessary.)
-.PP
+.P
 The fields of the
 .I open_how
 structure are as follows:
@@ -174,11 +152,11 @@ contains bits other than
 Similarly, an error is returned if
 .BR openat2 ()
 is called with a nonzero
-.IR how.mode
+.I how.mode
 and
-.IR how.flags
+.I how.flags
 does not contain
-.BR O_CREAT
+.B O_CREAT
 or
 .BR O_TMPFILE .
 .TP
@@ -227,9 +205,9 @@ If a prefix component of
 equates to
 .IR dirfd ,
 then an immediately following
-.IR ..\&
+.I ..\&
 component likewise equates to
-.IR dirfd
+.I dirfd
 (just as
 .I /..\&
 is traditionally equivalent to
@@ -263,9 +241,9 @@ Disallow all magic-link resolution during path resolution.
 Magic links are symbolic link-like objects that are most notably found in
 .BR proc (5);
 examples include
-.IR /proc/[pid]/exe
+.IR /proc/ pid /exe
 and
-.IR /proc/[pid]/fd/* .
+.IR /proc/ pid /fd/* .
 (See
 .BR symlink (7)
 for more details.)
@@ -273,15 +251,15 @@ for more details.)
 Unknowingly opening magic links can be risky for some applications.
 Examples of such risks include the following:
 .RS
-.IP \(bu 2
+.IP \[bu] 3
 If the process opening a pathname is a controlling process that
 currently has no controlling terminal (see
 .BR credentials (7)),
 then opening a magic link inside
-.IR /proc/[pid]/fd
+.IR /proc/ pid /fd
 that happens to refer to a terminal
 would cause the process to acquire a controlling terminal.
-.IP \(bu
+.IP \[bu]
 .\" From https://lwn.net/Articles/796868/:
 .\"     The presence of this flag will prevent a path lookup operation
 .\"     from traversing through one of these magic links, thus blocking
@@ -296,7 +274,7 @@ and thus may provide a means to escape from the container.
 .IP
 Because of such risks,
 an application may prefer to disable magic link resolution using the
-.BR RESOLVE_NO_MAGICLINKS
+.B RESOLVE_NO_MAGICLINKS
 flag.
 .IP
 If the trailing component (i.e., basename) of
@@ -308,7 +286,7 @@ contains
 and
 .I how.flags
 contains both
-.BR O_PATH
+.B O_PATH
 and
 .BR O_NOFOLLOW ,
 then an
@@ -330,7 +308,7 @@ contains
 and
 .I how.flags
 contains both
-.BR O_PATH
+.B O_PATH
 and
 .BR O_NOFOLLOW ,
 then an
@@ -338,24 +316,24 @@ then an
 file descriptor referencing the symbolic link will be returned.
 .IP
 Note that the effect of the
-.BR RESOLVE_NO_SYMLINKS
+.B RESOLVE_NO_SYMLINKS
 flag,
 which affects the treatment of symbolic links in all of the components of
 .IR pathname ,
 differs from the effect of the
-.BR O_NOFOLLOW
+.B O_NOFOLLOW
 file creation flag (in
 .IR how.flags ),
 which affects the handling of symbolic links only in the final component of
 .IR pathname .
 .IP
 Applications that employ the
-.BR RESOLVE_NO_SYMLINKS
+.B RESOLVE_NO_SYMLINKS
 flag are encouraged to make its use configurable
 (unless it is used for a specific security purpose),
 as symbolic links are very widely used by end-users.
-Setting this flag indiscriminately\(emi.e.,
-for purposes not specifically related to security\(emfor all uses of
+Setting this flag indiscriminately\[em]i.e.,
+for purposes not specifically related to security\[em]for all uses of
 .BR openat2 ()
 may result in spurious errors on previously functional systems.
 This may occur if, for example,
@@ -381,8 +359,8 @@ Applications that employ the
 flag are encouraged to make its use configurable (unless it is
 used for a specific security purpose),
 as bind mounts are widely used by end-users.
-Setting this flag indiscriminately\(emi.e.,
-for purposes not specifically related to security\(emfor all uses of
+Setting this flag indiscriminately\[em]i.e.,
+for purposes not specifically related to security\[em]for all uses of
 .BR openat2 ()
 may result in spurious errors on previously functional systems.
 This may occur if, for example,
@@ -396,7 +374,7 @@ in the kernel's lookup cache.
 If any kind of revalidation or I/O is needed to satisfy the lookup,
 .BR openat2 ()
 fails with the error
-.B EAGAIN .
+.BR EAGAIN .
 This is useful in providing a fast-path open that can be performed without
 resorting to thread offload, or other mechanisms that an application might
 use to offload slower operations.
@@ -427,7 +405,7 @@ for more detail on how extensions are handled.)
 .B EAGAIN
 .I how.resolve
 contains either
-.BR RESOLVE_IN_ROOT
+.B RESOLVE_IN_ROOT
 or
 .BR RESOLVE_BENEATH ,
 and the kernel could not ensure that a ".." component didn't escape (due to a
@@ -437,13 +415,13 @@ The caller may choose to retry the
 call.
 .TP
 .B EAGAIN
-.BR RESOLVE_CACHED
+.B RESOLVE_CACHED
 was set, and the open operation cannot be performed using only cached
 information.
 The caller should retry without
 .B RESOLVE_CACHED
 set in
-.I how.resolve .
+.IR how.resolve .
 .TP
 .B EINVAL
 An unknown flag or invalid value was specified in
@@ -454,7 +432,7 @@ An unknown flag or invalid value was specified in
 is nonzero, but
 .I how.flags
 does not contain
-.BR O_CREAT
+.B O_CREAT
 or
 .BR O_TMPFILE .
 .TP
@@ -478,7 +456,7 @@ and one of the path components was a magic link.
 .B EXDEV
 .I how.resolve
 contains either
-.BR RESOLVE_IN_ROOT
+.B RESOLVE_IN_ROOT
 or
 .BR RESOLVE_BENEATH ,
 and an escape from the root during path resolution was detected.
@@ -488,13 +466,12 @@ and an escape from the root during path resolution was detected.
 contains
 .BR RESOLVE_NO_XDEV ,
 and a path component crosses a mount point.
-.SH VERSIONS
-.BR openat2 ()
-first appeared in Linux 5.6.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 5.6.
 .\" commit fddb5d430ad9fa91b49b1d34d0202ffe2fa0e179
-.SH CONFORMING TO
-This system call is Linux-specific.
-.PP
+.P
 The semantics of
 .B RESOLVE_BENEATH
 were modeled after FreeBSD's
@@ -518,24 +495,24 @@ This extensibility design is very similar to other system calls such as
 .BR perf_event_open (2),
 and
 .BR clone3 (2).
-.PP
+.P
 If we let
 .I usize
 be the size of the structure as specified by the user-space application, and
 .I ksize
 be the size of the structure which the kernel supports, then there are
 three cases to consider:
-.IP \(bu 2
+.IP \[bu] 3
 If
-.IR ksize
+.I ksize
 equals
 .IR usize ,
 then there is no version mismatch and
 .I how
 can be used verbatim.
-.IP \(bu
+.IP \[bu]
 If
-.IR ksize
+.I ksize
 is larger than
 .IR usize ,
 then there are some extension fields that the kernel supports
@@ -546,9 +523,9 @@ the kernel
 treats all of the extension fields not provided by the user-space application
 as having zero values.
 This provides backwards-compatibility.
-.IP \(bu
+.IP \[bu]
 If
-.IR ksize
+.I ksize
 is smaller than
 .IR usize ,
 then there are some extension fields which the user-space application
@@ -561,28 +538,28 @@ If any unsupported extension fields are nonzero, then \-1 is returned and
 is set to
 .BR E2BIG .
 This provides forwards-compatibility.
-.PP
+.P
 Because the definition of
 .I struct open_how
 may change in the future (with new fields being added when system headers are
 updated), user-space applications should zero-fill
 .I struct open_how
 to ensure that recompiling the program with new headers will not result in
-spurious errors at runtime.
+spurious errors at run time.
 The simplest way is to use a designated
 initializer:
-.PP
+.P
 .in +4n
 .EX
 struct open_how how = { .flags = O_RDWR,
                         .resolve = RESOLVE_IN_ROOT };
 .EE
 .in
-.PP
+.P
 or explicitly using
 .BR memset (3)
 or similar:
-.PP
+.P
 .in +4n
 .EX
 struct open_how how;
@@ -591,14 +568,15 @@ how.flags = O_RDWR;
 how.resolve = RESOLVE_IN_ROOT;
 .EE
 .in
-.PP
+.P
 A user-space application that wishes to determine which extensions
 the running kernel supports can do so by conducting a binary search on
-.IR size
+.I size
 with a structure which has every byte nonzero (to find the largest value
 which doesn't produce an error of
 .BR E2BIG ).
 .SH SEE ALSO
 .BR openat (2),
+.BR open_how (2type),
 .BR path_resolution (7),
 .BR symlink (7)

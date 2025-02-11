@@ -70,10 +70,10 @@ degree that probably doesn't make any difference in the modern world.
 The main advantage \fBpamtopng\fP has over \fBpnmtopng\fP is that the
 former can use the transparency channel of a PAM image to generate the
 transparency information in the PNG.  In contrast, handling of the alpha
-channel is very cumbersome with \fBpnmotpng\fP.
+channel is very cumbersome with \fBpnmtopng\fP.
 .PP
 One difference that \fIdoes not\fP exist, that some people might
-incorrectly infer from the names is the possible input formats.  Both programs
+incorrectly infer from the names, is the possible input formats.  Both programs
 can take PBM, PGM, PPM, and PAM input.
 .PP
 Because \fBpnmtopng\fP has been around virtually forever, programs and
@@ -157,7 +157,9 @@ command line options:
 
 .TP
 \fB-transparent=\fP\fIcolor\fP
-\fBpamtopng\fP marks the specified color as transparent in the PNG image.
+\fBpamtopng\fP marks the specified color as transparent in the PNG image --
+Every pixel of this color is fully transparent.  This causes \fBpamtopng\fP to
+include a tRNS chunk in the image identifying that color.
 .sp
 Specify the color (\fIcolor\fP) as described for
 the 
@@ -171,10 +173,12 @@ argument of the \fBpnm_parsecolor()\fP library routine
 This causes \fBpamtopng\fP to create a background color chunk in the PNG
 output which can be used for subsequent transparency channel or transparent
 color conversions.  Specify \fIcolor\fP the same as for \fB-transparent\fP.
+.sp
+\ 
 
 .TP
 \fB-gamma=\fP\fIvalue\fP
-This causes \fBpnmtopng\fP to create a gAMA chunk.  This information
+This causes \fBpamtopng\fP to create a gAMA chunk.  This information
 helps describe how the color values in the PNG must be interpreted.  Without
 the gAMA chunk, whatever interprets the PNG must get this information
 separately (or just assume something standard).  If your input is a true PPM
@@ -184,7 +188,9 @@ gamma transfer function than the one specified for PPM.  A common case of this
 is when the image is created by simple hardware that doesn't have digital
 computational ability.  Also, some simple programs that generate images from
 scratch do it with a gamma transfer in which the gamma value is 1.0.
-
+.sp
+\ 
+  
 .TP
 \fB-chroma=\fP\fIchroma_list\fP
 This option specifies how red, green, and blue component values
@@ -193,7 +199,7 @@ of those 3 primary illuminants and of white (i.e. full strength of
 all three).
 .sp
 The \fIchroma_list\fP value is a blank-separated list of 8 floating
-point decimal numbers.  The CIE-1931 X and Y chromaticities (in that
+point decimal numbers: the CIE-1931 X and Y chromaticities (in that
 order) of each of white, red, green, and blue, in that order.
 .sp
 This information goes into the PNG's cHRM chunk.
@@ -241,6 +247,7 @@ Here is an example of a text string file:
                         PNG file
 	"Creation Date" 2015-may-11
 	Software        pamtopng
+
 .fi
 .sp
 The file is divided into entries, each entry comprising consecutive lines
@@ -263,13 +270,15 @@ string.  There is no limit on the number of entries.
 .TP
 \fB-ztxt=\fP\fIfilename\fP
 The same as \fB-text\fP, except the text string is compressed in the
-PNG output.  \fBpnmtopng\fP uses zTXt chunks instead of a tEXt chunks.
+PNG output.  \fBpamtopng\fP uses zTXt chunks instead of a tEXt chunks.
+.sp
+\ 
 
 .TP
 \fB-itxt=\fP\fIfilename\fP
 Similar to \fB-text\fP, but the text strings can be in a language other
 than English.  The PNG image indicates what language that is and includes the
-text string key both in English and that language.  \fBpnmtopng\fP uses
+text string key both in English and that language.  \fBpamtopng\fP uses
 iTXt chunks instead of tEXt chunks.
 .sp
 For each record, you must specify the language and give the key both in
@@ -282,6 +291,7 @@ Example:
         Title           nl-NL  Titel            PNG file
         Author          nl-NL  Auteur           Pietje Puk
         Description     nl-NL  Omschrijving     Tekst in het Nederlands.
+
 .fi
 .sp
 The language specification is based on the ISO 639-1 standard, see
@@ -293,7 +303,9 @@ The format is either a two character "nl" or an extended code like "en-US".
 This option allows you to specify the modification time value to be placed
 in the PNG output.  You can specify the year parameter either as a two or four
 digit value.
-
+.sp
+\ 
+    
 .TP
 \fB-interlace\fP
 This causes the PNG file to be interlaced, in Adam7 format.  The interlaced
@@ -324,6 +336,8 @@ This option was new in Netpbm 10.86 (March 2019).
 .TP
 \fB-verbose\fP
 This causes the program to display various facts about the conversion.
+.sp
+\ 
 
 
 

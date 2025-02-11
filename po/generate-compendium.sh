@@ -18,11 +18,11 @@
 # Require two arguments (.po file name and compendium file name)
 if [ ! -f "$1" ]; then
 	echo "The file '$1' could not be found."
-	exit 1
+	exit 13
 fi
 if [ -z "$2" ]; then
 	echo "Specify the compendium filename."
-	exit 1
+	exit 2
 fi
 
 # Extract header entry for compendium (first line until first blank line)

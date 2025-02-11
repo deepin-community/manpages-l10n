@@ -1,0 +1,287 @@
+.\" dummy line
+.\" Translated into Finnish by Jaakko Puurunen (jaakko.puurunen@iki.fi)
+.\" TERM shell_escapes pääsy_komentotulkkiin
+.\" TERM tic_marks akseleiden_jako_osiin
+.\"
+.TH GNUPLOT 1 "3. toukokuuta 1998" "" "Käyttäjän sovellusohjelmat"
+.UC 4
+.SH NIMI
+gnuplot \- interaktiivinen ohjelma kuvaajien tekoon
+.SH "YLEISKATSAUS"
+.B gnuplot
+[ X11-optiot ] [tiedosto ...]
+.br
+.SH KUVAUS
+.I Gnuplot
+on komentopohjainen, interaktiivinen ohjelma funktioiden
+kuvaajien tekoon.
+.PP
+Jos tiedostoja on annettu,
+.I gnuplot
+lukee jokaisen tiedoston komennolla
+\fIload\fR,
+annetussa järjestyksessä.
+.I Gnuplot
+poistuu suoritettuaan viimeisen tiedoston.
+.PP
+Seuraavassa joitain ohjelman ominaisuuksia:
+.PP
+Tulostaa mielivaltaisen määrän funktiota, jotka koostuvat C-kielen
+operaattoreista, C-kielen kirjastofunktioista ja joistain asioista, joita
+C-kielessä ei ole, kuten **, sgn() jne. Datatiedostojen kuvaajien
+tulostaminen  mahdollistaa myös todellisen datan vertaamisen
+teoreettisiin käyriin.
+.PP
+Käyttäjän määrittelemät rajat X- ja Y-akseleille
+(valinnainen rajojen automaattinen määritys),
+älykäs akseleiden skaalaus ja älykäs akseleiden jako osiin (tic marks).
+.PP
+X- ja Y-akseleiden nimeäminen.
+.PP
+Käyttäjän määrittelemät vakiot ja funktiot.
+.PP
+Yleistetyn ajurin kautta tuki seuraaville laitteille:
+AED 512,
+AED 767,
+BBN BitGraph,
+Commodore Amiga,
+Roland DXY800A,
+EEPIC,
+TeXDraw,
+EmTeX,
+Epson 60dpi tulostimet,
+Epson LX-800,
+Fig,
+HP2623,
+HP2648,
+HP75xx,
+HPGL,
+HP LaserJet II,
+Imagen,
+Iris 4D,
+MS-DOS Kermit,
+Kyocera lasertulostin,
+LaTeX,
+NEC CP6 matriisitulostin,
+PostScript,
+QMS QUIC,
+ReGis (VT125 ja VT2xx),
+SCO Xenix CGI,
+Selanar,
+Star väritulostin,
+Tandy DMP-130 tulostin,
+Tek 401x,
+Tek 410x,
+Vectrix 384,
+VT-tyyppinen Tektronix-emulaattori,
+Unix PC (ATT 3b1 tai ATT 7300),
+unixplot
+ja X11.
+Microsoft C:llä käännetty PC-versio tukee laitteita
+IBM CGA, EGA, VGA, Hercules, ATT 6300 ja Corona 325 graphics.
+Borland C++:lla käännetty PC-versio tukee laitteita
+IBM CGA, EGA, MCGA, VGA, Hercules ja ATT 6300 graphics.
+Muiden laitteiden lisääminen on yksinkertaista,
+mutta vaatii uudelleenkääntämisen.
+.PP
+Pääsy komentotulkkiin (shell escapes) ja komentorivin täydennys.
+.PP
+Luku- ja kirjoitusominaisuudet.
+.PP
+Tulosteen uudelleenohjaus.
+.PP
+Kaikki laskenta suoritetaan kompleksitasossa.  Oletusarvona vain reaaliosa
+tulostetaan, mutta esimerkiksi funktioilla imag(), abs() ja arg() tämä
+voidaan ohittaa.
+.SH X11-OPTIOT
+.I Gnuplot
+tarjoaa päätetyypin \fIx11\fP käytettäväksi X-palvelinten kanssa.
+Tämä päätetyyppi asetetaan käynnistettäessä automaattisesti, jos
+ympäristömuuttuja \fBDISPLAY\fR on asetettu, jos ympäristömuuttujan
+\fBTERM\fR arvo on \fBxterm\fR tai jos komentorivioptiota
+\fB\-display\fR on käytetty.
+Päätetyypille \fIx11\fR \fIgnuplot\fP hyväksyy normaalit X Toolkit
+optiot ja resurssit, kuten geometrian, fontin ja taustavärin.
+Katso optioiden kuvaus käsikirjan sivulta X(1).
+X Toolkit optioiden lisäksi:
+.PP
+\fB\-mono\fP pakottaa mustavalkotulostuksen värinäytöillä.
+.PP
+\fB\-gray\fP pyytää harmaasävytulostusta harmaasävy- tai värinäytöillä.
+(Harmaasävynäyttöjen oletustulostus on mustavalkoinen).
+.PP
+\fB\-clear\fP pyytää ikkunan hetkellistä tyhjentämistä ennen uuden
+kuvaajan tulostamista.
+.PP
+\fB\-tvtwm\fP pyytää, että ikkunan sijainnin geometriamäärittelyt
+tehdään suhteessa näkyvään virtuaalityöpöydän osaan.
+.PP
+Nämä optiot voidaan myös määritellä resursseina \fB.Xdefaults\fR
+-tiedostossasi. Esimerkiksi \fBgnuplot*gray: on\fP .
+.PP
+\fIGnuplot\fP tarjoaa komentorivioption (\fB\-pointsize \fIv\fR) ja
+resurssin (\fBgnuplot*pointsize: \fIv\fR) "points"-tyylillä tehtyjen
+kuvaajien pistekoon määrittelyyn.
+\fIv\fR:n arvo on reaaliluku (suurempi kuin nolla ja pienempi tai
+yhtäsuuri kuin kymmenen), jota käytetään pistekoon kertoimena. Esimerkiksi
+\fB\-pointsize 2\fR käyttää normaaliin nähden kaksinkertaista, ja
+\fB\-pointsize 0.5\fR puolta pistekokoa.
+.PP
+Mustavalkonäytöillä \fIgnuplot\fR ei noudata edusta- tai taustavärien
+määrityksiä. Oletusarvona on mustaa valkoisella. \fB\-rv\fP tai
+\fBgnuplot*reverseVideo: on\fP pyytää valkoista mustalla.
+.PP
+Värinäytöillä \fIgnuplot\fP käyttää seuraavia resursseja (ohessa esitetty
+oletusarvot). Arvot voivat olla värien nimiä X11-tiedostossa rgb.txt,
+heksadesimaalisia RGB-värimäärityksiä (katso X11 dokumentaatio) tai
+värin nimi seurattuna pilkulla ja \fIintensiteetti\fRarvolla nollan ja
+yhden väliltä. Esimerkiksi \fBblue,.5\fR tarkoittaa puolen intensiteetin 
+sinistä väriä.
+.sp
+.B  "gnuplot*background: white"
+.br
+.B  "gnuplot*textColor: black"
+.br
+.B  "gnuplot*borderColor: black"
+.br
+.B  "gnuplot*axisColor: black"
+.br
+.B  "gnuplot*line1Color: red"
+.br
+.B  "gnuplot*line2Color: green"
+.br
+.B  "gnuplot*line3Color: blue"
+.br
+.B  "gnuplot*line4Color: magenta"
+.br
+.B  "gnuplot*line5Color: cyan"
+.br
+.B  "gnuplot*line6Color: sienna"
+.br
+.B  "gnuplot*line7Color: orange"
+.br
+.B  "gnuplot*line8Color: coral"
+.br
+
+Kun \fB\-gray\fP on valittu, \fIgnuplot\fP käyttää harmaasävy-
+ja värinäytöillä seuraavia resursseja  (ohessa esitetty oletusarvot).
+Huomaa, että taustavärin oletusarvo on musta.
+.sp
+.B  "gnuplot*background: black"
+.br
+.B  "gnuplot*textGray: white"
+.br
+.B  "gnuplot*borderGray: gray50"
+.br
+.B  "gnuplot*axisGray: gray50"
+.br
+.B  "gnuplot*line1Gray: gray100"
+.br
+.B  "gnuplot*line2Gray: gray60"
+.br
+.B  "gnuplot*line3Gray: gray80"
+.br
+.B  "gnuplot*line4Gray: gray40"
+.br
+.B  "gnuplot*line5Gray: gray90"
+.br
+.B  "gnuplot*line6Gray: gray50"
+.br
+.B  "gnuplot*line7Gray: gray70"
+.br
+.B  "gnuplot*line8Gray: gray30"
+.br
+
+\fIGnuplot\fP käyttää kuvaajien viivanleveyksien pikseleissä asettamiseen
+seuraavia resursseja (ohessa esitetty oletusarvot). 0 tai 1 merkitsee
+kapeinta, 1 pikselin viivanleveyttä. Arvo 2 tai 3 saattaa parantaa
+joidenkin kuvaajien ulkoasua.
+.sp
+.br
+.B  "gnuplot*borderWidth: 2"
+.br
+.B  "gnuplot*axisWidth: 0"
+.br
+.B  "gnuplot*line1Width: 0"
+.br
+.B  "gnuplot*line2Width: 0"
+.br
+.B  "gnuplot*line3Width: 0"
+.br
+.B  "gnuplot*line4Width: 0"
+.br
+.B  "gnuplot*line5Width: 0"
+.br
+.B  "gnuplot*line6Width: 0"
+.br
+.B  "gnuplot*line7Width: 0"
+.br
+.B  "gnuplot*line8Width: 0"
+.br
+
+\fIGnuplot\fP käyttää kuvaajien katkoviivoituksen asettamiseen
+seuraavia resursseja.  0 merkitsee yhtenäistä viivaa. Kaksinumeroinen luku
+\fIjk\fR (\fIj\fP ja \fIk\fP ovat >= 1 ja <= 9) merkitsee katkoviivatyyppiä,
+jossa toistuu \fIj\fR pikseliä pitkä viiva \fIk\fR pikselin välien.
+Esimerkiksi '16' on "pisteviiva", jossa on 1 pikseli 6 pikselin välein.
+Monipuolisempia päällä/pois-viivatyyppejä voidaan määritellä nelinumeroisen
+luvun avulla. Esimerkiksi '4441' on 4 päällä, 4 pois, 4 päällä ja 1 pois.
+Ohessa esitetyt oletusarvot pätevät mustavalkonäytöille tai
+mustavalkotulostukseen väri- tai harmaasävynäytöillä. Värinäytöillä
+oletusarvona on kaikille 0 (yhtenäinen viiva) paitsi \fBaxisDashes\fR,
+jonka oletusarvo on '16'-pisteviiva.
+.sp
+.br
+.B  "gnuplot*borderDashes: 0"
+.br
+.B  "gnuplot*axisDashes: 16"
+.br
+.B  "gnuplot*line1Dashes: 0"
+.br
+.B  "gnuplot*line2Dashes: 42"
+.br
+.B  "gnuplot*line3Dashes: 13"
+.br
+.B  "gnuplot*line4Dashes: 44"
+.br
+.B  "gnuplot*line5Dashes: 15"
+.br
+.B  "gnuplot*line6Dashes: 4441"
+.br
+.B  "gnuplot*line7Dashes: 42"
+.br
+.B  "gnuplot*line8Dashes: 13"
+.br
+.PP
+Kuvaajan kokoa tai akseleiden suhdetta voi muuttaa muuttamalla 
+.I gnuplot
+ikkunan kokoa.
+.SH TEKIJÄT
+Thomas Williams, Pixar Corporation,
+.br
+(info-gnuplot@dartmouth.edu)
+.br
+ja Colin Kelley.
+.PP
+Lisäyksiä nimeämiseen teki Russell Lang, Monash University, Australia.
+.br
+(rjl@monu1.cc.monash.edu.au)
+.br
+Lisää lisäyksiä teki David Kotz, Dartmouth College, New Hampshire, USA
+(aiemmin Duke University, North Carolina, USA).
+.br
+(David.Kotz@Dartmouth.edu)
+.SH BUGIT
+Funktio atan() ei toimi oikein kompleksisilla argumenteilla.
+.br
+Bessel-funktiot eivät toimi kompleksisilla argumenteilla.
+.br
+Katso gnuplot-komento 
+.I help bugs
+.
+.SH "KATSO MYÖS"
+Katso komentojen yksityiskohtaiset kuvaukset kirjallisesta materiaalista
+tai on-line -avusteista.
+.br
+X(1).
+

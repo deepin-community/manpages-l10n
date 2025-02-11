@@ -1,0 +1,37 @@
+#!/bin/sh
+
+pdir=usr/share/man/pt_BR/
+pb=debian/tmp/
+
+while IFS=" " read -r f01 f02
+do
+    # Determine the directory part, with and without fancy additions (like "ssl")
+    # dsname=$(dirname $f01)
+    # dtname=$(dirname $f02)
+    dsnameshort=$(dirname $f01|awk '{print substr($0,1,4)}')
+    dtnameshort=$(dirname $f02|awk '{print substr($0,1,4)}')
+
+    # echo "INPUT $f01 $f02 $dsnameshort $dtnameshort"
+
+    # Decide, if the man pages is in the -dev package
+    if [ $dsnameshort = "man2" ] || [ $dsnameshort = "man3" ]; then
+	sdir=1
+    else
+	sdir=0
+    fi
+
+    # Decide, if the link is in the -dev package
+    if [ $dtnameshort = "man2" ] || [ $dtnameshort = "man3" ]; then
+	tdir=1
+    else
+	tdir=0
+    fi
+
+    # For now, only consider links *within* one package
+    if [ $sdir = 1 ] &&  [ $tdir = 1 ]; then
+	sfull=${pb}${pdir}${f01}
+	if [ -e $sfull ]; then
+	    echo "${pdir}${f01} ${pdir}${f02}"
+	fi
+    fi
+done < upstream/debian-unstable/links.txt

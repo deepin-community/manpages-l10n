@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.OFFLINE\-UPDATES" "7" "" "systemd 249" "systemd.offline-updates"
+.TH "SYSTEMD\&.OFFLINE\-UPDATES" "7" "" "systemd 257" "systemd.offline-updates"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -51,6 +51,8 @@ The package manager prepares system updates by downloading all (\&.rpm or \&.deb
 .\}
 When the user OK\*(Aqed the update, the symlink
 /system\-update
+or
+/etc/system\-update
 is created that points to
 /var/lib/system\-update
 (or wherever the directory with the upgrade files is located) and the system is rebooted\&. This symlink is in the root directory, since we need to check for it very early at boot, at a time where
@@ -70,6 +72,8 @@ Very early in the new boot
 \fBsystemd-system-update-generator\fR(8)
 checks whether
 /system\-update
+or
+/etc/system\-update
 exists\&. If so, it (temporarily and for this boot only) redirects (i\&.e\&. symlinks)
 default\&.target
 to
@@ -102,6 +106,8 @@ so that the update starts after all file systems have been mounted\&.
 .\}
 As the first step, an update service should check if the
 /system\-update
+or
+/etc/system\-update
 symlink points to the location used by that update service\&. In case it does not exist or points to a different location, the service must exit without error\&. It is possible for multiple update services to be installed, and for multiple update services to be launched in parallel, and only the one that corresponds to the tool that
 \fIcreated\fR
 the symlink before reboot should perform any actions\&. It is unsafe to run multiple updates in parallel\&.
@@ -131,6 +137,8 @@ The update scripts should exit only after the update is finished\&. It is expect
 system\-update\&.target
 is successfully reached, i\&.e\&. all update services have run, and the
 /system\-update
+or
+/etc/system\-update
 symlink still exists, it will be removed and the machine rebooted as a safety measure\&.
 .RE
 .sp
@@ -144,6 +152,8 @@ symlink still exists, it will be removed and the machine rebooted as a safety me
 .\}
 After a reboot, now that the
 /system\-update
+and
+/etc/system\-update
 symlink is gone, the generator won\*(Aqt redirect
 default\&.target
 anymore and the system now boots into the default target again\&.
@@ -181,7 +191,9 @@ to your package\&.
 .\}
 Make sure to remove the
 /system\-update
-symlink as early as possible in the update script to avoid reboot loops in case the update fails\&.
+and
+/etc/system\-update
+symlinks as early as possible in the update script to avoid reboot loops in case the update fails\&.
 .RE
 .sp
 .RS 4
@@ -239,10 +251,7 @@ and add a symlink to that file under
 .RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd.generator\fR(7),
-\fBsystemd-system-update-generator\fR(8),
-\fBdnf.plugin.system-upgrade\fR(8)
+\fBsystemd\fR(1), \fBsystemd.generator\fR(7), \fBsystemd-system-update-generator\fR(8), \fBdnf.plugin.system-upgrade\fR(8)
 .SH "NOTES"
 .IP " 1." 4
 GNOME design whiteboard

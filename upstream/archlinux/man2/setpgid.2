@@ -2,35 +2,7 @@
 .\" and Copyright (C) 2007, Michael Kerrisk <mtk.manpages@gmail.com>
 .\" All rights reserved.
 .\"
-.\" %%%LICENSE_START(BSD_4_CLAUSE_UCB)
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. All advertising materials mentioning features or use of this software
-.\"    must display the following acknowledgement:
-.\"	This product includes software developed by the University of
-.\"	California, Berkeley and its contributors.
-.\" 4. Neither the name of the University nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: BSD-4-Clause-UC
 .\"
 .\"     @(#)getpgrp.2	6.4 (Berkeley) 3/10/91
 .\"
@@ -45,43 +17,46 @@
 .\" 2007-07-25, mtk, fairly substantial rewrites and rearrangements
 .\" of text.
 .\"
-.TH SETPGID 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH setpgid 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 setpgid, getpgid, setpgrp, getpgrp \- set/get process group
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <unistd.h>
-.PP
+.P
 .BI "int setpgid(pid_t " pid ", pid_t " pgid );
 .BI "pid_t getpgid(pid_t " pid );
-.PP
-.BR "pid_t getpgrp(void);" "                 /* POSIX.1 version */"
-.BI "pid_t getpgrp(pid_t " pid ");\fR            /* BSD version */"
-.PP
-.BR "int setpgrp(void);" "                   /* System V version */"
-.BI "int setpgrp(pid_t " pid ", pid_t " pgid ");\fR  /* BSD version */"
+.P
+.BR "pid_t getpgrp(void);" "                            /* POSIX.1 version */"
+.BI "[[deprecated]] pid_t getpgrp(pid_t " pid ");\fR        /* BSD version */"
+.P
+.BR "int setpgrp(void);" "                              /* System V version */"
+.BI "[[deprecated]] int setpgrp(pid_t " pid ", pid_t " pgid ");\fR  /* BSD version */"
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR getpgid ():
 .nf
     _XOPEN_SOURCE >= 500
 .\"    || _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED
         || /* Since glibc 2.12: */ _POSIX_C_SOURCE >= 200809L
 .fi
-.PP
+.P
 .BR setpgrp "() (POSIX.1):"
 .nf
     _XOPEN_SOURCE >= 500
 .\"    || _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED
         || /* Since glibc 2.19: */ _DEFAULT_SOURCE
-        || /* Glibc <= 2.19: */ _SVID_SOURCE
+        || /* glibc <= 2.19: */ _SVID_SOURCE
 .fi
-.PP
+.P
 .BR setpgrp "() (BSD),"
 .BR getpgrp "() (BSD):"
 .nf
@@ -99,7 +74,7 @@ The preferred, POSIX.1-specified ways of doing this are:
 for retrieving the calling process's PGID; and
 .BR setpgid (),
 for setting a process's PGID.
-.PP
+.P
 .BR setpgid ()
 sets the PGID of the process specified by
 .I pid
@@ -124,12 +99,12 @@ and
 In this case,
 the \fIpgid\fP specifies an existing process group to be joined and the
 session ID of that group must match the session ID of the joining process.
-.PP
+.P
 The POSIX.1 version of
 .BR getpgrp (),
 which takes no arguments,
 returns the PGID of the calling process.
-.PP
+.P
 .BR getpgid ()
 returns the PGID of the process specified by
 .IR pid .
@@ -140,12 +115,12 @@ is zero, the process ID of the calling process is used.
 necessary, and the POSIX.1
 .BR getpgrp ()
 is preferred for that task.)
-.PP
+.P
 The System\ V-style
 .BR setpgrp (),
 which takes no arguments, is equivalent to
 .IR "setpgid(0,\ 0)" .
-.PP
+.P
 The BSD-specific
 .BR setpgrp ()
 call, which takes arguments
@@ -153,9 +128,13 @@ call, which takes arguments
 and
 .IR pgid ,
 is a wrapper function that calls
-.PP
-    setpgid(pid, pgid)
-.PP
+.P
+.in +4n
+.EX
+setpgid(pid, pgid)
+.EE
+.in
+.P
 .\" The true BSD setpgrp() system call differs in allowing the PGID
 .\" to be set to arbitrary values, rather than being restricted to
 .\" PGIDs in the same session.
@@ -166,15 +145,19 @@ function is no longer exposed by
 calls should be replaced with the
 .BR setpgid ()
 call shown above.
-.PP
+.P
 The BSD-specific
 .BR getpgrp ()
 call, which takes a single
 .I pid
 argument, is a wrapper function that calls
-.PP
-    getpgid(pid)
-.PP
+.P
+.in +4n
+.EX
+getpgid(pid)
+.EE
+.in
+.P
 Since glibc 2.19, the BSD-specific
 .BR getpgrp ()
 function is no longer exposed by
@@ -194,11 +177,11 @@ return zero.
 On error, \-1 is returned, and
 .I errno
 is set to indicate the error.
-.PP
+.P
 The POSIX.1
 .BR getpgrp ()
 always returns the PGID of the caller.
-.PP
+.P
 .BR getpgid (),
 and the BSD-specific
 .BR getpgrp ()
@@ -231,6 +214,11 @@ a session leader
 .RB ( setpgid (),
 .BR setpgrp ()).
 .TP
+.B EPERM
+The target process group does not exist.
+.RB ( setpgid (),
+.BR setpgrp ()).
+.TP
 .B ESRCH
 For
 .BR getpgid ():
@@ -240,40 +228,50 @@ For
 .BR setpgid ():
 .I pid
 is not the calling process and not a child of the calling process.
-.SH CONFORMING TO
-.BR setpgid ()
-and the version of
-.BR getpgrp ()
-with no arguments
-conform to POSIX.1-2001.
-.PP
-POSIX.1-2001 also specifies
+.SH STANDARDS
+.TP
 .BR getpgid ()
-and the version of
-.BR setpgrp ()
-that takes no arguments.
-(POSIX.1-2008 marks this
-.BR setpgrp ()
-specification as obsolete.)
-.PP
-The version of
-.BR getpgrp ()
-with one argument and the version of
-.BR setpgrp ()
-that takes two arguments derive from 4.2BSD,
-and are not specified by POSIX.1.
+.TQ
+.BR setpgid ()
+.TQ
+.BR getpgrp "() (no args)"
+.TQ
+.BR setpgrp "() (no args)"
+POSIX.1-2008 (but see HISTORY).
+.TP
+.BR setpgrp "() (2 args)"
+.TQ
+.BR getpgrp "() (1 arg)"
+None.
+.SH HISTORY
+.TP
+.BR getpgid ()
+.TQ
+.BR setpgid ()
+.TQ
+.BR getpgrp "() (no args)"
+POSIX.1-2001.
+.TP
+.BR setpgrp "() (no args)"
+POSIX.1-2001.
+POSIX.1-2008 marks it as obsolete.
+.TP
+.BR setpgrp "() (2 args)"
+.TQ
+.BR getpgrp "() (1 arg)"
+4.2BSD.
 .SH NOTES
 A child created via
 .BR fork (2)
 inherits its parent's process group ID.
 The PGID is preserved across an
 .BR execve (2).
-.PP
+.P
 Each process group is a member of a session and each process is a
 member of the session of which its process group is a member.
 (See
 .BR credentials (7).)
-.PP
+.P
 A session can have a controlling terminal.
 At any time, one (and only one) of the process groups
 in the session can be the foreground process group
@@ -300,7 +298,7 @@ and
 .BR tcsetpgrp (3)
 functions are used to get/set the foreground
 process group of the controlling terminal.
-.PP
+.P
 The
 .BR setpgid ()
 and
@@ -308,7 +306,7 @@ and
 calls are used by programs such as
 .BR bash (1)
 to create process groups in order to implement shell job control.
-.PP
+.P
 If the termination of a process causes a process group to become orphaned,
 and if any member of the newly orphaned process group is stopped, then a
 .B SIGHUP
@@ -329,12 +327,3 @@ in a different session (see also
 .BR tcsetpgrp (3),
 .BR termios (3),
 .BR credentials (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

@@ -396,6 +396,8 @@ manual page.
 and
 .B freesp
 do exactly the same thing.
+
+These commands are no longer supported as of Linux 5.17.
 .TP
 .BI "freesp " size " 0"
 See the
@@ -711,7 +713,7 @@ Swaps extent forks between files. The current open file is the target. The donor
 file is specified by path. Note that file data is not copied (file content moves
 with the fork(s)).
 .TP
-.BI "set_encpolicy [ \-c " mode " ] [ \-n " mode " ] [ \-f " flags " ] [ \-v " version " ] [ " keyspec " ]"
+.BI "set_encpolicy [ \-c " mode " ] [ \-n " mode " ] [ \-f " flags " ] [ \-s " log2_dusize " ] [ \-v " version " ] [ " keyspec " ]"
 On filesystems that support encryption, assign an encryption policy to the
 current file.
 .I keyspec
@@ -733,6 +735,9 @@ filenames encryption mode (e.g. AES-256-CTS)
 .TP
 .BI \-f " flags"
 policy flags (numeric)
+.TP
+.BI \-s " log2_dusize"
+log2 of data unit size.  Not supported by v1 policies.
 .TP
 .BI \-v " version"
 policy version.  Defaults to 1 or 2 depending on the length of
@@ -1143,7 +1148,7 @@ for the current memory mapping.
 
 .SH FILESYSTEM COMMANDS
 .TP
-.BI "bulkstat [ \-a " agno " ] [ \-d ] [ \-e " endino " ] [ \-n " batchsize " ] [ \-s " startino " ] [ \-v " version" ]
+.BI "bulkstat [ \-a " agno " ] [ \-d ] [ \-e " endino " ] [ \-n " batchsize " ] [ \-q ] [ \-s " startino " ] [ \-v " version" ]
 Display raw stat information about a bunch of inodes in an XFS filesystem.
 Options are as follows:
 .RS 1.0i
@@ -1163,6 +1168,10 @@ Defaults to stopping when the system call stops returning results.
 .BI \-n " batchsize"
 Retrieve at most this many records per call.
 Defaults to 4,096.
+.TP
+.BI \-q
+Run quietly.
+Does not parse or output retrieved bulkstat information.
 .TP
 .BI \-s " startino"
 Display inode allocation records starting with this inode.
@@ -1334,6 +1343,9 @@ parameter specifies which type of metadata to repair.
 For AG metadata, one AG number must be specified.
 For file metadata, the repair is applied to the open file unless the
 inode number and generation number are specified.
+The
+.B -R
+option can be specified to force rebuilding of a metadata structure.
 .TP
 .BI "label" " " "[ -c | -s " label " ] "
 On filesystems that support online label manipulation, get, set, or clear the
@@ -1449,6 +1461,9 @@ This option is not compatible with the
 flag.
 .RE
 .PD
+.TP
+.B fsuuid
+Print the mounted filesystem UUID.
 
 
 .SH OTHER COMMANDS

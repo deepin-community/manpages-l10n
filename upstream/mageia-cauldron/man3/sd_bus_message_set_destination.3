@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_MESSAGE_SET_DESTINATION" "3" "" "systemd 249" "sd_bus_message_set_destination"
+.TH "SD_BUS_MESSAGE_SET_DESTINATION" "3" "" "systemd 255" "sd_bus_message_set_destination"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -104,9 +104,29 @@ The message already has a destination or sender field set\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_message_set_destination()\fR
+and
+\fBsd_bus_message_set_sender()\fR
+were added in version 237\&.
+.PP
+\fBsd_bus_message_get_destination()\fR,
+\fBsd_bus_message_get_path()\fR,
+\fBsd_bus_message_get_interface()\fR,
+\fBsd_bus_message_get_member()\fR, and
+\fBsd_bus_message_get_sender()\fR
+were added in version 240\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

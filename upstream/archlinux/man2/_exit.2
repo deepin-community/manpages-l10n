@@ -1,50 +1,33 @@
 .\" This manpage is Copyright (C) 1992 Drew Eckhardt;
 .\"             and Copyright (C) 1993 Michael Haardt, Ian Jackson.
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" Modified Wed Jul 21 23:02:38 1993 by Rik Faith <faith@cs.unc.edu>
 .\" Modified 2001-11-17, aeb
 .\"
-.TH _EXIT 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH _exit 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 _exit, _Exit \- terminate the calling process
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <unistd.h>
-.PP
-.BI "noreturn void _exit(int " status );
-.PP
+.P
+.BI "[[noreturn]] void _exit(int " status );
+.P
 .B #include <stdlib.h>
-.PP
-.BI "noreturn void _Exit(int " status );
+.P
+.BI "[[noreturn]] void _Exit(int " status );
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR _Exit ():
 .nf
     _ISOC99_SOURCE || _POSIX_C_SOURCE >= 200112L
@@ -62,30 +45,37 @@ operation).
 The process's parent is sent a
 .B SIGCHLD
 signal.
-.PP
+.P
 The value
 .I "status & 0xFF"
 is returned to the parent process as the process's exit status, and
 can be collected by the parent using one of the
 .BR wait (2)
 family of calls.
-.PP
+.P
 The function
 .BR _Exit ()
 is equivalent to
 .BR _exit ().
 .SH RETURN VALUE
 These functions do not return.
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, SVr4, 4.3BSD.
-The function
+.SH STANDARDS
+.TP
+.BR _exit ()
+POSIX.1-2008.
+.TP
+.BR _Exit ()
+C11, POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, SVr4, 4.3BSD.
+.P
 .BR _Exit ()
 was introduced by C99.
 .SH NOTES
 For a discussion on the effects of an exit, the transmission of
 exit status, zombie processes, signals sent, and so on, see
 .BR exit (3).
-.PP
+.P
 The function
 .BR _exit ()
 is like
@@ -112,14 +102,14 @@ canceled upon
 .BR _exit (),
 is implementation-dependent.
 .SS C library/kernel differences
-In glibc up to version 2.3, the
-.BR _exit ()
-wrapper function invoked the kernel system call of the same name.
-Since glibc 2.3, the wrapper function invokes
-.BR exit_group (2),
-in order to terminate all of the threads in a process.
-.PP
-The raw
+The text above in DESCRIPTION describes the traditional effect of
+.BR _exit (),
+which is to terminate a process,
+and these are the semantics specified by POSIX.1 and implemented
+by the C library wrapper function.
+On modern systems, this means termination of all threads in the process.
+.P
+By contrast with the C library wrapper function, the raw Linux
 .BR _exit ()
 system call terminates only the calling thread, and actions such as
 reparenting child processes or sending
@@ -127,6 +117,13 @@ reparenting child processes or sending
 to the parent process are performed only if this is
 the last thread in the thread group.
 .\" _exit() is used by pthread_exit() to terminate the calling thread
+.P
+Up to glibc 2.3, the
+.BR _exit ()
+wrapper function invoked the kernel system call of the same name.
+Since glibc 2.3, the wrapper function invokes
+.BR exit_group (2),
+in order to terminate all of the threads in a process.
 .SH SEE ALSO
 .BR execve (2),
 .BR exit_group (2),
@@ -139,12 +136,3 @@ the last thread in the thread group.
 .BR exit (3),
 .BR on_exit (3),
 .BR termios (3)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

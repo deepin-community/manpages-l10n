@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_EVENT_ADD_SIGNAL" "3" "" "systemd 249" "sd_event_add_signal"
+.TH "SD_EVENT_ADD_SIGNAL" "3" "" "systemd 255" "sd_event_add_signal"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,7 +20,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-sd_event_add_signal, sd_event_source_get_signal, sd_event_signal_handler_t \- Add a UNIX process signal event source to an event loop
+sd_event_add_signal, sd_event_source_get_signal, sd_event_signal_handler_t, SD_EVENT_SIGNAL_PROCMASK \- Add a UNIX process signal event source to an event loop
 .SH "SYNOPSIS"
 .sp
 .ft B
@@ -32,6 +32,12 @@ sd_event_add_signal, sd_event_source_get_signal, sd_event_signal_handler_t \- Ad
 .ft B
 .nf
 typedef struct sd_event_source sd_event_source;
+.fi
+.ft
+.sp
+.ft B
+.nf
+\fBSD_EVENT_SIGNAL_PROCMASK\fR
 .fi
 .ft
 .HP \w'typedef\ int\ (*sd_event_signal_handler_t)('u
@@ -50,26 +56,36 @@ parameter, and the event source object is returned in the
 parameter\&. The
 \fIsignal\fR
 parameter specifies the numeric signal to be handled (see
-\fBsignal\fR(7))\&. The
+\fBsignal\fR(7))\&.
+.PP
+The
 \fIhandler\fR
-parameter must reference a function to call when the signal is received or be
+parameter is a function to call when the signal is received or
 \fBNULL\fR\&. The handler function will be passed the
 \fIuserdata\fR
 pointer, which may be chosen freely by the caller\&. The handler also receives a pointer to a
 signalfd_siginfo
 structure containing information about the received signal\&. See
 \fBsignalfd\fR(2)
-for further information\&.
+for further information\&. The handler may return negative to signal an error (see below), other return values are ignored\&. If
+\fIhandler\fR
+is
+\fBNULL\fR, a default handler that calls
+\fBsd_event_exit\fR(3)
+will be used\&.
 .PP
 Only a single handler may be installed for a specific signal\&. The signal must be blocked in all threads before this function is called (using
 \fBsigprocmask\fR(2)
 or
-\fBpthread_sigmask\fR(3))\&.
+\fBpthread_sigmask\fR(3))\&. For convenience, if the special flag
+\fBSD_EVENT_SIGNAL_PROCMASK\fR
+is ORed into the specified signal the signal will be automatically masked as necessary, for the calling thread\&. Note that this only works reliably if the signal is already masked in all other threads of the process, or if there are no other threads at the moment of invocation\&.
 .PP
 By default, the event source is enabled permanently (\fBSD_EVENT_ON\fR), but this may be changed with
-\fBsd_event_source_set_enabled\fR(3)\&. If the handler function returns a negative error code, it will be disabled after the invocation, even if the
+\fBsd_event_source_set_enabled\fR(3)\&. If the handler function returns a negative error code, it will either be disabled after the invocation, even if the
 \fBSD_EVENT_ON\fR
-mode was requested before\&.
+mode was requested before, or it will cause the loop to terminate, see
+\fBsd_event_source_set_exit_on_failure\fR(3)\&.
 .PP
 To destroy an event source object use
 \fBsd_event_source_unref\fR(3), but note that the event source is only removed from the event loop when all references to the event source are dropped\&. To make sure an event source does not fire anymore, even if it is still referenced, disable the event source using
@@ -127,7 +143,7 @@ The event loop is already terminated\&.
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The event loop has been created in a different process\&.
+The event loop has been created in a different process, library or module instance\&.
 .RE
 .PP
 \fB\-EDOM\fR
@@ -136,9 +152,22 @@ The passed event source is not a signal event source\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_event_add_signal()\fR,
+\fBsd_event_signal_handler_t()\fR, and
+\fBsd_event_source_get_signal()\fR
+were added in version 217\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

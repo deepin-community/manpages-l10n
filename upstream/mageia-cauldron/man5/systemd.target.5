@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.TARGET" "5" "" "systemd 249" "systemd.target"
+.TH "SYSTEMD\&.TARGET" "5" "" "systemd 255" "systemd.target"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,17 +28,35 @@ systemd.target \- Target unit configuration
 .PP
 A unit configuration file whose name ends in
 "\&.target"
-encodes information about a target unit of systemd, which is used for grouping units and as well\-known synchronization points during start\-up\&.
+encodes information about a target unit of systemd\&. Target units are used to group units and to set synchronization points for ordering dependencies with other unit files\&.
 .PP
 This unit type has no specific options\&. See
 \fBsystemd.unit\fR(5)
 for the common options of all unit configuration files\&. The common configuration items are configured in the generic [Unit] and [Install] sections\&. A separate [Target] section does not exist, since no target\-specific options may be configured\&.
 .PP
-Target units do not offer any additional functionality on top of the generic functionality provided by units\&. They exist merely to group units via dependencies (useful as boot targets), and to establish standardized names for synchronization points used in dependencies between units\&. Among other things, target units are a more flexible replacement for SysV runlevels in the classic SysV init system\&. (And for compatibility reasons special target units such as
-runlevel3\&.target
-exist which are used by the SysV runlevel compatibility code in systemd\&. See
+Target units do not offer any additional functionality on top of the generic functionality provided by units\&. They merely group units, allowing a single target name to be used in
+\fIWants=\fR
+and
+\fIRequires=\fR
+settings to establish a dependency on a set of units defined by the target, and in
+\fIBefore=\fR
+and
+\fIAfter=\fR
+settings to establish ordering\&. Targets establish standardized names for synchronization points during boot and shutdown\&. Importantly, see
 \fBsystemd.special\fR(7)
-for details)\&.
+for examples and descriptions of standard systemd targets\&.
+.PP
+Target units provide a more flexible replacement for SysV runlevels in the classic SysV init system\&. For compatibility reasons special target units such as
+runlevel3\&.target
+exist which are used by the SysV runlevel compatibility code in systemd, see
+\fBsystemd.special\fR(7)
+for details\&.
+.PP
+Note that a target unit file must not be empty, lest it be considered a masked unit\&. It is recommended to provide a [Unit] section which includes informative
+\fIDescription=\fR
+and
+\fIDocumentation=\fR
+options\&.
 .SH "AUTOMATIC DEPENDENCIES"
 .SS "Implicit Dependencies"
 .PP
@@ -65,12 +83,22 @@ with dependencies of type
 \fIAfter=\fR
 unless
 \fIDefaultDependencies=no\fR
-is set in the specified units\&. Note that
-\fIWants=\fR
+is set in the specified units\&.
+.sp
+Note that the reverse is not true\&. For example, defining
+\fBWants=that\&.target\fR
+in
+some\&.service
+will not automatically add the
+\fBAfter=that\&.target\fR
+ordering dependency for
+some\&.service\&. Instead,
+some\&.service
+should use the primary synchronization function of target type units, by setting a specific
+\fBAfter=that\&.target\fR
 or
-\fIRequires=\fR
-must be defined in the target unit itself \(em if you for example define
-\fIWants=\fRsome\&.target in some\&.service, the automatic ordering will not be added\&.
+\fBBefore=that\&.target\fR
+ordering dependency in its \&.service unit file\&.
 .RE
 .sp
 .RS 4
@@ -88,6 +116,10 @@ and
 dependencies against
 shutdown\&.target\&.
 .RE
+.SH "OPTIONS"
+.PP
+Target unit files may include [Unit] and [Install] sections, which are described in
+\fBsystemd.unit\fR(5)\&. No options specific to this file type are supported\&.
 .SH "EXAMPLE"
 .PP
 \fBExample\ \&1.\ \&Simple standalone target\fR

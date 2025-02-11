@@ -2,12 +2,12 @@
 .\"     Title: pactree
 .\"    Author: [see the "Authors" section]
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2021-06-29
+.\"      Date: 2024-08-24
 .\"    Manual: Pacman-contrib Manual
-.\"    Source: Pacman-contrib 1.4.0
+.\"    Source: Pacman-contrib 1.10.6
 .\"  Language: English
 .\"
-.TH "PACTREE" "8" "2021\-06\-29" "Pacman\-contrib 1\&.4\&.0" "Pacman\-contrib Manual"
+.TH "PACTREE" "8" "2024\-08\-24" "Pacman\-contrib 1\&.10\&.6" "Pacman\-contrib Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,10 +31,10 @@
 pactree \- package dependency tree viewer
 .SH "SYNOPSIS"
 .sp
-\fIpactree\fR [options] package
+\fIpactree\fR [options] <package>
 .SH "DESCRIPTION"
 .sp
-Pactree produces a dependency tree for a package\&.
+\fIpactree\fR produces a dependency tree for a package\&.
 .sp
 By default, a tree\-like output is generated, but with the \fI\-\-graph\fR option, a Graphviz description is generated\&.
 .SH "OPTIONS"
@@ -44,19 +44,34 @@ By default, a tree\-like output is generated, but with the \fI\-\-graph\fR optio
 Use ASCII characters for tree formatting\&. By default, pactree will use Unicode line drawing characters if it is able to detect that the locale supports them\&.
 .RE
 .PP
-\fB\-b, \-\-dbpath\fR
-.RS 4
-Specify an alternative database location\&.
-.RE
-.PP
 \fB\-c, \-\-color\fR
 .RS 4
 Colorize output\&.
 .RE
 .PP
+\fB\-\-config <file>\fR
+.RS 4
+Specify an alternate pacman configuration file\&.
+.RE
+.PP
+\fB\-b, \-\-dbpath\fR
+.RS 4
+Specify an alternative database location\&.
+.RE
+.PP
+\fB\-\-debug\fR
+.RS 4
+Print log messages produced by libalpm\&.
+.RE
+.PP
 \fB\-d, \-\-depth <num>\fR
 .RS 4
 Limits the number of levels of dependency to show\&. A zero means show the named package only, one shows the packages that are directly required\&.
+.RE
+.PP
+\fB\-\-gpgdir <dir>\fR
+.RS 4
+Specify an alternate GnuPG directory for verifying database signatures (default is /etc/pacman\&.d/gnupg)\&.
 .RE
 .PP
 \fB\-g, \-\-graph\fR
@@ -70,12 +85,19 @@ options are ignored\&.
 .PP
 \fB\-h, \-\-help\fR
 .RS 4
-Output syntax and command\-line options\&.
+Display syntax and command\-line options\&.
 .RE
 .PP
 \fB\-l, \-\-linear\fR
 .RS 4
 Prints package names at the start of each line, one per line\&.
+.RE
+.PP
+\fB\-o, \-\-optional[=depth]\fR
+.RS 4
+Additionally prints optional dependencies up to a certain depth, default 1 for immediate optional dependencies\&. When used in conjunction with
+\fI\-r\fR
+it shows which packages it is optional for\&. In Graphviz mode, produce dotted lines\&. Negative values mean infinite depth\&.
 .RE
 .PP
 \fB\-r, \-\-reverse\fR
@@ -93,34 +115,12 @@ Read package data from sync databases instead of local database\&.
 List dependent packages once\&. Implies
 \fI\-\-linear\fR\&.
 .RE
-.PP
-\fB\-o, \-\-optional[=DEPTH]\fR
-.RS 4
-Additionally prints optional dependencies up to a certain depth, default 1 for immediate optional dependencies\&. When used in conjunction with
-\fI\-r\fR
-it shows which packages it is optional for\&. In Graphviz mode, produce dotted lines\&. Negative values mean infinite depth\&.
-.RE
-.PP
-\fB\-\-config <file>\fR
-.RS 4
-Specify an alternate pacman configuration file\&.
-.RE
-.PP
-\fB\-\-debug\fR
-.RS 4
-Print log messages produced by libalpm\&.
-.RE
-.PP
-\fB\-\-gpgdir <dir>\fR
-.RS 4
-Specify an alternate GnuPG directory for verifying database signatures (default is /etc/pacman\&.d/gnupg)\&.
-.RE
 .SH "SEE ALSO"
 .sp
 \fBpacman\fR(8), \fBpacman.conf\fR(5), \fBmakepkg\fR(8)
 .SH "BUGS"
 .sp
-Bugs? You must be kidding; there are no bugs in this software\&. But if we happen to be wrong, send us an email with as much detail as possible to pacman\-contrib@lists\&.archlinux\&.org\&.
+Bugs? You must be kidding; there are no bugs in this software\&. But if we happen to be wrong, file an issue with as much detail as possible at https://gitlab\&.archlinux\&.org/pacman/pacman\-contrib/\-/issues/new\&.
 .SH "AUTHORS"
 .sp
 Current maintainers:

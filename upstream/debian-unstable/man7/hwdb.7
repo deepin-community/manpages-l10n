@@ -1,5 +1,5 @@
 '\" t
-.TH "HWDB" "7" "" "systemd 247" "hwdb"
+.TH "HWDB" "7" "" "systemd 257~rc3" "hwdb"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -27,15 +27,15 @@ The hardware database is a key\-value store for associating modalias\-like keys 
 .SH "HARDWARE DATABASE FILES"
 .PP
 The hwdb files are read from the files located in the system hwdb directory
-/lib/udev/hwdb\&.d
+/usr/lib/udev/hwdb\&.d
 and the local administration directory
 /etc/udev/hwdb\&.d\&. All hwdb files are collectively sorted and processed in lexical order, regardless of the directories in which they live\&. However, files with identical filenames replace each other\&. Files in
 /etc/
 have the highest priority and take precedence over files with the same name in
-/lib/\&. This can be used to override a system\-supplied hwdb file with a local file if needed; a symlink in
+/usr/lib/\&. This can be used to override a system\-supplied hwdb file with a local file if needed; a symlink in
 /etc/
 with the same name as a hwdb file in
-/lib/, pointing to
+/usr/lib/, pointing to
 /dev/null, disables that hwdb file entirely\&. hwdb files must have the extension
 \&.hwdb; other extensions are ignored\&.
 .PP
@@ -100,7 +100,7 @@ The content of all hwdb files is read by
 \fBsystemd-hwdb\fR(8)
 and compiled to a binary database located at
 /etc/udev/hwdb\&.bin, or alternatively
-/lib/udev/hwdb\&.bin
+/usr/lib/udev/hwdb\&.bin
 if you want ship the compiled database in an immutable image\&. During runtime, only the binary database is used\&.
 .SH "EXAMPLES"
 .PP
@@ -110,7 +110,7 @@ if you want ship the compiled database in an immutable image\&. During runtime, 
 .RS 4
 .\}
 .nf
-# /lib/udev/hwdb\&.d/example\&.hwdb
+# /usr/lib/udev/hwdb\&.d/example\&.hwdb
 # Comments can be placed before any records\&. This is a good spot
 # to describe what that file is used for, what kind of properties
 # it defines, and the ordering convention\&.
@@ -144,7 +144,7 @@ mouse:usb:v046dp4041:name:Logitech MX Master:*
 .RS 4
 .\}
 .nf
-# /lib/udev/hwdb\&.d/60\-keyboard\&.hwdb
+# /usr/lib/udev/hwdb\&.d/60\-keyboard\&.hwdb
 evdev:atkbd:dmi:bvn*:bvr*:bd*:svnAcer*:pn*:*
  KEYBOARD_KEY_a1=help
  KEYBOARD_KEY_a2=setup
@@ -165,7 +165,7 @@ evdev:atkbd:*
 .\}
 .PP
 If the hwdb consists of those two files, a keyboard with the lookup string
-"evdev:atkbd:dmi:bvnAcer:bdXXXXX:bd08/05/2010:svnAcer:pnX123"
+"evdev:atkbd:dmi:bvnAcer:bvr:bdXXXXX:bd08/05/2010:svnAcer:pnX123:"
 will match all three records, and end up with the following properties:
 .sp
 .if n \{\

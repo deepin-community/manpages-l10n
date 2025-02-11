@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_SESSION_IS_ACTIVE" "3" "" "systemd 249" "sd_session_is_active"
+.TH "SD_SESSION_IS_ACTIVE" "3" "" "systemd 257" "sd_session_is_active"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,7 +20,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-sd_session_is_active, sd_session_is_remote, sd_session_get_state, sd_session_get_uid, sd_session_get_seat, sd_session_get_service, sd_session_get_type, sd_session_get_class, sd_session_get_desktop, sd_session_get_display, sd_session_get_tty, sd_session_get_vt, sd_session_get_remote_host, sd_session_get_remote_user \- Determine state of a specific session
+sd_session_is_active, sd_session_is_remote, sd_session_get_state, sd_session_get_uid, sd_session_get_username, sd_session_get_seat, sd_session_get_start_time, sd_session_get_service, sd_session_get_type, sd_session_get_class, sd_session_get_desktop, sd_session_get_display, sd_session_get_tty, sd_session_get_vt, sd_session_get_remote_host, sd_session_get_remote_user, sd_session_get_leader \- Determine state of a specific session
 .SH "SYNOPSIS"
 .sp
 .ft B
@@ -36,8 +36,12 @@ sd_session_is_active, sd_session_is_remote, sd_session_get_state, sd_session_get
 .BI "int sd_session_get_state(const\ char\ *" "session" ", char\ **" "state" ");"
 .HP \w'int\ sd_session_get_uid('u
 .BI "int sd_session_get_uid(const\ char\ *" "session" ", uid_t\ *" "uid" ");"
+.HP \w'int\ sd_session_get_username('u
+.BI "int sd_session_get_username(const\ char\ *" "session" ", char\ **" "username" ");"
 .HP \w'int\ sd_session_get_seat('u
 .BI "int sd_session_get_seat(const\ char\ *" "session" ", char\ **" "seat" ");"
+.HP \w'int\ sd_session_get_start_time('u
+.BI "int sd_session_get_start_time(const\ char\ *" "session" ", uint64_t\ *" "usec" ");"
 .HP \w'int\ sd_session_get_service('u
 .BI "int sd_session_get_service(const\ char\ *" "session" ", char\ **" "service" ");"
 .HP \w'int\ sd_session_get_type('u
@@ -48,6 +52,8 @@ sd_session_is_active, sd_session_is_remote, sd_session_get_state, sd_session_get
 .BI "int sd_session_get_desktop(const\ char\ *" "session" ", char\ **" "desktop" ");"
 .HP \w'int\ sd_session_get_display('u
 .BI "int sd_session_get_display(const\ char\ *" "session" ", char\ **" "display" ");"
+.HP \w'int\ sd_session_get_leader('u
+.BI "int sd_session_get_leader(const\ char\ *" "session" ", pid_t\ *" "leader" ");"
 .HP \w'int\ sd_session_get_remote_host('u
 .BI "int sd_session_get_remote_host(const\ char\ *" "session" ", char\ **" "remote_host" ");"
 .HP \w'int\ sd_session_get_remote_user('u
@@ -79,11 +85,21 @@ call after use\&.
 \fBsd_session_get_uid()\fR
 may be used to determine the user identifier of the Unix user the session identified by the specified session identifier belongs to\&.
 .PP
+\fBsd_session_get_username()\fR
+may be used to determine the name of the Unix user the session identified by the specified session identifier belongs to\&. The returned string needs to be freed with the libc
+\fBfree\fR(3)
+call after use\&.
+.PP
 \fBsd_session_get_seat()\fR
 may be used to determine the seat identifier of the seat the session identified by the specified session identifier belongs to\&. Note that not all sessions are attached to a seat, this call will fail (returning
 \fB\-ENODATA\fR) for them\&. The returned string needs to be freed with the libc
 \fBfree\fR(3)
 call after use\&.
+.PP
+\fBsd_session_get_start_time()\fR
+may be used to determine the start time of the session identified by the specified session identifier belongs to\&. The
+\fIusec\fR
+is in microseconds since the epoch (\fBCLOCK_REALTIME\fR)\&.
 .PP
 \fBsd_session_get_service()\fR
 may be used to determine the name of the service (as passed during PAM session setup) that registered the session identified by the specified session identifier\&. The returned string needs to be freed with the libc
@@ -105,9 +121,15 @@ call after use\&.
 \fBsd_session_get_class()\fR
 may be used to determine the class of the session identified by the specified session identifier\&. The returned string is one of
 "user",
+"user\-early",
+"user\-incomplete",
 "greeter",
-"lock\-screen", or
-"background"
+"lock\-screen",
+"background",
+"background\-light",
+"manager"
+or
+"manager\-early"
 and needs to be freed with the libc
 \fBfree\fR(3)
 call after use\&.
@@ -123,6 +145,9 @@ call after use\&.
 may be used to determine the X11 display of the session identified by the specified session identifier\&. The returned string needs to be freed with the libc
 \fBfree\fR(3)
 call after use\&.
+.PP
+\fBsd_session_get_leader()\fR
+may be used to determine the PID of the leader of the session identified by the specified session identifier\&.
 .PP
 \fBsd_session_get_remote_host()\fR
 may be used to determine the remote hostname of the session identified by the specified session identifier\&. The returned string needs to be freed with the libc
@@ -155,11 +180,13 @@ and
 return a positive integer; if it fails, 0\&. On success,
 \fBsd_session_get_state()\fR,
 \fBsd_session_get_uid()\fR,
+\fBsd_session_get_username()\fR,
 \fBsd_session_get_seat()\fR,
 \fBsd_session_get_service()\fR,
 \fBsd_session_get_type()\fR,
 \fBsd_session_get_class()\fR,
 \fBsd_session_get_display()\fR,
+\fBsd_session_get_leader()\fR,
 \fBsd_session_get_remote_user()\fR,
 \fBsd_session_get_remote_host()\fR
 and
@@ -191,17 +218,45 @@ Memory allocation failed\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_session_get_state()\fR
+was added in version 186\&.
+.PP
+\fBsd_session_get_tty()\fR
+was added in version 198\&.
+.PP
+\fBsd_session_get_vt()\fR
+was added in version 207\&.
+.PP
+\fBsd_session_is_remote()\fR,
+\fBsd_session_get_remote_host()\fR, and
+\fBsd_session_get_remote_user()\fR
+were added in version 209\&.
+.PP
+\fBsd_session_get_desktop()\fR
+was added in version 217\&.
+.PP
+\fBsd_session_get_username()\fR,
+\fBsd_session_get_start_time()\fR, and
+\fBsd_session_get_leader()\fR
+were added in version 254\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-login\fR(3),
-\fBsd_pid_get_session\fR(3)
+\fBsystemd\fR(1), \fBsd-login\fR(3), \fBsd_pid_get_session\fR(3)
 .SH "NOTES"
 .IP " 1." 4
 Desktop Entry Specification
 .RS 4
-\%http://standards.freedesktop.org/desktop-entry-spec/latest/
+\%https://standards.freedesktop.org/desktop-entry-spec/latest/
 .RE

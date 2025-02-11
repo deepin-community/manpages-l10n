@@ -1,0 +1,137 @@
+.\" $Id: $
+..\" Copyright (c) 1983, 1990 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     from: @(#)lprm.1	6.7 (Berkeley) 5/9/91
+.\"	$Id: lprm.1,v 1.1.1.1 1997/10/08 18:09:58 msf Exp $
+.\"
+.Dd May 9, 1991
+.\" Translated into Finnish by rene.gauffin@dlc.fi
+.\"
+.TH LPRM 7 "" "Käyttäjän sovellusohjelmat" ""
+.Os BSD 4.2
+.SH NIMI
+.Nm lprm
+.Nd poistaa töitä rivikirjoittimen tulostusjonosta 
+.SH "YLEISKATSAUS"
+.Nm lprm
+.Op Fl P Ns Ar printer
+.Op Fl
+.Op job # ...
+.Op Ar user ...
+.SH KUVAUS
+.Nm Lprm
+poistaa työn tai töitä kirjoittimen tulostusjonosta
+Koska jonohakemisto yleensä on suojattu käyttäjiltä, on
+.Nm lprm
+tavallisesti ainoa keino millä käyttäjä voi pistaa työn
+Työn omistaja tunnistetaan käyttäjän kirjoittautumisnimen ja koneen nimen perusteella. sillä koneella mistä käsky
+.Xr lpr 1
+annettiin.
+.Pp
+Valitsimet ja parametrit
+.Bl -tag -width indent
+.It Fl P Ns Ar printer
+Määrittelee jonon joka liittyy tiettyyn tulostimeen
+.Ar printer
+(muuten käytetään oletuskirjoitinta)
+.It Fl
+Jos  pelkkä
+.Sq Fl
+annetaan,
+.Nm lprm
+poistaa kaikki käyttäjän omistamat työt
+Jos pääkäyttäjä antaa tämän merkin, kaikki tulostusjonot tyhjennetään.
+.It Ar user
+Aiheuttaa sen, että
+.Nm lprm
+yrittää  poistaa kaikki tämän käyttäjän jonossa olevat työt
+Tämä tapa käynnistää
+.Nm lprm
+on hyödyllinen vain pääkäyttäjälle.
+.It Ar job\ \&#
+Käyttäjä voi siirtää työn uudelleen jonoon antamlla työn numeron.
+Tämä numero voidaan hakea ohjelman 
+.Xr lpq  1
+avulla, esim.
+.Pp
+.Bd -literal -offset indent
+\&% lpq \-l
+
+1st:ken				[job #013ucbarpa]
+	(standard input)	100 bytes
+% lprm 13
+.Ed
+.El
+.Pp
+Jos ei anneta valitsimia eikä parametrejä
+.Nm Lprm
+poistaa  käynnissä olevan työn  mikäli sen omistaa sama käyttäjä joka käynnisti ohjelman .Nm lprm  .
+.Pp
+.Nm Lprm
+ilmoittaa poistamiensa tiedostojen nimet ja vaikenee, jos jonosa ei ole töitä joiden nimet ovat poistopyyntölistalla
+.Pp
+.Nm Lprm
+tappaa tarvittaesa aktiivin demonin ennenkuin poistaa  jonotiedostoja.Jos demoni tapetaan, uusi demoni käynnistetään automaattisesti heti tiedostopoistojen jälkeen
+.SH YMPÄRISTÖMUUTTUJAT
+Jos seuraava ypäistömuuttuja on olemasa, sitä käyttää
+.Nm lprm .
+.Bl -tag -width PRINTER
+.It Ev PRINTER
+Jos ympäristömuuttuja 
+.Ev PRINTER
+on olemassa eikä tulostinta ole vielä määritelty valitsimella
+.Fl P
+oletuskirjoittimeksi otetaan
+.Ev PRINTER .
+.El
+.SH TIEDOSTOT
+.Bl -tag -width /var/spool/*/lock/ -compact
+.It Pa /etc/printcap
+tulostimen karakteristiikkatiedosto
+.It Pa /var/spool/*
+tulostusjonojen hakemistot
+.It Pa /var/spool/*/lock
+Lukitustiedosto. jonka avulla saadaan tämänhetkisen demonin pid ja aktiivisen työn numero.
+.El
+.SH "KATSO MYÖS"
+.Xr lpr 1 ,
+.Xr lpq 1 ,
+.Xr lpd 8
+.SH DIAGNOSTIIKKA
+``Lupa evätty" jos käyttäjä yrittää poistaa muita kuin omia töitään
+.SH BUGIT
+Koska lukitustiedoston päivitykessä voi syntyä kilpa-ajotilanne, aktiivisen työn tunnistus voi olla virheellinen
+.SH HISTORIA
+Käsky
+.Nm lprm
+ilmaantui.Bx 3.0 .
+.SH "KATSO MYÖS"

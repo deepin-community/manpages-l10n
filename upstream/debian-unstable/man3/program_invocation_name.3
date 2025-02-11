@@ -21,15 +21,18 @@
 .\" SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 .\" %%%LICENSE_END
 .\"
-.TH INVOCATION_NAME 3 2017-09-15 "GNU" "Linux Programmer's Manual"
+.TH program_invocation_name 3 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 program_invocation_name, program_invocation_short_name \- \
 obtain name used to invoke calling program
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .BR "#define _GNU_SOURCE" "         /* See feature_test_macros(7) */"
 .B #include <errno.h>
-.PP
+.P
 .BI "extern char *" program_invocation_name ;
 .BI "extern char *" program_invocation_short_name ;
 .fi
@@ -43,31 +46,21 @@ in
 with the difference that the scope of
 .I program_invocation_name
 is global.
-.PP
+.P
 .I program_invocation_short_name
 contains the basename component of name that was used to invoke
 the calling program.
 That is, it is the same value as
 .IR program_invocation_name ,
 with all text up to and including the final slash (/), if any, removed.
-.PP
+.P
 These variables are automatically initialized by the glibc run-time
 startup code.
-.SH CONFORMING TO
-These variables are GNU extensions, and should not be
-used in programs intended to be portable.
-.SH NOTES
+.SH VERSIONS
 The Linux-specific
-.I /proc/[number]/cmdline
+.IR /proc/ pid /cmdline
 file provides access to similar information.
+.SH STANDARDS
+GNU.
 .SH SEE ALSO
 .BR proc (5)
-.SH COLOPHON
-This page is part of release 5.10 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

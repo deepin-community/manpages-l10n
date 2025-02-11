@@ -1,21 +1,26 @@
 .\" Copyright (C) 2003 Free Software Foundation, Inc.
 .\"
-.\" %%%LICENSE_START(GPL_NOVERSION_ONELINE)
-.\" This file is distributed according to the GNU General Public License.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-1.0-or-later
 .\"
-.TH IO_SETUP 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH io_setup 2 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 io_setup \- create an asynchronous I/O context
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
+.P
+Alternatively, Asynchronous I/O library
+.RI ( libaio ", " \-laio );
+see VERSIONS.
 .SH SYNOPSIS
 .nf
 .BR "#include <linux/aio_abi.h>" "          /* Defines needed types */"
-.PP
+.P
 .BI "long io_setup(unsigned int " nr_events ", aio_context_t *" ctx_idp );
 .fi
-.PP
+.P
 .IR Note :
-There is no glibc wrapper for this system call; see NOTES.
+There is no glibc wrapper for this system call; see VERSIONS.
 .SH DESCRIPTION
 .IR Note :
 this page describes the raw Linux system call interface.
@@ -24,8 +29,8 @@ The wrapper function provided by
 uses a different type for the
 .I ctx_idp
 argument.
-See NOTES.
-.PP
+See VERSIONS.
+.P
 The
 .BR io_setup ()
 system call
@@ -41,13 +46,13 @@ with the resulting handle.
 On success,
 .BR io_setup ()
 returns 0.
-For the failure return, see NOTES.
+For the failure return, see VERSIONS.
 .SH ERRORS
 .TP
 .B EAGAIN
 The specified \fInr_events\fP exceeds the limit of available events,
 as defined in
-.IR /proc/sys/fs/aio\-max\-nr
+.I /proc/sys/fs/aio\-max\-nr
 (see
 .BR proc (5)).
 .TP
@@ -66,13 +71,7 @@ Insufficient kernel resources are available.
 .BR io_setup ()
 is not implemented on this architecture.
 .SH VERSIONS
-The asynchronous I/O system calls first appeared in Linux 2.5.
-.SH CONFORMING TO
-.BR io_setup ()
-is Linux-specific and should not be used in programs
-that are intended to be portable.
-.SH NOTES
-Glibc does not provide a wrapper for this system call.
+glibc does not provide a wrapper for this system call.
 You could invoke it using
 .BR syscall (2).
 But instead, you probably want to use the
@@ -80,7 +79,7 @@ But instead, you probably want to use the
 wrapper function provided by
 .\" http://git.fedorahosted.org/git/?p=libaio.git
 .IR libaio .
-.PP
+.P
 Note that the
 .I libaio
 wrapper function uses a different type
@@ -101,6 +100,10 @@ then the return value follows the usual conventions for
 indicating an error: \-1, with
 .I errno
 set to a (positive) value that indicates the error.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 2.5.
 .SH SEE ALSO
 .BR io_cancel (2),
 .BR io_destroy (2),
@@ -109,12 +112,3 @@ set to a (positive) value that indicates the error.
 .BR aio (7)
 .\" .SH AUTHOR
 .\" Kent Yoder.
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

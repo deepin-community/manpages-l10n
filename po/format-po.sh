@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Copyright © 2010-2019 Dr. Tobias Quathamer <toddy@debian.org>
+#           © 2021 Dr. Helge Kreutzmann <debian@helgefjell.de>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,18 +20,46 @@ header=$(mktemp)
 tail=$(mktemp)
 result=$(mktemp)
 
+if [ "$1" == "-h" ]; then
+  echo "Usage: ./`basename $0` language_code"
+  echo This script reformats any *.po files. It wraps the lines at 80 characters
+  echo and removes outdated messages at the end of the file. 
+  echo ""
+  echo It is mandatory to submit the language code as parameter.
+  echo ""
+  echo Alternatively call it directly from the language directory, e.g. po/fr.
+  exit 0
+fi
+
+if [ -d man1 ]; then
+    lcode=$(basename $(pwd))
+elif [ a"$1" != a ]; then
+    if [ -d $1 ]; then
+        cd $1
+        lcode=$1
+    else
+        echo "Language $1 could not be found, aborting"
+        exit 11
+    fi
+else
+    echo "Could not determine target directory, aborting"
+    exit 12
+fi
+
+source ../l10n_set
+
 translations=$(find man* -name "*.po" | LC_ALL=C sort)
 for translation in $translations; do
 	# Get the head of the file until first msgid line
 	# and filter out all comment lines without year information
 	sed -n "1,/^msgid/p" "$translation" |
-	grep -v "^# German translation of manpages" |
-	grep -v "^# This file is distributed under the same license as the manpages-de package." |
+	grep -v "^# $langname translation of manpages" |
+	grep -v "^# This file is distributed under the same license as the manpages-l10n package." |
 	grep -v "^# Copyright © of this file:" |
 	grep -v "^#\s*$" > "$header"
 	sed -e "1,/^msgid/d" "$translation" > "$tail"
-	echo "# German translation of manpages" > "$result"
-	echo "# This file is distributed under the same license as the manpages-de package." >> "$result"
+	echo "# $langname translation of manpages" > "$result"
+	echo "# This file is distributed under the same license as the manpages-l10n package." >> "$result"
 	echo "# Copyright © of this file:" >> "$result"
 	cat "$result" "$header" "$tail" > "$translation"
 	# Reformat manpage to wrap lines

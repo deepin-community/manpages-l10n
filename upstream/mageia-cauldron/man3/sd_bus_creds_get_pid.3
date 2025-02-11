@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_CREDS_GET_PID" "3" "" "systemd 249" "sd_bus_creds_get_pid"
+.TH "SD_BUS_CREDS_GET_PID" "3" "" "systemd 255" "sd_bus_creds_get_pid"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -163,7 +163,7 @@ will retrieve an array of command line arguments (as stored in
 .PP
 \fBsd_bus_creds_get_cgroup()\fR
 will retrieve the control group path\&. See
-\m[blue]\fBcgroups\&.txt\fR\m[]\&\s-2\u[1]\d\s+2\&.
+\m[blue]\fBControl Groups v2\fR\m[]\&\s-2\u[1]\d\s+2\&.
 .PP
 \fBsd_bus_creds_get_unit()\fR
 will retrieve the systemd unit name (in the system instance of systemd) that the process is a part of\&. See
@@ -297,9 +297,57 @@ Memory allocation failed\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_creds_get_pid()\fR,
+\fBsd_bus_creds_get_tid()\fR,
+\fBsd_bus_creds_get_gid()\fR,
+\fBsd_bus_creds_get_comm()\fR,
+\fBsd_bus_creds_get_tid_comm()\fR,
+\fBsd_bus_creds_get_exe()\fR,
+\fBsd_bus_creds_get_cmdline()\fR,
+\fBsd_bus_creds_get_cgroup()\fR,
+\fBsd_bus_creds_get_unit()\fR,
+\fBsd_bus_creds_get_user_unit()\fR,
+\fBsd_bus_creds_get_slice()\fR,
+\fBsd_bus_creds_get_session()\fR,
+\fBsd_bus_creds_get_owner_uid()\fR,
+\fBsd_bus_creds_has_effective_cap()\fR,
+\fBsd_bus_creds_has_permitted_cap()\fR,
+\fBsd_bus_creds_has_inheritable_cap()\fR,
+\fBsd_bus_creds_has_bounding_cap()\fR,
+\fBsd_bus_creds_get_selinux_context()\fR,
+\fBsd_bus_creds_get_audit_session_id()\fR,
+\fBsd_bus_creds_get_audit_login_uid()\fR,
+\fBsd_bus_creds_get_unique_name()\fR, and
+\fBsd_bus_creds_get_well_known_names()\fR
+were added in version 209\&.
+.PP
+\fBsd_bus_creds_get_ppid()\fR,
+\fBsd_bus_creds_get_uid()\fR,
+\fBsd_bus_creds_get_euid()\fR,
+\fBsd_bus_creds_get_suid()\fR,
+\fBsd_bus_creds_get_fsuid()\fR,
+\fBsd_bus_creds_get_egid()\fR,
+\fBsd_bus_creds_get_sgid()\fR,
+\fBsd_bus_creds_get_fsgid()\fR,
+\fBsd_bus_creds_get_supplementary_gids()\fR,
+\fBsd_bus_creds_get_tty()\fR, and
+\fBsd_bus_creds_get_description()\fR
+were added in version 220\&.
+.PP
+\fBsd_bus_creds_get_user_slice()\fR
+was added in version 223\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),
@@ -313,12 +361,12 @@ file\&.
 \fBsystemd.journal-fields\fR(7)
 .SH "NOTES"
 .IP " 1." 4
-cgroups.txt
+Control Groups v2
 .RS 4
-\%https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt
+\%https://docs.kernel.org/admin-guide/cgroup-v2.html
 .RE
 .IP " 2." 4
 The D-Bus specification
 .RS 4
-\%http://dbus.freedesktop.org/doc/dbus-specification.html#message-protocol-names-bus
+\%https://dbus.freedesktop.org/doc/dbus-specification.html#message-protocol-names-bus
 .RE

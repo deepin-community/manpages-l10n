@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-HIBERNATE\-RESUME\-GENERATOR" "8" "" "systemd 249" "systemd-hibernate-resume-generator"
+.TH "SYSTEMD\-HIBERNATE\-RESUME\-GENERATOR" "8" "" "systemd 257" "systemd-hibernate-resume-generator"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -27,11 +27,13 @@ systemd-hibernate-resume-generator \- Unit generator for resume= kernel paramete
 .SH "DESCRIPTION"
 .PP
 \fBsystemd\-hibernate\-resume\-generator\fR
-is a generator that initiates the procedure to resume the system from hibernation\&. It instantiates the
-\fBsystemd-hibernate-resume@.service\fR(8)
-unit according to the value of
+is a generator that initiates the procedure to resume the system from hibernation\&. When
 \fBresume=\fR
-parameter specified on the kernel command line, which will instruct the kernel to resume the system from the hibernation image on that device\&.
+kernel command line option or
+\fIHibernateLocation\fR
+EFI variable is detected, it enables the
+\fBsystemd-hibernate-resume.service\fR(8)
+unit, which will instruct the kernel to resume the system from the hibernation image\&.
 .SH "KERNEL COMMAND LINE"
 .PP
 systemd\-hibernate\-resume\-generator
@@ -45,6 +47,16 @@ and
 \fBfstab\fR(5)\-style specifiers like
 "FOO=bar"
 are supported\&.
+.sp
+Added in version 217\&.
+.RE
+.PP
+\fIresume_offset=\fR
+.RS 4
+Takes the page offset of the swap space from the resume device\&. Defaults to
+"0"\&.
+.sp
+Added in version 254\&.
 .RE
 .PP
 \fIresumeflags=\fR
@@ -52,6 +64,8 @@ are supported\&.
 Takes the resume device mount options to use\&. Defaults
 \fIrootflags=\fR
 if not specified\&.
+.sp
+Added in version 243\&.
 .RE
 .PP
 \fInoresume\fR
@@ -59,9 +73,9 @@ if not specified\&.
 Do not try to resume from hibernation\&. If this parameter is present,
 \fIresume=\fR
 is ignored\&.
+.sp
+Added in version 240\&.
 .RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd-hibernate-resume@.service\fR(8),
-\fBkernel-command-line\fR(7)
+\fBsystemd\fR(1), \fBsystemd-hibernate-resume.service\fR(8), \fBkernel-command-line\fR(7)

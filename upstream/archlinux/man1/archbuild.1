@@ -1,0 +1,154 @@
+'\" t
+.\"     Title: archbuild
+.\"    Author: [see the "AUTHOR(S)" section]
+.\" Generator: Asciidoctor 2.0.23
+.\"      Date: 2024-06-18
+.\"    Manual: \ \&
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "ARCHBUILD" "1" "2024-06-18" "\ \&" "\ \&"
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.ss \n[.ss] 0
+.nh
+.ad l
+.de URL
+\fI\\$2\fP <\\$1>\\$3
+..
+.als MTO URL
+.if \n[.g] \{\
+.  mso www.tmac
+.  am URL
+.    ad l
+.  .
+.  am MTO
+.    ad l
+.  .
+.  LINKSTYLE blue R < >
+.\}
+.SH "NAME"
+archbuild \- a script to build an Arch Linux package inside a clean chroot.
+.SH "SYNOPSIS"
+.sp
+archbuild [options] \(em [makechrootpkg args]
+.SH "DESCRIPTION"
+.sp
+\fIarchbuild\fP is a script to build an Arch Linux package. archbuild is part of devtools but should only be used via one of the included symlinks:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+extra\-x86_64\-build
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+gnome\-unstable\-x86_64\-build
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+kde\-unstable\-x86_64\-build
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+multilib\-build
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+multilib\-staging\-build
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+multilib\-testing\-build
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+staging\-x86_64\-build
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.  sp -1
+.  IP \(bu 2.3
+.\}
+testing\-x86_64\-build
+.RE
+.sp
+The symlink used to run it will be inspected by archbuild, to determine which target you want it to use. It will load the available pacman configuration from \fIreponame\-arch.conf\fP with a fallback to \fIreponame.conf\fP from /usr/share/devtools/pacman.conf.d. The makepkg configuration is loaded from \fIrepo\-arch.conf\fP with a fallback to \fIreponame.conf\fP from /usr/share/devtools/makepkg.conf.d.
+.sp
+It will also load the bind mount configuration from \fImount.d/arch\fP in /usr/share/devtools. The file format is that each line starting with ro and rw will be used, other lines will be ignored, and the rest of the used line is out/path:in/path preceded by a space as a separator. ro means it is a read\-only mount, rw means a read\-write mount.
+.SH "OPTIONS"
+.sp
+\fB\-h\fP
+.RS 4
+Output command line options.
+.RE
+.sp
+\fB\-c\fP
+.RS 4
+Recreate the chroot before building.
+.RE
+.sp
+\fB\-r\fP <dir>
+.RS 4
+Create chroots in this directory.
+.RE
+.SH "SEE ALSO"
+.sp
+devtools(7)
+.SH "HOMEPAGE"
+.sp
+\fI\c
+.URL "https://gitlab.archlinux.org/archlinux/devtools" "" "\fP"
+.sp
+Please report bugs and feature requests in the issue tracker. Please do your best to provide a reproducible test case for bugs.

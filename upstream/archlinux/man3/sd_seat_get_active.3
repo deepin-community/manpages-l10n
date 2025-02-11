@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_SEAT_GET_ACTIVE" "3" "" "systemd 249" "sd_seat_get_active"
+.TH "SD_SEAT_GET_ACTIVE" "3" "" "systemd 257" "sd_seat_get_active"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -101,16 +101,22 @@ Memory allocation failed\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
 .SH "HISTORY"
 .PP
-In the past,
-\fBsd_seat_can_multi_session()\fR
-was used to check whether the seat supports multiple sessions\&. All seats support that now, so that function has been deprecated and always returns true\&.
+\fBsd_seat_can_tty()\fR
+and
+\fBsd_seat_can_graphical()\fR
+were added in version 186\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-login\fR(3),
-\fBsd_session_get_seat\fR(3)
+\fBsystemd\fR(1), \fBsd-login\fR(3), \fBsd_session_get_seat\fR(3)

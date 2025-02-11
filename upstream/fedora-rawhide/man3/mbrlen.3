@@ -1,11 +1,7 @@
+'\" t
 .\" Copyright (c) Bruno Haible <haible@clisp.cons.org>
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_ONEPARA)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
 .\" References consulted:
 .\"   GNU glibc-2 source code and manual
@@ -13,14 +9,17 @@
 .\"   OpenGroup's Single UNIX specification http://www.UNIX-systems.org/online.html
 .\"   ISO/IEC 9899:1999
 .\"
-.TH MBRLEN 3  2021-03-22 "GNU" "Linux Programmer's Manual"
+.TH mbrlen 3 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 mbrlen \- determine number of bytes in next multibyte character
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <wchar.h>
-.PP
-.BI "size_t mbrlen(const char *restrict " s ", size_t " n ,
+.P
+.BI "size_t mbrlen(const char " s "[restrict ." n "], size_t " n ,
 .BI "              mbstate_t *restrict " ps );
 .fi
 .SH DESCRIPTION
@@ -41,9 +40,9 @@ If the multibyte character is the null wide character, it resets the
 shift state
 .I *ps
 to the initial state and returns 0.
-.PP
+.P
 If the
-.IR n
+.I n
 bytes starting at
 .I s
 do not contain a complete multibyte
@@ -57,14 +56,14 @@ This can happen even if
 .IR MB_CUR_MAX ,
 if the multibyte string contains redundant shift
 sequences.
-.PP
+.P
 If the multibyte string starting at
 .I s
 contains an invalid multibyte
 sequence before the next complete character,
 .BR mbrlen ()
 returns
-.IR "(size_t)\ \-1"
+.I (size_t)\ \-1
 and sets
 .I errno
 to
@@ -73,7 +72,7 @@ In this case,
 the effects on
 .I *ps
 are undefined.
-.PP
+.P
 If
 .I ps
 is NULL, a static anonymous state known only to the
@@ -97,7 +96,7 @@ to
 if an invalid multibyte sequence was
 encountered.
 It returns
-.IR "(size_t)\ \-2"
+.I (size_t)\ \-2
 if it couldn't parse a complete multibyte
 character, meaning that
 .I n
@@ -105,22 +104,21 @@ should be increased.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR mbrlen ()
 T}	Thread safety	MT-Unsafe race:mbrlen/!ps
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, C99.
+.SH STANDARDS
+C11, POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, C99.
 .SH NOTES
 The behavior of
 .BR mbrlen ()
@@ -130,12 +128,3 @@ category of the
 current locale.
 .SH SEE ALSO
 .BR mbrtowc (3)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

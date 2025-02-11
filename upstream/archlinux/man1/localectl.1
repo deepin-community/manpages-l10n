@@ -1,5 +1,5 @@
 '\" t
-.TH "LOCALECTL" "1" "" "systemd 249" "localectl"
+.TH "LOCALECTL" "1" "" "systemd 257" "localectl"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,8 +38,8 @@ The system locale controls the language settings of system services and of the U
 .PP
 The keyboard settings control the keyboard layout used on the text console and of the graphical UI before the user logs in, such as the display manager, as well as the default for users after login\&.
 .PP
-Note that the changes performed using this tool might require the initramfs to be rebuilt to take effect during early system boot\&. The initramfs is not rebuilt automatically by
-localectl\&.
+Note that the changes performed using this tool might require the initrd to be rebuilt to take effect during early system boot\&. The initrd is not rebuilt automatically by
+localectl, this task has to be performed manually, usually by reinstalling the distribution\*(Aqs kernel package\&.
 .PP
 Note that
 \fBsystemd-firstboot\fR(1)
@@ -51,6 +51,8 @@ The following commands are understood:
 \fBstatus\fR
 .RS 4
 Show current settings of the system locale and keyboard mapping\&. If no command is specified, this is the implied default\&.
+.sp
+Added in version 195\&.
 .RE
 .PP
 \fBset\-locale LOCALE\fR, \fBset\-locale VARIABLE=LOCALE\&...\fR
@@ -65,12 +67,16 @@ locale variable will be set\&. See
 for details on the available settings and their meanings\&. Use
 \fBlist\-locales\fR
 for a list of available locales (see below)\&.
+.sp
+Added in version 195\&.
 .RE
 .PP
 \fBlist\-locales\fR
 .RS 4
 List available locales useful for configuration with
 \fBset\-locale\fR\&.
+.sp
+Added in version 195\&.
 .RE
 .PP
 \fBset\-keymap MAP [TOGGLEMAP]\fR
@@ -80,12 +86,16 @@ Set the system keyboard mapping for the console and X11\&. This takes a mapping 
 is passed, the selected setting is also applied as the default system keyboard mapping of X11, after converting it to the closest matching X11 keyboard mapping\&. Use
 \fBlist\-keymaps\fR
 for a list of available keyboard mappings (see below)\&.
+.sp
+Added in version 195\&.
 .RE
 .PP
 \fBlist\-keymaps\fR
 .RS 4
 List available keyboard mappings for the console, useful for configuration with
 \fBset\-keymap\fR\&.
+.sp
+Added in version 195\&.
 .RE
 .PP
 \fBset\-x11\-keymap LAYOUT [MODEL [VARIANT [OPTIONS]]]\fR
@@ -98,6 +108,8 @@ or
 for details\&. Unless
 \fB\-\-no\-convert\fR
 is passed, the selected setting is also applied as the system console keyboard mapping, after converting it to the closest matching console keyboard mapping\&.
+.sp
+Added in version 195\&.
 .RE
 .PP
 \fBlist\-x11\-keymap\-models\fR, \fBlist\-x11\-keymap\-layouts\fR, \fBlist\-x11\-keymap\-variants [LAYOUT]\fR, \fBlist\-x11\-keymap\-options\fR
@@ -106,14 +118,18 @@ List available X11 keymap models, layouts, variants and options, useful for conf
 \fBset\-keymap\fR\&. The command
 \fBlist\-x11\-keymap\-variants\fR
 optionally takes a layout parameter to limit the output to the variants suitable for the specific layout\&.
+.sp
+Added in version 201\&.
 .RE
 .SH "OPTIONS"
 .PP
 The following options are understood:
 .PP
-\fB\-\-no\-ask\-password\fR
+\fB\-l\fR, \fB\-\-full\fR
 .RS 4
-Do not query the user for authentication for privileged operations\&.
+Do not ellipsize the output\&.
+.sp
+Added in version 257\&.
 .RE
 .PP
 \fB\-\-no\-convert\fR
@@ -123,6 +139,8 @@ If
 or
 \fBset\-x11\-keymap\fR
 is invoked and this option is passed, then the keymap will not be converted from the console to X11, or X11 to console, respectively\&.
+.sp
+Added in version 195\&.
 .RE
 .PP
 \fB\-H\fR, \fB\-\-host=\fR
@@ -150,6 +168,11 @@ syntax is used either the left hand side or the right hand side may be omitted (
 are implied\&.
 .RE
 .PP
+\fB\-\-no\-ask\-password\fR
+.RS 4
+Do not query the user for authentication for privileged operations\&.
+.RE
+.PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
 Print a short help text and exit\&.
@@ -171,7 +194,7 @@ On success, 0 is returned, a non\-zero failure code otherwise\&.
 .PP
 \fI$SYSTEMD_LOG_LEVEL\fR
 .RS 4
-The maximum log level of emitted messages (messages with a higher log level, i\&.e\&. less important ones, will be suppressed)\&. Either one of (in order of decreasing importance)
+The maximum log level of emitted messages (messages with a higher log level, i\&.e\&. less important ones, will be suppressed)\&. Takes a comma\-separated list of values\&. A value may be either one of (in order of decreasing importance)
 \fBemerg\fR,
 \fBalert\fR,
 \fBcrit\fR,
@@ -181,7 +204,15 @@ The maximum log level of emitted messages (messages with a higher log level, i\&
 \fBinfo\fR,
 \fBdebug\fR, or an integer in the range 0\&...7\&. See
 \fBsyslog\fR(3)
-for more information\&.
+for more information\&. Each value may optionally be prefixed with one of
+\fBconsole\fR,
+\fBsyslog\fR,
+\fBkmsg\fR
+or
+\fBjournal\fR
+followed by a colon to set the maximum log level for that specific log target (e\&.g\&.
+\fBSYSTEMD_LOG_LEVEL=debug,console:info\fR
+specifies to log at debug level except when logging to the console which should be at info level)\&. Note that the global maximum log level takes priority over any per target maximum log levels\&.
 .RE
 .PP
 \fI$SYSTEMD_LOG_COLOR\fR
@@ -236,6 +267,12 @@ The destination for log messages\&. One of
 (disable log output)\&.
 .RE
 .PP
+\fI$SYSTEMD_LOG_RATELIMIT_KMSG\fR
+.RS 4
+Whether to ratelimit kmsg or not\&. Takes a boolean\&. Defaults to
+"true"\&. If disabled, systemd will not ratelimit messages written to kmsg\&.
+.RE
+.PP
 \fI$SYSTEMD_PAGER\fR
 .RS 4
 Pager to use when
@@ -252,6 +289,13 @@ and
 "cat"
 is equivalent to passing
 \fB\-\-no\-pager\fR\&.
+.sp
+Note: if
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set,
+\fI$SYSTEMD_PAGER\fR
+(as well as
+\fI$PAGER\fR) will be silently ignored\&.
 .RE
 .PP
 \fI$SYSTEMD_LESS\fR
@@ -287,6 +331,12 @@ will be ignored by the executable, and needs to be handled by the pager\&.
 This option instructs the pager to not send termcap initialization and deinitialization strings to the terminal\&. It is set by default to allow command output to remain visible in the terminal even after the pager exits\&. Nevertheless, this prevents some pager functionality from working, in particular paged output cannot be scrolled with the mouse\&.
 .RE
 .sp
+Note that setting the regular
+\fI$LESS\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
+.sp
 See
 \fBless\fR(1)
 for more discussion\&.
@@ -298,6 +348,12 @@ Override the charset passed to
 \fBless\fR
 (by default
 "utf\-8", if the invoking terminal is determined to be UTF\-8 compatible)\&.
+.sp
+Note that setting the regular
+\fI$LESSCHARSET\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
 .RE
 .PP
 \fI$SYSTEMD_PAGERSECURE\fR
@@ -353,17 +409,7 @@ and other conditions\&.
 .RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBlocale\fR(7),
-\fBlocale.conf\fR(5),
-\fBvconsole.conf\fR(5),
-\fBloadkeys\fR(1),
-\fBkbd\fR(4),
-\m[blue]\fBThe XKB Configuration Guide\fR\m[]\&\s-2\u[1]\d\s+2,
-\fBsystemctl\fR(1),
-\fBsystemd-localed.service\fR(8),
-\fBsystemd-firstboot\fR(1),
-\fBmkinitrd\fR(8)
+\fBsystemd\fR(1), \fBlocale\fR(7), \fBlocale.conf\fR(5), \fBvconsole.conf\fR(5), \fBloadkeys\fR(1), \fBkbd\fR(4), \m[blue]\fBThe XKB Configuration Guide\fR\m[]\&\s-2\u[1]\d\s+2, \fBsystemctl\fR(1), \fBsystemd-localed.service\fR(8), \fBsystemd-firstboot\fR(1)
 .SH "NOTES"
 .IP " 1." 4
 The XKB Configuration Guide

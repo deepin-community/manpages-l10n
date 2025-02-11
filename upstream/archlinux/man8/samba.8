@@ -2,12 +2,12 @@
 .\"     Title: samba
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/25/2021
+.\"      Date: 11/25/2024
 .\"    Manual: System Administration tools
-.\"    Source: Samba 4.14.7
+.\"    Source: Samba 4.21.2
 .\"  Language: English
 .\"
-.TH "SAMBA" "8" "08/25/2021" "Samba 4\&.14\&.7" "System Administration tools"
+.TH "SAMBA" "8" "11/25/2024" "Samba 4\&.21\&.2" "System Administration tools"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 samba \- Server to provide AD and SMB/CIFS services to clients
 .SH "SYNOPSIS"
 .HP \w'\ 'u
-samba [\-D] [\-i] [\-M\ <model>] [\-\-maximum\-runtime=<seconds>] [\-b] [\-\-help] [\-\-usage] [\-d\ <debug\ level>] [\-\-debug\-stderr] [\-s\ <configuration\ file>] [\-\-option=<smb_conf_param>=<value>] [\-l\ <log\ directory>] [\-\-leak\-report] [\-\-leak\-report\-full] [\-V]
+samba [\-D|\-\-daemon] [\-F|\-\-foreground] [\-i|\-\-interactive] [\-M|\-\-model=MODEL] [\-\-maximum\-runtime=seconds] [\-b|\-\-show\-build] [\-\-no\-process\-group] [\-d|\-\-debuglevel=DEBUGLEVEL] [\-\-debug\-stdout] [\-\-configfile=CONFIGFILE] [\-\-option=name=value] [\-l|\-\-log\-basename=LOGFILEBASE] [\-\-leak\-report] [\-\-leak\-report\-full] [\-V|\-\-version]
 .SH "DESCRIPTION"
 .PP
 This program is part of the
@@ -58,6 +58,13 @@ samba
 for servers that provide more than casual use file and print services\&. This switch is assumed if
 samba
 is executed on the command line of a shell\&.
+.RE
+.PP
+\-F|\-\-foreground
+.RS 4
+If specified, this parameter causes the
+samba
+process to not daemonize, i\&.e\&. double\-fork and disassociate with the terminal\&.
 .RE
 .PP
 \-i|\-\-interactive
@@ -133,14 +140,42 @@ Set maximum runtime of the server process till autotermination in seconds\&.
 Print information about how Samba was built\&.
 .RE
 .PP
-\-\-usage
+\-d|\-\-debuglevel=DEBUGLEVEL, \-\-debug\-stdout
 .RS 4
-Display brief usage message\&.
+\fIlevel\fR
+is an integer from 0 to 10\&. The default value if this parameter is not specified is 0\&.
+.sp
+The higher this value, the more detail will be logged to the log files about the activities of the server\&. At level 0, only critical errors and serious warnings will be logged\&. Level 1 is a reasonable level for day\-to\-day running \- it generates a small amount of information about operations carried out\&.
+.sp
+Levels above 1 will generate considerable amounts of log data, and should only be used when investigating a problem\&. Levels above 3 are designed for use only by developers and generate HUGE amounts of log data, most of which is extremely cryptic\&.
+.sp
+Note that specifying this parameter here will override the
+\m[blue]\fBlog level\fR\m[]
+parameter in the
+/etc/samba/smb\&.conf
+file\&.
+This will redirect debug output to STDOUT\&. By default server daemons are logging to a log file\&.
 .RE
 .PP
-\-\-debug\-stderr
+\-\-configfile=CONFIGFILE
 .RS 4
-Send debug output to STDERR\&.
+The file specified contains the configuration details required by the server\&. The information in this file includes server\-specific information such as what printcap file to use, as well as descriptions of all the services that the server is to provide\&. See
+/etc/samba/smb\&.conf
+for more information\&. The default configuration file name is determined at compile time\&.
+.RE
+.PP
+\-\-option=<name>=<value>
+.RS 4
+Set the
+\fBsmb.conf\fR(5)
+option "<name>" to value "<value>" from the command line\&. This overrides compiled\-in defaults and options read from the configuration file\&. If a name or a value includes a space, wrap whole \-\-option=name=value into quotes\&.
+.RE
+.PP
+\-l|\-\-log\-basename=logdirectory
+.RS 4
+Base directory name for log/debug files\&. The extension
+\fB"\&.progname"\fR
+will be appended (e\&.g\&. log\&.smbclient, log\&.smbd, etc\&.\&.\&.)\&. The log file is never removed by the client\&.
 .RE
 .PP
 \-\-leak\-report
@@ -153,46 +188,9 @@ Enable talloc leak reporting on exit\&.
 Enable full talloc leak reporting on exit\&.
 .RE
 .PP
-\-d|\-\-debuglevel=level
-.RS 4
-\fIlevel\fR
-is an integer from 0 to 10\&. The default value if this parameter is not specified is 0\&.
-.sp
-The higher this value, the more detail will be logged to the log files about the activities of the server\&. At level 0, only critical errors and serious warnings will be logged\&. Level 1 is a reasonable level for day\-to\-day running \- it generates a small amount of information about operations carried out\&.
-.sp
-Levels above 1 will generate considerable amounts of log data, and should only be used when investigating a problem\&. Levels above 3 are designed for use only by developers and generate HUGE amounts of log data, most of which is extremely cryptic\&.
-.sp
-Note that specifying this parameter here will override the
-\m[blue]\fBlog level\fR\m[]
-parameter in the
-smb\&.conf
-file\&.
-.RE
-.PP
 \-V|\-\-version
 .RS 4
 Prints the program version number\&.
-.RE
-.PP
-\-s|\-\-configfile=<configuration file>
-.RS 4
-The file specified contains the configuration details required by the server\&. The information in this file includes server\-specific information such as what printcap file to use, as well as descriptions of all the services that the server is to provide\&. See
-smb\&.conf
-for more information\&. The default configuration file name is determined at compile time\&.
-.RE
-.PP
-\-l|\-\-log\-basename=logdirectory
-.RS 4
-Base directory name for log/debug files\&. The extension
-\fB"\&.progname"\fR
-will be appended (e\&.g\&. log\&.smbclient, log\&.smbd, etc\&.\&.\&.)\&. The log file is never removed by the client\&.
-.RE
-.PP
-\-\-option=<name>=<value>
-.RS 4
-Set the
-\fBsmb.conf\fR(5)
-option "<name>" to value "<value>" from the command line\&. This overrides compiled\-in defaults and options read from the configuration file\&.
 .RE
 .PP
 \-?|\-\-help
@@ -241,7 +239,7 @@ The number and nature of diagnostics available depends on the debug level used b
 Most messages are reasonably self\-explanatory\&. Unfortunately, at the time this man page was created, there are too many diagnostics available in the source code to warrant describing each and every diagnostic\&. At this stage your best bet is still to grep the source code and inspect the conditions that gave rise to the diagnostics you are seeing\&.
 .SH "VERSION"
 .PP
-This man page is part of version 4\&.14\&.7 of the Samba suite\&.
+This man page is part of version 4\&.21\&.2 of the Samba suite\&.
 .SH "SEE ALSO"
 .PP
 \fBhosts_access\fR(5)

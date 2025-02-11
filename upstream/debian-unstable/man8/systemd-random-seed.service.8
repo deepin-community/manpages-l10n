@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-RANDOM\-SEED\&.SERVICE" "8" "" "systemd 247" "systemd-random-seed.service"
+.TH "SYSTEMD\-RANDOM\-SEED\&.SERVICE" "8" "" "systemd 257.1" "systemd-random-seed.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,12 +20,12 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-systemd-random-seed.service, systemd-random-seed \- Load and save the system random seed at boot and shutdown
+systemd-random-seed.service, systemd-random-seed \- Load and save the OS system random seed at boot and shutdown
 .SH "SYNOPSIS"
 .PP
 systemd\-random\-seed\&.service
 .PP
-/usr/lib/systemd/random\-seed
+/usr/lib/systemd/systemd\-random\-seed
 .SH "DESCRIPTION"
 .PP
 systemd\-random\-seed\&.service
@@ -35,9 +35,9 @@ for details\&. By default, no entropy is credited when the random seed is writte
 \fI$SYSTEMD_RANDOM_SEED_CREDIT\fR, see below\&. On disk the random seed is stored in
 /var/lib/systemd/random\-seed\&.
 .PP
-Note that this service runs relatively late during the early boot phase, i\&.e\&. generally after the initial RAM disk (initrd) completed its work, and the
+Note that this service runs relatively late during the early boot phase, i\&.e\&. generally after the initrd phase has finished and the
 /var/
-file system has been mounted writable\&. Many system services require entropy much earlier than this \(em this service is hence of limited use for complex system\&. It is recommended to use a boot loader that can pass an initial random seed to the kernel to ensure that entropy is available from earliest boot on, for example
+file system has been mounted\&. Many system services require entropy much earlier than this \(em this service is hence of limited use for complex system\&. It is recommended to use a boot loader that can pass an initial random seed to the kernel to ensure that entropy is available from earliest boot on, for example
 \fBsystemd-boot\fR(7), with its
 \fBbootctl random\-seed\fR
 functionality\&.
@@ -46,10 +46,11 @@ When loading the random seed from disk, the file is immediately updated with a n
 /dev/urandom
 without any further precautions)\&.
 .PP
-Care should be taken when creating OS images that are replicated to multiple systems: if the random seed file is included unmodified each system will initialize its entropy pool with the same data, and thus \(em if otherwise entropy\-starved \(em generate the same or at least guessable random seed streams\&. As a safety precaution crediting entropy is thus disabled by default\&. It is recommended to remove the random seed from OS images intended for replication on multiple systems, in which case it is safe to enable entropy crediting, see below\&.
+Care should be taken when creating OS images that are replicated to multiple systems: if the random seed file is included unmodified each system will initialize its entropy pool with the same data, and thus \(em if otherwise entropy\-starved \(em generate the same or at least guessable random seed streams\&. As a safety precaution crediting entropy is thus disabled by default\&. It is recommended to remove the random seed from OS images intended for replication on multiple systems, in which case it is safe to enable entropy crediting, see below\&. Also see
+\m[blue]\fBSafely Building Images\fR\m[]\&\s-2\u[1]\d\s+2\&.
 .PP
 See
-\m[blue]\fBRandom Seeds\fR\m[]\&\s-2\u[1]\d\s+2
+\m[blue]\fBRandom Seeds\fR\m[]\&\s-2\u[2]\d\s+2
 for further information\&.
 .SH "ENVIRONMENT"
 .PP
@@ -61,15 +62,19 @@ does not credit any entropy when loading the random seed\&. With this option thi
 "force"\&. Defaults to false, in which case no entropy is credited\&. If true, entropy is credited if the random seed file and system state pass various superficial concisistency checks\&. If set to
 "force"
 entropy is credited, regardless of these checks, as long as the random seed file exists\&.
+.sp
+Added in version 243\&.
 .RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBrandom\fR(4),
-\fBsystemd-boot\fR(7),
-\fBbootctl\fR(4)
+\fBsystemd\fR(1), \fBrandom\fR(4), \fBsystemd-boot\fR(7), \fBsystemd-stub\fR(7), \fBbootctl\fR(1), \fBsystemd-boot-random-seed.service\fR(8)
 .SH "NOTES"
 .IP " 1." 4
+Safely Building Images
+.RS 4
+\%https://systemd.io/BUILDING_IMAGES
+.RE
+.IP " 2." 4
 Random Seeds
 .RS 4
 \%https://systemd.io/RANDOM_SEEDS

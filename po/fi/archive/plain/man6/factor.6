@@ -1,0 +1,120 @@
+.\" Copyright (c) 1989 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" This code is derived from software contributed to Berkeley by
+.\" Landon Curt Noll.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	@(#)factor.6	5.3 (Berkeley) 6/23/90
+.\"
+.\"
+.\" By: Landon Curt Noll   chongo@toad.com,   ...!{sun,tolsoft}!hoptoad!chongo
+.\"
+.\"   chongo <for a good prime call: 391581 * 2^216193 - 1> /\oo/\
+.\" Translated into finnish by Lasse Heikkilä (raccoon@sci.fi)
+.\"
+.TH FACTOR 6 "" "Pelit ja demo-ohjelmat" ""
+.UC 7
+.SH NIMI
+factor, primes \- jakaa luvun teijöihinsä, tuottaa alkulukuja
+.SH "YLEISKATSAUS"
+.B factor
+[ luku ] ...
+.PP
+.B primes
+[ alku [ loppu ]]
+.SH KUVAUS
+Apuohjelma
+.I factor
+jakaa tekijöihinsä kaikki kokonaisluvut väliltä -2147483648 ja 2147483647.
+Kun luku jaetaan tekijöihinsä, se tulostetaan, ja sitä seuraa ``:'',
+sekä lista luvun tekijöistä yhdellä rivillä.
+Tekijät esitetään kasvavassa järjestyksessä, ja ne on erotettu välilyönnillä.
+Mikäli jaettava luku on jollakin tekijällään jaollinen useita kertoja,
+tekijää myös tulostetaan kyseinen määrä.
+.PP
+Kun
+.I factor
+käynnistetään yhden tai useamman parametrin kanssa,
+jokainen argumentti jaetaan tekijöihinsä.
+.PP
+Kun
+.I factor
+käynnistetään ilman parametrejä,
+.I factor
+lukee lukuja, yksi per rivi, vakiosyötteestä, kunnes tiedosto loppuu tai
+virhe kohdataan.
+Numeroa edeltävät välilyönnit ja tyhjät rivit jätetään huomiotta.
+Lukua saa edeltää etumerkkinä joko - tai +.
+Luvut päättyvät ei-numero merkkeihin (kuten rivinvaihto).
+Kun luku on luettu, se jaetaan tekijöihinsä.
+Rivit eivät saa olla pidempiä kuin 255 merkkiä.
+.PP
+Apuohjelma
+.I primes
+tulostaa alkulukuja kasvavassa järjestyksessä, yksi per rivi, aloittaen joko
+luvusta 
+.B alku
+tai sen yläpuolelta, jatkaen kunnes kohtaa luvun
+.B loppu 
+kuitenkaan sisältämättä sitä.
+Luvun
+.B alku 
+tulee olla vähintään 0, eikä suurempi kuin
+.B loppu.\&
+Luvun
+.B loppu
+arvo ei saa olla suurempi kuin 4294967295.
+Luvun
+.B loppu
+oletusarvo on 4294967295.
+.PP
+Kun
+.I primes
+käynnistetään ilman parametrejä,
+.B alku
+luetaan vakiosyötteestä.
+.B Lopun
+oletetaan olevan 4294967295.
+Lukua
+.B alku
+saa edeltää etumerkki +.
+Luku
+.B alku
+päättyy ei-numero merkkiin (kuten rivinvaihto).
+Rivi ei saa olla pidempi kuin 255 merkkiä.
+.SH DIAGNOSTIIKKA
+Sallitun lukualueen ulkopuolisen luvun tai pätemättömän syötteen aiheuttama
+virhe kirjoitetaan standardivirheeseen. 
+.SH BUGIT
+.I Factor
+ei kykene hallitsemaan ``10 eniten haluttua'' tekijöiden listaa,
+.I primes
+ei kykene maailmanennätykseen...

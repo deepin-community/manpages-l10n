@@ -1,0 +1,293 @@
+'\" t
+.TH "SYSTEMD\-PCRPHASE\&.SERVICE" "8" "" "systemd 255" "systemd-pcrphase.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-pcrphase.service, systemd-pcrphase-sysinit.service, systemd-pcrphase-initrd.service, systemd-pcrmachine.service, systemd-pcrfs-root.service, systemd-pcrfs@.service, systemd-pcrextend \- Measure boot phase into TPM2 PCR 11, machine ID and file system identity into PCR 15
+.SH "SYNOPSIS"
+.PP
+systemd\-pcrphase\&.service
+.PP
+systemd\-pcrphase\-sysinit\&.service
+.PP
+systemd\-pcrphase\-initrd\&.service
+.PP
+systemd\-pcrmachine\&.service
+.PP
+systemd\-pcrfs\-root\&.service
+.PP
+systemd\-pcrfs@\&.service
+.PP
+/usr/lib/systemd/systemd\-pcrextend
+[\fISTRING\fR]
+.SH "DESCRIPTION"
+.PP
+systemd\-pcrphase\&.service,
+systemd\-pcrphase\-sysinit\&.service, and
+systemd\-pcrphase\-initrd\&.service
+are system services that measure specific strings into TPM2 PCR 11 during boot at various milestones of the boot process\&.
+.PP
+systemd\-pcrmachine\&.service
+is a system service that measures the machine ID (see
+\fBmachine-id\fR(5)) into PCR 15\&.
+.PP
+systemd\-pcrfs\-root\&.service
+and
+systemd\-pcrfs@\&.service
+are services that measure file system identity information (i\&.e\&. mount point, file system type, label and UUID, partition label and UUID) into PCR 15\&.
+systemd\-pcrfs\-root\&.service
+does so for the root file system,
+systemd\-pcrfs@\&.service
+is a template unit that measures the file system indicated by its instance identifier instead\&.
+.PP
+These services require
+\fBsystemd-stub\fR(7)
+to be used in a unified kernel image (UKI)\&. They execute no operation when the stub has not been used to invoke the kernel\&. The stub will measure the invoked kernel and associated vendor resources into PCR 11 before handing control to it; once userspace is invoked these services then will extend TPM2 PCR 11 with certain literal strings indicating phases of the boot process\&. During a regular boot process PCR 11 is extended with the following strings:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+"enter\-initrd"
+\(em early when the initrd initializes, before activating system extension images for the initrd\&. It acts as a barrier between the time where the kernel initializes and where the initrd starts operating and enables system extension images, i\&.e\&. code shipped outside of the UKI\&. (This extension happens when the
+\fBsystemd-pcrphase-initrd.service\fR(8)
+service is started\&.)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+"leave\-initrd"
+\(em when the initrd is about to transition into the host file system\&. It acts as barrier between initrd code and host OS code\&. (This extension happens when the
+systemd\-pcrphase\-initrd\&.service
+service is stopped\&.)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+"sysinit"
+\(em when basic system initialization is complete (which includes local file systems having been mounted), and the system begins starting regular system services\&. (This extension happens when the
+\fBsystemd-pcrphase-sysinit.service\fR(8)
+service is started\&.)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 4.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  4." 4.2
+.\}
+"ready"
+\(em during later boot\-up, after remote file systems have been activated (i\&.e\&. after
+remote\-fs\&.target), but before users are permitted to log in (i\&.e\&. before
+systemd\-user\-sessions\&.service)\&. It acts as barrier between the time where unprivileged regular users are still prohibited to log in and where they are allowed to log in\&. (This extension happens when the
+systemd\-pcrphase\&.service
+service is started\&.)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 5.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  5." 4.2
+.\}
+"shutdown"
+\(em when the system shutdown begins\&. It acts as barrier between the time the system is fully up and running and where it is about to shut down\&. (This extension happens when the
+systemd\-pcrphase\&.service
+service is stopped\&.)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 6.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  6." 4.2
+.\}
+"final"
+\(em at the end of system shutdown\&. It acts as barrier between the time the service manager still runs and when it transitions into the final shutdown phase where service management is not available anymore\&. (This extension happens when the
+\fBsystemd-pcrphase-sysinit.service\fR(8)
+service is stopped\&.)
+.RE
+.PP
+During a regular system lifecycle, PCR 11 is extended with the strings
+"enter\-initrd",
+"leave\-initrd",
+"sysinit",
+"ready",
+"shutdown", and
+"final"\&.
+.PP
+Specific phases of the boot process may be referenced via the series of strings measured, separated by colons (the "phase path")\&. For example, the phase path for the regular system runtime is
+"enter\-initrd:leave\-initrd:sysinit:ready", while the one for the initrd is just
+"enter\-initrd"\&. The phase path for the boot phase before the initrd is an empty string; because that\*(Aqs hard to pass around a single colon (":") may be used instead\&. Note that the aforementioned six strings are just the default strings and individual systems might measure other strings at other times, and thus implement different and more fine\-grained boot phases to bind policy to\&.
+.PP
+By binding policy of TPM2 objects to a specific phase path it is possible to restrict access to them to specific phases of the boot process, for example making it impossible to access the root file system\*(Aqs encryption key after the system transitioned from the initrd into the host root file system\&.
+.PP
+Use
+\fBsystemd-measure\fR(1)
+to pre\-calculate expected PCR 11 values for specific boot phases (via the
+\fB\-\-phase=\fR
+switch)\&.
+.PP
+systemd\-pcrfs\-root\&.service
+and
+systemd\-pcrfs@\&.service
+are automatically pulled into the initial transaction by
+\fBsystemd-gpt-auto-generator\fR(8)
+for the root and
+/var/
+file systems\&.
+\fBsystemd-fstab-generator\fR(8)
+will do this for all mounts with the
+\fBx\-systemd\&.pcrfs\fR
+mount option in
+/etc/fstab\&.
+.SH "OPTIONS"
+.PP
+The
+/usr/lib/systemd/system\-pcrextend
+executable may also be invoked from the command line, where it expects the word to extend into PCR 11, as well as the following switches:
+.PP
+\fB\-\-bank=\fR
+.RS 4
+Takes the PCR banks to extend the specified word into\&. If not specified the tool automatically determines all enabled PCR banks and measures the word into all of them\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+\fB\-\-pcr=\fR
+.RS 4
+Takes the index of the PCR to extend\&. If
+\fB\-\-machine\-id\fR
+or
+\fB\-\-file\-system=\fR
+are specified defaults to 15, otherwise defaults to 11\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fB\-\-tpm2\-device=\fR\fIPATH\fR
+.RS 4
+Controls which TPM2 device to use\&. Expects a device node path referring to the TPM2 chip (e\&.g\&.
+/dev/tpmrm0)\&. Alternatively the special value
+"auto"
+may be specified, in order to automatically determine the device node of a suitable TPM2 device (of which there must be exactly one)\&. The special value
+"list"
+may be used to enumerate all suitable TPM2 devices currently discovered\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+\fB\-\-graceful\fR
+.RS 4
+If no TPM2 firmware, kernel subsystem, kernel driver or device support is found, exit with exit status 0 (i\&.e\&. indicate success)\&. If this is not specified any attempt to measure without a TPM2 device will cause the invocation to fail\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fB\-\-machine\-id\fR
+.RS 4
+Instead of measuring a word specified on the command line into PCR 11, measure the host\*(Aqs machine ID into PCR 15\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fB\-\-file\-system=\fR
+.RS 4
+Instead of measuring a word specified on the command line into PCR 11, measure identity information of the specified file system into PCR 15\&. The parameter must be the path to the established mount point of the file system to measure\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SH "FILES"
+.PP
+/run/log/systemd/tpm2\-measure\&.log
+.RS 4
+Measurements are logged into an event log file maintained in
+/run/log/systemd/tpm2\-measure\&.log, which contains a
+\m[blue]\fBJSON\-SEQ\fR\m[]\&\s-2\u[1]\d\s+2
+series of objects that follow the general structure of the
+\m[blue]\fBTCG Canonical Event Log Format (CEL\-JSON)\fR\m[]\&\s-2\u[2]\d\s+2
+event objects (but lack the
+"recnum"
+field)\&.
+.sp
+A
+\fBLOCK_EX\fR
+BSD file lock (\fBflock\fR(2)) on the log file is acquired while the measurement is made and the file is updated\&. Thus, applications that intend to acquire a consistent quote from the TPM with the associated snapshot of the event log should acquire a
+\fBLOCK_SH\fR
+lock while doing so\&.
+.sp
+Added in version 252\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-stub\fR(7),
+\fBsystemd-measure\fR(1),
+\fBsystemd-gpt-auto-generator\fR(8),
+\fBsystemd-fstab-generator\fR(8),
+\m[blue]\fBTPM2 PCR Measurements Made by systemd\fR\m[]\&\s-2\u[3]\d\s+2
+.SH "NOTES"
+.IP " 1." 4
+JSON-SEQ
+.RS 4
+\%https://www.rfc-editor.org/rfc/rfc7464.html
+.RE
+.IP " 2." 4
+TCG Canonical Event Log Format (CEL-JSON)
+.RS 4
+\%https://trustedcomputinggroup.org/resource/canonical-event-log-format/
+.RE
+.IP " 3." 4
+TPM2 PCR Measurements Made by systemd
+.RS 4
+\%https://systemd.io/TPM2_PCR_MEASUREMENTS
+.RE

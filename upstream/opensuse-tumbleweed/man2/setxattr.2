@@ -1,47 +1,28 @@
 .\" Copyright (C) Andreas Gruenbacher, February 2001
 .\" Copyright (C) Silicon Graphics Inc, September 2001
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
-.\" The GNU General Public License's references to "object code"
-.\" and "executables" are to be interpreted as the output of any
-.\" document formatting or typesetting system, including
-.\" intermediate and printed output.
-.\"
-.\" This manual is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
-.\"
-.TH SETXATTR 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH setxattr 2 2024-06-13 "Linux man-pages (unreleased)"
 .SH NAME
 setxattr, lsetxattr, fsetxattr \- set an extended attribute value
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
-.fam C
 .nf
 .B #include <sys/xattr.h>
-.PP
-.BI "int setxattr(const char\ *" path ", const char\ *" name ,
-.BI "              const void\ *" value ", size_t " size ", int " flags );
-.BI "int lsetxattr(const char\ *" path ", const char\ *" name ,
-.BI "              const void\ *" value ", size_t " size ", int " flags );
-.BI "int fsetxattr(int " fd ", const char\ *" name ,
-.BI "              const void\ *" value ", size_t " size ", int " flags );
+.P
+.BI "int setxattr(const char *" path ", const char *" name ,
+.BI "              const void " value [. size "], size_t " size ", int " flags );
+.BI "int lsetxattr(const char *" path ", const char *" name ,
+.BI "              const void " value [. size "], size_t " size ", int " flags );
+.BI "int fsetxattr(int " fd ", const char *" name ,
+.BI "              const void " value [. size "], size_t " size ", int " flags );
 .fi
-.fam T
 .SH DESCRIPTION
 Extended attributes are
-.IR name :\c
-.I value
+.IR name : value
 pairs associated with inodes (files, directories, symbolic links, etc.).
 They are extensions to the normal attributes which are associated
 with all inodes in the system (i.e., the
@@ -49,7 +30,7 @@ with all inodes in the system (i.e., the
 data).
 A complete overview of extended attributes concepts can be found in
 .BR xattr (7).
-.PP
+.P
 .BR setxattr ()
 sets the
 .I value
@@ -63,13 +44,13 @@ The
 argument specifies the size (in bytes) of
 .IR value ;
 a zero-length value is permitted.
-.PP
+.P
 .BR lsetxattr ()
 is identical to
 .BR setxattr (),
 except in the case of a symbolic link, where the extended attribute is
 set on the link itself, not the file that it refers to.
-.PP
+.P
 .BR fsetxattr ()
 is identical to
 .BR setxattr (),
@@ -79,7 +60,7 @@ only the extended attribute is set on the open file referred to by
 .BR open (2))
 in place of
 .IR path .
-.PP
+.P
 An extended attribute name is a null-terminated string.
 The
 .I name
@@ -89,10 +70,10 @@ The
 .I value
 of an extended attribute is a chunk of arbitrary textual or
 binary data of specified length.
-.PP
+.P
 By default
 (i.e.,
-.IR flags
+.I flags
 is zero),
 the extended attribute will be created if it does not exist,
 or the value will be replaced if the attribute already exists.
@@ -143,8 +124,8 @@ Extended attributes are not supported by the filesystem, or are disabled,
 .B EPERM
 The file is marked immutable or append-only.
 (See
-.BR ioctl_iflags (2).)
-.PP
+.BR FS_IOC_SETFLAGS (2const).)
+.P
 In addition, the errors documented in
 .BR stat (2)
 can also occur.
@@ -155,11 +136,11 @@ The size of
 or
 .I value
 exceeds a filesystem-specific limit.
-.SH VERSIONS
-These system calls have been available on Linux since kernel 2.4;
-glibc support is provided since version 2.3.
-.SH CONFORMING TO
-These system calls are Linux-specific.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 2.4,
+glibc 2.3.
 .\" .SH AUTHORS
 .\" Andreas Gruenbacher,
 .\" .RI < a.gruenbacher@computer.org >

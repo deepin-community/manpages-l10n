@@ -1,5 +1,5 @@
 '\" t
-.TH "SHUTDOWN" "8" "" "systemd 249" "shutdown"
+.TH "SHUTDOWN" "8" "" "systemd 255" "shutdown"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,14 +20,14 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-shutdown \- Halt, power\-off or reboot the machine
+shutdown \- Halt, power off or reboot the machine
 .SH "SYNOPSIS"
 .HP \w'\fBshutdown\fR\ 'u
 \fBshutdown\fR [OPTIONS...] [TIME] [WALL...]
 .SH "DESCRIPTION"
 .PP
 \fBshutdown\fR
-may be used to halt, power\-off or reboot the machine\&.
+may be used to halt, power off, or reboot the machine\&.
 .PP
 The first argument may be a time string (which is usually
 "now")\&. Optionally, this may be followed by a wall message to be sent to all logged\-in users before going down\&.
@@ -64,7 +64,7 @@ Halt the machine\&.
 .PP
 \fB\-P\fR, \fB\-\-poweroff\fR
 .RS 4
-Power\-off the machine (the default)\&.
+Power the machine off (the default)\&.
 .RE
 .PP
 \fB\-r\fR, \fB\-\-reboot\fR
@@ -74,20 +74,22 @@ Reboot the machine\&.
 .PP
 \fB\-h\fR
 .RS 4
-Equivalent to
-\fB\-\-poweroff\fR, unless
-\fB\-\-halt\fR
-is specified\&.
+The same as
+\fB\-\-poweroff\fR, but does not override the action to take if it is "halt"\&. E\&.g\&.
+\fBshutdown \-\-reboot \-h\fR
+means "poweroff", but
+\fBshutdown \-\-halt \-h\fR
+means "halt"\&.
 .RE
 .PP
 \fB\-k\fR
 .RS 4
-Do not halt, power\-off, reboot, just write wall message\&.
+Do not halt, power off, or reboot, but just write the wall message\&.
 .RE
 .PP
 \fB\-\-no\-wall\fR
 .RS 4
-Do not send wall message before halt, power\-off, reboot\&.
+Do not send wall message before halt, power off, or reboot\&.
 .RE
 .PP
 \fB\-c\fR
@@ -99,9 +101,23 @@ with a time argument that is not
 or
 "now"\&.
 .RE
+.PP
+\fB\-\-show\fR
+.RS 4
+Show a pending shutdown action and time if there is any\&.
+.sp
+Added in version 250\&.
+.RE
 .SH "EXIT STATUS"
 .PP
 On success, 0 is returned, a non\-zero failure code otherwise\&.
+.SH "COMPATIBILITY"
+.PP
+The
+\fB shutdown\fR
+command in previous init systems (including sysvinit) defaulted to single\-user mode instead of powering off the machine\&. To change into single\-user mode, use
+\fBsystemctl rescue\fR
+instead\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

@@ -1,10 +1,10 @@
-.TH "libalpm_options" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.TH "libalpm_options" 3 "libalpm" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 libalpm_options \- Options
 .PP
- \- Libalpm option getters and setters\&.  
+ \- Libalpm option getters and setters  
 
 .SH SYNOPSIS
 .br
@@ -87,6 +87,7 @@ libalpm_options \- Options
 .in -1c
 .SS "Accessors to the root directory"
 The root directory is the prefix to which libalpm installs packages to\&.
+
 .PP
 Hooks and scriptlets will also be run in a chroot to ensure they behave correctly in alternative roots\&. 
 .in +1c
@@ -105,6 +106,7 @@ The dbpath is where libalpm stores the local db and downloads sync databases\&.
 .in -1c
 .SS "Accessors to the lockfile"
 The lockfile is used to ensure two instances of libalpm can not write to the database at the same time\&.
+
 .PP
 The lock file is created when committing a transaction and released when the transaction completes\&. Or when calling \fBalpm_unlock\fP\&. 
 .in +1c
@@ -135,6 +137,7 @@ This is where libalpm will store downloaded packages\&.
 .in -1c
 .SS "Accessors to the list of package hook directories\&."
 libalpm will search these directories for hooks to run\&.
+
 .PP
 A hook in a later directory will override previous hooks if they have the same name\&. 
 .in +1c
@@ -157,6 +160,7 @@ A hook in a later directory will override previous hooks if they have the same n
 .in -1c
 .SS "Accessors to the list of overwritable files\&."
 Normally libalpm will refuse to install a package that owns files that are already on disk and not owned by that package\&.
+
 .PP
 If a conflicting file matches a glob in the overwrite_files list, then no conflict will be raised and libalpm will simply overwrite the file\&. 
 .in +1c
@@ -201,8 +205,21 @@ This controls where libalpm will store GnuPG's files\&.
 .br
 .RI "Sets the path to libalpm's GnuPG home directory\&. "
 .in -1c
+.SS "Accessors for use sandboxuser"
+This controls the user that libalpm will use for sensitive operations like downloading files\&. 
+.in +1c
+.ti -1c
+.RI "const char * \fBalpm_option_get_sandboxuser\fP (\fBalpm_handle_t\fP *handle)"
+.br
+.RI "Returns the user to switch to for sensitive operations\&. "
+.ti -1c
+.RI "int \fBalpm_option_set_sandboxuser\fP (\fBalpm_handle_t\fP *handle, const char *sandboxuser)"
+.br
+.RI "Sets the user to switch to for sensitive operations\&. "
+.in -1c
 .SS "Accessors for use syslog"
 This controls whether libalpm will also use the syslog\&.
+
 .PP
 Even if this option is enabled, libalpm will still try to log to its log file\&. 
 .in +1c
@@ -265,6 +282,7 @@ These functions modify the list of filenames which should be skipped packages wh
 .in -1c
 .SS "Accessors to the list of ignored packages\&."
 These functions modify the list of packages that should be ignored by a sysupgrade\&.
+
 .PP
 Entries in this list may be globs and only match the package's name\&. Providers are not taken into account\&. 
 .in +1c
@@ -287,6 +305,7 @@ Entries in this list may be globs and only match the package's name\&. Providers
 .in -1c
 .SS "Accessors to the list of ignored groups\&."
 These functions modify the list of groups whose packages should be ignored by a sysupgrade\&.
+
 .PP
 Entries in this list may be globs\&. 
 .in +1c
@@ -309,6 +328,7 @@ Entries in this list may be globs\&.
 .in -1c
 .SS "Accessors to the list of ignored dependencies\&."
 These functions modify the list of dependencies that should be ignored by a sysupgrade\&.
+
 .PP
 This is effectively a list of virtual providers that packages can use to satisfy their dependencies\&. 
 .in +1c
@@ -331,6 +351,7 @@ This is effectively a list of virtual providers that packages can use to satisfy
 .in -1c
 .SS "Accessors to the list of allowed architectures\&."
 libalpm will only install packages that match one of the configured architectures\&.
+
 .PP
 The architectures do not need to match the physical architecture\&. They can just be treated as a label\&. 
 .in +1c
@@ -365,10 +386,13 @@ This controls whether libalpm will check if there is sufficient before installin
 .in -1c
 .SS "Accessors for the database extension"
 This controls the extension used for sync databases\&.
+
 .PP
-libalpm will use this extension to both lookup remote databses and as the name used when opening reading them\&.
+libalpm will use this extension to both lookup remote databases and as the name used when opening reading them\&.
+
 .PP
 This is useful for file databases\&. Seems as files can increase the size of a database by quite a lot, a server could hold a database without files under one extension, and another with files under another extension\&.
+
 .PP
 Which one is downloaded and used then depends on this setting\&. 
 .in +1c
@@ -419,8 +443,10 @@ By default, libalpm will timeout if a download has been transferring less than 1
 .in -1c
 .SS "Accessors for parallel downloads"
 \fBalpm_db_update\fP, \fBalpm_fetch_pkgurl\fP and \fBalpm_trans_commit\fP can all download packages in parallel\&.
+
 .PP
 This setting configures how many packages can be downloaded in parallel,
+
 .PP
 By default this value is set to 1, meaning packages are downloading sequentially\&. 
 .in +1c
@@ -433,9 +459,17 @@ By default this value is set to 1, meaning packages are downloading sequentially
 .br
 .RI "Sets number of parallel streams to download database and package files\&. "
 .in -1c
+.SS "Accessors for sandbox"
+By default, libalpm will sandbox the downloader process\&. 
+.in +1c
+.ti -1c
+.RI "int \fBalpm_option_set_disable_sandbox\fP (\fBalpm_handle_t\fP *handle, unsigned short disable_sandbox)"
+.br
+.RI "Enables/disables the sandbox\&. "
+.in -1c
 .SH "Detailed Description"
 .PP 
-Libalpm option getters and setters\&. 
+Libalpm option getters and setters 
 
 
 .SH "Function Documentation"
@@ -1094,6 +1128,17 @@ Returns the root path\&. Read-only\&.
 .RE
 .PP
 
+.SS "const char * alpm_option_get_sandboxuser (\fBalpm_handle_t\fP * handle)"
+
+.PP
+Returns the user to switch to for sensitive operations\&. 
+.PP
+\fBReturns\fP
+.RS 4
+the user name 
+.RE
+.PP
+
 .SS "int alpm_option_get_usesyslog (\fBalpm_handle_t\fP * handle)"
 
 .PP
@@ -1424,6 +1469,24 @@ Enables/disables the download timeout\&.
 .RE
 .PP
 
+.SS "int alpm_option_set_disable_sandbox (\fBalpm_handle_t\fP * handle, unsigned short disable_sandbox)"
+
+.PP
+Enables/disables the sandbox\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIdisable_sandbox\fP 0 for enabled, 1 for disabled 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
 .SS "int alpm_option_set_dlcb (\fBalpm_handle_t\fP * handle, \fBalpm_cb_download\fP cb, void * ctx)"
 
 .PP
@@ -1734,6 +1797,19 @@ Set the remote file siglevel\&.
 \fBReturns\fP
 .RS 4
 0 on success, -1 on error (pm_errno is set accordingly) 
+.RE
+.PP
+
+.SS "int alpm_option_set_sandboxuser (\fBalpm_handle_t\fP * handle, const char * sandboxuser)"
+
+.PP
+Sets the user to switch to for sensitive operations\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIsandboxuser\fP the user to set 
 .RE
 .PP
 

@@ -1,5 +1,5 @@
 '\" t
-.TH "ORG\&.FREEDESKTOP\&.MACHINE1" "5" "" "systemd 249" "org.freedesktop.machine1"
+.TH "ORG\&.FREEDESKTOP\&.MACHINE1" "5" "" "systemd 257" "org.freedesktop.machine1"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -44,6 +44,7 @@ node /org/freedesktop/machine1 {
                       out o machine);
       ListMachines(out a(ssso) machines);
       ListImages(out a(ssbttto) images);
+      @org\&.freedesktop\&.systemd1\&.Privileged("true")
       CreateMachine(in  s name,
                     in  ay id,
                     in  s service,
@@ -52,6 +53,7 @@ node /org/freedesktop/machine1 {
                     in  s root_directory,
                     in  a(sv) scope_properties,
                     out o path);
+      @org\&.freedesktop\&.systemd1\&.Privileged("true")
       CreateMachineWithNetwork(in  s name,
                                in  ay id,
                                in  s service,
@@ -61,6 +63,7 @@ node /org/freedesktop/machine1 {
                                in  ai ifindices,
                                in  a(sv) scope_properties,
                                out o path);
+      @org\&.freedesktop\&.systemd1\&.Privileged("true")
       RegisterMachine(in  s name,
                       in  ay id,
                       in  s service,
@@ -68,6 +71,7 @@ node /org/freedesktop/machine1 {
                       in  u leader,
                       in  s root_directory,
                       out o path);
+      @org\&.freedesktop\&.systemd1\&.Privileged("true")
       RegisterMachineWithNetwork(in  s name,
                                  in  ay id,
                                  in  s service,
@@ -79,12 +83,16 @@ node /org/freedesktop/machine1 {
       UnregisterMachine(in  s name);
       TerminateMachine(in  s id);
       KillMachine(in  s name,
-                  in  s who,
+                  in  s whom,
                   in  i signal);
       GetMachineAddresses(in  s name,
                           out a(iay) addresses);
+      GetMachineSSHInfo(in  s name,
+                        out s ssh_address,
+                        out s ssh_private_key_path);
       GetMachineOSRelease(in  s name,
                           out a{ss} fields);
+      @org\&.freedesktop\&.systemd1\&.Privileged("true")
       OpenMachinePTY(in  s name,
                      out h pty,
                      out s pty_path);
@@ -109,6 +117,14 @@ node /org/freedesktop/machine1 {
       CopyToMachine(in  s name,
                     in  s source,
                     in  s destination);
+      CopyFromMachineWithFlags(in  s name,
+                               in  s source,
+                               in  s destination,
+                               in  t flags);
+      CopyToMachineWithFlags(in  s name,
+                             in  s source,
+                             in  s destination,
+                             in  t flags);
       OpenMachineRootDirectory(in  s name,
                                out h fd);
       GetMachineUIDShift(in  s name,
@@ -165,11 +181,13 @@ node /org/freedesktop/machine1 {
   interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
   interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
 };
-    
 .fi
 .if n \{\
 .RE
 .\}
+
+
+
 
 
 
@@ -285,6 +303,9 @@ retrieves the IP addresses of a container\&. This method returns an array of pai
 or
 \fBAF_INET6\fR) and a byte array containing the addresses\&. This is only supported for containers that make use of network namespacing\&.
 .PP
+\fBGetMachineSSHInfo()\fR
+retrieves the SSH information of a machine\&. This method returns two strings, the SSH address which can be used to tell SSH where to connect, and the path to the SSH private key required for the connection to succeed\&.
+.PP
 \fBGetMachineOSRelease()\fR
 retrieves the OS release information of a container\&. This method returns an array of key value pairs read from the
 \fBos-release\fR(5)
@@ -307,6 +328,10 @@ bind mounts a file or directory from the host into the container\&. Its argument
 copies files or directories from a container into the host\&. It takes a container name, a source directory in the container and a destination directory on the host as arguments\&.
 \fBCopyToMachine()\fR
 does the opposite and copies files from a source directory on the host into a destination directory in the container\&.
+\fBCopyFromMachineWithFlags()\fR
+and
+\fBCopyToMachineWithFlags()\fR
+do the same but take an additional flags argument\&.
 .PP
 \fBRemoveImage()\fR
 removes the image with the specified name\&.
@@ -333,9 +358,9 @@ sets a per\-image quota limit\&.
 may be used to map UIDs/GIDs from the host user namespace to a container user namespace or vice versa\&.
 .SS "Signals"
 .PP
-\fBMachineNew\fR
+\fBMachineNew()\fR
 and
-\fBMachineRemoved\fR
+\fBMachineRemoved()\fR
 are sent whenever a new machine is registered or removed\&. These signals carry the machine name and the object path to the corresponding
 org\&.freedesktop\&.machine1\&.Machine
 interface (see below)\&.
@@ -359,9 +384,11 @@ node /org/freedesktop/machine1/machine/rawhide {
   interface org\&.freedesktop\&.machine1\&.Machine {
     methods:
       Terminate();
-      Kill(in  s who,
+      Kill(in  s whom,
            in  i signal);
       GetAddresses(out a(iay) addresses);
+      GetSSHInfo(out s ssh_address,
+                 out s ssh_private_key_path);
       GetOSRelease(out a{ss} fields);
       GetUIDShift(out u shift);
       OpenPTY(out h pty,
@@ -382,6 +409,12 @@ node /org/freedesktop/machine1/machine/rawhide {
                in  s destination);
       CopyTo(in  s source,
              in  s destination);
+      CopyFromWithFlags(in  s source,
+                        in  s destination,
+                        in  t flags);
+      CopyToWithFlags(in  s source,
+                      in  s destination,
+                      in  t flags);
       OpenRootDirectory(out h fd);
     properties:
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
@@ -404,6 +437,12 @@ node /org/freedesktop/machine1/machine/rawhide {
       readonly s RootDirectory = \*(Aq\&.\&.\&.\*(Aq;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
       readonly ai NetworkInterfaces = [\&.\&.\&.];
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly u VSockCID = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s SSHAddress = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s SSHPrivateKeyPath = \*(Aq\&.\&.\&.\*(Aq;
       @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
       readonly s State = \*(Aq\&.\&.\&.\*(Aq;
   };
@@ -411,11 +450,16 @@ node /org/freedesktop/machine1/machine/rawhide {
   interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
   interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
 };
-    
 .fi
 .if n \{\
 .RE
 .\}
+
+
+
+
+
+
 
 
 
@@ -451,11 +495,13 @@ and
 \fBKillMachine()\fR
 on the Manager interface, respectively\&.
 .PP
-\fBGetAddresses()\fR
+\fBGetAddresses()\fR,
+\fBGetSSHInfo()\fR
 and
 \fBGetOSRelease()\fR
-get the IP address and OS release information from the machine\&. These methods take the same arguments as
-\fBGetMachineAddresses()\fR
+get the IP address, SSH connection and OS release information from the machine\&. These methods take the same arguments as
+\fBGetMachineAddresses()\fR,
+\fBGetMachineSSHInfo()\fR
 and
 \fBGetMachineOSRelease()\fR
 of the Manager interface, respectively\&.
@@ -484,7 +530,7 @@ is the systemd scope or service unit name for the machine\&.
 is the PID of the leader process of the machine\&.
 .PP
 \fIClass\fR
-is the class of the machine and is either the string "vm" (for real VMs based on virtualized hardware) or "container" (for light\-weight userspace virtualization sharing the same kernel as the host)\&.
+is the class of the machine and is either the string "vm" (for real VMs based on virtualized hardware) or "container" (for lightweight userspace virtualization sharing the same kernel as the host)\&.
 .PP
 \fIRootDirectory\fR
 is the root directory of the container if it is known and applicable or the empty string\&.
@@ -493,6 +539,19 @@ is the root directory of the container if it is known and applicable or the empt
 contains an array of network interface indices that point towards the container, the VM or the host\&. For details about this information see the description of
 \fBCreateMachineWithNetwork()\fR
 above\&.
+.PP
+\fIVSockCID\fR
+is the VSOCK CID of the VM if it is known, or
+\fBVMADDR_CID_ANY\fR
+otherwise\&.
+.PP
+\fISSHAddress\fR
+is the address of the VM in a format
+\fBssh\fR
+can understand if it is known or the empty string\&.
+.PP
+\fISSHPrivateKeyPath\fR
+is the path to the SSH private key of the VM if it is known or the empty string\&.
 .PP
 \fIState\fR
 is the state of the machine and is one of
@@ -510,7 +569,6 @@ is the state of the machine and is one of
 $ gdbus introspect \-\-system \e
   \-\-dest org\&.freedesktop\&.machine1 \e
   \-\-object\-path /org/freedesktop/machine1
-      
 .fi
 .if n \{\
 .RE
@@ -525,7 +583,6 @@ $ gdbus introspect \-\-system \e
 $ gdbus introspect \-\-system \e
   \-\-dest org\&.freedesktop\&.machine1 \e
   \-\-object\-path /org/freedesktop/machine1/machine/rawhide
-      
 .fi
 .if n \{\
 .RE
@@ -534,14 +591,40 @@ $ gdbus introspect \-\-system \e
 .PP
 These D\-Bus interfaces follow
 \m[blue]\fBthe usual interface versioning guidelines\fR\m[]\&\s-2\u[2]\d\s+2\&.
+.SH "HISTORY"
+.SS "The Manager Object"
+.PP
+\fBCopyFromMachineWithFlags()\fR
+and
+\fBCopyToMachineWithFlags()\fR
+were added in version 252\&.
+.PP
+\fBGetMachineSSHInfo()\fR
+was added in version 256\&.
+.SS "Machine Objects"
+.PP
+\fBCopyFromWithFlags()\fR
+and
+\fBCopyToWithFlags()\fR
+were added in version 252\&.
+.PP
+\fBGetSSHInfo()\fR,
+\fIVSockCID\fR,
+\fISSHAddress\fR
+and
+\fISSHPrivateKeyPath\fR
+were added in version 256\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1), \fBsystemd-machined.service\fR(8), \fBmachinectl\fR(1)
 .SH "NOTES"
 .IP " 1." 4
 New Control Group Interfaces
 .RS 4
-\%https://www.freedesktop.org/wiki/Software/systemd/ControlGroupInterface/
+\%https://systemd.io/CONTROL_GROUP_INTERFACE
 .RE
 .IP " 2." 4
 the usual interface versioning guidelines
 .RS 4
-\%http://0pointer.de/blog/projects/versioning-dbus.html
+\%https://0pointer.de/blog/projects/versioning-dbus.html
 .RE

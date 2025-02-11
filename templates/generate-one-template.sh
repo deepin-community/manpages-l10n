@@ -64,6 +64,9 @@ for upstream_manpage in $upstream_manpages; do
 done
 mandir=$(basename $(dirname $upstream_manpage))
 
+# New long extensions are used (e.g. 3type), shorten this to just the number:
+mandir=$(echo $mandir|cut -c 1-4)
+
 # Merge all pot files into one
 msgcat -o "$mandir/$manpage.pot" $potfiles
 

@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-DEBUG\-GENERATOR" "8" "" "systemd 247" "systemd-debug-generator"
+.TH "SYSTEMD\-DEBUG\-GENERATOR" "8" "" "systemd 257.1" "systemd-debug-generator"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -23,7 +23,7 @@
 systemd-debug-generator \- Generator for enabling a runtime debug shell and masking specific units at boot
 .SH "SYNOPSIS"
 .PP
-/lib/systemd/system\-generators/systemd\-debug\-generator
+/usr/lib/systemd/system\-generators/systemd\-debug\-generator
 .SH "DESCRIPTION"
 .PP
 systemd\-debug\-generator
@@ -33,7 +33,7 @@ If the
 \fBsystemd\&.mask=\fR
 or
 \fBrd\&.systemd\&.mask=\fR
-option is specified and followed by a unit name, this unit is masked for the runtime, similar to the effect of
+option is specified and followed by a unit name, this unit is masked for the runtime (i\&.e\&. for this session \(em from boot to shutdown), similarly to the effect of
 \fBsystemctl\fR(1)\*(Aqs
 \fBmask\fR
 command\&. This is useful to boot with certain units removed from the initial boot transaction for debugging system startup\&. May be specified more than once\&.
@@ -60,13 +60,17 @@ option is specified, the debug shell service
 "debug\-shell\&.service"
 is pulled into the boot transaction and a debug shell will be spawned during early boot\&. By default,
 /dev/tty9
-is used, but a specific tty can also be set, either with or without the
+is used, but a specific tty can also be specified, either with or without the
+/dev/
+prefix\&. To set the tty to use without enabling the debug shell, the
+\fBsystemd\&.default_debug_tty=\fR
+option can be used which also takes a tty with or without the
 /dev/
 prefix\&. Note that the shell may also be turned on persistently by enabling it with
 \fBsystemctl\fR(1)\*(Aqs
 \fBenable\fR
 command\&.
-\fBrd\&.systemd\&.debug_shell=\fR
+\fBrd\&.systemd\&.debug_shell\fR
 is honored only by initial RAM disk (initrd) while
 \fBsystemd\&.debug_shell\fR
 is honored only in the main system\&.
@@ -74,8 +78,31 @@ is honored only in the main system\&.
 systemd\-debug\-generator
 implements
 \fBsystemd.generator\fR(7)\&.
+.SH "SYSTEM CREDENTIALS"
+.PP
+\fIsystemd\&.extra\-unit\&.*\fR
+.RS 4
+Credentials prefixed with
+"systemd\&.extra\-unit\&."
+specify additional units to add to the final system\&. Note that these additional units are added to both the initrd and the final system\&.
+\fIConditionPathExists=!/etc/initrd\-release\fR
+can be used to make sure the unit is conditioned out in the initrd\&. Note that this can also be used to mask units, by simply specifying an empty value\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fIsystemd\&.unit\-dropin\&.*\fR
+.RS 4
+Credentials prefixed with
+"systemd\&.unit\-dropin\&."
+add drop\-ins for the corresponding units in the final system\&. Each credential must be suffixed with the full unit name including the unit extension\&. Its contents must be a valid unit drop\-in file\&. Optionally, the unit name may be followed with
+"~", followed by the drop\-in name without the
+"\&.conf"
+suffix\&. If not specified, the name of the generated drop\-in will be
+"50\-credential\&.conf"\&. Note that these additional drop\-ins are added to both the initrd and the final system\&.
+.sp
+Added in version 256\&.
+.RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemctl\fR(1),
-\fBkernel-command-line\fR(7)
+\fBsystemd\fR(1), \fBsystemctl\fR(1), \fBkernel-command-line\fR(7)

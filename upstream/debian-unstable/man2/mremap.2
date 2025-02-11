@@ -1,25 +1,6 @@
 .\" Copyright (c) 1996 Tom Bjorkholm <tomb@mydata.se>
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
-.\"
-.\" The GNU General Public License's references to "object code"
-.\" and "executables" are to be interpreted as the output of any
-.\" document formatting or typesetting system, including
-.\" intermediate and printed output.
-.\"
-.\" This manual is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
 .\" 1996-04-11 Tom Bjorkholm <tomb@mydata.se>
 .\"            First version written (1.3.86)
@@ -27,15 +8,18 @@
 .\"            Update for Linux 1.3.87 and later
 .\" 2005-10-11 mtk: Added NOTES for MREMAP_FIXED; revised EINVAL text.
 .\"
-.TH MREMAP 2 2020-06-09 "Linux" "Linux Programmer's Manual"
+.TH mremap 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 mremap \- remap a virtual memory address
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .BR "#define _GNU_SOURCE" "         /* See feature_test_macros(7) */"
 .B #include <sys/mman.h>
-.PP
-.BI "void *mremap(void *" old_address ", size_t " old_size ,
+.P
+.BI "void *mremap(void " old_address [. old_size "], size_t " old_size ,
 .BI "             size_t " new_size ", int " flags ", ... /* void *" new_address " */);"
 .fi
 .SH DESCRIPTION
@@ -43,7 +27,7 @@ mremap \- remap a virtual memory address
 expands (or shrinks) an existing memory mapping, potentially
 moving it at the same time (controlled by the \fIflags\fP argument and
 the available virtual address space).
-.PP
+.P
 \fIold_address\fP is the old address of the virtual memory block that you
 want to expand (or shrink).
 Note that \fIold_address\fP has to be page
@@ -57,11 +41,13 @@ An optional fifth argument,
 may be provided; see the description of
 .B MREMAP_FIXED
 below.
-.PP
+.P
 If the value of \fIold_size\fP is zero, and \fIold_address\fP refers to
-a shareable mapping (see
-.BR mmap (2)
-.BR MAP_SHARED ),
+a shareable mapping
+(see the description of
+.B MAP_SHARED
+in
+.BR mmap (2)),
 then
 .BR mremap ()
 will create a new mapping of the same pages.
@@ -73,7 +59,7 @@ below.
 If a new mapping is requested via this method, then the
 .B MREMAP_MAYMOVE
 flag must also be specified.
-.PP
+.P
 The \fIflags\fP bit-mask argument may be 0, or include the following flags:
 .TP
 .B MREMAP_MAYMOVE
@@ -122,15 +108,15 @@ The
 .B MREMAP_DONTUNMAP
 flag can be used only with private anonymous mappings
 (see the description of
-.BR MAP_PRIVATE
+.B MAP_PRIVATE
 and
-.BR MAP_ANONYMOUS
+.B MAP_ANONYMOUS
 in
 .BR mmap (2)).
 .IP
 After completion,
 any access to the range specified by
-.IR old_address
+.I old_address
 and
 .I old_size
 will result in a page fault.
@@ -142,12 +128,12 @@ if the address is in a range previously registered with
 Otherwise, the kernel allocates a zero-filled page to handle the fault.
 .IP
 The
-.BR MREMAP_DONTUNMAP
+.B MREMAP_DONTUNMAP
 flag may be used to atomically move a mapping while leaving the source
 mapped.
 See NOTES for some possible applications of
 .BR MREMAP_DONTUNMAP .
-.PP
+.P
 If the memory segment specified by
 .I old_address
 and
@@ -164,7 +150,7 @@ returns a pointer to the new virtual memory area.
 On error, the value
 .B MAP_FAILED
 (that is, \fI(void\ *)\ \-1\fP) is returned,
-and \fIerrno\fP is set appropriately.
+and \fIerrno\fP is set to indicate the error.
 .SH ERRORS
 .TP
 .B EAGAIN
@@ -186,10 +172,10 @@ whole address space requested, but those mappings are of different types.
 An invalid argument was given.
 Possible causes are:
 .RS
-.IP * 3
+.IP \[bu] 3
 \fIold_address\fP was not
 page aligned;
-.IP *
+.IP \[bu]
 a value other than
 .B MREMAP_MAYMOVE
 or
@@ -198,15 +184,15 @@ or
 .B MREMAP_DONTUNMAP
 was specified in
 .IR flags ;
-.IP *
+.IP \[bu]
 .I new_size
 was zero;
-.IP *
+.IP \[bu]
 .I new_size
 or
 .I new_address
 was invalid;
-.IP *
+.IP \[bu]
 the new address range specified by
 .I new_address
 and
@@ -215,31 +201,31 @@ overlapped the old address range specified by
 .I old_address
 and
 .IR old_size ;
-.IP *
+.IP \[bu]
 .B MREMAP_FIXED
 or
 .B MREMAP_DONTUNMAP
 was specified without also specifying
 .BR MREMAP_MAYMOVE ;
-.IP *
+.IP \[bu]
 .B MREMAP_DONTUNMAP
 was specified, but one or more pages in the range specified by
-.IR old_address
+.I old_address
 and
-.IR old_size
+.I old_size
 were not private anonymous;
-.IP *
+.IP \[bu]
 .B MREMAP_DONTUNMAP
 was specified and
-.IR old_size
+.I old_size
 was not equal to
 .IR new_size ;
-.IP *
+.IP \[bu]
 \fIold_size\fP was zero and \fIold_address\fP does not refer to a
 shareable mapping (but see BUGS);
-.IP *
+.IP \[bu]
 \fIold_size\fP was zero and the
-.BR MREMAP_MAYMOVE
+.B MREMAP_MAYMOVE
 flag was not specified.
 .RE
 .TP
@@ -247,30 +233,38 @@ flag was not specified.
 Not enough memory was available to complete the operation.
 Possible causes are:
 .RS
-.IP * 3
+.IP \[bu] 3
 The memory area cannot be expanded at the current virtual address, and the
 .B MREMAP_MAYMOVE
 flag is not set in \fIflags\fP.
 Or, there is not enough (virtual) memory available.
-.IP *
+.IP \[bu]
 .B MREMAP_DONTUNMAP
 was used causing a new mapping to be created that would exceed the
 (virtual) memory available.
 Or, it would exceed the maximum number of allowed mappings.
 .RE
-.SH CONFORMING TO
-This call is Linux-specific, and should not be used in programs
-intended to be portable.
+.SH STANDARDS
+Linux.
+.SH HISTORY
 .\" 4.2BSD had a (never actually implemented)
 .\" .BR mremap (2)
 .\" call with completely different semantics.
+.\" .P
+Prior to glibc 2.4, glibc did not expose the definition of
+.BR MREMAP_FIXED ,
+and the prototype for
+.BR mremap ()
+did not allow for the
+.I new_address
+argument.
 .SH NOTES
 .BR mremap ()
 changes the
 mapping between virtual addresses and memory pages.
 This can be used to implement a very efficient
 .BR realloc (3).
-.PP
+.P
 In Linux, memory is divided into pages.
 A process has (one or)
 several linear virtual memory segments.
@@ -284,7 +278,7 @@ if the memory is accessed incorrectly (e.g.,
 writing to a read-only segment).
 Accessing virtual memory outside of the
 segments will also cause a segmentation violation.
-.PP
+.P
 If
 .BR mremap ()
 is used to move or expand an area locked with
@@ -295,40 +289,32 @@ call will make a best effort to populate the new area but will not fail
 with
 .B ENOMEM
 if the area cannot be populated.
-.PP
-Prior to version 2.4, glibc did not expose the definition of
-.BR MREMAP_FIXED ,
-and the prototype for
-.BR mremap ()
-did not allow for the
-.I new_address
-argument.
 .\"
 .SS MREMAP_DONTUNMAP use cases
 Possible applications for
-.BR MREMAP_DONTUNMAP
+.B MREMAP_DONTUNMAP
 include:
-.IP * 3
+.IP \[bu] 3
 Non-cooperative
 .BR userfaultfd (2):
 an application can yank out a virtual address range using
-.BR MREMAP_DONTUNMAP
+.B MREMAP_DONTUNMAP
 and then employ a
 .BR userfaultfd (2)
 handler to handle the page faults that subsequently occur
 as other threads in the process touch pages in the yanked range.
-.IP *
+.IP \[bu]
 Garbage collection:
-.BR MREMAP_DONTUNMAP
+.B MREMAP_DONTUNMAP
 can be used in conjunction with
 .BR userfaultfd (2)
 to implement garbage collection algorithms (e.g., in a Java virtual machine).
 Such an implementation can be cheaper (and simpler)
 than conventional garbage collection techniques that involve
 marking pages with protection
-.BR PROT_NONE
-in conjunction with the of a
-.BR SIGSEGV
+.B PROT_NONE
+in conjunction with the use of a
+.B SIGSEGV
 handler to catch accesses to those pages.
 .SH BUGS
 Before Linux 4.14,
@@ -337,7 +323,10 @@ if
 was zero and the mapping referred to by
 .I old_address
 was a private mapping
-.RB ( mmap "(2) " MAP_PRIVATE ),
+(see the description of
+.B MAP_PRIVATE
+in
+.BR mmap (2)),
 .BR mremap ()
 created a new private mapping unrelated to the original mapping.
 This behavior was unintended
@@ -360,18 +349,9 @@ in this scenario.
 .BR sbrk (2),
 .BR malloc (3),
 .BR realloc (3)
-.PP
+.P
 Your favorite text book on operating systems
 for more information on paged memory
 (e.g., \fIModern Operating Systems\fP by Andrew S.\& Tanenbaum,
 \fIInside Linux\fP by Randolph Bentson,
 \fIThe Design of the UNIX Operating System\fP by Maurice J.\& Bach)
-.SH COLOPHON
-This page is part of release 5.10 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

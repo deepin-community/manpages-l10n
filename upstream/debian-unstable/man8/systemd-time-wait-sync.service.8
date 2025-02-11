@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-TIME\-WAIT\-SYNC\&.SERVICE" "8" "" "systemd 247" "systemd-time-wait-sync.service"
+.TH "SYSTEMD\-TIME\-WAIT\-SYNC\&.SERVICE" "8" "" "systemd 257.1" "systemd-time-wait-sync.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -25,27 +25,31 @@ systemd-time-wait-sync.service, systemd-time-wait-sync \- Wait until kernel time
 .PP
 systemd\-time\-wait\-sync\&.service
 .PP
-/lib/systemd/systemd\-time\-wait\-sync
+/usr/lib/systemd/systemd\-time\-wait\-sync
 .SH "DESCRIPTION"
 .PP
 systemd\-time\-wait\-sync
-is a system service that delays the start of units that depend on
+is a system service that delays the start of units that are ordered after
 time\-sync\&.target
-until the system time has been synchronized with an accurate time source by
+(see
+\fBsystemd.special\fR(7)
+for details) until the system time has been synchronized with an accurate remote reference time source by
 systemd\-timesyncd\&.service\&.
 .PP
 systemd\-timesyncd\&.service
-notifies on successful synchronization\&.
+notifies
 systemd\-time\-wait\-sync
-also tries to detect when the kernel marks the time as synchronized, but this detection is not reliable and is intended only as a fallback for other services that can be used to synchronize time (e\&.g\&., ntpd, chronyd)\&.
+about successful synchronization\&.
+systemd\-time\-wait\-sync
+also tries to detect when the kernel marks the system clock as synchronized, but this detection is not reliable and is intended only as a fallback for compatibility with alternative NTP services that can be used to synchronize time (e\&.g\&., ntpd, chronyd)\&.
 .SH "FILES"
 .PP
 /run/systemd/timesync/synchronized
 .RS 4
 The presence of this file indicates to this service that the system clock has been synchronized\&.
+.sp
+Added in version 239\&.
 .RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd.special\fR(7),
-\fBsystemd-timesyncd.service\fR(8),
+\fBsystemd\fR(1), \fBsystemd.special\fR(7), \fBsystemd-timesyncd.service\fR(8)

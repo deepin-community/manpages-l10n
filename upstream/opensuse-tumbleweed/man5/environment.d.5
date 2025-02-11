@@ -1,5 +1,5 @@
 '\" t
-.TH "ENVIRONMENT\&.D" "5" "" "systemd 249" "environment.d"
+.TH "ENVIRONMENT\&.D" "5" "" "systemd 256.8" "environment.d"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -23,20 +23,29 @@
 environment.d \- Definition of user service environment
 .SH "SYNOPSIS"
 .PP
+.RS 4
 ~/\&.config/environment\&.d/*\&.conf
-.PP
+.RE
+.RS 4
 /etc/environment\&.d/*\&.conf
-.PP
+.RE
+.RS 4
 /run/environment\&.d/*\&.conf
-.PP
+.RE
+.RS 4
+/usr/local/lib/environment\&.d/*\&.conf
+.RE
+.RS 4
 /usr/lib/environment\&.d/*\&.conf
-.PP
+.RE
+.RS 4
 /etc/environment
+.RE
 .SH "DESCRIPTION"
 .PP
 Configuration files in the
 environment\&.d/
-directories contain lists of environment variable assignments for services started by the systemd user instance\&.
+directories contain lists of environment variable assignments passed to services started by the systemd user instance\&.
 \fBsystemd-environment-d-generator\fR(8)
 parses them and updates the environment exported by the systemd user instance\&. See below for an discussion of which processes inherit those variables\&.
 .PP
@@ -69,9 +78,17 @@ Packages should install their configuration files in
 /usr/lib/
 (distribution packages) or
 /usr/local/lib/
-(local installs)\&. Files in
+(local installs)
+\&\s-2\u[1]\d\s+2\&. Files in
 /etc/
-are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. It is recommended to prefix all filenames with a two\-digit number and a dash, to simplify the ordering of the files\&.
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&.
+.PP
+It is recommended to prefix all filenames with a two\-digit number and a dash to simplify the ordering\&. It is recommended to use the range 10\-40 for configuration files in
+/usr/
+and the range 60\-90 for configuration files in
+/etc/
+and
+/run/, to make sure that local and transient configuration files will always take priority over configuration files shipped by the OS vendor\&.
 .PP
 If the administrator wants to disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
 /dev/null
@@ -117,23 +134,24 @@ are ignored\&.
         PATH=/opt/foo/bin:$PATH
         LD_LIBRARY_PATH=/opt/foo/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
         XDG_DATA_DIRS=/opt/foo/share:${XDG_DATA_DIRS:\-/usr/local/share/:/usr/share/}
-        
 .fi
 .if n \{\
 .RE
 .\}
 .SH "APPLICABILITY"
 .PP
-Environment variables exported by the user manager (\fBsystemd \-\-user\fR
+Environment variables exported by the user service manager (\fBsystemd \-\-user\fR
 instance started in the
 user@\fIuid\fR\&.service
-system service) apply to any services started by that manager\&. In particular, this may include services which run user shells\&. For example in the GNOME environment, the graphical terminal emulator runs as the
+system service) are passed to any services started by that service manager\&. In particular, this may include services which run user shells\&. For example in the GNOME environment, the graphical terminal emulator runs as the
 gnome\-terminal\-server\&.service
-user unit, which in turn runs the user shell, so that shell will inherit environment variables exported by the user manager\&. For other instances of the shell, not launched by the user manager, the environment they inherit is defined by the program that starts them\&. Hint: in general,
+user unit, which in turn runs the user shell, so that shell will inherit environment variables exported by the user manager\&. For other instances of the shell, not launched by the user service manager, the environment they inherit is defined by the program that starts them\&. Hint: in general,
 \fBsystemd.service\fR(5)
 units contain programs launched by systemd, and
 \fBsystemd.scope\fR(5)
 units contain programs launched by something else\&.
+.PP
+Note that these files do not affect the environment block of the service manager itself, but exclusively the environment blocks passed to the services it manages\&. Environment variables set that way thus cannot be used to influence behaviour of the service manager\&. In order to make changes to the service manager\*(Aqs environment block the environment must be modified before the user\*(Aqs service manager is invoked, for example from the system service manager or via a PAM module\&.
 .PP
 Specifically, for ssh logins, the
 \fBsshd\fR(8)
@@ -144,6 +162,10 @@ service builds an environment that is a combination of variables forwarded from 
 or the underlying D\-Bus call\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd-environment-d-generator\fR(8),
-\fBsystemd.environment-generator\fR(7)
+\fBsystemd\fR(1), \fBsystemd-environment-d-generator\fR(8), \fBsystemd.environment-generator\fR(7)
+.SH "NOTES"
+.IP " 1." 4
+💣💥🧨💥💥💣 Please note that those configuration files must be available at all times. If
+/usr/local/
+is a separate partition, it may not be available during early boot, and must not be used for configuration.
+

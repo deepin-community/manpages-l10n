@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_EMIT_SIGNAL" "3" "" "systemd 249" "sd_bus_emit_signal"
+.TH "SD_BUS_EMIT_SIGNAL" "3" "" "systemd 255" "sd_bus_emit_signal"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,7 +20,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-sd_bus_emit_signal, sd_bus_emit_signalv, sd_bus_emit_interfaces_added, sd_bus_emit_interfaces_added_strv, sd_bus_emit_interfaces_removed, sd_bus_emit_interfaces_removed_strv, sd_bus_emit_properties_changed, sd_bus_emit_properties_changed_strv, sd_bus_emit_object_added, sd_bus_emit_object_removed \- Convenience functions for emitting (standard) D\-Bus signals
+sd_bus_emit_signal, sd_bus_emit_signalv, sd_bus_emit_signal_to, sd_bus_emit_signal_tov, sd_bus_emit_interfaces_added, sd_bus_emit_interfaces_added_strv, sd_bus_emit_interfaces_removed, sd_bus_emit_interfaces_removed_strv, sd_bus_emit_properties_changed, sd_bus_emit_properties_changed_strv, sd_bus_emit_object_added, sd_bus_emit_object_removed \- Convenience functions for emitting (standard) D\-Bus signals
 .SH "SYNOPSIS"
 .sp
 .ft B
@@ -32,6 +32,10 @@ sd_bus_emit_signal, sd_bus_emit_signalv, sd_bus_emit_interfaces_added, sd_bus_em
 .BI "int sd_bus_emit_signal(sd_bus\ *" "bus" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", const\ char\ *" "types" ", \&.\&.\&.);"
 .HP \w'int\ sd_bus_emit_signalv('u
 .BI "int sd_bus_emit_signalv(sd_bus\ *" "bus" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", const\ char\ *" "types" ", va_list\ " "ap" ");"
+.HP \w'int\ sd_bus_emit_signal_to('u
+.BI "int sd_bus_emit_signal_to(sd_bus\ *" "bus" ", const\ char\ *" "destination" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", const\ char\ *" "types" ", \&.\&.\&.);"
+.HP \w'int\ sd_bus_emit_signal_tov('u
+.BI "int sd_bus_emit_signal_tov(sd_bus\ *" "bus" ", const\ char\ *" "destination" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", const\ char\ *" "types" ", va_list\ " "ap" ");"
 .HP \w'int\ sd_bus_emit_interfaces_added('u
 .BI "int sd_bus_emit_interfaces_added(sd_bus\ *" "bus" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", \&.\&.\&.);"
 .HP \w'int\ sd_bus_emit_interfaces_added_strv('u
@@ -62,6 +66,18 @@ is equivalent to
 \fBsd_bus_message_append()\fR, except that it is called with a
 "va_list"
 instead of a variable number of arguments\&.
+.PP
+\fBsd_bus_emit_signal_to()\fR
+and
+\fBsd_bus_emit_signal_tov()\fR
+are identical to
+\fBsd_bus_emit_signal()\fR
+and
+\fBsd_bus_emit_signalv()\fR, except that they can emit the signal to a single destination\&. Give
+\fIdestination\fR
+as
+\fBNULL\fR
+to broadcast the signal\&.
 .PP
 \fBsd_bus_emit_interfaces_added()\fR
 and
@@ -130,21 +146,29 @@ One of the required parameters is
 or invalid\&. A reserved D\-Bus interface was passed as the
 \fIinterface\fR
 parameter\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOPKG\fR
 .RS 4
 The bus cannot be resolved\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The bus was created in a different process\&.
+The bus was created in a different process, library or module instance\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOMEM\fR
 .RS 4
 Memory allocation failed\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ESRCH\fR
@@ -156,6 +180,8 @@ One of
 or
 \fBsd_bus_emit_object_removed()\fR
 was called on an object without an object manager registered on its own object path or one of its parent object paths\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 See the man pages of
@@ -166,9 +192,34 @@ and
 for more possible errors\&.
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_emit_signal()\fR,
+\fBsd_bus_emit_signalv()\fR,
+\fBsd_bus_emit_interfaces_added()\fR,
+\fBsd_bus_emit_interfaces_added_strv()\fR,
+\fBsd_bus_emit_interfaces_removed()\fR,
+\fBsd_bus_emit_interfaces_removed_strv()\fR,
+\fBsd_bus_emit_properties_changed()\fR,
+\fBsd_bus_emit_properties_changed_strv()\fR,
+\fBsd_bus_emit_object_added()\fR, and
+\fBsd_bus_emit_object_removed()\fR
+were added in version 246\&.
+.PP
+\fBsd_bus_emit_signal_to()\fR
+and
+\fBsd_bus_emit_signal_tov()\fR
+were added in version 253\&.
 .SH "SEE ALSO"
 .PP
 \fBsd-bus\fR(3),

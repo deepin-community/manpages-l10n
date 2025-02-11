@@ -1,5 +1,5 @@
 '\" t
-.TH "CRYPTTAB" "5" "" "systemd 249" "crypttab"
+.TH "CRYPTTAB" "5" "" "systemd 257.1" "crypttab"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -135,7 +135,7 @@ Six different mechanisms for acquiring the decryption key or passphrase unlockin
 .sp -1
 .IP "  1." 4.2
 .\}
-Most prominently, the user may be queried interactively during volume activation (i\&.e\&. typically at boot), asking them to type in the necessary passphrase(s)\&.
+Most prominently, the user may be queried interactively during volume activation (i\&.e\&. typically at boot), asking them to type in the necessary passphrases\&.
 .RE
 .sp
 .RS 4
@@ -170,8 +170,8 @@ file system socket in place of a key file in the third field\&. For details see 
 .sp -1
 .IP "  4." 4.2
 .\}
-The key may be acquired via a PKCS#11 compatible hardware security token or smartcard\&. In this case an encrypted key is stored on disk/removable media, acquired via
-\fBAF_UNIX\fR, or stored in the LUKS2 JSON token metadata header\&. The encrypted key is then decrypted by the PKCS#11 token with an RSA key stored on it, and then used to unlock the encrypted volume\&. Use the
+The key may be acquired via a PKCS#11 compatible hardware security token or smartcard\&. In this case a saved key used in unlock process is stored on disk/removable media, acquired via
+\fBAF_UNIX\fR, or stored in the LUKS2 JSON token metadata header\&. For RSA, the saved key is an encrypted volume key\&. The encrypted volume key is then decrypted by the PKCS#11 token with an RSA private key stored on it, and used to unlock the encrypted volume\&. For elliptic\-curve (EC) cryptography, the saved key is the public key generated in enrollment process\&. The public key is then used to derive a shared secret with a private key stored in the PKCS#11 token\&. The derived shared secret is then used to unlock the volume\&. Use the
 \fBpkcs11\-uri=\fR
 option described below to use this mechanism\&.
 .RE
@@ -184,7 +184,7 @@ option described below to use this mechanism\&.
 .sp -1
 .IP "  5." 4.2
 .\}
-Similar, the key may be acquired via a FIDO2 compatible hardware security token (which must implement the "hmac\-secret" extension)\&. In this case a (during enrollment) randomly generated key is stored on disk/removable media, acquired via
+Similarly, the key may be acquired via a FIDO2 compatible hardware security token (which must implement the "hmac\-secret" extension)\&. In this case a key generated randomly during enrollment is stored on disk/removable media, acquired via
 \fBAF_UNIX\fR, or stored in the LUKS2 JSON token metadata header\&. The random key is hashed via a keyed hash function (HMAC) on the FIDO2 token, using a secret key stored on the token that never leaves it\&. The resulting hash value is then used as key to unlock the encrypted volume\&. Use the
 \fBfido2\-device=\fR
 option described below to use this mechanism\&.
@@ -198,7 +198,7 @@ option described below to use this mechanism\&.
 .sp -1
 .IP "  6." 4.2
 .\}
-Similar, the key may be acquired via a TPM2 security chip\&. In this case a (during enrollment) randomly generated key \(em encrypted by an asymmetric key derived from the TPM2 chip\*(Aqs seed key \(em is stored on disk/removable media, acquired via
+Similarly, the key may be acquired via a TPM2 security chip\&. In this case a (during enrollment) randomly generated key \(em encrypted by an asymmetric key derived from the TPM2 chip\*(Aqs seed key \(em is stored on disk/removable media, acquired via
 \fBAF_UNIX\fR, or stored in the LUKS2 JSON token metadata header\&. Use the
 \fBtpm2\-device=\fR
 option described below to use this mechanism\&.
@@ -206,7 +206,7 @@ option described below to use this mechanism\&.
 .PP
 For the latter five mechanisms the source for the key material used for unlocking the volume is primarily configured in the third field of each
 /etc/crypttab
-line, but may also configured in
+line, but may also be configured in
 /etc/cryptsetup\-keys\&.d/
 and
 /run/cryptsetup\-keys\&.d/
@@ -223,11 +223,15 @@ Specifies the cipher to use\&. See
 \fBcryptsetup\fR(8)
 for possible values and the default value of this option\&. A cipher with unpredictable IV values, such as
 "aes\-cbc\-essiv:sha256", is recommended\&. Embedded commas in the cipher specification need to be escaped by preceding them with a backslash, see example below\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 \fBdiscard\fR
 .RS 4
 Allow discard requests to be passed through the encrypted block device\&. This improves performance on SSD storage but has security implications\&.
+.sp
+Added in version 207\&.
 .RE
 .PP
 \fBhash=\fR
@@ -235,11 +239,13 @@ Allow discard requests to be passed through the encrypted block device\&. This i
 Specifies the hash to use for password hashing\&. See
 \fBcryptsetup\fR(8)
 for possible values and the default value of this option\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 \fBheader=\fR
 .RS 4
-Use a detached (separated) metadata device or file where the LUKS header is stored\&. This option is only relevant for LUKS devices\&. See
+Use a detached (separated) metadata device or file where the header containing the master key(s) is stored\&. This option is only relevant for LUKS and TrueCrypt/VeraCrypt devices\&. See
 \fBcryptsetup\fR(8)
 for possible values and the default value of this option\&.
 .sp
@@ -250,6 +256,8 @@ and an
 device specification (e\&.g\&. starting with
 "UUID="
 or similar); in which case, the path is relative to the device file system root\&. The device gets mounted automatically for LUKS device activation duration only\&.
+.sp
+Added in version 219\&.
 .RE
 .PP
 \fBkeyfile\-offset=\fR
@@ -257,19 +265,25 @@ or similar); in which case, the path is relative to the device file system root\
 Specifies the number of bytes to skip at the start of the key file\&. See
 \fBcryptsetup\fR(8)
 for possible values and the default value of this option\&.
+.sp
+Added in version 187\&.
 .RE
 .PP
 \fBkeyfile\-size=\fR
 .RS 4
 Specifies the maximum number of bytes to read from the key file\&. See
 \fBcryptsetup\fR(8)
-for possible values and the default value of this option\&. This option is ignored in plain encryption mode, as the key file size is then given by the key size\&.
+for possible values and the default value of this option\&. This option is ignored in plain encryption mode, where the key file size is determined by the key size\&. It is also ignored when the key file is used as a salt file for a FIDO2 token, as the salt size in that case is defined by the FIDO2 specification to be exactly 32 bytes\&.
+.sp
+Added in version 188\&.
 .RE
 .PP
 \fBkeyfile\-erase\fR
 .RS 4
 If enabled, the specified key file is erased after the volume is activated or when activation fails\&. This is in particular useful when the key file is only acquired transiently before activation (e\&.g\&. via a file in
 /run/, generated by a service running before activation), and shall be removed after use\&. Defaults to off\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBkey\-slot=\fR
@@ -278,13 +292,43 @@ Specifies the key slot to compare the passphrase or key against\&. If the key sl
 \fBluks\fR\&. See
 \fBcryptsetup\fR(8)
 for possible values\&. The default is to try all key slots in sequential order\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fBkeyfile\-timeout=\fR
 .RS 4
-Specifies the timeout for the device on which the key file resides and falls back to a password if it could not be mounted\&. See
+Specifies the timeout for the device on which the key file resides or the device used as the key file, and falls back to a password if it could not be accessed\&. See
 \fBsystemd-cryptsetup-generator\fR(8)
 for key files on external devices\&.
+.sp
+Added in version 243\&.
+.RE
+.PP
+\fBlink\-volume\-key=\fR
+.RS 4
+Specifies the kernel keyring and key description (see
+\fBkeyrings\fR(7)) where LUKS2 volume key gets linked during device activation\&. The kernel keyring description and key description must be separated by
+"::"\&.
+.sp
+The kernel keyring part can be a string description or a predefined kernel keyring prefixed with
+"@"
+(e\&.g\&.: to use
+"@s"
+session or
+"@u"
+user keyring directly)\&. The type prefix text in the kernel keyring description is not required\&. The specified kernel keyring must already exist at the time of device activation\&.
+.sp
+The key part is a string description optionally prefixed by a
+"%key_type:"\&. If no type is specified, the
+"user"
+type key is linked by default\&. See
+\fBkeyctl\fR(1)
+for more information on key descriptions (KEY IDENTIFIERS section)\&.
+.sp
+Note that the linked volume key is not cleaned up automatically when the device is detached\&.
+.sp
+Added in version 256\&.
 .RE
 .PP
 \fBluks\fR
@@ -293,11 +337,15 @@ Force LUKS mode\&. When this mode is used, the following options are ignored sin
 \fBcipher=\fR,
 \fBhash=\fR,
 \fBsize=\fR\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 \fBbitlk\fR
 .RS 4
 Decrypt BitLocker drive\&. Encryption parameters are deduced by cryptsetup from BitLocker header\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB_netdev\fR
@@ -320,6 +368,8 @@ option should also be used for the mount point\&. Otherwise, a dependency loop m
 local\-fs\&.target, while the service to configure the network is usually only started
 \fIafter\fR
 the local file system has been mounted\&.
+.sp
+Added in version 235\&.
 .RE
 .PP
 \fBnoauto\fR
@@ -327,6 +377,8 @@ the local file system has been mounted\&.
 This device will not be added to
 cryptsetup\&.target\&. This means that it will not be automatically unlocked on boot, unless something else pulls it in\&. In particular, if the device is used for a mount point, it\*(Aqll be unlocked automatically during boot, unless the mount point itself is also disabled with
 \fBnoauto\fR\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 \fBnofail\fR
@@ -334,22 +386,32 @@ cryptsetup\&.target\&. This means that it will not be automatically unlocked on 
 This device will not be a hard dependency of
 cryptsetup\&.target\&. It\*(Aqll still be pulled in and started, but the system will not wait for the device to show up and be unlocked, and boot will not fail if this is unsuccessful\&. Note that other units that depend on the unlocked device may still fail\&. In particular, if the device is used for a mount point, the mount point itself also needs to have the
 \fBnofail\fR
-option, or the boot will fail if the device is not unlocked successfully\&.
+option, or the boot will fail if the device is not unlocked successfully\&. If a keyfile and/or a
+\fBheader\fR
+are specified, the dependencies on their respective directories will also not be fatal, so that umounting said directories will not cause the generated cryptset unit to be deactivated\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 \fBoffset=\fR
 .RS 4
 Start offset in the backend device, in 512\-byte sectors\&. This option is only relevant for plain devices\&.
+.sp
+Added in version 220\&.
 .RE
 .PP
 \fBplain\fR
 .RS 4
 Force plain encryption mode\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 \fBread\-only\fR, \fBreadonly\fR
 .RS 4
 Set up the encrypted block device in read\-only mode\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 \fBsame\-cpu\-crypt\fR
@@ -357,6 +419,8 @@ Set up the encrypted block device in read\-only mode\&.
 Perform encryption using the same CPU that IO was submitted on\&. The default is to use an unbound workqueue so that encryption work is automatically balanced between available CPUs\&.
 .sp
 This requires kernel 4\&.0 or newer\&.
+.sp
+Added in version 242\&.
 .RE
 .PP
 \fBsubmit\-from\-crypt\-cpus\fR
@@ -364,6 +428,8 @@ This requires kernel 4\&.0 or newer\&.
 Disable offloading writes to a separate thread after encryption\&. There are some situations where offloading write requests from the encryption threads to a dedicated thread degrades performance significantly\&. The default is to offload write requests to a dedicated thread because it benefits the CFQ scheduler to have writes submitted using the same context\&.
 .sp
 This requires kernel 4\&.0 or newer\&.
+.sp
+Added in version 242\&.
 .RE
 .PP
 \fBno\-read\-workqueue\fR
@@ -371,6 +437,8 @@ This requires kernel 4\&.0 or newer\&.
 Bypass dm\-crypt internal workqueue and process read requests synchronously\&. The default is to queue these requests and process them asynchronously\&.
 .sp
 This requires kernel 5\&.9 or newer\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fBno\-write\-workqueue\fR
@@ -378,6 +446,8 @@ This requires kernel 5\&.9 or newer\&.
 Bypass dm\-crypt internal workqueue and process write requests synchronously\&. The default is to queue these requests and process them asynchronously\&.
 .sp
 This requires kernel 5\&.9 or newer\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fBskip=\fR
@@ -398,6 +468,8 @@ to also be the first sector of the mapped device, but with its number for IV gen
 \fIn\fR\&.
 .sp
 This option is only relevant for plain devices\&.
+.sp
+Added in version 220\&.
 .RE
 .PP
 \fBsize=\fR
@@ -405,6 +477,8 @@ This option is only relevant for plain devices\&.
 Specifies the key size in bits\&. See
 \fBcryptsetup\fR(8)
 for possible values and the default value of this option\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 \fBsector\-size=\fR
@@ -412,6 +486,8 @@ for possible values and the default value of this option\&.
 Specifies the sector size in bytes\&. See
 \fBcryptsetup\fR(8)
 for possible values and the default value of this option\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fBswap\fR
@@ -419,10 +495,24 @@ for possible values and the default value of this option\&.
 The encrypted block device will be used as a swap device, and will be formatted accordingly after setting up the encrypted block device, with
 \fBmkswap\fR(8)\&. This option implies
 \fBplain\fR\&.
+.if n \{\
 .sp
-WARNING: Using the
+.\}
+.RS 4
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBWarning\fR
+.ps -1
+.br
+Using the
 \fBswap\fR
 option will destroy the contents of the named partition during every boot, so make sure the underlying block device is specified correctly\&.
+.sp .5v
+.RE
+Added in version 186\&.
 .RE
 .PP
 \fBtcrypt\fR
@@ -441,6 +531,8 @@ Note that the TrueCrypt format uses both passphrase and key files to derive a pa
 to provide the absolute path to all key files\&. When using an empty passphrase in combination with one or more key files, use
 "/dev/null"
 as the password file in the third field\&.
+.sp
+Added in version 206\&.
 .RE
 .PP
 \fBtcrypt\-hidden\fR
@@ -451,6 +543,8 @@ Use the hidden TrueCrypt volume\&. This option implies
 This will map the hidden volume that is inside of the volume provided in the second field\&. Please note that there is no protection for the hidden volume if the outer volume is mounted instead\&. See
 \fBcryptsetup\fR(8)
 for more information on this limitation\&.
+.sp
+Added in version 206\&.
 .RE
 .PP
 \fBtcrypt\-keyfile=\fR
@@ -462,23 +556,46 @@ and can be used more than once to provide several key files\&.
 See the entry for
 \fBtcrypt\fR
 on the behavior of the passphrase and key files when using TrueCrypt encryption mode\&.
+.sp
+Added in version 206\&.
 .RE
 .PP
 \fBtcrypt\-system\fR
 .RS 4
 Use TrueCrypt in system encryption mode\&. This option implies
 \fBtcrypt\fR\&.
+.sp
+Added in version 206\&.
 .RE
 .PP
 \fBtcrypt\-veracrypt\fR
 .RS 4
 Check for a VeraCrypt volume\&. VeraCrypt is a fork of TrueCrypt that is mostly compatible, but uses different, stronger key derivation algorithms that cannot be detected without this flag\&. Enabling this option could substantially slow down unlocking, because VeraCrypt\*(Aqs key derivation takes much longer than TrueCrypt\*(Aqs\&. This option implies
 \fBtcrypt\fR\&.
+.sp
+Added in version 232\&.
+.RE
+.PP
+\fBveracrypt\-pim=\fR
+.RS 4
+Specifies a custom Personal Iteration Multiplier (PIM) value, which can range from 0\&.\&.2147468 for standard veracrypt volumes and 0\&.\&.65535 for veracrypt system volumes\&. A value of 0 will imply the VeraCrypt default\&. This option is only effective when
+\fBtcrypt\-veracrypt\fR
+is set\&.
+.sp
+Note that VeraCrypt enforces a minimal allowed PIM value depending on the password strength and the hash algorithm used for key derivation, however
+\fBveracrypt\-pim=\fR
+is not checked against these bounds\&. See
+\m[blue]\fBVeracrypt Personal Iterations Multiplier\fR\m[]\&\s-2\u[1]\d\s+2
+documentation for more information\&.
+.sp
+Added in version 254\&.
 .RE
 .PP
 \fBtimeout=\fR
 .RS 4
 Specifies the timeout for querying for a password\&. If no unit is specified, seconds is used\&. Supported units are s, ms, us, min, h, d\&. A timeout of 0 waits indefinitely (which is the default)\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 \fBtmp=\fR
@@ -492,25 +609,45 @@ or
 "btrfs"\&. If no argument is specified defaults to
 "ext4"\&. This option implies
 \fBplain\fR\&.
+.if n \{\
 .sp
-WARNING: Using the
+.\}
+.RS 4
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBWarning\fR
+.ps -1
+.br
+Using the
 \fBtmp\fR
 option will destroy the contents of the named partition during every boot, so make sure the underlying block device is specified correctly\&.
+.sp .5v
+.RE
+Added in version 186\&.
 .RE
 .PP
 \fBtries=\fR
 .RS 4
 Specifies the maximum number of times the user is queried for a password\&. The default is 3\&. If set to 0, the user is queried for a password indefinitely\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 \fBheadless=\fR
 .RS 4
 Takes a boolean argument, defaults to false\&. If true, never query interactively for the password/PIN\&. Useful for headless systems\&.
+.sp
+Added in version 249\&.
 .RE
 .PP
 \fBverify\fR
 .RS 4
 If the encryption password is read from console, it has to be entered twice to prevent typos\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 \fBpassword\-echo=yes|no|masked\fR
@@ -521,6 +658,23 @@ Controls whether to echo passwords or security token PINs that are read from con
 .sp
 If enabled, the typed characters are echoed literally\&. If disabled, the typed characters are not echoed in any form, the user will not get feedback on their input\&. If set to
 "masked", an asterisk ("*") is echoed for each character typed\&. Regardless of which mode is chosen, if the user hits the tabulator key ("↹") at any time, or the backspace key ("⌫") before any other data has been entered, then echo is turned off\&.
+.sp
+Added in version 249\&.
+.RE
+.PP
+\fBpassword\-cache=yes|no|read\-only\fR
+.RS 4
+Controls whether to use cache for passwords or security token PINs\&. Takes a boolean or the special string
+"read\-only"\&. Defaults to
+"yes"\&.
+.sp
+If set to
+"read\-only", the kernel keyring is checked for a password/PIN before requesting one interactively\&. If set to
+"yes", in addition to checking the keyring, any password/PIN entered interactively is cached in the keyring with a 2\&.5\-minute timeout before being purged\&.
+.sp
+Note that this option is not permitted for PKCS#11 security tokens\&. The reasoning behind this is that PKCS#11 security tokens are usually configured to lock after being supplied an invalid PIN multiple times, so using the cache might inadvertently lock the token\&.
+.sp
+Added in version 257\&.
 .RE
 .PP
 \fBpkcs11\-uri=\fR
@@ -528,18 +682,18 @@ If enabled, the typed characters are echoed literally\&. If disabled, the typed 
 Takes either the special value
 "auto"
 or an
-\m[blue]\fBRFC7512 PKCS#11 URI\fR\m[]\&\s-2\u[1]\d\s+2
-pointing to a private RSA key which is used to decrypt the encrypted key specified in the third column of the line\&. This is useful for unlocking encrypted volumes through PKCS#11 compatible security tokens or smartcards\&. See below for an example how to set up this mechanism for unlocking a LUKS2 volume with a YubiKey security token\&.
+\m[blue]\fBRFC7512 PKCS#11 URI\fR\m[]\&\s-2\u[2]\d\s+2
+pointing to a private key which is used to decrypt the encrypted key specified in the third column of the line\&. This is useful for unlocking encrypted volumes through PKCS#11 compatible security tokens or smartcards\&. See below for an example how to set up this mechanism for unlocking a LUKS2 volume with a YubiKey security token\&.
 .sp
 If specified as
 "auto"
 the volume must be of type LUKS2 and must carry PKCS#11 security token metadata in its LUKS2 JSON token section\&. In this mode the URI and the encrypted key are automatically read from the LUKS2 JSON token header\&. Use
 \fBsystemd-cryptenroll\fR(1)
-as simple tool for enrolling PKCS#11 security tokens or smartcards in a way compatible with
+as a simple tool for enrolling PKCS#11 security tokens or smartcards in a way compatible with
 "auto"\&. In this mode the third column of the line should remain empty (that is, specified as
 "\-")\&.
 .sp
-The specified URI can refer directly to a private RSA key stored on a token or alternatively just to a slot or token, in which case a search for a suitable private RSA key will be performed\&. In this case if multiple suitable objects are found the token is refused\&. The encrypted key configured in the third column of the line is passed as is (i\&.e\&. in binary form, unprocessed) to RSA decryption\&. The resulting decrypted key is then Base64 encoded before it is used to unlock the LUKS volume\&.
+The specified URI can refer directly to a private key stored on a token or alternatively just to a slot or token, in which case a search for a suitable private key will be performed\&. In this case if multiple suitable objects are found the token is refused\&. The keyfile configured in the third column of the line is used as is (i\&.e\&. in binary form, unprocessed)\&. The resulting decrypted key (for RSA) or derived shared secret (for ECC) is then Base64 encoded before it is used to unlock the LUKS volume\&.
 .sp
 Use
 \fBsystemd\-cryptenroll \-\-pkcs11\-token\-uri=list\fR
@@ -548,6 +702,8 @@ to list all suitable PKCS#11 security tokens currently plugged in, along with th
 Note that many newer security tokens that may be used as PKCS#11 security token typically also implement the newer and simpler FIDO2 standard\&. Consider using
 \fBfido2\-device=\fR
 (described below) to enroll it via FIDO2 instead\&. Note that a security token enrolled via PKCS#11 cannot be used to unlock the volume via FIDO2, unless also enrolled via FIDO2, and vice versa\&.
+.sp
+Added in version 245\&.
 .RE
 .PP
 \fBfido2\-device=\fR
@@ -569,7 +725,7 @@ FIDO2 volume unlocking requires a client ID hash (CID) to be configured via
 \fBfido2\-cid=\fR
 (see below) and a key to pass to the security token\*(Aqs HMAC functionality (configured in the line\*(Aqs third column) to operate\&. If not configured and the volume is of type LUKS2, the CID and the key are read from LUKS2 JSON token metadata instead\&. Use
 \fBsystemd-cryptenroll\fR(1)
-as simple tool for enrolling FIDO2 security tokens, compatible with this automatic mode, which is only available for LUKS2 volumes\&.
+as simple tool for enrolling FIDO2 security tokens for LUKS2 volumes\&.
 .sp
 Use
 \fBsystemd\-cryptenroll \-\-fido2\-device=list\fR
@@ -580,6 +736,8 @@ This option implements the following mechanism: the configured key is hashed via
 Note that many security tokens that implement FIDO2 also implement PKCS#11, suitable for unlocking volumes via the
 \fBpkcs11\-uri=\fR
 option described above\&. Typically the newer, simpler FIDO2 standard is preferable\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fBfido2\-cid=\fR
@@ -595,6 +753,8 @@ is used but
 is not, the volume must be of LUKS2 type, and the CID is read from the LUKS2 JSON token header\&. Use
 \fBsystemd-cryptenroll\fR(1)
 for enrolling a FIDO2 token in the LUKS2 header compatible with this automatic mode\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fBfido2\-rp=\fR
@@ -602,6 +762,47 @@ for enrolling a FIDO2 token in the LUKS2 header compatible with this automatic m
 Takes a string, configuring the FIDO2 Relying Party (rp) for the FIDO2 unlock operation\&. If not specified
 "io\&.systemd\&.cryptsetup"
 is used, except if the LUKS2 JSON token header contains a different value\&. It should normally not be necessary to override this\&.
+.sp
+Added in version 248\&.
+.RE
+.PP
+\fBfido2\-pin=\fR
+.RS 4
+Controls whether to require the user to enter a PIN when unlocking the volume (the FIDO2
+"clientPin"
+feature)\&. This option only applies when in manual mode, i\&.e\&. when
+\fBfido2\-cid=\fR
+option is set\&. Defaults to neither true or false, but rather to
+\fBv248\fR
+behavior, that is: try with no PIN first, but if token reports that PIN is required, try again asking for PIN\&.
+.sp
+Added in version 257\&.
+.RE
+.PP
+\fBfido2\-up=\fR
+.RS 4
+Controls whether to require the user to verify presence (tap the token, the FIDO2
+"up"
+feature) when unlocking the volume\&. This option only applies when in manual mode, i\&.e\&. when
+\fBfido2\-cid=\fR
+option is set\&. Defaults to neither true or false, but rather to
+\fBv248\fR
+behavior, that is: try with no UP first, but if token reports that UP is required, try again with UP enabled\&.
+.sp
+Added in version 257\&.
+.RE
+.PP
+\fBfido2\-uv=\fR
+.RS 4
+Controls whether to require user verification (the FIDO2
+"uv"
+feature) when unlocking the volume\&. This option only applies when in manual mode, i\&.e\&. when
+\fBfido2\-cid=\fR
+option is set\&. Defaults to neither true or false, but rather to
+\fBv248\fR
+behavior, that is: omit configuring UV whatsoever\&.
+.sp
+Added in version 257\&.
 .RE
 .PP
 \fBtpm2\-device=\fR
@@ -626,6 +827,8 @@ to list all suitable TPM2 devices currently available, along with their device n
 This option implements the following mechanism: when enrolling a TPM2 device via
 \fBsystemd\-cryptenroll\fR
 on a LUKS2 volume, a randomized key unlocking the volume is generated on the host and loaded into the TPM2 chip where it is encrypted with an asymmetric "primary" key pair derived from the TPM2\*(Aqs internal "seed" key\&. Neither the seed key nor the primary key are permitted to ever leave the TPM2 chip \(em however, the now encrypted randomized key may\&. It is saved in the LUKS2 volume JSON token header\&. When unlocking the encrypted volume, the primary key pair is generated on the TPM2 chip again (which works as long as the chip\*(Aqs seed key is correctly maintained by the TPM2 chip), which is then used to decrypt (on the TPM2 chip) the encrypted key from the LUKS2 volume JSON token header saved there during enrollment\&. The resulting decrypted key is then used to unlock the volume\&. When the randomized key is encrypted the current values of the selected PCRs (see below) are included in the operation, so that different PCR state results in different encrypted keys and the decrypted key can only be recovered if the same PCR state is reproduced\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fBtpm2\-pcrs=\fR
@@ -635,25 +838,100 @@ Takes a
 separated list of numeric TPM2 PCR (i\&.e\&. "Platform Configuration Register") indexes to bind the TPM2 volume unlocking to\&. This option is only useful when TPM2 enrollment metadata is not available in the LUKS2 JSON token header already, the way
 \fBsystemd\-cryptenroll\fR
 writes it there\&. If not used (and no metadata in the LUKS2 JSON token header defines it), defaults to a list of a single entry: PCR 7\&. Assign an empty string to encode a policy that binds the key to no PCRs, making the key accessible to local programs regardless of the current PCR state\&.
+.sp
+Added in version 248\&.
+.RE
+.PP
+\fBtpm2\-pin=\fR
+.RS 4
+Takes a boolean argument, defaults to
+"false"\&. Controls whether TPM2 volume unlocking is bound to a PIN in addition to PCRs\&. Similarly, this option is only useful when TPM2 enrollment metadata is not available\&.
+.sp
+Added in version 251\&.
+.RE
+.PP
+\fBtpm2\-signature=\fR
+.RS 4
+Takes an absolute path to a TPM2 PCR JSON signature file, as produced by the
+\fBsystemd-measure\fR(1)
+tool\&. This permits locking LUKS2 volumes to any PCR values for which a valid signature matching a public key specified at key enrollment time can be provided\&. See
+\fBsystemd-cryptenroll\fR(1)
+for details on enrolling TPM2 PCR public keys\&. If this option is not specified but it is attempted to unlock a LUKS2 volume with a signed TPM2 PCR enrollment a suitable signature file
+tpm2\-pcr\-signature\&.json
+is searched for in
+/etc/systemd/,
+/run/systemd/,
+/usr/lib/systemd/
+(in this order)\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+\fBtpm2\-pcrlock=\fR
+.RS 4
+Takes an absolute path to a TPM2 pcrlock policy file, as produced by the
+\fBsystemd-pcrlock\fR(8)
+tool\&. This permits locking LUKS2 volumes to a local policy of allowed PCR values with variants\&. See
+\fBsystemd-cryptenroll\fR(1)
+for details on enrolling TPM2 pcrlock policies\&. If this option is not specified but it is attempted to unlock a LUKS2 volume with a TPM2 pcrlock enrollment a suitable signature file
+pcrlock\&.json
+is searched for in
+/run/systemd/
+and
+/var/lib/systemd/
+(in this order)\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fBtpm2\-measure\-pcr=\fR
+.RS 4
+Controls whether to measure the volume key of the encrypted volume to a TPM2 PCR\&. If set to "no" (which is the default) no PCR extension is done\&. If set to "yes" the volume key is measured into PCR 15\&. If set to a decimal integer in the range 0\&...23 the volume key is measured into the specified PCR\&. The volume key is measured along with the activated volume name and its UUID\&. This functionality is particularly useful for the encrypted volume backing the root file system, as it then allows later TPM objects to be securely bound to the root file system and hence the specific installation\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fBtpm2\-measure\-bank=\fR
+.RS 4
+Selects one or more TPM2 PCR banks to measure the volume key into, as configured with
+\fBtpm2\-measure\-pcr=\fR
+above\&. Multiple banks may be specified, separated by a colon character\&. If not specified automatically determines available and used banks\&. Expects a message digest name (e\&.g\&.
+"sha1",
+"sha256", \&...) as argument, to identify the bank\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fBtoken\-timeout=\fR
+.RS 4
+Specifies how long to wait at most for configured security devices (i\&.e\&. FIDO2, PKCS#11, TPM2) to show up\&. Takes a time value in seconds (but other time units may be specified too, see
+\fBsystemd.time\fR(7)
+for supported formats)\&. Defaults to 30s\&. Once the specified timeout elapsed authentication via password is attempted\&. Note that this timeout applies to waiting for the security device to show up \(em it does not apply to the PIN prompt for the device (should one be needed) or similar\&. Pass 0 to turn off the timeout and wait forever\&.
+.sp
+Added in version 250\&.
 .RE
 .PP
 \fBtry\-empty\-password=\fR
 .RS 4
 Takes a boolean argument\&. If enabled, right before asking the user for a password it is first attempted to unlock the volume with an empty password\&. This is useful for systems that are initialized with an encrypted volume with only an empty password set, which shall be replaced with a suitable password during first boot, but after activation\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fBx\-systemd\&.device\-timeout=\fR
 .RS 4
-Specifies how long systemd should wait for a device to show up before giving up on the entry\&. The argument is a time in seconds or explicitly specified units of
+Specifies how long systemd should wait for a block device to show up before giving up on the entry\&. The argument is a time in seconds or explicitly specified units of
 "s",
 "min",
 "h",
 "ms"\&.
+.sp
+Added in version 216\&.
 .RE
 .PP
 \fBx\-initrd\&.attach\fR
 .RS 4
-Setup this encrypted block device in the initramfs, similarly to
+Setup this encrypted block device in the initrd, similarly to
 \fBsystemd.mount\fR(5)
 units marked with
 \fBx\-initrd\&.mount\fR\&.
@@ -663,7 +941,9 @@ Although it\*(Aqs not necessary to mark the mount entry for the root file system
 \fBx\-initrd\&.attach\fR
 is still recommended with the encrypted block device containing the root file system as otherwise systemd will attempt to detach the device during the regular system shutdown while it\*(Aqs still in use\&. With this option the device will still be detached but later after the root file system is unmounted\&.
 .sp
-All other encrypted block devices that contain file systems mounted in the initramfs should use this option\&.
+All other encrypted block devices that contain file systems mounted in the initrd should use this option\&.
+.sp
+Added in version 245\&.
 .RE
 .PP
 At early boot and when the system manager configuration is reloaded, this file is translated into native systemd units by
@@ -678,13 +958,13 @@ stream socket in the file system, the key is acquired by connecting to the socke
 \fBAF_UNIX\fR
 socket name in the abstract namespace, see
 \fBunix\fR(7)
-for details\&. The source socket name is chosen according the following format:
+for details\&. The source socket name is chosen according to the following format:
 .sp
 .if n \{\
 .RS 4
 .\}
 .nf
-\fBNUL\fR \fIRANDOM\fR "/cryptsetup/" \fIVOLUME\fR
+\fBNUL\fR \fIRANDOM\fR /cryptsetup/ \fIVOLUME\fR
 .fi
 .if n \{\
 .RE
@@ -693,10 +973,8 @@ for details\&. The source socket name is chosen according the following format:
 In other words: a
 \fBNUL\fR
 byte (as required for abstract namespace sockets), followed by a random string (consisting of alphanumeric characters only), followed by the literal string
-"/cryptsetup/", followed by the name of the volume to acquire they key for\&. Example (for a volume
-"myvol"):
-.PP
-\fBExample\ \&1.\ \&\fR
+"/cryptsetup/", followed by the name of the volume to acquire they key for\&. For example, for the volume
+"myvol":
 .sp
 .if n \{\
 .RS 4
@@ -711,15 +989,12 @@ byte (as required for abstract namespace sockets), followed by a random string (
 Services listening on the
 \fBAF_UNIX\fR
 stream socket may query the source socket name with
-\fBgetpeername\fR(2), and use it to determine which key to send, allowing a single listening socket to serve keys for a multitude of volumes\&. If the PKCS#11 logic is used (see above) the socket source name is picked in identical fashion, except that the literal string
+\fBgetpeername\fR(2), and use this to determine which key to send, allowing a single listening socket to serve keys for multiple volumes\&. If the PKCS#11 logic is used (see above), the socket source name is picked in similar fashion, except that the literal string
 "/cryptsetup\-pkcs11/"
-is used (similar for FIDO2:
-"/cryptsetup\-fido2/"
-and TPM2:
-"/cryptsetup\-tpm2/")\&. This is done so that services providing key material know that not a secret key is requested but an encrypted key that will be decrypted via the PKCS#11/FIDO2/TPM2 logic to acquire the final secret key\&.
+is used\&. And similarly for FIDO2 ("/cryptsetup\-fido2\-salt/") and TPM2 ("/cryptsetup\-tpm2/")\&. A different path component is used so that services providing key material know that the secret key was not requested directly, but instead an encrypted key that will be decrypted via the PKCS#11/FIDO2/TPM2 logic to acquire the final secret key\&.
 .SH "EXAMPLES"
 .PP
-\fBExample\ \&2.\ \&/etc/crypttab example\fR
+\fBExample\ \&1.\ \&/etc/crypttab example\fR
 .PP
 Set up four encrypted block devices\&. One using LUKS for normal storage, another one for usage as a swap device and two TrueCrypt volumes\&. For the fourth device, the option string is interpreted as two options
 "cipher=xchacha12,aes\-adiantum\-plain64",
@@ -739,9 +1014,9 @@ external   /dev/sda3       keyfile:LABEL=keydev keyfile\-timeout=10s,cipher=xcha
 .RE
 .\}
 .PP
-\fBExample\ \&3.\ \&Yubikey\-based PKCS#11 Volume Unlocking Example\fR
+\fBExample\ \&2.\ \&Yubikey\-based PKCS#11 Volume Unlocking Example\fR
 .PP
-The PKCS#11 logic allows hooking up any compatible security token that is capable of storing RSA decryption keys for unlocking an encrypted volume\&. Here\*(Aqs an example how to set up a Yubikey security token for this purpose on a LUKS2 volume, using
+The PKCS#11 logic allows hooking up any compatible security token that is capable of storing RSA or EC cryptographic keys for unlocking an encrypted volume\&. Here\*(Aqs an example how to set up a Yubikey security token for this purpose on a LUKS2 volume, using
 \fBykmap\fR(1)
 from the yubikey\-manager project to initialize the token and
 \fBsystemd-cryptenroll\fR(1)
@@ -751,6 +1026,8 @@ to add it in the LUKS2 volume:
 .RS 4
 .\}
 .nf
+# SPDX\-License\-Identifier: MIT\-0
+
 # Destroy any old key on the Yubikey (careful!)
 ykman piv reset
 
@@ -772,11 +1049,24 @@ rm pubkey\&.pem
 sudo systemd\-cryptenroll \-\-pkcs11\-token\-uri=auto /dev/sdXn
 
 # Test: Let\*(Aqs run systemd\-cryptsetup to test if this all worked\&.
-sudo /usr/lib/systemd/systemd\-cryptsetup attach mytest /dev/sdXn \- pkcs11\-uri=auto
+sudo systemd\-cryptsetup attach mytest /dev/sdXn \- pkcs11\-uri=auto
 
 # If that worked, let\*(Aqs now add the same line persistently to /etc/crypttab,
-# for the future\&.
-sudo bash \-c \*(Aqecho "mytest /dev/sdXn \- pkcs11\-uri=auto" >> /etc/crypttab\*(Aq
+# for the future\&. We don\*(Aqt want to use the (unstable) /dev/sdX name, so let\*(Aqs
+# figure out a stable link:
+udevadm info \-q \-r symlink /dev/sdXn
+
+# Now add the line using the by\-uuid symlink to /etc/crypttab:
+sudo bash \-c \*(Aqecho "mytest /dev/disk/by\-uuid/\&.\&.\&. \- pkcs11\-uri=auto" >>/etc/crypttab\*(Aq
+
+# Depending on your distribution and encryption setup, you may need to manually
+# regenerate your initramfs to be able to use a Yubikey / PKCS#11 token to
+# unlock the partition during early boot\&.
+# More information at https://unix\&.stackexchange\&.com/a/705809\&.
+# On Fedora based systems:
+sudo dracut \-\-force
+# On Debian based systems:
+sudo update\-initramfs \-u
 .fi
 .if n \{\
 .RE
@@ -803,11 +1093,11 @@ We use RSA2048, which is the longest key size current Yubikeys support
 .sp -1
 .IP \(bu 2.3
 .\}
-We use Yubikey key slot 9d, since that\*(Aqs apparently the keyslot to use for decryption purposes,
-\m[blue]\fBsee documentation\fR\m[]\&\s-2\u[2]\d\s+2\&.
+We use Yubikey key slot 9d, since that\*(Aqs apparently the keyslot to use for decryption purposes, see
+\m[blue]\fBYubico PIV certificate slots\fR\m[]\&\s-2\u[3]\d\s+2\&.
 .RE
 .PP
-\fBExample\ \&4.\ \&FIDO2 Volume Unlocking Example\fR
+\fBExample\ \&3.\ \&FIDO2 Volume Unlocking Example\fR
 .PP
 The FIDO2 logic allows using any compatible FIDO2 security token that implements the
 "hmac\-secret"
@@ -818,22 +1108,37 @@ extension for unlocking an encrypted volume\&. Here\*(Aqs an example how to set 
 .RS 4
 .\}
 .nf
+# SPDX\-License\-Identifier: MIT\-0
+
 # Enroll the security token in the LUKS2 volume\&. Replace /dev/sdXn by the
 # partition to use (e\&.g\&. /dev/sda1)\&.
 sudo systemd\-cryptenroll \-\-fido2\-device=auto /dev/sdXn
 
 # Test: Let\*(Aqs run systemd\-cryptsetup to test if this worked\&.
-sudo /usr/lib/systemd/systemd\-cryptsetup attach mytest /dev/sdXn \- fido2\-device=auto
+sudo systemd\-cryptsetup attach mytest /dev/sdXn \- fido2\-device=auto
 
 # If that worked, let\*(Aqs now add the same line persistently to /etc/crypttab,
-# for the future\&.
-sudo bash \-c \*(Aqecho "mytest /dev/sdXn \- fido2\-device=auto" >> /etc/crypttab\*(Aq
+# for the future\&. We don\*(Aqt want to use the (unstable) /dev/sdX name, so let\*(Aqs
+# figure out a stable link:
+udevadm info \-q \-r symlink /dev/sdXn
+
+# Now add the line using the by\-uuid symlink to /etc/crypttab:
+sudo bash \-c \*(Aqecho "mytest /dev/disk/by\-uuid/\&.\&.\&. \- fido2\-device=auto" >>/etc/crypttab\*(Aq
+
+# Depending on your distribution and encryption setup, you may need to manually
+# regenerate your initramfs to be able to use a FIDO2 device to unlock the
+# partition during early boot\&.
+# More information at https://unix\&.stackexchange\&.com/a/705809\&.
+# On Fedora based systems:
+sudo dracut \-\-force
+# On Debian based systems:
+sudo update\-initramfs \-u
 .fi
 .if n \{\
 .RE
 .\}
 .PP
-\fBExample\ \&5.\ \&TPM2 Volume Unlocking Example\fR
+\fBExample\ \&4.\ \&TPM2 Volume Unlocking Example\fR
 .PP
 The TPM2 logic allows using any TPM2 chip supported by the Linux kernel for unlocking an encrypted volume\&. Here\*(Aqs an example how to set up a TPM2 chip for this purpose for a LUKS2 volume, using
 \fBsystemd-cryptenroll\fR(1):
@@ -842,38 +1147,67 @@ The TPM2 logic allows using any TPM2 chip supported by the Linux kernel for unlo
 .RS 4
 .\}
 .nf
+# SPDX\-License\-Identifier: MIT\-0
+
 # Enroll the TPM2 security chip in the LUKS2 volume, and bind it to PCR 7
 # only\&. Replace /dev/sdXn by the partition to use (e\&.g\&. /dev/sda1)\&.
 sudo systemd\-cryptenroll \-\-tpm2\-device=auto \-\-tpm2\-pcrs=7 /dev/sdXn
 
 # Test: Let\*(Aqs run systemd\-cryptsetup to test if this worked\&.
-sudo /usr/lib/systemd/systemd\-cryptsetup attach mytest /dev/sdXn \- tpm2\-device=auto
+sudo systemd\-cryptsetup attach mytest /dev/sdXn \- tpm2\-device=auto
 
 # If that worked, let\*(Aqs now add the same line persistently to /etc/crypttab,
-# for the future\&.
-sudo bash \-c \*(Aqecho "mytest /dev/sdXn \- tpm2\-device=auto" >> /etc/crypttab\*(Aq
+# for the future\&. We don\*(Aqt want to use the (unstable) /dev/sdX name, so let\*(Aqs
+# figure out a stable link:
+udevadm info \-q \-r symlink /dev/sdXn
+
+# Now add the line using the by\-uuid symlink to /etc/crypttab:
+sudo bash \-c \*(Aqecho "mytest /dev/disk/by\-uuid/\&.\&.\&. \- tpm2\-device=auto" >>/etc/crypttab\*(Aq
+
+# And now let\*(Aqs check that automatic unlocking works:
+sudo systemd\-cryptsetup detach mytest
+sudo systemctl daemon\-reload
+sudo systemctl start cryptsetup\&.target
+systemctl is\-active systemd\-cryptsetup@mytest\&.service
+
+# Once we have the device which will be unlocked automatically, we can use it\&.
+# Usually we would create a file system and add it to /etc/fstab:
+sudo mkfs\&.ext4 /dev/mapper/mytest
+# This prints a \*(AqFilesystem UUID\*(Aq, which we can use as a stable name:
+sudo bash \-c \*(Aqecho "/dev/disk/by\-uuid/\&.\&.\&. /var/mytest ext4 defaults,x\-systemd\&.mkdir 0 2" >>/etc/fstab\*(Aq
+# And now let\*(Aqs check that the mounting works:
+sudo systemctl daemon\-reload
+sudo systemctl start /var/mytest
+systemctl status /var/mytest
+
+# Depending on your distribution and encryption setup, you may need to manually
+# regenerate your initramfs to be able to use a TPM2 security chip to unlock
+# the partition during early boot\&.
+# More information at https://unix\&.stackexchange\&.com/a/705809\&.
+# On Fedora based systems:
+sudo dracut \-\-force
+# On Debian based systems:
+sudo update\-initramfs \-u
 .fi
 .if n \{\
 .RE
 .\}
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd-cryptsetup@.service\fR(8),
-\fBsystemd-cryptsetup-generator\fR(8),
-\fBsystemd-cryptenroll\fR(1),
-\fBfstab\fR(5),
-\fBcryptsetup\fR(8),
-\fBmkswap\fR(8),
-\fBmke2fs\fR(8)
+\fBsystemd\fR(1), \fBsystemd-cryptsetup@.service\fR(8), \fBsystemd-cryptsetup-generator\fR(8), \fBsystemd-cryptenroll\fR(1), \fBfstab\fR(5), \fBcryptsetup\fR(8), \fBmkswap\fR(8), \fBmke2fs\fR(8)
 .SH "NOTES"
 .IP " 1." 4
+Veracrypt Personal Iterations Multiplier
+.RS 4
+\%https://www.veracrypt.fr/en/Personal%20Iterations%20Multiplier%20%28PIM%29.html
+.RE
+.IP " 2." 4
 RFC7512 PKCS#11 URI
 .RS 4
 \%https://tools.ietf.org/html/rfc7512
 .RE
-.IP " 2." 4
-see documentation
+.IP " 3." 4
+Yubico PIV certificate slots
 .RS 4
 \%https://developers.yubico.com/PIV/Introduction/Certificate_slots.html
 .RE

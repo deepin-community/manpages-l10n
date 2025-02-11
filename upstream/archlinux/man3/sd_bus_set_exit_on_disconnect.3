@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_SET_EXIT_ON_DISCONNECT" "3" "" "systemd 249" "sd_bus_set_exit_on_disconnect"
+.TH "SD_BUS_SET_EXIT_ON_DISCONNECT" "3" "" "systemd 257" "sd_bus_set_exit_on_disconnect"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -68,26 +68,41 @@ Returned errors may indicate the following problems:
 .RS 4
 A required parameter was
 \fBNULL\fR\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOPKG\fR
 .RS 4
 The bus object could not be resolved\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The bus connection was created in a different process\&.
+The bus connection was created in a different process, library or module instance\&.
+.sp
+Added in version 246\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_set_exit_on_disconnect()\fR
+and
+\fBsd_bus_get_exit_on_disconnect()\fR
+were added in version 246\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-bus\fR(3),
-\fBsd_bus_attach_event\fR(3),
-\fBsd-event\fR(3),
-\fBsd_event_exit\fR(3)
+\fBsystemd\fR(1), \fBsd-bus\fR(3), \fBsd_bus_attach_event\fR(3), \fBsd-event\fR(3), \fBsd_event_exit\fR(3)

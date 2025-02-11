@@ -1,0 +1,391 @@
+'''
+'''  Ytalk Versio 3
+'''
+.de Sh
+.br
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.\" Translated into finnish by Sami Louko (slouko@dlc.fi)
+.\"
+.TH YTalk 7 "" "K‰ytt‰j‰n sovellusohjelmat" ""
+.SH NIMI
+ytalk - monen k‰ytt‰j‰n keskustelu-ohjelma
+.SH "YLEISKATSAUS"
+ytalk [-x] [-s] [-Y] [-i] k‰ytt‰j‰nimi...
+.SH KUVAUS
+.I YTalk V3.0 Paikkaus Taso 2 (Patch Level 2)
+.PP
+YTalk on varsinaisesti monen k‰ytt‰j‰n keskustelu ohjelma. Se toimii melkein
+tarkalleen samoin kun UNIX talk ohjelma ja jopa yhdistyy samaan tai samoihin
+talk demoniin/demoneihin, mutta YTalk mahdollistaa useat samanaikaiset yhteydet.
+
+.I K‰ytt‰j‰nimi 
+kentt‰ voidaan muotoilla muutamilla eri tavoilla:
+.br
+	nimi               - joku k‰ytt‰j‰ koneellasi
+.br
+	nimi@toimialue     - joku k‰ytt‰j‰ toisella koneella
+.br
+	nimi#tty           - joku k‰ytt‰j‰ tietyll‰ p‰‰tteell‰
+.br
+	nimi#tty@toimialue - joku k‰ytt‰j‰ tietyll‰ p‰‰tteell‰ eri koneessa
+.br 
+	nimi@toimialue#tty - sama kuin "nimi#tty@toimialue"
+.PP
+Voit m‰‰ritell‰ useita k‰ytt‰jien nimi‰ komentorivill‰, kuten:
+.sp
+      ytalk tero reino@hissun.fi marko@pahis.fi
+.PP
+Valitsin -x poistaa k‰ytˆst‰ X11 k‰yttˆliittym‰n (kuvattu alla).
+.PP
+Valitsin -s k‰ynnist‰‰ YTalk ikkunan shelliin.
+.PP
+Valitsin -i poistaa k‰ytˆst‰ auto-kutsu portin (tarkoittaa ettet n‰kisi
+"talk to joku@jossain.fi", mutta talk demoni sen sijaan piippaa sinua.
+.PP
+Valitsin -Y vaatii ison Y:n tai N:‰n vastauksena kaikkiin kyll‰/ei
+kysymyksiin.
+.PP
+YTalk yritt‰‰ yhdist‰‰ talk demonia jokaiselle k‰ytt‰j‰lle komentorivill‰
+m‰‰riteltyyn k‰ytt‰j‰n toimialueeseen (host) ja p‰‰tt‰‰ jos t‰m‰/n‰m‰
+k‰ytt‰j‰(t) on j‰tt‰nyt pyynnˆn kutsuusi. Jos ei, YTalk j‰tt‰‰ kutsun h‰nelle
+ja kertoo h‰nen talk demonille ett‰ l‰hett‰‰ tiedoituksen h‰nen ruudulleen.
+Viel‰ ei ole YTalkin k‰yttˆˆn varattua demonia, mutta tulee olemaan.
+T‰ll‰ hetkell‰ YTalk kykenee keskustelemaan MOLEMPIEN olemassa olevien UNIXin
+talk demonin versioiden kanssa. Tietyll‰ toimialueella, YTalk yritt‰‰ myˆs
+keskustella talk demonilla mit‰ soittajan toimialue tukee. Jos kaksi
+toimialuetta ei k‰yt‰ yleist‰ demonia, niin UNIXin talk ei toimi ollenkaan,
+mutta yhteys on mahdollinen k‰ytt‰m‰ll‰ (ja ainoastaan k‰ytt‰m‰ll‰) YTalkia.
+.PP
+Kun yhteys on muodostettu kahden k‰ytt‰j‰n v‰lill‰, he voivat keskustella
+edestakaisin mielin m‰‰rin. Yhteys katkeaa kun yksi heist‰ painaa control-C
+tai valitsee poistu (quit off) p‰‰valikosta.
+.PP
+YTalk on t‰ydellisesti yhteensopiva UNIXin talkin kanssa ja ne voivat
+kanssak‰yd‰ toisiensa kanssa ilman mit‰‰n ongelmia. Kuitenkin, monet YTalkin
+ominaisuudet toimivat vain kun olet yhteydess‰ k‰ytt‰j‰‰n joka myˆs k‰ytt‰‰
+YTalkia. Lopuksi t‰st‰ dokumentista, voidaan olettaa ett‰ kaikki kytkeytyneet
+k‰ytt‰j‰t k‰ytt‰v‰t YTalkia, kunnes toisin mainitaan.
+.PP
+Jos m‰‰rittelet useamman kuin yhden k‰ytt‰j‰n YTalkin komentorivill‰, YTalk
+toimii ja lis‰‰ jokaisen k‰ytt‰j‰n keskusteluun kun he vastaavat kutsuusi.
+Kun uusi k‰ytt‰j‰ liittyy keskusteluun, n‰yttˆ‰ jaetaan pienempiin ja
+pienempiin ikkunoihin, yksi jokaista kytkeytynytt‰ k‰ytt‰j‰‰ kohden.
+T‰ll‰ hetkell‰, kytkeytyneiden k‰ytt‰jien lukum‰‰r‰‰ on rajoitettu p‰‰tteen
+(tai ikkunan) rivien lukum‰‰r‰n mukaan, jokainen k‰ytt‰j‰ tarvitsee v‰hint‰‰n
+kolme rivi‰.
+.PP
+YTalk k‰ytt‰‰ alkeellista X11 Ikkunointi J‰rjestelm‰n tukea. Jos paikallis-
+muuttuja DISPLAY on asetettu, YTalk yritt‰‰ kytkeyty‰ t‰h‰n X palvelimeen.
+Tarkemmat tiedot X11 liittym‰st‰ (ja kuinka sulkea se) on annettu alempana.
+.PP
+Kun jokainen uusi k‰ytt‰j‰ lis‰t‰‰n keskusteluun, YTalki l‰hett‰‰ tietoja
+t‰st‰ k‰ytt‰j‰st‰ kaikille muille YTalkilla kytkeytyneille k‰ytt‰jille jotta
+heid‰n n‰yttˆns‰ jakautuisi ja liitt‰isi uuden k‰ytt‰j‰n. Jos uusi k‰ytt‰j‰
+k‰ytt‰‰ UNIXin talkkia, tietoja h‰nest‰ EI l‰hetet‰, h‰nen n‰yttˆns‰ saattaa
+olla kykenem‰tˆn hyv‰ksym‰‰n useita yhteyksi‰. Olen m‰‰r‰nnyt toimintaohjeen
+joka mahdollistaa v‰hint‰‰n UNIXin talk k‰ytt‰jien tulosteen l‰hett‰misen
+kaikille kytkeytyneille YTalk k‰ytt‰jille, mutta min‰ en ole kirjoittanut
+yht‰‰n koodia joka tekisi niin. Huomioi ett‰ vaikkei UNIX talk kykene
+k‰sittelem‰‰n useita yhteyksi‰, on yh‰ mahdollista YTalkilla k‰sitell‰ useita
+UNIX "talk" yhteyksi‰. Esimerkiksi, Tero (k‰ytt‰‰ YTalkia) voi keskustella
+Reinon ja Juhan kanssa (molemmat k‰ytt‰v‰t UNIXin talkkia), mutta Reino ja
+Juha voivat olla tiet‰m‰ttˆmi‰ toisistaan. Paras keino ymm‰rt‰‰ rajoitukset
+joita UNIX "talk" asettaa YTalkille, on testata erilaisia yhteyksi‰ kahden
+v‰lill‰ ja n‰hd‰ kuinka ne toimivat.
+.PP
+.SH ESCAPE VALIKKO
+Milloin tahansa kun k‰yt‰t YTalkia, voit painaa
+.I ESCAPE 
+n‰pp‰int‰ tuodaksesi esiin valikon miss‰ t‰ll‰
+hetkell‰ on n‰m‰ toiminnot:
+.sp
+        a: lis‰‰ k‰ytt‰j‰
+.br
+        d: poista k‰ytt‰j‰
+.br
+        k: poista (kill) kaikki kytkeytym‰ttˆm‰t
+.br
+        o: valinnat
+.br
+        s: shell
+.br
+        u: k‰ytt‰j‰ lista
+.br
+        w: tulosta k‰ytt‰j‰ tiedostoon
+.br
+        q: poistu
+.PP
+Valitsemalla toiminnon "a", olet m‰‰r‰nnyt tilaisuuden kirjoittaa jonkin
+k‰ytt‰j‰n nimi jonka haluaisit liittyv‰n keskusteluun. Taas, YTalk hyv‰ksyy
+pyynnˆt k‰ytt‰j‰lt‰ jos kutsu on olemassa, tai j‰tt‰‰ kutsun ja soittaa
+m‰‰r‰tylle k‰ytt‰j‰lle.
+.PP
+Valitsemalla toiminnon "d", voit valita katkaistavan yhteyden nimen.
+.PP
+Valitsemalla toiminnon "k", saat YTalkin unohtamaan kaikki avoimen (odottavat)
+yhteydet.
+.PP
+Valitsemalla toiminnon "o", voit katsoa ja/tai muuttaa mit‰ tahansa YTalkin
+valintoja. Katso OPTIONS osasta alapuolella luettelo YTalkin valinnoista.
+.PP
+Valitsemalla toiminnon "s", voit her‰tt‰‰ shellin sinun YTalk ikkunassasi.
+Kaikki muut k‰ytt‰j‰t n‰kev‰t mit‰ tapahtuu sinun shelliss‰si. YTalk pienent‰‰
+automaattisesti sinun ikkunasi kokoa alasp‰in kokoon joka on pienin ikkuna
+johon olet kytkeytyneen‰, varmistaakseen ett‰ kaikki k‰ytt‰j‰t n‰kev‰t saman
+asian.
+.PP
+"u" valinta n‰ytt‰‰ luettelon kytkeytyneist‰ ja kytkeytym‰ttˆmist‰ k‰ytt‰jist‰,
+kuten myˆs heid‰n ikkunoiden koot ja mit‰ versiota talk ohjelmasta he ajavat.
+.PP
+Valitsemalla toiminnon "w", voit valita jonkun kytkeytyneen k‰ytt‰j‰n ja antaa
+tiedoston nimen, ja kaikki seuraava teksti jonka t‰m‰ k‰ytt‰j‰ kirjoittaa,
+vedostetaan m‰‰riteltyyn tiedostoon. Jos tiedosto on jo olemassas, se tullaan
+YLIKIRJOITTAMAAN. Valitsemalla "w" ja sama k‰ytt‰j‰ uudelleen, vedostaminen
+tiedostoon lopetetaan.
+.PP
+Jaa, yksi muu asia:   kun k‰ytt‰j‰ A yritt‰‰ ytalkata k‰ytt‰j‰lle B, mutta
+k‰ytt‰j‰ B on jo valmiiksi ytalkaamassa k‰ytt‰j‰n C kanssa, k‰ytt‰j‰ A:n YTalk
+ymm‰rt‰‰ ett‰ k‰ytt‰j‰ B on jo k‰ytt‰m‰ss‰ YTalkia, ja keskustelee k‰ytt‰j‰ B:n
+YTalk ohjelman kanssa suoraan ilman keskustelun avausta. K‰ytt‰j‰ B n‰kee
+kivan ikkunoidun viestin:
+.sp
+	Do you wish to talk with user A?
+.PP
+eli haluatko keskustella k‰ytt‰j‰n A kanssa? ja h‰nelt‰ kysyt‰‰n kyll‰/ei
+vastaus. T‰m‰, minun mielest‰ni, on paljon parempi tapa n‰ytt‰‰ huomautus
+viesti ja sotkea k‰ytt‰j‰ B:n ruutu. Komentorivi-valinta "-i" kytkee t‰m‰n
+pois p‰‰lt‰.
+
+.SH AJONAIKAISET VALINNAT
+Kun valitset valinnat p‰‰valikosta, olet m‰‰r‰nnyt tilaisuuden muokata
+YTalkin valintoja. T‰m‰n hetkiset valinnat ovat: re:
+.sp
+	s: k‰‰nn‰ ruudun rullaus [pois/p‰‰lle]
+.br
+	w: k‰‰nn‰ automaattinen rivinvaihto [pois/p‰‰lle]
+.br
+	i: k‰‰nn‰ automaattinen tuonti [pois/p‰‰lle]
+.br
+	v: k‰‰nn‰ automaattinen kutsu [pois/p‰‰lle]
+.br
+	r: k‰‰nn‰ automaattinen uudelleensoitto [pois/p‰‰lle]
+.br
+	a: k‰‰nn‰ syrj‰ytys [pois/p‰‰lle]
+.PP
+Jos
+.I ruudun rullaus 
+on k‰‰nnetty p‰‰lle, k‰ytt‰j‰n ikuna rullaa kun h‰n saavuttaa alareunan,
+sen sijaan ett‰ hypp‰isi takaisin ylˆs.
+.PP
+Jos
+.I automaattinen rivinvaihto 
+on k‰‰nnetty p‰‰lle, niin mik‰ tahansa sana joka ylitt‰isi oikean marginaalin,
+automaattisesti siirrett‰isiin seuraavalle riville ruudullasi.
+.PP
+Jos
+.I automaattinen tuonti 
+on k‰‰nnetty p‰‰lle, niin YTalk olettaa ett‰ haluat jutella kaikille
+k‰ytt‰jille jotka kytkeytyv‰t toiseen YTalk k‰ytt‰j‰‰n joka on kytkettyn‰
+sinuun. Viimeinen tuomio vaikuttaa; yritt‰‰ uudelleen. YTalk lis‰‰ n‰m‰
+k‰ytt‰j‰t istuntoosi automaattisesti, ilman kysym‰tt‰ sinulta vahvistusta.
+.PP
+Jos
+.I automaattinen kutsu
+on k‰‰nnetty p‰‰lle, niin YTalk automaattisesti hyv‰ksyy kaikki pyydetyt
+kytkeytymiset muilta k‰ytt‰jilt‰ ja lis‰‰ heid‰t isuntoosi. Sinulta ei
+kysyt‰ vahvistusta.
+.PP
+Jos
+.I k‰‰nn‰ automaattinen uudelleensoitto 
+on k‰‰nnetty p‰‰lle, niin YTalk automaattisesti soittaa uudelleen
+k‰ytt‰j‰lle joka ei ole vastannut kutsuusi 30 sekunnin kuluessa.
+Sinulta ei kysyt‰ vahvistusta.
+.PP
+Jos
+.I syrj‰ytys 
+on k‰‰nnetty p‰‰lle (se ei pit‰isi olla mahdollisena), niin n‰pp‰imistˆlt‰
+vastaanotettu syˆte l‰hetet‰‰n vain m‰‰r‰ttyjen k‰ytt‰jien ikkunaan
+syˆtteen tarkennuksen mukaisesti. Katso X11 k‰yttˆliittym‰n selvitys alla.
+.PP
+Mik‰ tahansa n‰ist‰ valinnoista voidaan asettaa mieleiseksesi .ytalkrc
+tiedostoon, kuten selvennetty alla.
+.SH YTALK KƒYNNISTYSTIEDOSTO
+Jos kotihakemistosi sis‰lt‰‰ tiedoston nimelt‰‰n ".ytalkrc" niin YTalk
+lukee t‰m‰n tiedoston k‰ynnistyess‰‰n. Kaikki YTalkin ajonaikaiset valinnat,
+kuten myˆs jotkut k‰ynnistysvalinnat, voidaan asettaa t‰ss‰ tiedostossa.
+.Sh "ASETETAAN BOOLEAN VALINNAT"
+Boolean valinnat voidaan esi-m‰‰ritt‰‰ seuraavalla syntaksilla:
+.sp
+	turn
+.I valinta
+[off | on]
+.PP
+miss‰
+.I valinta
+on joku seuraavista
+.I scrolling ,
+.I word-wrap ,
+.I auto-import ,
+.I auto-invite ,
+.I auto-rering ,
+.I caps ,
+.I noinvite ,
+.I nodelay ,
+.I asides ,
+tai
+.I X .
+N‰iden asettaminen toimii juuri kuten selvitetty yl‰puolella.
+.I X
+:n k‰‰nt‰minen p‰‰lle tai pois kytkee p‰‰lle tai pois p‰‰lt‰ X11
+k‰yttˆliittym‰n joka on m‰‰ritelty alla.
+Esimerkiksi, automaattinen rivinvaihto voidaan kytke‰ p‰‰lle t‰ll‰ rivill‰:
+
+.sp
+	turn word-wrap on
+.Sh "UUDELLEEN-OSOITUS MOODIEN ASETTAMINEN"
+Uudelleenosoittamisen tarkoitus on mahdollistaa YTalk yhteydet PPP (point-
+to-point) verkkoyhdysk‰yt‰v‰n kautta miss‰ paikalliset koneet tuntee eri
+osoitteista (ja yleens‰ toimialueen nimest‰) kuin et‰koneilla.
+Perussyntaksi uudelleenosoittamisen komennosta on t‰m‰:
+.sp
+	readdress
+.I mist‰-osoite
+.I mihin-osoite
+.I verkkoalue (domain)
+.PP
+.I Readdress
+selvitys yksinkertaisesti tekee vaatimuksen ett‰ kone(et)
+.I verkkoalueella
+keskustelevat koneen/koneiden kanssa 
+.I mist‰-osoitteessa
+l‰hett‰m‰ll‰ paketteja
+.I mihin-osoitteeseen .
+Koska useimmat k‰ytt‰j‰ eiv‰t tarvitse t‰t‰, selvensin t‰m‰n vain tiedoksi.
+.PP
+TƒMƒ EI OLE REITIYSTƒ. Esimerkiksi, minun koneeni kotona on kytketty PPP:ll‰
+verkkoon minun toimistossani. Minun koneeni kotona luulee ett‰ sen ethernet
+osoite on 192.188.253.1 ja sen toimialueen nimi on "talisman.com". Verkkolla
+toimistossani on osoite 192.67.141.0. Kun olen kytkeytynyt PPP:ll‰,
+minun kotikoneeni asetetaan toimiston verkkoon osoitteeseen 192.67.141.9
+toimialuenimell‰ "talisman.austin.eds.com".
+.PP
+YTalkin tarvitsee tiet‰‰ ett‰ jos sit‰ ajetaan verkkoalueella 192.67.141.0 ja
+vastaanotetaan paketteja osoitteesta 192.188.253.1 t‰m‰n pit‰isi vastata
+osoitteeseen 192.67.141.9, eik‰ 192.188.253.1. Oikein? oikein. okei, okei, okei.
+Min‰ laitoin t‰m‰n rivin .ytalkrc tiedostoon molemmissa p‰iss‰:
+
+.sp
+	readdress talisman talisman.austin.eds.com 192.67.141.0
+.PP
+Kotini p‰‰ss‰, t‰m‰ k‰‰nnet‰‰n muotoon:
+.sp
+	readdress 192.188.253.1 192.67.141.9 192.67.141.0
+.PP
+mik‰ kertoo minun kotikoneelleni ett‰ ilmoittaa itsens‰ "192.67.141.9":ksi
+"192.188.253.1":n sijaan kun YTalkataan koneille verkossa "192.67.141.0".
+
+Toimiston p‰‰ss‰, readdress komento k‰‰nnet‰‰n muotoon:
+.sp
+	readdress 192.67.141.9 192.67.141.9 192.67.141.0
+.PP
+mik‰ toimiston koneissa pohjimmiltaan j‰tet‰‰n huomioimatta.
+.PP
+Riitt‰‰. Lis‰‰ tietoa kuinka t‰t‰ k‰ytet‰‰n, katso l‰hdekoodista tai
+l‰het‰ minulle kirje. :-)
+.SH X11 KƒYTT÷LIITTYMƒ
+Jos DISPLAY paikallismuuttuja on m‰‰ritelty kun YTalk k‰ynnistetyy, niin
+YTalk yritt‰‰ keskustella t‰m‰n X palvelimen kanssa. Ikkuna luodaan sinulle
+ja jokaiselle k‰ytt‰j‰lle mihin olet kytkettyn‰. X11 k‰yttˆliittym‰ voidaan
+pit‰‰ pois p‰‰lt‰ m‰‰rittelem‰ll‰ -x komentorivill‰ tai laittamalla t‰m‰
+rivi .ytalkrc tiedostoosi:
+.sp
+	turn X off
+.PP
+Ikkuna luodaan jokaiselle erilliselle k‰ytt‰j‰lle keskustelussa. Jos syˆttˆ-
+tarkennin on p‰‰ikkuna (se on ikkuna jonka otsikkopalkissa lukee "ytalk")
+niin kaikki mit‰ kirjoitetaan l‰hetet‰‰n kaikille kytketyille k‰ytt‰jille.
+Jos syˆttˆtarkennin on yksi k‰ytt‰jien ikkunoista, niin kaikki kirjoitettu
+l‰hetet‰‰n syrj‰ss‰ ainoastaan t‰lle k‰ytt‰j‰lle.  Jos "syrj‰ytys" valinta
+on kytketty pois p‰‰lt‰ (katso yll‰) niin ytalk piippaa eik‰ hyv‰ksy mit‰‰n
+mit‰ kirjoitetaan kun syˆttˆtarkennin ei ole p‰‰ikkuna.
+.PP
+YTalk k‰ytt‰‰ X11 resurssitietokantaa n‰ille k‰ytt‰j‰n m‰‰ritelt‰viss‰
+oleville kokoonpano valinnoille:
+.sp
+    YTalk.display:  X palvelin mihin kytkeydyt‰‰n, oletuksena
+DISPLAY paikallismuuttuja.
+.sp
+    YTalk.reverse:  k‰‰nteiset musta/valkeat pisteet
+.sp
+    YTalk.font:  k‰ytett‰v‰ fontti, oletuksena "9x15".
+.sp
+    YTalk.geometry:  ikkunan koko, oletuksena "80x24".
+.SH TULEVAISUUDEN TY÷T
+Tyˆt‰ on tarkoitus tehd‰ seuravilla ideoilla:
+.sp
+.br
+	1) YTalkin k‰yttˆˆn varattu YTalk demoni.
+.br
+	2) MBCS/NLS tuki.
+.br
+
+
+.SH TIEDOSTOT
+
+/usr/local/etc/ytalkrc
+.br
+    J‰rjestelm‰n-kattava oletus tiedosto.
+.PP
+$HOME/.ytalkrc
+.br
+    K‰ytt‰j‰n paikallinen kokoonpanotiedosto. T‰m‰ tiedosto ohittaa
+.br
+    valinnat jotka on m‰‰ritelty j‰rjestelm‰n ytalkrc tiedostossa.
+
+.SH TEKIJƒ
+
+Britt Yenne
+.br
+yenne@austin.eds.com
+.PP
+T‰t‰ versiota yll‰pit‰‰
+.br
+<roger.espel.llima@pobox.com>
+
+.SH AVUSTAJAT
+Erityiset kiitokset Carl Edmanille monista koodip‰ivityksist‰, beta-
+testaamisesta ja kommenteista. Luulen ett‰ t‰m‰ kaveri k‰ytt‰‰ yht‰
+paljon aikaa ytalkin kanssa kuin min‰.
+.PP
+Erityiset kiitokset Tobias Hahnille ja Geoff W:lle beta-testaamisesta
+ja ehdotuksista.
+.PP
+Kiitokset Sitaram Ramaswamylle alkuper‰isest‰ YTalk man-sivusta.
+.PP
+Kiitokset Magnus Hammerinille Solaris 2.* tuesta.
+.PP
+Kiitokset Thilo Wunderlichille Linux tuesta.
+.PP
+Kiitokset Jonas Yngvessonille syrj‰ytys viesteist‰ X:ss‰. 
+.PP
+Kiitokset Andreas Stolckelle X resurssitietokannan kutsujen korjaamisesta.
+.PP
+Kiitokset Pete Wenzelille #elif ohjeen korjaamisesta.
+.PP
+Kiitokset John Vanderpoolille, Shih-Chen Huangille, Andrew Myersille,
+Duncan Sinclairille, Evan McLeanille, Larry Schwimmerille, J. Adam Hawkesille,
+ja Mark Musonelle kommenteista ja ideoista.
+.PP
+YTalkin mukana l‰hetetty LUEMINUT tiedosto antaa tarkennetut ominaisuudet.
+
+.SH BUGIT
+Uusista yhteyksist‰ v‰litett‰vist‰ toimialuenimist‰ jotka v‰litet‰‰n muille
+kytketyille osapuolille puuttuu joskus verkkoalue-osa (domain).
+.PP
+Postita viesti mist‰ tahansa muusta bugista t‰m‰n version yll‰pit‰j‰lle,
+<roger.espel.llima@pobox.com>
+.SH "KATSO MY÷S"

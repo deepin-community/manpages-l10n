@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_CLOSE" "3" "" "systemd 249" "sd_bus_close"
+.TH "SD_BUS_CLOSE" "3" "" "systemd 255" "sd_bus_close"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -73,13 +73,29 @@ Returned errors may indicate the following problems:
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The bus connection has been created in a different process\&.
+The bus connection has been created in a different process, library or module instance\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_close()\fR
+and
+\fBsd_bus_flush()\fR
+were added in version 240\&.
+.PP
+\fBsd_bus_default_flush_close()\fR
+was added in version 246\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

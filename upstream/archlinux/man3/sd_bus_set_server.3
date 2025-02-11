@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_SET_SERVER" "3" "" "systemd 249" "sd_bus_set_server"
+.TH "SD_BUS_SET_SERVER" "3" "" "systemd 257" "sd_bus_set_server"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -110,17 +110,23 @@ Returned errors may indicate the following problems:
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The bus connection has been created in a different process\&.
+The bus connection has been created in a different process, library or module instance\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-EPERM\fR
 .RS 4
 The bus connection has already been started\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOPKG\fR
 .RS 4
 The bus cannot be resolved\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-EINVAL\fR
@@ -133,21 +139,41 @@ was zero and
 \fIid\fR
 did not equal
 \fBSD_ID128_NULL\fR\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOTCONN\fR
 .RS 4
 The bus is not connected\&.
+.sp
+Added in version 246\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_set_server()\fR,
+\fBsd_bus_is_server()\fR,
+\fBsd_bus_get_bus_id()\fR,
+\fBsd_bus_set_bus_client()\fR,
+\fBsd_bus_is_bus_client()\fR,
+\fBsd_bus_set_monitor()\fR, and
+\fBsd_bus_is_monitor()\fR
+were added in version 246\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-bus\fR(3)
+\fBsystemd\fR(1), \fBsd-bus\fR(3)
 .SH "NOTES"
 .IP " 1." 4
 The D-Bus specification

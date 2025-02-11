@@ -2,12 +2,12 @@
 .\"     Title: checkupdates
 .\"    Author: [see the "Authors" section]
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2021-06-29
+.\"      Date: 2024-08-24
 .\"    Manual: Pacman-contrib Manual
-.\"    Source: Pacman-contrib 1.4.0
+.\"    Source: Pacman-contrib 1.10.6
 .\"  Language: English
 .\"
-.TH "CHECKUPDATES" "8" "2021\-06\-29" "Pacman\-contrib 1\&.4\&.0" "Pacman\-contrib Manual"
+.TH "CHECKUPDATES" "8" "2024\-08\-24" "Pacman\-contrib 1\&.10\&.6" "Pacman\-contrib Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -34,8 +34,13 @@ checkupdates \- safely print a list of pending updates
 \fIcheckupdates\fR [options]
 .SH "DESCRIPTION"
 .sp
-Checks for pending updates using a separate Pacman database located in \fBTMPDIR\fR if \fBCHECKUPDATES_DB\fR is not set and outputs a list of updates with the old and new version\&.
+\fIcheckupdates\fR checks for pending updates using a separate pacman database located in \fBTMPDIR\fR if \fBCHECKUPDATES_DB\fR is not set and outputs a list of updates with the old and new version\&.
 .SH "OPTIONS"
+.PP
+\fB\-c, \-\-change\fR
+.RS 4
+Check for new available updates only, prints the list of available updates only if it differs from the last time checkupdates was run with that option\&.
+.RE
 .PP
 \fB\-d, \-\-download\fR
 .RS 4
@@ -44,24 +49,57 @@ Download any pending updates to the pacman cache\&.
 .PP
 \fB\-h, \-\-help\fR
 .RS 4
-Display syntax and command line options\&.
+Display syntax and command\-line options\&.
+.RE
+.PP
+\fB\-\-nocolor\fR
+.RS 4
+Do not colorize output\&.
+Color
+must be enabled in
+pacman\&.conf
+for the listing to be colored to begin with\&.
+.RE
+.PP
+\fB\-n, \-\-nosync\fR
+.RS 4
+Do not sync the temporary database, works best when the temporary database is updated regularly through some other means such as a cronjob or systemd timer\&.
+.RE
+.PP
+\fB\-V, \-\-version\fR
+.RS 4
+Display version information\&.
 .RE
 .SH "ENVIRONMENT"
 .PP
 \fBCHECKUPDATES_DB\fR
 .RS 4
-Override the default update db location\&.
+Override the default
+\fI${TMPDIR:\-/tmp}/checkup\-db\-${UID}\fR
+temporary database location\&.
+.RE
+.PP
+\fBCHECKUPDATES_CHANGE\fR
+.RS 4
+state file location for the \-c/\-\-change option\&.
 .RE
 .PP
 \fBTMPDIR\fR
 .RS 4
-Overrides the default
+Override the default
 \fI/tmp\fR
 temporary directory\&.
 .RE
+.PP
+\fBXDG_STATE_HOME\fR
+.RS 4
+Override the default
+\fI$HOME/\&.local/state\fR
+state directory
+.RE
 .SH "ERRORS"
 .sp
-On exit, checkpkg will return one of the following error codes\&.
+On exit, checkupdates will return one of the following error codes\&.
 .PP
 0
 .RS 4
@@ -82,7 +120,7 @@ No updates are available\&.
 \fBpacman\fR(8), \fBpacman.conf\fR(5)
 .SH "BUGS"
 .sp
-Bugs? You must be kidding; there are no bugs in this software\&. But if we happen to be wrong, send us an email with as much detail as possible to pacman\-contrib@lists\&.archlinux\&.org\&.
+Bugs? You must be kidding; there are no bugs in this software\&. But if we happen to be wrong, file an issue with as much detail as possible at https://gitlab\&.archlinux\&.org/pacman/pacman\-contrib/\-/issues/new\&.
 .SH "AUTHORS"
 .sp
 Current maintainers:

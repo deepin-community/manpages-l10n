@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_JOURNAL_GET_CURSOR" "3" "" "systemd 249" "sd_journal_get_cursor"
+.TH "SD_JOURNAL_GET_CURSOR" "3" "" "systemd 257" "sd_journal_get_cursor"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -41,16 +41,17 @@ returns a cursor string for the current journal entry\&. A cursor is a serializa
 and should be freed after use with
 \fBfree\fR(3)\&.
 .PP
-Note that
-\fBsd_journal_get_cursor()\fR
-will not work before
-\fBsd_journal_next\fR(3)
-(or related call) has been called at least once, in order to position the read pointer at a valid entry\&.
-.PP
 \fBsd_journal_test_cursor()\fR
 may be used to check whether the current position in the journal matches the specified cursor\&. This is useful since cursor strings do not uniquely identify an entry: the same entry might be referred to by multiple different cursor strings, and hence string comparing cursors is not possible\&. Use this call to verify after an invocation of
-\fBsd_journal_seek_cursor\fR(3)
-whether the entry being sought to was actually found in the journal or the next closest entry was used instead\&.
+\fBsd_journal_seek_cursor\fR(3), whether the entry being sought to was actually found in the journal or the next closest entry was used instead\&.
+.PP
+Note that
+\fBsd_journal_get_cursor()\fR
+and
+\fBsd_journal_test_cursor()\fR
+will not work before
+\fBsd_journal_next\fR(3)
+(or one of the other functions which move to an entry) has been called at least once to position the read pointer at a valid entry\&.
 .SH "RETURN VALUE"
 .PP
 \fBsd_journal_get_cursor()\fR
@@ -61,12 +62,16 @@ returns positive if the current entry matches the specified cursor, 0 if it does
 .PP
 All functions listed here are thread\-agnostic and only a single specific thread may operate on a given object during its entire lifetime\&. It\*(Aqs safe to allocate multiple independent objects and use each from a specific thread in parallel\&. However, it\*(Aqs not safe to allocate such an object in one thread, and operate or free it from any other, even if locking is used to ensure these threads don\*(Aqt operate on it at the very same time\&.
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.SH "HISTORY"
+.PP
+\fBsd_journal_get_cursor()\fR
+was added in version 187\&.
+.PP
+\fBsd_journal_test_cursor()\fR
+was added in version 195\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-journal\fR(3),
-\fBsd_journal_open\fR(3),
-\fBsd_journal_seek_cursor\fR(3)
+\fBsystemd\fR(1), \fBsd-journal\fR(3), \fBsd_journal_open\fR(3), \fBsd_journal_seek_cursor\fR(3)

@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_EVENT_ADD_INOTIFY" "3" "" "systemd 249" "sd_event_add_inotify"
+.TH "SD_EVENT_ADD_INOTIFY" "3" "" "systemd 257" "sd_event_add_inotify"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,7 +20,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-sd_event_add_inotify, sd_event_source_get_inotify_mask, sd_event_inotify_handler_t \- Add an "inotify" file system inode event source to an event loop
+sd_event_add_inotify, sd_event_add_inotify_fd, sd_event_source_get_inotify_mask, sd_event_source_get_inotify_path, sd_event_inotify_handler_t \- Add an "inotify" file system inode event source to an event loop
 .SH "SYNOPSIS"
 .sp
 .ft B
@@ -38,8 +38,12 @@ typedef struct sd_event_source sd_event_source;
 .BI "typedef int (*sd_event_inotify_handler_t)(sd_event_source\ *" "s" ", const\ struct\ inotify_event\ *" "event" ", void\ *" "userdata" ");"
 .HP \w'int\ sd_event_add_inotify('u
 .BI "int sd_event_add_inotify(sd_event\ *" "event" ", sd_event_source\ **" "source" ", const\ char\ *" "path" ", uint32_t\ " "mask" ", sd_event_inotify_handler_t\ " "handler" ", void\ *" "userdata" ");"
+.HP \w'int\ sd_event_add_inotify_fd('u
+.BI "int sd_event_add_inotify_fd(sd_event\ *" "event" ", sd_event_source\ **" "source" ", int\ " "fd" ", uint32_t\ " "mask" ", sd_event_inotify_handler_t\ " "handler" ", void\ *" "userdata" ");"
 .HP \w'int\ sd_event_source_get_inotify_mask('u
-.BI "int sd_event_source_get_inotify_mask(sd_event_source\ *" "source" ", uint32_t\ *" "mask" ");"
+.BI "int sd_event_source_get_inotify_mask(sd_event_source\ *" "source" ", uint32_t\ *" "ret" ");"
+.HP \w'int\ sd_event_source_get_inotify_path('u
+.BI "int sd_event_source_get_inotify_path(sd_event_source\ *" "source" ", const\ char\ **" "ret" ");"
 .SH "DESCRIPTION"
 .PP
 \fBsd_event_add_inotify()\fR
@@ -52,12 +56,6 @@ parameter, the event source object is returned in the
 parameter\&. The
 \fIpath\fR
 parameter specifies the path of the file system inode to watch\&. The
-\fIhandler\fR
-must reference a function to call when the inode changes\&. The handler function will be passed the
-\fIuserdata\fR
-pointer, which may be chosen freely by the caller\&. The handler also receives a pointer to a
-struct inotify_event
-structure containing information about the inode event\&. The
 \fImask\fR
 parameter specifies which types of inode events to watch specifically\&. It must contain an OR\-ed combination of
 \fBIN_ACCESS\fR,
@@ -65,6 +63,26 @@ parameter specifies which types of inode events to watch specifically\&. It must
 \fBIN_CLOSE_WRITE\fR, \&... flags\&. See
 \fBinotify\fR(7)
 for further information\&.
+.PP
+The
+\fIhandler\fR
+must reference a function to call when the inode changes or
+\fBNULL\fR\&. The handler function will be passed the
+\fIuserdata\fR
+pointer, which may be chosen freely by the caller\&. The handler also receives a pointer to a
+struct inotify_event
+structure containing information about the inode event\&. The handler may return negative to signal an error (see below), other return values are ignored\&. If
+\fIhandler\fR
+is
+\fBNULL\fR, a default handler that calls
+\fBsd_event_exit\fR(3)
+will be used\&.
+.PP
+\fBsd_event_add_inotify_fd()\fR
+is identical to
+\fBsd_event_add_inotify()\fR, except that it takes a file descriptor to an inode (possibly an
+\fBO_PATH\fR
+one, but any other will do too) instead of a path in the file system\&.
 .PP
 If multiple event sources are installed for the same inode the backing inotify watch descriptor is automatically shared\&. The mask parameter may contain any flag defined by the inotify API, with the exception of
 \fBIN_MASK_ADD\fR\&.
@@ -110,6 +128,14 @@ retrieves the configured inotify watch mask of an event source created previousl
 parameter and a pointer to a
 \fBuint32_t\fR
 variable to return the mask in\&.
+.PP
+\fBsd_event_source_get_inotify_path()\fR
+retrieves the target path of the configured inotify watch of an event source created previously with
+\fBsd_event_add_inotify()\fR\&. It takes the event source object as the
+\fIsource\fR
+parameter and a pointer to a
+\fBconst char **\fR
+variable to return the path in\&. The caller must not free the returned path\&.
 .SH "RETURN VALUE"
 .PP
 On success, these functions return 0 or a positive integer\&. On failure, they return a negative errno\-style error code\&.
@@ -131,17 +157,38 @@ set\&.
 .PP
 \fB\-ESTALE\fR
 .RS 4
-The event loop is already terminated\&.
+Returned by
+\fBsd_event_source_add_inotify()\fR
+or
+\fBsd_event_source_add_inotify_fd()\fR
+when the event loop is already terminated\&. Returned by
+\fBsd_event_source_get_inotify_path()\fR
+when no active inode data is assigned to the event source, e\&.g\&. when the event source is disabled\&.
 .RE
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The event loop has been created in a different process\&.
+The event loop has been created in a different process, library or module instance\&.
 .RE
 .PP
 \fB\-EDOM\fR
 .RS 4
 The passed event source is not an inotify process event source\&.
+.RE
+.PP
+\fB\-EBADF\fR
+.RS 4
+The passed file descriptor is not valid\&.
+.RE
+.PP
+\fB\-ENOSYS\fR
+.RS 4
+\fBsd_event_add_inotify_fd()\fR
+or
+\fBsd_event_source_get_inotify_path()\fR
+was called without
+/proc/
+mounted\&.
 .RE
 .SH "EXAMPLES"
 .PP
@@ -151,6 +198,8 @@ The passed event source is not an inotify process event source\&.
 .RS 4
 .\}
 .nf
+/* SPDX\-License\-Identifier: MIT\-0 */
+
 #include <stdio\&.h>
 #include <string\&.h>
 #include <sys/inotify\&.h>
@@ -213,23 +262,28 @@ int main(int argc, char **argv) {
 .\}
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_event_inotify_handler_t()\fR,
+\fBsd_event_add_inotify()\fR, and
+\fBsd_event_source_get_inotify_mask()\fR
+were added in version 239\&.
+.PP
+\fBsd_event_add_inotify_fd()\fR
+was added in version 250\&.
+.PP
+\fBsd_event_source_get_inotify_path()\fR
+was added in version 256\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-event\fR(3),
-\fBsd_event_new\fR(3),
-\fBsd_event_now\fR(3),
-\fBsd_event_add_io\fR(3),
-\fBsd_event_add_time\fR(3),
-\fBsd_event_add_signal\fR(3),
-\fBsd_event_add_defer\fR(3),
-\fBsd_event_add_child\fR(3),
-\fBsd_event_source_set_enabled\fR(3),
-\fBsd_event_source_set_priority\fR(3),
-\fBsd_event_source_set_userdata\fR(3),
-\fBsd_event_source_set_description\fR(3),
-\fBsd_event_source_set_floating\fR(3),
-\fBwaitid\fR(2)
+\fBsystemd\fR(1), \fBsd-event\fR(3), \fBsd_event_new\fR(3), \fBsd_event_now\fR(3), \fBsd_event_add_io\fR(3), \fBsd_event_add_time\fR(3), \fBsd_event_add_signal\fR(3), \fBsd_event_add_defer\fR(3), \fBsd_event_add_child\fR(3), \fBsd_event_source_set_enabled\fR(3), \fBsd_event_source_set_priority\fR(3), \fBsd_event_source_set_userdata\fR(3), \fBsd_event_source_set_description\fR(3), \fBsd_event_source_set_floating\fR(3), \fBwaitid\fR(2)

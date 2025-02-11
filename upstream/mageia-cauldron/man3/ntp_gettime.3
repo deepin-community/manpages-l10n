@@ -1,34 +1,18 @@
+'\" t
 .\" Copyright (c) 2016 by Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
-.\"
-.TH NTP_GETTIME 3 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH ntp_gettime 3 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 ntp_gettime, ntp_gettimex  \- get time parameters (NTP daemon interface)
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/timex.h>
-.PP
+.P
 .BI "int ntp_gettime(struct ntptimeval *" ntv );
 .BI "int ntp_gettimex(struct ntptimeval *" ntv );
 .fi
@@ -36,7 +20,7 @@ ntp_gettime, ntp_gettimex  \- get time parameters (NTP daemon interface)
 Both of these APIs return information to the caller via the
 .I ntv
 argument, a structure of the following type:
-.PP
+.P
 .in +4n
 .EX
 struct ntptimeval {
@@ -44,12 +28,12 @@ struct ntptimeval {
     long maxerror;          /* Maximum error */
     long esterror;          /* Estimated error */
     long tai;               /* TAI offset */
-
+\&
     /* Further padding bytes allowing for future expansion */
 };
 .EE
 .in
-.PP
+.P
 The fields of this structure are as follows:
 .TP
 .I time
@@ -85,7 +69,7 @@ This value is not used inside the kernel.
 .TP
 .I tai
 TAI (Atomic International Time) offset.
-.PP
+.P
 .BR ntp_gettime ()
 returns an
 .I ntptimeval
@@ -93,9 +77,9 @@ structure in which the
 .IR time ,
 .IR maxerror ,
 and
-.IR esterror
+.I esterror
 fields are filled in.
-.PP
+.P
 .BR ntp_gettimex ()
 performs the same task as
 .BR ntp_gettime (),
@@ -111,51 +95,41 @@ are as for
 .BR adjtimex (2).
 Given a correct pointer argument, these functions always succeed.
 .\" FIXME . the info page incorrectly describes the return values.
-.SH VERSIONS
-The
-.BR ntp_gettime ()
-function is available since glibc 2.1.
-The
-.BR ntp_gettimex ()
-function is available since glibc 2.12.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR ntp_gettime (),
 .BR ntp_gettimex ()
 T}	Thread safety	MT-Safe
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
+.SH STANDARDS
+.TP
 .BR ntp_gettime ()
-is described in the NTP Kernel Application Program Interface.
+NTP Kernel Application Program Interface.
+.TP
 .BR ntp_gettimex ()
-is a GNU extension.
+GNU.
+.SH HISTORY
+.TP
+.BR ntp_gettime ()
+glibc 2.1.
+.TP
+.BR ntp_gettimex ()
+glibc 2.12.
 .SH SEE ALSO
 .BR adjtimex (2),
 .BR ntp_adjtime (3),
 .BR time (7)
-.PP
+.P
 .ad l
 .UR http://www.slac.stanford.edu/comp/unix/\:package/\:rtems/\:src/\:ssrlApps/\:ntpNanoclock/\:api.htm
 NTP "Kernel Application Program Interface"
 .UE
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

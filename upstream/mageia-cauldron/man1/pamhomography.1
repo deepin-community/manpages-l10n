@@ -3,17 +3,17 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "pamhomography" 1 "03 January 2021" "netpbm documentation"
+.TH "pamhomography" 1 "04 December 2022" "netpbm documentation"
 
 
 
 
 <script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-.UN NAME
 .SH NAME
 .PP
-pamhomography - map one arbitrary quadrilateral image region to another
+pamhomography - stretch/shrink a quadrilateral region of an image to
+  another quadrilateral shape
 
 
 .UN SYNOPSIS
@@ -25,6 +25,7 @@ pamhomography - map one arbitrary quadrilateral image region to another
   [\fB-mapfile\fP=\fImap_file\fP]
   [\fB-view\fP=\fIcoords\fP]
   [\fB-fill\fP=\fIcolor\fP]
+  [\fB-verbose\fP
   [\fIpam_file\fP]
 .PP
 You can abbreviate any option to its shortest unique prefix. You can use
@@ -42,8 +43,9 @@ Netpbm
 .UE
 \&.
 .PP
-\fBpamhomography\fP transforms a quadrilateral-not necessarily
-rectangular-region of an image, producing a new image.
+\fBpamhomography\fP stretches and shrinks an arbitrary quadrilateral
+portion of an input image you specify (not necessarily rectangular), into a
+new quadrilateral shape you specify, producing a new image.
 .PP
 You can do any
 .UR https://en.wikipedia.org/wiki/Affine_transformation#Image_transformation
@@ -71,24 +73,25 @@ options:
 
 
 
-<dt id="from-coords">\fB-from\fP=\fIcoords\fP
+.TP
+\fB-from\fP=\fIcoords\fP
 .sp
 This defines the source quadrilateral. \fIcoords\fP is a list of four
-  integer-valued (\fIx\fP, \fIy\fP) coordinates. If you do not
-  specify \fB-from\fP, the source quadrilateral is taken to be the four
-  corners of the input image in clockwise order, starting from the upper
-  left.
+  integer-valued (\fIx\fP, \fIy\fP) coordinates. If you do not specify the
+  source with either \fB-from\fP or \fB-mapfile\fP, the source quadrilateral
+  is the entire input image.
 
 
-<dt id="to-coords">\fB-to\fP=\fIcoords\fP
+.TP
+\fB-to\fP=\fIcoords\fP
 .sp
 This defines the target quadrilateral. \fIcoords\fP is a list of four
-integer-valued (\fIx\fP, \fIy\fP) coordinates. If you do not
-specify \fB-to\fP, the target quadrilateral is taken to be the four corners
-of the input image in clockwise order, starting from the upper left.
+integer-valued (\fIx\fP, \fIy\fP) coordinates. If you do not specify the
+target with either \fB-to\fP or \fB-mapfile\fP, the target quadrilateral is
+the same as the entire input image.
 
-
-<dt id="mapfile-map_file">\fB-mapfile\fP=\fImap_file\fP
+.TP
+\fB-mapfile\fP=\fImap_file\fP
 .sp
 This names a text file that describes the mapping from the source to the
 target quadrilateral. The file \fImap_file\fP must contain either eight
@@ -98,9 +101,13 @@ four (\fIx\fP, \fIy\fP) coordinates, being only the four target
 coordinates. In the latter case, the source quadrilateral is taken to be the
 four corners of the input image in clockwise order, starting from the upper
 left.
+.sp
+Anything you specify with \fB-to\fP or \fB-from\fP overrides what is in
+  this file.
 
 
-<dt id="view-coords">\fB-view\fP=\fIcoords\fP
+.TP
+\fB-view\fP=\fIcoords\fP
 .sp
 This defines the target view. \fIcoords\fP is a list of two integer-valued
 (\fIx\fP, \fIy\fP) coordinates: the upper left and lower right boundaries,
@@ -109,7 +116,8 @@ respectively, of the pixels that will be visible in the output image. If
 quadrilateral.
 
 
-<dt id="fill-color">\fB-fill\fP=\fIcolor\fP
+.TP
+\fB-fill\fP=\fIcolor\fP
 .sp
 This is the color with which the program fills all pixels that lie outside
 of the target quadrilateral. Specify the color as described for the
@@ -122,16 +130,17 @@ The default is black, and for images with a transparency plane, transparent.
 
 
 
+.TP
+\fB-verbose\fP
+This makes the program issue some informational messages about what it is
+doing.
+
+
 .PP
 Cooordinates should normally be specified in clockwise order. The syntax is
 fairly flexible: all characters other than the plus sign, minus sign, and
 digits are treated as separators. Although coordinates need to be integers,
 they may lie outside the image's boundary.
-.PP
-If you specify \fB-mapfile\fP along with \fB-from\fP and/or \fB-to\fP,
-\fB-from\fP and \fB-to\fP override the quadrilaterals specified
-by \fImap_file\fP.
-
 
 .UN PARAMETERS
 .SH PARAMETERS
@@ -182,29 +191,34 @@ The first example showcases the real power of bilinear transformations.
 Assuming \fIpark_row_rect.map\fP has the following contents:
 
 .nf\f(CW    (147, 51) (316, 105) (402, 595) (92, 560)
-      (0,  0) (440,   0) (440, 639)  (0, 639)\fP</pre>
+      (0,  0) (440,   0) (440, 639)  (0, 639)\fP
+.fi
 .PP
 then
 
-.nf\f(CW    pamhomography -mapfile park_row_rect.map park_row.ppm > park_row_rect.ppm\fP</pre>
+.nf\f(CW    pamhomography -mapfile park_row_rect.map park_row.ppm > park_row_rect.ppm\fP
+.fi
 .PP
 projects the building's facade from a perspective view to a rectilinear
 front-on view. Remember that \fBpamhomography\fP ignores the parentheses and
 commas used in \fIpark_row_rect.map\fP; they merely make the file more
 human-readable. We equivalently could have written
 
-.nf\f(CW    147 51 316 105 402 595 92 560 0 0 440 0 440 639 0 639\fP</pre>
+.nf\f(CW    147 51 316 105 402 595 92 560 0 0 440 0 440 639 0 639\fP
+.fi
 .PP
 or any of myriad other variations.
 .PP
 \fBpamhomography\fP can warp the image to a trapezoid to make it look like
 it's leaning backwards in 3-D:
 
-.nf\f(CW    pamhomography -to '50,0 390,0 440,200 0,200' park_row.ppm > park_row_trap.ppm\fP</pre>
+.nf\f(CW    pamhomography -to '50,0 390,0 440,200 0,200' park_row.ppm > park_row_trap.ppm\fP
+.fi
 .PP
 As a very simple example,
 
-.nf\f(CW    pamhomography -to '440,0 0,0 0,639 440,639' park_row.ppm > park_row_flip.ppm\fP</pre>
+.nf\f(CW    pamhomography -to '440,0 0,0 0,639 440,639' park_row.ppm > park_row_flip.ppm\fP
+.fi
 .PP
 flips the image left-to-right. Note that in this case the target
 quadrilateral's coordinates are listed in counterclockwise order because
@@ -214,27 +228,32 @@ that represents the correspondence between points (0, 0) &harr; (440, 0) and
 Scaling is also straightforward. The following command scales down the
 image from 441&times;640 to 341&times;540:
 
-.nf\f(CW    pamhomography -to '0,0 340,0 340,539 0,539' park_row.ppm > park_row_small.ppm\fP</pre>
+.nf\f(CW    pamhomography -to '0,0 340,0 340,539 0,539' park_row.ppm > park_row_small.ppm\fP
+.fi
 .PP
 Let's add 100 pixels of tan border to the above. We use \fB-view\fP and
 \fB-fill\fP to accomplish that task:
 
-.nf\f(CW    pamhomography -to '0,0 340,0 340,539 0,539' -view '-100,-100 440,639' -fill tan park_row.ppm > park_row_small_border.ppm\fP</pre>
+.nf\f(CW    pamhomography -to '0,0 340,0 340,539 0,539' -view '-100,-100 440,639' -fill tan park_row.ppm > park_row_small_border.ppm\fP
+.fi
 .PP
 We can add a border without having to scale the image:
 
-.nf\f(CW    pamhomography -view '-100,-100 540,739' -fill tan park_row.ppm > park_row_border.ppm\fP</pre>
+.nf\f(CW    pamhomography -view '-100,-100 540,739' -fill tan park_row.ppm > park_row_border.ppm\fP
+.fi
 .PP
 The \fB-view\fP option can also be used to extract a rectangle out of an
 image, discarding the rest of the image:
 
-.nf\f(CW    pamhomography -view '130,10 205,80' park_row.ppm > park_row_cut.ppm\fP</pre>
+.nf\f(CW    pamhomography -view '130,10 205,80' park_row.ppm > park_row_cut.ppm\fP
+.fi
 .PP
 Specifying the same set of coordinates to \fB-from\fP and \fB-to\fP has
 the same effect but also allows you to extract non-rectangular quadrilaterals
 from an image:
 
-.nf\f(CW    pamhomography -from '185,300 310,325 320,425 180,405' -to '185,300 310,325 320,425 180,405' park_row.ppm > park_row_cut_2.ppm\fP</pre>
+.nf\f(CW    pamhomography -from '185,300 310,325 320,425 180,405' -to '185,300 310,325 320,425 180,405' park_row.ppm > park_row_cut_2.ppm\fP
+.fi
 .PP
 Rotation is doable but takes some effort. The challenge is that you need to
 compute the rotated coordinates yourself. The matrix expression to rotate
@@ -268,13 +287,15 @@ following map file, \fIpark_row_rot30.map\fP:
 .nf\f(CW     189  -67
      571  153
      251  706
-    -130  486\fP</pre>
+    -130  486\fP
+.fi
 .PP
 (These are the 'to' coordinates; we use the default, full-image
 \&'from' coordinates.) The mapping then works as in all of the
 preceding examples:
 
-.nf\f(CW    pamhomography -mapfile park_row_rot30.map park_row.ppm > park_row_rot30.ppm\fP</pre>
+.nf\f(CW    pamhomography -mapfile park_row_rot30.map park_row.ppm > park_row_rot30.ppm\fP
+.fi
 
 
 .UN SEE-ALSO
@@ -328,8 +349,8 @@ preceding examples:
 
 
 
-.UN SEE-ALSO
-.SH SEE ALSO
+.UN HISTORY
+.SH HISTORY
 .PP
 \fBpamhomography\fP was new in Netpbm 10.94 (March 2021).
   

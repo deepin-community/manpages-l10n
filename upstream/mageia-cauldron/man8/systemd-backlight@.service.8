@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-BACKLIGHT@\&.SERVICE" "8" "" "systemd 249" "systemd-backlight@.service"
+.TH "SYSTEMD\-BACKLIGHT@\&.SERVICE" "8" "" "systemd 255" "systemd-backlight@.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -36,7 +36,10 @@ systemd\-backlight@\&.service
 is a service that restores the display backlight brightness at early boot and saves it at shutdown\&. On disk, the backlight brightness is stored in
 /var/lib/systemd/backlight/\&. During loading, if the udev property
 \fBID_BACKLIGHT_CLAMP\fR
-is not set to false, the brightness is clamped to a value of at least 1 or 5% of maximum brightness, whichever is greater\&. This restriction will be removed when the kernel allows user space to reliably set a brightness value which does not turn off the display\&.
+is not set to false, the brightness is clamped to a value of at least 1 or 5% of maximum brightness, whichever is greater\&. The percentage can be adjusted by specifying a percentage (needs to be suffixed with
+"%", e\&.g\&.
+"30%") to the property
+\fBID_BACKLIGHT_CLAMP\fR\&.
 .SH "KERNEL COMMAND LINE"
 .PP
 systemd\-backlight
@@ -47,6 +50,8 @@ understands the following kernel command line parameter:
 Takes a boolean argument\&. Defaults to
 "1"\&. If
 "0", does not restore the backlight settings on boot\&. However, settings will still be stored on shutdown\&.
+.sp
+Added in version 209\&.
 .RE
 .SH "SEE ALSO"
 .PP

@@ -1,135 +1,297 @@
-.\"	$OpenBSD: lpq.1,v 1.10 2007/05/31 19:20:25 jmc Exp $
-.\"	$NetBSD: lpq.1,v 1.11 2002/01/19 03:23:11 wiz Exp $
-.\"
-.\" Copyright (c) 1983, 1990, 1993
-.\"	The Regents of the University of California.  All rights reserved.
-.\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. Neither the name of the University nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.\"
-.\"     @(#)lpq.1	8.2 (Berkeley) 4/28/95
-.\"
-.Dd $Mdocdate: May 31 2007 $
-.Dt LPQ 1
-.Os
-.Sh NAME
-.Nm lpq
-.Nd spool queue examination program
-.Sh SYNOPSIS
-.Nm lpq
-.Op Fl al
-.Op Fl P Ns Ar printer
-.Op Ar job# Ar ...
-.Op Ar user Ar ...
-.Sh DESCRIPTION
-.Nm lpq
-examines the spooling area used by
-.Xr lpd 8
-for printing files on the line printer, and reports the status of the
-specified jobs or all jobs associated with a user.
-.Nm
-invoked
-without any arguments reports on any jobs currently in the queue.
-.Pp
-The options are as follows:
-.Bl -tag -width Ds
-.It Fl a
-Report on the local queues for all printers,
-rather than just the specified printer.
-.It Fl l
-Information about each of the files comprising the job entry
-is printed.
-Normally, only as much information as will fit on one line is displayed.
-.It Fl P Ns Ar printer
-Specify a particular printer, otherwise the default
-line printer is used (or the value of the
-.Ev PRINTER
-variable in the
-environment).
-All other arguments supplied are interpreted as user
-names or job numbers to filter out only those jobs of interest.
-.El
-.Pp
-For each job submitted (i.e., invocation of
-.Xr lpr 1 )
-.Nm
-reports the user's name, current rank in the queue, the
-names of files comprising the job, the job identifier (a number which
-may be supplied to
-.Xr lprm 1
-for removing a specific job), and the total size in bytes.
-Job ordering is dependent on
-the algorithm used to scan the spooling directory and is supposed
-to be
-.Tn FIFO
-(First In First Out).
-File names comprising a job may be unavailable
-(when
-.Xr lpr 1
-is used as a sink in a pipeline) in which case the file is indicated as
-.Dq (standard input) .
-.Pp
-If
-.Nm
-warns that there is no daemon present (i.e., due to some malfunction), the
-.Xr lpc 8
-command can be used to restart the printer daemon.
-.Sh ENVIRONMENT
-If the following environment variable exists, it is used by
-.Nm lpq :
-.Bl -tag -width PRINTER
-.It Ev PRINTER
-Specifies an alternate default printer.
-.El
-.Sh FILES
-.Bl -tag -width "/var/spool/output/*/lock" -compact
-.It Pa /etc/printcap
-To determine printer characteristics.
-.It Pa /var/spool/*
-The spooling directory, as determined from printcap.
-.It Pa /var/spool/output/*/cf*
-Control files specifying jobs.
-.It Pa /var/spool/output/*/lock
-The lock file to obtain the currently active job.
-.El
-.Sh DIAGNOSTICS
-Unable to open various files.
-The lock file being malformed.
-Garbage files when there is no daemon active, but files in the
-spooling directory.
-.Sh SEE ALSO
-.Xr lpr 1 ,
-.Xr lprm 1 ,
-.Xr lpc 8 ,
-.Xr lpd 8
-.Sh HISTORY
-.Nm lpq
-appeared in
-.Bx 3 .
-.Sh BUGS
-Due to the dynamic nature of the information in the spooling directory,
-.Nm
-may report unreliably.
-Output formatting is sensitive to the line length of the terminal;
-this can result in widely spaced columns.
+.TH LPQ 1 2007-02-24 "LPRng" "lpq command"
+.SH NAME
+lpq \- spool queue examination program
+.SH SYNOPSIS
+.B lpq
+.RB [ \-a ]
+.RB [ \-A ]
+.RB [ \-l ]
+.RB [ \-L ]
+.RB [ \-V ]
+.RB [ \-c ]
+.RB [ \-v ]
+.RB [ \-P
+.IR " printer" ]
+.RB [ \-s ]
+.RB [ -t
+.IR " sleeptime" ]
+.RB [ \-D
+.IR " debugopt" ]
+.RI [  jobid \|.\|.\|.]
+.SH DESCRIPTION
+.I lpq
+requests a status report from
+.IR lpd (8)
+on the specified printers or jobs.
+.I lpq
+invoked without any arguments
+reports on the printer given by the default printer
+(see
+.B \-P
+option).
+The short (default) format simply lists
+the printer, host, and numbers of jobs in the spool queue.
+When using the long format (-l option),
+for each job in a spool queue
+.I lpq
+reports the job identifier
+which is generated from the user's name and originating host,
+current rank in the queue,
+the job number (which may be supplied to
+.IR lprm (1)
+for removing a specific job),
+the job description information,
+and the total size in bytes.
+If there is an error or other problem with the job,
+this information may be modified to reflect the problems.
+In a spool queue,
+Job ordering is a modified FIFO (First in First Out),
+modified by the job class and priority information.
+.PP
+The following options are available.
+.TP
+.B \-A
+Use authentication specified by the value of the AUTH environment variable.
+.TP
+.BI "\-D " debugoptions
+Debugging is controlled using the
+.B \-D
+option. This accepts a comma-separated list of debugging
+settings. These settings take one of two forms: 
+.B facility=value , 
+or
+.B value 
+to set an overall default value.
+.TP
+.BI "\-P " printer
+By default,
+the destination printer
+is taken from
+the command line
+.I printer
+value,
+then
+the environment variables
+PRINTER,
+LPDEST,
+NPRINTER,
+NGPRINTER,
+then first entry in the printcap information,
+and and finally the default_printer entry from the
+configuration file,
+and then the compile time default.
+.TP
+.B "\-V"
+Print version information.
+.TP
+.B "\-v"
+Dump lpd related information.
+.TP
+.B "\-c"
+Clear Screen before output, very usefull with \-t
+.TP
+.B "\-a"
+List status for all printers (see PRINTER LISTS below)
+which have entries for the LPRng client programs
+in the
+.IR printcap (5)
+database.
+.TP
+.B "\-l"
+Increase verbosity of the \fBl\fRong display format.
+A single -l options selects a short verbose display,
+multiple -l options increase the verbosity.
+.TP
+.B "\-L"
+Use maximum verbosity for the \fBl\fRong display format.
+.TP
+.B "\-s"
+Display a short, single line status summary for each queue and subqueue.
+.TP
+.BI "\-t " sleeptime
+Forces
+.I lpq
+to periodically display the spool queues and then sleep
+.I sleeptime
+seconds between scans of the queue.
+.IP "jobid ... all"
+The options are followed by
+a list of jobids which
+are used to select jobs of interest.
+A jobid can be a user name,
+a job identifier,
+a job number,
+or a glob based pattern which will be applied to the
+job identifiers.
+The all keyword will display all jobs and is the default option.
+.PP
+The
+.I lpq
+will report the status of the spool queue (enabled for spooling,
+disabled for unspooling),
+and the absence of a server if unspooling is enabled.
+The
+.IR lpc (1)
+command
+.I "lpc start <printer>"
+may be used to start the server if this is the case.
+.SH ENVIRONMENT
+By default,
+the destination printer
+is taken from
+the command line
+.I dest
+value,
+then
+the environment variables
+PRINTER,
+LPDEST,
+NPRINTER,
+NGPRINTER,
+then first entry in the printcap information,
+and and finally the default_printer entry from the
+configuration file,
+and then the compile time default.
+.SH "PRINTER LISTS"
+The
+.B -a
+option is used to by
+.IR lpq (1)
+to get status for a list of printers.
+This list is formed as follows.
+.IP 1)
+The printcap file is scanned for printer entries.
+Only entries with names starting with a
+letter or digit are recognized as valid queue or printer names.
+.IP 2)
+If the special entry
+.I all
+is present,
+and it has a field
+.I ":all=pr1@host1,pr2@host2,..."
+then the printers
+.IR pr1 ,
+.IR pr2 ,
+\&...
+are used as the printer or queue list.
+.IP 3)
+If there is no all entry,
+then the original list of printers found in
+step 1)
+is used as the list of printers. 
+.PP
+The special case of
+.B "lpq -Pall"
+disables the searching of the printcap database,
+and simply sends a query to the lpd server for status
+of printer
+.BR all .
+The
+.IR lpd (8)
+server enumerates the printers in its printcap file,
+ignoring any
+.I all
+entry,
+and returns status only for printers which have entries in the
+.IR lpd (8)
+server printcap file.
+.PP
+Finally,
+the special case
+.B "lpq -Ppr@host"
+causes
+.IR lpq (1)
+to send a status request for printer
+.B pr
+to host
+.BR host .
+.PP
+Here is a simple set of rules to use:
+.nf
+.ft CW
+Client:
+ pr1:lp=%P@server
+ pr2:lp=%P@server
+  - printer pr1 followed by pr2
+
+pr1:lp=%P@server
+pr2:lp=%P@server
+all:all=pr2,pr1
+  - printer pr2 followed by pr1 (all overrides)
+
+Client:
+ pr1:lp=%P@server
+ pr2:lp=%P@server
+Server:
+ lp:lp=...
+  lpq -Pall
+    - status returned only for printer 'lp'
+.fi
+.SH "EXIT STATUS"
+The following exit values are returned:
+.TP 15
+.B "zero (0)"
+Successful completion.
+.TP
+.B "non-zero (!=0)"
+An error occurred.
+.SH "PRINTCAP INFORMATION"
+The printer names and other information is obtained by using a printcap
+file or some other database.
+The ${HOME}/.printcap
+file can be used to specify user level options and configuration
+information.
+See
+.IR printcap (5)
+for more information.
+.SH FILES
+The files used by LPRng are set by values in the
+printer configuration file.
+The following are a commonly used set of default values.
+.nf
+.ta \w'/var/spool/lpd/printcap.<hostname>           'u
+/etc/lprng/lpd.conf	LPRng configuration file
+${HOME}/.printcap	user printer description file
+/etc/printcap	printer description file
+/etc/lprng/lpd.perms	permissions
+/var/run/lprng/lpd	lock file for queue control
+/var/spool/lpd		spool directories
+/var/spool/lpd/QUEUE/control	queue control
+/var/spool/lpd/QUEUE/log	trace or debug log file
+/var/spool/lpd/QUEUE/acct	accounting file
+/var/spool/lpd/QUEUE/status	status file
+.fi
+.SH "SEE ALSO"
+.BR lpd.conf (5),
+.BR lpc (8),
+.BR lpd (8),
+.BR checkpc (8),
+.BR lpr (1),
+.BR lprm (1),
+.BR printcap (5),
+.BR lpd.perms (5),
+.BR pr (1).
+.SH "AUTHOR"
+Patrick Powell <papowell@lprng.com>.
+.SH DIAGNOSTICS
+Most of the diagnostics are self explanatory.
+If you are puzzled over the exact cause of failure,
+set the debugging level on (-D5) and run again.
+The debugging information will 
+help you to pinpoint the exact cause of failure.
+.SH "HISTORY"
+LPRng is a enhanced printer spooler system
+with functionality similar to the Berkeley LPR software.
+The LPRng developer mailing list is lprng-devel@lists.sourceforge.net;
+subscribe by visiting 
+.B https://lists.sourceforge.net/lists/listinfo/lprng-devel
+or sending mail to 
+.B lprng-request@lists.sourceforge.net
+with
+the word 
+.I subscribe 
+in the body.
+.br
+The software is available via 
+.B http://lprng.sourceforge.net
+

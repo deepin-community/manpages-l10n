@@ -1,5 +1,5 @@
 '\" t
-.TH "VCONSOLE\&.CONF" "5" "" "systemd 249" "vconsole.conf"
+.TH "VCONSOLE\&.CONF" "5" "" "systemd 255" "vconsole.conf"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -32,9 +32,11 @@ file configures the virtual console, i\&.e\&. keyboard mapping and console font\
 90\-vconsole\&.rules
 file\&. You can safely mask this file if you want to avoid this kind of initialization\&.
 .PP
-The basic file format of the
+The format of
 vconsole\&.conf
-is a newline\-separated list of environment\-like shell\-compatible variable assignments\&. It is possible to source the configuration from shell scripts, however, beyond mere variable assignments no shell features are supported, allowing applications to read the file without implementing a shell compatible execution engine\&.
+is a newline\-separated list of environment\-like shell\-compatible variable assignments, ignoring comments and empty lines\&. It is possible to source the configuration from shell scripts, however, beyond mere variable assignments no shell features are supported, allowing applications to read the file without implementing a shell compatible execution engine\&. See
+\fBos-release\fR(5)
+for a detailed description of the format\&.
 .PP
 Note that the kernel command line options
 \fIvconsole\&.keymap=\fR,
@@ -63,7 +65,9 @@ Configures the key mapping table for the keyboard\&.
 \fIKEYMAP=\fR
 defaults to
 "us"
-if not set\&. The
+if not set\&. Specially, if
+"@kernel"
+is specified, no keymap will be loaded, i\&.e\&. the kernel\*(Aqs default keymap is used\&. The
 \fIKEYMAP_TOGGLE=\fR
 can be used to configure a second toggle keymap and is by default unset\&.
 .RE
@@ -84,6 +88,8 @@ Overrides
 \fIKEYMAP=\fR
 and
 \fIKEYMAP_TOGGLE=\fR\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fIvconsole\&.font=\fR, \fIvconsole\&.font_map=\fR, \fIvconsole\&.font_unimap=\fR
@@ -92,6 +98,8 @@ Overrides
 \fIFONT=\fR,
 \fIFONT_MAP=\fR, and
 \fIFONT_UNIMAP=\fR\&.
+.sp
+Added in version 232\&.
 .RE
 .SH "EXAMPLE"
 .PP

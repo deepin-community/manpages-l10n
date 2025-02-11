@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_JOURNAL_ENUMERATE_FIELDS" "3" "" "systemd 249" "sd_journal_enumerate_fields"
+.TH "SD_JOURNAL_ENUMERATE_FIELDS" "3" "" "systemd 257" "sd_journal_enumerate_fields"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -69,7 +69,7 @@ returns nothing\&.
 .PP
 All functions listed here are thread\-agnostic and only a single specific thread may operate on a given object during its entire lifetime\&. It\*(Aqs safe to allocate multiple independent objects and use each from a specific thread in parallel\&. However, it\*(Aqs not safe to allocate such an object in one thread, and operate or free it from any other, even if locking is used to ensure these threads don\*(Aqt operate on it at the very same time\&.
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
 .SH "EXAMPLES"
@@ -82,35 +82,37 @@ macro to iterate through all field names in use in the current journal\&.
 .RS 4
 .\}
 .nf
+/* SPDX\-License\-Identifier: MIT\-0 */
+
+#include <errno\&.h>
 #include <stdio\&.h>
-#include <string\&.h>
 #include <systemd/sd\-journal\&.h>
 
 int main(int argc, char *argv[]) {
-        sd_journal *j;
-        const char *field;
-        int r;
+  sd_journal *j;
+  const char *field;
+  int r;
 
-        r = sd_journal_open(&j, SD_JOURNAL_LOCAL_ONLY);
-        if (r < 0) {
-                fprintf(stderr, "Failed to open journal: %s\en", strerror(\-r));
-                return 1;
-        }
-        SD_JOURNAL_FOREACH_FIELD(j, field)
-                printf("%s\en", field);
-        sd_journal_close(j);
-        return 0;
+  r = sd_journal_open(&j, SD_JOURNAL_LOCAL_ONLY);
+  if (r < 0) {
+    fprintf(stderr, "Failed to open journal: %s\en", strerror(\-r));
+    return 1;
+  }
+  SD_JOURNAL_FOREACH_FIELD(j, field)
+    printf("%s\en", field);
+  sd_journal_close(j);
+  return 0;
 }
 .fi
 .if n \{\
 .RE
 .\}
+.SH "HISTORY"
+.PP
+\fBsd_journal_enumerate_fields()\fR,
+\fBsd_journal_restart_fields()\fR, and
+\fBSD_JOURNAL_FOREACH_FIELD()\fR
+were added in version 229\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd.journal-fields\fR(7),
-\fBsd-journal\fR(3),
-\fBsd_journal_open\fR(3),
-\fBsd_journal_query_unique\fR(3),
-\fBsd_journal_get_data\fR(3),
-\fBsd_journal_add_match\fR(3)
+\fBsystemd\fR(1), \fBsystemd.journal-fields\fR(7), \fBsd-journal\fR(3), \fBsd_journal_open\fR(3), \fBsd_journal_query_unique\fR(3), \fBsd_journal_get_data\fR(3), \fBsd_journal_add_match\fR(3)

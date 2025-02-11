@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_REPLY_METHOD_RETURN" "3" "" "systemd 249" "sd_bus_reply_method_return"
+.TH "SD_BUS_REPLY_METHOD_RETURN" "3" "" "systemd 257" "sd_bus_reply_method_return"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -67,6 +67,8 @@ is not attached to a bus\&.
 Message
 \fIm\fR
 is not a method reply message\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-EPERM\fR
@@ -74,6 +76,8 @@ is not a method reply message\&.
 Message
 \fIcall\fR
 has been sealed\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOTCONN\fR
@@ -81,23 +85,32 @@ has been sealed\&.
 The bus to which message
 \fIcall\fR
 is attached is not connected\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOMEM\fR
 .RS 4
 Memory allocation failed\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 In addition, any error returned by
-\fBsd_bus_send\fR(1)
+\fBsd_bus_send\fR(3)
 may be returned\&.
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-bus\fR(3),
-\fBsd_bus_message_new_method_return\fR(3)
+\fBsystemd\fR(1), \fBsd-bus\fR(3), \fBsd_bus_message_new_method_return\fR(3)

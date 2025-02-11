@@ -2,42 +2,24 @@
 .\" Copyright (C) Silicon Graphics Inc, September 2001
 .\" Copyright (C) 2015 Heinrich Schuchardt <xypron.glpk@gmx.de>
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
-.\" The GNU General Public License's references to "object code"
-.\" and "executables" are to be interpreted as the output of any
-.\" document formatting or typesetting system, including
-.\" intermediate and printed output.
-.\"
-.\" This manual is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
-.\"
-.TH LISTXATTR 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH listxattr 2 2024-06-15 "Linux man-pages (unreleased)"
 .SH NAME
 listxattr, llistxattr, flistxattr \- list extended attribute names
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
-.fam C
 .nf
 .B #include <sys/xattr.h>
-.PP
-.BI "ssize_t listxattr(const char *" path ", char *" list \
+.P
+.BI "ssize_t listxattr(const char *" path ", char *_Nullable " list \
 ", size_t " size );
-.BI "ssize_t llistxattr(const char *" path ", char *" list \
+.BI "ssize_t llistxattr(const char *" path ", char *_Nullable " list \
 ", size_t " size );
-.BI "ssize_t flistxattr(int " fd ", char *" list ", size_t " size );
+.BI "ssize_t flistxattr(int " fd ", char *_Nullable " list ", size_t " size );
 .fi
-.fam T
 .SH DESCRIPTION
 Extended attributes are
 .IR name : value
@@ -48,7 +30,7 @@ with all inodes in the system (i.e., the
 data).
 A complete overview of extended attributes concepts can be found in
 .BR xattr (7).
-.PP
+.P
 .BR listxattr ()
 retrieves the list
 of extended attribute names associated with the given
@@ -64,14 +46,14 @@ have access may be omitted from the list.
 The length of the attribute name
 .I list
 is returned.
-.PP
+.P
 .BR llistxattr ()
 is identical to
 .BR listxattr (),
 except in the case of a symbolic link, where the list of names of
 extended attributes associated with the link itself is retrieved,
 not the file that it refers to.
-.PP
+.P
 .BR flistxattr ()
 is identical to
 .BR listxattr (),
@@ -81,13 +63,13 @@ only the open file referred to by
 .BR open (2))
 is interrogated in place of
 .IR path .
-.PP
+.P
 A single extended attribute
 .I name
 is a null-terminated string.
 The name includes a namespace prefix; there may be several, disjoint
 namespaces associated with an individual inode.
-.PP
+.P
 If
 .I size
 is specified as zero, these calls return the current size of the
@@ -103,23 +85,24 @@ from the second call.)
 .SS Example
 The
 .I list
-of names is returned as an unordered array of null-terminated character
-strings (attribute names are separated by null bytes (\(aq\e0\(aq)), like this:
-.PP
+of names is returned as an unordered array of null-terminated character strings
+(attribute names are separated by null bytes (\[aq]\[rs]0\[aq])),
+like this:
+.P
 .in +4n
 .EX
-user.name1\e0system.name1\e0user.name2\e0
+user.name1\[rs]0system.name1\[rs]0user.name2\[rs]0
 .EE
 .in
-.PP
+.P
 Filesystems that implement POSIX ACLs using
 extended attributes might return a
 .I list
 like this:
-.PP
+.P
 .in +4n
 .EX
-system.posix_acl_access\e0system.posix_acl_default\e0
+system.posix_acl_access\[rs]0system.posix_acl_default\[rs]0
 .EE
 .in
 .SH RETURN VALUE
@@ -146,15 +129,15 @@ The
 of the
 .I list
 buffer is too small to hold the result.
-.PP
+.P
 In addition, the errors documented in
 .BR stat (2)
 can also occur.
-.SH VERSIONS
-These system calls have been available on Linux since kernel 2.4;
-glibc support is provided since version 2.3.
-.SH CONFORMING TO
-These system calls are Linux-specific.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 2.4,
+glibc 2.3.
 .\" .SH AUTHORS
 .\" Andreas Gruenbacher,
 .\" .RI < a.gruenbacher@computer.org >
@@ -167,7 +150,7 @@ As noted in
 .BR xattr (7),
 the VFS imposes a limit of 64\ kB on the size of the extended
 attribute name list returned by
-.BR listxattr (7).
+.BR listxattr ().
 If the total size of attribute names attached to a file exceeds this limit,
 it is no longer possible to retrieve the list of attribute names.
 .SH EXAMPLES
@@ -177,7 +160,7 @@ and
 .BR getxattr (2).
 For the file whose pathname is provided as a command-line argument,
 it lists all extended file attributes and their values.
-.PP
+.P
 To keep the code simple, the program assumes that attribute keys and
 values are constant during the execution of the program.
 A production program should expect and handle changes during
@@ -194,7 +177,7 @@ with a larger buffer each time it fails with the error
 Calls to
 .BR getxattr (2)
 could be handled similarly.
-.PP
+.P
 The following output was recorded by first creating a file, setting
 some extended file attributes,
 and then listing the attributes with the example program.
@@ -212,25 +195,24 @@ user.empty: <no value>
 .EE
 .in
 .SS Program source (listxattr.c)
+.\" SRC BEGIN (listxattr.c)
 .EX
-#include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 #include <sys/xattr.h>
-
+\&
 int
 main(int argc, char *argv[])
 {
-    ssize_t buflen, keylen, vallen;
-    char *buf, *key, *val;
-
+    char     *buf, *key, *val;
+    ssize_t  buflen, keylen, vallen;
+\&
     if (argc != 2) {
-        fprintf(stderr, "Usage: %s path\en", argv[0]);
+        fprintf(stderr, "Usage: %s path\[rs]n", argv[0]);
         exit(EXIT_FAILURE);
     }
-
+\&
     /*
      * Determine the length of the buffer needed.
      */
@@ -240,10 +222,10 @@ main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
     if (buflen == 0) {
-        printf("%s has no attributes.\en", argv[1]);
+        printf("%s has no attributes.\[rs]n", argv[1]);
         exit(EXIT_SUCCESS);
     }
-
+\&
     /*
      * Allocate the buffer.
      */
@@ -252,7 +234,7 @@ main(int argc, char *argv[])
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-
+\&
     /*
      * Copy the list of attribute keys to the buffer.
      */
@@ -261,7 +243,7 @@ main(int argc, char *argv[])
         perror("listxattr");
         exit(EXIT_FAILURE);
     }
-
+\&
     /*
      * Loop over the list of zero terminated strings with the
      * attribute keys. Use the remaining buffer length to determine
@@ -269,21 +251,21 @@ main(int argc, char *argv[])
      */
     key = buf;
     while (buflen > 0) {
-
+\&
         /*
          * Output attribute key.
          */
         printf("%s: ", key);
-
+\&
         /*
          * Determine length of the value.
          */
         vallen = getxattr(argv[1], key, NULL, 0);
         if (vallen == \-1)
             perror("getxattr");
-
+\&
         if (vallen > 0) {
-
+\&
             /*
              * Allocate value buffer.
              * One extra byte is needed to append 0x00.
@@ -293,27 +275,28 @@ main(int argc, char *argv[])
                 perror("malloc");
                 exit(EXIT_FAILURE);
             }
-
+\&
             /*
              * Copy value to buffer.
              */
             vallen = getxattr(argv[1], key, val, vallen);
-            if (vallen == \-1)
+            if (vallen == \-1) {
                 perror("getxattr");
-            else {
+            } else {
                 /*
                  * Output attribute value.
                  */
                 val[vallen] = 0;
                 printf("%s", val);
             }
-
+\&
             free(val);
-        } else if (vallen == 0)
+        } else if (vallen == 0) {
             printf("<no value>");
-
-        printf("\en");
-
+        }
+\&
+        printf("\[rs]n");
+\&
         /*
          * Forward to next attribute key.
          */
@@ -321,11 +304,12 @@ main(int argc, char *argv[])
         buflen \-= keylen;
         key += keylen;
     }
-
+\&
     free(buf);
     exit(EXIT_SUCCESS);
 }
 .EE
+.\" SRC END
 .SH SEE ALSO
 .BR getfattr (1),
 .BR setfattr (1),

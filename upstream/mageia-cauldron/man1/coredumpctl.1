@@ -1,5 +1,5 @@
 '\" t
-.TH "COREDUMPCTL" "1" "" "systemd 249" "coredumpctl"
+.TH "COREDUMPCTL" "1" "" "systemd 255" "coredumpctl"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -42,21 +42,29 @@ The output is designed to be human readable and contains a table with the follow
 TIME
 .RS 4
 The timestamp of the crash, as reported by the kernel\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 PID
 .RS 4
 The identifier of the process that crashed\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 UID, GID
 .RS 4
 The user and group identifiers of the process that crashed\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 SIGNAL
 .RS 4
 The signal that caused the process to crash, when applicable\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 COREFILE
@@ -77,27 +85,37 @@ is the same as one of the previous two, but the core was too large and was not s
 means that the core file cannot be accessed, most likely because of insufficient permissions, and
 "missing"
 means that the core was stored in a file, but this file has since been removed\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 EXE
 .RS 4
 The full path to the executable\&. For backtraces of scripts this is the name of the interpreter\&.
+.sp
+Added in version 233\&.
 .RE
 .sp
 It\*(Aqs worth noting that different restrictions apply to data saved in the journal and core dump files saved in
 /var/lib/systemd/coredump, see overview in
 \fBsystemd-coredump\fR(8)\&. Thus it may very well happen that a particular core dump is still listed in the journal while its corresponding core dump file has already been removed\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fBinfo\fR
 .RS 4
 Show detailed information about the last core dump or core dumps matching specified characteristics captured in the journal\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fBdump\fR
 .RS 4
 Extract the last core dump matching specified characteristics\&. The core dump will be written on standard output, unless an output file is specified with
 \fB\-\-output=\fR\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fBdebug\fR
@@ -111,6 +129,8 @@ option or the
 environment variable\&. Use the
 \fB\-\-debugger\-arguments=\fR
 option to pass extra command line arguments to the debugger\&.
+.sp
+Added in version 239\&.
 .RE
 .SH "OPTIONS"
 .PP
@@ -151,37 +171,51 @@ Shows output formatted as JSON\&. Expects one of
 .RS 4
 Show information of the most recent core dump only, instead of listing all known core dumps\&. Equivalent to
 \fB\-\-reverse \-n 1\fR\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fB\-n\fR \fIINT\fR
 .RS 4
 Show at most the specified number of entries\&. The specified parameter must be an integer greater or equal to 1\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fB\-S\fR, \fB\-\-since\fR
 .RS 4
 Only print entries which are since the specified date\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fB\-U\fR, \fB\-\-until\fR
 .RS 4
 Only print entries which are until the specified date\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fB\-r\fR, \fB\-\-reverse\fR
 .RS 4
 Reverse output so that the newest entries are displayed first\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fB\-F\fR \fIFIELD\fR, \fB\-\-field=\fR\fIFIELD\fR
 .RS 4
 Print all possible data values the specified field takes in matching core dump entries of the journal\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fB\-o\fR \fIFILE\fR, \fB\-\-output=\fR\fIFILE\fR
 .RS 4
 Write the core to
 \fBFILE\fR\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fB\-\-debugger=\fR\fIDEBUGGER\fR
@@ -193,6 +227,8 @@ command\&. If not given and
 is unset, then
 \fBgdb\fR(1)
 will be used\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-A\fR \fIARGS\fR, \fB\-\-debugger\-arguments=\fR\fIARGS\fR
@@ -202,6 +238,8 @@ Pass the given
 as extra command line arguments to the debugger\&. Quote as appropriate when
 \fIARGS\fR
 contain whitespace\&. (See Examples\&.)
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fB\-\-file=\fR\fB\fIGLOB\fR\fR
@@ -209,17 +247,60 @@ contain whitespace\&. (See Examples\&.)
 Takes a file glob as an argument\&. If specified, coredumpctl will operate on the specified journal files matching
 \fIGLOB\fR
 instead of the default runtime and system journal paths\&. May be specified multiple times, in which case files will be suitably interleaved\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-D\fR \fIDIR\fR, \fB\-\-directory=\fR\fIDIR\fR
 .RS 4
 Use the journal files in the specified
 \fBDIR\fR\&.
+.sp
+Added in version 225\&.
+.RE
+.PP
+\fB\-\-root=\fR\fB\fIROOT\fR\fR
+.RS 4
+Use root directory
+\fBROOT\fR
+when searching for coredumps\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+\fB\-\-image=\fR\fB\fIimage\fR\fR
+.RS 4
+Takes a path to a disk image file or block device node\&. If specified, all operations are applied to file system in the indicated disk image\&. This option is similar to
+\fB\-\-root=\fR, but operates on file systems stored in disk images or block devices\&. The disk image should either contain just a file system or a set of file systems within a GPT partition table, following the
+\m[blue]\fBDiscoverable Partitions Specification\fR\m[]\&\s-2\u[1]\d\s+2\&. For further information on supported disk images, see
+\fBsystemd-nspawn\fR(1)\*(Aqs switch of the same name\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+\fB\-\-image\-policy=\fR\fB\fIpolicy\fR\fR
+.RS 4
+Takes an image policy string as argument, as per
+\fBsystemd.image-policy\fR(7)\&. The policy is enforced when operating on the disk image specified via
+\fB\-\-image=\fR, see above\&. If not specified defaults to the
+"*"
+policy, i\&.e\&. all recognized file systems in the image are used\&.
 .RE
 .PP
 \fB\-q\fR, \fB\-\-quiet\fR
 .RS 4
 Suppresses informational messages about lack of access to journal files and possible in\-flight coredumps\&.
+.sp
+Added in version 233\&.
+.RE
+.PP
+\fB\-\-all\fR
+.RS 4
+Look at all available journal files in
+/var/log/journal/
+(excluding journal namespaces) instead of only local ones\&.
+.sp
+Added in version 250\&.
 .RE
 .SH "MATCHING"
 .PP
@@ -228,24 +309,32 @@ A match can be:
 \fIPID\fR
 .RS 4
 Process ID of the process that dumped core\&. An integer\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fICOMM\fR
 .RS 4
 Name of the executable (matches
 \fBCOREDUMP_COMM=\fR)\&. Must not contain slashes\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fIEXE\fR
 .RS 4
 Path to the executable (matches
 \fBCOREDUMP_EXE=\fR)\&. Must contain at least one slash\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fIMATCH\fR
 .RS 4
 General journalctl match filter, must contain an equals sign ("=")\&. See
 \fBjournalctl\fR(1)\&.
+.sp
+Added in version 215\&.
 .RE
 .SH "EXIT STATUS"
 .PP
@@ -259,6 +348,8 @@ Use the given debugger for the
 command\&. See the
 \fB\-\-debugger=\fR
 option\&.
+.sp
+Added in version 239\&.
 .RE
 .SH "EXAMPLES"
 .PP
@@ -269,9 +360,9 @@ option\&.
 .\}
 .nf
 $ coredumpctl list /usr/lib64/firefox/firefox
-TIME     PID  UID  GID SIG     COREFILE EXE                         SIZE
-Tue \&...   8018 1000 1000 SIGSEGV missing  /usr/lib64/firefox/firefox   n/a
-Wed \&... 251609 1000 1000 SIGTRAP missing  /usr/lib64/firefox/firefox   n/a
+TIME       PID  UID  GID SIG     COREFILE EXE                         SIZE
+Tue \&...   8018 1000 1000 SIGSEGV missing  /usr/lib64/firefox/firefox     \-
+Wed \&... 251609 1000 1000 SIGTRAP missing  /usr/lib64/firefox/firefox     \-
 Fri \&... 552351 1000 1000 SIGSEGV present  /usr/lib64/firefox/firefox 28\&.7M
 .fi
 .if n \{\
@@ -332,7 +423,7 @@ $ coredumpctl info 6654
     Machine ID: \&...
       Hostname: \&...
        Storage: /var/lib/systemd/coredump/core\&.bash\&.1000\&.\&...\&.zst (present)
-     Disk Size: 51\&.7K
+  Size on Disk: 51\&.7K
        Message: Process 130414 (bash) of user 1000 dumped core\&.
 
                 Stack trace of thread 130414:
@@ -368,3 +459,9 @@ $ coredumpctl \-o bar\&.coredump dump /usr/bin/bar
 \fBcoredump.conf\fR(5),
 \fBsystemd-journald.service\fR(8),
 \fBgdb\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+Discoverable Partitions Specification
+.RS 4
+\%https://uapi-group.org/specifications/specs/discoverable_partitions_specification
+.RE

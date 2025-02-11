@@ -1,5 +1,5 @@
 '\" t
-.TH "SD\-EVENT" "3" "" "systemd 249" "sd-event"
+.TH "SD\-EVENT" "3" "" "systemd 257" "sd-event"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -33,7 +33,9 @@ sd-event \- A generic event loop implementation
 .SH "DESCRIPTION"
 .PP
 sd\-event\&.h
-provides a generic event loop implementation, based on Linux
+is part of
+\fBlibsystemd\fR(3)
+and provides a generic event loop implementation, based on Linux
 \fBepoll\fR(7)\&.
 .PP
 See
@@ -45,6 +47,7 @@ See
 \fBsd_event_add_child\fR(3),
 \fBsd_event_add_inotify\fR(3),
 \fBsd_event_add_defer\fR(3),
+\fBsd_event_add_memory_pressure\fR(3),
 \fBsd_event_source_unref\fR(3),
 \fBsd_event_source_set_priority\fR(3),
 \fBsd_event_source_set_enabled\fR(3),
@@ -92,7 +95,7 @@ Timer event sources, based on
 \fBtimerfd_create\fR(2), supporting the
 \fBCLOCK_MONOTONIC\fR,
 \fBCLOCK_REALTIME\fR,
-\fBCLOCK_BOOTIME\fR
+\fBCLOCK_BOOTTIME\fR
 clocks, as well as the
 \fBCLOCK_REALTIME_ALARM\fR
 and
@@ -147,7 +150,7 @@ Static event sources, of three types: defer, post and exit, for invoking calls i
 .sp -1
 .IP "  6." 4.2
 .\}
-Event sources may be assigned a 64bit priority value, that controls the order in which event sources are dispatched if multiple are pending simultaneously\&. See
+Event sources may be assigned a 64\-bit priority value, that controls the order in which event sources are dispatched if multiple are pending simultaneously\&. See
 \fBsd_event_source_set_priority\fR(3)\&.
 .RE
 .sp
@@ -177,35 +180,16 @@ for an example\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd_event_new\fR(3),
-\fBsd_event_run\fR(3),
-\fBsd_event_add_io\fR(3),
-\fBsd_event_add_time\fR(3),
-\fBsd_event_add_signal\fR(3),
-\fBsd_event_add_child\fR(3),
-\fBsd_event_add_inotify\fR(3),
-\fBsd_event_add_defer\fR(3),
-\fBsd_event_source_unref\fR(3),
-\fBsd_event_source_set_priority\fR(3),
-\fBsd_event_source_set_enabled\fR(3),
-\fBsd_event_source_set_userdata\fR(3),
-\fBsd_event_source_get_event\fR(3),
-\fBsd_event_source_get_pending\fR(3),
-\fBsd_event_source_set_description\fR(3),
-\fBsd_event_source_set_prepare\fR(3),
-\fBsd_event_source_set_ratelimit\fR(3),
-\fBsd_event_wait\fR(3),
-\fBsd_event_get_fd\fR(3),
-\fBsd_event_set_watchdog\fR(3),
-\fBsd_event_exit\fR(3),
-\fBsd_event_now\fR(3),
-\fBepoll\fR(7),
-\fBtimerfd_create\fR(2),
-\fBsignalfd\fR(2),
-\fBwaitid\fR(2)
+\fBsystemd\fR(1), \fBsd_event_new\fR(3), \fBsd_event_run\fR(3), \fBsd_event_add_io\fR(3), \fBsd_event_add_time\fR(3), \fBsd_event_add_signal\fR(3), \fBsd_event_add_child\fR(3), \fBsd_event_add_inotify\fR(3), \fBsd_event_add_defer\fR(3), \fBsd_event_add_memory_pressure\fR(3), \fBsd_event_source_unref\fR(3), \fBsd_event_source_set_priority\fR(3), \fBsd_event_source_set_enabled\fR(3), \fBsd_event_source_set_userdata\fR(3), \fBsd_event_source_get_event\fR(3), \fBsd_event_source_get_pending\fR(3), \fBsd_event_source_set_description\fR(3), \fBsd_event_source_set_prepare\fR(3), \fBsd_event_source_set_ratelimit\fR(3), \fBsd_event_wait\fR(3), \fBsd_event_get_fd\fR(3), \fBsd_event_set_watchdog\fR(3), \fBsd_event_exit\fR(3), \fBsd_event_now\fR(3), \fBepoll\fR(7), \fBtimerfd_create\fR(2), \fBsignalfd\fR(2), \fBwaitid\fR(2)

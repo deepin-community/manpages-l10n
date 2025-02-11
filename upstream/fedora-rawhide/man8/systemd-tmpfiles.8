@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-TMPFILES" "8" "" "systemd 249" "systemd-tmpfiles"
+.TH "SYSTEMD\-TMPFILES" "8" "" "systemd 257.1" "systemd-tmpfiles"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,45 +20,58 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-systemd-tmpfiles, systemd-tmpfiles-setup.service, systemd-tmpfiles-setup-dev.service, systemd-tmpfiles-clean.service, systemd-tmpfiles-clean.timer \- Creates, deletes and cleans up volatile and temporary files and directories
+systemd-tmpfiles, systemd-tmpfiles-setup.service, systemd-tmpfiles-setup-dev-early.service, systemd-tmpfiles-setup-dev.service, systemd-tmpfiles-clean.service, systemd-tmpfiles-clean.timer \- Create, delete, and clean up files and directories
 .SH "SYNOPSIS"
 .HP \w'\fBsystemd\-tmpfiles\fR\ 'u
 \fBsystemd\-tmpfiles\fR [OPTIONS...] [\fICONFIGFILE\fR...]
 .PP
 System units:
-.sp
-.nf
+.RS 4
 systemd\-tmpfiles\-setup\&.service
+.RE
+.RS 4
+systemd\-tmpfiles\-setup\-dev\-early\&.service
+.RE
+.RS 4
 systemd\-tmpfiles\-setup\-dev\&.service
+.RE
+.RS 4
 systemd\-tmpfiles\-clean\&.service
+.RE
+.RS 4
 systemd\-tmpfiles\-clean\&.timer
-.fi
+.RE
 .PP
 User units:
-.sp
-.nf
+.RS 4
 systemd\-tmpfiles\-setup\&.service
+.RE
+.RS 4
 systemd\-tmpfiles\-clean\&.service
+.RE
+.RS 4
 systemd\-tmpfiles\-clean\&.timer
-.fi
+.RE
 .SH "DESCRIPTION"
 .PP
 \fBsystemd\-tmpfiles\fR
-creates, deletes, and cleans up volatile and temporary files and directories, using the configuration file format and location specified in
-\fBtmpfiles.d\fR(5)\&. It must be invoked with one or more options
+creates, deletes, and cleans up files and directories, using the configuration file format and location specified in
+\fBtmpfiles.d\fR(5)\&. Historically, it was designed to manage volatile and temporary files, as the name suggests, but it provides generic file management functionality and can be used to manage any kind of files\&. It must be invoked with one or more commands
 \fB\-\-create\fR,
 \fB\-\-remove\fR, and
 \fB\-\-clean\fR, to select the respective subset of operations\&.
 .PP
-By default, directives from all configuration files are applied\&. When invoked with
-\fB\-\-replace=\fR\fB\fIPATH\fR\fR, arguments specified on the command line are used instead of the configuration file
-\fIPATH\fR\&. Otherwise, if one or more absolute filenames are passed on the command line, only the directives in these files are applied\&. If
-"\-"
-is specified instead of a filename, directives are read from standard input\&. If only the basename of a configuration file is specified, all configuration directories as specified in
+If invoked with no arguments, directives from the configuration files found in the directories specified by
 \fBtmpfiles.d\fR(5)
-are searched for a matching file and the file found that has the highest priority is executed\&.
+are executed\&. When invoked with positional arguments, if option
+\fB\-\-replace=\fR\fB\fIPATH\fR\fR
+is specified, arguments specified on the command line are used instead of the configuration file
+\fIPATH\fR\&. Otherwise, just the configuration specified by the command line arguments is executed\&. If the string
+"\-"
+is specified instead of a filename, the configuration is read from standard input\&. If the argument is a file name (without any slashes), all configuration directories are searched for a matching file and the file found that has the highest priority is executed\&. If the argument is a path, that file is used directly without searching the configuration directories for any other matching file\&.
 .PP
 System services (systemd\-tmpfiles\-setup\&.service,
+systemd\-tmpfiles\-setup\-dev\-early\&.service,
 systemd\-tmpfiles\-setup\-dev\&.service,
 systemd\-tmpfiles\-clean\&.service) invoke
 \fBsystemd\-tmpfiles\fR
@@ -79,13 +92,13 @@ systemd\-tmpfiles\-clean\&.service, which will apply any settings which can be s
 \fBsystemd\-tmpfiles\fR, it may be useful to invoke it directly from the command line with increased log level (see
 \fI$SYSTEMD_LOG_LEVEL\fR
 below)\&.
-.SH "OPTIONS"
+.SH "COMMANDS AND OPTIONS"
 .PP
-The following options are understood:
+The following commands are understood:
 .PP
 \fB\-\-create\fR
 .RS 4
-If this option is passed, all files and directories marked with
+If this command is passed, all files and directories marked with
 \fIf\fR,
 \fIF\fR,
 \fIw\fR,
@@ -109,41 +122,112 @@ have their ownership, access mode and security labels set\&.
 .PP
 \fB\-\-clean\fR
 .RS 4
-If this option is passed, all files and directories with an age parameter configured will be cleaned up\&.
+If this command is passed, all files and directories with an age parameter configured will be cleaned up\&.
 .RE
 .PP
 \fB\-\-remove\fR
 .RS 4
-If this option is passed, the contents of directories marked with
+If this command is passed, the contents of directories marked with
 \fID\fR
 or
 \fIR\fR, and files or directories themselves marked with
 \fIr\fR
 or
 \fIR\fR
-are removed\&.
+are removed unless an exclusive or shared BSD lock is taken on them (see
+\fBflock\fR(2))\&.
+.RE
+.PP
+\fB\-\-purge\fR
+.RS 4
+If this option is passed, all files and directories declared for
+\fIcreation\fR
+and marked with the
+"$"
+character by the
+tmpfiles\&.d/
+files specified on the command line will be
+\fIdeleted\fR\&. Specifically, this acts on all files and directories marked with
+\fIf\fR,
+\fIF\fR,
+\fId\fR,
+\fID\fR,
+\fIv\fR,
+\fIq\fR,
+\fIQ\fR,
+\fIp\fR,
+\fIL\fR,
+\fIc\fR,
+\fIb\fR,
+\fIC\fR,
+\fIw\fR,
+\fIe\fR\&. If this switch is used at least one
+tmpfiles\&.d/
+file (or
+\-
+for standard input) must be specified on the command line or the invocation will be refused, for safety reasons (as otherwise much of the installed system files might be removed)\&.
+.sp
+The primary usecase for this option is to automatically remove files and directories that originally have been created on behalf of an installed package at package removal time\&.
+.sp
+It is recommended to first run this command in combination with
+\fB\-\-dry\-run\fR
+(see below) to verify which files and directories will be deleted\&.
+.sp
+\fIWarning!\fR
+This is usually not the command you want! In most cases
+\fB\-\-remove\fR
+is what you are looking for\&.
+.sp
+Added in version 256\&.
 .RE
 .PP
 \fB\-\-user\fR
 .RS 4
 Execute "user" configuration, i\&.e\&.
-tmpfiles\&.d
+tmpfiles\&.d/
 files in user configuration directories\&.
+.sp
+Added in version 236\&.
 .RE
 .PP
 \fB\-\-boot\fR
 .RS 4
-Also execute lines with an exclamation mark\&.
+Also execute lines with an exclamation mark\&. Lines that are not safe to be executed on a running system may be marked in this way\&.
+\fBsystemd\-tmpfiles\fR
+is executed in early boot with
+\fB\-\-boot\fR
+specified and will execute those lines\&. When invoked again later, it should be called without
+\fB\-\-boot\fR\&.
+.sp
+Added in version 209\&.
+.RE
+.PP
+\fB\-\-graceful\fR
+.RS 4
+Ignore configuration lines pertaining to unknown users or groups\&. This option is intended to be used in early boot before all users or groups have been created\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fB\-\-dry\-run\fR
+.RS 4
+Process the configuration and print what operations would be performed, but don\*(Aqt actually change anything in the file system\&.
+.sp
+Added in version 256\&.
 .RE
 .PP
 \fB\-\-prefix=\fR\fB\fIpath\fR\fR
 .RS 4
 Only apply rules with paths that start with the specified prefix\&. This option can be specified multiple times\&.
+.sp
+Added in version 212\&.
 .RE
 .PP
 \fB\-\-exclude\-prefix=\fR\fB\fIpath\fR\fR
 .RS 4
 Ignore rules with paths that start with the specified prefix\&. This option can be specified multiple times\&.
+.sp
+Added in version 207\&.
 .RE
 .PP
 \fB\-E\fR
@@ -151,6 +235,8 @@ Ignore rules with paths that start with the specified prefix\&. This option can 
 A shortcut for
 "\-\-exclude\-prefix=/dev \-\-exclude\-prefix=/proc \-\-exclude\-prefix=/run \-\-exclude\-prefix=/sys", i\&.e\&. exclude the hierarchies typically backed by virtual or memory file systems\&. This is useful in combination with
 \fB\-\-root=\fR, if the specified directory tree contains an OS tree without these virtual/memory file systems mounted in, as it is typically not desirable to create any files and directories below these subdirectories if they are supposed to be overmounted during runtime\&.
+.sp
+Added in version 247\&.
 .RE
 .PP
 \fB\-\-root=\fR\fB\fIroot\fR\fR
@@ -168,6 +254,8 @@ inside the alternate root are read directly\&. This means that users/groups not 
 Consider combining this with
 \fB\-E\fR
 to ensure the invocation does not create files or directories below mount points in the OS image operated on that are typically overmounted during runtime\&.
+.sp
+Added in version 212\&.
 .RE
 .PP
 \fB\-\-image=\fR\fB\fIimage\fR\fR
@@ -180,21 +268,39 @@ but operates on file systems stored in disk images or block devices\&. The disk 
 .sp
 Implies
 \fB\-E\fR\&.
+.sp
+Added in version 247\&.
+.RE
+.PP
+\fB\-\-image\-policy=\fR\fB\fIpolicy\fR\fR
+.RS 4
+Takes an image policy string as argument, as per
+\fBsystemd.image-policy\fR(7)\&. The policy is enforced when operating on the disk image specified via
+\fB\-\-image=\fR, see above\&. If not specified defaults to the
+"*"
+policy, i\&.e\&. all recognized file systems in the image are used\&.
 .RE
 .PP
 \fB\-\-replace=\fR\fB\fIPATH\fR\fR
 .RS 4
-When this option is given, one ore more positional arguments must be specified\&. All configuration files found in the directories listed in
+When this option is given, one or more positional arguments must be specified\&. All configuration files found in the directories listed in
 \fBtmpfiles.d\fR(5)
 will be read, and the configuration given on the command line will be handled instead of and with the same priority as the configuration file
 \fIPATH\fR\&.
 .sp
 This option is intended to be used when package installation scripts are running and files belonging to that package are not yet available on disk, so their contents must be given on the command line, but the admin configuration might already exist and should be given higher priority\&.
+.sp
+Added in version 238\&.
 .RE
 .PP
 \fB\-\-cat\-config\fR
 .RS 4
 Copy the contents of config files to standard output\&. Before each file, the filename is printed as a comment\&.
+.RE
+.PP
+\fB\-\-tldr\fR
+.RS 4
+Copy the contents of config files to standard output\&. Only the "interesting" parts of the configuration files are printed, comments and empty lines are skipped\&. Before each file, the filename is printed as a comment\&.
 .RE
 .PP
 \fB\-\-no\-pager\fR
@@ -227,11 +333,34 @@ systemd\-tmpfiles \-\-remove \-\-create
 .if n \{\
 .RE
 .\}
+.SH "CREDENTIALS"
+.PP
+\fBsystemd\-tmpfiles\fR
+supports the service credentials logic as implemented by
+\fIImportCredential=\fR/\fILoadCredential=\fR/\fISetCredential=\fR
+(see
+\fBsystemd.exec\fR(5)
+for details)\&. The following credentials are used when passed in:
+.PP
+\fItmpfiles\&.extra\fR
+.RS 4
+The contents of this credential may contain additional lines to operate on\&. The credential contents should follow the same format as any other
+tmpfiles\&.d/
+drop\-in configuration file\&. If this credential is passed it is processed after all of the drop\-in files read from the file system\&. The lines in the credential can hence augment existing lines of the OS, but not override them\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+Note that by default the
+systemd\-tmpfiles\-setup\&.service
+unit file (and related unit files) is set up to inherit the
+"tmpfiles\&.extra"
+credential from the service manager\&.
 .SH "ENVIRONMENT"
 .PP
 \fI$SYSTEMD_LOG_LEVEL\fR
 .RS 4
-The maximum log level of emitted messages (messages with a higher log level, i\&.e\&. less important ones, will be suppressed)\&. Either one of (in order of decreasing importance)
+The maximum log level of emitted messages (messages with a higher log level, i\&.e\&. less important ones, will be suppressed)\&. Takes a comma\-separated list of values\&. A value may be either one of (in order of decreasing importance)
 \fBemerg\fR,
 \fBalert\fR,
 \fBcrit\fR,
@@ -241,7 +370,15 @@ The maximum log level of emitted messages (messages with a higher log level, i\&
 \fBinfo\fR,
 \fBdebug\fR, or an integer in the range 0\&...7\&. See
 \fBsyslog\fR(3)
-for more information\&.
+for more information\&. Each value may optionally be prefixed with one of
+\fBconsole\fR,
+\fBsyslog\fR,
+\fBkmsg\fR
+or
+\fBjournal\fR
+followed by a colon to set the maximum log level for that specific log target (e\&.g\&.
+\fBSYSTEMD_LOG_LEVEL=debug,console:info\fR
+specifies to log at debug level except when logging to the console which should be at info level)\&. Note that the global maximum log level takes priority over any per target maximum log levels\&.
 .RE
 .PP
 \fI$SYSTEMD_LOG_COLOR\fR
@@ -305,6 +442,13 @@ and
 "cat"
 is equivalent to passing
 \fB\-\-no\-pager\fR\&.
+.sp
+Note: if
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set,
+\fI$SYSTEMD_PAGER\fR
+(as well as
+\fI$PAGER\fR) will be silently ignored\&.
 .RE
 .PP
 \fI$SYSTEMD_LESS\fR
@@ -340,6 +484,12 @@ will be ignored by the executable, and needs to be handled by the pager\&.
 This option instructs the pager to not send termcap initialization and deinitialization strings to the terminal\&. It is set by default to allow command output to remain visible in the terminal even after the pager exits\&. Nevertheless, this prevents some pager functionality from working, in particular paged output cannot be scrolled with the mouse\&.
 .RE
 .sp
+Note that setting the regular
+\fI$LESS\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
+.sp
 See
 \fBless\fR(1)
 for more discussion\&.
@@ -351,6 +501,12 @@ Override the charset passed to
 \fBless\fR
 (by default
 "utf\-8", if the invoking terminal is determined to be UTF\-8 compatible)\&.
+.sp
+Note that setting the regular
+\fI$LESSCHARSET\fR
+environment variable has no effect for
+\fBless\fR
+invocations by systemd tools\&.
 .RE
 .PP
 \fI$SYSTEMD_PAGERSECURE\fR
@@ -432,11 +588,10 @@ Note: when creating items, if the target already exists, but is of the wrong typ
 "+", a message is emitted, but the failure is otherwise ignored\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBtmpfiles.d\fR(5)
+\fBsystemd\fR(1), \fBtmpfiles.d\fR(5)
 .SH "NOTES"
 .IP " 1." 4
 Discoverable Partitions Specification
 .RS 4
-\%https://systemd.io/DISCOVERABLE_PARTITIONS
+\%https://uapi-group.org/specifications/specs/discoverable_partitions_specification
 .RE

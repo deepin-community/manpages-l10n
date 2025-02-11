@@ -1,5 +1,5 @@
 '\" t
-.TH "TIMESYNCD\&.CONF" "5" "" "systemd 249" "timesyncd.conf"
+.TH "TIMESYNCD\&.CONF" "5" "" "systemd 255" "timesyncd.conf"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -37,9 +37,14 @@ These configuration files control NTP network time synchronization\&. See
 for a general description of the syntax\&.
 .SH "CONFIGURATION DIRECTORIES AND PRECEDENCE"
 .PP
-The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. Initially, the main configuration file in
+The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. The main configuration file is either in
+/usr/lib/systemd/
+or
 /etc/systemd/
-contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by editing this file or by creating drop\-ins, as described below\&. Using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
+and contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by creating drop\-ins, as described below\&. The main configuration file can also be edited for this purpose (or a copy in
+/etc/
+if it\*(Aqs shipped in
+/usr/) however using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
 .PP
 In addition to the "main" configuration file, drop\-in configuration snippets are read from
 /usr/lib/systemd/*\&.conf\&.d/,
@@ -51,7 +56,7 @@ configuration subdirectories are sorted by their filename in lexicographic order
 When packages need to customize the configuration, they can install drop\-ins under
 /usr/\&. Files in
 /etc/
-are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&.
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&. This also defined a concept of drop\-in priority to allow distributions to ship drop\-ins within a specific range lower than the range used by users\&. This should lower the risk of package drop\-ins overriding accidentally drop\-ins defined by users\&.
 .PP
 To disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
 /dev/null
@@ -67,6 +72,8 @@ A space\-separated list of NTP server host names or IP addresses\&. During runti
 \fBsystemd-networkd.service\fR(8)\&.
 \fBsystemd\-timesyncd\fR
 will contact all configured system or per\-interface servers in turn, until one responds\&. When the empty string is assigned, the list of NTP servers is reset, and all prior assignments will have no effect\&. This setting defaults to an empty list\&.
+.sp
+Added in version 216\&.
 .RE
 .PP
 \fIFallbackNTP=\fR
@@ -76,6 +83,8 @@ A space\-separated list of NTP server host names or IP addresses to be used as t
 take precedence over this setting, as do any servers set via
 \fINTP=\fR
 above\&. This setting is hence only relevant if no other NTP server information is known\&. When the empty string is assigned, the list of NTP servers is reset, and all prior assignments will have no effect\&. If this option is not given, a compiled\-in list of NTP servers is used\&.
+.sp
+Added in version 216\&.
 .RE
 .PP
 \fIRootDistanceMaxSec=\fR
@@ -86,6 +95,8 @@ will switch to a different server\&.
 .sp
 Takes a time span value\&. The default unit is seconds, but other units may be specified, see
 \fBsystemd.time\fR(5)\&. Defaults to 5 seconds\&.
+.sp
+Added in version 236\&.
 .RE
 .PP
 \fIPollIntervalMinSec=\fR, \fIPollIntervalMaxSec=\fR
@@ -99,6 +110,8 @@ defaults to 32 seconds and must not be smaller than 16\ \&seconds\&.
 \fIPollIntervalMaxSec=\fR
 defaults to 34\ \&min\ \&8\ \&s (2048\ \&seconds) and must be larger than
 \fIPollIntervalMinSec=\fR\&.
+.sp
+Added in version 236\&.
 .RE
 .PP
 \fIConnectionRetrySec=\fR
@@ -107,6 +120,18 @@ Specifies the minimum delay before subsequent attempts to contact a new NTP serv
 .sp
 Takes a time span value\&. The default unit is seconds, but other units may be specified, see
 \fBsystemd.time\fR(5)\&. Defaults to 30 seconds and must not be smaller than 1 second\&.
+.sp
+Added in version 248\&.
+.RE
+.PP
+\fISaveIntervalSec=\fR
+.RS 4
+The interval at which the current time is periodically saved to disk, in the absence of any recent synchronisation from an NTP server\&. This is especially useful for offline systems with no local RTC, as it will guarantee that the system clock remains roughly monotonic across reboots\&.
+.sp
+Takes a time interval value\&. The default unit is seconds, but other units may be specified, see
+\fBsystemd.time\fR(5)\&. Defaults to 60 seconds\&.
+.sp
+Added in version 250\&.
 .RE
 .SH "SEE ALSO"
 .PP

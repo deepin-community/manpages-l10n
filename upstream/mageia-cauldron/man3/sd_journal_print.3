@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_JOURNAL_PRINT" "3" "" "systemd 249" "sd_journal_print"
+.TH "SD_JOURNAL_PRINT" "3" "" "systemd 255" "sd_journal_print"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -39,7 +39,7 @@ sd_journal_print, sd_journal_printv, sd_journal_send, sd_journal_sendv, sd_journ
 .HP \w'int\ sd_journal_perror('u
 .BI "int sd_journal_perror(const\ char\ *" "message" ");"
 .HP \w'int\ sd_journal_print_with_location('u
-.BI "int sd_journal_print_with_location(const\ char\ *" "file" ", const\ char\ *" "line" ", const\ char\ *" "func" ", int\ " "priority" ", const\ char\ *" "format" ", \&...);"
+.BI "int sd_journal_print_with_location(int\ " "priority" ", const\ char\ *" "file" ", const\ char\ *" "line" ", const\ char\ *" "func" ", const\ char\ *" "format" ", \&...);"
 .HP \w'int\ sd_journal_printv_with_location('u
 .BI "int sd_journal_printv_with_location(int\ " "priority" ", const\ char\ *" "file" ", const\ char\ *" "line" ", const\ char\ *" "func" ", const\ char\ *" "format" ", va_list\ " "ap" ");"
 .HP \w'int\ sd_journal_send_with_location('u
@@ -141,10 +141,17 @@ sd\-journal\&.h\&.
 \fBsd_journal_sendv_with_location()\fR, and
 \fBsd_journal_perror_with_location()\fR
 are similar to their counterparts without
-"_with_location", but accept additional parameters to explicitly set the source file name, function, and line\&. Those arguments must contain valid journal entries including the variable name, e\&.g\&.
-"CODE_FILE=src/foo\&.c",
-"CODE_LINE=666",
-"CODE_FUNC=myfunc"\&. These variants are primarily useful when writing custom wrappers, for example in bindings for a different language\&.
+"_with_location", but accept additional parameters to explicitly set the source file name, function, and line\&. The arguments
+"file"
+and
+"line"
+must contain valid journal entries including the variable name, e\&.g\&.
+"CODE_FILE=src/foo\&.c"
+and
+"CODE_LINE=666", while
+"func"
+must only contain the function name, i\&.e\&. the value without
+"CODE_FUNC="\&. These variants are primarily useful when writing custom wrappers, for example in bindings for a different language\&.
 .PP
 \fBsyslog\fR(3)
 and
@@ -185,9 +192,33 @@ are "async signal safe" in the meaning of
 are not async signal safe\&.
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_journal_print()\fR,
+\fBsd_journal_printv()\fR,
+\fBsd_journal_send()\fR, and
+\fBsd_journal_sendv()\fR
+were added in version 187\&.
+.PP
+\fBsd_journal_perror()\fR
+was added in version 188\&.
+.PP
+\fBsd_journal_print_with_location()\fR,
+\fBsd_journal_printv_with_location()\fR,
+\fBsd_journal_send_with_location()\fR,
+\fBsd_journal_sendv_with_location()\fR, and
+\fBsd_journal_perror_with_location()\fR
+were added in version 246\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

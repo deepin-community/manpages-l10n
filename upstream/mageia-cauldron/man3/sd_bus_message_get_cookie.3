@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_MESSAGE_GET_COOKIE" "3" "" "systemd 249" "sd_bus_message_get_cookie"
+.TH "SD_BUS_MESSAGE_GET_COOKIE" "3" "" "systemd 255" "sd_bus_message_get_cookie"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -61,9 +61,22 @@ No cookie has been assigned to this message\&. This either indicates that the me
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_message_get_cookie()\fR
+and
+\fBsd_bus_message_get_reply_cookie()\fR
+were added in version 209\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

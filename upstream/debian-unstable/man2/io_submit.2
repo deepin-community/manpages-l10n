@@ -1,23 +1,28 @@
 .\" Copyright (C) 2003 Free Software Foundation, Inc.
 .\" and Copyright (C) 2017 Goldwyn Rodrigues <rgoldwyn@suse.de>
 .\"
-.\" %%%LICENSE_START(GPL_NOVERSION_ONELINE)
-.\" This file is distributed according to the GNU General Public License.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-1.0-or-later
 .\"
-.TH IO_SUBMIT 2 2020-12-21 "Linux" "Linux Programmer's Manual"
+.TH io_submit 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 io_submit \- submit asynchronous I/O blocks for processing
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
+.P
+Alternatively, Asynchronous I/O library
+.RI ( libaio ", " \-laio );
+see VERSIONS.
 .SH SYNOPSIS
 .nf
 .BR "#include <linux/aio_abi.h>" "          /* Defines needed types */"
-.PP
+.P
 .BI "int io_submit(aio_context_t " ctx_id ", long " nr \
 ", struct iocb **" iocbpp );
 .fi
-.PP
+.P
 .IR Note :
-There is no glibc wrapper for this system call; see NOTES.
+There is no glibc wrapper for this system call; see VERSIONS.
 .SH DESCRIPTION
 .IR Note :
 this page describes the raw Linux system call interface.
@@ -26,8 +31,8 @@ The wrapper function provided by
 uses a different type for the
 .I ctx_id
 argument.
-See NOTES.
-.PP
+See VERSIONS.
+.P
 The
 .BR io_submit ()
 system call
@@ -37,17 +42,17 @@ The
 .I iocbpp
 argument should be an array of \fInr\fP AIO control blocks,
 which will be submitted to context \fIctx_id\fP.
-.PP
+.P
 The
 .I iocb
 (I/O control block) structure defined in
-.IR linux/aio_abi.h
+.I linux/aio_abi.h
 defines the parameters that control the I/O operation.
-.PP
+.P
 .in +4n
 .EX
 #include <linux/aio_abi.h>
-
+\&
 struct iocb {
     __u64   aio_data;
     __u32   PADDED(aio_key, aio_rw_flags);
@@ -63,7 +68,7 @@ struct iocb {
 };
 .EE
 .in
-.PP
+.P
 The fields of this structure are as follows:
 .TP
 .I aio_data
@@ -183,7 +188,7 @@ structure.
 The valid values are:
 .RS
 .TP
-.BR IOCB_FLAG_RESFD
+.B IOCB_FLAG_RESFD
 Asynchronous I/O control must signal the file
 descriptor mentioned in
 .I aio_resfd
@@ -206,7 +211,7 @@ On success,
 .BR io_submit ()
 returns the number of \fIiocb\fPs submitted (which may be
 less than \fInr\fP, or 0 if \fInr\fP is zero).
-For the failure return, see NOTES.
+For the failure return, see VERSIONS.
 .SH ERRORS
 .TP
 .B EAGAIN
@@ -241,13 +246,7 @@ but the submitting context does not have the
 .B CAP_SYS_ADMIN
 capability.
 .SH VERSIONS
-The asynchronous I/O system calls first appeared in Linux 2.5.
-.SH CONFORMING TO
-.BR io_submit ()
-is Linux-specific and should not be used in
-programs that are intended to be portable.
-.SH NOTES
-Glibc does not provide a wrapper function for this system call.
+glibc does not provide a wrapper for this system call.
 You could invoke it using
 .BR syscall (2).
 But instead, you probably want to use the
@@ -255,7 +254,7 @@ But instead, you probably want to use the
 wrapper function provided by
 .\" http://git.fedorahosted.org/git/?p=libaio.git
 .IR libaio .
-.PP
+.P
 Note that the
 .I libaio
 wrapper function uses a different type
@@ -276,6 +275,10 @@ then the return value follows the usual conventions for
 indicating an error: \-1, with
 .I errno
 set to a (positive) value that indicates the error.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 2.5.
 .SH SEE ALSO
 .BR io_cancel (2),
 .BR io_destroy (2),
@@ -284,12 +287,3 @@ set to a (positive) value that indicates the error.
 .BR aio (7)
 .\" .SH AUTHOR
 .\" Kent Yoder.
-.SH COLOPHON
-This page is part of release 5.10 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

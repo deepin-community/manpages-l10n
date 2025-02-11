@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-RC\-LOCAL\-GENERATOR" "8" "" "systemd 249" "systemd-rc-local-generator"
+.TH "SYSTEMD\-RC\-LOCAL\-GENERATOR" "8" "" "systemd 257.1" "systemd-rc-local-generator"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -63,12 +63,14 @@ After=network\-online\&.target
 .PP
 Support for
 /etc/rc\&.d/rc\&.local
-is provided for compatibility with specific System V systems only\&. However, it is strongly recommended to avoid making use of this script today, and instead provide proper unit files with appropriate dependencies for any scripts to run during the boot process\&. Note that the path to the script is set at compile time and varies between distributions\&.
+is provided for compatibility with specific System\ \&V systems only\&. However, it is strongly recommended to avoid using this script today, and instead provide proper unit files with appropriate dependencies for any scripts to run during the boot process\&. Note that the path to the script is set at compile time and varies between distributions\&.
 .PP
 systemd\-rc\-local\-generator
 implements
 \fBsystemd.generator\fR(7)\&.
+.SH "NOTES"
+.PP
+On systems with SELinux, when creating the file, make sure to set the appropriate context, e\&.g\&. with "\fBsudo restorecon \-v /etc/rc\&.d/rc\&.local\fR"\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemctl\fR(1)
+\fBsystemd\fR(1), \fBsystemctl\fR(1)

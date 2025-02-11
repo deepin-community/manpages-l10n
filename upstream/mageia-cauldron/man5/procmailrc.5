@@ -3,7 +3,7 @@
 .ds Rv \\$3
 .ds Dt \\$4
 ..
-.Id $Id: procmailrc.man,v 1.85 2001/08/04 06:08:21 guenther Exp $
+.Id $Id$
 .TH PROCMAILRC 5 \*(Dt BuGless
 .rn SH Sh
 .de SH
@@ -312,18 +312,21 @@ multiple directories to deliver to (procmail will do so utilising
 hardlinks).
 .SS "Environment variable defaults"
 .TP 2.2i
-.B "LOGNAME, HOME and SHELL"
+.B "LOGNAME, HOME and USER_SHELL"
 Your (the recipient's) defaults
+.TP
+.B SHELL
+\&/bin/sh
 .TP
 .B PATH
 .na
-\&$HOME/bin\h'-\w' 'u' :/bin\h'-\w' 'u' :/usr/local/bin
+\&$HOME/bin\h'-\w' 'u' :/usr/local/bin\h'-\w' 'u' :/bin
 (Except
 .ad
 during the processing of an /etc/procmailrc file, when it will be set
 to
 .na
-`\&/bin\h'-\w' 'u' :/usr/local/bin'.)
+`\&/usr/local/bin\h'-\w' 'u' :/bin'.)
 .ad
 .TP
 .B SHELLMETAS
@@ -368,7 +371,7 @@ The current hostname
 (If an rcfile is specified on the command line)
 .TP
 .B PROCMAIL_VERSION
-\&3.22
+\&3.24
 .TP
 .B LOCKEXT
 \&.lock
@@ -639,7 +642,10 @@ If set to `yes' procmail will drop all privileges it might have had (suid or sgi
 The following tokens are known to both the procmail internal egrep and the
 standard
 .BR egrep (1)
-(beware that some egrep implementations include other non-standard extensions):
+(beware that some egrep implementations include other non-standard
+extensions; in particular, the repetition operator
+.B {
+is not supported by procmail's egrep):
 .TP 1.0i
 .B ^
 Start of a line.
@@ -757,7 +763,6 @@ lost.
 .BR csh (1),
 .BR mail (1),
 .BR mailx (1),
-.BR binmail (1),
 .BR uucp (1),
 .BR aliases (5),
 .BR sendmail (8),
@@ -830,7 +835,7 @@ one trailing newline will be stripped.
 .PP
 Some non-optimal and non-obvious regexps set MATCH to an incorrect
 value.  The regexp can be made to work by removing one or more unneeded
-'*', '+', or '?' operator on the left-hand side of the \e/ token.
+\&'*', '+', or '?' operators on the left-hand side of the \e/ token.
 .SH MISCELLANEOUS
 If the regular expression contains `\fB^TO_\fP' it will be substituted by
 .na
@@ -910,10 +915,6 @@ follow.
 Stephen R. van den Berg
 .RS
 <srb@cuci.nl>
-.RE
-Philip A. Guenther
-.RS
-<guenther@sendmail.com>
 .RE
 .\".if n .pl -(\n(.tu-1i)
 .rm SH

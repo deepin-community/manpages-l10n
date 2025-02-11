@@ -1,20 +1,22 @@
+'\" t
 .\" Copyright 2002 Walter Harms (walter.harms@informatik.uni-oldenburg.de)
 .\"
-.\" %%%LICENSE_START(GPL_NOVERSION_ONELINE)
-.\" Distributed under GPL
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-1.0-or-later
 .\"
 .\" 2002-07-27 Walter Harms
 .\" this was done with the help of the glibc manual
 .\"
-.TH ISGREATER 3  2021-03-22 "" "Linux Programmer's Manual"
+.TH isgreater 3 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 isgreater, isgreaterequal, isless, islessequal, islessgreater,
 isunordered \- floating-point relational tests without exception for NaN
+.SH LIBRARY
+Math library
+.RI ( libm ", " \-lm )
 .SH SYNOPSIS
 .nf
 .B #include <math.h>
-.PP
+.P
 .BI "int isgreater(" x ", " y );
 .BI "int isgreaterequal(" x ", " y );
 .BI "int isless(" x ", " y );
@@ -22,14 +24,12 @@ isunordered \- floating-point relational tests without exception for NaN
 .BI "int islessgreater(" x ", " y );
 .BI "int isunordered(" x ", " y );
 .fi
-.PP
-Link with \fI\-lm\fP.
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .nf
     All functions described here:
         _ISOC99_SOURCE || _POSIX_C_SOURCE >= 200112L
@@ -41,7 +41,7 @@ The normal relational operations (like
 fail if one of the operands is NaN.
 This will cause an exception.
 To avoid this, C99 defines the macros listed below.
-.PP
+.P
 These macros are guaranteed to evaluate their arguments only once.
 The arguments must be of real floating-point type (note: do not pass
 integer values as arguments to these macros, since the arguments will
@@ -51,7 +51,7 @@ be promoted to real-floating types).
 .BR isgreater ()
 determines \fI(x)\ >\ (y)\fP without an exception
 if
-.IR x
+.I x
 or
 .I y
 is NaN.
@@ -59,7 +59,7 @@ is NaN.
 .BR isgreaterequal ()
 determines \fI(x)\ >=\ (y)\fP without an exception
 if
-.IR x
+.I x
 or
 .I y
 is NaN.
@@ -67,7 +67,7 @@ is NaN.
 .BR isless ()
 determines \fI(x)\ <\ (y)\fP without an exception
 if
-.IR x
+.I x
 or
 .I y
 is NaN.
@@ -75,7 +75,7 @@ is NaN.
 .BR islessequal ()
 determines \fI(x)\ <=\ (y)\fP without an exception
 if
-.IR x
+.I x
 or
 .I y
 is NaN.
@@ -83,13 +83,13 @@ is NaN.
 .BR islessgreater ()
 determines \fI(x)\ < (y) || (x) >\ (y)\fP
 without an exception if
-.IR x
+.I x
 or
 .I y
 is NaN.
 This macro is not equivalent to \fIx\ !=\ y\fP because that expression is
 true if
-.IR x
+.I x
 or
 .I y
 is NaN.
@@ -102,10 +102,10 @@ The macros other than
 .BR isunordered ()
 return the result of the relational comparison;
 these macros return 0 if either argument is a NaN.
-.PP
+.P
 .BR isunordered ()
 returns 1 if
-.IR x
+.I x
 or
 .I y
 is NaN and 0 otherwise.
@@ -114,14 +114,14 @@ No errors occur.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR isgreater (),
 .BR isgreaterequal (),
 .BR isless (),
@@ -130,25 +130,15 @@ T{
 .BR isunordered ()
 T}	Thread safety	MT-Safe
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, C99.
-.SH NOTES
+.SH VERSIONS
 Not all hardware supports these functions,
 and where hardware support isn't provided, they will be emulated by macros.
 This will result in a performance penalty.
 Don't use these functions if NaN is of no concern for you.
+.SH STANDARDS
+C11, POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, C99.
 .SH SEE ALSO
 .BR fpclassify (3),
 .BR isnan (3)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

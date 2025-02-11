@@ -1,5 +1,5 @@
 '\" t
-.TH "PAM_SYSTEMD" "8" "" "systemd 249" "pam_systemd"
+.TH "PAM_SYSTEMD" "8" "" "systemd 255" "pam_systemd"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -144,6 +144,8 @@ or
 "background"\&. See
 \fBsd_session_get_class\fR(3)
 for details about the session class\&.
+.sp
+Added in version 197\&.
 .RE
 .PP
 \fItype=\fR
@@ -159,6 +161,8 @@ or
 "mir"\&. See
 \fBsd_session_get_type\fR(3)
 for details about the session type\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fIdesktop=\fR
@@ -173,6 +177,23 @@ environment variable (see below) takes precedence\&. This may be used to indicat
 \fI$XDG_CURRENT_DESKTOP\fR\&.) See
 \fBsd_session_get_desktop\fR(3)
 for further details\&.
+.sp
+Added in version 240\&.
+.RE
+.PP
+\fIdefault\-capability\-bounding\-set=\fR, \fIdefault\-capability\-ambient\-set=\fR
+.RS 4
+Takes a comma\-separated list of process capabilities (e\&.g\&.
+\fBCAP_WAKE_ALARM\fR,
+\fBCAP_BLOCK_SUSPEND\fR, \&...) to set for the invoked session\*(Aqs processes, if the user record does not encode appropriate sets of capabilities directly\&. See
+\fBcapabilities\fR(7)
+for details on the capabilities concept\&. If not specified, the default bounding set is left as is (i\&.e\&. usually contains the full set of capabilities)\&. The default ambient set is set to
+\fBCAP_WAKE_ALARM\fR
+for regular users if the PAM session is associated with a local seat or if it is invoked for the
+"systemd\-user"
+service\&. Otherwise defaults to the empty set\&.
+.sp
+Added in version 254\&.
 .RE
 .PP
 \fIdebug\fR[=]
@@ -212,6 +233,8 @@ is not set if the current user is not the original user of the session\&.
 \fI$TZ\fR, \fI$EMAIL\fR, \fI$LANG\fR
 .RS 4
 If a JSON user record is known for the user logging in these variables are initialized from the respective data in the record\&.
+.sp
+Added in version 245\&.
 .RE
 .PP
 The following environment variables are read by the module and may be used by the PAM service to pass metadata to the module\&. If these variables are not set when the PAM module is invoked but can be determined otherwise they are set by the module, so that these variables are initialized for the session and applications if known at all\&.
@@ -221,6 +244,8 @@ The following environment variables are read by the module and may be used by th
 The session type\&. This may be used instead of
 \fItype=\fR
 on the module parameter line, and is usually preferred\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fI$XDG_SESSION_CLASS\fR
@@ -228,6 +253,8 @@ on the module parameter line, and is usually preferred\&.
 The session class\&. This may be used instead of
 \fIclass=\fR
 on the module parameter line, and is usually preferred\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fI$XDG_SESSION_DESKTOP\fR
@@ -235,17 +262,23 @@ on the module parameter line, and is usually preferred\&.
 The desktop identifier\&. This may be used instead of
 \fIdesktop=\fR
 on the module parameter line, and is usually preferred\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fI$XDG_SEAT\fR
 .RS 4
 The seat name the session shall be registered for, if any\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fI$XDG_VTNR\fR
 .RS 4
 The VT number the session shall be registered for, if any\&. (Only applies to seats with a VT available, such as
 "seat0")
+.sp
+Added in version 209\&.
 .RE
 .PP
 If not set,
@@ -277,30 +310,40 @@ for additional information about how to set the context objects\&.
 .RS 4
 Sets unit
 \fIMemoryMax=\fR\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fIsystemd\&.tasks_max=\fR
 .RS 4
 Sets unit
 \fITasksMax=\fR\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fIsystemd\&.cpu_weight=\fR
 .RS 4
 Sets unit
 \fICPUWeight=\fR\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fIsystemd\&.io_weight=\fR
 .RS 4
 Sets unit
 \fIIOWeight=\fR\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fIsystemd\&.runtime_max_sec=\fR
 .RS 4
 Sets unit
 \fIRuntimeMaxSec=\fR\&.
+.sp
+Added in version 244\&.
 .RE
 .PP
 Example data as can be provided from an another PAM module:
@@ -340,8 +383,7 @@ account   sufficient pam_unix\&.so
 account   required   pam_permit\&.so
 
 \-password sufficient pam_systemd_home\&.so
-password  sufficient pam_unix\&.so sha512 shadow try_first_pass use_authtok
-
+password  sufficient pam_unix\&.so sha512 shadow try_first_pass
 password  required   pam_deny\&.so
 
 \-session  optional   pam_keyinit\&.so revoke
@@ -376,10 +418,10 @@ JSON User Records
 .IP " 2." 4
 Desktop Entry Specification
 .RS 4
-\%http://standards.freedesktop.org/desktop-entry-spec/latest/
+\%https://standards.freedesktop.org/desktop-entry-spec/latest/
 .RE
 .IP " 3." 4
 XDG Base Directory Specification
 .RS 4
-\%http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
+\%https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
 .RE

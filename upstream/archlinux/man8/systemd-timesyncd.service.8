@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-TIMESYNCD\&.SERVICE" "8" "" "systemd 249" "systemd-timesyncd.service"
+.TH "SYSTEMD\-TIMESYNCD\&.SERVICE" "8" "" "systemd 257" "systemd-timesyncd.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -65,27 +65,45 @@ for details) until the local time has been updated from
 to achieve that, which will delay start of units that are ordered after
 time\-sync\&.target
 until synchronization to an accurate reference clock is reached\&.
+.PP
+systemd
+and
+systemd\-timesyncd
+advance the system clock to the "epoch" (the lowest date above which the system clock time is assumed to be set correctly)\&. See "System clock epoch" section in
+\fBsystemd\fR(1)
+for details\&.
+systemd
+will set the clock when initializing, but
+/var/lib/systemd/timesync/clock
+might not yet be available at that point\&.
+systemd\-timesyncd
+will advance the clock when it is started and notices that the system clock is before the modification time of
+/var/lib/systemd/timesync/clock\&.
 .SH "FILES"
 .PP
 /var/lib/systemd/timesync/clock
 .RS 4
-The modification time ("mtime") of this file indicates the timestamp of the last successful synchronization (or at least the systemd build date, in case synchronization was not possible)\&. It is used to ensure that the system clock remains roughly monotonic across reboots, in case no local RTC is available\&.
+The modification time ("mtime") of this file is updated on each successful NTP synchronization or after each
+\fISaveIntervalSec=\fR
+time interval, as specified in
+\fBtimesyncd.conf\fR(5)\&.
+.sp
+If present, the modification time of this file is used for the epoch by
+\fBsystemd\fR(1)
+and
+systemd\-timesyncd\&.service\&.
+.sp
+Added in version 219\&.
 .RE
 .PP
 /run/systemd/timesync/synchronized
 .RS 4
-A file that is touched on each successful synchronization, to assist
+A file that is touched on each successful synchronization to assist
 systemd\-time\-wait\-sync
-and other applications to detecting synchronization with accurate reference clocks\&.
+and other applications in detecting synchronization to an accurate reference clock\&.
+.sp
+Added in version 239\&.
 .RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBtimesyncd.conf\fR(5),
-\fBsystemd.network\fR(5),
-\fBsystemd-networkd.service\fR(8),
-\fBsystemd-time-wait-sync.service\fR(8),
-\fBsystemd.special\fR(7),
-\fBtimedatectl\fR(1),
-\fBlocaltime\fR(5),
-\fBhwclock\fR(8)
+\fBsystemd\fR(1), \fBtimesyncd.conf\fR(5), \fBsystemd.network\fR(5), \fBsystemd-networkd.service\fR(8), \fBsystemd-time-wait-sync.service\fR(8), \fBsystemd.special\fR(7), \fBtimedatectl\fR(1), \fBlocaltime\fR(5), \fBhwclock\fR(8)

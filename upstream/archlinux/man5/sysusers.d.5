@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSUSERS\&.D" "5" "" "systemd 249" "sysusers.d"
+.TH "SYSUSERS\&.D" "5" "" "systemd 257" "sysusers.d"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -23,11 +23,18 @@
 sysusers.d \- Declarative allocation of system users and groups
 .SH "SYNOPSIS"
 .PP
+.RS 4
 /etc/sysusers\&.d/*\&.conf
-.PP
+.RE
+.RS 4
 /run/sysusers\&.d/*\&.conf
-.PP
+.RE
+.RS 4
+/usr/local/lib/sysusers\&.d/*\&.conf
+.RE
+.RS 4
 /usr/lib/sysusers\&.d/*\&.conf
+.RE
 .sp
 .nf
 #Type Name       ID                  GECOS              Home directory Shell
@@ -83,9 +90,9 @@ The file format is one line per user or group containing name, ID, GECOS field d
 .\}
 .nf
 #Type Name     ID             GECOS                 Home directory Shell
-u     httpd    404            "HTTP User"
-u     _authd   /usr/bin/authd "Authorization user"
-u     postgres \-              "Postgresql Database" /var/lib/pgsql /usr/libexec/postgresdb
+u!    httpd    404            "HTTP User"
+u!    _authd   /usr/bin/authd "Authorization user"
+u!    postgres \-              "Postgresql Database" /var/lib/pgsql /usr/libexec/postgresdb
 g     input    \-              \-
 m     _authd   input
 u     root     0              "Superuser"           /root          /bin/zsh
@@ -105,6 +112,13 @@ The type consists of a single letter\&. The following line types are understood:
 \fIu\fR
 .RS 4
 Create a system user and group of the specified name should they not exist yet\&. The user\*(Aqs primary group will be set to the group bearing the same name unless the ID field specifies it\&. The account will be created disabled, so that logins are not allowed\&.
+.sp
+Type
+\fIu\fR
+may be suffixed with an exclamation mark ("u!") to create a fully locked account\&. This is recommended, since logins should typically not be allowed for system users\&. With or without the exclamation mark an invalid password is set\&. For
+"u!", the account is also locked, which makes a difference for non\-password forms of authentication, such as SSH or similar\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fIg\fR
@@ -112,16 +126,22 @@ Create a system user and group of the specified name should they not exist yet\&
 Create a system group of the specified name should it not exist yet\&. Note that
 \fIu\fR
 implicitly creates a matching group\&. The group will be created with no password set\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fIm\fR
 .RS 4
 Add a user to a group\&. If the user or group do not exist yet, they will be implicitly created\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fIr\fR
 .RS 4
 Add a range of numeric UIDs/GIDs to the pool to allocate new UIDs and GIDs from\&. If no line of this type is specified, the range of UIDs/GIDs is set to some compiled\-in default\&. Note that both UIDs and GIDs are allocated from the same pool, in order to ensure that users and groups of the same name are likely to carry the same numeric UID and GID\&.
+.sp
+Added in version 216\&.
 .RE
 .SS "Name"
 .PP
@@ -242,6 +262,7 @@ l l l
 l l l
 l l l
 l l l
+l l l
 l l l.
 T{
 "%a"
@@ -307,6 +328,13 @@ T}:T{
 The operating system identifier of the running system, as read from the \fIID=\fR field of /etc/os\-release\&. See \fBos-release\fR(5) for more information\&.
 T}
 T{
+"%q"
+T}:T{
+Pretty host name
+T}:T{
+The pretty hostname of the running system, as read from the \fIPRETTY_HOSTNAME=\fR field of /etc/machine\-info\&. If not set, resolves to the short hostname\&. See \fBmachine-info\fR(5) for more information\&.
+T}
+T{
 "%T"
 T}:T{
 Directory for temporary files
@@ -359,8 +387,7 @@ sysusers\&.d
 vendor configuration, except to block certain users or groups from being created\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd-sysusers\fR(8)
+\fBsystemd\fR(1), \fBsystemd-sysusers\fR(8)
 .SH "NOTES"
 .IP " 1." 4
 User/Group Name Syntax

@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.MOUNT" "5" "" "systemd 249" "systemd.mount"
+.TH "SYSTEMD\&.MOUNT" "5" "" "systemd 255" "systemd.mount"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -58,7 +58,7 @@ Mount units must be named after the mount point directories they control\&. Exam
 /home/lennart
 must be configured in a unit file
 home\-lennart\&.mount\&. For details about the escaping logic used to convert a file system path to a unit name, see
-\fBsystemd.unit\fR(5)\&. Note that mount units cannot be templated, nor is possible to add multiple names to a mount unit by creating additional symlinks to it\&.
+\fBsystemd.unit\fR(5)\&. Note that mount units cannot be templated, nor is possible to add multiple names to a mount unit by creating symlinks to its unit file\&.
 .PP
 Optionally, a mount unit may be accompanied by an automount unit, to allow on\-demand or parallelized mounting\&. See
 \fBsystemd.automount\fR(5)\&.
@@ -223,9 +223,12 @@ for details)\&. Mounts listed in
 /etc/fstab
 will be converted into native units dynamically at boot and when the configuration of the system manager is reloaded\&. In general, configuring mount points through
 /etc/fstab
-is the preferred approach\&. See
+is the preferred approach to manage mounts for humans\&. For tooling, writing mount units should be preferred over editing
+/etc/fstab\&. See
 \fBsystemd-fstab-generator\fR(8)
-for details about the conversion\&.
+for details about the conversion from
+/etc/fstab
+to mount units\&.
 .PP
 The NFS mount option
 \fBbg\fR
@@ -274,6 +277,8 @@ for details\&.
 Note that this option always applies to the created mount unit only regardless whether
 \fBx\-systemd\&.automount\fR
 has been specified\&.
+.sp
+Added in version 220\&.
 .RE
 .PP
 \fBx\-systemd\&.before=\fR, \fBx\-systemd\&.after=\fR
@@ -297,6 +302,8 @@ for details\&.
 Note that these options always apply to the created mount unit only regardless whether
 \fBx\-systemd\&.automount\fR
 has been specified\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBx\-systemd\&.wanted\-by=\fR, \fBx\-systemd\&.required\-by=\fR
@@ -313,6 +320,8 @@ and
 in
 \fBsystemd.unit\fR(5)
 for details\&.
+.sp
+Added in version 245\&.
 .RE
 .PP
 \fBx\-systemd\&.requires\-mounts\-for=\fR
@@ -324,18 +333,27 @@ dependency between the created mount unit and other mount units\&. The argument 
 in
 \fBsystemd.unit\fR(5)
 for details\&.
+.sp
+Added in version 220\&.
 .RE
 .PP
-\fBx\-systemd\&.device\-bound\fR
+\fBx\-systemd\&.device\-bound=\fR
 .RS 4
-The block device backed file system will be upgraded to
+Takes a boolean argument\&. If true or no argument, a
 \fIBindsTo=\fR
-dependency\&. This option is only useful when mounting file systems manually with
-\fBmount\fR(8)
-as the default dependency in this case is
-\fIRequires=\fR\&. This option is already implied by entries in
+dependency on the backing device is set\&. If false, the mount unit is not stopped no matter whether the backing device is still present\&. This is useful when the file system is backed by volume managers\&. If not set, and the mount comes from unit fragments, i\&.e\&. generated from
 /etc/fstab
-or by mount units\&.
+by
+\fBsystemd-fstab-generator\fR(8)
+or loaded from a manually configured mount unit, a combination of
+\fIRequires=\fR
+and
+\fIStopPropagatedFrom=\fR
+dependencies is set on the backing device\&. If doesn\*(Aqt, only
+\fIRequires=\fR
+is used\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBx\-systemd\&.automount\fR
@@ -343,6 +361,8 @@ or by mount units\&.
 An automount unit will be created for the file system\&. See
 \fBsystemd.automount\fR(5)
 for details\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fBx\-systemd\&.idle\-timeout=\fR
@@ -352,6 +372,8 @@ Configures the idle timeout of the automount unit\&. See
 in
 \fBsystemd.automount\fR(5)
 for details\&.
+.sp
+Added in version 220\&.
 .RE
 .PP
 \fBx\-systemd\&.device\-timeout=\fR
@@ -367,6 +389,8 @@ Note that this option can only be used in
 /etc/fstab, and will be ignored when part of the
 \fIOptions=\fR
 setting in a unit file\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fBx\-systemd\&.mount\-timeout=\fR
@@ -386,6 +410,8 @@ setting in a unit file\&.
 See
 \fITimeoutSec=\fR
 below for details\&.
+.sp
+Added in version 233\&.
 .RE
 .PP
 \fBx\-systemd\&.makefs\fR
@@ -404,6 +430,8 @@ See
 may be used to remove any signatures from a block device to force
 \fBx\-systemd\&.makefs\fR
 to reinitialize the device\&.
+.sp
+Added in version 236\&.
 .RE
 .PP
 \fBx\-systemd\&.growfs\fR
@@ -416,6 +444,27 @@ Note that this option can only be used in
 /etc/fstab, and will be ignored when part of the
 \fIOptions=\fR
 setting in a unit file\&.
+.sp
+Added in version 236\&.
+.RE
+.PP
+\fBx\-systemd\&.pcrfs\fR
+.RS 4
+Measures file system identity information (mount point, type, label, UUID, partition label, partition UUID) into PCR 15 after the file system has been mounted\&. This ensures the
+\fBsystemd-pcrfs@.service\fR(8)
+or
+systemd\-pcrfs\-root\&.service
+services are pulled in by the mount unit\&.
+.sp
+Note that this option can only be used in
+/etc/fstab, and will be ignored when part of the
+\fIOptions=\fR
+setting in a unit file\&. It is also implied for the root and
+/usr/
+partitions discovered by
+\fBsystemd-gpt-auto-generator\fR(8)\&.
+.sp
+Added in version 253\&.
 .RE
 .PP
 \fBx\-systemd\&.rw\-only\fR
@@ -423,6 +472,8 @@ setting in a unit file\&.
 If a mount operation fails to mount the file system read\-write, it normally tries mounting the file system read\-only instead\&. This option disables that behaviour, and causes the mount to fail immediately instead\&. This option is translated into the
 \fIReadWriteOnly=\fR
 setting in a unit file\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB_netdev\fR
@@ -439,6 +490,8 @@ local\-fs\&.target\&. They also pull in
 network\-online\&.target
 and are ordered after it and
 network\&.target\&.
+.sp
+Added in version 235\&.
 .RE
 .PP
 \fBnoauto\fR, \fBauto\fR
@@ -449,11 +502,17 @@ local\-fs\&.target
 or
 remote\-fs\&.target\&. This means that it will not be mounted automatically during boot, unless it is pulled in by some other unit\&. The
 \fBauto\fR
-option has the opposite meaning and is the default\&. Note that the
-\fBnoauto\fR
-option has an effect on the mount unit itself only \(em if
+option has the opposite meaning and is the default\&.
+.sp
+Note that if
 \fBx\-systemd\&.automount\fR
-is used (see above), then the matching automount unit will still be pulled in by these targets\&.
+(see above) is used, neither
+\fBauto\fR
+nor
+\fBnoauto\fR
+have any effect\&. The matching automount unit will be added as a dependency to the appropriate target\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fBnofail\fR
@@ -463,14 +522,18 @@ With
 local\-fs\&.target
 or
 remote\-fs\&.target\&. Moreover the mount unit is not ordered before these target units\&. This means that the boot will continue without waiting for the mount unit and regardless whether the mount point can be mounted successfully\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fBx\-initrd\&.mount\fR
 .RS 4
-An additional filesystem to be mounted in the initramfs\&. See
+An additional filesystem to be mounted in the initrd\&. See
 initrd\-fs\&.target
 description in
-\fBsystemd.special\fR(7)\&.
+\fBsystemd.special\fR(7)\&. This is both an indicator to the initrd to mount this partition early and an indicator to the host to leave the partition mounted until final shutdown\&. Or in other words, if this flag is set it is assumed the mount shall be active during the entire regular runtime of the system, i\&.e\&. established before the initrd transitions into the host all the way until the host transitions to the final shutdown phase\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 If a mount point is configured in both
@@ -483,7 +546,10 @@ will always take precedence over configuration in
 /usr/\&.
 .SH "OPTIONS"
 .PP
-Mount files must include a [Mount] section, which carries information about the file system mount points it supervises\&. A number of options that may be used in this section are shared with other unit types\&. These options are documented in
+Mount unit files may include [Unit] and [Install] sections, which are described in
+\fBsystemd.unit\fR(5)\&.
+.PP
+Mount unit files must include a [Mount] section, which carries information about the file system mount points it supervises\&. A number of options that may be used in this section are shared with other unit types\&. These options are documented in
 \fBsystemd.exec\fR(5)
 and
 \fBsystemd.kill\fR(5)\&. The options specific to the [Mount] section of mount units are the following:
@@ -500,7 +566,7 @@ for more information\&.) This option is mandatory\&. Note that the usual specifi
 .PP
 \fIWhere=\fR
 .RS 4
-Takes an absolute path of a file or directory for the mount point; in particular, the destination cannot be a symbolic link\&. If the mount point does not exist at the time of mounting, it is created as directory\&. This string must be reflected in the unit filename\&. (See above\&.) This option is mandatory\&.
+Takes an absolute path of a file or directory for the mount point; in particular, the destination cannot be a symbolic link\&. If the mount point does not exist at the time of mounting, it is created as either a directory or a file\&. The former is the usual case; the latter is done only if this mount is a bind mount and the source (\fIWhat=\fR) is not a directory\&. This string must be reflected in the unit filename\&. (See above\&.) This option is mandatory\&.
 .RE
 .PP
 \fIType=\fR
@@ -524,6 +590,8 @@ is relaxed, and unknown mount options are tolerated\&. This corresponds with
 \fBmount\fR(8)\*(Aqs
 \fI\-s\fR
 switch\&. Defaults to off\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fILazyUnmount=\fR
@@ -532,6 +600,8 @@ Takes a boolean argument\&. If true, detach the filesystem from the filesystem h
 \fBumount\fR(8)\*(Aqs
 \fI\-l\fR
 switch\&. Defaults to off\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fIReadWriteOnly=\fR
@@ -540,6 +610,8 @@ Takes a boolean argument\&. If false, a mount point that shall be mounted read\-
 \fBmount\fR(8)\*(Aqs
 \fI\-w\fR
 switch\&. Defaults to off\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fIForceUnmount=\fR
@@ -548,6 +620,8 @@ Takes a boolean argument\&. If true, force an unmount (in case of an unreachable
 \fBumount\fR(8)\*(Aqs
 \fI\-f\fR
 switch\&. Defaults to off\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fIDirectoryMode=\fR
@@ -569,8 +643,8 @@ option in
 .RE
 .PP
 Check
-\fBsystemd.exec\fR(5)
-and
+\fBsystemd.unit\fR(5),
+\fBsystemd.exec\fR(5), and
 \fBsystemd.kill\fR(5)
 for more settings\&.
 .SH "SEE ALSO"

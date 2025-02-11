@@ -1,0 +1,131 @@
+'\" t
+.\" Copyright 2022 Alejandro Colomar <alx@kernel.org>
+.\"
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+.\"
+.TH strncat 3 2023-02-05 "Linux man-pages 6.03"
+.SH NAME
+strncat \- concatenate a null-padded character sequence into a string
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
+.SH SYNOPSIS
+.nf
+.B #include <string.h>
+.PP
+.BI "char *strncat(char *restrict " dst ", const char " src "[restrict ." sz ],
+.BI "               size_t " sz );
+.fi
+.SH DESCRIPTION
+This function catenates the input character sequence
+contained in a null-padded fixed-width buffer,
+into a string at the buffer pointed to by
+.IR dst .
+The programmer is responsible for allocating a destination buffer large enough,
+that is,
+.IR "strlen(dst) + strnlen(src, sz) + 1" .
+.PP
+An implementation of this function might be:
+.PP
+.in +4n
+.EX
+char *
+strncat(char *restrict dst, const char *restrict src, size_t sz)
+{
+    int   len;
+    char  *p;
+
+    len = strnlen(src, sz);
+    p = dst + strlen(dst);
+    p = mempcpy(p, src, len);
+    *p = \[aq]\e0\[aq];
+
+    return dst;
+}
+.EE
+.in
+.SH RETURN VALUE
+.BR strncat ()
+returns
+.IR dst .
+.SH ATTRIBUTES
+For an explanation of the terms used in this section, see
+.BR attributes (7).
+.ad l
+.nh
+.TS
+allbox;
+lbx lb lb
+l l l.
+Interface	Attribute	Value
+T{
+.BR strncat ()
+T}	Thread safety	MT-Safe
+.TE
+.hy
+.ad
+.sp 1
+.SH STANDARDS
+POSIX.1-2001, POSIX.1-2008, C99, SVr4, 4.3BSD.
+.SH CAVEATS
+The name of this function is confusing.
+This function has no relation to
+.BR strncpy (3).
+.PP
+If the destination buffer is not large enough,
+the behavior is undefined.
+See
+.B _FORTIFY_SOURCE
+in
+.BR feature_test_macros (7).
+.SH BUGS
+This function can be very inefficient.
+Read about
+.UR https://www.joelonsoftware.com/\:2001/12/11/\:back\-to\-basics/
+Shlemiel the painter
+.UE .
+.SH EXAMPLES
+.\" SRC BEGIN (strncat.c)
+.EX
+#include <err.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define nitems(arr)  (sizeof((arr)) / sizeof((arr)[0]))
+
+int
+main(void)
+{
+    size_t  maxsize;
+
+    // Null-padded fixed-width character sequences
+    char    pre[4] = "pre.";
+    char    new_post[50] = ".foo.bar";
+
+    // Strings
+    char    post[] = ".post";
+    char    src[] = "some_long_body.post";
+    char    *dest;
+
+    maxsize = nitems(pre) + strlen(src) \- strlen(post) +
+              nitems(new_post) + 1;
+    dest = malloc(sizeof(*dest) * maxsize);
+    if (dest == NULL)
+        err(EXIT_FAILURE, "malloc()");
+
+    dest[0] = \[aq]\e0\[aq];  // There's no 'cpy' function to this 'cat'.
+    strncat(dest, pre, nitems(pre));
+    strncat(dest, src, strlen(src) \- strlen(post));
+    strncat(dest, new_post, nitems(new_post));
+
+    puts(dest);  // "pre.some_long_body.foo.bar"
+    free(dest);
+    exit(EXIT_SUCCESS);
+}
+.EE
+.\" SRC END
+.in
+.SH SEE ALSO
+.BR string (3),
+.BR string_copying (3)

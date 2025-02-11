@@ -1,28 +1,9 @@
+'\" t
 .\" Copyright (c) 1993 Luigi P. Bai (lpb@softint.com) July 28, 1993
 .\" and Copyright 1993 Giorgio Ciucci <giorgio@crcc.it>
 .\" and Copyright 2004, 2005 Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" Modified 1993-07-28, Rik Faith <faith@cs.unc.edu>
 .\" Modified 1993-11-28, Giorgio Ciucci <giorgio@crcc.it>
@@ -36,36 +17,37 @@
 .\"	Updated shmid_ds structure definitions
 .\"	Added information on SHM_DEST and SHM_LOCKED flags
 .\"	Noted that CAP_IPC_LOCK is not required for SHM_UNLOCK
-.\"		since kernel 2.6.9
+.\"		since Linux 2.6.9
 .\" Modified, 2004-11-25, mtk, notes on 2.6.9 RLIMIT_MEMLOCK changes
 .\" 2005-04-25, mtk -- noted aberrant Linux behavior w.r.t. new
 .\"	attaches to a segment that has already been marked for deletion.
 .\" 2005-08-02, mtk: Added IPC_INFO, SHM_INFO, SHM_STAT descriptions.
 .\" 2018-03-20, dbueso: Added SHM_STAT_ANY description.
 .\"
-.TH SHMCTL 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH shmctl 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 shmctl \- System V shared memory control
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
-.ad l
 .B #include <sys/shm.h>
-.PP
-.BI "int shmctl(int " shmid ", int " cmd ", struct shmid_ds *" buf );
-.ad b
+.P
+.BI "int shmctl(int " shmid ", int " op ", struct shmid_ds *" buf );
 .fi
 .SH DESCRIPTION
 .BR shmctl ()
 performs the control operation specified by
-.I cmd
+.I op
 on the System\ V shared memory segment whose identifier is given in
 .IR shmid .
-.PP
+.P
 The
 .I buf
 argument is a pointer to a \fIshmid_ds\fP structure,
 defined in \fI<sys/shm.h>\fP as follows:
-.PP
+.P
 .in +4n
 .EX
 struct shmid_ds {
@@ -82,7 +64,7 @@ struct shmid_ds {
 };
 .EE
 .in
-.PP
+.P
 The fields of the
 .I shmid_ds
 structure are as follows:
@@ -109,7 +91,7 @@ system call that detached tgis segment.
 .I shm_ctime
 Time of creation of segment or time of the last
 .BR shmctl ()
-.BR IPC_SET
+.B IPC_SET
 operation.
 .TP
 .I shm_cpid
@@ -124,13 +106,13 @@ system call on this segment.
 .TP
 .I shm_nattch
 Number of processes that have this segment attached.
-.PP
+.P
 The
 .I ipc_perm
 structure is defined as follows
 (the highlighted fields are settable using
 .BR IPC_SET ):
-.PP
+.P
 .in +4n
 .EX
 struct ipc_perm {
@@ -145,7 +127,7 @@ struct ipc_perm {
 };
 .EE
 .in
-.PP
+.P
 The least significant 9 bits of the
 .I mode
 field of the
@@ -161,7 +143,7 @@ l l.
 0004	Read by others
 0002	Write by others
 .TE
-.PP
+.P
 Bits 0100, 0010, and 0001 (the execute bits) are unused by the system.
 (It is not necessary to have execute permission on a segment
 in order to perform a
@@ -169,9 +151,9 @@ in order to perform a
 call with the
 .B SHM_EXEC
 flag.)
-.PP
+.P
 Valid values for
-.I cmd
+.I op
 are:
 .TP
 .B IPC_STAT
@@ -323,11 +305,13 @@ However,
 is not checked for read access for
 .IR shmid ,
 meaning that any user can employ this operation (just as any user may read
-.IR /proc/sysvipc/shm
+.I /proc/sysvipc/shm
 to obtain the same information).
-.PP
+.P
 The caller can prevent or allow swapping of a shared
-memory segment with the following \fIcmd\fP values:
+memory segment with the following
+.I op
+values:
 .TP
 .BR SHM_LOCK " (Linux-specific)"
 Prevent swapping of the shared memory segment.
@@ -343,13 +327,13 @@ will be set.
 .TP
 .BR SHM_UNLOCK " (Linux-specific)"
 Unlock the segment, allowing it to be swapped out.
-.PP
-In kernels before 2.6.10, only a privileged process
+.P
+Before Linux 2.6.10, only a privileged process
 could employ
 .B SHM_LOCK
 and
 .BR SHM_UNLOCK .
-Since kernel 2.6.10, an unprivileged process can employ these operations
+Since Linux 2.6.10, an unprivileged process can employ these operations
 if its effective UID matches the owner or creator UID of the segment, and
 (for
 .BR SHM_LOCK )
@@ -357,10 +341,10 @@ the amount of memory to be locked falls within the
 .B RLIMIT_MEMLOCK
 resource limit (see
 .BR setrlimit (2)).
-.\" There was some weirdness in 2.6.9: SHM_LOCK and SHM_UNLOCK could
+.\" There was some weirdness in Linux 2.6.9: SHM_LOCK and SHM_UNLOCK could
 .\" be applied to a segment, regardless of ownership of the segment.
 .\" This was a botch-up in the move to RLIMIT_MEMLOCK, and was fixed
-.\" in 2.6.10.  MTK, May 2005
+.\" in Linux 2.6.10.  MTK, May 2005
 .SH RETURN VALUE
 A successful
 .B IPC_INFO
@@ -381,7 +365,7 @@ operation returns the identifier of the shared memory segment
 whose index was given in
 .IR shmid .
 Other operations return 0 on success.
-.PP
+.P
 On error, \-1 is returned, and
 .I errno
 is set to indicate the error.
@@ -397,7 +381,7 @@ capability in the user namespace that governs its IPC namespace.
 .TP
 .B EFAULT
 The argument
-.I cmd
+.I op
 has value
 .B IPC_SET
 or
@@ -410,8 +394,10 @@ isn't accessible.
 \fIshmid\fP points to a removed identifier.
 .TP
 .B EINVAL
-\fIshmid\fP is not a valid identifier, or \fIcmd\fP
-is not a valid command.
+.I shmid
+is not a valid identifier, or
+.I op
+is not a valid operation.
 Or: for a
 .B SHM_STAT
 or
@@ -421,7 +407,7 @@ operation, the index value specified in
 referred to an array slot that is currently unused.
 .TP
 .B ENOMEM
-(In kernels since 2.6.9),
+(Since Linux 2.6.9),
 .B SHM_LOCK
 was specified and the size of the to-be-locked segment would mean
 that the total bytes in locked shared memory segments would exceed
@@ -448,7 +434,7 @@ and the process was not privileged (Linux: did not have the
 .B CAP_SYS_ADMIN
 capability).
 .IP
-Or (in kernels before 2.6.9),
+Or (before Linux 2.6.9),
 .B SHM_LOCK
 or
 .B SHM_UNLOCK
@@ -459,11 +445,34 @@ capability).
 (Since Linux 2.6.9, this error can also occur if the
 .B RLIMIT_MEMLOCK
 is 0 and the caller is not privileged.)
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, SVr4.
+.SH VERSIONS
+Linux permits a process to attach
+.RB ( shmat (2))
+a shared memory segment that has already been marked for deletion
+using
+.IR shmctl(IPC_RMID) .
+This feature is not available on other UNIX implementations;
+portable applications should avoid relying on it.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, SVr4.
 .\" SVr4 documents additional error conditions EINVAL,
 .\" ENOENT, ENOSPC, ENOMEM, EEXIST.  Neither SVr4 nor SVID documents
 .\" an EIDRM error condition.
+.P
+Various fields in a \fIstruct shmid_ds\fP were typed as
+.I short
+under Linux 2.2
+and have become
+.I long
+under Linux 2.4.
+To take advantage of this,
+a recompilation under glibc-2.1.91 or later should suffice.
+(The kernel distinguishes old and new calls by an
+.B IPC_64
+flag in
+.IR op .)
 .SH NOTES
 The
 .BR IPC_INFO ,
@@ -476,27 +485,6 @@ program to provide information on allocated resources.
 In the future, these may modified or moved to a
 .I /proc
 filesystem interface.
-.PP
-Linux permits a process to attach
-.RB ( shmat (2))
-a shared memory segment that has already been marked for deletion
-using
-.IR shmctl(IPC_RMID) .
-This feature is not available on other UNIX implementations;
-portable applications should avoid relying on it.
-.PP
-Various fields in a \fIstruct shmid_ds\fP were typed as
-.I short
-under Linux 2.2
-and have become
-.I long
-under Linux 2.4.
-To take advantage of this,
-a recompilation under glibc-2.1.91 or later should suffice.
-(The kernel distinguishes old and new calls by an
-.B IPC_64
-flag in
-.IR cmd .)
 .SH SEE ALSO
 .BR mlock (2),
 .BR setrlimit (2),
@@ -504,12 +492,3 @@ flag in
 .BR shmop (2),
 .BR capabilities (7),
 .BR sysvipc (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

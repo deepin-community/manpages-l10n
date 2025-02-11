@@ -12,13 +12,13 @@ plocate \- find files by name, quickly
 finds all files on the system matching the given pattern (or all
 of the patterns if multiple are given). It does this by means of
 an index made by
-.BR plocate-build (8),
-which in turn reads the database made by 
-.BR updatedb (8).
+.BR updatedb (8)
+or (less commonly) converted from another index by
+.BR plocate\-build (8).
 
-plocate is largely compatible with
+plocate is largely argument-compatible with
 .BR mlocate (1),
-and reuses its database to create its index, but is significantly
+but is significantly
 faster. In particular, it rarely needs to scan through its entire
 database, unless the pattern is very short (less than three bytes)
 or you want to search for a regular expression. It does not try to
@@ -33,16 +33,16 @@ will search for files that match
 of them. This is the main incompatibility with
 .BR mlocate (1),
 which searches for files that match one or more patterns, unless
-the \-a option is given.
+the \-A option is given.
 
 By default, patterns are taken to be substrings to search for.
 If at least one non-escaped globbing metacharacter (*, ? or []) is given,
 that pattern is instead taken to be a glob pattern (which means it needs
 to start and end in * for a substring match). If
-.B --regexp
+.B \-\-regexp
 is given, patterns are instead taken to be (non-anchored) POSIX basic
 regular expressions, and if
-.B --regex
+.B \-\-regex
 is given, patterns are taken to be POSIX extended regular expressions.
 All of this matches
 .BR mlocate (1)
@@ -57,7 +57,22 @@ and none that are not, by means of running with the setgid
 bit set to access the index (which is built as root), but by
 testing visibility as the calling user.
 
+.SH EXIT STATUS
+.B plocate
+exits with 0 to indicate that a match was found or that
+.B \-\-help
+or
+.B \-\-version
+were passed. Otherwise,
+.B plocate
+exits with status code 1, indicating that an error occurred or that no matches were found.
+
 .SH OPTIONS
+.TP
+\fB\-A\fR, \fB\-\-all\fR
+Ignored for compatibility with
+.BR mlocate (1).
+
 .TP
 \fB\-b\fR, \fB\-\-basename\fR
 Match only against the file name portion of the path name,
@@ -107,6 +122,16 @@ matches have been found. If
 is given, the number printed out will be at most \fILIMIT\fR.
 
 .TP
+\fB\-N\fR, \fB\-\-literal\fR
+Print entry names without quoting. Normally,
+.B plocate
+will escape special characters in filenames, so that they are safe for
+consumption by typical shells (similar to the GNU coreutils
+.I shell\-escape\-always
+quoting style), unless printing to a pipe, but this options will
+turn off such quoting.
+
+.TP
 \fB\-0\fR, \fB\-\-null\fR
 Instead of writing a newline after every match, write a NUL
 (ASCII 0). This is useful for creating unambiguous output
@@ -131,7 +156,7 @@ regular expressions.
 .TP
 \fB\-w\fR, \fB\-\-wholename\fR
 Match against the entire path name. This is the default,
-so unless \fB-b\fR is given first (see above), it will not do
+so unless \fB\-b\fR is given first (see above), it will not do
 anything. This option thus exists only as compatibility with
 .BR mlocate (1).
 
@@ -156,6 +181,6 @@ as for \fB\-\-database\fR.
 Steinar H. Gunderson <steinar+plocate@gunderson.no>
 
 .SH SEE ALSO
-\fBplocate-build\fP(8),
+\fBplocate\-build\fP(8),
 \fBmlocate\fP(1),
 \fBupdatedb\fP(8)

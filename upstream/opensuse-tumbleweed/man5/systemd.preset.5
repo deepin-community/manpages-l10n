@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.PRESET" "5" "" "systemd 249" "systemd.preset"
+.TH "SYSTEMD\&.PRESET" "5" "" "systemd 256.8" "systemd.preset"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -23,17 +23,30 @@
 systemd.preset \- Service enablement presets
 .SH "SYNOPSIS"
 .PP
+.RS 4
 /etc/systemd/system\-preset/*\&.preset
-.PP
+.RE
+.RS 4
 /run/systemd/system\-preset/*\&.preset
-.PP
+.RE
+.RS 4
+/usr/local/lib/systemd/system\-preset/*\&.preset
+.RE
+.RS 4
 /usr/lib/systemd/system\-preset/*\&.preset
-.PP
+.RE
+.RS 4
 /etc/systemd/user\-preset/*\&.preset
-.PP
+.RE
+.RS 4
 /run/systemd/user\-preset/*\&.preset
-.PP
+.RE
+.RS 4
+/usr/local/lib/systemd/user\-preset/*\&.preset
+.RE
+.RS 4
 /usr/lib/systemd/user\-preset/*\&.preset
+.RE
 .SH "DESCRIPTION"
 .PP
 Preset files may be used to encode policy which units shall be enabled by default and which ones shall be disabled\&. They are read by
@@ -45,37 +58,46 @@ is identical to
 or
 \fBsystemctl disable\fR\&.
 \fBsystemctl preset\fR
-is used by the post install scriptlets of rpm packages (or other OS package formats), to enable/disable specific units by default on package installation, enforcing distribution, spin or administrator preset policy\&. This allows choosing a certain set of units to be enabled/disabled even before installing the actual package\&. For more information, see
+is used by the post install scriptlets of rpm packages (or other OS package formats), to enable/disable specific units by default on package installation, enforcing distribution, spin, or administrator preset policy\&. This allows choosing a certain set of units to be enabled/disabled even before installing the actual package\&. For more information, see
 \fBsystemctl\fR(1)\&.
 .PP
 It is not recommended to ship preset files within the respective software packages implementing the units, but rather centralize them in a distribution or spin default policy, which can be amended by administrator policy, see below\&.
 .PP
-If no preset files exist,
-\fBsystemctl preset\fR
-will enable all units that are installed by default\&. If this is not desired and all units shall rather be disabled, it is necessary to ship a preset file with a single, catchall "disable *" line\&. (See example 1, below\&.)
+If no preset files exist, preset operations will enable all units that are installed by default\&. If this is not desired and all units shall rather be disabled, it is necessary to ship a preset file with a single, catchall "disable *" line\&. (See example 1, below\&.)
+.PP
+When the machine is booted for the first time,
+\fBsystemd\fR(1)
+will enable/disable all units according to preset policy, similarly to
+\fBsystemctl preset\-all\fR\&. Also see
+\fIConditionFirstBoot=\fR
+in
+\fBsystemd.unit\fR(5)
+and "First Boot Semantics" in
+\fBmachine-id\fR(5)\&.
 .SH "PRESET FILE FORMAT"
 .PP
-The preset files contain a list of directives consisting of either the word
-"enable"
-or
-"disable"
-followed by a space and a unit name (possibly with shell style wildcards), separated by newlines\&. Empty lines and lines whose first non\-whitespace character is
+The preset files contain a list of directives, one per line\&. Empty lines and lines whose first non\-whitespace character is
 "#"
 or
 ";"
-are ignored\&. Multiple instance names for unit templates may be specified as a space separated list at the end of the line instead of the customary position between
-"@"
-and the unit suffix\&.
+are ignored\&. Each directive consists of one of the words
+"enable",
+"disable", or
+"ignore", followed by whitespace and a unit name\&. The unit name may contain shell\-style wildcards\&.
+.PP
+For the enable directive for template units, one or more instance names may be specified as a space\-separated list after the unit name\&. In this case, those instances will be enabled instead of the instance specified via DefaultInstance= in the unit\&.
 .PP
 Presets must refer to the "real" unit file, and not to any aliases\&. See
 \fBsystemd.unit\fR(5)
 for a description of unit aliasing\&.
 .PP
-Two different directives are understood:
+Three different directives are understood:
 "enable"
 may be used to enable units by default,
 "disable"
-to disable units by default\&.
+to disable units by default, and
+"ignore"
+to ignore units and leave existing configuration intact\&.
 .PP
 If multiple lines apply to a unit name, the first matching one takes precedence over all others\&.
 .PP
@@ -198,9 +220,7 @@ The preset mechanism allows clean separation of the enablement mechanism (inside
 \fBsystemctl preset\fR) and enablement policy (centralized in the preset files), and lifts the configuration out of individual packages\&. Preset files may be written for specific distributions, for specific spins or for specific sites, in order to enforce different policies as needed\&. It is recommended to apply the policy encoded in preset files in package installation scriptlets\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemctl\fR(1),
-\fBsystemd-delta\fR(1)
+\fBsystemd\fR(1), \fBsystemctl\fR(1), \fBsystemd-delta\fR(1)
 .PP
 \fBdaemon\fR(7)
 has a discussion of packaging scriptlets\&.

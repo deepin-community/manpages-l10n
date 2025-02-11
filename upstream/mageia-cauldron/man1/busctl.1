@@ -1,5 +1,5 @@
 '\" t
-.TH "BUSCTL" "1" "" "systemd 249" "busctl"
+.TH "BUSCTL" "1" "" "systemd 255" "busctl"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -39,11 +39,15 @@ Show all peers on the bus, by their service names\&. By default, shows both uniq
 and
 \fB\-\-acquired\fR
 switches\&. This is the default operation if no command is specified\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fBstatus\fR [\fISERVICE\fR]
 .RS 4
 Show process information and credentials of a bus service (if one is specified by its unique or well\-known name), a process (if one is specified by its numeric PID), or the owner of the bus (if no parameter is specified)\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fBmonitor\fR [\fISERVICE\fR...]
@@ -53,17 +57,20 @@ Dump messages being exchanged\&. If
 is specified, show messages to or from this peer, identified by its well\-known or unique name\&. Otherwise, show all messages on the bus\&. Use
 Ctrl+C
 to terminate the dump\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fBcapture\fR [\fISERVICE\fR...]
 .RS 4
 Similar to
 \fBmonitor\fR
-but writes the output in pcap format (for details, see the
-\m[blue]\fBLibpcap File Format\fR\m[]\&\s-2\u[1]\d\s+2
-description)\&. Make sure to redirect standard output to a file\&. Tools like
+but writes the output in pcapng format (for details, see
+\m[blue]\fBPCAP Next Generation (pcapng) Capture File Format\fR\m[]\&\s-2\u[1]\d\s+2)\&. Make sure to redirect standard output to a file or pipe\&. Tools like
 \fBwireshark\fR(1)
 may be used to dissect and view the resulting files\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fBtree\fR [\fISERVICE\fR...]
@@ -71,11 +78,15 @@ may be used to dissect and view the resulting files\&.
 Shows an object tree of one or more services\&. If
 \fISERVICE\fR
 is specified, show object tree of the specified services only\&. Otherwise, show all object trees of all services on the bus that acquired at least one well\-known name\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fBintrospect\fR \fISERVICE\fR \fIOBJECT\fR [\fIINTERFACE\fR]
 .RS 4
 Show interfaces, methods, properties and signals of the specified object (identified by its path) on the specified service\&. If the interface argument is passed, the output is limited to members of the specified interface\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fBcall\fR \fISERVICE\fR \fIOBJECT\fR \fIINTERFACE\fR \fIMETHOD\fR [\fISIGNATURE\fR\ [\fIARGUMENT\fR...]]
@@ -83,6 +94,8 @@ Show interfaces, methods, properties and signals of the specified object (identi
 Invoke a method and show the response\&. Takes a service name, object path, interface name and method name\&. If parameters shall be passed to the method call, a signature string is required, followed by the arguments, individually formatted as strings\&. For details on the formatting used, see below\&. To suppress output of the returned data, use the
 \fB\-\-quiet\fR
 option\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fBemit\fR \fIOBJECT\fR \fIINTERFACE\fR \fISIGNAL\fR [\fISIGNATURE\fR\ [\fIARGUMENT\fR...]]
@@ -90,6 +103,8 @@ option\&.
 Emit a signal\&. Takes an object path, interface name and method name\&. If parameters shall be passed, a signature string is required, followed by the arguments, individually formatted as strings\&. For details on the formatting used, see below\&. To specify the destination of the signal, use the
 \fB\-\-destination=\fR
 option\&.
+.sp
+Added in version 242\&.
 .RE
 .PP
 \fBget\-property\fR \fISERVICE\fR \fIOBJECT\fR \fIINTERFACE\fR \fIPROPERTY\fR...
@@ -97,16 +112,22 @@ option\&.
 Retrieve the current value of one or more object properties\&. Takes a service name, object path, interface name and property name\&. Multiple properties may be specified at once, in which case their values will be shown one after the other, separated by newlines\&. The output is, by default, in terse format\&. Use
 \fB\-\-verbose\fR
 for a more elaborate output format\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fBset\-property\fR \fISERVICE\fR \fIOBJECT\fR \fIINTERFACE\fR \fIPROPERTY\fR \fISIGNATURE\fR \fIARGUMENT\fR...
 .RS 4
 Set the current value of an object property\&. Takes a service name, object path, interface name, property name, property signature, followed by a list of parameters formatted as strings\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fBhelp\fR
 .RS 4
 Show command syntax help\&.
+.sp
+Added in version 209\&.
 .RE
 .SH "OPTIONS"
 .PP
@@ -121,18 +142,24 @@ instead of using suitable defaults for either the system or user bus (see
 and
 \fB\-\-user\fR
 options)\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fB\-\-show\-machine\fR
 .RS 4
 When showing the list of peers, show a column containing the names of containers they belong to\&. See
 \fBsystemd-machined.service\fR(8)\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fB\-\-unique\fR
 .RS 4
 When showing the list of peers, show only "unique" names (of the form
 ":\fInumber\fR\&.\fInumber\fR")\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fB\-\-acquired\fR
@@ -140,11 +167,15 @@ When showing the list of peers, show only "unique" names (of the form
 The opposite of
 \fB\-\-unique\fR
 \(em only "well\-known" names will be shown\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fB\-\-activatable\fR
 .RS 4
 When showing the list of peers, show only peers which have actually not been activated yet, but may be started automatically if accessed\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fB\-\-match=\fR\fB\fIMATCH\fR\fR
@@ -152,6 +183,8 @@ When showing the list of peers, show only peers which have actually not been act
 When showing messages being exchanged, show only the subset matching
 \fIMATCH\fR\&. See
 \fBsd_bus_add_match\fR(3)\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fB\-\-size=\fR
@@ -159,6 +192,8 @@ When showing messages being exchanged, show only the subset matching
 When used with the
 \fBcapture\fR
 command, specifies the maximum bus message size to capture ("snaplen")\&. Defaults to 4096 bytes\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fB\-\-list\fR
@@ -166,6 +201,8 @@ command, specifies the maximum bus message size to capture ("snaplen")\&. Defaul
 When used with the
 \fBtree\fR
 command, shows a flat list of object paths instead of a tree\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fB\-q\fR, \fB\-\-quiet\fR
@@ -173,6 +210,8 @@ command, shows a flat list of object paths instead of a tree\&.
 When used with the
 \fBcall\fR
 command, suppresses display of the response message payload\&. Note that even if this option is specified, errors returned will still be printed and the tool will indicate success or failure with the process exit code\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fB\-\-verbose\fR
@@ -182,6 +221,8 @@ When used with the
 or
 \fBget\-property\fR
 command, shows output in a more verbose format\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fB\-\-xml\-interface\fR
@@ -191,6 +232,8 @@ When used with the
 call, dump the XML description received from the D\-Bus
 \fBorg\&.freedesktop\&.DBus\&.Introspectable\&.Introspect\fR
 call instead of the normal output\&.
+.sp
+Added in version 243\&.
 .RE
 .PP
 \fB\-\-json=\fR\fIMODE\fR
@@ -204,6 +247,8 @@ command, shows output formatted as JSON\&. Expects one of
 (for the shortest possible output without any redundant whitespace or line breaks) or
 "pretty"
 (for a pretty version of the same, with indentation and line breaks)\&. Note that transformation from D\-Bus marshalling to JSON is done in a loss\-less way, which means type information is embedded into the JSON object tree\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fB\-j\fR
@@ -212,6 +257,8 @@ Equivalent to
 \fB\-\-json=pretty\fR
 when invoked interactively from a terminal\&. Otherwise equivalent to
 \fB\-\-json=short\fR, in particular when the output is piped to some other program\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fB\-\-expect\-reply=\fR\fIBOOL\fR
@@ -225,6 +272,8 @@ shall wait for completion of the method call, output the returned method respons
 \fB\-\-quiet\fR
 above\&. Defaults to
 "yes"\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fB\-\-auto\-start=\fR\fIBOOL\fR
@@ -235,6 +284,8 @@ or
 \fBemit\fR
 command, specifies whether the method call should implicitly activate the called service, should it not be running yet but is configured to be auto\-started\&. Defaults to
 "yes"\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fB\-\-allow\-interactive\-authorization=\fR\fIBOOL\fR
@@ -243,6 +294,8 @@ When used with the
 \fBcall\fR
 command, specifies whether the services may enforce interactive authorization while executing the operation, if the security policy is configured for this\&. Defaults to
 "yes"\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fB\-\-timeout=\fR\fISECS\fR
@@ -254,6 +307,8 @@ command, specifies the maximum time to wait for method call completion\&. If no 
 is used, as the tool does not wait for any reply message then\&. When not specified or when set to 0, the default of
 "25s"
 is assumed\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fB\-\-augment\-creds=\fR\fIBOOL\fR
@@ -267,6 +322,8 @@ shall be augmented with data from
 /proc/
 might be more recent than the rest of the credential information\&. Defaults to
 "yes"\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fB\-\-watch\-bind=\fR\fIBOOL\fR
@@ -274,6 +331,8 @@ might be more recent than the rest of the credential information\&. Defaults to
 Controls whether to wait for the specified
 \fBAF_UNIX\fR
 bus socket to appear in the file system before connecting to it\&. Defaults to off\&. When enabled, the tool will watch the file system until the socket is created and then connect to it\&.
+.sp
+Added in version 237\&.
 .RE
 .PP
 \fB\-\-destination=\fR\fISERVICE\fR
@@ -281,6 +340,8 @@ bus socket to appear in the file system before connecting to it\&. Defaults to o
 Takes a service name\&. When used with the
 \fBemit\fR
 command, a signal is emitted to the specified service\&.
+.sp
+Added in version 242\&.
 .RE
 .PP
 \fB\-\-user\fR
@@ -323,6 +384,8 @@ are implied\&.
 Do not ellipsize the output in
 \fBlist\fR
 command\&.
+.sp
+Added in version 245\&.
 .RE
 .PP
 \fB\-\-no\-pager\fR
@@ -498,19 +561,20 @@ o "/org/freedesktop/systemd1/job/42684"
 \fBdbus-daemon\fR(1),
 \m[blue]\fBD\-Bus\fR\m[]\&\s-2\u[3]\d\s+2,
 \fBsd-bus\fR(3),
+\fBvarlinkctl\fR(1),
 \fBsystemd\fR(1),
 \fBmachinectl\fR(1),
 \fBwireshark\fR(1)
 .SH "NOTES"
 .IP " 1." 4
-Libpcap File Format
+PCAP Next Generation (pcapng) Capture File Format
 .RS 4
-\%https://wiki.wireshark.org/Development/LibpcapFileFormat
+\%https://github.com/pcapng/pcapng/
 .RE
 .IP " 2." 4
 Type system chapter of the D-Bus specification
 .RS 4
-\%http://dbus.freedesktop.org/doc/dbus-specification.html#type-system
+\%https://dbus.freedesktop.org/doc/dbus-specification.html#type-system
 .RE
 .IP " 3." 4
 D-Bus

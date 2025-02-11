@@ -1,0 +1,134 @@
+.\" $Id: $
+..\" Copyright (c) 1983, 1990 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     from: @(#)lpq.1	6.10 (Berkeley) 5/9/91
+.\"	$Id: lpq.1,v 1.1.1.1 1997/10/08 18:09:58 msf Exp $
+.\"
+.Dd May 9, 1991
+.\" Translated into finnish by Petri Aerikkala (pae@iki.fi)
+.\"
+.TH LPQ 7 "" "Käyttäjän sovellusohjelmat" ""
+.Os BSD 4.2
+.SH NIMI
+.Nm lpq
+.Nd ohjelma tulostusjonon tutkimiseen
+.SH "YLEISKATSAUS"
+.Nm lpq
+.Op Fl l
+.Op Fl P Ns Ar tulostin
+.Op  työ # ...
+.Op  käyttäjä ...
+.SH KUVAUS
+.Nm Lpq
+-ohjelmalla voi tutkia tulostusjonoa jota
+.Xr lpd  8
+käyttää tiedostojen tulostamiseen. Ohjelma raportoi käyttäjän nimettyjen tai kaikkien tulostustöiden tilan.
+Jos
+.Nm Lpq
+ajetaan ilman parametria, raportoidaan kaikki tulostustyöt, jotka ovat sillä hetkellä tulostusjonossa.
+.Pp
+Valitsimet:
+.Pp
+.Bl -tag -width indent
+.It Fl P
+Määrittele tulostin, muutoin käytetään oletustulostinta (tai tulostinta joka on määritelty
+.Ev PRINTER
+ympäristömuuttujassa).
+Kaikki muut argumentit tulkitaan käyttäjäniminä tai tulostustyönumeroina, joilla suodatetaan töistä ne, joista ollaan kiinnostuneita.
+.It Fl l
+Tulostetaan tietoa työhön kuuluvista tiedostoista.
+Normaalisti näytetään niin paljon informaatiota, mitä mahtuu yhdelle riville.
+.El
+.Pp
+Kaikille töille jotka käynnistetään komennolla
+.Xr lpr  1 
+.Nm lpq
+raportoi käyttäjän nimen, työn senhetkisen järjestysnumeron jonossa, tiedostojen nimet
+jotka kuuluvat työhön, työn tunnistenumeron (käyttämällä tunnistenumeroa haluttu työ voidaan poistaa jonosta
+.Xr lprm  1
+komennolla), sekä työn kokonaiskoon tavuissa.
+Töiden järjestely on riippuvainen
+algoritmista, jota käytetään jonohakemiston järjestelyyn. Toiminnan perusperiaate on
+.Tn FIFO
+-tyylinen
+(First in First Out, ensimmäisenä sisään, ensimmäisenä ulos).
+Tiedostoista jotka muodostavat jonon ei välttämättä ole tiedossa niiden nimiä
+(tapauksissa joissa
+.Xr lpr  1
+-komentoa käytetään ns. putkitetussa komennossa). Näissä tapauksissa tiedosto
+ilmaistaan ``(vakiosyötteenä)''.
+.Pp
+Jos
+.Nm lpq
+varoittaa että tulostusdemoni ei ole käynnissä (johtuen esim. jostain virheestä), demoni voidaan käynnistää uudelleen
+.Xr lpc  8
+komennolla.
+.SH YMPÄRISTÖMUUTTUJAT
+Jos seuraava ympäristömuuttuja on olemassa,
+.Nm lpq
+käyttää sitä:
+.Bl -tag -width PRINTER
+.It Ev PRINTER
+Määrittelee vaihtoehtoisen oletustulostimen.
+.El
+.SH TIEDOSTOT
+.Bl -tag -width /usr/share/misc/termcap -compact
+.It Pa /etc/printcap
+Määrittelee tulostimen ominaisuudet.
+.It Pa /var/spool/*
+Jonohakemisto, kuten on määritelty printcap tiedostossa.
+.It Pa /var/spool/*/cf*
+Ohjaustiedostot jotka määrittelevät tulostustyöt.
+.It Pa /var/spool/*/lock
+Lukitustiedosto aktiivisena olevalle työlle.
+.It Pa /usr/share/misc/termcap
+Määrittelee näytön manipuloinnin useille näytöille.
+.El
+.SH "KATSO MYÖS"
+.Xr lpr 1 ,
+.Xr lprm 1 ,
+.Xr lpc 8 ,
+.Xr lpd 8
+.SH HISTORIA
+.Nm Lpq
+esiteltiin
+.Bx 3 järjestelmässä.
+.SH BUGIT
+Jonohakemiston informaation dynaamisesta luonteesta johtuen
+.Nm lpq
+voi joskus raportoida epäluotettavasti.
+Tulosteen muodostus on riippuvainen terminaalin rivien pituudesta, jotka voivat aiheuttaa liian leveitä rivivälejä.
+.SH DIAGNOSTIIKKA
+Unable to open various files. The lock file being malformed.  
+On muodostunut ns. roskatiedostoja
+koska tiedostot ovat jonohakemistossa, mutta demoni ei ole aktiivinen.
+.SH "KATSO MYÖS"

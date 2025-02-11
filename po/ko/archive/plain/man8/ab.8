@@ -1,0 +1,215 @@
+.TH ab 1 "October 1999"
+.\" Copyright (c) 1998-1999 The Apache Group. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer. 
+.\"
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in
+.\"    the documentation and/or other materials provided with the
+.\"    distribution.
+.\"
+.\" 3. All advertising materials mentioning features or use of this
+.\"    software must display the following acknowledgment:
+.\"    "This product includes software developed by the Apache Group
+.\"    for use in the Apache HTTP server project (http://www.apache.org/)."
+.\"
+.\" 4. The names "Apache Server" and "Apache Group" must not be used to
+.\"    endorse or promote products derived from this software without
+.\"    prior written permission.
+.\"
+.\" 5. Products derived from this software may not be called "Apache"
+.\"    nor may "Apache" appear in their names without prior written
+.\"    permission of the Apache Group.
+.\"
+.\" 6. Redistributions of any form whatsoever must retain the following
+.\"    acknowledgment:
+.\"    "This product includes software developed by the Apache Group
+.\"    for use in the Apache HTTP server project (http://www.apache.org/)."
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE APACHE GROUP ``AS IS'' AND ANY
+.\" EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+.\" PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
+.\" ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+.\" SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+.\" NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+.\" LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+.\" STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+.\" ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+.\" OF THE POSSIBILITY OF SUCH DAMAGE.
+.\" ====================================================================
+.\"
+.\" This software consists of voluntary contributions made by many
+.\" individuals on behalf of the Apache Group and was originally based
+.\" on public domain software written at the National Center for
+.\" Supercomputing Applications, University of Illinois, Urbana-Champaign.
+.\" For more information on the Apache Group and the Apache HTTP server
+.\" project, please see <http://www.apache.org/>.
+.SH 이름
+ab \- Apache HTTP server 측정 툴
+.SH 사용법
+.B ab 
+[
+.B \-k
+] [
+.B \-i
+] [
+.BI \-n " 요청수"
+] [
+.BI \-t " 시간제한"
+] [
+.BI \-c " 동시접속"
+] [
+.BI \-p " POST file"
+] [
+.BI \-A " 인증 유저이름:패스워드"
+] [
+.BI \-P " 프락시인증 유저이름:패스워드"
+] [
+.BI \-H " Custom header"
+] [
+.BI \-C " Cookie name=value"
+] [
+.BI \-T " content-type"
+] [
+.BI \-v " verbosity"
+]
+] [
+.BI \-w " HTML 출력"
+]
+] [
+.BI \-x " <table> 속성"
+]
+] [
+.BI \-y " <tr> 속성"
+]
+] [
+.BI \-z " <td> 속성"
+]
+.I [http://]서버이름[:port]/path 
+
+.B ab
+[
+.B \-V
+] [
+.B \-h 
+]
+.PP
+.SH 설명
+.BR ab 는 
+Apache Web server의 상태를 측정하는 툴이며 초당 Apache server가
+얼마나 많은 요청을 처리할수 있는지를 측정할수 있다.
+.PP
+.SH 옵션
+.TP 12
+.B \-k 
+HTTP KeepAlive (연결 지속성) 요소를 사용 가능 하게 한다. 이것은 하나의
+HTTP session에서 여러 개의 요청을 처리할 수 있다. 기본값은 연결 지속성
+기능을 사용하지 않는다.
+.TP 12
+.B \-i
+GET 방식 대신에 HTTP 'HEAD'를 사용한다. POST와 섞어서 사용할수 없다.
+.TP 12
+.BI \-n " 요청수"
+측정을 하기 위한 요청수를 지정한다. 따로 지정하지 않는다면 하나의
+요청만이 수행된다.
+.TP 12
+.BI \-t " 시간제한"
+측정을 어느 정도까지 할 지 초단위로 지정한다. 따로 지정하지 않으면 
+측정 세션에 대해서 50000개의 요청을 자동으로 정의한다.
+고정된 시간 동안 서버를 측정하기 위하여 사용한다. 기본적으로 시간을
+제한하지는 않는다.
+.TP 12
+.BI \-c " 동시접속수"
+동시에 요청을 처리할 수 있는 수량을 지정한다. 기본값으로는 한번에 하나의 
+요청만을 수행한다. 즉 동시 접속을 하지 않는다는 의미이다.
+
+.TP 12
+.BI \-p " POST file"
+아파치 웹서버에 어떠한 HTTP POST 요청을 보내기 위한 data를 가진 파일을
+지정한다.
+
+.TP 12
+.BI \-A " Authorization username:password"
+서버로 신용증명을 하는 기본 인증을 지원한다. 사용자 이름과 
+패스워드는 하나의 ':'로 구분하고, uuencoded로 변환한 데이터를 보낸다.
+문자열은 서버가 필요로 하든 안하든 상관없이 보내며, 401
+인증을 보내는 것을 필요로 한다.
+
+.TP 12
+.BI \-p " Proxy-Authorization username:password"
+프락시 서버로 신용증명을 하는 기본 인증을 지원한다. 사용자 이름과 패스워드는
+하나의 ':'로 구분하고, uuencoded로 변환한 데이터를 보낸다.
+문자열은 프락시가 필요로 하든 안하든 상관없이 보내며, 407 인증을
+보내는 것을 필요로 한다.
+
+.TP 12
+.BI \-C " Cookie name=value"
+요청에 'Cookie:' line을 추가한다. 이 인자는 'name=value'의 형태를
+가진다. 이 옵션은 반복된다.
+
+.TP 12
+.BI \-H " Header string"
+요청에 임의의 헤더를 추가한다. 이 인자는 유효한 헤더의 형태를 가지며,
+보통 하나의 쌍으로 이루어진 필드 값을 콜론(:)으로 구분을 한다. 예를 들어
+'Accept-Encoding: zip/zop;8bit' 와 같다
+
+.TP 12
+.BI \-T " content-type"
+POST data에 대한 content-type header를 지정한다.
+
+.TP 12
+.B \-v 
+출력 레벨을 지정한다. 4단계는 결과값 상단에 HTML 헤더를 출력하며, 3단계는
+결과물 상단에 응답 코드(예를 들어 404, 200등)를 출력하며, 2단계는 경고와
+정보 메세지를 출력한다.
+
+.TP 12
+.BI \-w
+HTML table로 결과물을 출력한다. 기본 table은 2칼럼이며 흰색 바탕이다.
+.TP 12
+.BI \-x " attributes"
+<table> 에 대한 속성을 지정한다. 속성은 <table 
+.BR 속성> 
+과 같이 들어간다.
+.TP 12
+.BI \-y " attributes"
+<tr>에 대한 속성값을 지정한다.
+.TP 12
+.BI \-z " attributes"
+<td>에 대한 속성값을 지정한다.
+.TP 12
+.B \-V
+버전 정보를 출력하고 프로그램을 종료한다.
+.TP 12
+.B \-h 
+사용법에 대한 정보를 출력한다.
+.PD
+.SH 버그
+고정 길이를 가진 다양한 정적 선언 버퍼가 있다. 이 사실로 인해서
+비효율적인 명령 라인의 인자와 서버로부터의 헤더 응답, 그리고
+다른 외부 입력과의 결합으로 인해 버퍼 오버 플로우가 발생할 수 있다.
+
+.P
+.BR Ab 는 
+HTTP/1.x를 완전하게 충족시키지는 못한다. 대신 어떠한 형태의
+응답도 수용할 수 있다.
+.P
+프로그램에 의한
+.BR strstr(3) 의
+과도한 사용은 비정상적인 수행 결과를 가져오며, CPU 리소스를 잡아
+먹게 된다. 서버의 한계에 도달하기 전에 ab에 의하여 한계에 접근
+하지 않도록
+.BR ab 를 
+수행해야 한다.
+.SH 참조
+.BR httpd(8)
+.SH 역자
+김정균 <admin@oops.org> 2000년 8월 1일
+

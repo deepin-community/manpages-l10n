@@ -3,8 +3,10 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "Pamstereogram User Manual" 0 "10 May 2020" "netpbm documentation"
+.TH "Pamstereogram User Manual" 0 "2 January 2021" "netpbm documentation"
+.PP
 
+.PP
 .SH NAME
 
 pamstereogram - create a single-image stereogram from a PAM depth map
@@ -24,6 +26,7 @@ pamstereogram - create a single-image stereogram from a PAM depth map
 [\fB-xbegin=\fP\fIpixels\fP]
 [\fB-xshift=\fP\fIpixels\fP]
 [\fB-yshift=\fP\fIpixels\fP]
+[\fB-yfillshift\fP \fIpixels\fP]
 [\fB-magnifypat=\fP\fIscale\fP]
 [\fB-guidetop\fP]
 [\fB-guidebottom\fP]
@@ -87,12 +90,16 @@ image, use \fBpamtopnm\fP on the output.  There is no need to convert
 if you will use the image as input to a current Netpbm program, but
 many other programs don't know what a PAM is.
 .PP
-To make a red/green type of stereogram (that you view with 3-D
+To make a red/cyan type of stereogram (that you view with 3-D
 glasses) instead, see \fBppm3d\fP.
 
 
 .UN options
 .SH OPTIONS
+.PP
+You may use either single or double hyphens to denote options.  You
+may use either whitespace or an equals sign to separate an option name
+from its value.
 .PP
 In addition to the options common to all programs based on libnetpbm
 (most notably \fB-quiet\fP, see 
@@ -101,10 +108,6 @@ In addition to the options common to all programs based on libnetpbm
 .UE
 \&), \fBpamstereogram\fP recognizes the following
 command line options:
-.PP
-You may use either single or double hyphens to denote options.  You
-may use either whitespace or an equals sign to separate an option name
-from its value.
 
 
 
@@ -210,7 +213,7 @@ Netpbm 10.61 (December 2012), it has no effect without \fB-texfile\fP.
 \fB-xshift=\fP\fIpixels\fP
 Shift the pattern image (designated by \fB-patfile\fP) to the
 right by \fIpixels\fP pixels (default: 0).
-
+.sp
 This option is valid only along with \fB-patfile\fP.
 
 .TP
@@ -218,6 +221,21 @@ This option is valid only along with \fB-patfile\fP.
 Shift the pattern image (designated by \fB-patfile\fP)
 downwards by \fIpixels\fP pixels (default: 0). This option is
 valid only along with \fB-patfile\fP.
+
+.TP
+\fB-yfillshift\fP \fIpixels\fP
+Shift the pattern image (designated by \fB-patfile\fP) downwards
+by \fIpixels\fP pixels (default: 0) but only after the initial
+population of the pattern.  (If used with \fB-yshift\fP the resulting
+shifts are summed.)  A small \fB-yfillshift\fP helps reduce visual
+artifacts in the 3-D image.  Steer's website, referenced under
+.UR #seealso
+SEE ALSO
+.UE
+\&, recommends a shift of approximately
+1/16" (6-7 pixels at \fBpamstereogram\fP's default of 100 DPI).
+.sp
+This option was new in Netpbm 10.94 (March 2021).
 
 .TP
 \fB-magnifypat=\fP\fIscale\fP
@@ -444,6 +462,7 @@ prepare it for display on an 87 DPI monitor:
     pamstereogram depthmap.pam \e
         -dpi 87 -verbose -color -maxval 1 -magnifypat 3 \e
         >3d.pam
+
 .fi
 .PP
 Generate a SIS by tiling a PPM file (a prior run with
@@ -453,6 +472,7 @@ SISes):
 
 .nf
     pamstereogram depthmap.pam -patfile mypattern.ppm >3d.pam
+
 .fi
 .PP
 Generate an MTS by associating colors with a depth-mapped object
@@ -464,6 +484,7 @@ speckles:
     pamstereogram depthmap.pam \e
         -texfile colormap.pam -smoothing 2 -eyesep 3.5 \e
         >3d.pam
+
 .fi
 
 

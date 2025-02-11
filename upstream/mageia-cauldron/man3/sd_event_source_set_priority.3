@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_EVENT_SOURCE_SET_PRIORITY" "3" "" "systemd 249" "sd_event_source_set_priority"
+.TH "SD_EVENT_SOURCE_SET_PRIORITY" "3" "" "systemd 255" "sd_event_source_set_priority"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -46,7 +46,7 @@ enum {
 .PP
 \fBsd_event_source_set_priority()\fR
 may be used to set the priority for the event source object specified as
-\fIsource\fR\&. The priority is specified as an arbitrary signed 64bit integer\&. The priority is initialized to
+\fIsource\fR\&. The priority is specified as an arbitrary signed 64\-bit integer\&. The priority is initialized to
 \fBSD_EVENT_PRIORITY_NORMAL\fR
 (0) when the event source is allocated with a call such as
 \fBsd_event_add_io\fR(3)
@@ -57,7 +57,7 @@ or
 \fBSD_EVENT_PRIORITY_NORMAL\fR
 (0) and
 \fBSD_EVENT_PRIORITY_IDLE\fR
-(100) may be used to indicate event sources that shall be dispatched early, normally or late\&. It is recommended to specify priorities based on these definitions, and relative to them \(em however, the full 64bit signed integer range is available for ordering event sources\&.
+(100) may be used to indicate event sources that shall be dispatched early, normally or late\&. It is recommended to specify priorities based on these definitions, and relative to them \(em however, the full 64\-bit signed integer range is available for ordering event sources\&.
 .PP
 Priorities define the order in which event sources that have seen events are dispatched\&. Care should be taken to ensure that high\-priority event sources (those with negative priority values assigned) do not cause starvation of low\-priority event sources (those with positive priority values assigned)\&.
 .PP
@@ -100,13 +100,26 @@ The event loop is already terminated\&.
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The event loop has been created in a different process\&.
+The event loop has been created in a different process, library or module instance\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_event_source_set_priority()\fR
+and
+\fBsd_event_source_get_priority()\fR
+were added in version 229\&.
 .SH "SEE ALSO"
 .PP
 \fBsd-event\fR(3),

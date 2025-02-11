@@ -1,0 +1,730 @@
+# German translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Helge Kreutzmann <debian@helgefjell.de>, 2021.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n 4.23.1\n"
+"POT-Creation-Date: 2024-12-06 18:07+0100\n"
+"PO-Revision-Date: 2024-06-30 12:31+0200\n"
+"Last-Translator: Helge Kreutzmann <debian@helgefjell.de>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. type: TH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "pid_namespaces"
+msgstr "pid_namespaces"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-leap-16-0
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "2024-06-13"
+msgstr "13. Juni 2024"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+#, no-wrap
+msgid "Linux man-pages 6.9.1"
+msgstr "Linux man-pages 6.9.1"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr "BEZEICHNUNG"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "pid_namespaces - overview of Linux PID namespaces"
+msgstr "pid_namespaces - Überblick über PID-Namensräume"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "BESCHREIBUNG"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "For an overview of namespaces, see B<namespaces>(7)."
+msgstr "Für einen Überblick über Namensräume, siehe B<namespaces>(7)."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"PID namespaces isolate the process ID number space, meaning that processes "
+"in different PID namespaces can have the same PID.  PID namespaces allow "
+"containers to provide functionality such as suspending/resuming the set of "
+"processes in the container and migrating the container to a new host while "
+"the processes inside the container maintain the same PIDs."
+msgstr ""
+"PID-Namensräume isolieren den Raum der Prozesskennungen. Das bedeutet, dass "
+"Prozesse in verschiedenen PID-Namensräumen die gleiche PID haben können. PID-"
+"Namensräume erlauben Containern, Funktionalitäten wie Suspendierung/"
+"Wiederaufnahme der Gruppe an Prozessen in dem Container und der Migration "
+"des Containers auf einen neuen Rechner bereitzustellen, bei denen die "
+"Prozesse innerhalb des Containers die gleiche PID behalten."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"PIDs in a new PID namespace start at 1, somewhat like a standalone system, "
+"and calls to B<fork>(2), B<vfork>(2), or B<clone>(2)  will produce processes "
+"with PIDs that are unique within the namespace."
+msgstr ""
+"PIDs in einem neuen PID-Namensraum beginnen bei 1, ähnlich wie in autonomen "
+"Systemen. Aufrufe von B<fork>(2), B<vfork>(2) oder B<clone>(2) werden "
+"Prozesse mit PIDs erstellen, die innerhalb des Namensraums eindeutig sind."
+
+#
+#.  ============================================================
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Use of PID namespaces requires a kernel that is configured with the "
+"B<CONFIG_PID_NS> option."
+msgstr ""
+"Die Verwendung von PID-Namensräumen benötigt einen Kernel, der mit der "
+"Option B<CONFIG_PID_NS> konfiguriert wurde."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "The namespace init process"
+msgstr "Der Init-Prozess des Namensraums"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The first process created in a new namespace (i.e., the process created "
+"using B<clone>(2)  with the B<CLONE_NEWPID> flag, or the first child created "
+"by a process after a call to B<unshare>(2)  using the B<CLONE_NEWPID> flag) "
+"has the PID 1, and is the \"init\" process for the namespace (see "
+"B<init>(1)).  This process becomes the parent of any child processes that "
+"are orphaned because a process that resides in this PID namespace terminated "
+"(see below for further details)."
+msgstr ""
+"Der erste in einem neuen Namensraum erstellte Prozess (d.h. der mittels "
+"B<clone>(2) mit dem Schalter B<CLONE_NEWPID> erstellte Prozess oder der "
+"erste Prozess, der durch einen Prozess nach einem Aufruf von B<unshare>(2) "
+"mittels des Schalters B<CLONE_NEWPID> erstellt wurde) hat die PID 1 und ist "
+"der »Init«-Prozess für den Namensraum (siehe B<init>(1)). Dieser Prozess "
+"wird der Elternprozess jedes Kindprozesses, die verwaist wurden, da sich ein "
+"Prozess, der sich in diesem Namensraum befindet, beendet hat (weitere "
+"Details finden Sie weiter unten)."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If the \"init\" process of a PID namespace terminates, the kernel terminates "
+"all of the processes in the namespace via a B<SIGKILL> signal.  This "
+"behavior reflects the fact that the \"init\" process is essential for the "
+"correct operation of a PID namespace.  In this case, a subsequent "
+"B<fork>(2)  into this PID namespace fail with the error B<ENOMEM>; it is not "
+"possible to create a new process in a PID namespace whose \"init\" process "
+"has terminated.  Such scenarios can occur when, for example, a process uses "
+"an open file descriptor for a I</proc/>pidI</ns/pid> file corresponding to a "
+"process that was in a namespace to B<setns>(2)  into that namespace after "
+"the \"init\" process has terminated.  Another possible scenario can occur "
+"after a call to B<unshare>(2): if the first child subsequently created by a "
+"B<fork>(2)  terminates, then subsequent calls to B<fork>(2)  fail with "
+"B<ENOMEM>."
+msgstr ""
+"Falls sich der »Init«-Prozess eines PID-Namensraums beendet, beendet der "
+"Kernel mittels des Signals B<SIGKILL> alle Prozesse in dem Namensraum. "
+"Dieses Verhalten spiegelt die Tatsache wieder, dass der »Init«-Prozess für "
+"das korrekte Funktionieren eines PID-Namensraums wesentlich ist. In diesem "
+"Fall wird ein nachfolgender B<fork>(2) in den Namensraum mit dem Fehler "
+"B<ENOMEM> fehlschlagen; es ist nicht möglich, einen neuen Prozess in einem "
+"PID-Namensraum zu erstellen, dessen »Init«-Prozess sich beendet hat. Solche "
+"Szenarien können auftreten, wenn beispielsweise ein Prozess einen offenen "
+"Dateideskriptor für eine Datei I</proc/>PIDI</ns/pid> verwendet, der einem "
+"Prozess entspricht, der in einem Namensraum war und der mit B<setns>(2) in "
+"einen Namensraum soll, nachdem sich der »Init«-Prozess beendet hat. Ein "
+"anderes mögliches Szenario kann direkt nach dem Aufruf von B<unshare>(2) "
+"auftreten: Falls sich der erste Kindprozess, der nach einem B<fork>(2) "
+"nachfolgend erstellt wurde, beendet, dann schlagen nachfolgende Aufrufe von "
+"B<fork>(2) mit B<ENOMEM> fehl."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Only signals for which the \"init\" process has established a signal handler "
+"can be sent to the \"init\" process by other members of the PID namespace.  "
+"This restriction applies even to privileged processes, and prevents other "
+"members of the PID namespace from accidentally killing the \"init\" process."
+msgstr ""
+"Nur Signale, für die der »Init«-Prozess einen Signal-Handler etabliert hat, "
+"können durch andere Mitglieder des PID-Namensraums an den »Init«-Prozess "
+"gesandt werden. Diese Einschränkung gilt sogar für privilegierte Prozesse "
+"und verhindert, dass andere Mitglieder des PID-Namensraums versehentlich den "
+"»Init«-Prozess töten."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Likewise, a process in an ancestor namespace can\\[em]subject to the usual "
+"permission checks described in B<kill>(2)\\[em]send signals to the \"init\" "
+"process of a child PID namespace only if the \"init\" process has "
+"established a handler for that signal.  (Within the handler, the "
+"I<siginfo_t> I<si_pid> field described in B<sigaction>(2)  will be zero.)  "
+"B<SIGKILL> or B<SIGSTOP> are treated exceptionally: these signals are "
+"forcibly delivered when sent from an ancestor PID namespace.  Neither of "
+"these signals can be caught by the \"init\" process, and so will result in "
+"the usual actions associated with those signals (respectively, terminating "
+"and stopping the process)."
+msgstr ""
+"Entsprechend kann ein Prozess in einem Vorgängernamensraum \\[en] gemäß der "
+"gewöhnlichen, in B<kill>(2) beschriebenen Berechtigungsprüfungen \\[en] nur "
+"Signale an den »Init«-Prozess eines Nachfolge-PID-Namensraums senden, falls "
+"der »Init«-Prozess einen Handler für das Signal etabliert hat. (Innerhalb "
+"des Handlers wird das B<sigaction>(2) I<siginfo_t>-Feld I<si_pid> Null "
+"sein.) B<SIGKILL> oder B<SIGSTOP> werden besonders behandelt: diese Signale "
+"werden zwangsweise zugestellt, wenn sie von einem Vorgänger-PID-Namensraum "
+"gesandt werden. Keines dieser Signale kann durch den »Init«-Prozess "
+"abgefangen werden. Daher führen sie zu den gewöhnlichen Aktionen, die diesen "
+"Signalen zugeordnet sind (beenden bzw. stoppen des Prozesses)."
+
+#
+#.  ============================================================
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Starting with Linux 3.4, the B<reboot>(2)  system call causes a signal to be "
+"sent to the namespace \"init\" process.  See B<reboot>(2)  for more details."
+msgstr ""
+"Seit Linux 3.4 führt der Systemaufruf B<reboot>(2) zum Senden eines Signales "
+"an den »Init«-Prozess des Namensraumes. Siehe B<reboot>(2) für weitere "
+"Details."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Nesting PID namespaces"
+msgstr "Verschachtelung von PID-Namensräumen"
+
+#.  commit f2302505775fd13ba93f034206f1e2a587017929
+#.  The kernel constant MAX_PID_NS_LEVEL
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"PID namespaces can be nested: each PID namespace has a parent, except for "
+"the initial (\"root\") PID namespace.  The parent of a PID namespace is the "
+"PID namespace of the process that created the namespace using B<clone>(2)  "
+"or B<unshare>(2).  PID namespaces thus form a tree, with all namespaces "
+"ultimately tracing their ancestry to the root namespace.  Since Linux 3.7, "
+"the kernel limits the maximum nesting depth for PID namespaces to 32."
+msgstr ""
+"PID-Namensräume können verschachtelt werden: jeder PID-Namensraum hat einen "
+"Vorgänger, außer für den anfänglichen (»Wurzel-«) PID-Namensraum. Der "
+"Vorgänger eines PID-Namensraums ist der PID-Namensraum des Prozesses, der "
+"den Namensraum mittels B<clone>(2) oder B<unshare>(2) erstellte. PID-"
+"Namensräume formen somit einen Baum, wobei alle Namensräume in letzter "
+"Instanz ihren Vorgänger auf den Wurzelnamensraum zurückführen. Seit Linux "
+"3.7 begrenzt der Kernel die maximale Schachtelungstiefe für PID-Namensräume "
+"auf 32."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"A process is visible to other processes in its PID namespace, and to the "
+"processes in each direct ancestor PID namespace going back to the root PID "
+"namespace.  In this context, \"visible\" means that one process can be the "
+"target of operations by another process using system calls that specify a "
+"process ID.  Conversely, the processes in a child PID namespace can't see "
+"processes in the parent and further removed ancestor namespaces.  More "
+"succinctly: a process can see (e.g., send signals with B<kill>(2), set nice "
+"values with B<setpriority>(2), etc.) only processes contained in its own PID "
+"namespace and in descendants of that namespace."
+msgstr ""
+"Ein Prozess ist für andere Prozesse in seinem PID-Namensraum sichtbar und "
+"für Prozesse in jedem direkten Vorgänger-PID-Namensraum, direkt zurück bis "
+"zum Wurzel-PID-Namensraum. In diesem Zusammenhang bedeutet »sichtbar«, dass "
+"ein Prozess das Ziel von Aktionen eines anderen Prozesses durch Verwendung "
+"von Systemaufrufen sein kann, die eine Prozesskennung angeben können. "
+"Umgekehrt kann ein Prozess in einem Nachfolge-PID-Namensraum die Prozesse in "
+"dem Vorgänger und weiter entfernten Vorgänger-Namensräumen nicht sehen. Kurz "
+"gesagt: Ein Prozess kann nur Prozesse, die in seinem eigenen PID-Namensraum "
+"und in Nachfolgern dieses Namensraums sind, sehen (z.B. ihnen Signale mit "
+"B<kill>(2) senden, ihren Nice-Wert mit B<setpriority>(2) ändern usw.)."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"A process has one process ID in each of the layers of the PID namespace "
+"hierarchy in which is visible, and walking back though each direct ancestor "
+"namespace through to the root PID namespace.  System calls that operate on "
+"process IDs always operate using the process ID that is visible in the PID "
+"namespace of the caller.  A call to B<getpid>(2)  always returns the PID "
+"associated with the namespace in which the process was created."
+msgstr ""
+"Ein Prozess hat eine Prozesskennung in jedem der Ebenen der PID-Namensraum-"
+"Hierarchie, in der er sichtbar ist, sowie rückwärts durch jeden direkten "
+"Vorgängernamensraum bis zum Wurzel-PID-Namensraum. Systemaufrufe, die auf "
+"Prozesskennungen agieren, agieren immer auf Prozesskennungen, die in dem PID-"
+"Namensraum des aufrufenden Prozesses sichtbar sind. Ein Aufruf von "
+"B<getpid>(2) liefert immer die PID zurück, die dem Namensraum zugeordnet "
+"ist, in dem der Prozess erstellt wurde."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Some processes in a PID namespace may have parents that are outside of the "
+"namespace.  For example, the parent of the initial process in the namespace "
+"(i.e., the B<init>(1)  process with PID 1) is necessarily in another "
+"namespace.  Likewise, the direct children of a process that uses "
+"B<setns>(2)  to cause its children to join a PID namespace are in a "
+"different PID namespace from the caller of B<setns>(2).  Calls to "
+"B<getppid>(2)  for such processes return 0."
+msgstr ""
+"Einige Prozesse in einem PID-Namensraum können Elternprozesse haben, die "
+"sich außerhalb des Namensraums befinden. Der Elternprozess des anfänglichen "
+"Prozesses in dem Namensraum (d.h. der B<init>(1)-Prozess mit der PID 1) "
+"befindet sich beispielsweise notwendigerweise in einem anderen Namensraum. "
+"Entsprechend sind die direkten Kindprozesses eines Prozesses, der "
+"B<setns>(2) verwendet, damit seine Kindprozesse einem PID-Namensraum "
+"beitreten, in einem anderen PID-Nemsraum als der Aufrufende von B<setns>(2). "
+"Wird für solche Prozesse B<getppid>(2) aufgerufen, dann wird 0 "
+"zurückgeliefert."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"While processes may freely descend into child PID namespaces (e.g., using "
+"B<setns>(2)  with a PID namespace file descriptor), they may not move in the "
+"other direction.  That is to say, processes may not enter any ancestor "
+"namespaces (parent, grandparent, etc.).  Changing PID namespaces is a one-"
+"way operation."
+msgstr ""
+"Während Prozesse frei in Nachfolge-PID-Namensräume absteigen können (z.B. "
+"mittels B<setns>(2) mit einem PID-Namensraum-Dateideskriptor), können sie "
+"sich nicht in die andere Richtung bewegen. Das bedeutet, Prozesse dürfen "
+"keine Vorgängernamensräume (direkte, zweiter Stufe, usw.) betreten. Das "
+"Ändern von PID-Namensräumen ist eine Einwegaktion."
+
+#
+#.  ============================================================
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-leap-16-0
+#: opensuse-tumbleweed
+msgid ""
+"The B<NS_GET_PARENT> B<ioctl>(2)  operation can be used to discover the "
+"parental relationship between PID namespaces; see B<ioctl_nsfs>(2)."
+msgstr ""
+"Die Aktion B<NS_GET_PARENT> B<ioctl>(2) kann zum Erkennen der hierarchischen "
+"Beziehung zwischen PID-Namensräumen verwandt werden; siehe B<ioctl_nfs>(2)."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "setns(2) and unshare(2) semantics"
+msgstr "Semantik von setns und unshare(2)"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Calls to B<setns>(2)  that specify a PID namespace file descriptor and calls "
+"to B<unshare>(2)  with the B<CLONE_NEWPID> flag cause children subsequently "
+"created by the caller to be placed in a different PID namespace from the "
+"caller.  (Since Linux 4.12, that PID namespace is shown via the I</proc/"
+">pidI</ns/pid_for_children> file, as described in B<namespaces>(7).)  These "
+"calls do not, however, change the PID namespace of the calling process, "
+"because doing so would change the caller's idea of its own PID (as reported "
+"by B<getpid>()), which would break many applications and libraries."
+msgstr ""
+"Aufrufe von B<setns>(2), die einen PID-Namensraum-Dateideskriptor festlegen "
+"und Aufrufe von B<unshare>(2) mit dem Schalter B<CLONE_NEWPID> führen dazu, "
+"dass nachfolgend durch den Aufrufenden erstellte Kindprozesse in einem "
+"anderen PID-Namensraum als dem des Aufrufenden abgelegt werden. (Seit Linux "
+"4.12 wird dieser PID-Namensraum über die Datei I</proc/>PIDI</ns/"
+"pid_for_children> gezeigt, wie in B<namespaces>(7) beschrieben.) Diese "
+"Aufrufe ändern allerdings nicht den PID-Namensraum des aufrufenden "
+"Prozesses, da dies das Verständnis des Aufrufenden über seine eigene PID "
+"(wie sie mit B<getpid>() berichtet wird) ändern würde, wodurch viele "
+"Anwendungen und Bibliotheken beschädigt würden."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"To put things another way: a process's PID namespace membership is "
+"determined when the process is created and cannot be changed thereafter.  "
+"Among other things, this means that the parental relationship between "
+"processes mirrors the parental relationship between PID namespaces: the "
+"parent of a process is either in the same namespace or resides in the "
+"immediate parent PID namespace."
+msgstr ""
+"Um es anders zu sagen: die Mitgliedschaft eines Prozesses in einem PID-"
+"Namensraum wird bei der Erstellung des Prozesses bestimmt und kann danach "
+"nicht mehr geändert werden. Unter anderem bedeutet dies, dass die Eltern-"
+"Kind-Beziehung zwischen Prozessen die Vorgänger-Nachfolger-Beziehung "
+"zwischen PID-Namensräumen spiegelt: der Elternprozess ist entweder im "
+"gleichen Namensraum oder befindet sich im direkten Vorgänger-PID-Namensraum."
+
+#
+#.  ============================================================
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"A process may call B<unshare>(2)  with the B<CLONE_NEWPID> flag only once.  "
+"After it has performed this operation, its I</proc/>pidI</ns/"
+"pid_for_children> symbolic link will be empty until the first child is "
+"created in the namespace."
+msgstr ""
+"Ein Prozess kann B<unshare>(2) mit dem Schalter B<CLONE_NEWPID> nur einmal "
+"aufrufen. Nachdem er diese Aktion durchgeführt hat, wird sein symbolischer "
+"Link I</proc/>PIDI</ns/pid_for_children> leer sein, bis der erste "
+"Kindprozess in dem Namensraum erstellt wurde."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Adoption of orphaned children"
+msgstr "Adoption von verwaisten Kindprozessen"
+
+#
+#.  Furthermore, by definition, the parent of the "init" process
+#.  of a PID namespace resides in the parent PID namespace.
+#.  ============================================================
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"When a child process becomes orphaned, it is reparented to the \"init\" "
+"process in the PID namespace of its parent (unless one of the nearer "
+"ancestors of the parent employed the B<prctl>(2)  B<PR_SET_CHILD_SUBREAPER> "
+"command to mark itself as the reaper of orphaned descendant processes).  "
+"Note that because of the B<setns>(2)  and B<unshare>(2)  semantics described "
+"above, this may be the \"init\" process in the PID namespace that is the "
+"I<parent> of the child's PID namespace, rather than the \"init\" process in "
+"the child's own PID namespace."
+msgstr ""
+"Wenn ein Kindprozess verwaist wird, wird der »Init«-Prozess in dem PID-"
+"Namensraum seines Elternprozesses sein neuer Elternprozess (außer einer der "
+"Vorfahrprozesse des Elternprozesses, der näher dran ist, setzt den Befehl "
+"B<prctl>(2) B<PR_SET_CHILD_SUBREAPER> ein, um sich selbst als Auffänger des "
+"verwaisten Nachfahrprozesses zu markieren.) Beachten Sie, dass aufgrund der "
+"oben beschriebenen Semantik von B<setns>(2) und B<unshare>(2) dies der "
+"»Init«-Prozess in dem PID-Namensraum sein kann, der I<Vorgänger> des PID-"
+"Namensraums des Kindprozesses sein kann, statt des »Init«-Prozesses in dem "
+"eigenen PID-Namensraum des Kindprozesses."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Compatibility of CLONE_NEWPID with other CLONE_* flags"
+msgstr "Kompatibilität von CLONE_NEWPID zu anderen CLONE_*-Schaltern"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"In current versions of Linux, B<CLONE_NEWPID> can't be combined with "
+"B<CLONE_THREAD>.  Threads are required to be in the same PID namespace such "
+"that the threads in a process can send signals to each other.  Similarly, it "
+"must be possible to see all of the threads of a process in the B<proc>(5)  "
+"filesystem.  Additionally, if two threads were in different PID namespaces, "
+"the process ID of the process sending a signal could not be meaningfully "
+"encoded when a signal is sent (see the description of the I<siginfo_t> type "
+"in B<sigaction>(2)).  Since this is computed when a signal is enqueued, a "
+"signal queue shared by processes in multiple PID namespaces would defeat "
+"that."
+msgstr ""
+"In den aktuellen Versionen von Linux kann B<CLONE_NEWPID> nicht mit "
+"B<CLONE_THREAD> kombiniert werden. Threads müssen im gleichen PID-Namensraum "
+"sein, damit die Threads in einem Prozess sich gegenseitig Signale senden "
+"können. Entsprechend muss es möglich sein, alle Threads eines Prozesses in "
+"dem Dateisystem B<proc>(5) zu sehen. Ergänzend kommt hinzu, dass die "
+"Prozesskennung des Prozesses, der ein Signal sendet, nicht beim Senden eines "
+"Signals aussagekräftig kodiert werden könnte, falls die zwei Threads in "
+"verschiedenen PID-Namensräumen wären (siehe die Beschreibung des Typs "
+"I<siginfo_t> in B<sigaction>(2)). Da diese berechnet wird, wenn ein Signal "
+"in die Warteschlange gestellt wird, würde eine Signalwarteschlange, die von "
+"Prozessen in mehreren PID-Namensräumen gemeinsam benutzt würde, dies "
+"vereiteln."
+
+#
+#.  Note these restrictions were all introduced in
+#.  8382fcac1b813ad0a4e68a838fc7ae93fa39eda0
+#.  when CLONE_NEWPID|CLONE_VM was disallowed
+#.  (restriction lifted in faf00da544045fdc1454f3b9e6d7f65c841de302)
+#.  (restriction lifted in e79f525e99b04390ca4d2366309545a836c03bf1)
+#.  ============================================================
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"In earlier versions of Linux, B<CLONE_NEWPID> was additionally disallowed "
+"(failing with the error B<EINVAL>)  in combination with B<CLONE_SIGHAND> "
+"(before Linux 4.3) as well as B<CLONE_VM> (before Linux 3.12).  The changes "
+"that lifted these restrictions have also been ported to earlier stable "
+"kernels."
+msgstr ""
+"In früheren Versionen von Linux war zusätzlich B<CLONE_NEWPID> verboten "
+"(schlug mit dem Fehler B<EINVAL> fehl) zusammen mit B<CLONE_SIGHAND> (vor "
+"Linux 4.3) sowie B<CLONE_VM> (vor Linux 3.12). Die Änderungen, die diese "
+"Beschränkungen aufhoben, wurden auch in ältere stabile Kernel portiert."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "/proc and PID namespaces"
+msgstr "/proc und PID-Namensräume"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"A I</proc> filesystem shows (in the I</proc/>pid directories) only processes "
+"visible in the PID namespace of the process that performed the mount, even "
+"if the I</proc> filesystem is viewed from processes in other namespaces."
+msgstr ""
+"Ein Dateisystem I</proc> zeigt (in den Verzeichnissen I</proc/>PID) nur "
+"Prozesse, die in dem PID-Namensraum des Prozesses sichtbar sind, der die "
+"Einhängung durchführte, selbst falls das Dateisystem I</proc> von Prozessen "
+"in anderen Namensräumen betrachtet wird."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"After creating a new PID namespace, it is useful for the child to change its "
+"root directory and mount a new procfs instance at I</proc> so that tools "
+"such as B<ps>(1)  work correctly.  If a new mount namespace is "
+"simultaneously created by including B<CLONE_NEWNS> in the I<flags> argument "
+"of B<clone>(2)  or B<unshare>(2), then it isn't necessary to change the root "
+"directory: a new procfs instance can be mounted directly over I</proc>."
+msgstr ""
+"Nach dem Erstellen eines neuen PID-Namensraumes ist es für den Kindprozess "
+"nützlich, sein Wurzelverzeichnis zu ändern und eine neue Procfs-Instanz "
+"unter I</proc> einzuhängen, so dass Werkzeuge wie B<ps>(1) korrekt "
+"funktionieren. Falls ein neuer Einhängenamensraum gleichzeitig durch "
+"Aufnahme von B<CLONE_NEWNS> in dem Argument I<flags> von B<clone>(2) oder "
+"B<unshare>(2) erstellt wird, dann ist es nicht notwendig, das "
+"Wurzelverzeichnis zu ändern: eine neue Procfs-Instanz kann direkt über I</"
+"proc> eingehängt werden."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "From a shell, the command to mount I</proc> is:"
+msgstr "In einer Shell lautet der Einhängebefehl für I</proc>:"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "$ mount -t proc proc /proc\n"
+msgstr "$ mount -t proc proc /proc\n"
+
+#
+#.  ============================================================
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Calling B<readlink>(2)  on the path I</proc/self> yields the process ID of "
+"the caller in the PID namespace of the procfs mount (i.e., the PID namespace "
+"of the process that mounted the procfs).  This can be useful for "
+"introspection purposes, when a process wants to discover its PID in other "
+"namespaces."
+msgstr ""
+"Der Aufruf von B<readlink>(2) auf dem Pfad I</proc/self> liefert die "
+"Prozesskennung des Aufrufenden in dem PID-Namensraum der Procfs-Einhängung "
+"(d.h. des PID-Namensraums, der Procfs einhängte). Dies kann zu "
+"Untersuchungszwecken nützlich sein, wenn ein Prozess seine PID in anderen "
+"Namensräumen herausfinden möchte."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "/proc files"
+msgstr "/proc-Dateien"
+
+#. type: TP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B</proc/sys/kernel/ns_last_pid> (since Linux 3.3)"
+msgstr "B</proc/sys/kernel/ns_last_pid> (seit Linux 3.3)"
+
+#.  commit b8f566b04d3cddd192cfd2418ae6d54ac6353792
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"This file (which is virtualized per PID namespace)  displays the last PID "
+"that was allocated in this PID namespace.  When the next PID is allocated, "
+"the kernel will search for the lowest unallocated PID that is greater than "
+"this value, and when this file is subsequently read it will show that PID."
+msgstr ""
+"Diese Datei (die pro PID-Namensraum virtualisiert ist) zeigt die letzte PID, "
+"die in diesem PID-Namensraum zugewiesen wurde. Wenn die nächste PID "
+"zugewiesen wird, wird der Kernel nach der kleinsten nicht zugewiesenen PID "
+"suchen, die größer als dieser Wert ist, und wenn danach diese Datei gelesen "
+"wird, wird diese PID dann gezeigt."
+
+#
+#.  This ability is necessary to support checkpoint restore in user-space
+#.  ============================================================
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"This file is writable by a process that has the B<CAP_SYS_ADMIN> or (since "
+"Linux 5.9)  B<CAP_CHECKPOINT_RESTORE> capability inside the user namespace "
+"that owns the PID namespace.  This makes it possible to determine the PID "
+"that is allocated to the next process that is created inside this PID "
+"namespace."
+msgstr ""
+"Diese Datei ist für einen Prozess, der über die Capability B<CAP_SYS_ADMIN> "
+"oder (seit Linux 5.9) B<CAP_CHECKPOINT_RESTORE> innerhalb des "
+"Benutzernamensraums, der den PID-Namensraum besitzt, verfügt, schreibbar. "
+"Dies ermöglicht es, die PID zu bestimmen, die dem nächsten Prozess, der "
+"innerhalb des PID-Namensraums erstellt wird, zugewiesen wird."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Miscellaneous"
+msgstr "Verschiedenes"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"When a process ID is passed over a UNIX domain socket to a process in a "
+"different PID namespace (see the description of B<SCM_CREDENTIALS> in "
+"B<unix>(7)), it is translated into the corresponding PID value in the "
+"receiving process's PID namespace."
+msgstr ""
+"Wenn eine Prozesskennung über einen UNIX-Domain-Socket an einen Prozess in "
+"einem anderen PID-Namensraum übergeben wird (siehe die Beschreibung von "
+"B<SCM_CREDENTIALS> in B<unix>(7)), dann wird sie in den entsprechenden PID-"
+"Wert in dem PID-Namensraum des empfangenen Prozesses übersetzt."
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "STANDARDS"
+msgstr "STANDARDS"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+msgid "Linux."
+msgstr "Linux."
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "EXAMPLES"
+msgstr "BEISPIELE"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "See B<user_namespaces>(7)."
+msgstr "siehe B<user_namespaces>(7)"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "SIEHE AUCH"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"B<clone>(2), B<reboot>(2), B<setns>(2), B<unshare>(2), B<proc>(5), "
+"B<capabilities>(7), B<credentials>(7), B<mount_namespaces>(7), "
+"B<namespaces>(7), B<user_namespaces>(7), B<switch_root>(8)"
+msgstr ""
+"B<clone>(2), B<reboot>(2), B<setns>(2), B<unshare>(2), B<proc>(5), "
+"B<capabilities>(7), B<credentials>(7), B<mount_namespaces>(7), "
+"B<namespaces>(7), B<user_namespaces>(7), B<switch_root>(8)"
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "2023-02-05"
+msgstr "5. Februar 2023"
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "Linux man-pages 6.03"
+msgstr "Linux man-pages 6.03"
+
+#
+#.  ============================================================
+#. type: Plain text
+#: debian-bookworm mageia-cauldron
+msgid ""
+"The B<NS_GET_PARENT> B<ioctl>(2)  operation can be used to discover the "
+"parental relationship between PID namespaces; see B<ioctl_ns>(2)."
+msgstr ""
+"Die Aktion B<NS_GET_PARENT> B<ioctl>(2) kann zum Erkennen der hierarchischen "
+"Beziehung zwischen PID-Namensräumen verwandt werden; siehe B<ioctl_ns>(2)."
+
+#. type: Plain text
+#: debian-bookworm
+msgid "Namespaces are a Linux-specific feature."
+msgstr "Namensräume sind eine Linux-spezifische Funktionalität."
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "2023-10-31"
+msgstr "31. Oktober 2023"
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "Linux man-pages 6.06"
+msgstr "Linux man-pages 6.06"
+
+#. type: TH
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux man-pages (unreleased)"
+msgstr "Linux man-pages (unveröffentlicht)"

@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_LOGIN_MONITOR_NEW" "3" "" "systemd 249" "sd_login_monitor_new"
+.TH "SD_LOGIN_MONITOR_NEW" "3" "" "systemd 255" "sd_login_monitor_new"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -80,8 +80,10 @@ object\&. This call is useful in conjunction with GCC\*(Aqs and LLVM\*(Aqs
   int r;
   \&...
   r = sd_login_monitor_new(NULL, &m);
-  if (r < 0)
-    fprintf(stderr, "Failed to allocate login monitor object: %s\en", strerror(\-r));
+  if (r < 0) {
+    errno = \-r;
+    fprintf(stderr, "Failed to allocate login monitor object: %m\en");
+  }
   \&...
 }
 .fi
@@ -133,7 +135,7 @@ for details about
 \fB(uint64_t) \-1\fR
 instead\&. Note that
 \fBpoll()\fR
-takes a relative timeout in milliseconds rather than an absolute timeout in microseconds\&. To convert the absolute \*(Aq\(mcs\*(Aq timeout into relative \*(Aqms\*(Aq, use code like the following:
+takes a relative timeout in milliseconds rather than an absolute timeout in microseconds\&. To convert the absolute \*(Aqμs\*(Aq timeout into relative \*(Aqms\*(Aq, use code like the following:
 .sp
 .if n \{\
 .RS 4
@@ -195,9 +197,25 @@ Memory allocation failed\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_login_monitor_get_events()\fR
+and
+\fBsd_login_monitor_get_timeout()\fR
+were added in version 201\&.
+.PP
+\fBsd_login_monitor_unrefp()\fR
+was added in version 229\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

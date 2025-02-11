@@ -1,31 +1,11 @@
 .\" Copyright (c) 2006 by Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" 2008-06-24, mtk: added some details about where jiffies come into
 .\"     play; added section on high-resolution timers.
 .\"
-.TH TIME 7 2020-04-11 "Linux" "Linux Programmer's Manual"
+.TH time 7 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 time \- overview of time and timers
 .SH DESCRIPTION
@@ -36,7 +16,7 @@ either from a standard point in the past
 (see the description of the Epoch and calendar time below),
 or from some point (e.g., the start) in the life of a process
 .RI ( "elapsed time" ).
-.PP
+.P
 .I "Process time"
 is defined as the amount of CPU time used by a process.
 This is sometimes divided into
@@ -78,22 +58,24 @@ a clock maintained by the kernel which measures time in
 .IR jiffies .
 The size of a jiffy is determined by the value of the kernel constant
 .IR HZ .
-.PP
+.P
 The value of
 .I HZ
 varies across kernel versions and hardware platforms.
 On i386 the situation is as follows:
-on kernels up to and including 2.4.x, HZ was 100,
+on kernels up to and including Linux 2.4.x,
+HZ was 100,
 giving a jiffy value of 0.01 seconds;
-starting with 2.6.0, HZ was raised to 1000, giving a jiffy of
-0.001 seconds.
-Since kernel 2.6.13, the HZ value is a kernel
+starting with Linux 2.6.0,
+HZ was raised to 1000,
+giving a jiffy of 0.001 seconds.
+Since Linux 2.6.13, the HZ value is a kernel
 configuration parameter and can be 100, 250 (the default) or 1000,
 yielding a jiffies value of, respectively, 0.01, 0.004, or 0.001 seconds.
-Since kernel 2.6.20, a further frequency is available:
-300, a number that divides evenly for the common video
-frame rates (PAL, 25 HZ; NTSC, 30 HZ).
-.PP
+Since Linux 2.6.20, a further frequency is available:
+300, a number that divides evenly for the common video frame rates
+(PAL, 25 Hz; NTSC, 30 Hz).
+.P
 The
 .BR times (2)
 system call is a special case.
@@ -117,7 +99,7 @@ The values of certain clocks are virtualized by time namespaces; see
 .SS High-resolution timers
 Before Linux 2.6.21, the accuracy of timer and sleep system calls
 (see below) was also limited by the size of the jiffy.
-.PP
+.P
 Since Linux 2.6.21, Linux supports high-resolution timers (HRTs),
 optionally configurable via
 .BR CONFIG_HIGH_RES_TIMERS .
@@ -130,19 +112,19 @@ checking the resolution returned by a call to
 .BR clock_getres (2)
 or looking at the "resolution" entries in
 .IR /proc/timer_list .
-.PP
+.P
 HRTs are not supported on all hardware architectures.
-(Support is provided on x86, arm, and powerpc, among others.)
+(Support is provided on x86, ARM, and PowerPC, among others.)
 .SS The Epoch
 UNIX systems represent time in seconds since the
 .IR Epoch ,
 1970-01-01 00:00:00 +0000 (UTC).
-.PP
+.P
 A program can determine the
 .I "calendar time"
 via the
 .BR clock_gettime (2)
-.BR CLOCK_REALTIME
+.B CLOCK_REALTIME
 clock,
 which returns time (in seconds and nanoseconds) that have
 elapsed since the Epoch;
@@ -161,7 +143,7 @@ to represent
 which stores time value separated out into distinct components
 (year, month, day, hour, minute, second, etc.).
 This structure is described in
-.BR ctime (3),
+.BR tm (3type),
 which also describes functions that convert between calendar time and
 broken-down time.
 Functions for converting between broken-down time and printable
@@ -177,7 +159,7 @@ Various system calls and functions allow a program to sleep
 .BR clock_nanosleep (2),
 and
 .BR sleep (3).
-.PP
+.P
 Various system calls allow a process to set a timer that expires
 at some point in the future, and optionally at repeated intervals;
 see
@@ -234,12 +216,3 @@ in
 .BR rtc (4),
 .BR time_namespaces (7),
 .BR hwclock (8)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

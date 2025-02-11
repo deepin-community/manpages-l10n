@@ -1,6 +1,6 @@
 '\" t
-.\" $Id: dialog.3,v 1.139 2021/06/21 08:08:16 tom Exp $
-.\" Copyright 2005-2020,2021  Thomas E. Dickey
+.\" $Id: dialog.3,v 1.148 2024/03/06 09:13:53 tom Exp $
+.\" Copyright 2005-2023,2024  Thomas E. Dickey
 .\"
 .\" This program is free software; you can redistribute it and/or modify
 .\" it under the terms of the GNU Lesser General Public License, version 2.1
@@ -22,6 +22,12 @@
 .ds l dialog
 .ds L Dialog
 .ds D DIALOG
+.\"
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .
 .de ES
 .ne 8
@@ -31,7 +37,7 @@
 .RS +7
 .PP
 .nf
-.ft CW
+.ft \*(CW
 ..
 .de Ee
 .fi
@@ -43,13 +49,25 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
-.TH \*D 3 "" "$Date: 2021/06/21 08:08:16 $"
+.
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.ds '  \(aq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.ie t .ds '  \(aq
+.el   .ds '  '
+.\}",
+.
+.TH \*D "" 2024-01-01 "" "Library calls"
 .SH NAME
-dialog \- widgets and utilities for the \*p program
+dialog \-
+widgets and utilities for the \*p program
 .SH SYNOPSIS
 .B cc [ flag ... ] file ...  \-l\*l [ library ... ]
 .br
@@ -122,7 +140,7 @@ are used for convenience in building the library or main program.
 These include definitions based on the generated \fI<dlg_config.h>\fP header.
 .
 .\" ************************************************************************
-.SH DATA STRUCTURES
+.SH "DATA STRUCTURES"
 All of the global data for the \fB\*l\fP library is stored in
 a few structures:
 \fIDIALOG_STATE\fP, \fIDIALOG_VARS\fP and \fIDIALOG_COLORS\fP.
@@ -324,9 +342,7 @@ accepting options to invoke each widget.
 Most of the \fIDIALOG_VARS\fP members are set directly from \fB\*p\fP's
 command-line options:
 .\" ---------------------------------------------------------------------------
-.SH
-DIALOG_VARS
-.PP
+.SH DIALOG_VARS
 In contrast to \fBDIALOG_STATE\fP, the members of \fBDIALOG_VARS\fP
 are set by command-line options in \fB\*p\fP.
 .\" ---------------------------------------------------------------------------
@@ -366,7 +382,7 @@ the command-line option "\fB\-\-begin\fP \fIy x\/\fP" (first value).
 .\" ---------------------------------------------------------------------------
 .SS .cancel_label
 This corresponds to the command-line option
-"\fB--cancel-label\fP \fIstring\/\fP".
+"\fB\-\-cancel\-label\fP \fIstring\/\fP".
 The given \fIstring\fP overrides the label used for \*(``Cancel\*('' buttons.
 .\" ---------------------------------------------------------------------------
 .SS .cant_kill
@@ -384,6 +400,7 @@ This corresponds to the command-line option "\fB\-\-colors\fP".
 If true, interpret embedded "\eZ" sequences in the dialog text
 by the following character,
 which tells \fB\*p\fP to set colors or video attributes:
+.bP
 0 through 7 are the ANSI codes used in curses:
 black,
 red,
@@ -393,9 +410,13 @@ blue,
 magenta,
 cyan and
 white respectively.
+.bP
 Bold is set by 'b', reset by 'B'.
+.bP
 Reverse is set by 'r', reset by 'R'.
+.bP
 Underline is set by 'u', reset by 'U'.
+.PP
 The settings are cumulative, e.g., "\eZb\eZ1" makes the following text
 bright red.
 Restore normal settings with "\eZn".
@@ -467,9 +488,10 @@ This corresponds to the command-line option "\fB\-\-erase\-on\-exit\fP".
 If true, remove the dialog widget on program exit, erasing the entire
 screen to its native background color, and place the terminal cursor
 at the lower left corner of the screen.
+.PP
 This is useful for making the window contents invisible at the end of
 a series of dialog boxes.
-But it can also be used at earlier stages of a series of invocations
+It can also be used at earlier stages of a series of invocations
 of \fB\*p\fP, if the series may be aborted before it is fully completed.
 .\" ---------------------------------------------------------------------------
 .SS .exit_label
@@ -479,7 +501,8 @@ The given string overrides the label used for \*(``EXIT\*('' buttons.
 .SS .extra_button
 This corresponds to the command-line option "\fB\-\-extra\-button\fP".
 If true, some widgets show an extra button,
-between \*(``OK\*('' and \*(``Cancel\*('' buttons.
+between \*(``OK\*('' and \*(``Cancel\*('' buttons,
+or \*(``Yes\*('' and \*(``No\*('' buttons.
 .\" ---------------------------------------------------------------------------
 .SS .extra_label
 This corresponds to the command-line option
@@ -496,7 +519,10 @@ password widgets.
 This corresponds to the command-line option "\fB\-\-help\-button\fP".
 If true, some widgets show a help-button after
 \*(``OK\*('' and \*(``Cancel\*('' buttons,
-i.e., in checklist, radiolist and menu boxes.
+i.e., in checklist, radiolist and menu boxes,
+or the
+\*(``Yes\*('' and \*(``No\*('' buttons for the \fIyesno\fP box.
+.PP
 If \fB\-\-item\-help\fR is also given, on exit
 the return status will be the same as for the \*(``OK\*('' button,
 and the item-help text will be written to \fB\*p\fP's output
@@ -784,7 +810,7 @@ If nonzero, this is the number of seconds after to delay
 after processing a dialog box.
 .\" ---------------------------------------------------------------------------
 .SS .tab_correct
-This corresponds to the command-line option "\fB\-\-tab-correct\fP".
+This corresponds to the command-line option "\fB\-\-tab\-correct\fP".
 If true, convert each tab character of the text to one or more spaces.
 Otherwise, tabs are rendered according to the curses library's interpretation.
 .\" ---------------------------------------------------------------------------
@@ -1508,7 +1534,7 @@ is the desired width of the box.
 If zero, the height is based on the screen size.
 .
 .\" ************************************************************************
-.SH UTILITY FUNCTIONS
+.SH "UTILITY FUNCTIONS"
 Most functions that implement lower-level
 functionality for the command-line \fB\*p\fP
 program or widgets, have names beginning "\fIdlg_\fP".
@@ -1670,7 +1696,7 @@ If the parameter is not a line-drawing or other special character
 such as ACS_DARROW, it returns 0.
 .TP 5
 .B chtype \fIch
-is the parameter, usually one of the \fBACS_\fP\fIxxx\fP constants.
+is the parameter, usually one of the \fBACS_\fIxxx\fR constants.
 .\" ---------------------------------------------------------------------------
 .SS dlg_attr_clear
 Set window to the given attribute.
@@ -2087,7 +2113,6 @@ DLGK_PAGE_PREV or
 .br
 DLGK_PAGE_NEXT.
 .RE
-.fi
 .LP
 Some widgets use these key bindings for scrolling the prompt-text up and
 down, to allow for display in very small windows.
@@ -2877,7 +2902,9 @@ is the corresponding \fB\*p\fP internal code
 Limit the parameter according to \fBdialog_vars.max_input\fP
 .TP 5
 .B int \fImax_len
-is the value to limit
+is the value to limit.
+If it is less than or equal to zero, the return value is the maximum
+value for \fBdialog_vars.max_input\fP.
 .\" ---------------------------------------------------------------------------
 .SS dlg_match_char
 Match a given character against the beginning of the string,
@@ -3184,6 +3211,32 @@ is a list of (pointers to) button labels terminated by a null pointer.
 .B int \fIbutton
 is the current button index
 .\" ---------------------------------------------------------------------------
+.SS dlg_print_line
+Print one line of the prompt in the window within the limits of the
+specified right margin.
+The line will end on a word boundary and a pointer
+to the start of the next line is returned, or a NULL pointer if the end of
+*prompt is reached.
+.TP 5
+.B WINDOW *\fIwin
+is the window to update.
+.TP 5
+.B chtype *\fIattr
+holds the starting attributes, and is updated to reflect the final attributes
+applied to the string.
+.TP 5
+.B const char *\fIprompt
+is the string to print
+.TP 5
+.B int \fIlm
+is the left margin.
+.TP 5
+.B int \fIrm
+is the right margin
+.TP 5
+.B int *\fIx
+returns the ending x-ordinate.
+.\" ---------------------------------------------------------------------------
 .SS dlg_print_listitem
 This is a helper function used for the various \*(``list\*('' widgets,
 e.g., checklist, menu, buildlist, treeview.
@@ -3209,6 +3262,20 @@ and the first character of the value should be highlighted.
 .TP 5
 .B int \fIselected
 nonzero if the text should be displayed using the \*(``selected\*('' colors
+.\" ---------------------------------------------------------------------------
+.SS dlg_print_nowrap
+Print the \fIline\fP within the given \fIwidth\fP, without wrapping.
+Fill the remainder of the width with spaces.
+.TP 5
+.B WINDOW *\fIwin
+the window in which to display the text
+.TP 5
+.B const char *\fIlin
+the value to display
+.TP 5
+.B int \fIwidth
+the number of columns available for printing the text,
+including a margin.
 .\" ---------------------------------------------------------------------------
 .SS dlg_print_scrolled
 This is a wrapper for \fBdlg_print_autowrap\fP which allows the user
@@ -3238,32 +3305,6 @@ is the width that the wrapping should occur in
 .B int \fIpauseopt
 is true if the extra functionality for scrolling should be enabled.
 If false, this calls \fBdlg_print_autowrap\fP without doing any scrolling.
-.\" ---------------------------------------------------------------------------
-.SS dlg_print_line
-Print one line of the prompt in the window within the limits of the
-specified right margin.
-The line will end on a word boundary and a pointer
-to the start of the next line is returned, or a NULL pointer if the end of
-*prompt is reached.
-.TP 5
-.B WINDOW *\fIwin
-is the window to update.
-.TP 5
-.B chtype *\fIattr
-holds the starting attributes, and is updated to reflect the final attributes
-applied to the string.
-.TP 5
-.B const char *\fIprompt
-is the string to print
-.TP 5
-.B int \fIlm
-is the left margin.
-.TP 5
-.B int \fIrm
-is the right margin
-.TP 5
-.B int *\fIx
-returns the ending x-ordinate.
 .\" ---------------------------------------------------------------------------
 .SS dlg_prev_ok_buttonindex
 Find the previous button index in the list from \fBdlg_ok_labels\fP.
@@ -3828,9 +3869,9 @@ Usually it is the standard error, but
 if \fB\-\-stdout\fP or \fB\-\-output\-fd\fP is used, it may be anything.
 .
 .\" ************************************************************************
-.SH SEE ALSO
-\fB\*p\fP (1).
+.SH AUTHORS
+Thomas E.\& Dickey
 .
 .\" ************************************************************************
-.SH AUTHOR
-Thomas E.\& Dickey
+.SH SEE ALSO
+\fB\*p\fP(1).

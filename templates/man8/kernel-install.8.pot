@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2021-09-10 14:49+0200\n"
+"POT-Creation-Date: 2024-12-22 07:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,21 +17,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. type: TH
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
 #, no-wrap
 msgid "KERNEL-INSTALL"
 msgstr ""
 
 #. type: TH
-#: archlinux mageia-cauldron opensuse-tumbleweed
+#: archlinux
 #, no-wrap
-msgid "systemd 249"
+msgid "systemd 257"
 msgstr ""
 
 #. type: TH
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
 #, no-wrap
 msgid "kernel-install"
 msgstr ""
@@ -40,165 +40,1286 @@ msgstr ""
 #.  * MAIN CONTENT STARTS HERE *
 #.  -----------------------------------------------------------------
 #. type: SH
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
 #, no-wrap
 msgid "NAME"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
 msgid ""
-"kernel-install - Add and remove kernel and initramfs images to and from /boot"
+"kernel-install - Add and remove kernel and initrd images to and from the "
+"boot partition"
 msgstr ""
 
 #. type: SH
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
 #, no-wrap
 msgid "SYNOPSIS"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
 msgid ""
-"B<kernel-install> COMMAND [OPTIONS...] I<KERNEL-VERSION> I<KERNEL-IMAGE> "
+"B<kernel-install> [OPTIONS...] add I<KERNEL-VERSION> I<KERNEL-IMAGE> "
 "[I<INITRD-FILE>...]"
 msgstr ""
 
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid "B<kernel-install> [OPTIONS...] add-all"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "B<kernel-install> [OPTIONS...] remove I<KERNEL-VERSION>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"B<kernel-install> [OPTIONS...] inspect [I<KERNEL-VERSION>] [I<KERNEL-IMAGE>] "
+"[I<INITRD-FILE>...]"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "B<kernel-install> [OPTIONS...] list"
+msgstr ""
+
 #. type: SH
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
 #, no-wrap
 msgid "DESCRIPTION"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
 msgid ""
-"B<kernel-install> is used to install and remove kernel and initramfs images "
-"to and from the boot loader partition, referred to as I<$BOOT> here\\&. It "
-"will usually be one of /boot/, /efi/, or /boot/efi/, see below\\&."
+"B<kernel-install> is used to install and remove kernel and initrd images "
+"\\&\\s-2\\u[1]\\d\\s+2 to and from the boot partition, referred to as "
+"I<$BOOT> here\\&. It will usually be one of /boot/, /efi/, or /boot/efi/, "
+"see below\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
 msgid ""
-"B<kernel-install> will execute the files located in the directory /usr/lib/"
-"kernel/install\\&.d/ and the local administration directory /etc/kernel/"
-"install\\&.d/\\&. All files are collectively sorted and executed in lexical "
-"order, regardless of the directory in which they live\\&. However, files "
-"with identical filenames replace each other\\&. Files in /etc/kernel/install"
-"\\&.d/ take precedence over files with the same name in /usr/lib/kernel/"
-"install\\&.d/\\&. This can be used to override a system-supplied executables "
-"with a local file if needed; a symbolic link in /etc/kernel/install\\&.d/ "
-"with the same name as an executable in /usr/lib/kernel/install\\&.d/, "
-"pointing to /dev/null, disables the executable entirely\\&. Executables must "
-"have the extension \"\\&.install\"; other extensions are ignored\\&."
+"B<kernel-install> will run the executable files (\"plugins\") located in the "
+"directory /usr/lib/kernel/install\\&.d/ and the local administration "
+"directory /etc/kernel/install\\&.d/\\&. All files are collectively sorted "
+"and executed in lexical order, regardless of the directory in which they "
+"live\\&. However, files with identical filenames replace each other\\&. "
+"Files in /etc/kernel/install\\&.d/ take precedence over files with the same "
+"name in /usr/lib/kernel/install\\&.d/\\&. This can be used to override a "
+"system-supplied executables with a local file if needed; a symbolic link in /"
+"etc/kernel/install\\&.d/ with the same name as an executable in /usr/lib/"
+"kernel/install\\&.d/, pointing to /dev/null, disables the executable "
+"entirely\\&. Executables must have the extension \"\\&.install\"; other "
+"extensions are ignored\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
 msgid ""
-"An executable should return B<0> on success\\&. It may also return B<77> to "
-"cause the whole operation to terminate (executables later in lexical order "
-"will be skipped)\\&."
+"An executable placed in these directories should return B<0> on success\\&. "
+"It may also return B<77> to cause the whole operation to terminate "
+"(executables later in lexical order will be skipped)\\&."
 msgstr ""
 
 #. type: SH
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
 #, no-wrap
 msgid "COMMANDS"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
 msgid "The following commands are understood:"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"B<add [[[>I<KERNEL-VERSION>B<] >I<KERNEL-IMAGE>B<] [>I<INITRD-FILE>B< \\&."
+"\\&.\\&.]]>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"This command takes a kernel version string and a path to a kernel image file "
+"as arguments\\&. If the former is omitted, specified as an empty string or "
+"as \"-\" it defaults to the current kernel version, i\\&.e\\&. the same "
+"string B<uname -r> returns\\&. If the latter is omitted, specified as an "
+"empty string or as \"-\" defaults to /usr/lib/modules/I<KERNEL_VERSION>/"
+"vmlinuz\\&. Optionally, one or more initrd images may be specified as well "
+"(note that plugins might generate additional ones)\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"The executable files from /usr/lib/kernel/install\\&.d/*\\&.install and /etc/"
+"kernel/install\\&.d/*\\&.install (i\\&.e\\&. the plugins) are called with "
+"the following arguments:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#, no-wrap
+msgid ""
+"add I<KERNEL-VERSION> $BOOT/I<ENTRY-TOKEN>/I<KERNEL-VERSION>/ I<KERNEL-IMAGE> \\e\n"
+"          [I<INITRD-FILE> \\&.\\&.\\&.]\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"The third argument directly refers to the path where to place kernel images, "
+"initrd images and other resources for \\m[blue]B<Boot Loader "
+"Specification>\\m[]\\&\\s-2\\u[2]\\d\\s+2 Type #1 entries (the \"entry "
+"directory\")\\&. If other boot loader schemes are used the parameter may be "
+"ignored\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"The I<ENTRY-TOKEN> string is typically the machine ID and is supposed to "
+"identify the local installation on the system\\&. For details see below\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "Two default plugins execute the following operations in this case:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"B<kernel-install> creates $BOOT/I<ENTRY-TOKEN>/I<KERNEL-VERSION>, if enabled "
+"(see I<$KERNEL_INSTALL_LAYOUT>)\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "50-depmod\\&.install runs B<depmod>(8)  for the I<KERNEL-VERSION>\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"90-loaderentry\\&.install copies I<KERNEL-IMAGE> to $BOOT/I<ENTRY-TOKEN>/"
+"I<KERNEL-VERSION>/linux\\&. If I<INITRD-FILE>s are provided, it also copies "
+"them to $BOOT/I<ENTRY-TOKEN>/I<KERNEL_VERSION>/I<INITRD-FILE>\\&. This can "
+"also be used to prepend microcode before the actual initrd\\&. It also "
+"creates a boot loader entry according to the \\m[blue]B<Boot Loader "
+"Specification>\\m[]\\&\\s-2\\u[2]\\d\\s+2 (Type #1) in $BOOT/loader/entries/"
+"I<ENTRY-TOKEN>-I<KERNEL-VERSION>\\&.conf\\&. The title of the entry is the "
+"I<PRETTY_NAME> parameter specified in /etc/os-release or /usr/lib/os-release "
+"(if the former is missing), or \"Linux I<KERNEL-VERSION>\", if unset\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"If I<$KERNEL_INSTALL_LAYOUT> is not \"bls\", this plugin does nothing\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"90-uki-copy\\&.install copies a file uki\\&.efi from "
+"I<$KERNEL_INSTALL_STAGING_AREA> or if it does not exist the I<KERNEL-IMAGE> "
+"argument, only if it has a \"\\&.efi\" extension, to $BOOT/EFI/Linux/I<ENTRY-"
+"TOKEN>-I<KERNEL-VERSION>\\&.efi\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"If I<$KERNEL_INSTALL_LAYOUT> is not \"uki\", this plugin does nothing\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 198\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "B<add-all>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"This is the same as B<add> (see above), but invokes the operation "
+"iteratively for every installed kernel in /usr/lib/modules/\\&. This "
+"operation is only supported on systems where the kernel image is installed "
+"in /usr/lib/modules/I<KERNEL-VERSION>/vmlinuz\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 255\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "B<remove >I<KERNEL-VERSION>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "This command expects a kernel version string as single argument\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+#, no-wrap
+msgid "remove I<KERNEL-VERSION> $BOOT/I<ENTRY-TOKEN>/I<KERNEL-VERSION>/\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"Afterwards, B<kernel-install> removes the entry directory $BOOT/I<ENTRY-"
+"TOKEN>/I<KERNEL-VERSION>/ and its contents, if it exists\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"50-depmod\\&.install removes the files generated by B<depmod> for this "
+"kernel again\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"90-loaderentry\\&.install removes the file $BOOT/loader/entries/I<ENTRY-"
+"TOKEN>-I<KERNEL-VERSION>\\&.conf\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"90-uki-copy\\&.install removes the file $BOOT/EFI/Linux/I<ENTRY-TOKEN>-"
+"I<KERNEL-VERSION>\\&.efi\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"B<inspect [[[>I<KERNEL-VERSION>B<] >I<KERNEL-IMAGE>B<] [>I<INITRD-FILE>B< "
+"\\&.\\&.\\&.]]>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Takes the same parameters as B<add>\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Shows the various paths and parameters configured or auto-detected\\&. In "
+"particular shows the values of the various I<$KERNEL_INSTALL_*> environment "
+"variables listed below, as they would be passed to plugins\\&. The B<--json> "
+"option can be used to get the output of this verb as a JSON object\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 251\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "B<list>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Shows the various installed kernels\\&. This enumerates the subdirectories "
+"of /usr/lib/modules/, and shows whether a kernel image is installed there\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+#, no-wrap
+msgid "COMPATIBILITY WITH THE KERNEL BUILD SYSTEM"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "B<installkernel> [OPTIONS...] VERSION VMLINUZ [MAP] [INSTALLATION-DIR]"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"When invoked as B<installkernel>, this program accepts arguments as "
+"specified by the kernel build system\\*(Aqs B<make install> command\\&. The "
+"I<VERSION> and I<VMLINUZ> parameters specify the kernel version and the "
+"kernel binary\\&. The other two parameters (I<MAP> and I<INSTALLATION-DIR>) "
+"are currently ignored\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+#, no-wrap
+msgid "THE \\FI$BOOT\\FR PARTITION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"The partition where the kernels and \\m[blue]B<Boot Loader "
+"Specification>\\m[]\\&\\s-2\\u[2]\\d\\s+2 snippets are located is called "
+"I<$BOOT>\\&.  B<kernel-install> determines the location of this partition by "
+"checking /efi/, /boot/, and /boot/efi/ in turn\\&. The first location where "
+"$BOOT/loader/entries/ or $BOOT/I<ENTRY-TOKEN>/ exists is used\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+#, no-wrap
+msgid "OPTIONS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "The following options are understood:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "B<--esp-path=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"Path to the EFI System Partition (ESP)\\&. If not specified, /efi/, /boot/, "
+"and /boot/efi/ are checked in turn\\&. It is recommended to mount the ESP "
+"to /efi/, if possible\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "B<--boot-path=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"Path to the Extended Boot Loader partition, as defined in the "
+"\\m[blue]B<Boot Loader Specification>\\m[]\\&\\s-2\\u[2]\\d\\s+2\\&. If not "
+"specified, /boot/ is checked\\&. It is recommended to mount the Extended "
+"Boot Loader partition to /boot/, if possible\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "B<--make-entry-directory=yes|no|auto>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"Controls creation and deletion of the \\m[blue]B<Boot Loader "
+"Specification>\\m[]\\&\\s-2\\u[2]\\d\\s+2 Type #1 entry directory on the "
+"file system containing resources such as kernel and initrd images during "
+"B<add> and B<remove>, respectively\\&. The directory is named after the "
+"entry token, and is placed immediately below the boot root directory\\&. "
+"When \"auto\", the directory is created or removed only when the install "
+"layout is \"bls\"\\&. Defaults to \"auto\"\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 254\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "B<--entry-token=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"Controls how to name and identify boot loader entries for this kernel "
+"installation or deletion\\&. Takes one of \"auto\", \"machine-id\", \"os-"
+"id\", \"os-image-id\", or an arbitrary string prefixed by \"literal:\" as "
+"argument\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"If set to B<machine-id> the entries are named after the machine ID of the "
+"running system (e\\&.g\\&.  \"b0e793a9baf14b5fa13ecbe84ff637ac\")\\&. See "
+"B<machine-id>(5)  for details about the machine ID concept and file\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"If set to B<os-id> the entries are named after the OS ID of the running "
+"system, i\\&.e\\&. the I<ID=> field of B<os-release>(5)  (e\\&.g\\&.  "
+"\"fedora\")\\&. Similarly, if set to B<os-image-id> the entries are named "
+"after the OS image ID of the running system, i\\&.e\\&. the I<IMAGE_ID=> "
+"field of os-release (e\\&.g\\&.  \"vendorx-cashier-system\")\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"If set to B<auto> (the default), the /etc/kernel/entry-token (or "
+"$KERNEL_INSTALL_CONF_ROOT/entry-token) file will be read if it exists, and "
+"the stored value used\\&. Otherwise if the local machine ID is initialized "
+"it is used\\&. Otherwise I<IMAGE_ID=> from os-release will be used, if "
+"set\\&. Otherwise, I<ID=> from os-release will be used, if set\\&. Otherwise "
+"a randomly generated machine ID is used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"Using the machine ID for naming the entries is generally preferable, however "
+"there are cases where using the other identifiers is a good option\\&. "
+"Specifically: if the identification data that the machine ID entails shall "
+"not be stored on the (unencrypted)  I<$BOOT_ROOT> partition, or if the ID "
+"shall be generated on first boot and is not known when the entries are "
+"prepared\\&. Note that using the machine ID has the benefit that multiple "
+"parallel installations of the same OS can coexist on the same medium, and "
+"they can update their boot loader entries independently\\&. When using "
+"another identifier (such as the OS ID or the OS image ID), parallel "
+"installations of the same OS would try to use the same entry name\\&. To "
+"support parallel installations, the installer must use a different entry "
+"token when adding a second installation\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "B<-v>, B<--verbose>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "Output additional information about operations being performed\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 242\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "B<--root=>I<root>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Takes a directory path as an argument\\&. All paths will be prefixed with "
+"the given alternate I<root> path, including config search paths\\&. This is "
+"useful to operate on a system image mounted to the specified directory "
+"instead of the host system itself\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "B<--image=>I<image>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Takes a path to a disk image file or block device node\\&. If specified, all "
+"operations are applied to the file system in the indicated disk image\\&. "
+"This option is similar to B<--root=>, but operates on file systems stored in "
+"disk images or block devices\\&. The disk image should either contain just a "
+"file system or a set of file systems within a GPT partition table, following "
+"the \\m[blue]B<Discoverable Partitions Specification>\\m[]"
+"\\&\\s-2\\u[3]\\d\\s+2\\&. For further information on supported disk images, "
+"see B<systemd-nspawn>(1)\\*(Aqs switch of the same name\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "B<-h>, B<--help>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "Print a short help text and exit\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "B<--version>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "Print a short version string and exit\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "B<--no-pager>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Do not pipe output into a pager\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "B<--json=>I<MODE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Shows output formatted as JSON\\&. Expects one of \"short\" (for the "
+"shortest possible output without any redundant whitespace or line breaks), "
+"\"pretty\" (for a pretty version of the same, with indentation and line "
+"breaks) or \"off\" (to turn off JSON output, the default)\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "B<--image-policy=>I<policy>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Takes an image policy string as argument, as per B<systemd.image-"
+"policy>(7)\\&. The policy is enforced when operating on the disk image "
+"specified via B<--image=>, see above\\&. If not specified defaults to the "
+"\"*\" policy, i\\&.e\\&. all recognized file systems in the image are "
+"used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "B<--no-legend>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Do not print the legend, i\\&.e\\&. column headers and the footer with "
+"hints\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+#, no-wrap
+msgid "ENVIRONMENT VARIABLES"
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+#, no-wrap
+msgid "Environment variables exported for plugins"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"If B<--verbose> is used, I<$KERNEL_INSTALL_VERBOSE=1> will be exported for "
+"plugins\\&. They may output additional logs in this case\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"I<$KERNEL_INSTALL_IMAGE_TYPE=uki|pe|unknown> is set for the plugins to "
+"specify the type of the kernel image\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "uki"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "Unified kernel image\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "pe"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "PE binary\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "unknown"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "Unknown type\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"I<$KERNEL_INSTALL_MACHINE_ID> is set for the plugins to the desired machine-"
+"id to use\\&. It\\*(Aqs always a 128-bit ID\\&. Normally it\\*(Aqs read "
+"from /etc/machine-id, but it can also be overridden via I<$MACHINE_ID> (see "
+"below)\\&. If not specified via these methods, a fallback value will "
+"generated by B<kernel-install> and used only for a single invocation\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"I<$KERNEL_INSTALL_ENTRY_TOKEN> is set for the plugins to the desired entry "
+"\"token\" to use\\&. It\\*(Aqs an identifier that shall be used to identify "
+"the local installation, and is often the machine ID, i\\&.e\\&. same as "
+"I<$KERNEL_INSTALL_MACHINE_ID>, but might also be a different type of "
+"identifier, for example a fixed string or the I<ID=>, I<IMAGE_ID=> values "
+"from /etc/os-release\\&. The string passed here will be used to name Boot "
+"Loader Specification entries, or the directories the kernel image and "
+"initial RAM disk images are placed into\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"Note that while I<$KERNEL_INSTALL_ENTRY_TOKEN> and "
+"I<$KERNEL_INSTALL_MACHINE_ID> are often set to the same value, the latter is "
+"guaranteed to be a valid 32 character ID in lowercase hexadecimals while the "
+"former can be any short string\\&. The entry token to use is read from /etc/"
+"kernel/entry-token, if it exists\\&. Otherwise a few possible candidates "
+"below I<$BOOT> are checked for Boot Loader Specification Type 1 entry "
+"directories, and if found the entry token is derived from that\\&. If that "
+"is not successful, I<$KERNEL_INSTALL_MACHINE_ID> is used as fallback\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"I<$KERNEL_INSTALL_BOOT_ROOT> is set for the plugins to the absolute path of "
+"the root directory (mount point, usually) of the hierarchy where boot loader "
+"entries, kernel images, and associated resources should be placed\\&. This "
+"usually is the path where the XBOOTLDR partition or the ESP (EFI System "
+"Partition) are mounted, and also conceptually referred to as I<$BOOT>\\&. "
+"Can be overridden by setting I<$BOOT_ROOT> (see below)\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"I<$KERNEL_INSTALL_LAYOUT=auto|bls|uki|other|\\&.\\&.\\&.> is set for the "
+"plugins to specify the installation layout\\&. Additional layout names may "
+"be defined by convention\\&. If a plugin uses a special layout, it\\*(Aqs "
+"encouraged to declare its own layout name and configure I<layout=> in "
+"install\\&.conf upon initial installation\\&. The following values are "
+"currently understood:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "bls"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"Standard \\m[blue]B<Boot Loader Specification>\\m[]\\&\\s-2\\u[2]\\d\\s+2 "
+"Type #1 layout, compatible with B<systemd-boot>(7): entries in $BOOT/loader/"
+"entries/I<ENTRY-TOKEN>-I<KERNEL-VERSION>[+I<TRIES>]\\&.conf, kernel and "
+"initrds under $BOOT/I<ENTRY-TOKEN>/I<KERNEL-VERSION>/"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "Implemented by 90-loaderentry\\&.install\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 250\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"Standard \\m[blue]B<Boot Loader Specification>\\m[]\\&\\s-2\\u[2]\\d\\s+2 "
+"Type #2 layout, compatible with B<systemd-boot>(7): unified kernel images "
+"under $BOOT/EFI/Linux as $BOOT/EFI/Linux/I<ENTRY-TOKEN>-I<KERNEL-"
+"VERSION>[+I<TRIES>]\\&.efi\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "Implemented by 90-uki-copy\\&.install\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 253\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "other"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "Some other layout not understood natively by B<kernel-install>\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "auto"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"Pick the layout automatically\\&. If the kernel is a UKI set layout to "
+"B<uki>\\&. If not default to B<bls> if $BOOT/loader/entries\\&.srel with "
+"content \"type1\" or $BOOT/I<ENTRY-TOKEN> exists, or B<other> otherwise\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "Leaving layout blank has the same effect\\&. This is the default\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"I<$KERNEL_INSTALL_INITRD_GENERATOR> and I<$KERNEL_INSTALL_UKI_GENERATOR> are "
+"set for plugins to select the initrd and/or UKI generator\\&. This may be "
+"configured as I<initrd_generator=> and I<uki_generator=> in install\\&.conf, "
+"see below\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"I<$KERNEL_INSTALL_STAGING_AREA> is set for plugins to a path to a "
+"directory\\&. Plugins may drop files in that directory, and they will be "
+"installed as part of the loader entry, based on the file name and extension: "
+"Files named initrd* will be installed as I<INITRD-FILE>s, and files named "
+"microcode* will be prepended before I<INITRD-FILE>s\\&."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+#, no-wrap
+msgid "Environment variables understood by kernel-install"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid ""
+"I<$KERNEL_INSTALL_CONF_ROOT> can be set to override the location of the "
+"configuration files read by B<kernel-install>\\&. When set, install\\&.conf, "
+"entry-token, and other files will be read from this directory only\\&. Note "
+"that this path is relative to the host, and in particular I<symlinks in this "
+"directory are resolved relative to the host>, even if B<--root=>I<root> is "
+"used\\&. This means that it is generally I<not> correct to use this variable "
+"to specify a directory underneath I<root> if symlinks are used there\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"I<$KERNEL_INSTALL_PLUGINS> can be set to override the list of plugins "
+"executed by B<kernel-install>\\&. The argument is a whitespace-separated "
+"list of paths\\&.  \"KERNEL_INSTALL_PLUGINS=:\" may be used to prevent any "
+"plugins from running\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"I<$MACHINE_ID> can be set for B<kernel-install> to override "
+"I<$KERNEL_INSTALL_MACHINE_ID>, the machine ID\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"I<$BOOT_ROOT> can be set for B<kernel-install> to override "
+"I<$KERNEL_INSTALL_BOOT_ROOT>, the installation location for boot entries\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"The last two variables may also be set in install\\&.conf\\&. Variables set "
+"in the environment take precedence over the values specified in the config "
+"file\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+#, no-wrap
+msgid "EXIT STATUS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"If every executable returns 0 or 77, 0 is returned, and a non-zero failure "
+"code otherwise\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+#, no-wrap
+msgid "FILES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"/etc/kernel/install\\&.d/*\\&.install, /usr/lib/kernel/install\\&.d/"
+"*\\&.install"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Drop-in files which are executed by B<kernel-install>\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "/etc/kernel/cmdline, /usr/lib/kernel/cmdline, /proc/cmdline"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Specifies the kernel command line to use\\&. The first of the files that is "
+"found will be used\\&.  I<$KERNEL_INSTALL_CONF_ROOT> may be used to override "
+"the search path; see below for details\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "/etc/kernel/devicetree, /usr/lib/kernel/devicetree"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Specifies the partial path to the file containing the device tree blob to "
+"install with the kernel and use at boot\\&. The first of the files that is "
+"found will be used\\&.  I<$KERNEL_INSTALL_CONF_ROOT> may be used to override "
+"the search path; see below for details\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"The devicetree file contains a path, and this path specifies a location "
+"relative to the kernel install tree\\&. A set of locations is checked, "
+"including in particular /usr/lib/modules/I<KERNEL_VERSION>/dtb/, which is "
+"the recommended location to place the dtb files under\\&. For example, with "
+"\"broadcom/bcm2711-rpi-4-b\\&.dtb\" in the devicetree file, the device tree "
+"blob for the Raspberry Pi 4 Model B would be installed, and the actual file "
+"would be /usr/lib/modules/I<KERNEL_VERSION>/dtb/broadcom/bcm2711-rpi-4-"
+"b\\&.dtb\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "/etc/kernel/tries"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Read by 90-loaderentry\\&.install and 90-uki-copy\\&.install\\&. If this "
+"file exists, a numeric value is read from it and the naming of the generated "
+"entry file or UKI is altered to include it as $BOOT/loader/entries/I<ENTRY-"
+"TOKEN>-I<KERNEL-VERSION>+I<TRIES>\\&.conf or $BOOT/EFI/Linux/I<ENTRY-TOKEN>-"
+"I<KERNEL-VERSION>+I<TRIES>\\&.efi, respectively\\&. This is useful for boot "
+"loaders such as B<systemd-boot>(7)  which implement boot attempt counting "
+"with a counter embedded in the entry file name\\&.  "
+"I<$KERNEL_INSTALL_CONF_ROOT> may be used to override the search path; see "
+"below for details\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Added in version 240\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "/etc/kernel/entry-token"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"If this file exists it is read and used as \"entry token\" for this system, "
+"i\\&.e\\&. is used for naming Boot Loader Specification entries\\&. See "
+"I<$KERNEL_INSTALL_ENTRY_TOKEN> above for details\\&.  "
+"I<$KERNEL_INSTALL_CONF_ROOT> may be used to override the search path; see "
+"below for details\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "/etc/machine-id"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"The content of this file specifies the machine identification I<MACHINE-"
+"ID>\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "/etc/os-release, /usr/lib/os-release"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"Read by 90-loaderentry\\&.install\\&. If available, I<PRETTY_NAME=> is read "
+"from these files and used as the title of the boot menu entry\\&. Otherwise, "
+"\"Linux I<KERNEL-VERSION>\" will be used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid ""
+"/etc/kernel/install\\&.conf, /run/kernel/install\\&.conf, /usr/local/lib/"
+"kernel/install\\&.conf, /usr/lib/kernel/install\\&.conf, /etc/kernel/"
+"install\\&.conf\\&.d/*\\&.conf, /run/kernel/install\\&.conf\\&.d/*\\&.conf, /"
+"usr/local/lib/kernel/install\\&.conf\\&.d/*\\&.conf, /usr/lib/kernel/"
+"install\\&.conf\\&.d/*\\&.conf"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+msgid ""
+"Configuration file with options for B<kernel-install>, as a series of "
+"I<KEY=>I<VALUE> assignments, compatible with shell syntax, following the "
+"same rules as described in B<os-release>(5)\\&. The first of the files that "
+"is found will be used\\&.  I<$KERNEL_INSTALL_CONF_ROOT> may be used to "
+"override the search path; see below for details\\&. Drop-in files may also "
+"be used to extend the configuration with overrides, see "
+"B<systemd.unit>(5)\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"Currently, the following keys are supported: I<MACHINE_ID=>, I<BOOT_ROOT=>, "
+"I<layout=>, I<initrd_generator=>, I<uki_generator=>\\&. See the Environment "
+"variables section above for details\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "/etc/kernel/uki\\&.conf"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Ini-style configuration file for B<ukify>(1)  which is only effective when "
+"I<$KERNEL_INSTALL_LAYOUT> or I<layout=> in install\\&.conf is set to B<uki> "
+"and I<$KERNEL_INSTALL_UKI_GENERATOR> or I<uki_generator=> in install\\&.conf "
+"is set to B<ukify>, or is unset\\&.  I<$KERNEL_INSTALL_CONF_ROOT> may be "
+"used to override the search path; see below for details\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "/usr/lib/modules/I<KERNEL-VERSION/>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Location for installed kernel modules and other kernel related resources\\&. "
+"For each locally installed kernel a directory named after the kernel version "
+"(B<uname -r>) is kept\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "/usr/lib/modules/I<KERNEL-VERSION/vmlinuz>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"Location for installed kernel images\\&. This is the recommended location "
+"for OS package managers to install kernel images into (as applicable), from "
+"which B<kernel-install add> then copies it into the final boot partition\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"For various cases listed above, if the I<$KERNEL_INSTALL_CONF_ROOT> "
+"environment variable is set, it will override the search path\\&. The files "
+"will be loaded I<only> from the directory specified by the environment "
+"variable\\&. When the variable is not set, the listed paths are tried in "
+"turn, and the first file that exists is used\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"B<machine-id>(5), B<os-release>(5), B<depmod>(8), B<systemd-boot>(7), "
+"B<ukify>(1), \\m[blue]B<Boot Loader Specification>\\m[]\\&\\s-2\\u[2]\\d\\s+2"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+#, no-wrap
+msgid "NOTES"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+#, no-wrap
+msgid " 1."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"Nowadays actually CPIO archives used as an \"initramfs\", rather than "
+"\"initrd\". See B<bootup>(7)  for an explanation."
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+#, no-wrap
+msgid " 2."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid "Boot Loader Specification"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron
+msgid ""
+"\\%https://uapi-group.org/specifications/specs/boot_loader_specification"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#, no-wrap
+msgid " 3."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid "Discoverable Partitions Specification"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+msgid ""
+"\\%https://uapi-group.org/specifications/specs/"
+"discoverable_partitions_specification"
+msgstr ""
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "systemd 254"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm
+msgid ""
+"kernel-install - Add and remove kernel and initrd images to and from /boot"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm
+msgid "B<kernel-install> [OPTIONS...] inspect [I<KERNEL-IMAGE>]"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm
+msgid ""
+"B<kernel-install> is used to install and remove kernel and initrd images "
+"\\&\\s-2\\u[1]\\d\\s+2 to and from the boot loader partition, referred to as "
+"I<$BOOT> here\\&. It will usually be one of /boot/, /efi/, or /boot/efi/, "
+"see below\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm
 msgid ""
 "B<add >I<KERNEL-VERSION>B< >I<KERNEL-IMAGE>B< [>I<INITRD-FILE>B< \\&.\\&."
 "\\&.]>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: debian-bookworm
 msgid ""
 "This command expects a kernel version string and a path to a kernel image "
-"file as arguments\\&.  B<kernel-install> calls the executables from /usr/lib/"
-"kernel/install\\&.d/*\\&.install and /etc/kernel/install\\&.d/*\\&.install "
-"with the following arguments:"
+"file as arguments\\&. Optionally, one or more initrd images may be specified "
+"as well (note that plugins might generate additional ones)\\&.  B<kernel-"
+"install> calls the executable files from /usr/lib/kernel/install\\&.d/"
+"*\\&.install and /etc/kernel/install\\&.d/*\\&.install (i\\&.e\\&. the "
+"plugins) with the following arguments:"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: debian-bookworm
 #, no-wrap
-msgid "add I<KERNEL-VERSION> $BOOT/I<MACHINE-ID>/I<KERNEL-VERSION>/ I<KERNEL-IMAGE> [I<INITRD-FILE> \\&.\\&.\\&.]\n"
+msgid "add I<KERNEL-VERSION> $BOOT/I<ENTRY-TOKEN>/I<KERNEL-VERSION>/ I<KERNEL-IMAGE> [I<INITRD-FILE> \\&.\\&.\\&.]\n"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "Three default plugins execute the following operations in this case:"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: debian-bookworm
 msgid ""
-"00-entry-directory\\&.install creates the directory $BOOT/I<MACHINE-ID>/"
-"I<KERNEL-VERSION>/ if $BOOT/I<MACHINE-ID>/ already exists\\&."
+"The third argument directly refers to the path where to place kernel images, "
+"initrd images and other resources for \\m[blue]B<Boot Loader "
+"Specification>\\m[]\\&\\s-2\\u[2]\\d\\s+2 Type #1 entries (the \"entry "
+"directory\")\\&. If other boot loader schemes are used the parameter may be "
+"ignored\\&. The I<ENTRY-TOKEN> string is typically the machine ID and is "
+"supposed to identify the local installation on the system\\&. For details "
+"see below\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "50-depmod\\&.install runs B<depmod>(8)  for the I<KERNEL-VERSION>\\&."
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid ""
-"90-loaderentry\\&.install copies I<KERNEL-IMAGE> to $BOOT/I<MACHINE-ID>/"
-"I<KERNEL-VERSION>/linux\\&. If an I<INITRD-FILE> is provided, it also copies "
-"I<INITRD-FILE> to $BOOT/I<MACHINE-ID>/I<KERNEL_VERSION>/I<INITRD-FILE>\\&. "
-"It also creates a boot loader entry according to the \\m[blue]B<Boot Loader "
-"Specification>\\m[]\\&\\s-2\\u[1]\\d\\s+2 in $BOOT/loader/entries/I<MACHINE-"
-"ID>-I<KERNEL-VERSION>\\&.conf\\&. The title of the entry is the "
-"I<PRETTY_NAME> parameter specified in /etc/os-release or /usr/lib/os-release "
-"(if the former is missing), or \"Linux I<KERNEL-VERSION>\", if unset\\&."
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid ""
-"If the entry directory $BOOT/I<MACHINE-ID>/I<KERNEL-VERSION>/ does not "
-"exist, this plugin does nothing\\&."
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "B<remove >I<KERNEL-VERSION>"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: debian-bookworm
 msgid ""
 "This command expects a kernel version string as single argument\\&. This "
 "calls executables from /usr/lib/kernel/install\\&.d/*\\&.install and /etc/"
@@ -206,266 +1327,135 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-#, no-wrap
-msgid "remove I<KERNEL-VERSION> $BOOT/I<MACHINE-ID>/I<KERNEL-VERSION>/\n"
+#: debian-bookworm
+msgid "B<inspect [>I<KERNEL-IMAGE>B<]>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: debian-bookworm
 msgid ""
-"Afterwards, B<kernel-install> removes the directory $BOOT/I<MACHINE-ID>/"
-"I<KERNEL-VERSION>/ and its contents\\&."
+"Shows the various paths and parameters configured or auto-detected\\&. In "
+"particular shows the values of the various I<$KERNEL_INSTALL_*> environment "
+"variables listed below\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "Two default plugins execute the following operations in this case:"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: debian-bookworm mageia-cauldron
 msgid ""
-"50-depmod\\&.install removes the files generated by B<depmod> for this "
-"kernel again\\&."
+"I<$KERNEL_INSTALL_CONF_ROOT> can be set to override the location of the "
+"configuration files read by B<kernel-install>\\&. When set, install\\&.conf, "
+"entry-token, and other files will be read from this directory\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: debian-bookworm
 msgid ""
-"90-loaderentry\\&.install removes the file $BOOT/loader/entries/I<MACHINE-"
-"ID>-I<KERNEL-VERSION>\\&.conf\\&."
-msgstr ""
-
-#. type: SH
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-#, no-wrap
-msgid "THE \\FI$BOOT\\FR PARTITION"
+"/usr/lib/kernel/install\\&.d/*\\&.install /etc/kernel/install\\&.d/"
+"*\\&.install"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid ""
-"The partition where the kernels and \\m[blue]B<Boot Loader Specification>"
-"\\m[]\\&\\s-2\\u[1]\\d\\s+2 snippets are located is called I<$BOOT>\\&.  "
-"B<kernel-install> determines the location of this partition by checking /"
-"efi/, /boot/, and /boot/efi/ in turn\\&. The first location where $BOOT/"
-"loader/entries/ or $BOOT/$MACHINE_ID/ exists is used\\&."
-msgstr ""
-
-#. type: SH
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-#, no-wrap
-msgid "OPTIONS"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "The following options are understood:"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "B<-v>, B<--verbose>"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "Output additional information about operations being performed\\&."
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "B<-h>, B<--help>"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "Print a short help text and exit\\&."
-msgstr ""
-
-#. type: SH
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-#, no-wrap
-msgid "ENVIRONMENT VARIABLES"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid ""
-"If B<--verbose> is used, I<$KERNEL_INSTALL_VERBOSE=1> will be set for the "
-"plugins\\&. They may output additional logs in this case\\&."
-msgstr ""
-
-#. type: SH
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-#, no-wrap
-msgid "EXIT STATUS"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid ""
-"If every executable returns 0 or 77, 0 is returned, and a non-zero failure "
-"code otherwise\\&."
-msgstr ""
-
-#. type: SH
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-#, no-wrap
-msgid "FILES"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid ""
-"/usr/lib/kernel/install\\&.d/*\\&.install /etc/kernel/install\\&.d/*\\&."
-"install"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: debian-bookworm
 msgid "Drop-in files which are executed by kernel-install\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "/etc/kernel/cmdline /proc/cmdline"
+#: debian-bookworm
+msgid "/usr/lib/kernel/cmdline /etc/kernel/cmdline /proc/cmdline"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: debian-bookworm
 msgid ""
 "Read by 90-loaderentry\\&.install\\&. The content of the file /etc/kernel/"
 "cmdline specifies the kernel command line to use\\&. If that file does not "
-"exist, /proc/cmdline is used\\&."
+"exist, /usr/lib/kernel/cmdline is used\\&. If that also does not exist, /"
+"proc/cmdline is used\\&.  I<$KERNEL_INSTALL_CONF_ROOT> may be used to "
+"override the path\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "/etc/kernel/tries"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: debian-bookworm
 msgid ""
-"Read by 90-loaderentry\\&.install\\&. If this file exists a numeric value is "
-"read from it and the naming of the generated entry file is slightly altered "
-"to include it as $BOOT/loader/entries/I<MACHINE-ID>-I<KERNEL-VERSION>"
-"+I<TRIES>\\&.conf\\&. This is useful for boot loaders such as B<systemd-"
-"boot>(7)  which implement boot attempt counting with a counter embedded in "
-"the entry file name\\&."
+"Read by 90-loaderentry\\&.install and 90-uki-copy\\&.install\\&. If this "
+"file exists a numeric value is read from it and the naming of the generated "
+"entry file or UKI is slightly altered to include it as $BOOT/loader/entries/"
+"I<ENTRY-TOKEN>-I<KERNEL-VERSION>+I<TRIES>\\&.conf or $BOOT/EFI/Linux/I<ENTRY-"
+"TOKEN>-I<KERNEL-VERSION>+I<TRIES>\\&.efi, respectively\\&. This is useful "
+"for boot loaders such as B<systemd-boot>(7)  which implement boot attempt "
+"counting with a counter embedded in the entry file name\\&.  "
+"I<$KERNEL_INSTALL_CONF_ROOT> may be used to override the path\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "/etc/machine-id"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron
-#: opensuse-tumbleweed
+#: debian-bookworm
 msgid ""
-"The content of this file specifies the machine identification I<MACHINE-ID>"
-"\\&. If it cannot read /etc/machine-id, kernel-install will use \"Linux\" as "
-"the machine ID instead\\&."
+"If this file exists it is read and used as \"entry token\" for this system, "
+"i\\&.e\\&. is used for naming Boot Loader Specification entries, see "
+"I<$KERNEL_INSTALL_ENTRY_TOKEN> above for details\\&.  "
+"I<$KERNEL_INSTALL_CONF_ROOT> may be used to override the path\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: debian-bookworm
 msgid "/etc/os-release /usr/lib/os-release"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: debian-bookworm
+msgid "/usr/lib/kernel/install\\&.conf /etc/kernel/install\\&.conf"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm
 msgid ""
-"The content of the file specifies the operating system title I<PRETTY_NAME>"
-"\\&."
-msgstr ""
-
-#. type: SH
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-#, no-wrap
-msgid "SEE ALSO"
+"Configuration options for B<kernel-install>, as a series of I<KEY=>I<VALUE> "
+"assignments, compatible with shell syntax, following the same rules as "
+"described in B<os-release>(5)\\&.  /etc/kernel/install\\&.conf will be read "
+"if present, and /usr/lib/kernel/install\\&.conf otherwise\\&. This file is "
+"optional\\&.  I<$KERNEL_INSTALL_CONF_ROOT> may be used to override the "
+"path\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: debian-bookworm
 msgid ""
-"B<machine-id>(5), B<os-release>(5), B<depmod>(8), B<systemd-boot>(7), "
-"\\m[blue]B<Boot Loader Specification>\\m[]\\&\\s-2\\u[1]\\d\\s+2"
-msgstr ""
-
-#. type: SH
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-#, no-wrap
-msgid "NOTES"
-msgstr ""
-
-#. type: IP
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-#, no-wrap
-msgid " 1."
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "Boot Loader Specification"
-msgstr ""
-
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
-msgid "\\%https://systemd.io/BOOT_LOADER_SPECIFICATION"
+"Ini-style configuration file for B<ukify>(1)  which is only effective when "
+"I<$KERNEL_INSTALL_LAYOUT> or I<layout=> in install\\&.conf is set to B<uki> "
+"and I<$KERNEL_INSTALL_UKI_GENERATOR> or I<uki_generator=> in install\\&.conf "
+"is set to B<ukify>\\&.  I<$KERNEL_INSTALL_CONF_ROOT> may be used to override "
+"the path\\&."
 msgstr ""
 
 #. type: TH
-#: debian-bullseye debian-unstable
+#: debian-unstable fedora-rawhide
 #, no-wrap
-msgid "systemd 247"
+msgid "systemd 257.1"
 msgstr ""
 
 #. type: TH
-#: opensuse-leap-15-3
+#: fedora-41
 #, no-wrap
-msgid "systemd 246"
+msgid "systemd 256.7"
+msgstr ""
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "systemd 255"
 msgstr ""
 
 #. type: Plain text
-#: opensuse-leap-15-3
+#: mageia-cauldron
+msgid "/etc/kernel/install\\&.conf, /usr/lib/kernel/install\\&.conf"
+msgstr ""
+
+#. type: Plain text
+#: mageia-cauldron
 msgid ""
-"The content of the file specifies the machine identification I<MACHINE-ID>"
-"\\&."
+"Configuration file with options for B<kernel-install>, as a series of "
+"I<KEY=>I<VALUE> assignments, compatible with shell syntax, following the "
+"same rules as described in B<os-release>(5)\\&. The first of the files that "
+"is found will be used\\&.  I<$KERNEL_INSTALL_CONF_ROOT> may be used to "
+"override the search path; see below for details\\&."
 msgstr ""

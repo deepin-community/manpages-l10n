@@ -1,0 +1,1812 @@
+# Russian translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Alexander Golubev <fatzer2@gmail.com>, 2018.
+# Azamat Hackimov <azamat.hackimov@gmail.com>, 2011, 2014-2016.
+# Hotellook, 2014.
+# Nikita <zxcvbnm3230@mail.ru>, 2014.
+# Spiros Georgaras <sng@hellug.gr>, 2016.
+# Vladislav <ivladislavefimov@gmail.com>, 2015.
+# Yuri Kozlov <yuray@komyakino.ru>, 2011-2019.
+# Иван Павлов <pavia00@gmail.com>, 2017.
+# Kirill Rekhov <krekhov.dev@gmail.com>, 2024.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n\n"
+"POT-Creation-Date: 2024-12-06 18:14+0100\n"
+"PO-Revision-Date: 2024-12-21 19:50+0300\n"
+"Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
+"Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#. type: TH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "Signals"
+msgid "signal-safety"
+msgstr "Сигналы"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-leap-16-0
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "2024-05-02"
+msgstr "2 мая 2024 г."
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+#, no-wrap
+msgid "Linux man-pages 6.9.1"
+msgstr "Справочные страницы Linux 6.9.1"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr "НАИМЕНОВАНИЕ"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "signal-safety - async-signal-safe functions"
+msgstr "signal-safety - функции async-signal-safe"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "ОПИСАНИЕ"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"An I<async-signal-safe> function is one that can be safely called from "
+"within a signal handler.  Many functions are I<not> async-signal-safe.  In "
+"particular, nonreentrant functions are generally unsafe to call from a "
+"signal handler."
+msgstr ""
+"Функцией I<async-signal-safe> называется функция, которую безопасно вызывать "
+"внутри обработчика сигналов. Многие функции I<не> являются async-signal-"
+"safe. В частности, нереентерабельные функции, обычно, небезопасно вызывать в "
+"обработчиках сигналов."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The kinds of issues that render a function unsafe can be quickly understood "
+"when one considers the implementation of the I<stdio> library, all of whose "
+"functions are not async-signal-safe."
+msgstr ""
+"Виды проблем, которые делают функцию небезопасной, можно быстро понять на "
+"примере реализации библиотеки I<stdio>, все функции которой являются не "
+"async-signal-safe."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"When performing buffered I/O on a file, the I<stdio> functions must maintain "
+"a statically allocated data buffer along with associated counters and "
+"indexes (or pointers)  that record the amount of data and the current "
+"position in the buffer.  Suppose that the main program is in the middle of a "
+"call to a I<stdio> function such as B<printf>(3)  where the buffer and "
+"associated variables have been partially updated.  If, at that moment, the "
+"program is interrupted by a signal handler that also calls B<printf>(3), "
+"then the second call to B<printf>(3)  will operate on inconsistent data, "
+"with unpredictable results."
+msgstr ""
+"При выполнении буферизируемого ввода-вывода в файл функции I<stdio> должны "
+"вести статически выделенный буфер и связанные с ним счётчики и индексы (или "
+"указатели), содержащие количество данных и текущее положение в буфере. "
+"Предположим, что основная программа находится в середине вызова функции "
+"I<stdio>, например B<printf>(3), которая обновляет часть буфера и связанных "
+"переменных. Если в этот момент программа прервётся обработчиком сигнала, "
+"который также вызывает B<printf>(3), то второй вызов B<printf>(3) будет "
+"работать с не целостными данными и результат будет непредсказуем."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"To avoid problems with unsafe functions, there are two possible choices:"
+msgstr ""
+"Чтобы не возникало проблем с небезопасными функциями есть два варианта:"
+
+#. type: IP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "(a)"
+msgstr "(а)"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "Ensure that (a) the signal handler calls only async-signal-safe "
+#| "functions, and (b) the signal handler itself is reentrant with respect to "
+#| "global variables in the main program."
+msgid ""
+"Ensure that (1) the signal handler calls only async-signal-safe functions, "
+"and (2) the signal handler itself is reentrant with respect to global "
+"variables in the main program."
+msgstr ""
+"Следить, чтобы (а) обработчик сигнала вызывал только функции async-signal-"
+"safe, и (б) сам обработчик сигнала был реентерабельным по отношению к "
+"глобальным переменным основной программы."
+
+#. type: IP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "(b)"
+msgstr "(б)"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Block signal delivery in the main program when calling functions that are "
+"unsafe or operating on global data that is also accessed by the signal "
+"handler."
+msgstr ""
+"Блокировать доставку сигнала в основной программе при вызове небезопасных "
+"функций или при работе с глобальными данными, доступными из обработчика "
+"сигнала."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Generally, the second choice is difficult in programs of any complexity, so "
+"the first choice is taken."
+msgstr ""
+"Обычно, второй вариант труден для программ любой сложности, поэтому "
+"используется первый вариант."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "POSIX.1 specifies a set of functions that an implementation must make "
+#| "async-signal-safe.  (An implementation may provide safe implementations "
+#| "of additional functions, but this is not required by the standard and "
+#| "other implementations may not provide the same guarantees.)  In general, "
+#| "a function is async-signal-safe either because it is reentrant or because "
+#| "it is atomic with respect to signals (i.e., its execution can't be "
+#| "interrupted by a signal handler)."
+msgid ""
+"POSIX.1 specifies a set of functions that an implementation must make async-"
+"signal-safe.  (An implementation may provide safe implementations of "
+"additional functions, but this is not required by the standard and other "
+"implementations may not provide the same guarantees.)"
+msgstr ""
+"В POSIX.1 определён набор функций, реализация которых должна быть async-"
+"signal-safe (реализация может предоставлять безопасную реализацию и других "
+"функций, но это не требуется стандартом и другие реализации могут не "
+"предоставлять те же гарантии) Обычно, функция является async-signal-safe или "
+"потому что она реентерабельная, или из-за её атомарности по отношению к "
+"сигналам (т. е., её выполнение не может быть прервано обработчиком сигнала)."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"In general, a function is async-signal-safe either because it is reentrant "
+"or because it is atomic with respect to signals (i.e., its execution can't "
+"be interrupted by a signal handler)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The set of functions required to be async-signal-safe by POSIX.1 is shown in "
+"the following table.  The functions not otherwise noted were required to be "
+"async-signal-safe in POSIX.1-2001; the table details changes in the "
+"subsequent standards."
+msgstr ""
+"Набор функций async-signal-safe по POSIX.1 показан в таблице далее. Функции, "
+"если не указано обратное, являются async-signal-safe и по POSIX.1-2001; в "
+"таблице отмечены изменения в последующих стандартах."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Function"
+msgstr "функция"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Notes"
+msgstr "Примечания"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<abort>(3)"
+msgstr "B<abort>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "Added in POSIX.1-2003"
+msgid "Added in POSIX.1-2001 TC1"
+msgstr "Добавлена в POSIX.1-2003"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<accept>(2)"
+msgstr "B<accept>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<access>(2)"
+msgstr "B<access>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<aio_error>(3)"
+msgstr "B<aio_error>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<aio_return>(3)"
+msgstr "B<aio_return>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<aio_suspend>(3)"
+msgstr "B<aio_suspend>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "See notes below"
+msgstr "смотрите замечания далее"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<alarm>(2)"
+msgstr "B<alarm>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<bind>(2)"
+msgstr "B<bind>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<cfgetispeed>(3)"
+msgstr "B<cfgetispeed>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<cfgetospeed>(3)"
+msgstr "B<cfgetospeed>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<cfsetispeed>(3)"
+msgstr "B<cfsetispeed>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<cfsetospeed>(3)"
+msgstr "B<cfsetospeed>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<chdir>(2)"
+msgstr "B<chdir>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<chmod>(2)"
+msgstr "B<chmod>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<chown>(2)"
+msgstr "B<chown>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<clock_gettime>(2)"
+msgstr "B<clock_gettime>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<close>(2)"
+msgstr "B<close>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<connect>(2)"
+msgstr "B<connect>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<creat>(2)"
+msgstr "B<creat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<dup>(2)"
+msgstr "B<dup>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<dup2>(2)"
+msgstr "B<dup2>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<execl>(3)"
+msgstr "B<execl>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Added in POSIX.1-2008; see notes below"
+msgstr "Добавлена в POSIX.1-2008; смотрите замечания ниже"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<execle>(3)"
+msgstr "B<execle>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<execv>(3)"
+msgstr "B<execv>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Added in POSIX.1-2008"
+msgstr "Добавлена в POSIX.1-2008"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<execve>(2)"
+msgstr "B<execve>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<_exit>(2)"
+msgstr "B<_exit>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<_Exit>(2)"
+msgstr "B<_Exit>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<faccessat>(2)"
+msgstr "B<faccessat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fchdir>(2)"
+msgstr "B<fchdir>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "Added in POSIX.1-2008"
+msgid "Added in POSIX.1-2008 TC1"
+msgstr "Добавлена в POSIX.1-2008"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fchmod>(2)"
+msgstr "B<fchmod>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fchmodat>(2)"
+msgstr "B<fchmodat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fchown>(2)"
+msgstr "B<fchown>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fchownat>(2)"
+msgstr "B<fchownat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fcntl>(2)"
+msgstr "B<fcntl>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fdatasync>(2)"
+msgstr "B<fdatasync>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fexecve>(3)"
+msgstr "B<fexecve>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ffs>(3)"
+msgstr "B<ffs>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "Added in POSIX.1-2008"
+msgid "Added in POSIX.1-2008 TC2"
+msgstr "Добавлена в POSIX.1-2008"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fork>(2)"
+msgstr "B<fork>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fstat>(2)"
+msgstr "B<fstat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fstatat>(2)"
+msgstr "B<fstatat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fsync>(2)"
+msgstr "B<fsync>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ftruncate>(2)"
+msgstr "B<ftruncate>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<futimens>(3)"
+msgstr "B<futimens>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getegid>(2)"
+msgstr "B<getegid>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<geteuid>(2)"
+msgstr "B<geteuid>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getgid>(2)"
+msgstr "B<getgid>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getgroups>(2)"
+msgstr "B<getgroups>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getpeername>(2)"
+msgstr "B<getpeername>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getpgrp>(2)"
+msgstr "B<getpgrp>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getpid>(2)"
+msgstr "B<getpid>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getppid>(2)"
+msgstr "B<getppid>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getsockname>(2)"
+msgstr "B<getsockname>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getsockopt>(2)"
+msgstr "B<getsockopt>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<getuid>(2)"
+msgstr "B<getuid>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<htonl>(3)"
+msgstr "B<htonl>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<htons>(3)"
+msgstr "B<htons>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<kill>(2)"
+msgstr "B<kill>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<link>(2)"
+msgstr "B<link>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<linkat>(2)"
+msgstr "B<linkat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<listen>(2)"
+msgstr "B<listen>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<longjmp>(3)"
+msgstr "B<longjmp>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "Added in POSIX.1-2008; see notes below"
+msgid "Added in POSIX.1-2008 TC2; see notes below"
+msgstr "Добавлена в POSIX.1-2008; смотрите замечания ниже"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<lseek>(2)"
+msgstr "B<lseek>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<lstat>(2)"
+msgstr "B<lstat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<memccpy>(3)"
+msgstr "B<memccpy>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<memchr>(3)"
+msgstr "B<memchr>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<memcmp>(3)"
+msgstr "B<memcmp>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<memcpy>(3)"
+msgstr "B<memcpy>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<memmove>(3)"
+msgstr "B<memmove>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<memset>(3)"
+msgstr "B<memset>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<mkdir>(2)"
+msgstr "B<mkdir>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<mkdirat>(2)"
+msgstr "B<mkdirat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<mkfifo>(3)"
+msgstr "B<mkfifo>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<mkfifoat>(3)"
+msgstr "B<mkfifoat>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<mknod>(2)"
+msgstr "B<mknod>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<mknodat>(2)"
+msgstr "B<mknodat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ntohl>(3)"
+msgstr "B<ntohl>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<ntohs>(3)"
+msgstr "B<ntohs>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<open>(2)"
+msgstr "B<open>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<openat>(2)"
+msgstr "B<openat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<pause>(2)"
+msgstr "B<pause>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<pipe>(2)"
+msgstr "B<pipe>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<poll>(2)"
+msgstr "B<poll>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<posix_trace_event>(3)"
+msgstr "B<posix_trace_event>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<pselect>(2)"
+msgstr "B<pselect>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<pthread_kill>(3)"
+msgstr "B<pthread_kill>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<pthread_self>(3)"
+msgstr "B<pthread_self>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<pthread_sigmask>(3)"
+msgstr "B<pthread_sigmask>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<raise>(3)"
+msgstr "B<raise>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<read>(2)"
+msgstr "B<read>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<readlink>(2)"
+msgstr "B<readlink>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<readlinkat>(2)"
+msgstr "B<readlinkat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<recv>(2)"
+msgstr "B<recv>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<recvfrom>(2)"
+msgstr "B<recvfrom>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<recvmsg>(2)"
+msgstr "B<recvmsg>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<rename>(2)"
+msgstr "B<rename>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<renameat>(2)"
+msgstr "B<renameat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<rmdir>(2)"
+msgstr "B<rmdir>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<select>(2)"
+msgstr "B<select>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sem_post>(3)"
+msgstr "B<sem_post>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<send>(2)"
+msgstr "B<send>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sendmsg>(2)"
+msgstr "B<sendmsg>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sendto>(2)"
+msgstr "B<sendto>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<setgid>(2)"
+msgstr "B<setgid>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<setpgid>(2)"
+msgstr "B<setpgid>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<setsid>(2)"
+msgstr "B<setsid>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<setsockopt>(2)"
+msgstr "B<setsockopt>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<setuid>(2)"
+msgstr "B<setuid>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<shutdown>(2)"
+msgstr "B<shutdown>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigaction>(2)"
+msgstr "B<sigaction>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigaddset>(3)"
+msgstr "B<sigaddset>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigdelset>(3)"
+msgstr "B<sigdelset>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigemptyset>(3)"
+msgstr "B<sigemptyset>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigfillset>(3)"
+msgstr "B<sigfillset>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigismember>(3)"
+msgstr "B<sigismember>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<siglongjmp>(3)"
+msgstr "B<siglongjmp>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<signal>(2)"
+msgstr "B<signal>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigpause>(3)"
+msgstr "B<sigpause>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigpending>(2)"
+msgstr "B<sigpending>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigprocmask>(2)"
+msgstr "B<sigprocmask>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigqueue>(2)"
+msgstr "B<sigqueue>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigset>(3)"
+msgstr "B<sigset>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sigsuspend>(2)"
+msgstr "B<sigsuspend>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sleep>(3)"
+msgstr "B<sleep>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<sockatmark>(3)"
+msgstr "B<sockatmark>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "Added in POSIX.1-2003"
+msgid "Added in POSIX.1-2001 TC2"
+msgstr "Добавлена в POSIX.1-2003"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<socket>(2)"
+msgstr "B<socket>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<socketpair>(2)"
+msgstr "B<socketpair>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<stat>(2)"
+msgstr "B<stat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<stpcpy>(3)"
+msgstr "B<stpcpy>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<stpncpy>(3)"
+msgstr "B<stpncpy>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strcat>(3)"
+msgstr "B<strcat>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strchr>(3)"
+msgstr "B<strchr>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strcmp>(3)"
+msgstr "B<strcmp>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strcpy>(3)"
+msgstr "B<strcpy>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strcspn>(3)"
+msgstr "B<strcspn>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strlen>(3)"
+msgstr "B<strlen>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strncat>(3)"
+msgstr "B<strncat>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strncmp>(3)"
+msgstr "B<strncmp>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strncpy>(3)"
+msgstr "B<strncpy>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strnlen>(3)"
+msgstr "B<strnlen>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strpbrk>(3)"
+msgstr "B<strpbrk>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strrchr>(3)"
+msgstr "B<strrchr>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strspn>(3)"
+msgstr "B<strspn>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strstr>(3)"
+msgstr "B<strstr>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<strtok_r>(3)"
+msgstr "B<strtok_r>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<symlink>(2)"
+msgstr "B<symlink>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<symlinkat>(2)"
+msgstr "B<symlinkat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcdrain>(3)"
+msgstr "B<tcdrain>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcflow>(3)"
+msgstr "B<tcflow>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcflush>(3)"
+msgstr "B<tcflush>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcgetattr>(3)"
+msgstr "B<tcgetattr>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcgetpgrp>(3)"
+msgstr "B<tcgetpgrp>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcsendbreak>(3)"
+msgstr "B<tcsendbreak>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcsetattr>(3)"
+msgstr "B<tcsetattr>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<tcsetpgrp>(3)"
+msgstr "B<tcsetpgrp>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<time>(2)"
+msgstr "B<time>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<timer_getoverrun>(2)"
+msgstr "B<timer_getoverrun>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<timer_gettime>(2)"
+msgstr "B<timer_gettime>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<timer_settime>(2)"
+msgstr "B<timer_settime>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<times>(2)"
+msgstr "B<times>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<umask>(2)"
+msgstr "B<umask>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<uname>(2)"
+msgstr "B<uname>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<unlink>(2)"
+msgstr "B<unlink>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<unlinkat>(2)"
+msgstr "B<unlinkat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<utime>(2)"
+msgstr "B<utime>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<utimensat>(2)"
+msgstr "B<utimensat>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<utimes>(2)"
+msgstr "B<utimes>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wait>(2)"
+msgstr "B<wait>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<waitpid>(2)"
+msgstr "B<waitpid>(2)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcpcpy>(3)"
+msgstr "B<wcpcpy>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcpncpy>(3)"
+msgstr "B<wcpncpy>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcscat>(3)"
+msgstr "B<wcscat>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcschr>(3)"
+msgstr "B<wcschr>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcscmp>(3)"
+msgstr "B<wcscmp>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcscpy>(3)"
+msgstr "B<wcscpy>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcscspn>(3)"
+msgstr "B<wcscspn>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcslen>(3)"
+msgstr "B<wcslen>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsncat>(3)"
+msgstr "B<wcsncat>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsncmp>(3)"
+msgstr "B<wcsncmp>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsncpy>(3)"
+msgstr "B<wcsncpy>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsnlen>(3)"
+msgstr "B<wcsnlen>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcspbrk>(3)"
+msgstr "B<wcspbrk>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsrchr>(3)"
+msgstr "B<wcsrchr>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsspn>(3)"
+msgstr "B<wcsspn>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcsstr>(3)"
+msgstr "B<wcsstr>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wcstok>(3)"
+msgstr "B<wcstok>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wmemchr>(3)"
+msgstr "B<wmemchr>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wmemcmp>(3)"
+msgstr "B<wmemcmp>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wmemcpy>(3)"
+msgstr "B<wmemcpy>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wmemmove>(3)"
+msgstr "B<wmemmove>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<wmemset>(3)"
+msgstr "B<wmemset>(3)"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<write>(2)"
+msgstr "B<write>(2)"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "Notes:"
+msgstr "Замечания:"
+
+#. type: IP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "\\[bu]"
+msgstr "\\[bu]"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "POSIX.1-2001 and POSIX.1-2004 required the functions B<fpathconf>(3), "
+#| "B<pathconf>(3), and B<sysconf>(3)  to be async-signal-safe, but this "
+#| "requirement was removed in POSIX.1-2008."
+msgid ""
+"POSIX.1-2001 and POSIX.1-2001 TC2 required the functions B<fpathconf>(3), "
+"B<pathconf>(3), and B<sysconf>(3)  to be async-signal-safe, but this "
+"requirement was removed in POSIX.1-2008."
+msgstr ""
+"В POSIX.1-2001 и POSIX.1-2004 требуется, чтобы функции B<fpathconf>(3), "
+"B<pathconf>(3) и B<sysconf>(3) были async-signal-safe, но это требование "
+"удалено в POSIX.1-2008."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If a signal handler interrupts the execution of an unsafe function, and the "
+"handler terminates via a call to B<longjmp>(3)  or B<siglongjmp>(3)  and the "
+"program subsequently calls an unsafe function, then the behavior of the "
+"program is undefined."
+msgstr ""
+"Если обработчик сигнала прерывает выполнение небезопасной функции и "
+"обработчик завершается вызовом B<longjmp>(3) или B<siglongjmp>(3) и далее "
+"программа вызывает небезопасную функцию, то поведение программы "
+"непредсказуемо."
+
+#.  http://www.opengroup.org/austin/aardvark/latest/xshbug3.txt
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "POSIX.1-2003 clarified that if an application calls B<fork>(2)  from a "
+#| "signal handler and any of the fork handlers registered by "
+#| "B<pthread_atfork>(3)  calls a function that is not async-signal-safe, the "
+#| "behavior is undefined.  A future revision of the standard is likely to "
+#| "remove B<fork>(2)  from the list of async-signal-safe functions."
+msgid ""
+"POSIX.1-2001 TC1 clarified that if an application calls B<fork>(2)  from a "
+"signal handler and any of the fork handlers registered by "
+"B<pthread_atfork>(3)  calls a function that is not async-signal-safe, the "
+"behavior is undefined.  A future revision of the standard is likely to "
+"remove B<fork>(2)  from the list of async-signal-safe functions."
+msgstr ""
+"В POSIX.1-2003 уточнено, что если приложение вызывает B<fork>(2) из "
+"обработчика сигнала и и зарегистрированный обработчик fork (с помощью "
+"B<pthread_atfork>(3)) вызывает не async-signal-safe функцию, то поведение "
+"непредсказуемо. Вероятно, в будущих версиях стандарта вызов B<fork>(2) будет "
+"удалён из списка функций async-signal-safe."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Asynchronous signal handlers that call functions which are cancelation "
+"points and nest over regions of deferred cancelation may trigger cancelation "
+"whose behavior is as if asynchronous cancelation had occurred and may cause "
+"application state to become inconsistent."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "errno"
+msgstr "errno"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Fetching and setting the value of I<errno> is async-signal-safe provided "
+"that the signal handler saves I<errno> on entry and restores its value "
+"before returning."
+msgstr ""
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Deviations in the GNU C library"
+msgstr "Отклонения в библиотеке GNU C"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The following known deviations from the standard occur in the GNU C library:"
+msgstr "В библиотеке GNU C есть следующие известные отклонения от стандарта:"
+
+#.  https://sourceware.org/bugzilla/show_bug.cgi?id=19534
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Before glibc 2.24, B<execl>(3)  and B<execle>(3)  employed B<realloc>(3)  "
+"internally and were consequently not async-signal-safe.  This was fixed in "
+"glibc 2.24."
+msgstr ""
+"До glibc 2.24 внутри B<execl>(3) и B<execle>(3) использовалась B<realloc>(3) "
+"и поэтому они были не безопасны для асинхронных сигналов. Это было "
+"исправлено в glibc 2.24."
+
+#.  FIXME . https://sourceware.org/bugzilla/show_bug.cgi?id=13172
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The glibc implementation of B<aio_suspend>(3)  is not async-signal-safe "
+"because it uses B<pthread_mutex_lock>(3)  internally."
+msgstr ""
+"Реализация B<aio_suspend>(3) в glibc не является безопасной для асинхронных "
+"сигналов, так как в ней используется B<pthread_mutex_lock>(3)."
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "СМОТРИТЕ ТАКЖЕ"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<sigaction>(2), B<signal>(7), B<standards>(7)"
+msgstr "B<sigaction>(2), B<signal>(7), B<standards>(7)"
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "2023-02-05"
+msgstr "5 февраля 2023 г."
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "Linux man-pages 6.03"
+msgstr "Справочные страницы Linux 6.03"
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "2023-10-31"
+msgstr "31 октября 2023 г."
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "Linux man-pages 6.06"
+msgstr "Справочные страницы Linux 6.06"
+
+#. type: TH
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux man-pages (unreleased)"
+msgstr "Справочные страницы Linux (невыпущенные)"

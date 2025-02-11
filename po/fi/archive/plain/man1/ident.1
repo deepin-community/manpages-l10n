@@ -1,0 +1,182 @@
+.de Id
+.ds Rv \\$3
+.ds Dt \\$4
+.ds iD \\$3 \\$4 \\$5 \\$6 \\$7
+..
+.Id $Id: ident.1,v 5.4 1993/11/09 17:40:15 eggert Exp $
+.ds r \&\s-1RCS\s0
+.ds u \&\s-1UTC\s0
+.if n .ds - \%--
+.if t .ds - \(em
+.\" Translated into finish by jappe (jappe@iki.fi)
+.\"
+.TH IDENT 0 "7. Huhtikuuta 1998" "" "Käyttäjän sovellusohjelmat"
+.SH NIMI
+ident \- etsii ja tunnistaa RCS merkkijonoja tiedostoista
+.SH "YLEISKATSAUS"
+.B ident
+[
+.B \-q
+] [
+.B \-V
+] [
+.I tiedosto
+\&.\|.\|. ]
+.SH KUVAUS
+.B ident
+etsii kaikki mahdolliset 
+.BI $ avainsana : "\ teksiä\ " $
+-osumat annetuista tiedostoista, tai jos tiedostoja ei ole annettu, vakiosyötteestä.
+.PP
+\*r:n
+.BR co (1)-komento
+normaalisti sijoittaa nämä tunnisteet, mutta ne voidaan lisätä myös käsin.
+Optio
+.B \-q
+poistaa   
+varoistuksen jos tiedostosta ei löydy tunnistetta.
+Optio
+.B \-V
+tulostaa
+.BR ident-ohjelman
+versionumeron.
+.PP
+.B ident
+toimii yhtä hyvin teksti-tiedostoilla kuin objektitiedostoilla ja
+raakatulosteilla.
+Esimerkiksi, jos C-ohjelman f.c 
+.B f.c
+sisältää
+.IP
+.ft 3
+#include <stdio.h>
+.br
+static char const rcsid[] =
+.br
+  \&"$\&Id: f.c,v \*(iD $\&";
+.br
+int main() { return printf(\&"%s\en\&", rcsid) == EOF; }
+.ft P
+.LP
+ja
+.B f.c
+on käänneetty
+.BR f.o:ksi ,
+niin komento 
+.IP
+.B "ident  f.c  f.o"
+.LP
+tulostaa
+.nf
+.IP
+.ft 3
+f.c:
+    $\&Id: f.c,v \*(iD $
+f.o:
+    $\&Id: f.c,v \*(iD $
+.ft
+.fi
+.PP
+Jos C-ohjelma määrittelee merkkijonon
+.B rcsid
+kuten yllä, mutta ei käytä sitä,
+.BR lint (1)
+voi valittaa siitä, ja jotkut C-kääntäjät optimoivat merkkijonon pois. 
+Luotettavin ratkaisu on käyttää
+.B rcisd
+merkkijonoa ohjelmassa.
+kuten esimerkki ohjelmassa yläpuolella.
+.PP
+.B ident
+löytää kaikki
+.BI $ avainsana :  "\ teksti\ " $
+-merkkijonot, vaikka
+.I avainsana
+ei olisikaan virallisesti \*r määrittelemä avainsana.
+Tämä antaa tietoa myös ei-standarteista avainsanoista kuten
+.BR $\&XConsortium$ .
+.SH AVAINSANAT
+Ohjelma
+.BR co (1)
+ylläpitää seuraavia avainsanoja.
+Kaikki päivämäärät ja ajat ovat oletuksena Coordinated Universal Time-muodossa (\*u,
+joka kutsutaan myös \&\s-1GMT\s0:ksi), mutta jos tiedostot on merkkattu käyttäen
+.BR co (1) 
+ohjelman
+.BI \-z vyöhyke
+optiota käyttäen, päivämäärät ja kellonajat tulostetaan 
+numeerinen aikavyöhyke-koodi lisättynä.
+.TP
+.B $\&Author$
+Käyttäjän login-nimi joka on merkannut versio-tiedot.
+.TP
+.B $\&Date$
+Päivämäärä ja aika jolloin versio on merkattu.
+.TP
+.B $\&Header$
+Yleinen otsikko joka sisältää, \*r tiedoston koko polun, versio numeron,
+päivämäärän ja kellonajan, omistajan, tilan, ja lukitsijan jos lukittu.
+.TP
+.B $\&Id$
+Sama kuin
+.BR $\&Header$ ,
+paitsi että \*r tiedostonimi ei sisällä kokopolkua
+.TP
+.B $\&Locker$
+Sen käyttäjän login-nimi joka on lukinnut version(tyhjä jos ei ole lukittu).
+.TP
+.B $\&Log$
+Viesti joka on annettu merkkauksen yhteydessä.
+.BR Identin 
+näkökulmasta sama kuin
+.BR $\&RCSfile$ .
+.TP
+.B $\&Name$
+Symboolinen nimi, jota on käytetty version merkkaamisen yhteydessä. 
+Tyhjä, jos ei käytetty.
+.TP
+.B $\&RCSfile$
+\*r-tiedoston nimi ilman polkua.       
+.TP
+.B $\&Revision$
+Anettu versio numero.                        
+.TP
+.B $\&Source$
+\*r-tiedoston täydellinen polku ja nimi.
+.TP
+.B $\&State$
+Ohjelmien 
+.BR rcs (1)
+tai 
+.BR ci (1)
+option
+.B -s
+avulla määrämä tila.
+.PP
+.BR co (1)
+korvaa seuraavat merkit escape-jonoilla, jotta avainsanat       
+säilyvät helppolukuisina.
+.LP
+.RS
+.nf
+.ne 6
+.ta \w'newline  'u
+\f2merkki       escape-jono\fP
+tabulaattori \f3\et\fP
+rivinvaihto  \f3\en\fP
+välilyönti     \f3\e040
+$            \e044
+\e            \e\e\fP
+.fi
+.RE
+.SH IDENTIFICATION
+Author: Walter F. Tichy.
+.br
+Manual Page Revision: \*(Rv; Release Date: \*(Dt.
+.br
+Copyright \(co 1982, 1988, 1989 Walter F. Tichy.
+.br
+Copyright \(co 1990, 1992, 1993 Paul Eggert.
+.SH "KATSO MYÖS"
+ci(1) co(1) rcs(1) rcsdiff(1) rcsintro(1) rcsmerge(1) rlog(1) rcsfile(5) .br Walter F. Tichy \*r\*-A System for Version Control .I Software\*-Practice & Experience 15 .BR 7 (July 1985),
+637-654. 

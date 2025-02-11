@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-JOURNAL\-REMOTE\&.SERVICE" "8" "" "systemd 247" "systemd-journal-remote.service"
+.TH "SYSTEMD\-JOURNAL\-REMOTE\&.SERVICE" "8" "" "systemd 257.1" "systemd-journal-remote.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -26,8 +26,8 @@ systemd-journal-remote.service, systemd-journal-remote.socket, systemd-journal-r
 systemd\-journal\-remote\&.service
 .PP
 systemd\-journal\-remote\&.socket
-.HP \w'\fB/lib/systemd/systemd\-journal\-remote\fR\ 'u
-\fB/lib/systemd/systemd\-journal\-remote\fR [OPTIONS...] [\-o/\-\-output=\fIDIR\fR|\fIFILE\fR] [SOURCES...]
+.HP \w'\fB/usr/lib/systemd/systemd\-journal\-remote\fR\ 'u
+\fB/usr/lib/systemd/systemd\-journal\-remote\fR [OPTIONS...] [\-o/\-\-output=\fIDIR\fR|\fIFILE\fR] [SOURCES...]
 .SH "DESCRIPTION"
 .PP
 \fBsystemd\-journal\-remote\fR
@@ -60,11 +60,13 @@ will exit\&.
 .PP
 Active sources can be specified in the following ways:
 .PP
-[SOURCES...]
+[SOURCES]
 .RS 4
 When
 \fB\-\fR
 is given as a positional argument, events will be read from standard input\&. Other positional arguments will be treated as filenames to open and read from\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-\-url=\fR\fB\fIADDRESS\fR\fR
@@ -75,9 +77,11 @@ option, events will be retrieved using HTTP from
 \fIADDRESS\fR\&. This URL should refer to the root of a remote
 \fBsystemd-journal-gatewayd\fR(8)
 instance, e\&.g\&. http://some\&.host:19531/ or https://some\&.host:19531/\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
-\fB\-\-getter=\*(Aq\fR\fB\fIPROG\fR\fR\fB \fR\fB[OPTIONS...]\fR\fB\*(Aq\fR
+\fB\-\-getter=\*(Aq\fR\fB\fIPROG\fR\fR\fB \fR\fB[OPTIONS]\fR\fB\*(Aq\fR
 .RS 4
 Program to invoke to retrieve data\&. The journal event stream must be generated on standard output\&.
 .sp
@@ -102,6 +106,8 @@ Examples:
 .if n \{\
 .RE
 .\}
+.sp
+Added in version 239\&.
 .RE
 .PP
 Passive sources can be specified in the following ways:
@@ -115,6 +121,8 @@ must be an address suitable for
 \fBsystemd.socket\fR(5))\&.
 \fBsystemd\-journal\-remote\fR
 will listen on this socket for connections\&. Each connection is expected to be a stream of journal events\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-\-listen\-http=\fR\fB\fIADDRESS\fR\fR, \fB\-\-listen\-https=\fR\fB\fIADDRESS\fR\fR
@@ -132,6 +140,8 @@ and
 with
 "Content\-Type: application/vnd\&.fdo\&.journal"
 are supported\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fI$LISTEN_FDS\fR
@@ -146,6 +156,8 @@ described above, unless they are specified as an argument in
 or
 \fB\-\-listen\-https=\-\fR\fB\fIn\fR\fR
 above\&. In the latter case, an HTTP or HTTPS server will be spawned using this descriptor and connections must be made over the HTTP protocol\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-\-key=\fR
@@ -155,6 +167,8 @@ Takes a path to a SSL secret key file in PEM format\&. Defaults to
 \fB\-\-listen\-https=\fR\&. If the path refers to an
 \fBAF_UNIX\fR
 stream socket in the file system a connection is made to it and the key read from it\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-\-cert=\fR
@@ -164,6 +178,8 @@ Takes a path to a SSL certificate file in PEM format\&. Defaults to
 \fB\-\-listen\-https=\fR\&. If the path refers to an
 \fBAF_UNIX\fR
 stream socket in the file system a connection is made to it and the certificate read from it\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-\-trust=\fR
@@ -176,6 +192,8 @@ is set, then certificate checking will be disabled\&. Defaults to
 \fB\-\-listen\-https=\fR\&. If the path refers to an
 \fBAF_UNIX\fR
 stream socket in the file system a connection is made to it and the certificate read from it\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-\-gnutls\-log=\fR
@@ -184,6 +202,8 @@ Takes a comma separated list of gnutls logging categories\&. This option can be 
 \fB\-\-listen\-http=\fR
 or
 \fB\-\-listen\-https=\fR\&.
+.sp
+Added in version 239\&.
 .RE
 .SH "SINKS"
 .PP
@@ -192,18 +212,22 @@ The location of the output journal can be specified with
 or
 \fB\-\-output=\fR\&.
 .PP
-\fB\-\-output=\fR\fB\fIFILE\fR\fR
+\fB\-o \fR\fB\fIFILE\fR\fR, \fB\-\-output=\fR\fB\fIFILE\fR\fR
 .RS 4
 Will write to this journal file\&. The filename must end with
 \&.journal\&. The file will be created if it does not exist\&. If necessary (journal file full, or corrupted), the file will be renamed following normal journald rules and a new journal file will be created in its stead\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
-\fB\-\-output=\fR\fB\fIDIR\fR\fR
+\fB\-o \fR\fB\fIDIR\fR\fR, \fB\-\-output=\fR\fB\fIDIR\fR\fR
 .RS 4
 Will create journal files underneath directory
 \fIDIR\fR\&. The directory must exist\&. If necessary (journal files over size, or corrupted), journal files will be rotated following normal journald rules\&. Names of files underneath
 \fIDIR\fR
 will be generated using the rules described below\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 If
@@ -234,6 +258,8 @@ In the case that "active" sources are given by the positional arguments or
 option, the output file name must always be given explicitly and only
 \fBnone\fR
 is allowed\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-\-compress\fR [\fIBOOL\fR]
@@ -242,6 +268,8 @@ If this is set to
 "yes"
 then compress the data in the journal using XZ\&. The default is
 "yes"\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-\-seal\fR [\fIBOOL\fR]
@@ -250,6 +278,8 @@ If this is set to
 "yes"
 then periodically sign the data in the journal using Forward Secure Sealing\&. The default is
 "no"\&.
+.sp
+Added in version 239\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
@@ -270,7 +300,6 @@ Copy local journal events to a different journal directory:
 .\}
 .nf
 journalctl \-o export | systemd\-journal\-remote \-o /tmp/dir/foo\&.journal \-
-    
 .fi
 .if n \{\
 .RE
@@ -286,7 +315,6 @@ instance and store them in
 .\}
 .nf
 systemd\-journal\-remote \-\-url http://some\&.host:19531/
-    
 .fi
 .if n \{\
 .RE
@@ -302,7 +330,6 @@ instance, and store them in
 .\}
 .nf
 systemd\-journal\-remote \-\-url http://some\&.host:19531/entries?boot&follow
-    
 .fi
 .if n \{\
 .RE
@@ -310,14 +337,10 @@ systemd\-journal\-remote \-\-url http://some\&.host:19531/entries?boot&follow
 .sp
 .SH "SEE ALSO"
 .PP
-\fBjournal-remote.conf\fR(5),
-\fBjournalctl\fR(1),
-\fBsystemd-journal-gatewayd.service\fR(8),
-\fBsystemd-journal-upload.service\fR(8),
-\fBsystemd-journald.service\fR(8)
+\fBjournal-remote.conf\fR(5), \fBjournalctl\fR(1), \fBsystemd-journal-gatewayd.service\fR(8), \fBsystemd-journal-upload.service\fR(8), \fBsystemd-journald.service\fR(8)
 .SH "NOTES"
 .IP " 1." 4
 Journal Export Format
 .RS 4
-\%https://www.freedesktop.org/wiki/Software/systemd/export
+\%https://systemd.io/JOURNAL_EXPORT_FORMATS#journal-export-format
 .RE

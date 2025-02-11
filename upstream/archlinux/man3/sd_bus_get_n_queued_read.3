@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_GET_N_QUEUED_READ" "3" "" "systemd 249" "sd_bus_get_fd"
+.TH "SD_BUS_GET_N_QUEUED_READ" "3" "" "systemd 257" "sd_bus_get_fd"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -35,7 +35,7 @@ sd_bus_get_n_queued_read, sd_bus_get_n_queued_write \- Get the number of pending
 .SH "DESCRIPTION"
 .PP
 \fBsd_bus_get_n_queued_read()\fR
-may be used to query the number of bus messages in the read queue of a bus connection object\&. The read queue contains all messages read from the transport medium (e\&.g\&. network socket) but not yet processed locally\&. The function expects two arguments: the bus object to query, and a pointer to a 64bit counter variable to write the current queue size to\&. Use
+may be used to query the number of bus messages in the read queue of a bus connection object\&. The read queue contains all messages read from the transport medium (e\&.g\&. network socket) but not yet processed locally\&. The function expects two arguments: the bus object to query, and a pointer to a 64\-bit counter variable to write the current queue size to\&. Use
 \fBsd_bus_process()\fR
 in order to process queued messages, i\&.e\&. to reduce the size of the read queue (as well as, in fact, the write queue, see below)\&.
 .PP
@@ -58,12 +58,14 @@ Returned errors may indicate the following problems:
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The bus connection was created in a different process\&.
+The bus connection was created in a different process, library or module instance\&.
 .RE
+.SH "HISTORY"
+.PP
+\fBsd_bus_get_n_queued_read()\fR
+and
+\fBsd_bus_get_n_queued_write()\fR
+were added in version 238\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-bus\fR(3),
-\fBsd_bus_process\fR(3),
-\fBsd_bus_send\fR(3),
-\fBsd_bus_flush\fR(3)
+\fBsystemd\fR(1), \fBsd-bus\fR(3), \fBsd_bus_process\fR(3), \fBsd_bus_send\fR(3), \fBsd_bus_flush\fR(3)

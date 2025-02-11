@@ -1,0 +1,365 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-12-06 18:03+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "landlock_restrict_self"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-leap-16-0
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "2024-05-02"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+#, no-wrap
+msgid "Linux man-pages 6.9.1"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "landlock_restrict_self - enforce a Landlock ruleset"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "LIBRARY"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "Standard C library (I<libc>, I<-lc>)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<#include E<lt>linux/landlock.hE<gt>>  /* Definition of B<LANDLOCK_*> constants */\n"
+"B<#include E<lt>sys/syscall.hE<gt>>     /* Definition of B<SYS_*> constants */\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"B<int syscall(SYS_landlock_restrict_self, int >I<ruleset_fd>B<,>\n"
+"B<            uint32_t >I<flags>B<);>\n"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Once a Landlock ruleset is populated with the desired rules, the "
+"B<landlock_restrict_self>()  system call enables enforcing this ruleset on "
+"the calling thread.  See B<landlock>(7)  for a global overview."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"A thread can be restricted with multiple rulesets that are then composed "
+"together to form the thread's Landlock domain.  This can be seen as a stack "
+"of rulesets but it is implemented in a more efficient way.  A domain can "
+"only be updated in such a way that the constraints of each past and future "
+"composed rulesets will restrict the thread and its future children for their "
+"entire life.  It is then possible to gradually enforce tailored access "
+"control policies with multiple independent rulesets coming from different "
+"sources (e.g., init system configuration, user session policy, built-in "
+"application policy).  However, most applications should only need one call "
+"to B<landlock_restrict_self>()  and they should avoid arbitrary numbers of "
+"such calls because of the composed rulesets limit.  Instead, developers are "
+"encouraged to build a tailored ruleset thanks to multiple calls to "
+"B<landlock_add_rule>(2)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"In order to enforce a ruleset, either the caller must have the "
+"B<CAP_SYS_ADMIN> capability in its user namespace, or the thread must "
+"already have the I<no_new_privs> bit set.  As for B<seccomp>(2), this avoids "
+"scenarios where unprivileged processes can affect the behavior of privileged "
+"children (e.g., because of set-user-ID binaries).  If that bit was not "
+"already set by an ancestor of this thread, the thread must make the "
+"following call:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"I<ruleset_fd> is a Landlock ruleset file descriptor obtained with "
+"B<landlock_create_ruleset>(2)  and fully populated with a set of calls to "
+"B<landlock_add_rule>(2)."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<flags> must be 0."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "RETURN VALUE"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "On success, B<landlock_restrict_self>()  returns 0."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "ERRORS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<landlock_restrict_self>()  can fail for the following reasons:"
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EOPNOTSUPP>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "Landlock is supported by the kernel but disabled at boot time."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EINVAL>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<flags> is not 0."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EBADF>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<ruleset_fd> is not a file descriptor for the current thread."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EBADFD>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<ruleset_fd> is not a ruleset file descriptor."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<EPERM>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"I<ruleset_fd> has no read access to the underlying ruleset, or the calling "
+"thread is not running with I<no_new_privs>, or it doesn't have the "
+"B<CAP_SYS_ADMIN> in its user namespace."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<E2BIG>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The maximum number of composed rulesets is reached for the calling thread.  "
+"This limit is currently 64."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "STANDARDS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+msgid "Linux."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "HISTORY"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+msgid "Linux 5.13."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "EXAMPLES"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "See B<landlock>(7)."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<landlock_create_ruleset>(2), B<landlock_add_rule>(2), B<landlock>(7)"
+msgstr ""
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "2022-10-30"
+msgstr ""
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "Linux man-pages 6.03"
+msgstr ""
+
+#. type: SH
+#: debian-bookworm
+#, no-wrap
+msgid "VERSIONS"
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm
+msgid "Landlock was added in Linux 5.13."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm
+msgid "This system call is Linux-specific."
+msgstr ""
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "2023-10-31"
+msgstr ""
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "Linux man-pages 6.06"
+msgstr ""
+
+#. type: TH
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux man-pages (unreleased)"
+msgstr ""

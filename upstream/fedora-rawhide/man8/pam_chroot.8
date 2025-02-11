@@ -1,0 +1,92 @@
+'\" t
+.\"     Title: pam_chroot
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/22/2024
+.\"    Manual: pam-redhat Manual
+.\"    Source: pam-redhat
+.\"  Language: English
+.\"
+.TH "PAM_CHROOT" "8" "11/22/2024" "pam\-redhat" "pam\-redhat Manual"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+pam_chroot \- PAM module that allows a user to be chrooted in session
+.SH "SYNOPSIS"
+.HP \w'\fBpam_chroot\&.so\fR\ 'u
+\fBpam_chroot\&.so\fR [debug] [onerr]
+.SH "DESCRIPTION"
+.PP
+When the calling application attempts to open a session, pam_chroot opens
+/etc/security/chroot\&.conf
+and searches for a line of the form: user directory, where the "user" listed is actually a regular expression\&. If the
+\fIPAM_USER\fR
+for whom the session is being opened matches the regular expression, the module will attempt to chroot() to the given directory\&.
+.PP
+The calling application must be executing with root privileges in order to be able to chroot() at all\&. If the application needs to exec() other programs (such as a server process or spawning a shell), you will need to duplicate some portions of an actual root environment under the chroot()ed directory in order for it to work at all\&. (This includes configuration and logging files\&.) If configured incorrectly, this module may potentially render the service unusable and, under some circumstances, pose a security risk\&.
+.PP
+In particular, the new root directory and all of its parent directories must not be writable by anyone but root\&.
+.SH "OPTIONS"
+.PP
+debug
+.RS 4
+Log debug messages to syslog\&.
+.RE
+.PP
+onerr=
+.RS 4
+Values can be
+\fI"succeed"\fR
+or
+\fI"fail"\fR\&. The action to take if the configuration file can not be opened, the chroot() fails, or the user does not match any of the expressions listed in the configuration file\&. Default is
+\fI"succeed"\fR\&.
+.RE
+.SH "MODULE TYPES PROVIDED"
+.PP
+Only
+\fBsession\fR
+module type is provided\&.
+.SH "RETURN VALUES"
+.PP
+.PP
+PAM_SUCCESS
+.RS 4
+Everything was successful\&.
+.RE
+.PP
+PAM_SESSION_ERR
+.RS 4
+Session error\&.
+.RE
+.SH "FILES"
+.PP
+/etc/security/chroot\&.conf
+.RS 4
+Chroot configuration file
+.RE
+.SH "SEE ALSO"
+.PP
+\fBpam.d\fR(5),
+\fBpam\fR(8)
+.SH "AUTHOR"
+.PP
+The original pam_chroot was written by Matthew Kirkwood and it was obtained from ftp://ferret\&.lmh\&.ox\&.ac\&.uk/users/weejock/pam_chroot/\&.
+.PP
+nalin ported this module for Red Hat\&.

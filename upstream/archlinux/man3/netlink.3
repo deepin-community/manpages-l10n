@@ -1,20 +1,21 @@
 .\" This manpage copyright 1998 by Andi Kleen.
 .\"
-.\" %%%LICENSE_START(GPL_NOVERSION_ONELINE)
-.\" Subject to the GPL.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-1.0-or-later
 .\"
 .\" Based on the original comments from Alexey Kuznetsov
 .\" $Id: netlink.3,v 1.1 1999/05/14 17:17:24 freitag Exp $
 .\"
-.TH NETLINK 3 2014-03-20 "GNU" "Linux Programmer's Manual"
+.TH netlink 3 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 netlink \- Netlink macros
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <asm/types.h>
 .B #include <linux/netlink.h>
-.PP
+.P
 .BI "int NLMSG_ALIGN(size_t " len );
 .BI "int NLMSG_LENGTH(size_t " len );
 .BI "int NLMSG_SPACE(size_t " len );
@@ -61,7 +62,7 @@ The caller must check if the current
 .I nlmsghdr
 didn't have the
 .B NLMSG_DONE
-set\(emthis function doesn't return NULL on end.
+set\[em]this function doesn't return NULL on end.
 The
 .I len
 argument is an lvalue containing the remaining length
@@ -75,21 +76,12 @@ is in a form suitable for parsing.
 .BR NLMSG_PAYLOAD ()
 Return the length of the payload associated with the
 .IR nlmsghdr .
-.SH CONFORMING TO
-These macros are nonstandard Linux extensions.
-.SH NOTES
+.SH VERSIONS
 It is often better to use netlink via
 .I libnetlink
 than via the low-level kernel interface.
+.SH STANDARDS
+Linux.
 .SH SEE ALSO
 .BR libnetlink (3),
 .BR netlink (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

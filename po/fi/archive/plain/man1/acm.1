@@ -1,0 +1,286 @@
+.\" Translated into finnish by Sami Louko (slouko@dlc.fi)
+.\"
+.TH ACM 7 "" "Käyttäjän sovellusohjelmat" ""
+.SH NIMI
+acm \- ilmataistelu simulaattori X:lle
+.SH "YLEISKATSAUS"
+.B acm
+[
+.I palvelin
+] [
+.I valinnat
+]  
+.LP
+
+.SH KUVAUS
+
+acm on ilmataistelu simulaattori joka toimii X ikkunointijärjestelmän alla.
+Jopa kahdeksan pelaajaa voi samanaikaisesti ryhtyä ilmataisteluun. Pelaajat
+lentävät suihkukoneilla mitkä on varustettu tutkalla, lämpöohjautuvilla
+ohjuksilla sekä kanuunalla.
+
+Ohjelma, "acm", kutsuu määritellyllä palvelimen toimialueella (server_hostname)
+jo ajossa olevaa demonia ja pyytää tältä liittymistäsi peliin. Shellin
+muuttuja "ACMSERVER" vaihtoehtoisesti määrittää palvelimen nimen.
+
+Jokainen pelaaja lentää joko F-16C Falconilla tai MIG-23:lla.
+
+
+.SH KÄYTTÖOHJE
+
+Aloittaaksesi pelaamisen, järjestelmän lentosimulaattori-palvelin täytyy käsin
+käynnistää jotta se olisi avoin kaikille pelaajille.
+
+Seuraava komentorivi tekee tämän:
+
+.LP
+.TP
+	% acms
+
+acm huomioi seuraavat komentorivi valinnat:
+.LP
+.TP
+-geometry geometry_spec
+X-yhteensopiva ikkunan geometriamäärittely.
+.TP
+-team <1 tai 2>
+Määrittelee aloitus lentokentän. Lentokentät ovat noin 50 mpk etäisyydellä
+toisistaan. Joukkue 1 lentää F-16:ia ja joukkue 2 lentää MIG-23:ia.
+.TP
+-dv
+Käyttää X-palvelimen oletus näkymää ruudullesi. Normaalisti acm käyttäisi
+näkymää joka on kahdeksan tasoa syvä (256 väriä). Se tekee myös
+yksityisen värikartan acm:n käyttöön. Jos ruutusi oletus näkymä on 8-
+tason näennäisväri näkymä, käyttämällä tätä valitsinta sallitaan acm:n
+käyttää "yleistä" värikarttaa, jolloin muut ikkunat eivät voi vaihtaa
+väriä kun acm on käytössä.
+
+
+.SH KUINKA PÄÄSTÄÄN ILMAAN
+
+
+Hiiresi on ohjaussauva. Nollakohta on keskellä sinun näyttö ruutua -- 
+merkitty pisteellä keskellä HUD-näyttöäsi (heads-up-display).
+Liikuttamalla hiirtä itsestäsi poispäin kallistat konetta alaspäin,
+liikuttamalla sitä takaisin, kallistat konetta ylöspäin. Vasen ja oikea
+syöttö kääntää konetta vastaavaan suuntaan. Maan pinnalla 100 kts nopeuksiin
+asti, nokan pyörä ohjaa konetta.
+
+Noustessasi ilmaan ensimmäistä kertaa, valitse 20 astetta laskusiivekkeistä
+(painamalla H kahdesti), sitten paina täyden kaasun nappia (päänäppäimistön
+näppäin 4). Pidä hiiri nollakohdassa kunnes liikut noin 140 kts nopeudella,
+sitten vedä hiirtä noin kaksi kolmasosaa alaspäin näyttöruudussa. Sinun pitäisi
+nousta ylös ja irrota maasta melko helposti. Siirrä ohjaussauvaa vähitellen
+kohti nollakohtaa ja anna lentonopeutesi kasvaa -- älä liikuta sitä takaisin
+nollakohtaan liian nopeasti tai tulet päätymään takaisin maahan! Kun lentonopeutesi
+ylittää noin 250 kts, nosta laskusiivekkeet (painamalla Y kahdesti) ja laskuteline
+(paina G). Onnittelut, lennät monen miljoonan dollarin suihkukonetta.
+
+
+.SH MOOTTORIN OHJAUS
+
+
+Seuraavat näppäimet ohjaavat moottorin työntöä:
+
+.LP
+	4	Täysi teho
+.LP
+	3	Lisää tehoa (noin 2 prosenttia)
+.LP
+	2	Vähennä tehoa (noin saman verran)
+.LP
+	1	Tyhjäkäynti
+.LP
+	A	Kytke jälkipoltinta
+
+Moottorin mittaristo näyttää tehon mitä kehität. Tämän alapuolella,
+sinulla on näyttö joka kertoo jäljelläolevan polttoaineen määrän kuten
+myös senhetkisen kulutuksen. Jälkipoltin käyttää polttoainetta hämmästyttävän
+nopeasti; käytä sitä viisaasti.
+
+
+
+.SH YMPÄRILLE KATSELU
+
+
+Numeronäppäimistön näppäimet ohjaavat mihin suuntaan katsot ulos ohjaamosta:
+
+.LP
+			8 Eteenpäin
+.LP	
+	4 Vasemmalle	5 Ylös	6 Oikealle
+.LP
+			2 Peräänpäin
+
+Kannattaa katsella ympärilleen silloin kun olet taisteluympäristössä.
+Mahdollisuutesi pysyä hengissä kasvavat merkittävästi.
+
+
+.SH HEADS-UP-DISPLAY (HUD) NÄYTTÖ
+
+
+Vasemmalla puolella HUD:ia on asteikko joka näyttää sinun sen hetkistä
+lentonopeutta meripeninkulmina (se näyttää oikean lentonopeuden). Tämän
+yläpuolella, vasemmassa ylänurkassa on G-mittari.
+
+Oikea asteikko näyttää korkeutta; tämän yläpuolella on lukema sinun sen
+hetkisestä hyökkäyskulmasta asteina ("a=X.X"). Sinun suihkukoneesi sakkaa
+30 asteen positiivisessa hyökkäyskulmassa ja negatiivisena 16 asteessa.
+
+Koneen symboli (suunnilleen tämän näköinen "-O-") näyttää suhteellisen
+tuulen suuntaa. Suhteellinen tuuli toimii yhdessä hyökkäyskulman ja
+sivusiivekkeiden kanssa. Asteikko keskellä HUD:ia näyttää koneesi sen
+hetkisen lentoasennon.
+
+Alempi, vaakasuuntainen asteikko näyttää sinun senhetkisen kurssin.
+Irto-osat vasemmassa alanurkassa näyttävät asejärjestelmien tilaa.
+Vähän niiden yläpuolella on lukema senhetkisestä työnnöstä prosentteina
+kuin on myös moottorin jälkipolttimen tila -- "AB" symboli ilmaisee että
+jälkipoltin on päällä.
+
+
+
+.SH TUTKANÄYTÖN KÄYTTÖ
+
+
+Tutkajärjestelmällä on 130 asteen näkökenttä pystysuunnassa ja laidasta-
+laitaan. Tutka automaattisesti lukittuu lähimpään uhkaavaan kohteeseen sen
+näkökentässä. Lukittu kohde näkyy täytettynä palasena. Muut viholliskohteet
+näytetään pelkkänä neliönä.
+
+Kohteen tiedot näkyvät ruudun oikeassa alanurkassa. Ylempi numero on lukitun
+kohteen suunta, seuraava numero on suhteellinen suunta minne pitäisi ohjata
+torjuaksesi kohteen (näytetään "ddd R", ja kolmas numero on nopeus solmuina
+jolla lähestyt tätä kohdetta.
+
+Voit myös lukittua muihin kohteisiin painamalla kohteen valinta nappia (Q).
+
+
+.SH KUKA MINUA AMPUU?
+
+Tutka kertoo että koneesi seuraaminen on tunnistettu. Sinun varhaisen-
+uhkan-varoitus-järjestelmä (Threat Early Warning System - TEWS) varoittaa
+sinua mahdollisista uhkaajista. Tämä pyöreä näyttö näyttää sinua seuraavien
+(muiden koneiden) suhteellisen tutkien suunnan.
+
+.SH ASEISTUS
+
+
+Koneesi on varustettu lämpö-hakuisilla ohjuksilla ja 20 millimetrin
+kanuunalla. Aseiden tiedot näkyvät HUD:in vasemmassa alakulmassa.
+Eri aseet voit valita painamalla hiiren nappia 3.
+
+Ohjukset on tehty U.S. AIM-9M Sidewinder-ohjuksen mukaan. Ne tunnistavat
+infrapuna (IR) kohteita missä tahansa sijainnissa (ei kuitenkaan aivan
+takana). Niiden toimintaetäisyys riippuu olennaisesti korkeudesta ja
+pystysuuntaisesta etäisyydestä. Ohjusalijärjestelmä toimii yhdessä
+tutkajärjestelmän kanssa mahdollistaen aikaa-osumaan tiedon kun AIM-9
+ohjukset on valittuna.
+
+
+.SH ESIMERKKEJÄ
+
+ acm bismarck 
+
+ acm bismarck -geometry 1000x500
+
+.SH NÄPPÄINKOMENTOJEN LISTA
+
+Ohjaussauvan ja peräsimen ohjaus
+
+.LP
+Hiiri on sinun ohjaussauvasi. Se ohjaa kallistusta ja kääntämistä.
+.LP
+Z -- Peräsin vasemmalle
+.LP
+C -- Peräsin oikealle
+.LP
+X -- Peräsin keskelle
+
+
+
+Moottorin ohjaus
+
+.LP
+4 -- Täysi teho
+.LP
+3 -- Lisää tehoa
+.LP
+2 -- Vähennä tehoa
+.LP
+1 -- Tyhjäkäynti
+.LP
+A -- Kytke jälkipolttimen tilaa
+
+
+
+Tutkan ohjaus
+
+.LP
+R -- Kytke tutkan tilaa (Päällä/Valmiustilassa)
+.LP
+Q -- Kohteen valitsin
+
+
+
+Laskusiivekkeet
+
+.LP
+H -- Avaa ulospäin 10 astetta
+.LP
+Y -- Vedä sisään 10 astetta
+
+
+
+Ilmajarru
+
+.LP
+S -- Aukaise
+.LP
+W -- Vedä sisään
+
+
+Aseiden ohjaus
+
+.LP
+Hiiren nappi 2 -- Laukaise valittu ase
+.LP
+Hiiren nappi 3 -- Valitse toinen ase
+
+
+Kallistuksen tasauksen ohjaus
+
+.LP
+U -- Aseta maasta-irroittautumisen kallistus
+.LP
+J -- Aseta kallistus ohjaussauvan sen hetkiseen tilaan
+
+
+Muu ohjaus
+
+.LP
+G -- Vedä laskeutumisteline sisään/Laske laskeutumisteline ulos
+.LP
+P -- Itsetuhoaminen (Pelin lopetus)
+.LP
+L -- Laukaise kauko-ohjattava kohdelentokone
+
+
+
+Näkymän ohjaus (numeronäppäimistö)
+
+.LP
+8 -- Näkymä eteen
+.LP
+2 -- Näkymä perään
+.LP
+4 -- Näkymä vasemmalle
+.LP
+6 -- Näkymä oikealle
+.LP
+5 -- Näkymä ylös
+
+
+.SH AUTHOR
+Riley Rainey, riley@mips.com
+.SH "KATSO MYÖS"

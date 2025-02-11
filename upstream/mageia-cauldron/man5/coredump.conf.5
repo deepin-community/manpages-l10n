@@ -1,5 +1,5 @@
 '\" t
-.TH "COREDUMP\&.CONF" "5" "" "systemd 249" "coredump.conf"
+.TH "COREDUMP\&.CONF" "5" "" "systemd 255" "coredump.conf"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -45,9 +45,14 @@ and
 pages for the details\&.
 .SH "CONFIGURATION DIRECTORIES AND PRECEDENCE"
 .PP
-The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. Initially, the main configuration file in
+The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. The main configuration file is either in
+/usr/lib/systemd/
+or
 /etc/systemd/
-contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by editing this file or by creating drop\-ins, as described below\&. Using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
+and contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by creating drop\-ins, as described below\&. The main configuration file can also be edited for this purpose (or a copy in
+/etc/
+if it\*(Aqs shipped in
+/usr/) however using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
 .PP
 In addition to the "main" configuration file, drop\-in configuration snippets are read from
 /usr/lib/systemd/*\&.conf\&.d/,
@@ -59,7 +64,7 @@ configuration subdirectories are sorted by their filename in lexicographic order
 When packages need to customize the configuration, they can install drop\-ins under
 /usr/\&. Files in
 /etc/
-are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&.
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&. This also defined a concept of drop\-in priority to allow distributions to ship drop\-ins within a specific range lower than the range used by users\&. This should lower the risk of package drop\-ins overriding accidentally drop\-ins defined by users\&.
 .PP
 To disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
 /dev/null
@@ -83,29 +88,50 @@ Controls where to store cores\&. One of
 .sp
 When cores are stored in the journal, they might be compressed following journal compression settings, see
 \fBjournald.conf\fR(5)\&. When cores are stored externally, they will be compressed by default, see below\&.
+.sp
+Note that in order to process a coredump (i\&.e\&. extract a stack trace) the core must be written to disk first\&. Thus, unless
+\fIProcessSizeMax=\fR
+is set to 0 (see below), the core will be written to
+/var/lib/systemd/coredump/
+either way (under a temporary filename, or even in an unlinked file),
+\fIStorage=\fR
+thus only controls whether to leave it there even after it was processed\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fICompress=\fR
 .RS 4
 Controls compression for external storage\&. Takes a boolean argument, which defaults to
 "yes"\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fIProcessSizeMax=\fR
 .RS 4
-The maximum size in bytes of a core which will be processed\&. Core dumps exceeding this size may be stored, but the backtrace will not be generated\&. Like other sizes in this same config file, the usual suffixes to the base of 1024 are allowed (B, K, M, G, T, P, and E)\&.
+The maximum size in bytes of a core which will be processed\&. Core dumps exceeding this size may be stored, but the stack trace will not be generated\&. Like other sizes in this same config file, the usual suffixes to the base of 1024 are allowed (B, K, M, G, T, P, and E)\&. Defaults to 1G on 32\-bit systems, 32G on 64\-bit systems\&.
 .sp
 Setting
 \fIStorage=none\fR
 and
 \fIProcessSizeMax=0\fR
 disables all coredump handling except for a log entry\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fIExternalSizeMax=\fR, \fIJournalSizeMax=\fR
 .RS 4
-The maximum (compressed or uncompressed) size in bytes of a core to be saved\&. Unit suffixes are allowed just as in
+The maximum (compressed or uncompressed) size in bytes of a coredump to be saved in separate files on disk (default: 1G on 32\-bit systems, 32G on 64\-bit systems) or in the journal (default: 767M)\&. Note that the journal service enforces a hard limit on journal log records of 767M, and will ignore larger submitted log records\&. Hence,
+\fIJournalSizeMax=\fR
+may be lowered relative to the default, but not increased\&. Unit suffixes are allowed just as in
 \fBProcessSizeMax=\fR\&.
+.sp
+\fIExternalSizeMax=infinity\fR
+sets the core size to unlimited\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fIMaxUse=\fR, \fIKeepFree=\fR
@@ -117,6 +143,8 @@ makes sure that old core dumps are removed as soon as the total disk space taken
 \fBKeepFree=\fR
 controls how much disk space to keep free at least (defaults to 15% of the total disk size)\&. Note that the disk space used by core dumps might temporarily exceed these limits while core dumps are processed\&. Note that old core dumps are also removed based on time via
 \fBsystemd-tmpfiles\fR(8)\&. Set either value to 0 to turn off size\-based cleanup\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 The defaults for all values are listed as comments in the template

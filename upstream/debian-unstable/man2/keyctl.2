@@ -3,53 +3,38 @@
 .\" A very few fragments remain from an earlier version of this page
 .\" written by David Howells (dhowells@redhat.com)
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
-.\"
-.TH KEYCTL 2 2020-11-01 Linux "Linux Key Management Calls"
+.TH keyctl 2 2024-06-15 "Linux man-pages 6.9.1"
 .SH NAME
 keyctl \- manipulate the kernel's key management facility
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
+.P
+Alternatively, Linux Key Management Utilities
+.RI ( libkeyutils ", " \-lkeyutils );
+see VERSIONS.
 .SH SYNOPSIS
 .nf
-.B #include <sys/types.h>
-.B #include <keyutils.h>
-.PP
-.BI "long keyctl(int " operation ", ...);"
-
-.B "/* For direct call via syscall(2): */"
-.B #include <asm/unistd.h>
-.B #include <linux/keyctl.h>
+.BR "#include <linux/keyctl.h>" "     /* Definition of " KEY* " constants */"
+.BR "#include <sys/syscall.h>" "      /* Definition of " SYS_* " constants */"
 .B #include <unistd.h>
-.PP
-.BI "long syscall(__NR_keyctl, int " operation ", __kernel_ulong_t " arg2 ,
-.BI "             __kernel_ulong_t " arg3 ", __kernel_ulong_t " arg4 ,
-.BI "             __kernel_ulong_t " arg5 );
+.P
+.BI "long syscall(SYS_keyctl, int " operation ", unsigned long " arg2 ,
+.BI "             unsigned long " arg3 ", unsigned long " arg4 ,
+.BI "             unsigned long " arg5 );
 .fi
-.PP
-No glibc wrapper is provided for this system call; see NOTES.
+.P
+.IR Note :
+glibc provides no wrapper for
+.BR keyctl (),
+necessitating the use of
+.BR syscall (2).
 .SH DESCRIPTION
 .BR keyctl ()
 allows user-space programs to perform key manipulation.
-.PP
+.P
 The operation performed by
 .BR keyctl ()
 is determined by the value of the
@@ -61,7 +46,7 @@ library (provided by the
 .I keyutils
 package) into individual functions (noted below)
 to permit the compiler to check types.
-.PP
+.P
 The permitted values for
 .I operation
 are:
@@ -135,8 +120,8 @@ does not exist depends on the value of
 .IR int ).
 If
 .I arg3
-contains a nonzero value, then\(emif it is appropriate to do so
-(e.g., when looking up the user, user-session, or session key)\(ema new key
+contains a nonzero value, then\[em]if it is appropriate to do so
+(e.g., when looking up the user, user-session, or session key)\[em]a new key
 is created and its real key ID returned as the function result.
 .\" The keyctl_get_keyring_ID.3 page says that a new key
 .\" "will be created *if it is appropriate to do so**. What is the
@@ -158,9 +143,9 @@ The caller must have
 permission on a keyring in order for it to be found.
 .IP
 The arguments
-.IR arg4
+.I arg4
 and
-.IR arg5
+.I arg5
 are ignored.
 .IP
 This operation is exposed by
@@ -188,7 +173,7 @@ Otherwise,
 is treated as the description (name) of a keyring,
 and the behavior is as follows:
 .RS
-.IP * 3
+.IP \[bu] 3
 If a keyring with a matching description exists,
 the process will attempt to subscribe to that keyring
 as its session keyring if possible;
@@ -197,7 +182,7 @@ In order to subscribe to the keyring,
 the caller must have
 .I search
 permission on the keyring.
-.IP *
+.IP \[bu]
 If a keyring with a matching description does not exist,
 then a new keyring with the specified description is created,
 and the process is subscribed to that keyring as its session keyring.
@@ -207,7 +192,7 @@ The arguments
 .IR arg3 ,
 .IR arg4 ,
 and
-.IR arg5
+.I arg5
 are ignored.
 .IP
 This operation is exposed by
@@ -262,9 +247,9 @@ Further attempts to use the key will fail with the error
 .BR EKEYREVOKED .
 .IP
 The caller must have
-.IR write
+.I write
 or
-.IR setattr
+.I setattr
 permission on the key.
 .\" Keys with the KEY_FLAG_KEEP bit set cause an EPERM
 .\" error for KEYCTL_REVOKE. Does this need to be documented?
@@ -274,7 +259,7 @@ The arguments
 .IR arg3 ,
 .IR arg4 ,
 and
-.IR arg5
+.I arg5
 are ignored.
 .IP
 This operation is exposed by
@@ -343,13 +328,13 @@ capability, it can change permissions only for the keys it owns.
 The key must grant
 .I setattr
 permission to the caller
-.IR regardless
+.I regardless
 of the caller's capabilities.
 .\" FIXME Above, is it really intended that a privileged process can't
 .\" override the lack of the 'setattr' permission?
 .IP
 The permissions in
-.IR arg3
+.I arg3
 specify masks of available operations
 for each of the following user categories:
 .RS
@@ -361,21 +346,21 @@ This is the permission granted to a process that possesses the key
 see
 .BR keyrings (7).
 .TP
-.IR user
+.I user
 This is the permission granted to a process
 whose filesystem UID matches the UID of the key.
 .TP
-.IR group
+.I group
 This is the permission granted to a process
 whose filesystem GID or any of its supplementary GIDs
 matches the GID of the key.
 .TP
-.IR other
+.I other
 This is the permission granted to other processes
 that do not match the
-.IR user
+.I user
 and
-.IR group
+.I group
 categories.
 .RE
 .IP
@@ -383,17 +368,17 @@ The
 .IR user ,
 .IR group ,
 and
-.IR other
+.I other
 categories are exclusive: if a process matches the
-.IR user
+.I user
 category, it will not receive permissions granted in the
-.IR group
+.I group
 category; if a process matches the
 .I user
 or
-.IR group
+.I group
 category, then it will not receive permissions granted in the
-.IR other
+.I other
 category.
 .IP
 The
@@ -402,7 +387,7 @@ category grants permissions that are cumulative with the grants from the
 .IR user ,
 .IR group ,
 or
-.IR other
+.I other
 category.
 .IP
 Each permission mask is eight bits in size,
@@ -410,11 +395,11 @@ with only six bits currently used.
 The available permissions are:
 .RS
 .TP
-.IR view
+.I view
 This permission allows reading attributes of a key.
 .IP
 This permission is required for the
-.BR KEYCTL_DESCRIBE
+.B KEYCTL_DESCRIBE
 operation.
 .IP
 The permission bits for each category are
@@ -424,11 +409,11 @@ The permission bits for each category are
 and
 .BR KEY_OTH_VIEW .
 .TP
-.IR read
+.I read
 This permission allows reading a key's payload.
 .IP
 This permission is required for the
-.BR KEYCTL_READ
+.B KEYCTL_READ
 operation.
 .IP
 The permission bits for each category are
@@ -438,7 +423,7 @@ The permission bits for each category are
 and
 .BR KEY_OTH_READ .
 .TP
-.IR write
+.I write
 This permission allows update or instantiation of a key's payload.
 For a keyring, it allows keys to be linked and unlinked from the keyring,
 .IP
@@ -448,7 +433,7 @@ This permission is required for the
 .BR KEYCTL_CLEAR ,
 .BR KEYCTL_LINK ,
 and
-.BR KEYCTL_UNLINK
+.B KEYCTL_UNLINK
 operations.
 .IP
 The permission bits for each category are
@@ -458,7 +443,7 @@ The permission bits for each category are
 and
 .BR KEY_OTH_WRITE .
 .TP
-.IR search
+.I search
 This permission allows keyrings to be searched and keys to be found.
 Searches can recurse only into nested keyrings that have
 .I search
@@ -469,7 +454,7 @@ This permission is required for the
 .BR KEYCTL_JOIN_SESSION_KEYRING ,
 .BR KEYCTL_SEARCH ,
 and
-.BR KEYCTL_INVALIDATE
+.B KEYCTL_INVALIDATE
 operations.
 .IP
 The permission bits for each category are
@@ -479,13 +464,13 @@ The permission bits for each category are
 and
 .BR KEY_OTH_SEARCH .
 .TP
-.IR link
+.I link
 This permission allows a key or keyring to be linked to.
 .IP
 This permission is required for the
-.BR KEYCTL_LINK
+.B KEYCTL_LINK
 and
-.BR KEYCTL_SESSION_TO_PARENT
+.B KEYCTL_SESSION_TO_PARENT
 operations.
 .IP
 The permission bits for each category are
@@ -502,7 +487,7 @@ This permission is required for the
 .BR KEYCTL_REVOKE ,
 .BR KEYCTL_CHOWN ,
 and
-.BR KEYCTL_SETPERM
+.B KEYCTL_SETPERM
 operations.
 .IP
 The permission bits for each category are
@@ -522,7 +507,9 @@ and
 .BR KEY_OTH_ALL .
 .IP
 The
-.IR arg4 " and " arg5
+.I arg4
+and
+.I arg5
 arguments are ignored.
 .IP
 This operation is exposed by
@@ -540,7 +527,7 @@ The ID of the key to be described is specified in
 The descriptive string is returned in the buffer pointed to by
 .I arg3
 (cast to
-.IR "char\ *" );
+.IR char\~* );
 .I arg4
 (cast to
 .IR size_t )
@@ -558,24 +545,28 @@ contains the following information about the key:
 .in
 .IP
 In the above,
-.IR type
+.I type
 and
-.IR description
+.I description
 are strings,
-.IR uid
+.I uid
 and
-.IR gid
+.I gid
 are decimal strings, and
 .I perm
 is a hexadecimal permissions mask.
 The descriptive string is written with the following format:
 .IP
-    %s;%d;%d;%08x;%s
+.in +4n
+.EX
+%s;%d;%d;%08x;%s
+.EE
+.in
 .IP
-.BR "Note: the intention is that the descriptive string should"
-.BR "be extensible in future kernel versions".
+.B Note: the intention is that the descriptive string should
+.B be extensible in future kernel versions.
 In particular, the
-.IR description
+.I description
 field will not contain semicolons;
 .\" FIXME But, the kernel does not enforce the requirement
 .\" that the key description contains no semicolons!
@@ -588,7 +579,7 @@ This allows future semicolon-delimited fields to be inserted
 in the descriptive string in the future.
 .IP
 Writing to the buffer is attempted only when
-.IR arg3
+.I arg3
 is non-NULL and the specified buffer size
 is large enough to accept the descriptive string
 (including the terminating null byte).
@@ -631,7 +622,7 @@ The arguments
 .IR arg3 ,
 .IR arg4 ,
 and
-.IR arg5
+.I arg5
 are ignored.
 .IP
 This operation is exposed by
@@ -643,11 +634,11 @@ via the function
 Create a link from a keyring to a key.
 .IP
 The key to be linked is specified in
-.IR arg2
+.I arg2
 (cast to
 .IR key_serial_t );
 the keyring is specified in
-.IR arg3
+.I arg3
 (cast to
 .IR key_serial_t ).
 .IP
@@ -670,9 +661,9 @@ permission on the key being added and
 permission on the keyring.
 .IP
 The arguments
-.IR arg4
+.I arg4
 and
-.IR arg5
+.I arg5
 are ignored.
 .IP
 This operation is exposed by
@@ -702,9 +693,9 @@ If the last link to a key is removed,
 then that key will be scheduled for destruction.
 .IP
 The arguments
-.IR arg4
+.I arg4
 and
-.IR arg5
+.I arg5
 are ignored.
 .IP
 This operation is exposed by
@@ -718,7 +709,7 @@ returning its ID and optionally linking it to a specified keyring.
 .IP
 The tree to be searched is specified by passing
 the ID of the head keyring in
-.IR arg2
+.I arg2
 (cast to
 .IR key_serial_t ).
 The search is performed breadth-first and recursively.
@@ -730,13 +721,13 @@ and
 arguments specify the key to be searched for:
 .I arg3
 (cast as
-.IR "char\ *" )
+.IR char\~* )
 contains the key type
 (a null-terminated character string up to 32 bytes in size,
 including the terminating null byte), and
 .I arg4
 (cast as
-.IR "char\ *" )
+.IR char\~* )
 contains the description of the key
 (a null-terminated character string up to 4096 bytes in size,
 including the terminating null byte).
@@ -806,7 +797,7 @@ For example, a keyring will return an array of
 .I key_serial_t
 entries representing the IDs of all the keys that are linked to it.
 The
-.IR "user"
+.I user
 key type will return its data as is.
 If a key type does not implement this function,
 the operation fails with the error
@@ -856,7 +847,7 @@ the size of that buffer is specified in
 (cast to
 .IR size_t ).
 .IP
-The payload may be a NULL pointer and the buffer size may be 0
+The payload may be a null pointer and the buffer size may be 0
 if this is supported by the key type (e.g., it is a keyring).
 .IP
 The operation may be fail if the payload data is in the wrong format
@@ -891,7 +882,11 @@ Negatively instantiate an uninstantiated key.
 .IP
 This operation is equivalent to the call:
 .IP
-    keyctl(KEYCTL_REJECT, arg2, arg3, ENOKEY, arg4);
+.in +4n
+.EX
+keyctl(KEYCTL_REJECT, arg2, arg3, ENOKEY, arg4);
+.EE
+.in
 .IP
 The
 .I arg5
@@ -924,12 +919,12 @@ should contain one of the following values,
 to specify the new default keyring:
 .RS
 .TP
-.BR KEY_REQKEY_DEFL_NO_CHANGE
+.B KEY_REQKEY_DEFL_NO_CHANGE
 Don't change the default keyring.
 This can be used to discover the current default keyring
 (without changing it).
 .TP
-.BR KEY_REQKEY_DEFL_DEFAULT
+.B KEY_REQKEY_DEFL_DEFAULT
 This selects the default behaviour,
 which is to use the thread-specific keyring if there is one,
 otherwise the process-specific keyring if there is one,
@@ -937,29 +932,29 @@ otherwise the session keyring if there is one,
 otherwise the UID-specific session keyring,
 otherwise the user-specific keyring.
 .TP
-.BR KEY_REQKEY_DEFL_THREAD_KEYRING
+.B KEY_REQKEY_DEFL_THREAD_KEYRING
 Use the thread-specific keyring
-.RB ( thread-keyring (7))
+.RB ( thread\-keyring (7))
 as the new default keyring.
 .TP
-.BR KEY_REQKEY_DEFL_PROCESS_KEYRING
+.B KEY_REQKEY_DEFL_PROCESS_KEYRING
 Use the process-specific keyring
-.RB ( process-keyring (7))
+.RB ( process\-keyring (7))
 as the new default keyring.
 .TP
-.BR KEY_REQKEY_DEFL_SESSION_KEYRING
+.B KEY_REQKEY_DEFL_SESSION_KEYRING
 Use the session-specific keyring
-.RB ( session-keyring (7))
+.RB ( session\-keyring (7))
 as the new default keyring.
 .TP
-.BR KEY_REQKEY_DEFL_USER_KEYRING
+.B KEY_REQKEY_DEFL_USER_KEYRING
 Use the UID-specific keyring
-.RB ( user-keyring (7))
+.RB ( user\-keyring (7))
 as the new default keyring.
 .TP
-.BR KEY_REQKEY_DEFL_USER_SESSION_KEYRING
+.B KEY_REQKEY_DEFL_USER_SESSION_KEYRING
 Use the UID-specific session keyring
-.RB ( user-session-keyring (7))
+.RB ( user\-session\-keyring (7))
 as the new default keyring.
 .TP
 .BR KEY_REQKEY_DEFL_REQUESTOR_KEYRING " (since Linux 2.6.29)"
@@ -981,7 +976,7 @@ The arguments
 .IR arg3 ,
 .IR arg4 ,
 and
-.IR arg5
+.I arg5
 are ignored.
 .IP
 The setting controlled by this operation is inherited by the child of
@@ -1030,9 +1025,9 @@ This operation cannot be used to set timeouts on revoked, expired,
 or negatively instantiated keys.
 .IP
 The arguments
-.IR arg4
+.I arg4
 and
-.IR arg5
+.I arg5
 are ignored.
 .IP
 This operation is exposed by
@@ -1068,7 +1063,7 @@ Authority over a key can be assumed only if the calling thread has present
 in its keyrings the authorization key that is
 associated with the specified key.
 (In other words, the
-.BR KEYCTL_ASSUME_AUTHORITY
+.B KEYCTL_ASSUME_AUTHORITY
 operation is available only from a
 .BR request\-key (8)-style
 program; see
@@ -1091,7 +1086,7 @@ is 0, then the currently assumed authority is cleared (divested),
 and the value 0 is returned.
 .IP
 The
-.BR KEYCTL_ASSUME_AUTHORITY
+.B KEYCTL_ASSUME_AUTHORITY
 mechanism allows a program such as
 .BR request\-key (8)
 to assume the necessary authority to instantiate a new uninstantiated key
@@ -1100,13 +1095,13 @@ that was created as a consequence of a call to
 For further information, see
 .BR request_key (2)
 and the kernel source file
-.IR Documentation/security/keys-request-key.txt .
+.IR Documentation/security/keys\-request\-key.txt .
 .IP
 The arguments
 .IR arg3 ,
 .IR arg4 ,
 and
-.IR arg5
+.I arg5
 are ignored.
 .IP
 This operation is exposed by
@@ -1135,7 +1130,7 @@ the size of the buffer must be provided in
 If
 .I arg3
 is specified as NULL or the buffer size specified in
-.IR arg4
+.I arg4
 is too small, the full size of the security label string
 (including the terminating null byte)
 is returned as the function result,
@@ -1149,7 +1144,11 @@ The returned security label string will be rendered in a form appropriate
 to the LSM in force.
 For example, with SELinux, it may look like:
 .IP
-    unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+.in +4n
+.EX
+unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+.EE
+.in
 .IP
 If no LSM is currently in force,
 then an empty string is placed in the buffer.
@@ -1201,7 +1200,7 @@ The arguments
 .IR arg3 ,
 .IR arg4 ,
 and
-.IR arg5
+.I arg5
 are ignored.
 .IP
 This operation is exposed by
@@ -1214,7 +1213,7 @@ via the function
 Mark a key as negatively instantiated and set an expiration timer
 on the key.
 This operation provides a superset of the functionality of the earlier
-.BR KEYCTL_NEGATE
+.B KEYCTL_NEGATE
 operation.
 .IP
 The ID of the key that is to be negatively instantiated is specified in
@@ -1277,24 +1276,16 @@ via a vector of buffers.
 This operation is the same as
 .BR KEYCTL_INSTANTIATE ,
 but the payload data is specified as an array of
-.IR iovec
-structures:
-.IP
-.in +4n
-.EX
-struct iovec {
-    void  *iov_base;    /* Starting address of buffer */
-    size_t iov_len;     /* Size of buffer (in bytes) */
-};
-.EE
-.in
+.I iovec
+structures (see
+.BR iovec (3type)).
 .IP
 The pointer to the payload vector is specified in
-.IR arg3
+.I arg3
 (cast as
-.IR "const struct iovec\ *" ).
+.IR "const struct iovec\~*" ).
 The number of items in the vector is specified in
-.IR arg4
+.I arg4
 (cast as
 .IR "unsigned int" ).
 .IP
@@ -1345,7 +1336,7 @@ The arguments
 .IR arg3 ,
 .IR arg4 ,
 and
-.IR arg5
+.I arg5
 are ignored.
 .IP
 This operation is exposed by
@@ -1356,7 +1347,7 @@ via the function
 .BR KEYCTL_GET_PERSISTENT " (since Linux 3.13)"
 .\" commit f36f8c75ae2e7d4da34f4c908cebdb4aa42c977e
 Get the persistent keyring
-.RB ( persistent-keyring (7))
+.RB ( persistent\-keyring (7))
 for a specified user and link it to a specified keyring.
 .IP
 The user ID is specified in
@@ -1370,7 +1361,7 @@ The ID of the destination keyring is specified in
 .IR key_serial_t ).
 .IP
 The caller must have the
-.BR CAP_SETUID
+.B CAP_SETUID
 capability in its user namespace in order to fetch the persistent keyring
 for a user ID that does not match either the real or effective user ID
 of the caller.
@@ -1402,12 +1393,12 @@ Should the timeout be reached,
 the persistent keyring will be removed and
 everything it pins can then be garbage collected.
 .IP
-Persistent keyrings were added to Linux in kernel version 3.13.
+Persistent keyrings were added in Linux 3.13.
 .IP
 The arguments
-.IR arg4
+.I arg4
 and
-.IR arg5
+.I arg5
 are ignored.
 .IP
 This operation is exposed by
@@ -1424,7 +1415,7 @@ The
 .I arg2
 argument is a pointer to a set of parameters containing
 serial numbers for three
-.IR """user"""
+.I \[dq]user\[dq]
 keys used in the Diffie-Hellman calculation,
 packaged in a structure of the following form:
 .IP
@@ -1445,7 +1436,11 @@ permission.
 The payloads of these keys are used to calculate the Diffie-Hellman
 result as:
 .IP
-    base \(ha private mod prime
+.in +4n
+.EX
+base \[ha] private mod prime
+.EE
+.in
 .IP
 If the base is the shared generator, the result is the local public key.
 If the base is the remote public key, the result is the shared secret.
@@ -1453,7 +1448,7 @@ If the base is the remote public key, the result is the shared secret.
 The
 .I arg3
 argument (cast to
-.IR "char\ *" )
+.IR char\~* )
 points to a buffer where the result of the calculation is placed.
 The size of that buffer is specified in
 .I arg4
@@ -1495,7 +1490,7 @@ parameters of the KDF operation to be applied:
 .EX
 struct keyctl_kdf_params {
     char *hashname;     /* Hash algorithm name */
-    char *otherinfo;    /* SP800-56A OtherInfo */
+    char *otherinfo;    /* SP800\-56A OtherInfo */
     __u32 otherinfolen; /* Length of otherinfo data */
     __u32 __spare[8];   /* Reserved */
 };
@@ -1547,7 +1542,9 @@ as with SP800-108 (the counter KDF).
 .\" keyutils commit d68a981e5db41d059ac782071c35d1e8f3aaf61c
 This operation is exposed by
 .I libkeyutils
-(from version 1.5.10 onwards) via the functions
+(from
+.I libkeyutils
+1.5.10 onwards) via the functions
 .BR keyctl_dh_compute (3)
 and
 .BR keyctl_dh_compute_alloc (3).
@@ -1556,11 +1553,11 @@ and
 .\" commit 6563c91fd645556c7801748f15bc727c77fcd311
 .\" commit 7228b66aaf723a623e578aa4db7d083bb39546c9
 Apply a key-linking restriction to the keyring with the ID provided in
-.IR arg2
+.I arg2
 (cast to
 .IR key_serial_t ).
 The caller must have
-.IR setattr
+.I setattr
 permission on the key.
 If
 .I arg3
@@ -1656,10 +1653,10 @@ is 0, the required buffer size.
 .TP
 All other operations
 Zero.
-.PP
+.P
 On error, \-1 is returned, and
 .I errno
-is set appropriately to indicate the error.
+is set to indicate the error.
 .SH ERRORS
 .TP
 .B EACCES
@@ -1674,13 +1671,13 @@ and there was an error during crypto module initialization.
 .B EDEADLK
 .I operation
 was
-.BR KEYCTL_LINK
+.B KEYCTL_LINK
 and the requested link would result in a cycle.
 .TP
 .B EDEADLK
 .I operation
 was
-.BR KEYCTL_RESTRICT_KEYRING
+.B KEYCTL_RESTRICT_KEYRING
 and the requested keyring restriction would result in a cycle.
 .TP
 .B EDQUOT
@@ -1690,7 +1687,7 @@ linking it to the keyring.
 .B EEXIST
 .I operation
 was
-.BR KEYCTL_RESTRICT_KEYRING
+.B KEYCTL_RESTRICT_KEYRING
 and keyring provided in
 .I arg2
 argument already has a restriction set.
@@ -1701,26 +1698,26 @@ was
 .B KEYCTL_DH_COMPUTE
 and one of the following has failed:
 .RS
-.IP \(bu 3
+.IP \[bu] 3
 copying of the
 .IR "struct keyctl_dh_params" ,
 provided in the
 .I arg2
 argument, from user space;
-.IP \(bu
+.IP \[bu]
 copying of the
 .IR "struct keyctl_kdf_params" ,
 provided in the non-NULL
 .I arg5
 argument, from user space
 (in case kernel supports performing KDF operation on DH operation result);
-.IP \(bu
+.IP \[bu]
 copying of data pointed by the
 .I hashname
 field of the
 .I "struct keyctl_kdf_params"
 from user space;
-.IP \(bu
+.IP \[bu]
 copying of data pointed by the
 .I otherinfo
 field of the
@@ -1728,7 +1725,7 @@ field of the
 from user space if the
 .I otherinfolen
 field was nonzero;
-.IP \(bu
+.IP \[bu]
 copying of the result to user space.
 .RE
 .TP
@@ -1742,10 +1739,12 @@ and an invalid permission bit was specified in
 .B EINVAL
 .I operation
 was
-.BR KEYCTL_SEARCH
+.B KEYCTL_SEARCH
 and the size of the description in
-.IR arg4
+.I arg4
 (including the terminating null byte) exceeded 4096 bytes.
+.TP
+.B EINVAL
 size of the string (including the terminating null byte) specified in
 .I arg3
 (the key type)
@@ -1754,7 +1753,7 @@ or
 (the key description)
 exceeded the limit (32 bytes and 4096 bytes respectively).
 .TP
-.BR EINVAL " (Linux kernels before 4.12)"
+.BR EINVAL " (before Linux 4.12)"
 .I operation
 was
 .BR KEYCTL_DH_COMPUTE ,
@@ -1813,7 +1812,7 @@ A revoked key was found or specified.
 .B ELOOP
 .I operation
 was
-.BR KEYCTL_LINK
+.B KEYCTL_LINK
 and the requested link would cause the maximum nesting depth
 for keyrings to be exceeded.
 .TP
@@ -1834,10 +1833,10 @@ exceeds
 .B KEYCTL_KDF_MAX_OI_LEN
 (which is 64 currently).
 .TP
-.BR ENFILE " (Linux kernels before 3.13)"
-.IR operation
+.BR ENFILE " (before Linux 3.13)"
+.I operation
 was
-.BR KEYCTL_LINK
+.B KEYCTL_LINK
 and the keyring is full.
 (Before Linux 3.13,
 .\" commit b2a4df200d570b2c33a57e1ebfa5896e4bc81b69
@@ -1898,7 +1897,7 @@ was
 .B KEYCTL_READ
 and the key type does not support reading
 (e.g., the type is
-.IR """login""" ).
+.IR \[dq]login\[dq] ).
 .TP
 .B EOPNOTSUPP
 .I operation
@@ -1912,8 +1911,8 @@ was
 .BR KEYCTL_RESTRICT_KEYRING ,
 the type provided in
 .I arg3
-argument was "asymmetric", and the key specified in the restriction specification
-provided in
+argument was "asymmetric",
+and the key specified in the restriction specification provided in
 .I arg4
 has type other than "asymmetric" or "keyring".
 .TP
@@ -1930,7 +1929,7 @@ capability.
 .B EPERM
 .I operation
 was
-.BR KEYCTL_SESSION_TO_PARENT
+.B KEYCTL_SESSION_TO_PARENT
 and either:
 all of the UIDs (GIDs) of the parent process do not match
 the effective UID (GID) of the calling process;
@@ -1948,19 +1947,19 @@ was
 .B KEYCTL_DH_COMPUTE
 and the initialization of crypto modules has timed out.
 .SH VERSIONS
-This system call first appeared in Linux 2.6.10.
-.SH CONFORMING TO
-This system call is a nonstandard Linux extension.
-.SH NOTES
-No wrapper for this system call is provided in glibc.
 A wrapper is provided in the
-.IR libkeyutils
+.I libkeyutils
 library.
-When employing the wrapper in that library, link with
-.IR \-lkeyutils .
+(The accompanying package provides the
+.I <keyutils.h>
+header file.)
 However, rather than using this system call directly,
 you probably want to use the various library functions
 mentioned in the descriptions of individual operations above.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 2.6.10.
 .SH EXAMPLES
 The program below provide subset of the functionality of the
 .BR request\-key (8)
@@ -1969,7 +1968,7 @@ program provided by the
 package.
 For informational purposes,
 the program records various information in a log file.
-.PP
+.P
 As described in
 .BR request_key (2),
 the
@@ -1979,7 +1978,7 @@ describe a key that is to be instantiated.
 The example program fetches and logs these arguments.
 The program assumes authority to instantiate the requested key,
 and then instantiates that key.
-.PP
+.P
 The following shell session demonstrates the use of this program.
 In the session,
 we compile the program and then use it to temporarily replace the standard
@@ -1992,7 +1991,7 @@ While our example program is installed,
 we use the example program shown in
 .BR request_key (2)
 to request a key.
-.PP
+.P
 .in +4n
 .EX
 $ \fBcc \-o key_instantiate key_instantiate.c \-lkeyutils\fP
@@ -2003,17 +2002,17 @@ Key ID is 20d035bf
 $ \fBsudo mv /sbin/request\-key.backup /sbin/request\-key\fP
 .EE
 .in
-.PP
+.P
 Looking at the log file created by this program,
 we can see the command-line arguments supplied to our example program:
-.PP
+.P
 .in +4n
 .EX
 $ \fBcat /tmp/key_instantiate.log\fP
 Time: Mon Nov  7 13:06:47 2016
-
+\&
 Command line arguments:
-  argv[0]:            /sbin/request-key
+  argv[0]:            /sbin/request\-key
   operation:          create
   key_to_instantiate: 20d035bf
   UID:                1000
@@ -2021,35 +2020,35 @@ Command line arguments:
   thread_keyring:     0
   process_keyring:    0
   session_keyring:    256e6a6
-
+\&
 Key description:      user;1000;1000;3f010000;mykey
 Auth key payload:     somepayloaddata
 Destination keyring:  256e6a6
 Auth key description: .request_key_auth;1000;1000;0b010000;20d035bf
 .EE
 .in
-.PP
+.P
 The last few lines of the above output show that the example program
 was able to fetch:
-.IP * 3
+.IP \[bu] 3
 the description of the key to be instantiated,
 which included the name of the key
 .RI ( mykey );
-.IP *
+.IP \[bu]
 the payload of the authorization key, which consisted of the data
 .RI ( somepayloaddata )
 passed to
 .BR request_key (2);
-.IP *
+.IP \[bu]
 the destination keyring that was specified in the call to
 .BR request_key (2);
 and
-.IP *
+.IP \[bu]
 the description of the authorization key,
 where we can see that the name of the authorization key matches
 the ID of the key that is to be instantiated
 .RI ( 20d035bf ).
-.PP
+.P
 The example program in
 .BR request_key (2)
 specified the destination keyring as
@@ -2060,61 +2059,66 @@ we can see that this was translated to the ID of the destination keyring
 .RI ( 0256e6a6 )
 shown in the log output above;
 we can also see the newly created key with the name
-.IR mykey
+.I mykey
 and ID
 .IR 20d035bf .
-.PP
+.P
 .in +4n
 .EX
-$ \fBcat /proc/keys | egrep \(aqmykey|256e6a6\(aq\fP
+$ \fBcat /proc/keys | egrep \[aq]mykey|256e6a6\[aq]\fP
 0256e6a6 I\-\-Q\-\-\-  194 perm 3f030000  1000  1000 keyring  _ses: 3
 20d035bf I\-\-Q\-\-\-    1 perm 3f010000  1000  1000 user     mykey: 16
 .EE
 .in
 .SS Program source
 \&
+.\" SRC BEGIN (key_instantiate.c)
 .EX
 /* key_instantiate.c */
-
-#include <sys/types.h>
+\&
+#include <errno.h>
 #include <keyutils.h>
-#include <time.h>
-#include <fcntl.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <errno.h>
-
+#include <sys/types.h>
+#include <time.h>
+\&
 #ifndef KEY_SPEC_REQUESTOR_KEYRING
-#define KEY_SPEC_REQUESTOR_KEYRING      \-8
+#define KEY_SPEC_REQUESTOR_KEYRING      (\-8)
 #endif
-
+\&
 int
 main(int argc, char *argv[])
 {
-    FILE *fp;
-    time_t t;
-    char *operation;
-    key_serial_t key_to_instantiate, dest_keyring;
-    key_serial_t thread_keyring, process_keyring, session_keyring;
-    uid_t uid;
-    gid_t gid;
-    char dbuf[256];
-    char auth_key_payload[256];
-    int akp_size;       /* Size of auth_key_payload */
-    int auth_key;
-
+    int           akp_size;       /* Size of auth_key_payload */
+    int           auth_key;
+    char          dbuf[256];
+    char          auth_key_payload[256];
+    char          *operation;
+    FILE          *fp;
+    gid_t         gid;
+    uid_t         uid;
+    time_t        t;
+    key_serial_t  key_to_instantiate, dest_keyring;
+    key_serial_t  thread_keyring, process_keyring, session_keyring;
+\&
+    if (argc != 8) {
+        fprintf(stderr, "Usage: %s op key uid gid thread_keyring "
+                        "process_keyring session_keyring\[rs]n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+\&
     fp = fopen("/tmp/key_instantiate.log", "w");
     if (fp == NULL)
         exit(EXIT_FAILURE);
-
+\&
     setbuf(fp, NULL);
-
+\&
     t = time(NULL);
-    fprintf(fp, "Time: %s\en", ctime(&t));
-
+    fprintf(fp, "Time: %s\[rs]n", ctime(&t));
+\&
     /*
      * The kernel passes a fixed set of arguments to the program
      * that it execs; fetch them.
@@ -2126,83 +2130,83 @@ main(int argc, char *argv[])
     thread_keyring = atoi(argv[5]);
     process_keyring = atoi(argv[6]);
     session_keyring = atoi(argv[7]);
-
-    fprintf(fp, "Command line arguments:\en");
-    fprintf(fp, "  argv[0]:            %s\en", argv[0]);
-    fprintf(fp, "  operation:          %s\en", operation);
-    fprintf(fp, "  key_to_instantiate: %jx\en",
+\&
+    fprintf(fp, "Command line arguments:\[rs]n");
+    fprintf(fp, "  argv[0]:            %s\[rs]n", argv[0]);
+    fprintf(fp, "  operation:          %s\[rs]n", operation);
+    fprintf(fp, "  key_to_instantiate: %jx\[rs]n",
             (uintmax_t) key_to_instantiate);
-    fprintf(fp, "  UID:                %jd\en", (intmax_t) uid);
-    fprintf(fp, "  GID:                %jd\en", (intmax_t) gid);
-    fprintf(fp, "  thread_keyring:     %jx\en",
+    fprintf(fp, "  UID:                %jd\[rs]n", (intmax_t) uid);
+    fprintf(fp, "  GID:                %jd\[rs]n", (intmax_t) gid);
+    fprintf(fp, "  thread_keyring:     %jx\[rs]n",
             (uintmax_t) thread_keyring);
-    fprintf(fp, "  process_keyring:    %jx\en",
+    fprintf(fp, "  process_keyring:    %jx\[rs]n",
             (uintmax_t) process_keyring);
-    fprintf(fp, "  session_keyring:    %jx\en",
+    fprintf(fp, "  session_keyring:    %jx\[rs]n",
             (uintmax_t) session_keyring);
-    fprintf(fp, "\en");
-
+    fprintf(fp, "\[rs]n");
+\&
     /*
-     * Assume the authority to instantiate the key named in argv[2]
+     * Assume the authority to instantiate the key named in argv[2].
      */
     if (keyctl(KEYCTL_ASSUME_AUTHORITY, key_to_instantiate) == \-1) {
-        fprintf(fp, "KEYCTL_ASSUME_AUTHORITY failed: %s\en",
+        fprintf(fp, "KEYCTL_ASSUME_AUTHORITY failed: %s\[rs]n",
                 strerror(errno));
         exit(EXIT_FAILURE);
     }
-
+\&
     /*
-     * Fetch the description of the key that is to be instantiated
+     * Fetch the description of the key that is to be instantiated.
      */
     if (keyctl(KEYCTL_DESCRIBE, key_to_instantiate,
-                dbuf, sizeof(dbuf)) == \-1) {
-        fprintf(fp, "KEYCTL_DESCRIBE failed: %s\en", strerror(errno));
+               dbuf, sizeof(dbuf)) == \-1) {
+        fprintf(fp, "KEYCTL_DESCRIBE failed: %s\[rs]n", strerror(errno));
         exit(EXIT_FAILURE);
     }
-
-    fprintf(fp, "Key description:      %s\en", dbuf);
-
+\&
+    fprintf(fp, "Key description:      %s\[rs]n", dbuf);
+\&
     /*
      * Fetch the payload of the authorization key, which is
-     * actually the callout data given to request_key()
+     * actually the callout data given to request_key().
      */
     akp_size = keyctl(KEYCTL_READ, KEY_SPEC_REQKEY_AUTH_KEY,
                       auth_key_payload, sizeof(auth_key_payload));
     if (akp_size == \-1) {
-        fprintf(fp, "KEYCTL_READ failed: %s\en", strerror(errno));
+        fprintf(fp, "KEYCTL_READ failed: %s\[rs]n", strerror(errno));
         exit(EXIT_FAILURE);
     }
-
-    auth_key_payload[akp_size] = \(aq\e0\(aq;
-    fprintf(fp, "Auth key payload:     %s\en", auth_key_payload);
-
+\&
+    auth_key_payload[akp_size] = \[aq]\[rs]0\[aq];
+    fprintf(fp, "Auth key payload:     %s\[rs]n", auth_key_payload);
+\&
     /*
      * For interest, get the ID of the authorization key and
      * display it.
      */
     auth_key = keyctl(KEYCTL_GET_KEYRING_ID,
-            KEY_SPEC_REQKEY_AUTH_KEY);
+                      KEY_SPEC_REQKEY_AUTH_KEY);
     if (auth_key == \-1) {
-        fprintf(fp, "KEYCTL_GET_KEYRING_ID failed: %s\en",
+        fprintf(fp, "KEYCTL_GET_KEYRING_ID failed: %s\[rs]n",
                 strerror(errno));
         exit(EXIT_FAILURE);
     }
-
-    fprintf(fp, "Auth key ID:          %jx\en", (uintmax_t) auth_key);
-
+\&
+    fprintf(fp, "Auth key ID:          %jx\[rs]n", (uintmax_t) auth_key);
+\&
     /*
      * Fetch key ID for the request_key(2) destination keyring.
      */
     dest_keyring = keyctl(KEYCTL_GET_KEYRING_ID,
                           KEY_SPEC_REQUESTOR_KEYRING);
     if (dest_keyring == \-1) {
-        fprintf(fp, "KEYCTL_GET_KEYRING_ID failed: %s\en",
+        fprintf(fp, "KEYCTL_GET_KEYRING_ID failed: %s\[rs]n",
                 strerror(errno));
         exit(EXIT_FAILURE);
     }
-
-    fprintf(fp, "Destination keyring:  %jx\en", (uintmax_t) dest_keyring);
-
+\&
+    fprintf(fp, "Destination keyring:  %jx\[rs]n", (uintmax_t) dest_keyring);
+\&
     /*
      * Fetch the description of the authorization key. This
      * allows us to see the key type, UID, GID, permissions,
@@ -2211,27 +2215,30 @@ main(int argc, char *argv[])
      * string representing the ID of the key to be instantiated.
      */
     if (keyctl(KEYCTL_DESCRIBE, KEY_SPEC_REQKEY_AUTH_KEY,
-                dbuf, sizeof(dbuf)) == \-1) {
-        fprintf(fp, "KEYCTL_DESCRIBE failed: %s\en", strerror(errno));
+               dbuf, sizeof(dbuf)) == \-1)
+    {
+        fprintf(fp, "KEYCTL_DESCRIBE failed: %s\[rs]n", strerror(errno));
         exit(EXIT_FAILURE);
     }
-
-    fprintf(fp, "Auth key description: %s\en", dbuf);
-
+\&
+    fprintf(fp, "Auth key description: %s\[rs]n", dbuf);
+\&
     /*
      * Instantiate the key using the callout data that was supplied
      * in the payload of the authorization key.
      */
     if (keyctl(KEYCTL_INSTANTIATE, key_to_instantiate,
-               auth_key_payload, akp_size + 1, dest_keyring) == \-1) {
-        fprintf(fp, "KEYCTL_INSTANTIATE failed: %s\en",
+               auth_key_payload, akp_size + 1, dest_keyring) == \-1)
+    {
+        fprintf(fp, "KEYCTL_INSTANTIATE failed: %s\[rs]n",
                 strerror(errno));
         exit(EXIT_FAILURE);
     }
-
+\&
     exit(EXIT_SUCCESS);
 }
 .EE
+.\" SRC END
 .SH SEE ALSO
 .ad l
 .nh
@@ -2283,17 +2290,8 @@ main(int argc, char *argv[])
 .BR user_namespaces (7),
 .BR user\-session\-keyring (7),
 .BR request\-key (8)
-.PP
+.P
 The kernel source files under
-.IR Documentation/security/keys/
+.I Documentation/security/keys/
 (or, before Linux 4.13, in the file
 .IR Documentation/security/keys.txt ).
-.SH COLOPHON
-This page is part of release 5.10 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-JOURNALD\&.SERVICE" "8" "" "systemd 249" "systemd-journald.service"
+.TH "SYSTEMD\-JOURNALD\&.SERVICE" "8" "" "systemd 256.8" "systemd-journald.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -23,21 +23,30 @@
 systemd-journald.service, systemd-journald.socket, systemd-journald-dev-log.socket, systemd-journald-audit.socket, systemd-journald@.service, systemd-journald@.socket, systemd-journald-varlink@.socket, systemd-journald \- Journal service
 .SH "SYNOPSIS"
 .PP
+.RS 4
 systemd\-journald\&.service
-.PP
+.RE
+.RS 4
 systemd\-journald\&.socket
-.PP
+.RE
+.RS 4
 systemd\-journald\-dev\-log\&.socket
-.PP
+.RE
+.RS 4
 systemd\-journald\-audit\&.socket
-.PP
+.RE
+.RS 4
 systemd\-journald@\&.service
-.PP
+.RE
+.RS 4
 systemd\-journald@\&.socket
-.PP
+.RE
+.RS 4
 systemd\-journald\-varlink@\&.socket
-.PP
+.RE
+.RS 4
 /usr/lib/systemd/systemd\-journald
+.RE
 .SH "DESCRIPTION"
 .PP
 systemd\-journald
@@ -108,7 +117,7 @@ The daemon will implicitly collect numerous metadata fields for each log message
 \fBsystemd.journal-fields\fR(7)
 for more information about the collected metadata\&.
 .PP
-Log data collected by the journal is primarily text\-based but can also include binary data where necessary\&. Individual fields making up a log record stored in the journal may be up to 2^64\-1 bytes in size\&.
+Log data collected by the journal is primarily text\-based but can also include binary data where necessary\&. Individual fields making up a log record stored in the journal may be up to 2⁶⁴\-1 bytes in size\&.
 .PP
 The journal service stores log data either persistently below
 /var/log/journal
@@ -215,7 +224,8 @@ switch of
 \fBjournalctl\fR(1)
 may be used to view the log stream of a specific namespace\&. If the switch is not used the log stream of the default namespace is shown, i\&.e\&. log data from other namespaces is not visible\&.
 .PP
-Services associated with a specific log namespace may log via syslog, the native logging protocol of the journal and via stdout/stderr; the logging from all three transports is associated with the namespace\&.
+Services associated with a specific log namespace may log via
+\fBsyslog\fR(3), the native logging protocol of the journal and via stdout/stderr; the logging from all three transports is associated with the namespace\&.
 .PP
 By default only the default namespace will collect kernel and audit log messages\&.
 .PP
@@ -247,6 +257,8 @@ regardless of the configuration\&. Use the
 command to request flushing of the journal files, and wait for the operation to complete\&. See
 \fBjournalctl\fR(1)
 for details\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 SIGUSR2
@@ -254,6 +266,8 @@ SIGUSR2
 Request immediate rotation of the journal files\&. Use the
 \fBjournalctl \-\-rotate\fR
 command to request journal file rotation, and wait for the operation to complete\&.
+.sp
+Added in version 186\&.
 .RE
 .PP
 SIGRTMIN+1
@@ -261,6 +275,36 @@ SIGRTMIN+1
 Request that all unwritten log data is written to disk\&. Use the
 \fBjournalctl \-\-sync\fR
 command to trigger journal synchronization, and wait for the operation to complete\&.
+.sp
+Added in version 228\&.
+.RE
+.SH "CREDENTIALS"
+.PP
+\fBsystemd\-journald\fR
+supports the service credentials logic as implemented by
+\fIImportCredential=\fR/\fILoadCredential=\fR/\fISetCredential=\fR
+(see
+\fBsystemd.exec\fR(5)
+for details)\&. The following credentials are used when passed in:
+.PP
+\fIjournal\&.forward_to_socket\fR
+.RS 4
+May contain a socket address to which logs should be forwarded\&. See
+\fIForwardToSocket=\fR
+in
+\fBjournald.conf\fR(5)\&.
+.sp
+Added in version 256\&.
+.RE
+.PP
+\fIjournal\&.storage\fR
+.RS 4
+May be used to specify where journal files should be stored\&. See
+\fIStorage=\fR
+in
+\fBjournald.conf\fR(5)\&.
+.sp
+Added in version 256\&.
 .RE
 .SH "KERNEL COMMAND LINE"
 .PP
@@ -275,6 +319,19 @@ Enables/disables forwarding of collected log messages to syslog, the kernel log 
 See
 \fBjournald.conf\fR(5)
 for information about these settings\&.
+.sp
+Added in version 186\&.
+.RE
+.PP
+\fIsystemd\&.journald\&.max_level_store=\fR, \fIsystemd\&.journald\&.max_level_syslog=\fR, \fIsystemd\&.journald\&.max_level_kmsg=\fR, \fIsystemd\&.journald\&.max_level_console=\fR, \fIsystemd\&.journald\&.max_level_wall=\fR, \fIsystemd\&.journald\&.max_level_socket=\fR
+.RS 4
+Controls the maximum log level of messages that are stored in the journal, forwarded to
+\fBsyslog\fR(3), kmsg, the console,
+\fBwall\fR(1), or a socket\&. This kernel command line options override the settings of the same names in the
+\fBjournald.conf\fR(5)
+file\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 Note that these kernel command line options are only honoured by the default namespace, see above\&.
@@ -316,6 +373,8 @@ Configure
 \fBsystemd\-journald\fR
 behavior\&. See
 \fBjournald.conf\fR(5)\&.
+.sp
+Added in version 206\&.
 .RE
 .PP
 /run/log/journal/\fImachine\-id\fR/*\&.journal, /run/log/journal/\fImachine\-id\fR/*\&.journal~, /var/log/journal/\fImachine\-id\fR/*\&.journal, /var/log/journal/\fImachine\-id\fR/*\&.journal~
@@ -359,6 +418,8 @@ will automatically remove the oldest archived journal files to limit disk use\&.
 \fISystemMaxUse=\fR
 and related settings in
 \fBjournald.conf\fR(5)\&.
+.sp
+Added in version 206\&.
 .RE
 .PP
 /dev/kmsg, /dev/log, /run/systemd/journal/dev\-log, /run/systemd/journal/socket, /run/systemd/journal/stdout
@@ -368,21 +429,17 @@ Sockets and other file node paths that
 will listen on and are visible in the file system\&. In addition to these,
 \fBsystemd\-journald\fR
 can listen for audit events using
-\fBnetlink\fR(7)\&.
+\fBnetlink\fR(7), depending on whether
+"systemd\-journald\-audit\&.socket"
+is enabled or not\&.
+.sp
+Added in version 228\&.
 .RE
 .PP
 If journal namespacing is used these paths are slightly altered to include a namespace identifier, see above\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBjournalctl\fR(1),
-\fBjournald.conf\fR(5),
-\fBsystemd.journal-fields\fR(7),
-\fBsd-journal\fR(3),
-\fBsystemd-coredump\fR(8),
-\fBsetfacl\fR(1),
-\fBsd_journal_print\fR(3),
-\fBpydoc systemd\&.journal\fR
+\fBsystemd\fR(1), \fBjournalctl\fR(1), \fBjournald.conf\fR(5), \fBsystemd.journal-fields\fR(7), \fBsd-journal\fR(3), \fBsystemd-coredump\fR(8), \fBsetfacl\fR(1), \fBsd_journal_print\fR(3), \fBpydoc systemd\&.journal\fR
 .SH "NOTES"
 .IP " 1." 4
 Native Journal Protocol

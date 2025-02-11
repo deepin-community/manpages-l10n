@@ -1,40 +1,23 @@
 .\" Copyright (C) 2003 Andi Kleen
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
-.\"
-.TH ARCH_PRCTL 2 2021-08-27 "Linux" "Linux Programmer's Manual"
+.TH arch_prctl 2 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 arch_prctl \- set architecture-specific thread state
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .BR "#include <asm/prctl.h>" "        /* Definition of " ARCH_* " constants */"
 .BR "#include <sys/syscall.h>" "      /* Definition of " SYS_* " constants */"
 .B #include <unistd.h>
-.PP
-.BI "int syscall(SYS_arch_prctl, int " code ", unsigned long " addr );
-.BI "int syscall(SYS_arch_prctl, int " code ", unsigned long *" addr );
+.P
+.BI "int syscall(SYS_arch_prctl, int " op ", unsigned long " addr );
+.BI "int syscall(SYS_arch_prctl, int " op ", unsigned long *" addr );
 .fi
-.PP
+.P
 .IR Note :
 glibc provides no wrapper for
 .BR arch_prctl (),
@@ -43,8 +26,8 @@ necessitating the use of
 .SH DESCRIPTION
 .BR arch_prctl ()
 sets architecture-specific process or thread state.
-.I code
-selects a subfunction
+.I op
+selects an operation
 and passes argument
 .I addr
 to it;
@@ -54,7 +37,7 @@ is interpreted as either an
 for the "set" operations, or as an
 .IR "unsigned long\ *" ,
 for the "get" operations.
-.PP
+.P
 Subfunctions for both x86 and x86-64 are:
 .TP
 .BR ARCH_SET_CPUID " (since Linux 4.12)"
@@ -78,7 +61,7 @@ results that differ from what the underlying
 hardware would have produced (e.g., in a paravirtualization setting).
 .IP
 The
-.BR ARCH_SET_CPUID
+.B ARCH_SET_CPUID
 setting is preserved across
 .BR fork (2)
 and
@@ -137,8 +120,8 @@ is set to indicate the error.
 points to an unmapped address or is outside the process address space.
 .TP
 .B EINVAL
-.I code
-is not a valid subcommand.
+.I op
+is not a valid operation.
 .TP
 .B ENODEV
 .B ARCH_SET_CPUID
@@ -149,19 +132,17 @@ was requested, but the underlying hardware does not support CPUID faulting.
 is outside the process address space.
 .\" .SH AUTHOR
 .\" Man page written by Andi Kleen.
-.SH CONFORMING TO
-.BR arch_prctl ()
-is a Linux/x86-64 extension and should not be used in programs intended
-to be portable.
+.SH STANDARDS
+Linux/x86-64.
 .SH NOTES
 .BR arch_prctl ()
 is supported only on Linux/x86-64 for 64-bit programs currently.
-.PP
+.P
 The 64-bit base changes when a new 32-bit segment selector is loaded.
-.PP
+.P
 .B ARCH_SET_GS
 is disabled in some kernels.
-.PP
+.P
 Context switches for 64-bit segment bases are rather expensive.
 As an optimization, if a 32-bit TLS base address is used,
 .BR arch_prctl ()
@@ -173,14 +154,14 @@ Memory in the first 2\ GB of address space can be allocated by using
 with the
 .B MAP_32BIT
 flag.
-.PP
+.P
 Because of the aforementioned optimization, using
 .BR arch_prctl ()
 and
 .BR set_thread_area (2)
 in the same thread is dangerous, as they may overwrite each other's
 TLS entries.
-.PP
+.P
 .I FS
 may be already used by the threading library.
 Programs that use
@@ -191,5 +172,5 @@ directly are very likely to crash.
 .BR modify_ldt (2),
 .BR prctl (2),
 .BR set_thread_area (2)
-.PP
+.P
 AMD X86-64 Programmer's manual

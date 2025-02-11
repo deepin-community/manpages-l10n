@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_EVENT_ADD_DEFER" "3" "" "systemd 249" "sd_event_add_defer"
+.TH "SD_EVENT_ADD_DEFER" "3" "" "systemd 255" "sd_event_add_defer"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -48,9 +48,19 @@ These three functions add new static event sources to an event loop\&. The event
 \fIevent\fR
 parameter, the event source object is returned in the
 \fIsource\fR
-parameter\&. The event sources are enabled statically and will "fire" when the event loop is run and the conditions described below are met\&. The handler function will be passed the
+parameter\&. The event sources are enabled statically and will "fire" when the event loop is run and the conditions described below are met\&.
+.PP
+The
+\fIhandler\fR
+is a function to call or
+\fBNULL\fR\&. The handler function will be passed the
 \fIuserdata\fR
-pointer, which may be chosen freely by the caller\&.
+pointer, which may be chosen freely by the caller\&. The handler may return negative to signal an error (see below), other return values are ignored\&. If
+\fIhandler\fR
+is
+\fBNULL\fR, a default handler that calls
+\fBsd_event_exit\fR(3)
+will be used\&.
 .PP
 \fBsd_event_add_defer()\fR
 adds a new event source that will be dispatched instantly, before the event loop goes to sleep again and waits for new events\&. By default, the handler will be called once (\fBSD_EVENT_ONESHOT\fR)\&. Note that if the event source is set to
@@ -69,9 +79,10 @@ The
 \fBsd_event_source_set_enabled\fR(3)
 function may be used to enable the event source permanently (\fBSD_EVENT_ON\fR) or to make it fire just once (\fBSD_EVENT_ONESHOT\fR)\&.
 .PP
-If the handler function returns a negative error code, it will be disabled after the invocation, even if the
+If the handler function returns a negative error code, it will either be disabled after the invocation, even if the
 \fBSD_EVENT_ON\fR
-mode was requested before\&.
+mode was requested before, or it will cause the loop to terminate, see
+\fBsd_event_source_set_exit_on_failure\fR(3)\&.
 .PP
 To destroy an event source object use
 \fBsd_event_source_unref\fR(3), but note that the event source is only removed from the event loop when all references to the event source are dropped\&. To make sure an event source does not fire anymore, even when there\*(Aqs still a reference to it kept, consider setting the event source to
@@ -119,13 +130,27 @@ The event loop is already terminated\&.
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The event loop has been created in a different process\&.
+The event loop has been created in a different process, library or module instance\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_event_add_defer()\fR,
+\fBsd_event_add_post()\fR,
+\fBsd_event_add_exit()\fR, and
+\fBsd_event_handler_t()\fR
+were added in version 217\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

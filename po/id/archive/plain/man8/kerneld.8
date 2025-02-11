@@ -1,0 +1,88 @@
+.\" ------------------------------------------------
+.\" Keterangan dibawah ini tidak akan diterjemahkan!
+.\" ------------------------------------------------
+.\" Copyright (c) 1995 Bjorn Ekwall <bj0rn@blox.se>
+.\" This program is distributed according to the Gnu General Public License.
+.\" See the file COPYING in the kernel source directory /linux
+.\" $Id: kerneld.8,v 1.1 1997/09/10 22:18:33 rth Exp $
+.\"
+.TH KERNELD 8 "May 14, 1995" Linux "Linux Extensions"
+.SH NAMA
+kerneld \- Menunjukkan aksi dari kernel di tempat user (seperti permintaan langsung untuk me-load dari modul)
+.SH SINOPSIS
+.B kerneld
+[ debug ] [ keep ] [ delay=<seconds> ] [ type=<message number> ]
+.SH PENJELASAN
+Selain dari pada itu juga menghilangkan secara automatis modul-modul yang tidak berguna
+.B kerneld
+juga memperlihatkan spesifikasi kerja dari kernel di tempat user dengan melakukan
+jawaban dari permintaan kernel melewati antrian pesan dari permintaan IPC.
+Untuk mengakses dari antrian ini dapat dibuat dari tempat user dengan membuka
+antrian seperti:
+
+	qid = msgget(IPC_PRIVATE, 0600 | IPC_KERNELD);
+
+Spesifikasi kerja diminta dengan tipe dari pesan, yang dispesifikasikan
+di <linux/kerneld.h>.
+.PP
+Struktur dari pesan kerneld ini adalah:
+.nf
+	struct kerneld_msg {
+		long mtype;
+		long id;
+		char text[1];
+	};
+.fi
+dimana field id dipergunakan sebagai nomor dari permintaan pesan dari
+kerneld untuk kembali ke kernel.
+Jika field id itu nol, berarti tidak ada jawaban dari kerneld.
+.br
+(Note that a new structure is proposed that will include the pid of
+the requestor into the protocol header.)
+(Catatan struktur baru itu diusulkan akan disertakan dengan pid dari
+peminta kepada header protokol.)
+
+Jika jawaban itu diterima, maka status keluar(exit) dari aksi kerneld
+akan disimpan pada field id tersebut.
+
+Field text kami pergunakan untuk menyimpan parameter dari kernel untuk
+spesifikasi aksi kerneld.
+Dalam pengembalian pesan, field ini berisikan keluaran dari aksi tersebut,
+yang akan dipergunakan (jika diminta) oleh kernel.
+.PP
+Pilihan tersebut adalah sebagai berikut:
+.TP 8
+debug
+Dengan mengaktifkan debug ini, kamu akan dapat melihat status sekarang
+dari kerneld apa yang sedang dikerjakannya. Catatan bahwa kamu dapat
+mengontrol debug ini, boleh dikatakan semua dari parameter yang lain via
+utilitas kdstat.
+.TP 8
+keep
+Pilihan keep membuat kerneld mengabaikan semua permintaan untuk menghilangkan
+modul (unloading modules). Pilihan ini mungkin akan berguna untuk sistem dimana
+modul-module tersebut tidak pernah dihilangkan(unload) semua (untuk beberapa
+alasan atau yang lain).
+Pilihan ini juga menghalangi penghilangan automatis dari modul-module yang
+tidak berguna terhadap aktivitas kerneld setiap menitnya (atau <selang waktu>
+tiap detik).
+.TP 8
+delay=<seconds>
+Pilihan selang(delay) akan mengubah nilai timeout dari kerneld untuk
+menyelang penghilangan(removal) module dari defaultnya selama 60 detik
+kepada apapun yang dipilih.
+.TP 8
+type=<message type>
+mendengar(listen) untuk semua pesan dimana dari tipe tersebut kurang dari
+atau sama dengan 255.
+Jika bilangan positif diberikan, kerneld hanya akan mendengar untuk tipe
+dari pesan itu saja.
+.PP
+kerneld mengirimkan pesan kesalahan kepada syslog lewat fasilitas LOG_DAEMON.
+.SH LIHAT JUGA
+insmod(1), rmmod(1), modprobe(1), depmod(1), syslogd(8)
+.SH SEJARAH
+Dukungan kerneld ini hasil inspirasi berdasarkan diskusi dengan Jacques Gelinas <jack@solucorp.qc.ca>
+.SH PENERJEMAH
+ Rachman M. Heryanto <manz@ibm.net>
+ Tanggal Terjemah : 25 Mei 1999 (Indonesia)

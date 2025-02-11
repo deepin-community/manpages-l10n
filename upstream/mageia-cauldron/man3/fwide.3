@@ -1,11 +1,6 @@
 .\" Copyright (c) Bruno Haible <haible@clisp.cons.org>
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_ONEPARA)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
 .\" References consulted:
 .\"   GNU glibc-2 source code and manual
@@ -13,21 +8,24 @@
 .\"   OpenGroup's Single UNIX specification http://www.UNIX-systems.org/online.html
 .\"   ISO/IEC 9899:1999
 .\"
-.TH FWIDE 3  2021-03-22 "GNU" "Linux Programmer's Manual"
+.TH fwide 3 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 fwide \- set and determine the orientation of a FILE stream
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <wchar.h>
-.PP
+.P
 .BI "int fwide(FILE *" stream ", int " mode );
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR fwide ():
 .nf
     _XOPEN_SOURCE >= 500 || _ISOC99_SOURCE
@@ -41,17 +39,17 @@ orientation of \fIstream\fP.
 It returns a positive value if \fIstream\fP is
 wide-character oriented, that is, if wide-character I/O is permitted but char
 I/O is disallowed.
-It returns a negative value if \fIstream\fP is byte oriented\(emthat is,
+It returns a negative value if \fIstream\fP is byte oriented\[em]that is,
 if char I/O is permitted but wide-character I/O is disallowed.
 It
 returns zero if \fIstream\fP has no orientation yet; in this case the next
 I/O operation might change the orientation (to byte oriented if it is a char
 I/O operation, or to wide-character oriented if it is a wide-character I/O
 operation).
-.PP
+.P
 Once a stream has an orientation, it cannot be changed and persists until
 the stream is closed.
-.PP
+.P
 When \fImode\fP is nonzero, the
 .BR fwide ()
 function first attempts to set
@@ -68,8 +66,10 @@ changing it.
 A positive return value means wide-character oriented.
 A negative return value means byte oriented.
 A return value of zero means undecided.
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, C99.
+.SH STANDARDS
+C11, POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, C99.
 .SH NOTES
 Wide-character output to a byte oriented stream can be performed through the
 .BR fprintf (3)
@@ -78,7 +78,7 @@ function with the
 and
 .B %ls
 directives.
-.PP
+.P
 Char oriented output to a wide-character oriented stream can be performed
 through the
 .BR fwprintf (3)
@@ -90,12 +90,3 @@ directives.
 .SH SEE ALSO
 .BR fprintf (3),
 .BR fwprintf (3)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

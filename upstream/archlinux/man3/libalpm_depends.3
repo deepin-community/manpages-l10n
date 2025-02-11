@@ -1,4 +1,4 @@
-.TH "libalpm_depends" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.TH "libalpm_depends" 3 "libalpm" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -140,16 +140,10 @@ A conflict that has occurred between two packages\&.
 .PP
 \fBData Fields:\fP
 .RS 4
-char * \fIpackage1\fP Name of the first package\&. 
+\fBalpm_pkg_t\fP * \fIpackage1\fP The first package\&. 
 .br
 .PP
-unsigned long \fIpackage1_hash\fP Hash of the first package name (used internally to speed up conflict checks) 
-.br
-.PP
-char * \fIpackage2\fP Name of the second package\&. 
-.br
-.PP
-unsigned long \fIpackage2_hash\fP Hash of the second package name (used internally to speed up conflict checks) 
+\fBalpm_pkg_t\fP * \fIpackage2\fP The second package\&. 
 .br
 .PP
 \fBalpm_depend_t\fP * \fIreason\fP The conflict\&. 
@@ -189,22 +183,22 @@ Types of version constraints in dependency specs\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIALPM_DEP_MOD_ANY \fP\fP
+\f(BIALPM_DEP_MOD_ANY \fP
 No version constraint\&. 
 .TP
-\fB\fIALPM_DEP_MOD_EQ \fP\fP
+\f(BIALPM_DEP_MOD_EQ \fP
 Test version equality (package=x\&.y\&.z) 
 .TP
-\fB\fIALPM_DEP_MOD_GE \fP\fP
+\f(BIALPM_DEP_MOD_GE \fP
 Test for at least a version (package>=x\&.y\&.z) 
 .TP
-\fB\fIALPM_DEP_MOD_LE \fP\fP
+\f(BIALPM_DEP_MOD_LE \fP
 Test for at most a version (package<=x\&.y\&.z) 
 .TP
-\fB\fIALPM_DEP_MOD_GT \fP\fP
+\f(BIALPM_DEP_MOD_GT \fP
 Test for greater than some version (package>x\&.y\&.z) 
 .TP
-\fB\fIALPM_DEP_MOD_LT \fP\fP
+\f(BIALPM_DEP_MOD_LT \fP
 Test for less than some version (package<x\&.y\&.z) 
 .SS "enum \fBalpm_fileconflicttype_t\fP"
 
@@ -214,10 +208,10 @@ File conflict type\&. Whether the conflict results from a file existing on the f
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIALPM_FILECONFLICT_TARGET \fP\fP
+\f(BIALPM_FILECONFLICT_TARGET \fP
 The conflict results with a another target in the transaction\&. 
 .TP
-\fB\fIALPM_FILECONFLICT_FILESYSTEM \fP\fP
+\f(BIALPM_FILECONFLICT_FILESYSTEM \fP
 The conflict results from a file existing on the filesystem\&. 
 .SH "Function Documentation"
 .PP 
@@ -343,6 +337,7 @@ Free a fileconflict and its members\&.
 
 .PP
 Find a package satisfying a specified dependency\&. First look for a literal, going through each db one by one\&. Then look for providers\&. The first satisfyer that belongs to an installed package is returned\&. If no providers belong to an installed package then an \fBalpm_question_select_provider_t\fP is created to select the provider\&. The dependency can include versions with depmod operators\&.
+
 .PP
 \fBParameters\fP
 .RS 4

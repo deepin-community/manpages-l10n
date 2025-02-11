@@ -3,7 +3,7 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "G3topbm User Manual" 0 "03 December 2008" "netpbm documentation"
+.TH "G3topbm User Manual" 0 "02 July 2023" "netpbm documentation"
 
 .SH NAME
 g3topbm - convert a Group 3 fax file into a PBM image
@@ -12,11 +12,12 @@ g3topbm - convert a Group 3 fax file into a PBM image
 .SH SYNOPSIS
 
 \fBg3topbm\fP
-[\fB-kludge\fP]
 [\fB-reversebits\fP]
 [\fB-stretch\fP]
 [\fB-width=\fP\fIpixels\fP | paper_size={A3|A4|A5|A6|B4}]
 [\fB-stop_error\fP]
+[\fB-correctlong\fP]
+[\fB-kludge\fP]
 [\fIg3file\fP]
 .PP
 Minimum unique abbreviation of option is acceptable.  You may use double
@@ -70,11 +71,6 @@ In addition to the options common to all programs based on libnetpbm
 \&), \fBg3topbm\fP recognizes the following
 command line options:
 
-
-.TP
-\fB-kludge\fP
-Tells \fBg3topbm\fP to ignore the first few lines of the file;
-sometimes fax files have some junk at the beginning.
 
 .TP
 \fB-reversebits\fP
@@ -132,6 +128,39 @@ input errors.
 This option was new in Netpbm 10.24 (August 2004).  Before that,
 \fBg3topbm\fP always failed when it encountered premature EOF and
 never failed when it encountered other problems.
+\fB-correctlong\fP
+.sp
+This option helps with certain corrupted input files.  Faxes often are
+corrupted because of communication line errors.  A particularly annoying
+corruption causes a line to be much longer than it is supposed to be.  One way
+that can happen is where an End of Line marker is missing, so two consecutive
+lines turn into one.
+.sp
+Without this option, \fBg3topbm\fP faithfully renders the document as
+coded, so the output PBM image simply contains that long line.  This is an
+especially problematic corruption because it makes the entire output image
+about twice as wide as it is supposed to be.  But with \fB-correctlong\fP,
+\fBg3topbm\fP truncates that line so the overall effect of the input
+corruption is that a line is missing rather than that the image is twice as
+wide as it is supposed to be.
+.sp
+Specifically, with \fB-correctlong\fP, the program looks at the lengths of
+all the lines (which would all be the same length in an uncorrupted G3 image)
+and considers the line length that occurs the most to be the intended image
+width.  It truncates every line that is longer than that.
+.sp
+The program warns you when corruption has caused the input image to have
+lines of more than one length, whether you specify \fB-correctlong\fP or not.
+.sp
+Note that there is no point to specifying \fB-correctlong\fP if you also
+specify \fB-stop_error\fP.
+.sp
+This option was new in Netpbm 11.04 (September 2023).
+    
+.TP
+\fB-kludge\fP
+Tells \fBg3topbm\fP to ignore the first few lines of the file; sometimes
+fax files have some junk at the beginning.
 
 
 

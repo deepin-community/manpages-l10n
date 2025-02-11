@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_LISTEN_FDS" "3" "" "systemd 249" "sd_listen_fds"
+.TH "SD_LISTEN_FDS" "3" "" "systemd 255" "sd_listen_fds"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -41,8 +41,14 @@ sd_listen_fds, sd_listen_fds_with_names, SD_LISTEN_FDS_START \- Check for file d
 .SH "DESCRIPTION"
 .PP
 \fBsd_listen_fds()\fR
-may be invoked by a daemon to check for file descriptors passed by the service manager as part of the socket\-based activation logic\&. It returns the number of received file descriptors\&. If no file descriptors have been received, zero is returned\&. The first file descriptor may be found at file descriptor number 3 (i\&.e\&.
+may be invoked by a daemon to check for file descriptors passed by the service manager as part of the socket\-based activation and file descriptor store logic\&. It returns the number of received file descriptors\&. If no file descriptors have been received, zero is returned\&. The first file descriptor may be found at file descriptor number 3 (i\&.e\&.
 \fBSD_LISTEN_FDS_START\fR), the remaining descriptors follow at 4, 5, 6, \&..., if any\&.
+.PP
+The file descriptors passed this way may be closed at will by the processes receiving them: it\*(Aqs up to the processes themselves to close them after use or whether to leave them open until the process exits (in which case the kernel closes them automatically)\&. Note that the file descriptors received by daemons are duplicates of the file descriptors the service manager originally allocated and bound and of which it continuously keeps a copy (except if
+\fIAccept=yes\fR
+is used)\&. This means any socket option changes and other changes made to the sockets will be visible to the service manager too\&. Most importantly this means it\*(Aqs generally not a good idea to invoke
+\fBshutdown\fR(2)
+on such sockets, since it will shut down communication on the file descriptor the service manager holds for the same socket too\&. Also note that if a daemon is restarted (and its associated sockets are not) it will receive file descriptors to the very same sockets as the earlier invocations, thus all socket options applied then will still apply\&.
 .PP
 If a daemon receives more than one file descriptor, they will be passed in the same order as configured in the systemd socket unit file (see
 \fBsystemd.socket\fR(5)
@@ -53,7 +59,9 @@ for details) \(em if there\*(Aqs only one such file (see below)\&. Nonetheless, 
 \fBsd_is_socket_unix\fR(3)
 are provided\&. In order to maximize flexibility, it is recommended to make these checks as loose as possible without allowing incorrect setups\&. i\&.e\&. often, the actual port number a socket is bound to matters little for the service to work, hence it should not be verified\&. On the other hand, whether a socket is a datagram or stream socket matters a lot for the most common program logics and should be checked\&.
 .PP
-This function call will set the FD_CLOEXEC flag for all passed file descriptors to avoid further inheritance to children of the calling process\&.
+This function call will set the
+\fBFD_CLOEXEC\fR
+flag for all passed file descriptors to avoid further inheritance to children of the calling process\&.
 .PP
 If multiple socket units activate the same service, the order of the file descriptors passed to its main process is undefined\&. If additional file descriptors have been passed to the service manager using
 \fBsd_pid_notify_with_fds\fR(3)\*(Aqs
@@ -86,7 +94,7 @@ setting in socket unit files, see
 for details\&. For file descriptors pushed into the file descriptor store (see above), the name is set via the
 \fIFDNAME=\fR
 field transmitted via
-\fBsd_pid_notify_with_fds()\fR\&. The primary usecase for these names are services which accept a variety of file descriptors which are not recognizable with functions like
+\fBsd_pid_notify_with_fds()\fR\&. The primary use case for these names are services which accept a variety of file descriptors which are not recognizable with functions like
 \fBsd_is_socket()\fR
 alone, and thus require identification via a name\&. It is recommended to rely on named file descriptors only if identification via
 \fBsd_is_socket()\fR
@@ -136,6 +144,10 @@ The service was activated in per\-connection style using \fIAccept=yes\fR in the
 T}
 .TE
 .sp 1
+.PP
+For further information on the file descriptor store see the
+\m[blue]\fBFile Descriptor Store\fR\m[]\&\s-2\u[1]\d\s+2
+overview\&.
 .SH "RETURN VALUE"
 .PP
 On failure, these calls returns a negative errno\-style error code\&. If
@@ -143,9 +155,16 @@ On failure, these calls returns a negative errno\-style error code\&. If
 was not set or was not correctly set for this daemon and hence no file descriptors were received, 0 is returned\&. Otherwise, the number of file descriptors passed is returned\&. The application may find them starting with file descriptor SD_LISTEN_FDS_START, i\&.e\&. file descriptor 3\&.
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
 .PP
 Internally,
 \fBsd_listen_fds()\fR
@@ -158,6 +177,12 @@ environment variable, then sets the FD_CLOEXEC flag for the parsed number of fil
 does the same but also parses
 \fI$LISTEN_FDNAMES\fR
 if set\&.
+.PP
+These functions are not designed for services that specify
+\fIStandardInput=socket\fR
+as the
+\fI$LISTEN_FDS\fR
+variable is not set in their environment\&.
 .SH "ENVIRONMENT"
 .PP
 \fI$LISTEN_PID\fR, \fI$LISTEN_FDS\fR, \fI$LISTEN_FDNAMES\fR
@@ -168,6 +193,10 @@ and
 \fBsd_listen_fds_with_names()\fR
 parses\&. See above for details\&.
 .RE
+.SH "HISTORY"
+.PP
+\fBsd_listen_fds_with_names()\fR
+was added in version 227\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),
@@ -180,3 +209,9 @@ parses\&. See above for details\&.
 \fBdaemon\fR(7),
 \fBsystemd.service\fR(5),
 \fBsystemd.socket\fR(5)
+.SH "NOTES"
+.IP " 1." 4
+File Descriptor Store
+.RS 4
+\%https://systemd.io/FILE_DESCRIPTOR_STORE
+.RE

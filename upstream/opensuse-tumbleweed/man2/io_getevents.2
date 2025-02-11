@@ -1,23 +1,28 @@
 .\" Copyright (C) 2003 Free Software Foundation, Inc.
 .\"
-.\" %%%LICENSE_START(GPL_NOVERSION_ONELINE)
-.\" This file is distributed according to the GNU General Public License.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-1.0-or-later
 .\"
-.TH IO_GETEVENTS 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH io_getevents 2 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 io_getevents \- read asynchronous I/O events from the completion queue
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
+.P
+Alternatively, Asynchronous I/O library
+.RI ( libaio ", " \-laio );
+see VERSIONS.
 .SH SYNOPSIS
 .nf
 .BR "#include <linux/aio_abi.h>" "    /* Definition of " *io_* " types */"
 .BR "#include <sys/syscall.h>" "      /* Definition of " SYS_* " constants */"
 .B #include <unistd.h>
-.PP
+.P
 .BI "int syscall(SYS_io_getevents, aio_context_t " ctx_id ,
 .BI "            long " min_nr ", long " nr ", struct io_event *" events ,
 .BI "            struct timespec *" timeout );
 .fi
-.PP
+.P
 .IR Note :
 glibc provides no wrapper for
 .BR io_getevents (),
@@ -31,30 +36,23 @@ The wrapper function provided by
 uses a different type for the
 .I ctx_id
 argument.
-See NOTES.
-.PP
+See VERSIONS.
+.P
 The
 .BR io_getevents ()
 system call
 attempts to read at least \fImin_nr\fP events and
 up to \fInr\fP events from the completion queue of the AIO context
 specified by \fIctx_id\fP.
-.PP
+.P
 The \fItimeout\fP argument specifies the amount of time to wait for events,
-and is specified as a relative timeout in a structure of the following form:
-.PP
-.in +4n
-.EX
-struct timespec {
-    time_t tv_sec;      /* seconds */
-    long   tv_nsec;     /* nanoseconds [0 .. 999999999] */
-};
-.EE
-.in
-.PP
+and is specified as a relative timeout in a
+.BR timespec (3)
+structure.
+.P
 The specified time will be rounded up to the system clock granularity
 and is guaranteed not to expire early.
-.PP
+.P
 Specifying
 .I timeout
 as NULL means block indefinitely until at least
@@ -72,8 +70,8 @@ expired.
 It may also be a nonzero value less than
 .IR min_nr ,
 if the call was interrupted by a signal handler.
-.PP
-For the failure return, see NOTES.
+.P
+For the failure return, see VERSIONS.
 .SH ERRORS
 .TP
 .B EFAULT
@@ -92,18 +90,12 @@ out of range.
 .BR io_getevents ()
 is not implemented on this architecture.
 .SH VERSIONS
-The asynchronous I/O system calls first appeared in Linux 2.5.
-.SH CONFORMING TO
-.BR io_getevents ()
-is Linux-specific and should not be used in
-programs that are intended to be portable.
-.SH NOTES
 You probably want to use the
 .BR io_getevents ()
 wrapper function provided by
 .\" http://git.fedorahosted.org/git/?p=libaio.git
 .IR libaio .
-.PP
+.P
 Note that the
 .I libaio
 wrapper function uses a different type
@@ -124,9 +116,13 @@ then the return value follows the usual conventions for
 indicating an error: \-1, with
 .I errno
 set to a (positive) value that indicates the error.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 2.5.
 .SH BUGS
 An invalid
-.IR ctx_id
+.I ctx_id
 may cause a segmentation fault instead of generating the error
 .BR EINVAL .
 .SH SEE ALSO
@@ -134,6 +130,7 @@ may cause a segmentation fault instead of generating the error
 .BR io_destroy (2),
 .BR io_setup (2),
 .BR io_submit (2),
+.BR timespec (3),
 .BR aio (7),
 .BR time (7)
 .\" .SH AUTHOR

@@ -1,37 +1,21 @@
 .\" Copyright (C) 2005 Robert Love
 .\" and Copyright, 2006 Michael Kerrisk
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
-.\"
-.\" The GNU General Public License's references to "object code"
-.\" and "executables" are to be interpreted as the output of any
-.\" document formatting or typesetting system, including
-.\" intermediate and printed output.
-.\"
-.\" This manual is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
 .\" 2005-07-19 Robert Love <rlove@rlove.org> - initial version
 .\" 2006-02-07 mtk, various changes
 .\"
-.TH INOTIFY_ADD_WATCH 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH inotify_add_watch 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 inotify_add_watch \- add a watch to an initialized inotify instance
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/inotify.h>
-.PP
+.P
 .BI "int inotify_add_watch(int " fd ", const char *" pathname ", uint32_t " mask );
 .fi
 .SH DESCRIPTION
@@ -53,7 +37,7 @@ See
 .BR inotify (7)
 for a description of the bits that can be set in
 .IR mask .
-.PP
+.P
 A successful call to
 .BR inotify_add_watch ()
 returns a unique watch descriptor for this inotify instance,
@@ -65,7 +49,7 @@ then the watch descriptor is newly allocated.
 If the filesystem object was already being watched
 (perhaps via a different link to the same object), then the descriptor
 for the existing watch is returned.
-.PP
+.P
 The watch descriptor is returned by later
 .BR read (2)s
 from the inotify file descriptor.
@@ -138,10 +122,10 @@ contains
 and
 .I pathname
 is not a directory.
-.SH VERSIONS
-Inotify was merged into the 2.6.13 Linux kernel.
-.SH CONFORMING TO
-This system call is Linux-specific.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 2.6.13.
 .SH EXAMPLES
 See
 .BR inotify (7).
@@ -149,12 +133,3 @@ See
 .BR inotify_init (2),
 .BR inotify_rm_watch (2),
 .BR inotify (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

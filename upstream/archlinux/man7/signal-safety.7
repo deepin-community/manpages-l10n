@@ -1,28 +1,9 @@
+'\" t
 .\" Copyright (c) 2016 Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
-.\"
-.TH SIGNAL-SAFETY 7  2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH signal-safety 7 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 signal-safety \- async-signal-safe functions
 .SH DESCRIPTION
@@ -34,13 +15,13 @@ Many functions are
 async-signal-safe.
 In particular,
 nonreentrant functions are generally unsafe to call from a signal handler.
-.PP
+.P
 The kinds of issues that render a function
 unsafe can be quickly understood when one considers
 the implementation of the
 .I stdio
 library, all of whose functions are not async-signal-safe.
-.PP
+.P
 When performing buffered I/O on a file, the
 .I stdio
 functions must maintain a statically allocated data buffer
@@ -57,38 +38,38 @@ the program is interrupted by a signal handler that also calls
 then the second call to
 .BR printf (3)
 will operate on inconsistent data, with unpredictable results.
-.PP
+.P
 To avoid problems with unsafe functions, there are two possible choices:
-.IP 1. 3
+.IP (a) 5
 Ensure that
-(a) the signal handler calls only async-signal-safe functions,
+(1) the signal handler calls only async-signal-safe functions,
 and
-(b) the signal handler itself is reentrant
+(2) the signal handler itself is reentrant
 with respect to global variables in the main program.
-.IP 2.
+.IP (b)
 Block signal delivery in the main program when calling functions
 that are unsafe or operating on global data that is also accessed
 by the signal handler.
-.PP
+.P
 Generally, the second choice is difficult in programs of any complexity,
 so the first choice is taken.
-.PP
+.P
 POSIX.1 specifies a set of functions that an implementation
 must make async-signal-safe.
 (An implementation may provide safe implementations of additional functions,
 but this is not required by the standard and other implementations
 may not provide the same guarantees.)
-.PP
+.P
 In general, a function is async-signal-safe either because it is reentrant
 or because it is atomic with respect to signals
 (i.e., its execution can't be interrupted by a signal handler).
-.PP
+.P
 The set of functions required to be async-signal-safe by POSIX.1
 is shown in the following table.
 The functions not otherwise noted were required to be async-signal-safe
 in POSIX.1-2001;
 the table details changes in the subsequent standards.
-.PP
+.P
 .TS
 lb lb
 l l.
@@ -291,16 +272,16 @@ T}
 \fBwmemset\fP(3)	Added in POSIX.1-2008 TC2
 \fBwrite\fP(2)
 .TE
-.PP
+.P
 Notes:
-.IP * 3
+.IP \[bu] 3
 POSIX.1-2001 and POSIX.1-2001 TC2 required the functions
 .BR fpathconf (3),
 .BR pathconf (3),
 and
 .BR sysconf (3)
 to be async-signal-safe, but this requirement was removed in POSIX.1-2008.
-.IP *
+.IP \[bu]
 If a signal handler interrupts the execution of an unsafe function,
 and the handler terminates via a call to
 .BR longjmp (3)
@@ -308,7 +289,7 @@ or
 .BR siglongjmp (3)
 and the program subsequently calls an unsafe function,
 then the behavior of the program is undefined.
-.IP *
+.IP \[bu]
 POSIX.1-2001 TC1 clarified
 that if an application calls
 .BR fork (2)
@@ -321,10 +302,10 @@ is likely to remove
 .BR fork (2)
 from the list of async-signal-safe functions.
 .\"
-.IP * 3
-Asynchronous signal handlers that call functions which are cancellation
-points and nest over regions of deferred cancellation may trigger
-cancellation whose behavior is as if asynchronous cancellation had
+.IP \[bu]
+Asynchronous signal handlers that call functions which are cancelation
+points and nest over regions of deferred cancelation may trigger
+cancelation whose behavior is as if asynchronous cancelation had
 occurred and may cause application state to become inconsistent.
 .\"
 .SS errno
@@ -337,7 +318,7 @@ on entry and restores its value before returning.
 .SS Deviations in the GNU C library
 The following known deviations from the standard occur in
 the GNU C library:
-.IP * 3
+.IP \[bu] 3
 Before glibc 2.24,
 .BR execl (3)
 and
@@ -347,7 +328,7 @@ employed
 internally and were consequently not async-signal-safe.
 .\" https://sourceware.org/bugzilla/show_bug.cgi?id=19534
 This was fixed in glibc 2.24.
-.IP *
+.IP \[bu]
 .\" FIXME . https://sourceware.org/bugzilla/show_bug.cgi?id=13172
 The glibc implementation of
 .BR aio_suspend (3)
@@ -358,12 +339,3 @@ internally.
 .BR sigaction (2),
 .BR signal (7),
 .BR standards (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

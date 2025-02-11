@@ -1,0 +1,477 @@
+.\" $Id: $
+.\" Translated into Finnish by Tommi Vainikainen (mucus@pcuf.fi)
+.\"
+.TH EMACS 1 "7. joulukuuta 1995" "GNU-projekti" "Käyttäjän sovellusohjelmat"
+.UC 4
+.SH NIMI
+emacs \- GNU-projektin Emacs
+.SH "YLEISKATSAUS"
+.B emacs
+[
+.I komentorivivalitsimet
+] [
+.I tiedostot ...
+]
+.br
+.SH KUVAUS
+.I GNU Emacs
+on
+.IR Emacs -versio,
+jonka kirjoitti alkuperäisen (PDP-10)
+.I Emacsin
+tekijä Richard Stallman.
+.PP
+Ensisijainen GNU Emacsin dokumentaatio on GNU Emacs Manuaalissa,
+jonka voit lukea Infolla, joka on osa Emacsia. Se kannattaa tarkistaa
+täydellistä ja ajanmukaista dokumentaatiota tarvittaessa. Tätä
+manuaalisivua päivitetään vain, kun joku sen vapaaehtoisesti tekee;
+Emacsin ylläpitäjät yrittävät minimoida ajan, joka kuluu tämän
+manuaalisivun ylläpitoon muiden hyödyllisempien projektien sijaan.
+.PP
+GNU Emacsin toiminnallisuus sisältää kaiken, mitä
+muutkin
+.IR Emacs -tekstieditorit
+sisältävät, ja on helposti laajennettavista, sillä
+muokkauskomennot on kirjoitettu tulkattavalla Lisp-kielellä.
+.PP
+.I Emacsissa
+on  laaja interaktiivinen ohjevalmius, mutta sujuvuuden takaamiseksi
+sinun oletetaan osaavan käsitellä 
+.I Emacsin
+ikkunoita ja puskureita.
+CTRL-h (askelpalautin tai CTRL-h) siirtyy ohjetilaan.
+Johdatus (CTRL-h t) voi
+opettaan aloittelijoille perustiedot
+.I Emacsista
+muutamassa minuuteissa.
+Help Apropos (CTRL-h a) etsii sinulle komennon hakusanan perusteella,
+Hep Character (CTRL-h c) kertoo annettuun näppäinyhdistelmään sidotun
+toiminnon ja Help Function (CTRL-h f) kuvaa annetun Lisp-funktion.
+.PP
+.I Emacsin
+Undo voi kumota useita muokkaustoimenpiteitä puskureissasi, joten
+on helppoa saada tiedot takaisin virheiden jälkeen.
+.PP
+.I GNU Emacsin
+useat erikoispaketit osaavat lukea (RMail) tai lähettää (Mail) sähköpostia,
+muokata vedoksia (Outline), kääntää (Compile), ajaa komentotulkkeja
+.I Emacsin
+ikkunassa (Shell), ajaa Lispin read-eval-print-silmukkaa
+(Lisp-Interaction-Mode) ja antaa automaattista psykoterapiaa (Doctor).
+.PP
+Laaja ohjekirja on olemassa, mutta muiden
+.I Emacsien
+käyttäjillä ei pitäisi olla suuria vaikeuksia kotiutuessaan
+ilman ohjekirjaa.
+Uudet
+.I Emacsin
+käyttäjät oppivat helposti käyttämään perusominaisuuksia
+johdatuksen avulla ja käyttämällä itsedokumentointiominaisuuksia.
+.PP
+.SM Emacsin valitsimet
+.PP
+Seuraavat valitsimet ovat yleisimpiä:
+.TP 8
+.I tiedosto
+Muokkaa
+.IR tiedosto a.
+.TP
+.BI \+ numero
+Hyppää annetulle riville.
+(jätä pois välilyönti "+"-merkin ja numeron välistä).
+.TP
+.B \-q
+Älä lataa käynnistystiedostoa.
+.TP
+.BI \-u " käyttäjä"
+Lataa
+.IR käyttäjä n
+käynnistystiedosto.
+.TP
+.BI \-t " tiedosto"
+Käytä määriteltyä
+.IR tiedosto a
+päätteenä vakiosyötteen/vakiotulosteen sijasta.
+Tämän täytyy olla ensimmäinen valitsin komentorivillä.
+.PP
+Seuraavat valitsimet liittyvät Lispiin
+(nämä valitsimet tulkitaan esiintymisjärjestyksessään):
+.TP 8
+.BI \-f " funktio"
+Suorittaa Lisp-funktion.
+.TP
+.BI \-l " tiedosto"
+Suorittaa Lisp-koodin tiedostosta.
+.PP
+Seuraavat valitsimet ovat hyödyllisiä, kun
+.IR Emacs ia
+käytetään eräajoon:
+.TP 8
+.BI \-batch
+Muokkaa eräajotilassa. Editori lähettää viestit vakiovirhetulosteeseen.
+Tämä valitsin täytyy antaa ensimmäisenä. Sinun täytyy käyttää "-l"- ja
+"-f"-valitsimia kertoaksesi mitkä tiedostot ajetaan ja mitä funktioita
+suoritetaan.
+.TP
+.B \-kill
+Poistuu  
+.I Emacsista
+eräajotilassa. Muistithan, että Emacs tulkitsee valitsimet
+esiintymisjärjestyksessä.
+.\" START DELETING HERE IF YOU'RE NOT USING X
+.PP
+.SM Emacsin ja X:n yhteiskäyttö
+.PP
+.I Emacs
+on räätälöity toimimaan hyvin X ikkunointijärjestlmän alla.
+Jos ajat 
+.I Emacsia
+X-järjestelmän alla, luo Emacs oman X-ikkunansa.
+Todennäköisesti haluat käynnistää editorin tausta-ajoon,
+jotta voit jatkaa työskentelyäsi alkuperäisessä
+ikkunassa.
+.PP
+.I Emacs
+voidaan käynnistää seuraavilla X-valitsimilla:
+.TP 8
+.BI \-name " nimi"
+Määrittää nimen, joka annetaan ensimmäiselle
+.I Emacsin
+ikkunalle. X tarkistaa resurssit(X resources) tämän
+nimen ja ikkunan otsikon perusteella.
+.TP 8
+.BI \-title " nimi"
+Määrittää otsikon ensimmäiselle X-ikkunalle.
+.TP 8
+.B \-r
+Vaihda tausta- ja kirjoitusväri keskenään
+.IR Emacs in
+ikkunassa.
+.TP
+.B \-i
+Käytä "tiskiallas"-kuvaketta, kun
+.IR Emacs in
+ikkunan ikonisoidaan.
+.TP
+.BI \-font " fontti, " \-fn " fontti"
+Asettaa
+.I Emacsin
+ikkunan fontin annetuksi
+Löydät erinäköisiä
+.IR X fontteja
+.IR /usr/lib/X11/fonts -hakemistosta.
+Muista, että
+.I Emacs
+sallii ainoastaan tasalevyiset fontit.
+X11 Release 4 -järjestelmän mukaisessa fonttien nimeämistavassa
+jokaisen tasalevyisen fontin yhdennentoista kentän kohdalla
+on arvo "m" tai "c". Lisäksi fontit, joiden nimet ovat
+muotoa
+.IR leveys x korkeus
+ovat yleensä tasalevyisiä, kuten on myös fontti
+.IR fixed .
+
+Jos tarvitset lisätietoa, katso
+.IR xlsfonts (1).
+
+Kun määrität fonttia, varmista, että fontin nimen ja valitsimen
+välissä on välilyönti.
+.TP
+.BI \-b " pikseliä"
+Asettaa
+.IR Emacs in
+ikkunan reunan leveydeksi annetun määrän pikseleitä.
+Oletuksena tämä on yksi pikseli ikkunan jokaisella reunalla.
+.TP
+.BI \-ib " pikseliä"
+Asettaa ikkunan sisäisen reunan leveydeksi annetun määrän pikseleitä.
+Oletuksena tämä on yksi pikseli.
+.PP
+.TP 8
+.BI \-geometry " geometria"
+Asettaa
+.I Emacsin
+ikkunan leveyden, korkeuden ja sijainnin.
+Geometriamäärittely on normaalissa X-muodossa;
+lisätietoja varten, katso
+.IR X (1).
+Leveys ja korkeus määritellään merkkeinä; oletus on 80 merkkiä
+ja 24 riviä.
+.PP
+.TP 8
+.BI \-fg " väri"
+Värinäytöillä asetetaan tekstin väri.
+
+Katso tiedostosta
+.I /usr/lib/X11/rgb.txt
+lista sallituista värien nimistä.
+.TP
+.BI \-bg " väri"
+Värinäytöillä asettaa ikkunan taustavärin.
+.TP
+.BI \-bd " väri"
+Värinäytöillä asettaa ikkunan reunavärin.
+.TP
+.BI \-cr " väri"
+Värinäytöillä asettaa ikkunan tekstin kursorin värin.
+.TP
+.BI \-ms " väri"
+Värinäytöillä asettaa ikkunan hiiren kursorin värin.
+.TP
+.BI \-d " näytönnimi, " \-display " näytönnimi"
+Luo
+.I Emacsin
+ikkunan annetulle näytölle.
+Tämän täytyy olla komentorivin ensimmäinen valitsin.
+.TP
+.B \-nw
+Kertoo
+.IR Emacs ille,
+että omaa käyttöliittymään X:lle ei käytetä. Jos käytät
+tätä valitsinta käynnistäessäsi
+.IR Emacs ia
+.IR xterm (1)-ikkunasta
+näyttäminen tapahtuu samassa ikkunassa.
+Tämän täytyy olla komentorivin ensimmäinen valitsin.
+.PP
+Voit asettaa oletusarvot
+.I Emacsin
+ikkunoille
+.IR \.Xresources -tiedostossasi
+(katso
+.IR xrdb (1)).
+Käytä seuraavaa muotoa:
+.IP
+emacs.avainsana:arvo
+.PP
+, jossa
+.I arvo
+määrittää
+.IR avainsana n
+oletusarvon.
+.I Emacs
+sallii sinun määrittää oletusarvot seuraaville avainsanoille:
+.TP 8
+.B font (\fPclass\fB Font)
+Asettaa ikkunan fontin.
+.TP
+.B reverseVideo (\fPclass\fB ReverseVideo)
+Jos
+.IR reverseVideo n
+arvoksi on asetettu
+.IR on ,
+teksti- ja taustaväri vaihdetaan keskenään.
+.TP
+.B bitmapIcon (\fPclass\fB BitmapIcon)
+Jos
+.IR bitmapIcon in
+arvoksi on asetettu
+.IR on ,
+ikkuna ikonisoituu "tiskialtaaksi."
+.TP
+.B borderWidth (\fPclass\fB BorderWidth)
+Asettaa ikkunan reunuksen leveyden pikseleissä.
+.TP
+.B internalBorder (\fPclass\fB BorderWidth)
+Asettaa ikkunan sisäisen reunuksen leveyden pikseleissä.
+.TP
+.B foreground (\fPclass\fB Foreground)
+Värinäytöillä asetetaan tekstin väri.
+.TP
+.B background (\fPclass\fB Background)
+Värinäytöillä asetetaan ikkunan taustaväri.
+.TP
+.B borderColor (\fPclass\fB BorderColor)
+Värinäytöillä asetetaan ikkunan reunuksen väri.
+.TP
+.B cursorColor (\fPclass\fB Foreground)
+Värinäytöillä asetetaan ikkunan tekstin kursorin väri.
+.TP
+.B pointerColor (\fPclass\fB Foreground)
+Värinäytöillä asetetaan ikkunan hiiren kursorin väri.
+.TP
+.B geometry (\fPclass\fB Geometry)
+Asettaa
+.I Emacsin
+ikkunan geometrian (kuten yllä kuvattiin).
+.TP
+.B title (\fPclass\fB Title)
+Asettaa otsikon
+.IR Emacs in
+ikkunalle.
+.TP
+.B iconName (\fPclass\fB Title)
+Asettaa kuvakkeen nimen
+.I Emacsin
+ikkunan kuvakkeelle.
+.PP
+Jos yrität asettaa värien arvoja käytettäessä mustavalkonäyttöä,
+ikkunan ominaisuudet ovat seuraavat:
+tekstinväri musta,
+taustaväri valkoinen,
+reunuksien väri harmaa ja
+tekstin ja hiiren kursorit mustia.
+.PP
+.SM Hiiren käyttö
+.PP
+Seuraavana listataan hiiren näppäinten komentosidokset
+.IR Emacs in
+ikkunoille X11-järjestelmän alla.
+
+.in +\w'CTRL-SHIFT-keski'u+4n
+.ta \w'CTRL-SHIFT-keski'u+4n
+.ti -\w'CTRL-SHIFT-keski'u+4n
+HIIREN NAPPI	KOMENTO
+.br
+.ti -\w'CTRL-SHIFT-keski'u+4n
+vasen	Asettaa kohdan.
+.br
+.ti -\w'CTRL-SHIFT-keski'u+4n
+keski	Liittää tekstin.
+.br
+.ti -\w'CTRL-SHIFT-keski'u+4n
+oikea	Leikkaa tekstin X:n leikepuskuriin.
+.br
+.ti -\w'CTRL-SHIFT-keski'u+4n
+SHIFT-keski	Leikkaa tekstin X:n leikepuskuriin.
+.br
+.ti -\w'CTRL-SHIFT-keski'u+4n
+SHIFT-oikea	Liittää tekstin.
+.br
+.ti -\w'CTRL-SHIFT-keski'u+4n
+CTRL-keski	Leikkaa tekstin X:N leikepuskuriin ja
+poistaa sen sitten Emacsin puskurista.
+.br
+.ti -\w'CTRL-SHIFT-keski'u+4n
+CTRL-oikea	Valitseen tämän ikkunan, sitten jakaa sen kahdeksi
+ikkunaksi. Sama kuin painaisi CTRL-x 2.
+.\" START DELETING HERE IF YOU'RE NOT USING X MENUS
+.br
+.ti -\w'CTRL-SHIFT-keski'u+4n
+CTRL-SHIFT-vasen	X-puskurin valikko -- pidä nappi ja näppäimet
+alhaalla kunnes valikko ilmestyy, valitse puskuri ja päästä irti.
+Siirrä hiiri pois valikon päältä ja päästä irti keskeyttääksesi.
+.br
+.ti -\w'CTRL-SHIFT-keski'u+4n
+CTRL-SHIFT-keski	X-ohjevalikko -- avaa päävalikko ohjetta varten.
+.\" STOP DELETING HERE IF YOU'RE NOT USING X MENUS
+.br
+.ti -\w'CTRL-SHIFT-keski'u+4n
+CTRL-SHIFT-oikea	Valitse ikkuna hiirellä ja poista muut ikknat.
+Saman voisi tehdä painamalla CTRL-x 1.
+.\" STOP DELETING HERE IF YOU'RE NOT USING X
+.PP
+.SH OHJEKIRJAT
+Voit tilata paperikopioita GNU Emacs Manual -ohjekirjasta
+Free Software Foundationilta, joka kehittää GNU-ohjelmistoja.
+Tiedostosta ORDERS löydät tilausohjeet.
+.br
+Myös paikallisella Emacs-ylläpitäjällä voi olla kopioita saatavilla.
+Nimittäin, kaikki saavat tehdä ja levittää kopioita Emacsin manuaalista,
+kuten myös muista FSF:n ohjelmista ja julkaisuista.
+Manuaalin TeX-lähdekoodi on myös mukana Emacsin lähdekoodijakelussa.
+.PP
+.SH TIEDOSTOT
+/usr/local/info - tiedostot Info-selaimelle (Emacsin osa).
+Tällähetkellä Unixin dokumentaatiosta ei kovin paljoa ole täällä,
+mutta Emacsin manuaali on mukana kokonaan sopivasti paloiteltuna.
+
+/usr/local/share/emacs/$VERSION/src - C-lähdekoodi- ja objektitiedostot
+
+/usr/local/share/emacs/$VERSION/lisp - Lisp source files and compiled files
+that define most editing commands.  Some are preloaded;
+others are autoloaded from this directory when used.
+  
+/usr/local/share/emacs/$VERSION/etc - erilaisia ohjelmia, joita voi
+käyttää GNU Emacsin kanssa, ja joitakin ohjetiedostoja.
+
+/usr/local/share/emacs/$VERSION/etc/DOC.* - sisältää
+dokumentaation GNU Emacsin Lisp-primitiiveille ja
+esiladatuille Lisp-funktioille. Dokumentaatio säilytetään
+täällä, jotta Emacsin itsensä kokoa saadaan pienemmäksi.
+
+/usr/local/share/emacs/$VERSION/etc/OTHER.EMACSES keskustelua
+aiheesta GNU Emacs vs. Emacsin muut versiot.
+
+.br
+/usr/local/share/emacs/$VERSION/etc/SERVICE listaa ihmiset,
+jotka tarjoavat erilaisia palveluja auttamaan GNU Emacsin käyttäjiä,
+sisältäen opetuksen, vianetsinnän, siirtämisen muihin ympäristöihin
+ja räätälöinnin.
+.br
+Nämä tiedostot sisältävät myös hyödyllistä tietoa jokaiselle,
+joka haluaisi kirjoittaa ohjelmia Emacs Lisp -laajennuskielellä.
+
+/usr/local/com/emacs/lock - sisältää lukkotiedostoja, jotka
+tehdään kaikille tiedostoille, joita Emacsilla muokataan, estämään
+käyttäjiä muokkaamasta samaa tiedostoa samaan aikaan.
+
+.\" START DELETING HERE IF YOU'RE NOT USING X
+/usr/lib/X11/rgb.txt - lista X:n sallimista värien nimistä.
+.\" STOP DELETING HERE IF YOU'RE NOT USING X
+.PP
+.SH VIAT
+Postituslista bug-gnu-emacs@gnu.org Internetissä on vikailmoitusten
+ja korjauksien lähettämistä varten. Ennenkuin lähetät ilmoituksen
+viasta, yritä varmistaa, että se todella on vika, eikä
+väärinymmärrys tai tarkoituksenmukainen ominaisuus. Pyytäisimme sinua
+lukemaan kappaleen "Reporting Emacs Bugs" Laajan ohjekirjan
+loppupäästä (tai Info-järjestelmästä) neuvomaan, kuinka ja milloin
+ilmoittaa vioista. Muista myös ilmoittaa Emacsisi versionumero
+\fIjokaisessa\fR vikailmoituksessa, jonka lähetät.
+
+Ethän odota henkilökohtaista vastausta vikailmoitukseen.
+Vikailmoitusten tarkoitus on saada viat korjatuksi jokaista varten
+seuraavassa julkaisussa, jos se vain suinkin on mahdollista.
+Jos tarvitset henkilökohtaista neuvontaa, katso SERVICE-tiedostosta
+(ks. yllä) listaa ihmisistä, jotka voivat sitä tarjota.
+
+Ethän myöskään lähetä muita kuin vikailmoituksia tälle
+postituslistalle. Lähetä listallelisäämispyyntö erikoislistalle
+info-gnu-emacs-request@gnu.org. Lisätietoa Emacsin postituslistoista
+saat tiedostosta /usr/local/emacs/etc/MAILINGLISTS. Viat yleensä
+saadaan korjattua, jos ne voidaan paikantaa, joten sinua yleensä
+auttaa, jos ilmoituksesta käy ilmi, kuinka vikatila voidaan helposti
+toistaa.
+.PP
+Tunnetut viat: komentotulkki ei toimi ohjelmilla, jotka käyttävät
+raakaa näyttötilaa joissain Unix-versioissa.
+.SH RAJOITTAMATTOMUUDET
+.PP
+.I Emacs
+on vapaa. Jokainen voi levittää kopioita
+.I Emacsista
+kenelle vain tahtoo
+.IR "GNU General Public License" -lisenssin
+ehtojen mukaisesti.
+Kopio lisenssiehdoista tulee jokaisen
+.IR Emacs in
+kopion mukana, ja löytyy myös ohjekirjasta.
+.PP
+Kopio
+.IR Emacs ista
+voi joskus tulla Unix-järjestelmien paketeissa mukana, mutta
+koskaan se ei ole järjestelmän lisenssiehtojen alla. Sellainen
+järjestely rikkoisi termejä, joiden alla levitys on sallittua.
+Todellisuudessa, Generel Public Licensen ensisijainen tarkoitus
+on estää lisärajoitukset
+.IR Emacs in
+levityksessä.
+.PP
+Richard Stallman kannustaa sinua parantamaan ja laajentamaan
+.IR Emacs ia,
+ja yllyttää sinua lahjoittamaan laajennoksesi GNU-kirjastoon.
+Lopulta GNU (Gnu's Not Unix eli Gnu ei ole Unix) tulee olemaan
+täydellinen vastine Berkeley-Unixille.
+Jokainen on vapaa käyttämään, kopioimaan, tutkimaan ja muuttamaan
+GNU-järjestelmää.
+.SH "KATSO MYÖS"
+.BR X (1),
+.BR xlsfonts (1),
+.BR xterm (1),
+.BR xrdb (1)
+.SH TEKIJÄT
+.PP
+.I Emacsin
+kirjoitti Richard Stallman ja Free Software Foundation.
+Joachim Martillo ja Robert Krawitz lisäsivät X-ominaisuudet.

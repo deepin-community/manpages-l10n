@@ -1,0 +1,174 @@
+.\" $Id: $
+..\" Copyright (c) 1983, 1990 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	from: @(#)rlogin.1	6.19 (Berkeley) 7/27/91
+.\"	$Id: rlogin.1,v 1.1 1996/07/15 09:14:11 dholland Exp $
+.\"
+.Dd July 27, 1991
+.\" Translated into Finnish by rene.gauffin@dlc.fi
+.\"				1999-08-22
+.\"
+.TH RLOGIN 7 "" "K‰ytt‰j‰n sovellusohjelmat" ""
+.Os BSD 4.2
+.SH NIMI
+.Nm rlogin
+.Nd remote login
+.SH "YLEISKATSAUS"
+.Ar rlogin
+.Op Fl 8EKLdx
+.Op Fl e Ar char
+.Op Fl k Ar realm
+.Op Fl l Ar username
+.Ar host
+.SH KUVAUS
+.Nm Rlogin
+k‰ynnist‰‰ p‰‰teyhteyden et‰koneelle
+.Ar host  .
+.Pp
+.Nm Rlogin
+
+Yritt‰‰ ensin k‰ytt‰‰ alempana kuvattua Kerberos-autentikointia
+Jos  et‰kone ei tue Kerberosta, k‰ytet‰‰n vakioitua Berkleyn
+.Pa rhosts
+autentikointia., Valitsimet ovat seuraavat:
+.Bl -tag -width flag
+.It Fl 8
+Valitsin
+.Fl 8
+sallii 8-bittisen syˆttˆpolun joka tilanteessa,
+muussa tapuksessa pariteettibitit poistetaan paitsi jos et‰koneen k‰ynnistys- ja lopetusmerkit ovat muita merkkej‰ kuin 
+^S/^Q .
+.It Fl E
+valitsin
+.Fl E
+est‰‰ mink‰ tahansa merkin tulkinnan keskeytysmekkiksi 
+Kun t‰t‰ k‰ytet‰‰n valitsimen
+.Fl 8
+kanssa, syntyy t‰ysin l‰pin‰kyv‰ yhteys.
+.It Fl K
+Valitsin
+.Fl K
+Kytkee pois p‰‰lt‰ koko Kerberos-autentikoinnin
+.It Fl L
+Valitsin 
+.Fl L
+sallii rlogin-p‰‰teyhteyden ajamisen  `litout''-moodissa  (kts
+.Xr tty 4 )
+.It Fl d
+Valitsin
+.Fl d
+k‰ynnist‰‰ (socket-) debuggauksen  (kts 
+.Xr setsockopt 2 )
+niiss‰ TCP-socketeissa  joita k‰ytet‰‰n yhteyksiin  et‰koneelle
+.It Fl e
+Valitsin
+.Fl e
+sallii k‰ytt‰j‰n m‰‰ritell‰ keskeytysmerkin  jonka oletusarvo on
+``~'' 
+T‰m‰  m‰‰rittely voidaan antaa joko kirjainmerkkin‰ tai oktaalisena muodossa \ennn
+.It Fl k
+Valitsin
+.FL k
+pyyt‰‰ ett‰ rlogin hankkii p‰‰syliput et‰koneelle k‰ytt‰en sen realm-tiesdostossa olevia arvoja
+.Ar realm  
+-parametri korvaa et‰koneen realm-tiedot niinkuin ne on m‰‰ritelty
+.Xr krb_realmofhost  3 
+ssa .
+.It Fl x
+Valitsin
+.Fl x
+kytkee p‰lle
+.Tn DES
+salauksen kaikelle tiedolle, joka kulkee rlogin p‰‰teyhteyden kautta. T‰m‰ voi vaikuttaa
+vasteaikaan ja 
+.Tn CPU
+k‰yttˆn, mutta lis‰‰ turvallisuuta
+.El
+.Pp
+Rivi muotoa``<keskeytys>.'' katkaisee yhteyden et‰koneeseen
+Samoin rivi``<keskeytys>^Z''  sulkee
+.Nm rlogin
+yhteyden  ja ``<keskeytys><hidas lopetus>''  sulkee
+rlogin-l‰hetyspuolen mutta sallii l‰hetyksen et‰koneelta
+Oletusarvona  tilde (``~'')  on keskeytys ja control-Y (``^Y'')  on hidas lopetus.
+.Pp
+Kaikki kaiutus tapahtuu et‰koneella, t‰ten  (paitsi viiveiden osalta)
+.Nm rlogin
+on l‰piin‰kyv‰
+Tiedon siirron ohjaus k‰ytt‰en ^S/^Q sek‰ tietojen tyhjennykset katkojen yhteydess‰ hoidetaan asianmukaisesti.
+.SH KERBEROS AUTENTIKOINTI
+Jokaisella k‰ytt‰j‰ll‰ voi olla oma autentikointiluettelonsa tiedostossa
+.Pa .klogin
+kotihakemistossaan.
+T‰ss‰ tiedostossa jokaisen rivin tulee sis‰lt‰‰ Kerberoksen p‰‰nimen (principal) muotoa
+.Ar principal.instance@realm  .
+Jos k‰ytt‰j‰ on autentikoitu johonkin p‰‰nimeen, joka on mainittu tiedostossa
+.Pa .klogin ,
+yhteys sallitaan.
+P‰‰nimeen
+.Ar accountname.@localrealm
+sallitaan yhteys jos tiedostoa
+.Pa .klogin
+ei ole.
+Muissa tapauksissa  et‰kone pyyt‰‰ k‰ytt‰j‰tunnusta  ja salasanaa kuten
+.Xr login  1  .
+Er‰iden turvallisuusongelmiÈn v‰ltt‰miseksi, on et‰k‰ytt‰j‰n omistettava tiedosto
+.Pa .kloginf
+Pp
+Jos  Kerberos-autentikointi ei onnistu, tulostetaan varoitus ja noudatetaan vakioitua Berkeley
+.Nm rlogin
+k‰yt‰ntˆ‰.
+.SH YMPƒRIST÷MUUTTUJAT
+.Nm rlogin :
+k‰ytt‰‰ seuraavia ymp‰risyˆmuuttujia:
+.Bl -tag -width TERM
+.It Ev TERM
+M‰‰rittelee k‰ytt‰j‰n p‰‰tetyypin.
+.El
+.SH "KATSO MY÷S"
+.Xr rsh 1 ,
+.Xr kerberos 3 ,
+.Xr krb_sendauth 3 ,
+.Xr krb_realmofhost 3
+.SH HISTORIA
+K‰sky
+.Nm rlogin
+esiintyi
+.Bx 4.2 .
+.SH BUGIT
+.Nm Rlogin
+korvataan
+.Xr telnet  1
+l‰hiaikoina
+.Pp
+Ymp‰ristˆtoimintojai tulisi lis‰t‰.
+.SH "KATSO MY÷S"

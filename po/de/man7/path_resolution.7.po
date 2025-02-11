@@ -1,0 +1,665 @@
+# German translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Helge Kreutzmann <debian@helgefjell.de>, 2021.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n 4.22.0\n"
+"POT-Creation-Date: 2024-12-06 18:07+0100\n"
+"PO-Revision-Date: 2024-03-29 19:22+0100\n"
+"Last-Translator: Helge Kreutzmann <debian@helgefjell.de>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. type: TH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "path_resolution"
+msgstr "path_resolution"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-leap-16-0
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "2024-05-02"
+msgstr "2. Mai 2024"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+#, no-wrap
+msgid "Linux man-pages 6.9.1"
+msgstr "Linux man-pages 6.9.1"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr "BEZEICHNUNG"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "path_resolution - how a pathname is resolved to a file"
+msgstr "path_resolution - Wie ein Pfadname zu einer Datei aufgelöst wird"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "BESCHREIBUNG"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Some UNIX/Linux system calls have as parameter one or more filenames.  A "
+"filename (or pathname) is resolved as follows."
+msgstr ""
+"Einige UNIX/Linux-Systemaufrufe haben als Parameter einen oder mehrere "
+"Dateinamen. Ein Dateiname (oder Pfadname) wird wie folgt aufgelöst:"
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Step 1: start of the resolution process"
+msgstr "Schritt 1: Start des Auflösungsprozesses"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If the pathname starts with the \\[aq]/\\[aq] character, the starting lookup "
+"directory is the root directory of the calling process.  A process inherits "
+"its root directory from its parent.  Usually this will be the root directory "
+"of the file hierarchy.  A process may get a different root directory by use "
+"of the B<chroot>(2)  system call, or may temporarily use a different root "
+"directory by using B<openat2>(2)  with the B<RESOLVE_IN_ROOT> flag set."
+msgstr ""
+"Falls der Pfadname mit dem Zeichen »/« beginnt, wird das Wurzelverzeichnis "
+"des aufrufenden Prozesses als Startverzeichnis beim Nachschlagen verwandt. "
+"Ein Prozess erbt sein Wurzelverzeichnis von seinem Elternprozess. "
+"Normalerweise wird dies das Wurzelverzeichnis der Dateihierarchie sein. "
+"Durch die Verwendung des Systemaufrufs B<chroot>(2) kann ein Prozess ein "
+"anderes Wurzelverzeichnis erhalten oder er kann mittels B<openat2>(2) mit "
+"dem gesetzten Schalter B<RESOLVE_IN_ROOT> temporär ein anderes "
+"Wurzelverzeichnis erhalten."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"A process may get an entirely private mount namespace in case it\\[em]or one "
+"of its ancestors\\[em]was started by an invocation of the B<clone>(2)  "
+"system call that had the B<CLONE_NEWNS> flag set.  This handles the \\[aq]/\\"
+"[aq] part of the pathname."
+msgstr ""
+"Ein Prozess kann einen komplett privaten Einhängenamensraum erhalten, falls "
+"er\\[en]oder einer seiner Vorgänger\\[en]durch einen Systemaufruf von "
+"B<clone>(2) mit gesetztem Schalter B<CLONE_NEWNS> gestartet wurde. Dieser "
+"handhabt den »/«-Anteil des Pfadnamens."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If the pathname does not start with the \\[aq]/\\[aq] character, the "
+"starting lookup directory of the resolution process is the current working "
+"directory of the process \\[em] or in the case of B<openat>(2)-style system "
+"calls, the I<dfd> argument (or the current working directory if B<AT_FDCWD> "
+"is passed as the I<dfd> argument).  The current working directory is "
+"inherited from the parent, and can be changed by use of the B<chdir>(2)  "
+"system call."
+msgstr ""
+"Falls der Pfadname nicht mit dem Zeichen »/« beginnt, ist das Nachschlage-"
+"Startverzeichnis für den Pfadauflösungsprozess das aktuelle "
+"Arbeitsverzeichnis des Prozesses \\[en] oder im Falle von Systemaufrufen im "
+"Stil von B<openat>(2), das Argument I<dfd> (oder das aktuelle "
+"Arbeitsverzeichnis, falls B<AT_FDCWD> als Argument I<dfd> übergeben wurde). "
+"Das aktuelle Arbeitsverzeicnis wird vom Elternprozess geerbt und kann "
+"mittels des Systemaufrufs B<chdir>(2) geändert werden."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Pathnames starting with a \\[aq]/\\[aq] character are called absolute "
+"pathnames.  Pathnames not starting with a \\[aq]/\\[aq] are called relative "
+"pathnames."
+msgstr ""
+"Pfadnamen, die mit dem Zeichen »/« beginnen, werden absolute Pfadnamen "
+"genannt. Alle anderen Pfadnamen heißen relative Pfadnamen."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Step 2: walk along the path"
+msgstr "Schritt 2: Ablaufen entlang des Pfades"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Set the current lookup directory to the starting lookup directory.  Now, for "
+"each nonfinal component of the pathname, where a component is a substring "
+"delimited by \\[aq]/\\[aq] characters, this component is looked up in the "
+"current lookup directory."
+msgstr ""
+"Das aktuelle Nachschlageverzeichnis wird auf das Nachschlage-"
+"Startverzeichnis gesetzt. Jetzt wird für jede nicht abschließende Komponente "
+"des Pfadnamens diese im aktuellen Nachschlageverzeichnis nachgeschlagen. "
+"Hierbei ist eine Komponente eine Teilzeichenkette, die durch das Zeichen »/« "
+"abgetrennt wird."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If the process does not have search permission on the current lookup "
+"directory, an B<EACCES> error is returned (\"Permission denied\")."
+msgstr ""
+"Falls der Prozess über keine Suchberechtigungen im aktuellen Nachschlage-"
+"Verzeichnis verfügt, wird der Fehler B<EACCES> (»Keine Berechtigung«) "
+"zurückgeliefert."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If the component is not found, an B<ENOENT> error is returned (\"No such "
+"file or directory\")."
+msgstr ""
+"Falls die Komponente nicht gefunden wird, wird der Fehler B<ENOENT> (»Datei "
+"oder Verzeichnis nicht gefunden«) zurückgeliefert."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If the component is found, but is neither a directory nor a symbolic link, "
+"an B<ENOTDIR> error is returned (\"Not a directory\")."
+msgstr ""
+"Falls eine Komponente gefunden wird, aber weder ein Verzeichnis noch ein "
+"symbolischer Link ist, wird der Fehler B<ENOTDIR> (»Ist kein Verzeichnis«) "
+"zurückgeliefert."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If the component is found and is a directory, we set the current lookup "
+"directory to that directory, and go to the next component."
+msgstr ""
+"Falls die Komponente gefunden wird und ein Verzeichnis ist, wird das "
+"aktuelle Nachschlage-Verzeichnis auf dieses Verzeichnis gesetzt und zur "
+"nächsten Komponenten gewechselt."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If the component is found and is a symbolic link, we first resolve this "
+"symbolic link (with the current lookup directory as starting lookup "
+"directory).  Upon error, that error is returned.  If the result is not a "
+"directory, an B<ENOTDIR> error is returned.  If the resolution of the "
+"symbolic link is successful and returns a directory, we set the current "
+"lookup directory to that directory, and go to the next component.  Note that "
+"the resolution process here can involve recursion if the prefix ('dirname') "
+"component of a pathname contains a filename that is a symbolic link that "
+"resolves to a directory (where the prefix component of that directory may "
+"contain a symbolic link, and so on).  In order to protect the kernel against "
+"stack overflow, and also to protect against denial of service, there are "
+"limits on the maximum recursion depth, and on the maximum number of symbolic "
+"links followed.  An B<ELOOP> error is returned when the maximum is exceeded "
+"(\"Too many levels of symbolic links\")."
+msgstr ""
+"Falls die Komponente gefunden wird und ein symbolischer Link ist, wird "
+"zuerst dieser symbolische Link aufgelöst (mit dem anfänglichen Nachschlage-"
+"Verzeichnis). Im Fehlerfall wird dieser Fehler zurückgeliefert. Falls das "
+"Ergebnis kein Verzeichnis ist, wird der Fehler B<ENOTDIR> zurückgeliefert. "
+"Falls die Auflösung des symbolischen Links erfolgreich ist und ein "
+"Verzeichnis zurückliefert, wird das aktuelle Nachschlage-Verzeichnis auf "
+"dieses Verzeichnis gesetzt und zur nächsten Komponente gewechselt. Bachten "
+"Sie, dass dieser Auflösungsprozess Rekursionen enthalten kann, falls die "
+"Präfixkomponente (»dirname«) eines Pfadnamens einen Dateinamen enthält, der "
+"ein symbolischer Link ist, der sich auf ein Verzeichnis auflöst (wobei die "
+"Präfixkomponente dieses Verzeichnisses einen symbolischen Link enthalten "
+"könnte und so weiter). Um den Kernel gegen eine Stapelüberlauf und auch eine "
+"Diensteverweigerung zu schützen, gibt es Begrenzungen zur Rekursionstiefe "
+"und der maximalen Anzahl an gefolgten symbolischen Links. Ein Fehler "
+"B<ELOOP> wird zurückgeliefert, wenn das Maximum überschritten wurde (»Zu "
+"viele Ebenen aus symbolischen Links«)."
+
+#
+#.  presently: max recursion depth during symlink resolution: 5
+#.  max total number of symbolic links followed: 40
+#.  _POSIX_SYMLOOP_MAX is 8
+#.  MAXSYMLINKS is 40
+#.  MAX_NESTED_LINKS
+#.  commit 894bc8c4662ba9daceafe943a5ba0dd407da5cd3
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"As currently implemented on Linux, the maximum number of symbolic links that "
+"will be followed while resolving a pathname is 40.  Before Linux 2.6.18, the "
+"limit on the recursion depth was 5.  Starting with Linux 2.6.18, this limit "
+"was raised to 8.  In Linux 4.2, the kernel's pathname-resolution code was "
+"reworked to eliminate the use of recursion, so that the only limit that "
+"remains is the maximum of 40 resolutions for the entire pathname."
+msgstr ""
+"Derzeit ist in Linux die maximale Anzahl von beim Auflösen von Pfadnamen "
+"gefolgten symbolischen Links auf 40 begrenzt. In Linux vor 2.6.18 war die "
+"Begrenzung der Rekursionstiefe 5. Seit Linux 2.6.18 wurde diese Begrenzung "
+"auf 8 erhöht. In Linux 4.2 wurde der Code für die Pfadnamenauflösung "
+"überarbeitet, um die Verwendung von Rekursion zu beseitigen, so dass die "
+"einzige verbliebene Begrenzung die maximalen 40 Auflösungen für den gesamten "
+"Pfadnamen ist."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The resolution of symbolic links during this stage can be blocked by using "
+"B<openat2>(2), with the B<RESOLVE_NO_SYMLINKS> flag set."
+msgstr ""
+"Die Auflösung symbolischer Links während dieser Stufe kann mittels "
+"B<openat2>(2) durch den gesetzten Schalter B<RESOLVE_NO_SYMLINKS> verhindert "
+"werden."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Step 3: find the final entry"
+msgstr "Schritt 3: Finden des finalen Eintrags"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The lookup of the final component of the pathname goes just like that of all "
+"other components, as described in the previous step, with two differences: "
+"(i) the final component need not be a directory (at least as far as the path "
+"resolution process is concerned\\[em]it may have to be a directory, or a "
+"nondirectory, because of the requirements of the specific system call), and "
+"(ii) it is not necessarily an error if the component is not found\\[em]maybe "
+"we are just creating it.  The details on the treatment of the final entry "
+"are described in the manual pages of the specific system calls."
+msgstr ""
+"Das Nachschlagen der finalen Komponente des Pfadnamens erfolgt genau wie der "
+"von allen anderen Komponenten, wie im vorherigen Schritt beschrieben, mit "
+"zwei Unterschieden: (i) die finale Komponente muss kein Verzeichnis sein "
+"(zumindest soweit, wie der Pfadauflösungsprozess betroffen ist \\[en] es mag "
+"ein Verzeichnis oder keines sein müssen, abhängig von den Anforderungen des "
+"spezifischen Systemaufrufs) und (ii) es ist nicht unbedingt ein Fehler, "
+"falls die Komponente nicht gefunden wird \\[en] vielleicht wird sie gerade "
+"erstellt. Die Details der Behandlung des abschließenden Eintrags werden in "
+"den Handbuchseiten der jeweiligen Systemaufrufe beschrieben."
+
+#. type: SS
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-leap-16-0
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "\\&. and .."
+msgstr "\\&. und .."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"By convention, every directory has the entries \".\" and \"..\", which refer "
+"to the directory itself and to its parent directory, respectively."
+msgstr ""
+"Herkömmlicherweise hat jedes Verzeichnis zwei Einträge (».« und »..«), die "
+"sich auf das Verzeichnis selbst bzw. sein übergeordnetes Verzeichnis "
+"beziehen."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The path resolution process will assume that these entries have their "
+"conventional meanings, regardless of whether they are actually present in "
+"the physical filesystem."
+msgstr ""
+"Der Pfadauflösungsprozess wird annehmen, dass diese zwei Einträge ihre "
+"konventionelle Bedeutung haben, unabhängig davon, ob sie im physischen "
+"Dateisystem tatsächlich vorhanden sind."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "One cannot walk up past the root: \"/..\" is the same as \"/\"."
+msgstr ""
+"Sie können nicht höher als die Wurzel aufsteigen: »/..« ist zu »/« identisch."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Mount points"
+msgstr "Einhängepunkte"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"After a I<mount dev path> command, the pathname \"path\" refers to the root "
+"of the filesystem hierarchy on the device \"dev\", and no longer to whatever "
+"it referred to earlier."
+msgstr ""
+"Nach einem Befehl I<mount Gerät Pfad> bezieht sich der Pfadname »Pfad« auf "
+"die Wurzel der Dateisystemhierarchie auf dem Gerät »Gerät« und nicht auf "
+"etwas, worauf es sich vorher bezog."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"One can walk out of a mounted filesystem: \"path/..\" refers to the parent "
+"directory of \"path\", outside of the filesystem hierarchy on \"dev\"."
+msgstr ""
+"Sie können sich außerhalb des eingehängten Dateisystems bewegen: »Pfad/..« "
+"bezieht sich auf das übergeordnete Verzeichnis von »Pfad« außerhalb der "
+"Dateisystemhierarchie von »Gerät«."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Traversal of mount points can be blocked by using B<openat2>(2), with the "
+"B<RESOLVE_NO_XDEV> flag set (though note that this also restricts bind mount "
+"traversal)."
+msgstr ""
+"Durchlauf von Einhängepunkten kann mittels B<openat2>(2) mit dem gesetzten "
+"Schalter B<RESOLVE_NO_XDEV> verhindert werden (beachten Sie allerdings, dass "
+"dies auch den Durchlauf von Bind-Einhängungen beschränkt)."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Trailing slashes"
+msgstr "Abschließende Schrägstriche"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If a pathname ends in a \\[aq]/\\[aq], that forces resolution of the "
+"preceding component as in Step 2: the component preceding the slash either "
+"exists and resolves to a directory or it names a directory that is to be "
+"created immediately after the pathname is resolved.  Otherwise, a trailing \\"
+"[aq]/\\[aq] is ignored."
+msgstr ""
+"Falls ein Pfadname mit einem »/« endet, der die Auflösung der vorherigen "
+"Komponente gemäß Schritt 2 erzwingt: die Komponente vor dem Schrägstrich "
+"existiert entweder und wird zu einem Verzeichnis aufgelöst oder sie benennt "
+"ein Verzeichnis, das sofort nach der Auflösung des Pfadnamens erstellt "
+"werden soll. Andernfalls wird ein abschließender »/« ignoriert."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Final symbolic link"
+msgstr "Finaler symbolischer Link"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If the last component of a pathname is a symbolic link, then it depends on "
+"the system call whether the file referred to will be the symbolic link or "
+"the result of path resolution on its contents.  For example, the system call "
+"B<lstat>(2)  will operate on the symbolic link, while B<stat>(2)  operates "
+"on the file pointed to by the symbolic link."
+msgstr ""
+"Falls die letzte Komponente des Pfadnamens ein symbolischer Link ist, hängt "
+"es vom Systemaufruf ab, ob die Datei, auf die referenziert wird, ein "
+"symbolischer Link ist oder das Ergebnis der Pfadauflösung seiner Inhalte. "
+"Beispielsweise wird der Systemaufruf B<lstat>(2) auf einem symbolischen Link "
+"agieren, während B<stat>(2) auf der Datei agiert, auf die der symbolische "
+"Link zeigt."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Length limit"
+msgstr "Längenbeschränkung"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"There is a maximum length for pathnames.  If the pathname (or some "
+"intermediate pathname obtained while resolving symbolic links)  is too long, "
+"an B<ENAMETOOLONG> error is returned (\"Filename too long\")."
+msgstr ""
+"Es gibt eine maximale Länge für Pfadnamen. Falls der Pfadname (oder ein "
+"Zwischenpfadname, der beim Auflösen von symbolischen Links erhalten wurde) "
+"zu lang ist, wird ein Fehler B<ENAMETOOLONG> zurückgeliefert (»Der Dateiname "
+"ist zu lang«)."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Empty pathname"
+msgstr "Leere Pfadnamen"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"In the original UNIX, the empty pathname referred to the current directory.  "
+"Nowadays POSIX decrees that an empty pathname must not be resolved "
+"successfully.  Linux returns B<ENOENT> in this case."
+msgstr ""
+"Im ursprünglichen UNIX bezogen sich leere Pfadnamen auf das aktuelle "
+"Verzeichnis. Heutzutage beschließt POSIX, dass ein leerer Pfadname nicht "
+"erfolgreich aufgelöst werden darf. Linux liefert in diesem Fall B<ENOENT> "
+"zurück."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Permissions"
+msgstr "Berechtigungen"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The permission bits of a file consist of three groups of three bits; see "
+"B<chmod>(1)  and B<stat>(2).  The first group of three is used when the "
+"effective user ID of the calling process equals the owner ID of the file.  "
+"The second group of three is used when the group ID of the file either "
+"equals the effective group ID of the calling process, or is one of the "
+"supplementary group IDs of the calling process (as set by B<setgroups>(2)).  "
+"When neither holds, the third group is used."
+msgstr ""
+"Die Berechtigungsbits einer Datei bestehen aus drei Gruppen von drei Bits: "
+"siehe B<chmod>(1) und B<stat>(2). Die erste Gruppe der drei wird verwandt, "
+"wenn die effektive Benutzerkennung des aufrufenden Prozesses identisch zu "
+"der Eigentümerkennung der Datei ist. Die zweite Gruppe der drei wird "
+"verwandt, wenn die Gruppenkennung der Datei entweder mit der effektiven "
+"Gruppenkennung des aufrufenden Prozesses übereinstimmt oder eine der "
+"ergänzenden Gruppenkennungen des aufrufenden Prozesses ist (wie durch "
+"B<setgroups>(2) gesetzt). Falls nichts davon zutrifft, wird die dritte "
+"Gruppe verwandt."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Of the three bits used, the first bit determines read permission, the second "
+"write permission, and the last execute permission in case of ordinary files, "
+"or search permission in case of directories."
+msgstr ""
+"Von den drei verwandten Bits bestimmt das erste Bit die Leseberechtigung, "
+"das zweite die Schreibberechtigung und das letzte die Ausführberechtigung im "
+"Falle von gewöhnlichen Dateien oder die Suchberechtigung im Falle von "
+"Verzeichnissen."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Linux uses the fsuid instead of the effective user ID in permission checks.  "
+"Ordinarily the fsuid will equal the effective user ID, but the fsuid can be "
+"changed by the system call B<setfsuid>(2)."
+msgstr ""
+"Linux verwendet fsuid anstelle der effektiven Benutzerkennung bei "
+"Berechtigungsprüfungen. Normalerweise ist die fsuid identisch mit der "
+"effektiven Benutzerkennung, aber die fsuid kann mit dem Systemaufruf "
+"B<setfsuid>(2) geändert werden."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"(Here \"fsuid\" stands for something like \"filesystem user ID\".  The "
+"concept was required for the implementation of a user space NFS server at a "
+"time when processes could send a signal to a process with the same effective "
+"user ID.  It is obsolete now.  Nobody should use B<setfsuid>(2).)"
+msgstr ""
+"(Hier steht »fsuid« für etwas wie »Dateisystembenutzerkennung«. Das Konzept "
+"wurde für die Implementierung von NFS-Servern im Benutzerbereich zu einem "
+"Zeitpunkt benötigt, zu dem ein Prozess ein Signal zu einem anderen Prozess "
+"mit der gleichen effektiven Benutzerkennung senden konnte. Dies ist jetzt "
+"veraltet. Niemand sollte B<setfsuid>(2) verwenden.)"
+
+#.  FIXME . say something about filesystem mounted read-only ?
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Similarly, Linux uses the fsgid (\"filesystem group ID\")  instead of the "
+"effective group ID.  See B<setfsgid>(2)."
+msgstr ""
+"Auf ähnliche Weise verwendet Linux die fsgid (»Dateisystemgruppenkennung«) "
+"anstelle der effektiven Gruppenkennung. Siehe B<setfsgid>(2)."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Bypassing permission checks: superuser and capabilities"
+msgstr "Umgehen von Berechtigungsprüfungen: Superuser und Capabilitys"
+
+#.  (but for exec at least one x bit must be set) -- AEB
+#.  but there is variation across systems on this point: for
+#.  example, HP-UX and Tru64 are as described by AEB.  However,
+#.  on some implementations (e.g., Solaris, FreeBSD),
+#.  access(X_OK) by superuser will report success, regardless
+#.  of the file's execute permission bits. -- MTK (Oct 05)
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"On a traditional UNIX system, the superuser (I<root>, user ID 0) is all-"
+"powerful, and bypasses all permissions restrictions when accessing files."
+msgstr ""
+"Auf einem traditionellen UNIX-System ist der Superuser (I<root>, "
+"Benutzerkennung 0) allmächtig und umgeht alle Berechtigungseinschränkungen "
+"beim Zugriff auf Dateien."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"On Linux, superuser privileges are divided into capabilities (see "
+"B<capabilities>(7)).  Two capabilities are relevant for file permissions "
+"checks: B<CAP_DAC_OVERRIDE> and B<CAP_DAC_READ_SEARCH>.  (A process has "
+"these capabilities if its fsuid is 0.)"
+msgstr ""
+"Unter Linux sind die Superuser-Privilegien in Capabilitys aufgeteilt (siehe "
+"B<capabilities>(7)). Zwei Capabilitys sind für "
+"Dateiberechtigungsüberprüfungen relevant: B<CAP_DAC_OVERRIDE> und "
+"B<CAP_DAC_READ_SEARCH>. (Ein Prozess hat diese Capabilitys, falls seine "
+"fsuid 0 ist.)"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The B<CAP_DAC_OVERRIDE> capability overrides all permission checking, but "
+"grants execute permission only when at least one of the file's three execute "
+"permission bits is set."
+msgstr ""
+"Die Capability B<CAP_DAC_OVERRIDE> setzt alle Berechtigungsprüfungen außer "
+"Kraft, aber gewährt die Ausführberechtigung nur, falls mindestens eines der "
+"drei Ausführ-Berechtigungs-Bits der Datei gesetzt ist."
+
+#.  FIXME . say something about immutable files
+#.  FIXME . say something about ACLs
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The B<CAP_DAC_READ_SEARCH> capability grants read and search permission on "
+"directories, and read permission on ordinary files."
+msgstr ""
+"Die Capability B<CAP_DAC_READ_SEARCH> gewährt Lese- und Suchberechtigungen "
+"für Verzeichnisse und Leseberechtigungen für gewöhnliche Dateien."
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "SIEHE AUCH"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<readlink>(2), B<capabilities>(7), B<credentials>(7), B<symlink>(7)"
+msgstr "B<readlink>(2), B<capabilities>(7), B<credentials>(7), B<symlink>(7)"
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "2023-02-05"
+msgstr "5. Februar 2023"
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "Linux man-pages 6.03"
+msgstr "Linux man-pages 6.03"
+
+#. type: SS
+#: debian-bookworm mageia-cauldron
+#, no-wrap
+msgid ". and .."
+msgstr ". und .."
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "2023-10-31"
+msgstr "31. Oktober 2023"
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "Linux man-pages 6.06"
+msgstr "Linux man-pages 6.06"
+
+#. type: TH
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux man-pages (unreleased)"
+msgstr "Linux man-pages (unveröffentlicht)"

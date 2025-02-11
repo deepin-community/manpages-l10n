@@ -1,0 +1,451 @@
+# Romanian translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>, 2023.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n 4.20.0\n"
+"POT-Creation-Date: 2024-06-29 05:00+0200\n"
+"PO-Revision-Date: 2024-07-01 21:58+0200\n"
+"Last-Translator: Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>\n"
+"Language-Team: Romanian <translation-team-ro@lists.sourceforge.net>\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2;\n"
+"X-Generator: Poedit 3.4.3\n"
+
+#. type: TH
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid "LOCATEDB"
+msgstr "LOCATEDB"
+
+#. type: SH
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid "NAME"
+msgstr "NUME"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid "locatedb - front-compressed file name database"
+msgstr "locatedb - bază de date de nume de fișiere comprimată frontal"
+
+#. type: SH
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "DESCRIERE"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"This manual page documents the format of file name databases for the GNU "
+"version of B<locate>.  The file name databases contain lists of files that "
+"were in particular directory trees when the databases were last updated."
+msgstr ""
+"Această pagină de manual documentează formatul bazelor de date cu nume de "
+"fișiere pentru versiunea GNU a B<locate>. Bazele de date cu nume de fișiere "
+"conțin liste de fișiere care se aflau în anumiți arbori de directoare în "
+"momentul în care bazele de date au fost actualizate ultima dată."
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"There can be multiple databases.  Users can select which databases B<locate> "
+"searches using an environment variable or command line option; see "
+"B<locate>(1).  The system administrator can choose the file name of the "
+"default database, the frequency with which the databases are updated, and "
+"the directories for which they contain entries.  Normally, file name "
+"databases are updated by running the B<updatedb> program periodically, "
+"typically nightly; see B<updatedb>(1)."
+msgstr ""
+"Pot exista mai multe baze de date. Utilizatorii pot selecta bazele de date "
+"în care B<locate> caută folosind o variabilă de mediu sau o opțiune de linie "
+"de comandă; a se vedea B<locate>(1). Administratorul de sistem poate alege "
+"numele de fișier al bazei de date implicite, frecvența cu care sunt "
+"actualizate bazele de date și directoarele pentru care acestea conțin "
+"intrări. În mod normal, bazele de date cu nume de fișiere sunt actualizate "
+"prin rularea periodică a programului B<updatedb>, de obicei în fiecare "
+"noapte; a se vedea B<updatedb>(1)."
+
+#. type: SH
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid "GNU LOCATE02 database format"
+msgstr "Formatul bazei de date GNU LOCATE02"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"This is the default format of databases produced by B<updatedb>.  The "
+"B<updatedb> program runs B<frcode> to compress the list of file names using "
+"front-compression, which reduces the database size by a factor of 4 to 5.  "
+"Front-compression (also known as incremental encoding) works as follows."
+msgstr ""
+"Acesta este formatul implicit al bazelor de date produse de B<updatedb>. "
+"Programul B<updatedb> execută B<frcode> pentru a comprima lista de nume de "
+"fișiere utilizând compresia frontală, ceea ce reduce dimensiunea bazei de "
+"date de un factor de 4 până la 5. Compresia frontală (cunoscută și sub "
+"denumirea de codificare incrementală) funcționează după cum urmează."
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"The database entries are a sorted list (case-insensitively, for users' "
+"convenience).  Since the list is sorted, each entry is likely to share a "
+"prefix (initial string) with the previous entry.  Each database entry begins "
+"with an signed offset-differential count byte, which is the additional "
+"number of characters of prefix of the preceding entry to use beyond the "
+"number that the preceding entry is using of its predecessor.  (The counts "
+"can be negative.)  Following the count is a null-terminated ASCII remainder "
+"\\(em the part of the name that follows the shared prefix."
+msgstr ""
+"Intrările din baza de date sunt o listă ordonată (fără a ține cont de "
+"diferențele dintre majuscule și minuscule, pentru confortul utilizatorilor). "
+"Deoarece lista este sortată, este probabil ca fiecare intrare să aibă un "
+"prefix (șir inițial) comun cu intrarea anterioară. Fiecare intrare în baza "
+"de date începe cu un octet de contorizare diferențială cu semn, care "
+"reprezintă numărul suplimentar de caractere ale prefixului intrării "
+"precedente care urmează să fie utilizate în plus față de numărul pe care "
+"intrarea precedentă îl utilizează de la predecesorul său (numărătoarea poate "
+"fi negativă.) După numărătoare urmează un rest ASCII cu terminație nulă, "
+"partea din nume care urmează prefixului partajat."
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"If the offset-differential count is larger than can be stored in a signed "
+"byte (\\(+-127), the byte has the value 0x80 (binary 10000000)  and the "
+"actual count follows in a 2-byte word, with the high byte first (network "
+"byte order).  This count can also be negative (the sign bit being in the "
+"first of the two bytes)."
+msgstr ""
+"În cazul în care numărul diferențial de poziție este mai mare decât poate fi "
+"stocat într-un octet cu semn (\\(+-127), octetul are valoarea 0x80 (binar "
+"10000000), iar numărul real urmează într-un cuvânt de 2 octeți, cu octetul "
+"cel mai mare mai întâi (ordinea octeților de rețea). Această numărătoare "
+"poate fi, de asemenea, negativă (bitul de semn fiind în primul dintre cei "
+"doi octeți)."
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"Every database begins with a dummy entry for a file called `LOCATE02', which "
+"B<locate> checks for to ensure that the database file has the correct "
+"format; it ignores the entry in doing the search."
+msgstr ""
+"Fiecare bază de date începe cu o intrare fictivă pentru un fișier numit "
+"„LOCATE02”, pe care B<locate> îl verifică pentru a se asigura că fișierul "
+"bazei de date are formatul corect; în timpul căutării, ignoră această "
+"intrare."
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"Databases cannot be concatenated together, even if the first (dummy) entry "
+"is trimmed from all but the first database.  This is because the offset-"
+"differential count in the first entry of the second and following databases "
+"will be wrong."
+msgstr ""
+"Bazele de date nu pot fi concatenate împreună, chiar dacă prima intrare "
+"(fictivă) este eliminată din toate bazele de date, cu excepția primei. Acest "
+"lucru se datorează faptului că numărul diferențial de poziție din prima "
+"intrare a celei de-a doua baze de date și a următoarelor va fi greșit."
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"In the future, the data within the locate database may not be sorted in any "
+"particular order.  To obtain sorted results, pipe the output of B<locate> "
+"through B<sort -f>."
+msgstr ""
+"În viitor, este posibil ca datele din baza de date „locate” să nu fie "
+"sortate într-o anumită ordine. Pentru a obține rezultate sortate, trimiteți "
+"ieșirea din B<locate> prin B<sort -f>."
+
+#. type: SH
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid "slocate database format"
+msgstr "Formatul bazei de date „slocate”"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"The B<slocate> program uses a database format similar to, but not quite the "
+"same as, GNU B<locate>.  The first byte of the database specifies its "
+"I<security> I<level>.  If the security level is 0, B<slocate> will read, "
+"match and print filenames on the basis of the information in the database "
+"only.  However, if the security level byte is 1, B<slocate> omits entries "
+"from its output if the invoking user is unable to access them.  The second "
+"byte of the database is zero.  The second byte is followed by the first "
+"database entry.  The first entry in the database is not preceded by any "
+"differential count or dummy entry.  Instead the differential count for the "
+"first item is assumed to be zero."
+msgstr ""
+"Programul B<slocate> utilizează un format de bază de date similar, dar nu "
+"chiar la fel ca GNU B<locate>. Primul octet al bazei de date specifică "
+"I<nivelul> său de I<securitate>.  Dacă nivelul de securitate este 0, "
+"B<slocate> va citi, va potrivi și va imprima numele fișierelor numai pe baza "
+"informațiilor din baza de date. Cu toate acestea, dacă octetul de nivel de "
+"securitate este 1, B<slocate> omite intrările de la ieșire dacă utilizatorul "
+"care îl invocă nu are acces la ele. Al doilea octet al bazei de date este "
+"zero. Al doilea octet este urmat de prima intrare din baza de date. Prima "
+"intrare din baza de date nu este precedată de nici un număr diferențial sau "
+"de o intrare fictivă. În schimb, se presupune că numărul diferențial pentru "
+"primul element este zero."
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"Starting with the second entry (if any) in the database, data is interpreted "
+"as for the GNU LOCATE02 format."
+msgstr ""
+"Începând cu a doua intrare (dacă există) în baza de date, datele sunt "
+"interpretate ca în formatul GNU LOCATE02."
+
+#. type: SH
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid "Old Locate Database format"
+msgstr "Formatul vechi al bazei de date „locate”"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"There is also an old database format, used by Unix B<locate> and B<find> "
+"programs and earlier releases of the GNU ones.  B<updatedb> runs programs "
+"called B<bigram> and B<code> to produce old-format databases.  The old "
+"format differs from the above description in the following ways.  Instead of "
+"each entry starting with an offset-differential count byte and ending with a "
+"null, byte values from 0 through 28 indicate offset-differential counts from "
+"-14 through 14.  The byte value indicating that a long offset-differential "
+"count follows is 0x1e (30), not 0x80.  The long counts are stored in host "
+"byte order, which is not necessarily network byte order, and host integer "
+"word size, which is usually 4 bytes.  They also represent a count 14 less "
+"than their value.  The database lines have no termination byte; the start of "
+"the next line is indicated by its first byte having a value \\(E<lt>= 30."
+msgstr ""
+"Acesta este, de asemenea, un format vechi de bază de date, utilizat de "
+"programele Unix B<locate> și B<find> și de versiunile anterioare ale celor "
+"GNU. B<updatedb> rulează programe numite B<bigram> și B<code> pentru a "
+"produce baze de date în format vechi. Formatul vechi diferă de descrierea de "
+"mai sus în următoarele aspecte. În loc ca fiecare intrare să înceapă cu un "
+"octet de contorizare a diferenței de poziție și să se termine cu un zero, "
+"valorile octeților de la 0 la 28 indică valori de contorizare a diferenței "
+"de poziție de la -14 la 14. Valoarea octetului care indică faptul că urmează "
+"un număr diferențial de poziție lung este 0x1e (30), nu 0x80. Numărătorile "
+"lungi sunt stocate în ordinea octeților gazdă, care nu este neapărat ordinea "
+"octeților rețelei, și în ordinea mărimii cuvântului întreg gazdă, care este "
+"de obicei de 4 octeți. Acestea reprezintă, de asemenea, un număr cu 14 mai "
+"mic decât valoarea lor. Liniile bazei de date nu au un octet de terminare; "
+"începutul liniei următoare este indicat de primul octet al acesteia având "
+"valoarea \\(E<lt>= 30."
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"In addition, instead of starting with a dummy entry, the old database format "
+"starts with a 256 byte table containing the 128 most common bigrams in the "
+"file list.  A bigram is a pair of adjacent bytes.  Bytes in the database "
+"that have the high bit set are indexes (with the high bit cleared) into the "
+"bigram table.  The bigram and offset-differential count coding makes these "
+"databases 20\\(en25% smaller than the new format, but makes them not 8-bit "
+"clean.  Any byte in a file name that is in the ranges used for the special "
+"codes is replaced in the database by a question mark, which not "
+"coincidentally is the shell wildcard to match a single character."
+msgstr ""
+"În plus, în loc să înceapă cu o intrare fictivă, vechiul format al bazei de "
+"date începe cu un tabel de 256 de octeți care conține cele mai frecvente 128 "
+"de bigrame din lista de fișiere. O bigramă este o pereche de octeți "
+"adiacenți. Octeții din baza de date care au bitul înalt activat sunt "
+"indexuri (cu bitul înalt șters) în tabelul bigramelor. Codificarea "
+"bigramelor și a numărătorii diferențiale de poziție face ca aceste baze de "
+"date să fie cu 20\\25% mai mici decât noul format, dar nu le face să fie "
+"curate pe 8 biți. Orice octet dintr-un nume de fișier care se află în "
+"intervalele utilizate pentru codurile speciale este înlocuit în baza de date "
+"cu un semn de întrebare, care, nu întâmplător, este metacaracterul din shell "
+"pentru a se potrivi cu un singur caracter."
+
+#. type: SH
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid "EXAMPLE"
+msgstr "EXEMPLU"
+
+#.  with nulls changed to newlines:
+#. type: Plain text
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid ""
+"Input to B<frcode>:\n"
+"/usr/src\n"
+"/usr/src/cmd/aardvark.c\n"
+"/usr/src/cmd/armadillo.c\n"
+"/usr/tmp/zoo\n"
+msgstr ""
+"Intrare în B<frcode>:\n"
+"/usr/src\n"
+"/usr/src/cmd/aardvark.c\n"
+"/usr/src/cmd/armadillo.c\n"
+"/usr/tmp/zoo\n"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid ""
+"Length of the longest prefix of the preceding entry to share:\n"
+"0 /usr/src\n"
+"8 /cmd/aardvark.c\n"
+"14 rmadillo.c\n"
+"5 tmp/zoo\n"
+msgstr ""
+"Lungimea celui mai lung prefix al intrării precedente care trebuie partajat:\n"
+"0 /usr/src\n"
+"8 /cmd/aardvark.c\n"
+"14 rmadillo.c\n"
+"5 tmp/zoo\n"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"Output from B<frcode>, with trailing nulls changed to newlines and count "
+"bytes made printable:"
+msgstr ""
+"Ieșire de la B<frcode>, cu nulurile din urmă schimbate în linii noi și cu "
+"numărul de octeți care pot fi imprimați:"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid ""
+"0 LOCATE02\n"
+"0 /usr/src\n"
+"8 /cmd/aardvark.c\n"
+"6 rmadillo.c\n"
+"-9 tmp/zoo\n"
+msgstr ""
+"0 LOCATE02\n"
+"0 /usr/src\n"
+"8 /cmd/aardvark.c\n"
+"6 rmadillo.c\n"
+"-9 tmp/zoo\n"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid "(6 = 14 - 8, and -9 = 5 - 14)\n"
+msgstr "(6 = 14 - 8, și -9 = 5 - 14)\n"
+
+#. type: SH
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid "REPORTING BUGS"
+msgstr "RAPORTAREA ERORILOR"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"GNU findutils online help: E<lt>https://www.gnu.org/software/findutils/#get-"
+"helpE<gt>"
+msgstr ""
+"Ajutor în internet pentru GNU findutils: E<lt>https://www.gnu.org/software/"
+"findutils/#get-helpE<gt>."
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"Report any translation bugs to E<lt>https://translationproject.org/team/E<gt>"
+msgstr ""
+"Raportați orice erori de traducere la: E<lt>https://translationproject.org/"
+"team/ro.htmlE<gt>"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid "Report any other issue via the form at the GNU Savannah bug tracker:"
+msgstr ""
+"Raportați orice altă problemă prin intermediul formularului de la sistemul "
+"de urmărire a erorilor al GNU Savannah:"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid "E<lt>https://savannah.gnu.org/bugs/?group=findutilsE<gt>"
+msgstr "E<lt>https://savannah.gnu.org/bugs/?group=findutilsE<gt>"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"General topics about the GNU findutils package are discussed at the I<bug-"
+"findutils> mailing list:"
+msgstr ""
+"Subiectele generale despre pachetul GNU findutils sunt discutate pe lista de "
+"discuții I<bug-findutils>:"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid "E<lt>https://lists.gnu.org/mailman/listinfo/bug-findutilsE<gt>"
+msgstr "E<lt>https://lists.gnu.org/mailman/listinfo/bug-findutilsE<gt>"
+
+#. type: SH
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid "COPYRIGHT"
+msgstr "DREPTURI DE AUTOR"
+
+#. type: Plain text
+#: debian-bookworm
+msgid ""
+"Copyright \\(co 1994-2022 Free Software Foundation, Inc.  License GPLv3+: "
+"GNU GPL version 3 or later E<lt>https://gnu.org/licenses/gpl.htmlE<gt>."
+msgstr ""
+"Drepturi de autor © 1994-2022 Free Software Foundation, Inc. Licență GPLv3+: "
+"GNU GPL versiunea 3 sau o versiune ulterioară E<lt>https://gnu.org/licenses/"
+"gpl.htmlE<gt>."
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"This is free software: you are free to change and redistribute it.  There is "
+"NO WARRANTY, to the extent permitted by law."
+msgstr ""
+"Acesta este software liber: sunteți liber să-l modificați și să-l "
+"redistribuiți. Nu există NICIO GARANȚIE, în limitele prevăzute de lege."
+
+#. type: SH
+#: debian-bookworm debian-unstable
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "CONSULTAȚI ȘI"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid "B<find>(1), B<locate>(1), B<xargs>(1), B<locatedb>(5)"
+msgstr "B<find>(1), B<locate>(1), B<xargs>(1), B<locatedb>(5)"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid ""
+"Full documentation E<lt>https://www.gnu.org/software/findutils/locatedbE<gt>"
+msgstr ""
+"Documentația completă este disponibilă la E<lt>https://www.gnu.org/software/"
+"coreutils/tsortE<gt>"
+
+#. type: Plain text
+#: debian-bookworm debian-unstable
+msgid "or available locally via: B<info locatedb>"
+msgstr "sau local prin intermediul comenzii: B<info locatedb>"
+
+#. type: Plain text
+#: debian-unstable
+msgid ""
+"Copyright \\(co 1994\\(en2024 Free Software Foundation, Inc.  License "
+"GPLv3+: GNU GPL version 3 or later E<lt>https://gnu.org/licenses/"
+"gpl.htmlE<gt>."
+msgstr ""
+"Drepturi de autor © 1994-2024 Free Software Foundation, Inc. Licență GPLv3+: "
+"GNU GPL versiunea 3 sau o versiune ulterioară E<lt>https://gnu.org/licenses/"
+"gpl.htmlE<gt>."

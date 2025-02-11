@@ -20,7 +20,7 @@ use warnings;
 
 # Set up month names
 my @months =
-  qw(Ianuarie februarie martie aprilie mai iunie iulie august septembrie octombrie noiembrie decembrie);
+  qw(ianuarie februarie martie aprilie mai iunie iulie august septembrie octombrie noiembrie decembrie);
 
 # Split by paragraphs, in order to be able to remove a 'fuzzy' mark.
 $/ = "";
@@ -31,7 +31,7 @@ while (<>) {
     if (/^msgid "([1-2][0-9]{3})-([0-1][0-9])-([0-3][0-9])"$/m) {
         my $year  = sprintf( "%4d", $1 );
         my $month = $months[ $2 - 1 ];
-        my $day   = sprintf( "%d.", $3 );
+        my $day   = sprintf( "%d", $3 );
 
         # Replace the current date translation with the new one.
         s/^msgstr \".*\"$/msgstr "$day $month $year"/m;

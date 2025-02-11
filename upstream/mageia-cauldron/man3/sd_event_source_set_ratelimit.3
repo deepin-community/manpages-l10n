@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_EVENT_SOURCE_SET_RATELIMIT" "3" "" "systemd 249" "sd_event_source_set_ratelimit"
+.TH "SD_EVENT_SOURCE_SET_RATELIMIT" "3" "" "systemd 255" "sd_event_source_set_ratelimit"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,7 +20,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-sd_event_source_set_ratelimit, sd_event_source_get_ratelimit, sd_event_source_is_ratelimited \- Configure rate limiting on event sources
+sd_event_source_set_ratelimit, sd_event_source_get_ratelimit, sd_event_source_is_ratelimited, sd_event_source_set_ratelimit_expire_callback, sd_event_source_leave_ratelimit \- Configure rate limiting on event sources
 .SH "SYNOPSIS"
 .sp
 .ft B
@@ -34,6 +34,10 @@ sd_event_source_set_ratelimit, sd_event_source_get_ratelimit, sd_event_source_is
 .BI "int sd_event_source_get_ratelimit(sd_event_source\ *" "source" ", uint64_t*\ " "ret_interval_usec" ", unsigned*\ " "ret_burst" ");"
 .HP \w'int\ sd_event_source_is_ratelimited('u
 .BI "int sd_event_source_is_ratelimited(sd_event_source\ *" "source" ");"
+.HP \w'int\ sd_event_source_set_ratelimit_expire_callback('u
+.BI "int sd_event_source_set_ratelimit_expire_callback(sd_event_source\ *" "source" ", sd_event_handler_t" "callback" ");"
+.HP \w'int\ sd_event_source_leave_ratelimit('u
+.BI "int sd_event_source_leave_ratelimit(sd_event_source\ *" "source" ");"
 .SH "DESCRIPTION"
 .PP
 \fBsd_event_source_set_ratelimit()\fR
@@ -54,16 +58,25 @@ may be used to query the current rate limiting parameters set on the event sourc
 \fBsd_event_source_is_ratelimited()\fR
 may be used to query whether the event source is currently affected by rate limiting, i\&.e\&. it has recently hit the rate limit and is currently temporarily disabled due to that\&.
 .PP
+\fBsd_event_source_set_ratelimit_expire_callback()\fR
+may be used to set a callback function that is invoked every time the event source leaves rate limited state\&. Note that function is called in the same event loop iteration in which state transition occurred\&.
+.PP
+\fBsd_event_source_leave_ratelimit()\fR
+may be used to immediately reenable an event source that was temporarily disabled due to rate limiting\&. This will reset the ratelimit counters for the current time interval\&.
+.PP
 Rate limiting is currently implemented for I/O, timer, signal, defer and inotify event sources\&.
 .SH "RETURN VALUE"
 .PP
 On success,
-\fBsd_event_source_set_ratelimit()\fR
+\fBsd_event_source_set_ratelimit()\fR,
+\fBsd_event_source_set_ratelimit_expire_callback\fR
 and
 \fBsd_event_source_get_ratelimit()\fR
 return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
-\fBsd_event_source_is_ratelimited\fR
+\fBsd_event_source_is_ratelimited()\fR
 returns zero if rate limiting is currently not in effect and greater than zero if it is in effect; it returns a negative errno\-style error code on failure\&.
+\fBsd_event_source_leave_ratelimit()\fR
+returns zero if rate limiting wasn\*(Aqt in effect on the specified event source, and positive if it was and rate limiting is now turned off again; it returns a negative errno\-style error code on failure\&.
 .SS "Errors"
 .PP
 Returned errors may indicate the following problems:
@@ -74,28 +87,55 @@ Returned errors may indicate the following problems:
 is not a valid pointer to an
 sd_event_source
 object\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The event loop has been created in a different process\&.
+The event loop has been created in a different process, library or module instance\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fB\-EDOM\fR
 .RS 4
 It was attempted to use the rate limiting feature on an event source type that does not support rate limiting\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fB\-ENOEXEC\fR
 .RS 4
 \fBsd_event_source_get_ratelimit()\fR
 was called on an event source that doesn\*(Aqt have rate limiting configured\&.
+.sp
+Added in version 248\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_event_source_set_ratelimit()\fR,
+\fBsd_event_source_get_ratelimit()\fR, and
+\fBsd_event_source_is_ratelimited()\fR
+were added in version 248\&.
+.PP
+\fBsd_event_source_set_ratelimit_expire_callback()\fR
+was added in version 250\&.
+.PP
+\fBsd_event_source_leave_ratelimit()\fR
+was added in version 254\&.
 .SH "SEE ALSO"
 .PP
 \fBsd-event\fR(3),

@@ -3,7 +3,7 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "Pamstack User Manual" 0 "10 January 2006" "netpbm documentation"
+.TH "Pamstack User Manual" 0 "18 May 2023" "netpbm documentation"
 
 .SH NAME
 pamstack - stack planes of multiple PAM images into one PAM image
@@ -13,6 +13,7 @@ pamstack - stack planes of multiple PAM images into one PAM image
 
 \fBpamstack\fP
 [\fB-tupletype \fP\fItupletype\fP]
+[\fB-firstmaxval\fP,\fB-lcmmaxval\fP]
 [\fIinputfilespec\fP ...]
 .PP
 All options may be abbreviated to the shortest unique prefix.  You
@@ -30,15 +31,23 @@ This program is part of
 produces a PAM image as output, consisting of all the planes
 (channels) of the inputs, stacked in the order specified.
 .PP
-For any one (but not more) of the input files, you may specify
-"-" to mean Standard Input.  If you specify no arguments at all,
-the input is one file: Standard Input.
+It can also just change the tuple type of a single PAM image.
+  
 .PP
-The output is the same dimensions as the inputs, except that the
-depth is the sum of the depths of the inputs.  It has the same maxval.
-\fBpamstack\fP fails if the inputs are not all the same width, height,
-and maxval.  The tuple type is a null string unless you specify the
-\fB-tupletype\fP option.
+For any one (but not more) of the input files, you may specify "-" to mean
+Standard Input.  If you specify no arguments at all, the input is one file:
+Standard Input.
+.PP
+The output is the same dimensions as the inputs, except that the depth is
+  the sum of the depths of the inputs.  The maxval is the same as the inputs
+  if they are all alike, and controlled by \fB-firstmaxval\fP
+  and \fB-lcmmaxval\fP if not.  The tuple type is a null string unless you
+  specify the \fB-tupletype\fP option.
+  
+.PP
+ \fBpamstack\fP fails if the inputs are not all the same width and height.
+It also fails if they do not all have the same maxval, unless you specify
+\fB-firstmaxval\fP or \fB-lcmmaxval\fP.
 .PP
 \fBpamstack\fP works with multi-image streams.  It stacks the 1st
 image in all the streams into one output image (the first one in the
@@ -73,6 +82,7 @@ this:
 $ pamstack -tupletype=RGB_ALPHA myimage.ppm myalpha.pgm | \e
       pamtouil >myimage.uil
 \fP
+
 .fi
 
 .UN options
@@ -93,6 +103,33 @@ command line option:
 This specifies the tuple type name to be recorded in the output.  You may
 use any string up to 255 characters.  Some programs recognize some names.
 If you omit this option, the default tuple type name is null.
+
+.TP
+\fB-firstmaxval\fP
+This says to make the maxval of the output the same as the maxval of the first
+image of the input; the program scales sample values of other images are as
+necessary.
+.sp
+By default, \fBpamstack\fP requires all the input images to have the same
+maxval.  If they don't, it fails.
+.sp
+You cannot specify this with \fB-lcmmaxval\fP.
+.sp
+This option was new in Netpbm 11.03 (June 2023).
+  
+.TP
+\fB-lcmmaxval\fP
+This says to make the maxval of the output the least common multiple of the
+maxvals of the input images, limited to 65535 if the LCM is above that; the
+program scales sample values of other images are as necessary.
+.sp
+By default, \fBpamstack\fP requires all the input images to have the same
+maxval.  If they don't, it fails.
+.sp
+You cannot specify this with \fB-firstmaxval\fP.
+.sp
+This option was new in Netpbm 11.03 (June 2023).
+
 
 
 .UN seealso

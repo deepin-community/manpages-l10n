@@ -1,5 +1,5 @@
 '\" t
-.TH "SD\-BUS" "3" "" "systemd 249" "sd-bus"
+.TH "SD\-BUS" "3" "" "systemd 255" "sd-bus"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -33,7 +33,9 @@ sd-bus \- A lightweight D\-Bus IPC client library
 .SH "DESCRIPTION"
 .PP
 sd\-bus\&.h
-provides an implementation of a D\-Bus IPC client\&. See
+is part of
+\fBlibsystemd\fR(3)
+and provides an implementation of a D\-Bus IPC client\&. See
 \m[blue]\fB\%https://www.freedesktop.org/software/dbus/\fR\m[]
 for more information about D\-Bus IPC\&.
 .PP
@@ -71,6 +73,8 @@ See
 \fBsd_bus_emit_properties_changed_strv\fR(3),
 \fBsd_bus_emit_signal\fR(3),
 \fBsd_bus_emit_signalv\fR(3),
+\fBsd_bus_emit_signal_to\fR(3),
+\fBsd_bus_emit_signal_tov\fR(3),
 \fBsd-bus-errors\fR(3),
 \fBsd_bus_error\fR(3),
 \fBsd_bus_error_add_map\fR(3),
@@ -125,6 +129,7 @@ See
 \fBsd_bus_message_new_method_call\fR(3),
 \fBsd_bus_message_new_method_error\fR(3),
 \fBsd_bus_message_new_signal\fR(3),
+\fBsd_bus_message_new_signal_to\fR(3),
 \fBsd_bus_message_open_container\fR(3),
 \fBsd_bus_message_peek_type\fR(3),
 \fBsd_bus_message_read\fR(3),
@@ -183,9 +188,16 @@ See
 for more information about the functions available\&.
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

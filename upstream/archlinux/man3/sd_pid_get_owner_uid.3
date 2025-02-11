@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_PID_GET_OWNER_UID" "3" "" "systemd 249" "sd_pid_get_owner_uid"
+.TH "SD_PID_GET_OWNER_UID" "3" "" "systemd 257" "sd_pid_get_owner_uid"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,7 +20,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-sd_pid_get_owner_uid, sd_pid_get_session, sd_pid_get_user_unit, sd_pid_get_unit, sd_pid_get_machine_name, sd_pid_get_slice, sd_pid_get_user_slice, sd_pid_get_cgroup, sd_peer_get_owner_uid, sd_peer_get_session, sd_peer_get_user_unit, sd_peer_get_unit, sd_peer_get_machine_name, sd_peer_get_slice, sd_peer_get_user_slice, sd_peer_get_cgroup \- Determine the owner uid of the user unit or session, or the session, user unit, system unit, container/VM or slice that a specific PID or socket peer belongs to
+sd_pid_get_owner_uid, sd_pid_get_session, sd_pid_get_user_unit, sd_pid_get_unit, sd_pid_get_machine_name, sd_pid_get_slice, sd_pid_get_user_slice, sd_pid_get_cgroup, sd_pidfd_get_owner_uid, sd_pidfd_get_session, sd_pidfd_get_user_unit, sd_pidfd_get_unit, sd_pidfd_get_machine_name, sd_pidfd_get_slice, sd_pidfd_get_user_slice, sd_pidfd_get_cgroup, sd_peer_get_owner_uid, sd_peer_get_session, sd_peer_get_user_unit, sd_peer_get_unit, sd_peer_get_machine_name, sd_peer_get_slice, sd_peer_get_user_slice, sd_peer_get_cgroup \- Determine the owner uid of the user unit or session, or the session, user unit, system unit, container/VM or slice that a specific PID or socket peer belongs to
 .SH "SYNOPSIS"
 .sp
 .ft B
@@ -44,6 +44,22 @@ sd_pid_get_owner_uid, sd_pid_get_session, sd_pid_get_user_unit, sd_pid_get_unit,
 .BI "int sd_pid_get_user_slice(pid_t\ " "pid" ", char\ **" "slice" ");"
 .HP \w'int\ sd_pid_get_cgroup('u
 .BI "int sd_pid_get_cgroup(pid_t\ " "pid" ", char\ **" "cgroup" ");"
+.HP \w'int\ sd_pidfd_get_owner_uid('u
+.BI "int sd_pidfd_get_owner_uid(int\ " "pidfd" ", uid_t\ *" "uid" ");"
+.HP \w'int\ sd_pidfd_get_session('u
+.BI "int sd_pidfd_get_session(int\ " "pidfd" ", char\ **" "session" ");"
+.HP \w'int\ sd_pidfd_get_user_unit('u
+.BI "int sd_pidfd_get_user_unit(int\ " "pidfd" ", char\ **" "unit" ");"
+.HP \w'int\ sd_pidfd_get_unit('u
+.BI "int sd_pidfd_get_unit(int\ " "pidfd" ", char\ **" "unit" ");"
+.HP \w'int\ sd_pidfd_get_machine_name('u
+.BI "int sd_pidfd_get_machine_name(int\ " "pidfd" ", char\ **" "name" ");"
+.HP \w'int\ sd_pidfd_get_slice('u
+.BI "int sd_pidfd_get_slice(int\ " "pidfd" ", char\ **" "slice" ");"
+.HP \w'int\ sd_pidfd_get_user_slice('u
+.BI "int sd_pidfd_get_user_slice(int\ " "pidfd" ", char\ **" "slice" ");"
+.HP \w'int\ sd_pidfd_get_cgroup('u
+.BI "int sd_pidfd_get_cgroup(int\ " "pidfd" ", char\ **" "cgroup" ");"
 .HP \w'int\ sd_peer_get_owner_uid('u
 .BI "int sd_peer_get_owner_uid(int\ " "fd" ", uid_t\ *" "uid" ");"
 .HP \w'int\ sd_peer_get_session('u
@@ -113,6 +129,23 @@ If the
 parameter of any of these functions is passed as 0, the operation is executed for the calling process\&.
 .PP
 The
+\fBsd_pidfd_get_owner_uid()\fR,
+\fBsd_pidfd_get_session()\fR,
+\fBsd_pidfd_get_user_unit()\fR,
+\fBsd_pidfd_get_unit()\fR,
+\fBsd_pidfd_get_machine_name()\fR,
+\fBsd_pidfd_get_slice()\fR,
+\fBsd_pidfd_get_user_slice()\fR
+and
+\fBsd_pidfd_get_cgroup()\fR
+calls operate similarly to their PID counterparts, but accept a
+\fBPIDFD\fR
+instead of a
+\fBPID\fR, which means they are not subject to recycle race conditions as the process is pinned by the file descriptor during the whole duration of the invocation\&. Note that these require a kernel that supports
+\fBPIDFD\fR\&. A suitable file descriptor may be acquired via
+\fBpidfd_open\fR(2)\&.
+.PP
+The
 \fBsd_peer_get_owner_uid()\fR,
 \fBsd_peer_get_session()\fR,
 \fBsd_peer_get_user_unit()\fR,
@@ -122,7 +155,9 @@ The
 \fBsd_peer_get_user_slice()\fR
 and
 \fBsd_peer_get_cgroup()\fR
-calls operate similar to their PID counterparts, but operate on a connected AF_UNIX socket and retrieve information about the connected peer process\&. Note that these fields are retrieved via
+calls operate similarly to their PID counterparts, but accept a connected
+\fBAF_UNIX\fR
+socket and retrieve information about the connected peer process\&. Note that these fields are retrieved via
 /proc/, and hence are not suitable for authorization purposes, as they are subject to races\&.
 .SH "RETURN VALUE"
 .PP
@@ -158,7 +193,7 @@ Memory allocation failed\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
 .PP
@@ -166,11 +201,35 @@ Note that the login session identifier as returned by
 \fBsd_pid_get_session()\fR
 is completely unrelated to the process session identifier as returned by
 \fBgetsid\fR(2)\&.
+.SH "HISTORY"
+.PP
+\fBsd_peer_get_cgroup()\fR,
+\fBsd_peer_get_machine_name()\fR,
+\fBsd_peer_get_owner_uid()\fR,
+\fBsd_peer_get_session()\fR,
+\fBsd_peer_get_slice()\fR,
+\fBsd_peer_get_unit()\fR,
+\fBsd_peer_get_user_slice()\fR,
+\fBsd_peer_get_user_unit()\fR,
+\fBsd_pid_get_cgroup()\fR,
+\fBsd_pid_get_machine_name()\fR,
+\fBsd_pid_get_owner_uid()\fR,
+\fBsd_pid_get_session()\fR,
+\fBsd_pid_get_slice()\fR,
+\fBsd_pid_get_unit()\fR,
+\fBsd_pid_get_user_slice()\fR, and
+\fBsd_pid_get_user_unit()\fR
+were added in version 236\&.
+.PP
+\fBsd_pidfd_get_owner_uid()\fR,
+\fBsd_pidfd_get_session()\fR,
+\fBsd_pidfd_get_user_unit()\fR,
+\fBsd_pidfd_get_unit()\fR,
+\fBsd_pidfd_get_machine_name()\fR,
+\fBsd_pidfd_get_slice()\fR,
+\fBsd_pidfd_get_user_slice()\fR, and
+\fBsd_pidfd_get_cgroup()\fR
+were added in version 253\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-login\fR(3),
-\fBsd_session_is_active\fR(3),
-\fBgetsid\fR(2),
-\fBsystemd.slice\fR(5),
-\fBsystemd-machined.service\fR(8)
+\fBsystemd\fR(1), \fBsd-login\fR(3), \fBsd_session_is_active\fR(3), \fBgetsid\fR(2), \fBsystemd.slice\fR(5), \fBsystemd-machined.service\fR(8)

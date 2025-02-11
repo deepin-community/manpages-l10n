@@ -1,34 +1,15 @@
+'\" t
 .\" Copyright (C) 2008, George Spelvin <linux@horizon.com>,
 .\" and Copyright (C) 2008, Matt Mackall <mpm@selenic.com>
 .\" and Copyright (C) 2016, Laurent Georget <laurent.georget@supelec.fr>
 .\" and Copyright (C) 2016, Nikos Mavrogiannopoulos <nmav@redhat.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of
-.\" this manual under the conditions for verbatim copying, provided that
-.\" the entire resulting derived work is distributed under the terms of
-.\" a permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume.
-.\" no responsibility for errors or omissions, or for damages resulting.
-.\" from the use of the information contained herein.  The author(s) may.
-.\" not have taken the same level of care in the production of this.
-.\" manual, which is licensed free of charge, as they might when working.
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" The following web page is quite informative:
 .\" http://www.2uo.de/myths-about-urandom/
 .\"
-.TH RANDOM 7 2017-03-13 "Linux" "Linux Programmer's Manual"
+.TH random 7 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 random \- overview of interfaces for obtaining randomness
 .SH DESCRIPTION
@@ -36,9 +17,9 @@ The kernel random-number generator relies on entropy gathered from
 device drivers and other sources of environmental noise to seed
 a cryptographically secure pseudorandom number generator (CSPRNG).
 It is designed for security, rather than speed.
-.PP
+.P
 The following interfaces provide access to output from the kernel CSPRNG:
-.IP * 3
+.IP \[bu] 3
 The
 .I /dev/urandom
 and
@@ -47,7 +28,7 @@ devices, both described in
 .BR random (4).
 These devices have been present on Linux since early times,
 and are also available on many other systems.
-.IP *
+.IP \[bu]
 The Linux-specific
 .BR getrandom (2)
 system call, available since Linux 3.17.
@@ -66,7 +47,7 @@ The default is the
 source; the
 .I random
 source is selected by specifying the
-.BR GRND_RANDOM
+.B GRND_RANDOM
 flag to the system call.
 (The
 .BR getentropy (3)
@@ -80,23 +61,23 @@ entropy pool is considered to be initialized.
 .SS Choice of random source
 Unless you are doing long-term key generation (and most likely not even
 then), you probably shouldn't be reading from the
-.IR /dev/random
+.I /dev/random
 device or employing
 .BR getrandom (2)
 with the
-.BR GRND_RANDOM
+.B GRND_RANDOM
 flag.
 Instead, either read from the
-.IR /dev/urandom
+.I /dev/urandom
 device or employ
 .BR getrandom (2)
 without the
 .B GRND_RANDOM
 flag.
 The cryptographic algorithms used for the
-.IR urandom
+.I urandom
 source are quite conservative, and so should be sufficient for all purposes.
-.PP
+.P
 The disadvantage of
 .B GRND_RANDOM
 and reads from
@@ -210,10 +191,10 @@ The amount of seed material required to generate a cryptographic key
 equals the effective key size of the key.
 For example, a 3072-bit RSA
 or Diffie-Hellman private key has an effective key size of 128 bits
-(it requires about 2^128 operations to break) so a key generator
+(it requires about 2\[ha]128 operations to break) so a key generator
 needs only 128 bits (16 bytes) of seed material from
 .IR /dev/random .
-.PP
+.P
 While some safety margin above that minimum is reasonable, as a guard
 against flaws in the CSPRNG algorithm, no cryptographic primitive
 available today can hope to promise more than 256 bits of security,
@@ -230,12 +211,3 @@ skillfully implemented.
 .BR random (4),
 .BR urandom (4),
 .BR signal (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

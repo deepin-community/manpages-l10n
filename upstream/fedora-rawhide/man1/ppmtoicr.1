@@ -3,7 +3,7 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "Ppmtoicr User Manual" 0 "05 June 2015" "netpbm documentation"
+.TH "Ppmtoicr User Manual" 0 "17 July 2022" "netpbm documentation"
 
 .SH NAME
 
@@ -20,9 +20,12 @@ ppmtoicr - convert a PPM image into NCSA ICR format
 
 [\fB-display\fP \fIdisplay\fP]
 
-[\fB-rle\fP]
-
 [\fIppmfile\fP]
+.PP
+Minimum unique abbreviation of option is acceptable.  You may use double
+hyphens instead of single hyphen to denote options.  You may use white
+space in place of the equals sign to separate an option name from its value.
+
 
 .UN description
 .SH DESCRIPTION
@@ -65,10 +68,15 @@ command line options:
 
 .TP
 \fB-windowname\fP \fIname\fP
-Output will be displayed in \fIname\fP (Default is to use
-\fIppmfile\fP or "untitled" if the input is from Standard
-Input).
-
+Output will be displayed in \fIname\fP.
+.sp
+\fIname\fP must be printable characters, and not '^'.
+.sp
+Default is to use the input file name if specified on the command line or
+  "untitled" if the input is from Standard Input.  In the former case, any
+  unprintable character or '^' in the file name becomes a
+  '.' in the window name.
+    
 .TP
 \fB-expand\fP \fIexpand\fP
 Output will be expanded on display by factor \fIexpand\fP (For
@@ -103,11 +111,10 @@ may achieve the same effect with the following sequence:
 .fi
 .PP
 To display a GIF file using the protocol in a window titled after the
-input file, zoom the displayed image by a factor of 2, and run-length
-encode the data:
+input file, zoom the displayed image by a factor of 2:
 
 .nf
-    giftopnm giffile | ppmtoicr -w giffile -r -e 2
+    giftopnm giffile | ppmtoicr -windowname=giffile -expand=2
 
 .fi
 

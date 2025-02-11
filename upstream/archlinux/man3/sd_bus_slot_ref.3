@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_SLOT_REF" "3" "" "systemd 249" "sd_bus_slot_ref"
+.TH "SD_BUS_SLOT_REF" "3" "" "systemd 257" "sd_bus_slot_ref"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -37,12 +37,12 @@ sd_bus_slot_ref, sd_bus_slot_unref, sd_bus_slot_unrefp \- Create and destroy ref
 .SH "DESCRIPTION"
 .PP
 \fBsd_bus_slot_ref()\fR
-increases the reference counter of
+increases the internal reference counter of
 \fIslot\fR
 by one\&.
 .PP
 \fBsd_bus_slot_unref()\fR
-decreases the reference counter of
+decreases the internal reference counter of
 \fIslot\fR
 by one\&. Once the reference count has dropped to zero, slot object is destroyed and cannot be used anymore, so further calls to
 \fBsd_bus_slot_ref()\fR
@@ -81,16 +81,25 @@ always returns
 \fBNULL\fR\&.
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_slot_ref()\fR,
+\fBsd_bus_slot_unref()\fR, and
+\fBsd_bus_slot_unrefp()\fR
+were added in version 240\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd-bus\fR(3),
-\fBsd_bus_new\fR(3),
-\fBsd_bus_message_new\fR(3),
-\fBsd_bus_call_method_async\fR(3)
+\fBsystemd\fR(1), \fBsd-bus\fR(3), \fBsd_bus_new\fR(3), \fBsd_bus_message_new\fR(3), \fBsd_bus_call_method_async\fR(3)
 .SH "NOTES"
 .IP " 1." 4
 Clean-up Variable Attribute

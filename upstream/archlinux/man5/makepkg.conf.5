@@ -2,12 +2,12 @@
 .\"     Title: makepkg.conf
 .\"    Author: [see the "Authors" section]
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2021-09-06
+.\"      Date: 2024-11-27
 .\"    Manual: Pacman Manual
-.\"    Source: Pacman 6.0.1
+.\"    Source: Pacman 7.0.0
 .\"  Language: English
 .\"
-.TH "MAKEPKG\&.CONF" "5" "2021\-09\-06" "Pacman 6\&.0\&.1" "Pacman Manual"
+.TH "MAKEPKG\&.CONF" "5" "2024\-11\-27" "Pacman 7\&.0\&.0" "Pacman Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -52,7 +52,9 @@ This does not guarantee that all package Makefiles will use your exported variab
 .sp .5v
 .RE
 .sp
-The system\-wide configuration file is found in /etc/makepkg\&.conf\&. Individual options can be overridden (or added to) on a per\-user basis in $XDG_CONFIG_HOME/pacman/makepkg\&.conf or ~/\&.makepkg\&.conf, with the former taking priority\&.
+The system\-wide configuration file is found in /etc/makepkg\&.conf\&. Specific additions (e\&.g\&. build flags for additional languages) can be placed in /etc/makepkg\&.conf\&.d/*\&.conf\&.
+.sp
+Individual options can be overridden (or added to) on a per\-user basis in $XDG_CONFIG_HOME/pacman/makepkg\&.conf or ~/\&.makepkg\&.conf, with the former taking priority\&.
 .sp
 The default file is fairly well commented, so it may be easiest to simply follow directions given there for customization\&.
 .SH "OPTIONS"
@@ -107,16 +109,19 @@ in place of
 Flags used for the C++ compiler; see CFLAGS for more info\&.
 .RE
 .PP
-\fBRUSTFLAGS=\fR"rustflags"
-.RS 4
-Flags used for the Rust compiler, similar in spirit to CFLAGS\&. Read
-\fBrustc\fR(1)
-for more details on the available flags\&.
-.RE
-.PP
 \fBLDFLAGS=\fR"ldflags"
 .RS 4
 Flags used for the linker\&. Several options may be specified with common usage resembling \(lq\-Wl,\-\-hash\-style=gnu\(rq\&. Read ld(1) for more details on available linker flags\&.
+.RE
+.PP
+\fBLTOFLAGS=\fR"ltoflags"
+.RS 4
+Additional compiler and linker flags appended to
+CFLAGS,
+CXXFLAGS
+and
+LDFLAGS
+when building with link time optimization\&. If empty, \(lq\-flto\(rq is used\&.
 .RE
 .PP
 \fBMAKEFLAGS=\fR"makeflags"
@@ -135,15 +140,6 @@ for use in debugging\&. Usually this would include: \(lq\-g\(rq\&. Read gcc(1) f
 \fBDEBUG_CXXFLAGS=\fR"debug_cxxflags"
 .RS 4
 Debug flags used for the C++ compiler; see DEBUG_CFLAGS for more info\&.
-.RE
-.PP
-\fBDEBUG_RUSTFLAGS=\fR"debug_rustflags"
-.RS 4
-Additional compiler flags appended to
-RUSTFLAGS
-for use in debugging\&. Usually this would include: \(lq\-C debuginfo=2\(rq\&. Read
-\fBrustc\fR(1)
-for more details on the available flags\&.
 .RE
 .PP
 \fBBUILDENV=(\fR!distcc !color !ccache check !sign\fB)\fR
@@ -181,7 +177,7 @@ options, respectively\&.
 \fBsign\fR
 .RS 4
 Generate a PGP signature file using GnuPG\&. This will execute
-\fIgpg \-\-detach\-sign \-\-use\-agent\fR
+\fIgpg \-\-detach\-sign\fR
 on the built package to generate a detached signature file, using the GPG agent, if it is available\&. The signature file will be the entire file name of the package with a \(lq\&.sig\(rq extension\&.
 .RE
 .RE
@@ -206,7 +202,7 @@ Specify a key to use for GPG signing instead of the default key in the keyring\&
 option\&.
 .RE
 .PP
-\fBOPTIONS=(\fR!strip docs libtool staticlibs emptydirs !zipman !purge !debug\fB)\fR
+\fBOPTIONS=(\fR!strip docs libtool staticlibs emptydirs \&...\fB)\fR
 .RS 4
 This array contains options that affect default packaging\&. They are equivalent to options that can be placed in the PKGBUILD; the defaults are shown here\&. All options should always be left in the array; to enable or disable an option, simply remove or add an \(lq!\(rq at the front of the option\&. If an option is specified multiple times, the final value takes precedence\&. Each option works as follows:
 .PP
@@ -264,9 +260,12 @@ Add the user\-specified debug flags as specified in DEBUG_CFLAGS and DEBUG_CXXFL
 .PP
 \fBlto\fR
 .RS 4
-Enable building packages using link time optimization\&. Adds
-\fI\-flto\fR
-to both CFLAGS and CXXFLAGS\&.
+Enable building packages using link time optimization\&. Adds the flags specified in LTOFLAGS to CFLAGS, CXXFLAGS and LDFLAGS (or \(lq\-flto\(rq if LTOFLAGS is empty)\&.
+.RE
+.PP
+\fBautodeps\fR
+.RS 4
+Enable the automatic addition of libraries to the depends and provides arrays\&. Search library directories are controlled by the LIB_DIRS variable defined below\&.
 .RE
 .RE
 .PP
@@ -326,6 +325,17 @@ array, this variable will instruct makepkg where to look to remove docs\&. If yo
 Do not add the leading slash to the directory name\&.
 .RE
 .PP
+\fBLIB_DIRS=(\fRlib:usr/lib \&...\fB)\fR
+.RS 4
+If
+autodeps
+is specified in the
+OPTIONS
+array, this variable will instruct makepkg where to look to find libraries to add to the
+provides
+array\&. The format is "prefix:path", where provides will be added for libraries found in "path" with the specified prefix added\&.
+.RE
+.PP
 \fBPURGE_TARGETS=(\fRusr/{,share}/info/dir \&.podlist *\&.pod\&...\fB)\fR
 .RS 4
 If
@@ -380,6 +390,10 @@ Sets the command and options used when compressing compiled or source packages i
 \fBPKGEXT=\fR"\&.pkg\&.tar\&.gz", \fBSRCEXT=\fR"\&.src\&.tar\&.gz"
 .RS 4
 Sets the compression used when making compiled or source packages\&. Valid suffixes are
+\&.pkg
+or
+\&.src
+(for PKGEXT and SRCEXT respectively) followed by one of
 \&.tar\&.gz,
 \&.tar\&.bz2,
 \&.tar\&.xz,
@@ -409,7 +423,7 @@ will be replaced with the shell\-quoted form of the command to run\&. Otherwise,
 See the pacman website at https://archlinux\&.org/pacman/ for current information on pacman and its related tools\&.
 .SH "BUGS"
 .sp
-Bugs? You must be kidding; there are no bugs in this software\&. But if we happen to be wrong, submit a bug report with as much detail as possible at the Arch Linux Bug Tracker in the Pacman section\&.
+Bugs? You must be kidding; there are no bugs in this software\&. But if we happen to be wrong, please report them to the issue tracker at https://gitlab\&.archlinux\&.org/pacman/pacman/\-/issues with specific information such as your command\-line, the nature of the bug, and even the package database if it helps\&.
 .SH "AUTHORS"
 .sp
 Current maintainers:
@@ -434,17 +448,6 @@ Allan McRae <allan@archlinux\&.org>
 .IP \(bu 2.3
 .\}
 Andrew Gregory <andrew\&.gregory\&.8@gmail\&.com>
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-Eli Schwartz <eschwartz@archlinux\&.org>
 .RE
 .sp
 .RS 4
@@ -535,6 +538,17 @@ Nagy Gabor <ngaba@bibl\&.u\-szeged\&.hu>
 .IP \(bu 2.3
 .\}
 Dave Reisner <dreisner@archlinux\&.org>
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Eli Schwartz <eschwartz@archlinux\&.org>
 .RE
 .sp
 For additional contributors, use git shortlog \-s on the pacman\&.git repository\&.

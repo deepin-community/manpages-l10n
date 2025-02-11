@@ -1,49 +1,30 @@
 .\" Copyright (c) 2009 Linux Foundation, written by Michael Kerrisk
 .\"     <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
-.\"
-.TH TIMER_SETTIME 2 2021-03-22 Linux "Linux Programmer's Manual"
+.TH timer_settime 2 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 timer_settime, timer_gettime \- arm/disarm and fetch
 state of POSIX per-process timer
+.SH LIBRARY
+Real-time library
+.RI ( librt ", " \-lrt )
 .SH SYNOPSIS
 .nf
 .B  #include <time.h>
-.PP
+.P
+.BI "int timer_gettime(timer_t " timerid ", struct itimerspec *" curr_value );
 .BI "int timer_settime(timer_t " timerid ", int " flags ,
 .BI "                  const struct itimerspec *restrict " new_value ,
-.BI "                  struct itimerspec *restrict " old_value );
-.BI "int timer_gettime(timer_t " timerid ", struct itimerspec *" curr_value );
+.BI "                  struct itimerspec *_Nullable restrict " old_value );
 .fi
-.PP
-Link with \fI\-lrt\fP.
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR timer_settime (),
 .BR timer_gettime ():
 .nf
@@ -61,32 +42,19 @@ structure that specifies the new initial value and
 the new interval for the timer.
 The
 .I itimerspec
-structure is defined as follows:
-.PP
-.in +4n
-.EX
-struct timespec {
-    time_t tv_sec;                /* Seconds */
-    long   tv_nsec;               /* Nanoseconds */
-};
-
-struct itimerspec {
-    struct timespec it_interval;  /* Timer interval */
-    struct timespec it_value;     /* Initial expiration */
-};
-.EE
-.in
-.PP
+structure is described in
+.BR itimerspec (3type).
+.P
 Each of the substructures of the
 .I itimerspec
 structure is a
-.I timespec
+.BR timespec (3)
 structure that allows a time value to be specified
 in seconds and nanoseconds.
 These time values are measured according to the clock
 that was specified when the timer was created by
 .BR timer_create (2).
-.PP
+.P
 If
 .I new_value\->it_value
 specifies a nonzero value (i.e., either subfield is nonzero), then
@@ -100,7 +68,7 @@ If
 specifies a zero value
 (i.e., both subfields are zero),
 then the timer is disarmed.
-.PP
+.P
 The
 .I new_value\->it_interval
 field specifies the period of the timer, in seconds and nanoseconds.
@@ -112,7 +80,7 @@ If
 specifies a zero value,
 then the timer expires just once, at the time specified by
 .IR it_value .
-.PP
+.P
 By default, the initial expiration time specified in
 .I new_value\->it_value
 is interpreted relative to the current time on the timer's
@@ -133,7 +101,7 @@ and the overrun count (see
 .BR timer_getoverrun (2))
 will be set correctly.
 .\" By experiment: the overrun count is set correctly, for CLOCK_REALTIME.
-.PP
+.P
 If the value of the
 .B CLOCK_REALTIME
 clock is adjusted while an absolute timer based on that clock is armed,
@@ -143,7 +111,7 @@ Adjustments to the
 clock have no effect on relative timers based on that clock.
 .\" Similar remarks might apply with respect to process and thread CPU time
 .\" clocks, but these clocks are not currently (2.6.28) settable on Linux.
-.PP
+.P
 If
 .I old_value
 is not NULL, then it points to a buffer
@@ -152,7 +120,7 @@ that is used to return the previous interval of the timer (in
 and the amount of time until the timer
 would previously have next expired (in
 .IR old_value\->it_value ).
-.PP
+.P
 .BR timer_gettime ()
 returns the time until next expiration, and the interval,
 for the timer specified by
@@ -162,15 +130,15 @@ in the buffer pointed to by
 The time remaining until the next timer expiration is returned in
 .IR curr_value\->it_value ;
 this is always a relative value, regardless of whether the
-.BR TIMER_ABSTIME
+.B TIMER_ABSTIME
 flag was used when arming the timer.
 If the value returned in
-.IR curr_value\->it_value
+.I curr_value\->it_value
 is zero, then the timer is currently disarmed.
 The timer interval is returned in
 .IR curr_value\->it_interval .
 If the value returned in
-.IR curr_value\->it_interval
+.I curr_value\->it_interval
 is zero, then this is a "one-shot" timer.
 .SH RETURN VALUE
 On success,
@@ -195,7 +163,7 @@ is not a valid pointer.
 .I timerid
 is invalid.
 .\" FIXME . eventually: invalid value in flags
-.PP
+.P
 .BR timer_settime ()
 may fail with the following errors:
 .TP
@@ -204,14 +172,16 @@ may fail with the following errors:
 is negative; or
 .I new_value.it_value.tv_nsec
 is negative or greater than 999,999,999.
-.SH VERSIONS
-These system calls are available since Linux 2.6.
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+Linux 2.6.
+POSIX.1-2001.
 .SH EXAMPLES
 See
 .BR timer_create (2).
 .SH SEE ALSO
 .BR timer_create (2),
 .BR timer_getoverrun (2),
+.BR timespec (3),
 .BR time (7)

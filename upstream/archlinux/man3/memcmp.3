@@ -1,40 +1,24 @@
+'\" t
 .\" Copyright 1993 David Metcalfe (david@prism.demon.co.uk)
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" References consulted:
 .\"     Linux libc source code
 .\"     Lewine's _POSIX Programmer's Guide_ (O'Reilly & Associates, 1991)
 .\"     386BSD man pages
 .\" Modified Sat Jul 24 18:55:27 1993 by Rik Faith (faith@cs.unc.edu)
-.TH MEMCMP 3  2021-03-22 "" "Linux Programmer's Manual"
+.TH memcmp 3 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 memcmp \- compare memory areas
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <string.h>
-.PP
-.BI "int memcmp(const void *" s1 ", const void *" s2 ", size_t " n );
+.P
+.BI "int memcmp(const void " s1 [. n "], const void " s2 [. n "], size_t " n );
 .fi
 .SH DESCRIPTION
 The
@@ -49,7 +33,7 @@ function returns an integer less than, equal to, or
 greater than zero if the first \fIn\fP bytes of \fIs1\fP is found,
 respectively, to be less than, to match, or be greater than the first
 \fIn\fP bytes of \fIs2\fP.
-.PP
+.P
 For a nonzero return value, the sign is determined by the sign of
 the difference between the first pair of bytes (interpreted as
 .IR "unsigned char" )
@@ -57,41 +41,47 @@ that differ in
 .I s1
 and
 .IR s2 .
-.PP
+.P
 If
 .I n
 is zero, the return value is zero.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR memcmp ()
 T}	Thread safety	MT-Safe
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, C89, C99, SVr4, 4.3BSD.
-.SH NOTES
+.SH STANDARDS
+C11, POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, C89, SVr4, 4.3BSD.
+.SH CAVEATS
 Do not use
 .BR memcmp ()
-to compare security critical data, such as cryptographic secrets,
-because the required CPU time depends on the number of equal bytes.
-Instead, a function that performs comparisons in constant time is required.
+to compare confidential data,
+such as cryptographic secrets,
+because the CPU time required for the comparison
+depends on the contents of the addresses compared,
+this function is subject to timing-based side-channel attacks.
+In such cases,
+a function that performs comparisons in deterministic time,
+depending only on
+.I n
+(the quantity of bytes compared)
+is required.
 Some operating systems provide such a function (e.g., NetBSD's
 .BR consttime_memequal ()),
 but no such function is specified in POSIX.
-On Linux, it may be necessary to implement such a function oneself.
+On Linux, you may need to implement such a function yourself.
 .SH SEE ALSO
-.BR bcmp (3),
 .BR bstring (3),
 .BR strcasecmp (3),
 .BR strcmp (3),
@@ -99,12 +89,3 @@ On Linux, it may be necessary to implement such a function oneself.
 .BR strncasecmp (3),
 .BR strncmp (3),
 .BR wmemcmp (3)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

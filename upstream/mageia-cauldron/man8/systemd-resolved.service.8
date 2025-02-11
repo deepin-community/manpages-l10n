@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-RESOLVED\&.SERVICE" "8" "" "systemd 249" "systemd-resolved.service"
+.TH "SYSTEMD\-RESOLVED\&.SERVICE" "8" "" "systemd 255" "systemd-resolved.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -77,8 +77,10 @@ is required in order to allow glibc\*(Aqs NSS resolver functions to resolve host
 .\}
 Additionally,
 \fBsystemd\-resolved\fR
-provides a local DNS stub listener on IP address 127\&.0\&.0\&.53 on the local loopback interface\&. Programs issuing DNS requests directly, bypassing any local API may be directed to this stub, in order to connect them to
+provides a local DNS stub listener on the IP addresses 127\&.0\&.0\&.53 and 127\&.0\&.0\&.54 on the local loopback interface\&. Programs issuing DNS requests directly, bypassing any local API may be directed to this stub, in order to connect them to
 \fBsystemd\-resolved\fR\&. Note however that it is strongly recommended that local programs use the glibc NSS or bus APIs instead (as described above), as various network resolution concepts (such as link\-local addressing, or LLMNR Unicode domains) cannot be mapped to the unicast DNS protocol\&.
+.sp
+The DNS stub resolver on 127\&.0\&.0\&.53 provides the full feature set of the local resolver, which includes offering LLMNR/MulticastDNS resolution\&. The DNS stub resolver on 127\&.0\&.0\&.54 provides a more limited resolver, that operates in "proxy" mode only, i\&.e\&. it will pass most DNS messages relatively unmodified to the current upstream DNS servers and back, but not try to process the messages locally, and hence does not validate DNSSEC, or offer up LLMNR/MulticastDNS\&. (It will translate to DNS\-over\-TLS communication if needed however\&.)
 .RE
 .PP
 The DNS servers contacted are determined from the global settings in
@@ -158,6 +160,32 @@ is resolved to all current default routing gateway addresses, ordered by their m
 The hostname
 "_outbound"
 is resolved to the local IPv4 and IPv6 addresses that are most likely used for communication with other hosts\&. This is determined by requesting a routing decision to the configured default gateways from the kernel and then using the local IP addresses selected by this decision\&. This hostname is only available if there is at least one local default gateway configured\&. This assigns a stable hostname to the local outbound IP addresses, useful for referencing them independently of the current network configuration state\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+The hostname
+"_localdnsstub"
+is resolved to the IP address 127\&.0\&.0\&.53, i\&.e\&. the address the local DNS stub (see above) is listening on\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+The hostname
+"_localdnsproxy"
+is resolved to the IP address 127\&.0\&.0\&.54, i\&.e\&. the address the local DNS proxy (see above) is listening on\&.
 .RE
 .sp
 .RS 4
@@ -356,7 +384,7 @@ systemd\-resolved
 provides\&.
 .SH "COMPATIBILITY WITH THE TRADITIONAL GLIBC STUB RESOLVER"
 .PP
-This section provides a short summary of differences in the stub resolver implemented by
+This section provides a short summary of differences in the resolver implemented by
 \fBnss-resolve\fR(8)
 together with
 \fBsystemd\-resolved\fR
@@ -479,6 +507,23 @@ described in
 \fBresolv.conf\fR(5)
 are not supported currently\&.
 .RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+The
+nss\-dns
+resolver maintains little state between subsequent DNS queries, and for each query always talks to the first listed DNS server from
+/etc/resolv\&.conf
+first, and on failure continues with the next until reaching the end of the list which is when the query fails\&. The resolver in
+systemd\-resolved\&.service
+however maintains state, and will continuously talk to the same server for all queries on a particular lookup scope until some form of error is seen at which point it switches to the next, and then continuously stays with it for all queries on the scope until the next failure, and so on, eventually returning to the first configured server\&. This is done to optimize lookup times, in particular given that the resolver typically must first probe server feature sets when talking to a server, which is time consuming\&. This different behaviour implies that listed DNS servers per lookup scope must be equivalent in the zones they serve, so that sending a query to one of them will yield the same results as sending it to another configured DNS server\&.
+.RE
 .SH "/ETC/RESOLV\&.CONF"
 .PP
 Four modes of handling
@@ -497,8 +542,7 @@ Four modes of handling
 \fBsystemd\-resolved\fR
 maintains the
 /run/systemd/resolve/stub\-resolv\&.conf
-file for compatibility with traditional Linux programs\&. This file may be symlinked from
-/etc/resolv\&.conf\&. This file lists the 127\&.0\&.0\&.53 DNS stub (see above) as the only DNS server\&. It also contains a list of search domains that are in use by systemd\-resolved\&. The list of search domains is always kept up\-to\-date\&. Note that
+file for compatibility with traditional Linux programs\&. This file lists the 127\&.0\&.0\&.53 DNS stub (see above) as the only DNS server\&. It also contains a list of search domains that are in use by systemd\-resolved\&. The list of search domains is always kept up\-to\-date\&. Note that
 /run/systemd/resolve/stub\-resolv\&.conf
 should not be used directly by applications, but only through a symlink from
 /etc/resolv\&.conf\&. This file may be symlinked from
@@ -576,6 +620,8 @@ Upon reception of the
 process signal
 \fBsystemd\-resolved\fR
 will dump the contents of all DNS resource record caches it maintains, as well as all feature level information it learnt about configured DNS servers into the system logs\&.
+.sp
+Added in version 231\&.
 .RE
 .PP
 \fBSIGUSR2\fR
@@ -591,6 +637,8 @@ flushes the caches automatically anyway any time the host\*(Aqs network configur
 is equivalent to the
 \fBresolvectl flush\-caches\fR
 command, however the latter is recommended since it operates in a synchronous way\&.
+.sp
+Added in version 231\&.
 .RE
 .PP
 \fBSIGRTMIN+1\fR
@@ -606,6 +654,86 @@ automatically forgets learnt information any time the DNS server configuration c
 is equivalent to the
 \fBresolvectl reset\-server\-features\fR
 command, however the latter is recommended since it operates in a synchronous way\&.
+.sp
+Added in version 235\&.
+.RE
+.SH "CREDENTIALS"
+.PP
+\fBsystemd\-resolved\fR
+supports the service credentials logic as implemented by
+\fIImportCredential=\fR/\fILoadCredential=\fR/\fISetCredential=\fR
+(see
+\fBsystemd.exec\fR(5)
+for details)\&. The following credentials are used when passed in:
+.PP
+\fInetwork\&.dns\fR, \fInetwork\&.search_domains\fR
+.RS 4
+May contain a space separated list of DNS server IP addresses and DNS search domains\&. This information is only used when no explicit configuration via
+/etc/systemd/resolved\&.conf,
+/etc/resolv\&.conf
+or the kernel command line has been provided\&.
+.sp
+Added in version 253\&.
+.RE
+.SH "KERNEL COMMAND LINE"
+.PP
+\fBsystemd\-resolved\fR
+also honours two kernel command line options:
+.PP
+\fInameserver=\fR, \fIdomain=\fR
+.RS 4
+Takes the IP address of a DNS server (in case of
+\fInameserver=\fR), and a DNS search domain (in case of
+\fIdomain=\fR)\&. May be used multiple times, to define multiple DNS servers/search domains\&. If either of these options are specified
+/etc/resolv\&.conf
+will not be read and the
+\fIDNS=\fR
+and
+\fIDomains=\fR
+settings of
+\fBresolved.conf\fR(5)
+will be ignored\&. These two kernel command line options hence override system configuration\&.
+.sp
+Added in version 253\&.
+.RE
+.SH "IP PORTS"
+.PP
+The
+\fBsystemd\-resolved\fR
+service listens on the following IP ports:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Port 53 on IPv4 addresses 127\&.0\&.0\&.53 and 127\&.0\&.0\&.54 (both are on the local loopback interface
+"lo")\&. This is the local DNS stub, as discussed above\&. Both UDP and TCP are covered\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Port 5353 on all local addresses, both IPv4 and IPv6 (0\&.0\&.0\&.0 and ::0), for MulticastDNS on UDP\&. Note that even though the socket is bound to all local interfaces via the selected "wildcard" IP addresses, the incoming datagrams are filtered by the network interface they are coming in on, and separate MulticastDNS link\-local scopes are maintained for each, taking into consideration whether MulticastDNS is enabled for the interface or not\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Port 5355 on all local addresses, both IPv4 and IP6 (0\&.0\&.0\&.0 and ::0), for LLMNR, on both TCP and UDP\&. As with MulticastDNS filtering by incoming network interface is applied\&.
 .RE
 .SH "SEE ALSO"
 .PP

@@ -1,5 +1,5 @@
 .\" -*- nroff -*- --------------------------------------------------------- *
-.\"  
+.\"
 .\" Copyright (c) 1990, 1993, 1994
 .\"     The Regents of the University of California.  All rights reserved.
 .\"
@@ -30,7 +30,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"----------------------------------------------------------------------- */
-.TH TFTPD 8 "7 June 2014" "tftp-hpa 5.2" "System Manager's Manual"
+.TH TFTPD 8 "7 June 2014" "tftp-hpa 5.3" "System Manager's Manual"
 .SH NAME
 .B tftpd
 \- Trivial File Transfer Protocol server
@@ -163,6 +163,10 @@ remapping below.  This option may not be compiled in, see the output of
 .B "in.tftpd \-V"
 to verify whether or not it is available.
 .TP
+.\fB\-\-map-steps\fP \fIsteps\fP
+Specify the number of remapping rules that may be executed before the
+filename mapping fails. The default is 4096.
+.TP
 \fB\-\-verbose\fP, \fB\-v\fP
 Increase the logging verbosity of
 .BR tftpd .
@@ -270,7 +274,18 @@ by the
 The replacement pattern may contain escape sequences; see below.
 .TP
 .B g
-Repeat this rule until it no longer matches.  This is always used with
+Repeat this rule until it no longer matches. This is always used with
+.BR r .
+.TP
+.B gg
+Repeat this rule until it no longer matches, but only on the portion
+of the string that has not yet been matched, similar to how the
+.B s
+command with the
+.B g
+option works in
+.BR sed (1).
+This is always used with
 .BR r .
 .TP
 .B i
@@ -280,6 +295,17 @@ case-insensitively.  By default it is case sensitive.
 .TP
 .B e
 If this rule matches, end rule processing after executing the rule.
+.TP
+.B E
+If this rule matches,
+\fIand the result matches a filename that can be transferred\fP,
+end rule processing after executing the rule. If this is combined with
+.BR r ,
+then if the substitution does \fInot\fP result in a valid filename,
+the substitution is undone. This cannot be combined with
+.BR g ,
+but \fIcan\fP be combined with
+.BR gg .
 .TP
 .B s
 If this rule matches, start rule processing over from the very first
@@ -307,10 +333,10 @@ Inverse the sense of this rule, i.e. execute the
 only if the
 .I regex
 .I doesn't
-match.  Cannot used together with 
+match.  Cannot used together with
 .BR r .
 .PP
-The following escape sequences are recognized as part of the
+The following escape sequences are recognized as part of a
 .IR "replacement pattern" :
 .TP
 \fB\\0\fP
@@ -391,7 +417,7 @@ Access to files can, and should, be restricted by invoking
 .B tftpd
 with a list of directories by including pathnames as server program
 arguments on the command line.  In this case access is restricted to
-files whole names are prefixed by one of the given directories.  If
+files whose names are prefixed by one of the given directories.  If
 possible, it is recommended that the
 .B \-\-secure
 flag is used to set up a chroot() environment for the server to run in

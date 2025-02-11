@@ -1,26 +1,7 @@
+'\" t
 .\" Copyright (C) 1993 David Metcalfe (david@prism.demon.co.uk)
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" References consulted:
 .\"     Linux libc source code
@@ -38,71 +19,55 @@
 .\" Copyright (c) 2012, Mark R. Bannister <cambridge@users.sourceforge.net>
 .\"        based on text in mkfifoat.3 Copyright (c) 2006, Michael Kerrisk
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
-.\" The GNU General Public License's references to "object code"
-.\" and "executables" are to be interpreted as the output of any
-.\" document formatting or typesetting system, including
-.\" intermediate and printed output.
-.\"
-.\" This manual is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
-.\"
-.TH SCANDIR 3  2021-08-27 "GNU" "Linux Programmer's Manual"
+.TH scandir 3 2024-06-15 "Linux man-pages 6.9.1"
 .SH NAME
 scandir, scandirat, alphasort, versionsort \- scan
 a directory for matching entries
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <dirent.h>
-.PP
+.P
 .BI "int scandir(const char *restrict " dirp ,
 .BI "            struct dirent ***restrict " namelist ,
 .BI "            int (*" filter ")(const struct dirent *),"
 .BI "            int (*" compar ")(const struct dirent **,"
-.BR "                          const struct dirent **));"
-.PP
+.B "                          const struct dirent **));"
+.P
 .BI "int alphasort(const struct dirent **" a ", const struct dirent **" b );
 .BI "int versionsort(const struct dirent **" a ", const struct dirent **" b );
-.PP
+.P
 .BR "#include <fcntl.h>" "          /* Definition of AT_* constants */"
 .B #include <dirent.h>
-.PP
+.P
 .BI "int scandirat(int " dirfd ", const char *restrict " dirp ,
 .BI "            struct dirent ***restrict " namelist ,
 .BI "            int (*" filter ")(const struct dirent *),"
 .BI "            int (*" compar ")(const struct dirent **,"
-.BI "                          const struct dirent **));"
+.B "                          const struct dirent **));"
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR scandir (),
 .BR alphasort ():
 .nf
     /* Since glibc 2.10: */ _POSIX_C_SOURCE >= 200809L
-        || /* Glibc <= 2.19: */ _BSD_SOURCE || _SVID_SOURCE
+        || /* glibc <= 2.19: */ _BSD_SOURCE || _SVID_SOURCE
 .fi
-.PP
+.P
 .BR versionsort ():
 .nf
     _GNU_SOURCE
 .fi
-.PP
+.P
 .BR scandirat ():
 .nf
     _GNU_SOURCE
@@ -122,7 +87,7 @@ function \fIcompar\fP(), and collected in array \fInamelist\fP
 which is allocated via
 .BR malloc (3).
 If \fIfilter\fP is NULL, all entries are selected.
-.PP
+.P
 The
 .BR alphasort ()
 and
@@ -140,7 +105,7 @@ The
 function operates in exactly the same way as
 .BR scandir (),
 except for the differences described here.
-.PP
+.P
 If the pathname given in
 .I dirp
 is relative, then it is interpreted relative to the directory
@@ -150,7 +115,7 @@ referred to by the file descriptor
 the calling process, as is done by
 .BR scandir ()
 for a relative pathname).
-.PP
+.P
 If
 .I dirp
 is relative and
@@ -162,13 +127,13 @@ then
 is interpreted relative to the current working
 directory of the calling process (like
 .BR scandir ()).
-.PP
+.P
 If
 .I dirp
 is absolute, then
 .I dirfd
 is ignored.
-.PP
+.P
 See
 .BR openat (2)
 for an explanation of the need for
@@ -181,7 +146,7 @@ selected.
 On error, \-1 is returned, with
 .I errno
 set to indicate the error.
-.PP
+.P
 The
 .BR alphasort ()
 and
@@ -215,44 +180,51 @@ The path in \fIdirp\fR is not a directory.
 is a relative pathname and
 .I dirfd
 is a file descriptor referring to a file other than a directory.
-.SH VERSIONS
-.BR versionsort ()
-was added to glibc in version 2.1.
-.PP
-.BR scandirat ()
-was added to glibc in version 2.15.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR scandir (),
 .BR scandirat ()
 T}	Thread safety	MT-Safe
 T{
+.na
+.nh
 .BR alphasort (),
 .BR versionsort ()
 T}	Thread safety	MT-Safe locale
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
-.BR alphasort (),
-.BR scandir ():
-4.3BSD, POSIX.1-2008.
-.PP
+.SH STANDARDS
+.TP
+.BR alphasort ()
+.TQ
+.BR scandir ()
+POSIX.1-2008.
+.TP
 .BR versionsort ()
-and
+.TQ
 .BR scandirat ()
-are GNU extensions.
-.\" .LP
+GNU.
+.SH HISTORY
+.TP
+.BR alphasort ()
+.TQ
+.BR scandir ()
+4.3BSD, POSIX.1-2008.
+.TP
+.BR versionsort ()
+glibc 2.1.
+.TP
+.BR scandirat ()
+glibc 2.15.
+.\" .P
 .\" The functions
 .\" .BR scandir ()
 .\" and
@@ -273,7 +245,7 @@ calls
 .BR strcoll (3);
 earlier it used
 .BR strcmp (3).
-.PP
+.P
 Before glibc 2.10, the two arguments of
 .BR alphasort ()
 and
@@ -296,33 +268,35 @@ in reverse order.
 .\"
 .SS Program source
 \&
+.\" SRC BEGIN (scandir.c)
 .EX
 #define _DEFAULT_SOURCE
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+\&
 int
 main(void)
 {
     struct dirent **namelist;
     int n;
-
+\&
     n = scandir(".", &namelist, NULL, alphasort);
     if (n == \-1) {
         perror("scandir");
         exit(EXIT_FAILURE);
     }
-
+\&
     while (n\-\-) {
-        printf("%s\en", namelist[n]\->d_name);
+        printf("%s\[rs]n", namelist[n]\->d_name);
         free(namelist[n]);
     }
     free(namelist);
-
+\&
     exit(EXIT_SUCCESS);
 }
 .EE
+.\" SRC END
 .SH SEE ALSO
 .BR closedir (3),
 .BR fnmatch (3),
@@ -334,12 +308,3 @@ main(void)
 .BR strcoll (3),
 .BR strverscmp (3),
 .BR telldir (3)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

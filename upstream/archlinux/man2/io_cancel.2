@@ -1,18 +1,23 @@
 .\" Copyright (C) 2003 Free Software Foundation, Inc.
 .\"
-.\" %%%LICENSE_START(GPL_NOVERSION_ONELINE)
-.\" This file is distributed according to the GNU General Public License.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-1.0-or-later
 .\"
-.TH IO_CANCEL 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH io_cancel 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 io_cancel \- cancel an outstanding asynchronous I/O operation
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
+.P
+Alternatively, Asynchronous I/O library
+.RI ( libaio ", " \-laio );
+see VERSIONS.
 .SH SYNOPSIS
 .nf
 .BR "#include <linux/aio_abi.h>" "    /* Definition of needed types */"
 .BR "#include <sys/syscall.h>" "      /* Definition of " SYS_* " constants */"
 .B #include <unistd.h>
-.PP
+.P
 .BI "int syscall(SYS_io_cancel, aio_context_t " ctx_id ", struct iocb *" iocb ,
 .BI "            struct io_event *" result );
 .fi
@@ -24,8 +29,8 @@ The wrapper function provided by
 uses a different type for the
 .I ctx_id
 argument.
-See NOTES.
-.PP
+See VERSIONS.
+.P
 The
 .BR io_cancel ()
 system call
@@ -45,7 +50,7 @@ completion queue.
 On success,
 .BR io_cancel ()
 returns 0.
-For the failure return, see NOTES.
+For the failure return, see VERSIONS.
 .SH ERRORS
 .TP
 .B EAGAIN
@@ -61,18 +66,12 @@ The AIO context specified by \fIctx_id\fP is invalid.
 .BR io_cancel ()
 is not implemented on this architecture.
 .SH VERSIONS
-The asynchronous I/O system calls first appeared in Linux 2.5.
-.SH CONFORMING TO
-.BR io_cancel ()
-is Linux-specific and should not be used
-in programs that are intended to be portable.
-.SH NOTES
 You probably want to use the
 .BR io_cancel ()
 wrapper function provided by
 .\" http://git.fedorahosted.org/git/?p=libaio.git
 .IR libaio .
-.PP
+.P
 Note that the
 .I libaio
 wrapper function uses a different type
@@ -93,6 +92,10 @@ then the return value follows the usual conventions for
 indicating an error: \-1, with
 .I errno
 set to a (positive) value that indicates the error.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 2.5.
 .SH SEE ALSO
 .BR io_destroy (2),
 .BR io_getevents (2),
@@ -101,12 +104,3 @@ set to a (positive) value that indicates the error.
 .BR aio (7)
 .\" .SH AUTHOR
 .\" Kent Yoder.
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

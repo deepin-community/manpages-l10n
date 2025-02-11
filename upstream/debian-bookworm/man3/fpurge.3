@@ -1,0 +1,84 @@
+'\" t
+.\" Copyright (C) 2001 Andries Brouwer <aeb@cwi.nl>.
+.\"
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+.\"
+.TH fpurge 3 2022-12-15 "Linux man-pages 6.03"
+.SH NAME
+fpurge, __fpurge \- purge a stream
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
+.SH SYNOPSIS
+.nf
+/* unsupported */
+.B #include <stdio.h>
+.PP
+.BI "int fpurge(FILE *" stream );
+.PP
+/* supported */
+.B #include <stdio.h>
+.B #include <stdio_ext.h>
+.PP
+.BI "void  __fpurge(FILE *" stream );
+.fi
+.SH DESCRIPTION
+The function
+.BR fpurge ()
+clears the buffers of the given stream.
+For output streams this discards any unwritten output.
+For input streams this discards any input read from the underlying object
+but not yet obtained via
+.BR getc (3);
+this includes any text pushed back via
+.BR ungetc (3).
+See also
+.BR fflush (3).
+.PP
+The function
+.BR __fpurge ()
+does precisely the same, but without returning a value.
+.SH RETURN VALUE
+Upon successful completion
+.BR fpurge ()
+returns 0.
+On error, it returns \-1 and sets
+.I errno
+to indicate the error.
+.SH ERRORS
+.TP
+.B EBADF
+.I stream
+is not an open stream.
+.SH ATTRIBUTES
+For an explanation of the terms used in this section, see
+.BR attributes (7).
+.ad l
+.nh
+.TS
+allbox;
+lbx lb lb
+l l l.
+Interface	Attribute	Value
+T{
+.BR __fpurge ()
+T}	Thread safety	MT-Safe race:stream
+.TE
+.hy
+.ad
+.sp 1
+.SH STANDARDS
+These functions are nonstandard and not portable.
+The function
+.BR fpurge ()
+was introduced in 4.4BSD and is not available under Linux.
+The function
+.BR __fpurge ()
+was introduced in Solaris, and is present in glibc 2.1.95 and later.
+.SH NOTES
+Usually it is a mistake to want to discard input buffers.
+.SH SEE ALSO
+.\" .BR fclean (3),
+.BR fflush (3),
+.BR setbuf (3),
+.BR stdio_ext (3)

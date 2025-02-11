@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # Copyright © 2010-2017 Dr. Tobias Quathamer <toddy@debian.org>
+#             2022 Dr. Helge Kreutzmann <debian@helgefjell.de>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +18,9 @@
 
 translation="$1"
 addendum="$2"
+
+
+ismdoc=$(grep -l $translation ../mdoc.cache)
 
 # Use the header up until the first msgid
 # and remove the comment character
@@ -35,12 +39,17 @@ number_translators=$(echo "$translators" | wc -l)
 
 # Output of common header
 echo "PO4A-HEADER:mode=after;position=^\.(TH|Dt);beginboundary=FakePo4aBoundary" > "$addendum"
-echo >> "$addendum"
-# Special case for manpages which use mdoc syntax (currently only tar.1)
-case $(basename "$translation") in
-	tar.1.po ) echo ".Sh ПРЕВОД" >> "$addendum" ;;
-	* ) echo ".SH ПРЕВОД" >> "$addendum" ;;
-esac
+
+# Special case for manpages which use mdoc syntax
+if [ $ismdoc ]; then
+    # MDOC File
+    echo ".Pp" >> "$addendum"
+    echo ".Sh ПРЕВОД" >> "$addendum"
+else
+    # Groff file
+    echo ".PP" >> "$addendum"
+    echo ".SH ПРЕВОД" >> "$addendum"
+fi
 echo "Македонскиот превод на оваа рачна страница е создаден од" >> "$addendum"
 
 # Warn if the translators string is empty
@@ -65,3 +74,12 @@ fi
 
 # Output of common ending
 echo "." >> "$addendum"
+
+# Special case for manpages which use mdoc syntax
+if [ $ismdoc ]; then
+    # MDOC File
+    cat license-mdoc.add >> "$addendum"
+else
+    # Groff file
+    cat license-groff.add >> "$addendum"
+fi

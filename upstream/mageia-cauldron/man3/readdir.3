@@ -1,27 +1,8 @@
+'\" t
 .\" Copyright (C) 1993 David Metcalfe (david@prism.demon.co.uk)
 .\" and Copyright (C) 2008, 2016 Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" References consulted:
 .\"     Linux libc source code
@@ -33,13 +14,16 @@
 .\" 2007-07-30 Ulrich Drepper <drepper@redhat.com>, mtk:
 .\"     Rework discussion of nonstandard structure fields.
 .\"
-.TH READDIR 3  2021-03-22 "" "Linux Programmer's Manual"
+.TH readdir 3 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 readdir \- read a directory
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <dirent.h>
-.PP
+.P
 .BI "struct dirent *readdir(DIR *" dirp );
 .fi
 .SH DESCRIPTION
@@ -50,11 +34,11 @@ representing the next directory entry in the directory stream pointed
 to by \fIdirp\fP.
 It returns NULL on reaching the end of the directory stream or if
 an error occurred.
-.PP
+.P
 In the glibc implementation, the
 .I dirent
 structure is defined as follows:
-.PP
+.P
 .in +4n
 .EX
 struct dirent {
@@ -67,16 +51,16 @@ struct dirent {
 };
 .EE
 .in
-.PP
+.P
 The only fields in the
 .I dirent
 structure that are mandated by POSIX.1 are
-.IR d_name
+.I d_name
 and
 .IR d_ino .
 The other fields are unstandardized, and not present on all systems;
 see NOTES below for some further details.
-.PP
+.P
 The fields of the
 .I dirent
 structure are as follows:
@@ -111,9 +95,9 @@ if further actions depend on the type of the file.
 .IP
 When a suitable feature test macro is defined
 .RB ( _DEFAULT_SOURCE
-on glibc versions since 2.19, or
-.BR _BSD_SOURCE
-on glibc versions 2.19 and earlier),
+since glibc 2.19, or
+.B _BSD_SOURCE
+on glibc 2.19 and earlier),
 glibc defines the following macro constants for the value returned in
 .IR d_type :
 .RS
@@ -155,7 +139,7 @@ All applications must properly handle a return of
 .I d_name
 This field contains the null terminated filename.
 .IR "See NOTES" .
-.PP
+.P
 The data returned by
 .BR readdir ()
 may be overwritten by subsequent calls to
@@ -170,7 +154,7 @@ structure.
 (This structure may be statically allocated; do not attempt to
 .BR free (3)
 it.)
-.PP
+.P
 If the end of the directory stream is reached, NULL is returned and
 .I errno
 is not changed.
@@ -191,21 +175,18 @@ Invalid directory stream descriptor \fIdirp\fP.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR readdir ()
 T}	Thread safety	MT-Unsafe race:dirstream
 .TE
-.hy
-.ad
-.sp 1
-.PP
+.P
 In the current POSIX.1 specification (POSIX.1-2008),
 .BR readdir ()
 is not required to be thread-safe.
@@ -225,17 +206,7 @@ It is expected that a future version of POSIX.1
 will require that
 .BR readdir ()
 be thread-safe when concurrently employed on different directory streams.
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, SVr4, 4.3BSD.
-.SH NOTES
-A directory stream is opened using
-.BR opendir (3).
-.PP
-The order in which filenames are read by successive calls to
-.BR readdir ()
-depends on the filesystem implementation;
-it is unlikely that the names will be sorted in any fashion.
-.PP
+.SH VERSIONS
 Only the fields
 .I d_name
 and (as an XSI extension)
@@ -263,7 +234,7 @@ structure definition shown above is taken from the glibc headers,
 and shows the
 .I d_name
 field with a fixed size.
-.PP
+.P
 .IR Warning :
 applications should avoid any dependence on the size of the
 .I d_name
@@ -272,26 +243,30 @@ POSIX defines it as
 .IR "char\ d_name[]",
 a character array of unspecified size, with at most
 .B NAME_MAX
-characters preceding the terminating null byte (\(aq\e0\(aq).
-.PP
+characters preceding the terminating null byte (\[aq]\e0\[aq]).
+.P
 POSIX.1 explicitly notes that this field should not be used as an lvalue.
 The standard also notes that the use of
 .I sizeof(d_name)
 is incorrect; use
-.IR strlen(d_name)
+.I strlen(d_name)
 instead.
 (On some systems, this field is defined as
-.IR char\ d_name[1] !)
+.IR char\~d_name[1] !)
 By implication, the use
-.IR "sizeof(struct dirent)"
+.I sizeof(struct dirent)
 to capture the size of the record including the size of
-.IR d_name
+.I d_name
 is also incorrect.
-.PP
+.P
 Note that while the call
-.PP
-    fpathconf(fd, _PC_NAME_MAX)
-.PP
+.P
+.in +4n
+.EX
+fpathconf(fd, _PC_NAME_MAX)
+.EE
+.in
+.P
 returns the value 255 for most filesystems,
 on some filesystems (e.g., CIFS, Windows SMB servers),
 the null-terminated filename that is (correctly) returned in
@@ -302,6 +277,18 @@ In such cases, the
 field will contain a value that exceeds the size of the glibc
 .I dirent
 structure shown above.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, SVr4, 4.3BSD.
+.SH NOTES
+A directory stream is opened using
+.BR opendir (3).
+.P
+The order in which filenames are read by successive calls to
+.BR readdir ()
+depends on the filesystem implementation;
+it is unlikely that the names will be sorted in any fashion.
 .SH SEE ALSO
 .BR getdents (2),
 .BR read (2),
@@ -315,12 +302,3 @@ structure shown above.
 .BR scandir (3),
 .BR seekdir (3),
 .BR telldir (3)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

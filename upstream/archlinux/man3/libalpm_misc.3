@@ -1,10 +1,10 @@
-.TH "libalpm_misc" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.TH "libalpm_misc" 3 "libalpm" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 libalpm_misc \- Miscellaneous Functions
 .PP
- \- Various libalpm functions\&.  
+ \- Various libalpm functions  
 
 .SH SYNOPSIS
 .br
@@ -52,10 +52,14 @@ libalpm_misc \- Miscellaneous Functions
 .RI "int \fBalpm_capabilities\fP (void)"
 .br
 .RI "Get the capabilities of the library\&. "
+.ti -1c
+.RI "int \fBalpm_sandbox_setup_child\fP (\fBalpm_handle_t\fP *handle, const char *sandboxuser, const char *sandbox_path)"
+.br
+.RI "Drop privileges by switching to a different user\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
-Various libalpm functions\&. 
+Various libalpm functions 
 
 
 .SH "Typedef Documentation"
@@ -74,17 +78,17 @@ Enum of possible compile time features\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIALPM_CAPABILITY_NLS \fP\fP
+\f(BIALPM_CAPABILITY_NLS \fP
 localization 
 .TP
-\fB\fIALPM_CAPABILITY_DOWNLOADER \fP\fP
+\f(BIALPM_CAPABILITY_DOWNLOADER \fP
 Ability to download\&. 
 .TP
-\fB\fIALPM_CAPABILITY_SIGNATURES \fP\fP
+\f(BIALPM_CAPABILITY_SIGNATURES \fP
 Signature checking\&. 
 .SH "Function Documentation"
 .PP 
-.SS "int alpm_capabilities (void)"
+.SS "int alpm_capabilities (void )"
 
 .PP
 Get the capabilities of the library\&. 
@@ -127,10 +131,31 @@ the checksum on success, NULL on error
 .RE
 .PP
 
+.SS "int alpm_sandbox_setup_child (\fBalpm_handle_t\fP * handle, const char * sandboxuser, const char * sandbox_path)"
+
+.PP
+Drop privileges by switching to a different user\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIhandle\fP the context handle 
+.br
+\fIsandboxuser\fP the user to switch to 
+.br
+\fIsandbox_path\fP if non-NULL, restrict writes to this filesystem path 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, -1 on failure 
+.RE
+.PP
+
 .SS "\fBalpm_pkg_t\fP * alpm_sync_get_new_version (\fBalpm_pkg_t\fP * pkg, \fBalpm_list_t\fP * dbs_sync)"
 
 .PP
 Check for new version of pkg in syncdbs\&. If the same package appears multiple dbs only the first will be checked
+
 .PP
 This only checks the syncdb for a newer version\&. It does not access the network at all\&. See \fBalpm_db_update\fP to update a database\&. 
 .SS "int alpm_unlock (\fBalpm_handle_t\fP * handle)"
@@ -154,7 +179,7 @@ Safe to call from inside signal handlers\&.
 .RE
 .PP
 
-.SS "const char * alpm_version (void)"
+.SS "const char * alpm_version (void )"
 
 .PP
 Get the version of library\&. 

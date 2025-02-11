@@ -24,7 +24,7 @@
 .\" from The Open Group.
 .\"
 .\"
-.TH STARTX 1 "xinit 1.4.0" "X Version 11"
+.TH STARTX 1 "xinit 1.4.2" "X Version 11"
 .SH NAME
 startx \- initialize an X session
 .SH SYNOPSIS
@@ -54,25 +54,19 @@ Arguments immediately following the
 command are used to start a client in the same manner as
 .BR xinit (1).
 The special argument
-.RB '--'
+.RB '\-\^\-'
 marks the end of client arguments and the beginning of server options.
-It may be convenient to specify server options with startx to change on a
-per-session basis the
-default color depth, the server's notion of the number of dots-per-inch the
-display device presents, or take advantage of a different server layout, as
-permitted by the
-.BR Xorg (1)
-server and specified in the
-.BR xorg.conf (5)
-configuration.  Some examples of specifying server arguments follow; consult
+It may be convenient to specify server options with startx to change them on a
+per-session basis.
+Some examples of specifying server arguments follow; consult
 the manual page for your X server to determine which arguments are legal.
 .RS
 .PP
-startx -- -depth 16
+startx \-\^\- \-depth 16
 .PP
-startx -- -dpi 100
+startx \-\^\- \-dpi 100
 .PP
-startx -- -layout Multihead
+startx \-\^\- \-layout Multihead
 .RE
 .PP
 Note that in the Debian system, what many people traditionally put in the
@@ -99,25 +93,27 @@ and completely ignored by
 .PP
 To determine the client to run,
 .B startx
-looks for the following files, in order:
-.RS
-.PP
-.I $(HOME)/.startxrc
-.PP
-.I /usr/lib/x86_64-linux-gnu/sys.startxrc
-.PP
-.I $(HOME)/.xinitrc
-.PP
-.I /etc/X11/xinit/xinitrc
-.RE
-.PP
+first checks the environment variable
+.I XINITRC
+for a filename. If that variable is unset, or does not contain a filename,
+it looks for a file called
+.I .xinitrc
+in the user's home directory.  If that is not found, it uses
+the file
+.I xinitrc
+in the
+.I xinit
+library directory.
 If command line client options are given, they override this
 behavior and revert to the
 .BR xinit (1)
 behavior.
 To determine the server to run,
 .B startx
-first looks for a file called
+checks the environment variable
+.I XSERVERRC
+for a filename. If that variable is unset, or does not contain a filename,
+it looks for a file called
 .I .xserverrc
 in the user's home directory.  If that is not found, it uses
 the file
@@ -161,6 +157,20 @@ for the local host.  See the
 and
 .IR Xsecurity (7)
 manual pages for more information on X client/server authentication.
+.TP 25
+XINITRC
+This variable should contain the location of an xinitrc file. If unset,
+.I $(HOME)/.xinitrc
+or
+.I /etc/X11/xinit/xinitrc
+will be used.
+.TP 25
+XSERVERRC
+This variable should contain the location of an xserver file. If unset,
+.I $(HOME)/.xinitrc
+or
+.I /etc/X11/xinit/xserverrc
+will be used.
 .SH FILES
 .TP 25
 .I $(HOME)/.xinitrc

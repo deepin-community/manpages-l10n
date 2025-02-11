@@ -1,4 +1,4 @@
-.TH HDPARM 8 "November 2020" "Version 9.60"
+.TH HDPARM 8 "Sep 2022" "Version 9.65"
 
 .SH NAME
 hdparm \- get/set SATA/IDE device parameters
@@ -306,6 +306,9 @@ drives which may give media errors with the standard mechanism.
 When
 .B \-\-Istdin
 is used, it must be the *only* parameter given.
+Note that some information will be incomplete, as the drive LOG PAGES are unavailable when
+.B \-\-Istdin
+is used.
 .TP
 .I \-\-Istdout
 This option dumps the drive's identify data in hex to stdout,
@@ -320,11 +323,10 @@ This timeout controls how often the drive parks its heads and enters
 a low power consumption state.  The factory default is eight (8) seconds,
 which is a very poor choice for use with Linux.  Leaving it at the default
 will result in hundreds of thousands of head load/unload cycles in a very
-short period of time.
-The drive mechanism is only rated for 300,000 to 1,000,000
+short period of time.  The drive mechanism is only rated for 300,000 to 1,000,000
 cycles, so leaving it at the default could result in premature failure,
-not to mention the performance impact of the drive often having to
-wake-up before doing routine I/O.
+not to mention the performance impact of the drive often having to wake-up
+before doing routine I/O.
 .IP
 WD supply a WDIDLE3.EXE DOS utility for tweaking this setting,
 and you should use that program instead of hdparm

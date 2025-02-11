@@ -1,25 +1,6 @@
 .\" Copyright (C) Tom Bjorkholm & Markus Kuhn, 1996
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
-.\"
-.\" The GNU General Public License's references to "object code"
-.\" and "executables" are to be interpreted as the output of any
-.\" document formatting or typesetting system, including
-.\" intermediate and printed output.
-.\"
-.\" This manual is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
 .\" 1996-04-01 Tom Bjorkholm <tomb@mydata.se>
 .\"            First version written
@@ -27,16 +8,19 @@
 .\"            revision
 .\" Modified 2004-05-27 by Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.TH SCHED_SETPARAM 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH sched_setparam 2 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 sched_setparam, sched_getparam \- set and get scheduling parameters
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sched.h>
-.PP
+.P
 .BI "int sched_setparam(pid_t " pid ", const struct sched_param *" param );
 .BI "int sched_getparam(pid_t " pid ", struct sched_param *" param );
-.PP
+.P
 \fBstruct sched_param {
     ...
     int \fIsched_priority\fB;
@@ -56,13 +40,13 @@ policy of the thread identified by
 See
 .BR sched (7)
 for a description of the scheduling policies supported under Linux.
-.PP
+.P
 .BR sched_getparam ()
 retrieves the scheduling parameters for the
 thread identified by \fIpid\fP.
 If \fIpid\fP is zero, then the parameters
 of the calling thread are retrieved.
-.PP
+.P
 .BR sched_setparam ()
 checks the validity of \fIparam\fP for the scheduling policy of the
 thread.
@@ -71,11 +55,11 @@ range given by
 .BR sched_get_priority_min (2)
 and
 .BR sched_get_priority_max (2).
-.PP
+.P
 For a discussion of the privileges and resource limits related to
 scheduling priority and policy, see
 .BR sched (7).
-.PP
+.P
 POSIX systems on which
 .BR sched_setparam ()
 and
@@ -115,8 +99,10 @@ capability).
 .TP
 .B ESRCH
 The thread whose ID is \fIpid\fP could not be found.
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001.
 .SH SEE ALSO
 .ad l
 .nh

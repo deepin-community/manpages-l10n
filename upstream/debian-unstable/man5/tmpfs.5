@@ -1,206 +1,281 @@
-.TH tmpfs 5 "18 Feb 2012" "" "Debian Administrator's Manual"
+.\" Copyright (c) 2016 by Michael Kerrisk <mtk.manpages@gmail.com>
+.\"
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+.\"
+.TH tmpfs 5 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
-tmpfs \- variables that configure tmpfs filesystems mounted during boot
+tmpfs \- a virtual memory filesystem
 .SH DESCRIPTION
 The
-.I /etc/default/tmpfs
-file contains variable settings in POSIX format:
-.IP "" .5i
-VAR=VAL
-.PP
-Only one assignment is allowed per line.
-Comments (starting with '#') are also allowed.
-.PP
-This file is for the configuration of tmpfs filesystems mounted in
-early boot, before filesystems from /etc/fstab are mounted.  This
-currently includes the filesystems /run, /run/lock, /run/shm and /tmp.
-/run is required to be a tmpfs on systems supporting tmpfs mounts.
-/run/lock and /run/shm may be separate tmpfs mounts, useful for
-enforcing separate size limits.  /tmp is not required to be a tmpfs,
-and is not mounted as a tmpfs by default.
-.PP
-
-.IP /run
-Previously configured using \fBRAMRUN\fP in /etc/default/rcS, /run is
-now always mounted as a ram file system (tmpfs).  The size of the
-tmpfs can be controlled using TMPFS_SIZE and RUN_SIZE.  If desired,
-the defaults may also be overridden with an entry in in /etc/fstab,
-for example:
-
+.B tmpfs
+facility allows the creation of filesystems whose contents reside
+in virtual memory.
+Since the files on such filesystems typically reside in RAM,
+file access is extremely fast.
+.P
+The filesystem is automatically created when mounting
+a filesystem with the type
+.B tmpfs
+via a command such as the following:
+.P
+.in +4n
 .EX
-tmpfs	/run	tmpfs	nodev,nosuid,size=10%,mode=755	0	0
+$ sudo mount \-t tmpfs \-o size=10M tmpfs /mnt/mytmpfs
 .EE
-
+.in
+.P
+A
+.B tmpfs
+filesystem has the following properties:
+.IP \[bu] 3
+The filesystem can employ swap space when physical memory pressure
+demands it.
+.IP \[bu]
+The filesystem consumes only as much physical memory and swap space
+as is required to store the current contents of the filesystem.
+.IP \[bu]
+During a remount operation
+.RI ( "mount\ \-o\ remount" ),
+the filesystem size can be changed
+(without losing the existing contents of the filesystem).
+.P
+If a
+.B tmpfs
+filesystem is unmounted, its contents are discarded (lost).
+.\" See mm/shmem.c:shmem_parse_options for options it supports.
+.SS Mount options
+The
+.B tmpfs
+filesystem supports the following mount options:
+.TP
+.BR size "=\fIbytes\fP"
+Specify an upper limit on the size of the filesystem.
+The size is given in bytes, and rounded up to entire pages.
+The limit is removed if the size is
+.BR 0 .
 .IP
-The contents of /run will always be lost on system reboot, and it it
-is no longer explicitly cleaned at boot.  Packages can not expect
-directories in /run to exist after boot.  Packages expecting this are
-buggy and need to be fixed.  Note that /run was previously /var/run,
-and a compatibility symlink or bind mount will be created to allow the
-old path to continue to function.
-
-.IP /run/lock
-Previously configured using \fBRAMLOCK\fP in /etc/default/rcS.
-Configured using RAMLOCK, TMPFS_SIZE and LOCK_SIZE.  If desired,
-the defaults may also be overridden with an entry in in /etc/fstab,
-for example:
-
-.EX
-tmpfs	/run/lock	tmpfs	nodev,noexec,nosuid,size=52428800,mode=1777	0	0
-.EE
-
+The size may have a
+.BR k ,
+.BR m ,
+or
+.B g
+suffix for Ki, Mi, Gi (binary kilo (kibi), binary mega (mebi), and binary giga
+(gibi)).
 .IP
-Note that irrespective of these settings, /run/lock will be located on
-a tmpfs, either one mounted on /run/lock (if RAMLOCK=yes) or one
-mounted on /run (if RAMLOCK=no), and as a result the contents of
-/var/lock will always be lost on system reboot, and it it is no longer
-explicitly cleaned at boot.  Packages can not expect directories in
-/var/lock to exist after boot.  Packages expecting this are buggy and
-need to be fixed.  Note that /run/lock was previously /var/lock, and a
-compatibility symlink or bind mount will be created to allow the old
-path to continue to function.
-
-.IP /run/shm
-Previously configured using \fBRAMSHM\fP in /etc/default/rcS.  Note
-that the setting in /etc/default/rcS, if present, will still be used,
-but the setting in /etc/default/tmpfs will take precedence if enabled.
-Configured using RAMSHM, TMPFS_SIZE and SHM_SIZE.  If desired, the
-defaults may also be overridden with an entry in in /etc/fstab, for
-example:
-
-.EX
-tmpfs	/run/shm	tmpfs	nosuid,nodev,size=40%,mode=1777	0	0
-.EE
-
+The size may also have a % suffix to limit this instance to a percentage of
+physical RAM.
 .IP
-Packages can not expect directories in /run/shm to exist after boot.
-Note that /run/shm was previously /dev/shm, and a compatibility
-symlink or bind mount will be created to allow the old path to
-continue to function.  If an fstab entry for /dev/shm exists instead
-of /run/shm, then /dev/shm will continue to be used; note that this is
-only needed for users of newer versions of the Oracle database, which
-contain a buggy check for /dev/shm.
-
-.IP /tmp
-Previously configured using \fBRAMTMP\fP in /etc/default/rcS.  Note
-that the setting in /etc/default/rcS, if present, will still be used,
-but the setting in /etc/default/tmpfs will take precedence if enabled.
-Configured using RAMTMP, TMPFS_SIZE and TMP_SIZE.  If desired, the
-defaults may also be overridden with an entry in in /etc/fstab, for
-example:
-
-.EX
-tmpfs	/tmp	tmpfs	nodev,nosuid,size=20%,mode=1777	0	0
-.EE
-
+The default, when neither
+.B size
+nor
+.B nr_blocks
+is specified, is
+.IR size=50% .
+.TP
+.BR nr_blocks "=\fIblocks\fP"
+The same as
+.BR size ,
+but in blocks of
+.BR PAGE_CACHE_SIZE .
 .IP
-Packages can not expect directories in /tmp to exist after boot.
-
-.PP
-\fBNOTE: This file is ignored when systemd is used as init system.\fP
-
-.SH OPTIONS
-The following variables can be set.
-
-.SS Enabling or disabling tmpfs mounts
-
-.PP
-The following options enable specific mounts (with the exception of
-/run) to be enabled or disabled.  Note that the addition of an entry
-to /etc/fstab for any of the following will enable the mount
-unconditionally, overriding the setting here.
-
-.IP \fBRAMLOCK\fP
-Mount /run/lock as a tmpfs (separately from /run).  Defaults to
-\fByes\fP; set to \fBno\fP to disable (/run/lock will then be part of
-the /run tmpfs, if available).
-
-.IP \fBRAMSHM\fP
-Mount /run/shm as a tmpfs (separately from /run).  Defaults to
-\fByes\fP; set to \fBno\fP to disable (/run/shm will then be part of
-the /run tmpfs, if available).
-
-.IP \fBRAMTMP\fP
-Mount /tmp as a tmpfs.  Defaults to \fBno\fP; set to \fByes\fP to
-enable (/tmp will be part of the root filesystem if disabled).  /tmp
-may also be configured to be a separate mount in /etc/fstab, which
-will override the RAMTMP setting.
-
-.SS Configuring size limits for tmpfs mounts
-
-.PP
-The following options configure size limits for tmpfs mounts.  Note
-that the addition of an entry to /etc/fstab will override any of the
-limits specified here.
-.PP
-The following _SIZE variables are the maximum size (in bytes) that
-tmpfs filesystems can use.  The size will be rounded down to a
-multiple of the page size, 4096 bytes.  If no size is set, TMPFS_SIZE
-will be used as the default.
-.PP
-More complex mount options may be used by the creation of a
-suitable entry in /etc/fstab.  For example:
-
-.EX
-tmpfs	/run	tmpfs	size=10%	0	0
-.EE
-
-is equivalent to
-
-.EX
-RUN_SIZE=10%
-.EE
-
-and will override the RUN_SIZE setting.  This will allow additional
-options such as nr_blocks and nr_inodes to be used, and also
-adjustment of the mode, nodev, nosuid, noexec options should any
-change from the defaults be necessary.
-
-.IP "\fBTMPFS_SIZE\fP"
-Maximum size for all tmpfs filesystems if no specific size is
-provided.  The default is \fB20%VM\fP (20% of virtual memory,
-including swap space).  If no value is provided here, the kernel
-default (50% RAM) will be used.  Note that the "%VM" suffix may be
-used in this and all the _SIZE settings below, but may not be used in
-/etc/fstab (the absolute size is calculated by the init scripts).
-
-.IP "\fBRUN_SIZE\fP"
-Maximum size of /run (was previously /var/run).  The default is 10%
-core memory; the size required varies widely depending upon the
-demands of the software being run; this heuristic scales /run usage on
-system size.  Samba in particular has been seen to use at least 50MiB
-in a large heavily used server.  Typical usage is hundreds of KiB,
-maximum is tens of MiB.
-
-.IP "\fBLOCK_SIZE\fP"
-Maximum size of /run/lock (was previously /var/lock).  Defaults to
-5242880 (5 MiB).  Typical usage: tens of KiB; maximum hundreds of KiB.
-The default of 5 MiB should ensure the limit is never reached.
-
-.IP "\fBSHM_SIZE\fP"
-Maximum size of /run/shm (was previously /dev/shm).  No default size;
-the size required varies widely depending upon the demands of the
-software being run.
-
-.IP "\fBTMP_SIZE\fP"
-Maximum size of /tmp.  No default size.
-
-.SS Emergency overflow /tmp
-
-.PP
-If the amount of free space on the root filesystem falls below a
-certain size, a tmpfs will be mounted on /tmp (irrespective of the
-RAMTMP setting, which this overrides).  This is to permit logins when
-there would otherwise be too little free space for this to be possible.
-
-.IP "\fBTMP_OVERFLOW_LIMIT\fP"
-Mount a tmpfs on /tmp if the amount of free space on the root
-filesystem is below the specified limit at boot time (default 1024
-KiB).
-
-.SH AUTHOR
-Roger Leigh <rleigh@debian.org>
-
+Blocks may be specified with
+.BR k ,
+.BR m ,
+or
+.B g
+suffixes like
+.BR size ,
+but not a % suffix.
+.TP
+.BR nr_inodes "=\fIinodes\fP"
+The maximum number of inodes for this instance.
+The default is half of the number of your physical RAM pages, or (on a
+machine with highmem) the number of lowmem RAM pages, whichever is smaller.
+The limit is removed if the number is
+.BR 0 .
+.IP
+Inodes may be specified with
+.BR k ,
+.BR m ,
+or
+.B g
+suffixes like
+.BR size ,
+but not a % suffix.
+.TP
+.BR noswap "(since Linux 6.4)"
+.\" commit 2c6efe9cf2d7841b75fe38ed1adbd41a90f51ba0
+Disables swap.
+Remounts must respect the original settings.
+By default swap is enabled.
+.TP
+.BR mode "=\fImode\fP"
+Set initial permissions of the root directory.
+.TP
+.BR gid "=\fIgid\fP (since Linux 2.5.7)"
+.\" Technically this is also in some version of Linux 2.4.
+.\" commit 099445b489625b80b1d6687c9b6072dbeaca4096
+Set the initial group ID of the root directory.
+.TP
+.BR uid "=\fIuid\fP (since Linux 2.5.7)"
+.\" Technically this is also in some version of Linux 2.4.
+.\" commit 099445b489625b80b1d6687c9b6072dbeaca4096
+Set the initial user ID of the root directory.
+.TP
+.BR huge "=\fIhuge_option\fR (since Linux 4.7.0)"
+.\" commit 5a6e75f8110c97e2a5488894d4e922187e6cb343
+Set the huge table memory allocation policy for all files in this instance (if
+.B CONFIG_TRANSPARENT_HUGEPAGE
+is enabled).
+.IP
+The
+.I huge_option
+value is one of the following:
+.RS
+.TP
+.B never
+Do not allocate huge pages.
+This is the default.
+.TP
+.B always
+Attempt to allocate huge pages every time a new page is needed.
+.TP
+.B within_size
+Only allocate huge page if it will be fully within
+.IR i_size .
+Also respect
+.BR fadvise (2)
+and
+.BR madvise (2)
+hints
+.TP
+.B advise
+Only allocate huge pages if requested with
+.BR fadvise (2)
+or
+.BR madvise (2).
+.TP
+.B deny
+For use in emergencies, to force the huge option off from all mounts.
+.TP
+.B force
+Force the huge option on for all mounts; useful for testing.
+.RE
+.TP
+.BR mpol "=\fImpol_option\fR (since Linux 2.6.15)"
+.\" commit 7339ff8302fd70aabf5f1ae26e0c4905fa74a495
+Set the NUMA memory allocation policy for all files in this instance (if
+.B CONFIG_NUMA
+is enabled).
+.IP
+The
+.I mpol_option
+value is one of the following:
+.RS
+.TP
+.B default
+Use the process allocation policy (see
+.BR set_mempolicy (2)).
+.TP
+.BR prefer ":\fInode\fP"
+Preferably allocate memory from the given
+.IR node .
+.TP
+.BR bind ":\fInodelist\fP"
+Allocate memory only from nodes in
+.IR nodelist .
+.TP
+.B interleave
+Allocate from each node in turn.
+.TP
+.BR interleave ":\fInodelist\fP"
+Allocate from each node of
+.I in
+turn.
+.TP
+.B local
+Preferably allocate memory from the local node.
+.RE
+.IP
+In the above,
+.I nodelist
+is a comma-separated list of decimal numbers and ranges
+that specify NUMA nodes.
+A range is a pair of hyphen-separated decimal numbers,
+the smallest and largest node numbers in the range.
+For example,
+.IR mpol=bind:0\-3,5,7,9\-15 .
+.SH VERSIONS
+The
+.B tmpfs
+facility was added in Linux 2.4, as a successor to the older
+.B ramfs
+facility, which did not provide limit checking or
+allow for the use of swap space.
+.SH NOTES
+In order for user-space tools and applications to create
+.B tmpfs
+filesystems, the kernel must be configured with the
+.B CONFIG_TMPFS
+option.
+.P
+The
+.B tmpfs
+filesystem supports extended attributes (see
+.BR xattr (7)),
+but
+.I user
+extended attributes are not permitted.
+.P
+An internal shared memory filesystem is used for
+System V shared memory
+.RB ( shmget (2))
+and shared anonymous mappings
+.RB ( mmap (2)
+with the
+.B MAP_SHARED
+and
+.B MAP_ANONYMOUS
+flags).
+This filesystem is available regardless of whether
+the kernel was configured with the
+.B CONFIG_TMPFS
+option.
+.P
+A
+.B tmpfs
+filesystem mounted at
+.I /dev/shm
+is used for the implementation of POSIX shared memory
+.RB ( shm_overview (7))
+and POSIX semaphores
+.RB ( sem_overview (7)).
+.P
+The amount of memory consumed by all
+.B tmpfs
+filesystems is shown in the
+.I Shmem
+field of
+.I /proc/meminfo
+and in the
+.I shared
+field displayed by
+.BR free (1).
+.P
+The
+.B tmpfs
+facility was formerly called
+.BR shmfs .
 .SH SEE ALSO
-.BR mount (8),
-.BR rcS (5).
+.BR df (1),
+.BR du (1),
+.BR memfd_create (2),
+.BR mmap (2),
+.BR set_mempolicy (2),
+.BR shm_open (3),
+.BR mount (8)
+.P
+The kernel source files
+.I Documentation/filesystems/tmpfs.txt
+and
+.IR Documentation/admin\-guide/mm/transhuge.rst .

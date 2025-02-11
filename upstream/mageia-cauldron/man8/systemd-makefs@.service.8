@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-MAKEFS@\&.SERVICE" "8" "" "systemd 249" "systemd-makefs@.service"
+.TH "SYSTEMD\-MAKEFS@\&.SERVICE" "8" "" "systemd 255" "systemd-makefs@.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,7 +20,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-systemd-makefs@.service, systemd-mkswap@.service, systemd-growfs@.service, systemd-makefs, systemd-growfs \- Creating and growing file systems on demand
+systemd-makefs@.service, systemd-mkswap@.service, systemd-growfs@.service, systemd-growfs-root.service, systemd-makefs, systemd-growfs \- Creating and growing file systems on demand
 .SH "SYNOPSIS"
 .PP
 systemd\-makefs@\fIdevice\fR\&.service
@@ -29,14 +29,17 @@ systemd\-mkswap@\fIdevice\fR\&.service
 .PP
 systemd\-growfs@\fImountpoint\fR\&.service
 .PP
+systemd\-growfs\-root\&.service
+.PP
 /usr/lib/systemd/systemd\-makefs
 .PP
 /usr/lib/systemd/systemd\-growfs
 .SH "DESCRIPTION"
 .PP
 systemd\-makefs@\&.service,
-systemd\-mkswap@\&.service, and
-systemd\-growfs@\&.service
+systemd\-mkswap@\&.service,
+systemd\-growfs@\&.service, and
+systemd\-growfs\-root\&.service
 are used to implement the
 \fBx\-systemd\&.makefs\fR
 and
@@ -50,7 +53,9 @@ These services are started at boot, either right before or right after the mount
 systemd\-makefs
 knows very little about specific file systems and swap devices, and after checking that the block device does not already contain a file system or other content, it will execute binaries specific to each filesystem type (/sbin/mkfs\&.\fItype\fR
 or
-/sbin/mkswap)\&.
+/sbin/mkswap)\&. For certain file system types (currently ext2/ext3/\fBext4\fR(5),
+\fBbtrfs\fR(5),
+\fBxfs\fR(5), f2fs, vfat) and for swap devices, it will configure reasonable defaults and set the file system label and UUID based on the device name\&.
 .PP
 systemd\-growfs
 knows very little about specific file systems and swap devices, and will instruct the kernel to grow the mounted filesystem to full size of the underlying block device\&. Nevertheless, it needs to know the

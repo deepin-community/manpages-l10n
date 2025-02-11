@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2021-09-10 14:45+0200\n"
+"POT-Creation-Date: 2024-12-22 07:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,21 +17,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. type: TH
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "SYSTEMD\\&.LINK"
 msgstr ""
 
 #. type: TH
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux
 #, no-wrap
-msgid "systemd 249"
+msgid "systemd 257"
 msgstr ""
 
 #. type: TH
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "systemd.link"
 msgstr ""
@@ -40,41 +40,41 @@ msgstr ""
 #.  * MAIN CONTENT STARTS HERE *
 #.  -----------------------------------------------------------------
 #. type: SH
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "NAME"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "systemd.link - Network device configuration"
 msgstr ""
 
 #. type: SH
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "SYNOPSIS"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<link>\\&.link"
 msgstr ""
 
 #. type: SH
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "DESCRIPTION"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "A plain ini-style text file that encodes configuration for matching network "
 "devices, used by B<systemd-udevd>(8)  and in particular its "
@@ -83,35 +83,41 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
 msgid ""
-"The link files are read from the files located in the system network "
-"directory /usr/lib/systemd/network, the volatile runtime network directory /"
-"run/systemd/network, and the local administration network directory /etc/"
-"systemd/network\\&. Link files must have the extension \\&.link; other "
-"extensions are ignored\\&. All link files are collectively sorted and "
-"processed in lexical order, regardless of the directories in which they live"
-"\\&. However, files with identical filenames replace each other\\&. Files "
-"in /etc/ have the highest priority, files in /run/ take precedence over "
-"files with the same name in /usr/lib/\\&. This can be used to override a "
-"system-supplied link file with a local file if needed\\&. As a special case, "
-"an empty file (file size 0) or symlink with the same name pointing to /dev/"
-"null disables the configuration file entirely (it is \"masked\")\\&."
+"The \\&.link files are read from the files located in the system network "
+"directory /usr/lib/systemd/network and /usr/local/lib/systemd/network "
+"\\&\\s-2\\u[1]\\d\\s+2, the volatile runtime network directory /run/systemd/"
+"network, and the local administration network directory /etc/systemd/"
+"network\\&. All configuration files are collectively sorted and processed in "
+"alphanumeric order, regardless of the directories in which they live\\&. "
+"However, files with identical filenames replace each other\\&. It is "
+"recommended that each filename is prefixed with a number smaller than \"70\" "
+"(e\\&.g\\&.  10-eth0\\&.link)\\&. Otherwise, the default \\&.link files or "
+"those generated by B<systemd-network-generator.service>(8)  may take "
+"precedence over user configured files\\&. Files in /etc/ have the highest "
+"priority, files in /run/ take precedence over files with the same name in /"
+"usr/lib/\\&. This can be used to override a system-supplied link file with a "
+"local file if needed\\&. As a special case, an empty file (file size 0) or "
+"symlink with the same name pointing to /dev/null disables the configuration "
+"file entirely (it is \"masked\")\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"Along with the link file foo\\&.link, a \"drop-in\" directory foo\\&.link\\&."
-"d/ may exist\\&. All files with the suffix \"\\&.conf\" from this directory "
-"will be merged in the alphanumeric order and parsed after the main file "
-"itself has been parsed\\&. This is useful to alter or add configuration "
-"settings, without having to modify the main configuration file\\&. Each drop-"
-"in file must have appropriate section headers\\&."
+"Along with the link file foo\\&.link, a \"drop-in\" directory "
+"foo\\&.link\\&.d/ may exist\\&. All files with the suffix \"\\&.conf\" from "
+"this directory will be merged in the alphanumeric order and parsed after the "
+"main file itself has been parsed\\&. This is useful to alter or add "
+"configuration settings, without having to modify the main configuration "
+"file\\&. Each drop-in file must have appropriate section headers\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "In addition to /etc/systemd/network, drop-in \"\\&.d\" directories can be "
 "placed in /usr/lib/systemd/network or /run/systemd/network directories\\&. "
@@ -121,8 +127,8 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The link file contains a [Match] section, which determines if a given link "
 "file may be applied to a given device, as well as a [Link] section "
@@ -134,114 +140,197 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "See B<udevadm>(8)  for diagnosing problems with \\&.link files\\&."
 msgstr ""
 
 #. type: SH
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "[MATCH] SECTION OPTIONS"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"A link file is said to match a device if all matches specified by the "
+"A link file is said to match an interface if all matches specified by the "
 "[Match] section are satisfied\\&. When a link file does not contain valid "
-"settings in [Match] section, then the file will match all devices and "
+"settings in [Match] section, then the file will match all interfaces and "
 "B<systemd-udevd> warns about that\\&. Hint: to avoid the warning and to make "
 "it clear that all interfaces shall be matched, add the following:"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "OriginalName=*\n"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "The following keys are accepted:"
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The first (in alphanumeric order) of the link files that matches a given "
+"interface is applied, all later files are ignored, even if they match as "
+"well\\&. The following keys are accepted:"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<MACAddress=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"A whitespace-separated list of hardware addresses\\&. Use full colon-, "
-"hyphen- or dot-delimited hexadecimal\\&. See the example below\\&. This "
-"option may appear more than once, in which case the lists are merged\\&. If "
-"the empty string is assigned to this option, the list of hardware addresses "
-"defined prior to this is reset\\&."
+"A whitespace-separated list of hardware addresses\\&. The acceptable formats "
+"are:"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "Example:"
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<colon-delimited hexadecimal>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-#, no-wrap
-msgid "MACAddress=01:23:45:67:89:ab 00-11-22-33-44-55 AABB\\&.CCDD\\&.EEFF\n"
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Each field must be one byte\\&. E\\&.g\\&.  \"12:34:56:78:90:ab\" or "
+"\"AA:BB:CC:DD:EE:FF\"\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 250\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<hyphen-delimited hexadecimal>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Each field must be one byte\\&. E\\&.g\\&.  \"12-34-56-78-90-ab\" or \"AA-BB-"
+"CC-DD-EE-FF\"\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<dot-delimited hexadecimal>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Each field must be two bytes\\&. E\\&.g\\&.  \"1234\\&.5678\\&.90ab\" or "
+"\"AABB\\&.CCDD\\&.EEFF\"\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<IPv4 address format>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "E\\&.g\\&.  \"127\\&.0\\&.0\\&.1\" or \"192\\&.168\\&.0\\&.1\"\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<IPv6 address format>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "E\\&.g\\&.  \"2001:0db8:85a3::8a2e:0370:7334\" or \"::1\"\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The total length of each MAC address must be 4 (for IPv4 tunnel), 6 (for "
+"Ethernet), 16 (for IPv6 tunnel), or 20 (for InfiniBand)\\&. This option may "
+"appear more than once, in which case the lists are merged\\&. If the empty "
+"string is assigned to this option, the list of hardware addresses defined "
+"prior to this is reset\\&. Defaults to unset\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 211\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<PermanentMACAddress=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "A whitespace-separated list of hardware\\*(Aqs permanent addresses\\&. While "
 "I<MACAddress=> matches the device\\*(Aqs current MAC address, this matches "
 "the device\\*(Aqs permanent MAC address, which may be different from the "
-"current one\\&. Use full colon-, hyphen- or dot-delimited hexadecimal\\&. "
-"This option may appear more than once, in which case the lists are merged"
-"\\&. If the empty string is assigned to this option, the list of hardware "
-"addresses defined prior to this is reset\\&."
+"current one\\&. Use full colon-, hyphen- or dot-delimited hexadecimal, or "
+"IPv4 or IPv6 address format\\&. This option may appear more than once, in "
+"which case the lists are merged\\&. If the empty string is assigned to this "
+"option, the list of hardware addresses defined prior to this is reset\\&. "
+"Defaults to unset\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 245\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Path=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "A whitespace-separated list of shell-style globs matching the persistent "
 "path, as exposed by the udev property I<ID_PATH>\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Driver=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "A whitespace-separated list of shell-style globs matching the driver "
 "currently bound to the device, as exposed by the udev property "
@@ -251,30 +340,56 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Type=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-unstable fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "A whitespace-separated list of shell-style globs matching the device type, "
 "as exposed by B<networkctl list>\\&. If the list is prefixed with a \"!\", "
 "the test is inverted\\&. Some valid values are \"ether\", \"loopback\", "
-"\"wlan\", \"wwan\"\\&. Valid types are named either from the udev \"DEVTYPE"
-"\" attribute, or \"ARPHRD_\" macros in linux/if_arp\\&.h, so this is not "
-"comprehensive\\&."
+"\"wlan\", \"wwan\"\\&. Valid types are named either from the udev "
+"\"DEVTYPE\" attribute, or \"ARPHRD_\" macros in linux/if_arp\\&.h, so this "
+"is not comprehensive\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<Kind=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"A whitespace-separated list of shell-style globs matching the device kind, "
+"as exposed by B<networkctl status >I<INTERFACE> or B<ip -d link show "
+">I<INTERFACE>\\&. If the list is prefixed with a \"!\", the test is "
+"inverted\\&. Some valid values are \"bond\", \"bridge\", \"gre\", \"tun\", "
+"\"veth\"\\&. Valid kinds are given by netlink\\*(Aqs \"IFLA_INFO_KIND\" "
+"attribute, so this is not comprehensive\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 251\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Property=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "A whitespace-separated list of udev property names with their values after "
 "equals sign (\"=\")\\&. If multiple properties are specified, the test "
@@ -285,35 +400,41 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "Example: if a \\&.link file has the following:"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "Property=ID_MODEL_ID=9999 \"ID_VENDOR_FROM_DATABASE=vendor name\" \"KEY=with \\e\"quotation\\e\"\"\n"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "then, the \\&.link file matches only when an interface has all the above "
 "three properties\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 243\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<OriginalName=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "A whitespace-separated list of shell-style globs matching the device name, "
 "as exposed by the udev property \"INTERFACE\"\\&. This cannot be used to "
@@ -323,161 +444,300 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 218\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Host=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Matches against the hostname or machine ID of the host\\&. See "
 "I<ConditionHost=> in B<systemd.unit>(5)  for details\\&. When prefixed with "
 "an exclamation mark (\"!\"), the result is negated\\&. If an empty string is "
-"assigned, then previously assigned value is cleared\\&."
+"assigned, the previously assigned value is cleared\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Virtualization=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Checks whether the system is executed in a virtualized environment and "
 "optionally test whether it is a specific implementation\\&. See "
 "I<ConditionVirtualization=> in B<systemd.unit>(5)  for details\\&. When "
 "prefixed with an exclamation mark (\"!\"), the result is negated\\&. If an "
-"empty string is assigned, then previously assigned value is cleared\\&."
+"empty string is assigned, the previously assigned value is cleared\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<KernelCommandLine=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Checks whether a specific kernel command line option is set\\&. See "
 "I<ConditionKernelCommandLine=> in B<systemd.unit>(5)  for details\\&. When "
 "prefixed with an exclamation mark (\"!\"), the result is negated\\&. If an "
-"empty string is assigned, then previously assigned value is cleared\\&."
+"empty string is assigned, the previously assigned value is cleared\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<KernelVersion=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Checks whether the kernel version (as reported by B<uname -r>) matches a "
 "certain expression\\&. See I<ConditionKernelVersion=> in B<systemd.unit>(5)  "
 "for details\\&. When prefixed with an exclamation mark (\"!\"), the result "
-"is negated\\&. If an empty string is assigned, then previously assigned "
-"value is cleared\\&."
+"is negated\\&. If an empty string is assigned, the previously assigned value "
+"is cleared\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 237\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<Credential=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Checks whether the specified credential was passed to the systemd-"
+"udevd\\&.service service\\&. See \\m[blue]B<System and Service "
+"Credentials>\\m[]\\&\\s-2\\u[2]\\d\\s+2 for details\\&. When prefixed with "
+"an exclamation mark (\"!\"), the result is negated\\&. If an empty string is "
+"assigned, the previously assigned value is cleared\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 252\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Architecture=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Checks whether the system is running on a specific architecture\\&. See "
 "I<ConditionArchitecture=> in B<systemd.unit>(5)  for details\\&. When "
 "prefixed with an exclamation mark (\"!\"), the result is negated\\&. If an "
-"empty string is assigned, then previously assigned value is cleared\\&."
+"empty string is assigned, the previously assigned value is cleared\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Firmware=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"Checks whether the system is running on a machine with the specified firmware"
-"\\&. See I<ConditionFirmware=> in B<systemd.unit>(5)  for details\\&. When "
-"prefixed with an exclamation mark (\"!\"), the result is negated\\&. If an "
-"empty string is assigned, then previously assigned value is cleared\\&."
+"Checks whether the system is running on a machine with the specified "
+"firmware\\&. See I<ConditionFirmware=> in B<systemd.unit>(5)  for "
+"details\\&. When prefixed with an exclamation mark (\"!\"), the result is "
+"negated\\&. If an empty string is assigned, the previously assigned value is "
+"cleared\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 249\\&."
 msgstr ""
 
 #. type: SH
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "[LINK] SECTION OPTIONS"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "The [Link] section accepts the following keys:"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Description=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "A description of the device\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Set specified udev properties\\&. This takes space separated list of key-"
+"value pairs concatenated with equal sign (\"=\")\\&. Example:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Property=HOGE=foo BAR=baz\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"This option supports simple specifier expansion, see the Specifiers section "
+"below\\&. This option can be specified multiple times\\&. If an empty string "
+"is assigned, then the all previous assignments are cleared\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide opensuse-tumbleweed
+msgid ""
+"This setting is useful to configure the \"ID_NET_MANAGED_BY=\" property "
+"which declares which network management service shall manage the interface, "
+"which is respected by B<systemd-networkd> and others\\&. Use"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Property=ID_NET_MANAGED_BY=io\\&.systemd\\&.Network\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"to declare explicitly that B<systemd-networkd> shall manage the interface, "
+"or set the property to something else to declare explicitly it shall not do "
+"so\\&. See B<systemd.network>(5)  for details how this property is used to "
+"match interface names\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "Added in version 256\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "I<ImportProperty=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Import specified udev properties from the saved database\\&. This takes "
+"space separated list of property names\\&. Example:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "ImportProperty=HOGE BAR\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"If the same property is also set in I<Property=> in the above, then the "
+"imported property value will be overridden by the value specified in "
+"I<Property=>\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "I<UnsetProperty=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Unset specified udev properties\\&. This takes space separated list of "
+"property names\\&. Example:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"This setting is applied after I<ImportProperty=> and I<Property=> are "
+"applied\\&. Hence, if the same property is specified in I<ImportProperty=> "
+"or I<Property=>, then the imported or specified property value will be "
+"ignored, and the property will be unset\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Alias=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "The I<ifalias> interface property is set to this value\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<MACAddressPolicy=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The policy by which the MAC address should be set\\&. The available policies "
 "are:"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<persistent>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "If the hardware has a persistent MAC address, as most hardware should, and "
 "if it is used by the kernel, nothing is done\\&. Otherwise, a new MAC "
@@ -489,14 +749,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<random>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "If the kernel is using a random MAC address, nothing is done\\&. Otherwise, "
 "a new address is randomly generated each time the device appears, typically "
@@ -505,88 +765,101 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<none>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Keeps the MAC address assigned by the kernel\\&. Or use the MAC address "
 "specified in I<MACAddress=>\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
 #: opensuse-tumbleweed
+msgid "Added in version 227\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "An empty string assignment is equivalent to setting \"none\"\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The interface MAC address to use\\&. For this setting to take effect, "
 "I<MACAddressPolicy=> must either be unset, empty, or \"none\"\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<NamePolicy=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "An ordered, space-separated list of policies by which the interface name "
-"should be set\\&.  I<NamePolicy=> may be disabled by specifying B<net\\&."
-"ifnames=0> on the kernel command line\\&. Each of the policies may fail, and "
-"the first successful one is used\\&. The name is not set directly, but is "
-"exported to udev as the property B<ID_NET_NAME>, which is, by default, used "
-"by a B<udev>(7), rule to set I<NAME>\\&. The available policies are:"
+"should be set\\&.  I<NamePolicy=> may be disabled by specifying "
+"B<net\\&.ifnames=0> on the kernel command line\\&. Each of the policies may "
+"fail, and the first successful one is used\\&. The name is not set directly, "
+"but is exported to udev as the property B<ID_NET_NAME>, which is, by "
+"default, used by a B<udev>(7), rule to set I<NAME>\\&. The available "
+"policies are:"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<kernel>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "If the kernel claims that the name it has set for a device is predictable, "
 "then no renaming is performed\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 216\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<database>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The name is set based on entries in the udev\\*(Aqs Hardware Database with "
 "the key I<ID_NET_NAME_FROM_DATABASE>\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<onboard>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The name is set based on information given by the firmware for on-board "
 "devices, as exported by the udev property I<ID_NET_NAME_ONBOARD>\\&. See "
@@ -594,14 +867,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<slot>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The name is set based on information given by the firmware for hot-plug "
 "devices, as exported by the udev property I<ID_NET_NAME_SLOT>\\&. See "
@@ -609,14 +882,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<path>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The name is set based on the device\\*(Aqs physical location, as exported by "
 "the udev property I<ID_NET_NAME_PATH>\\&. See B<systemd.net-naming-"
@@ -624,14 +897,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<mac>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The name is set based on the device\\*(Aqs persistent MAC address, as "
 "exported by the udev property I<ID_NET_NAME_MAC>\\&. See B<systemd.net-"
@@ -639,38 +912,44 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<keep>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "If the device already had a name given by userspace (as part of creation of "
 "the device or a rename), keep it\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 241\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Name=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The interface name to use\\&. This option has lower precedence than "
 "I<NamePolicy=>, so for this setting to take effect, I<NamePolicy=> must "
-"either be unset, empty, disabled, or all policies configured there must fail"
-"\\&. Also see the example below with \"Name=dmz0\"\\&."
+"either be unset, empty, disabled, or all policies configured there must "
+"fail\\&. Also see the example below with \"Name=dmz0\"\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Note that specifying a name that the kernel might use for another interface "
 "(for example \"eth0\") is dangerous because the name assignment done by udev "
@@ -682,14 +961,27 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Interface names must have a minimum length of 1 character and a maximum "
+"length of 15 characters, and may contain any 7bit ASCII character, with the "
+"exception of control characters, \":\", \"/\" and \"%\"\\&. While \"\\&.\" "
+"is an allowed character, it\\*(Aqs recommended to avoid it when naming "
+"interfaces as various tools (such as B<resolvconf>(1)) use it as separator "
+"character\\&. Also, fully numeric interface names are not allowed (in order "
+"to avoid ambiguity with interface specification by numeric indexes), nor are "
+"the special strings \"\\&.\", \"\\&.\\&.\", \"all\" and \"default\"\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<AlternativeNamesPolicy=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "A space-separated list of policies by which the interface\\*(Aqs alternative "
 "names should be set\\&. Each of the policies may fail, and all successful "
@@ -699,14 +991,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<AlternativeName=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The alternative interface name to use\\&. This option can be specified "
 "multiple times\\&. If the empty string is assigned to this option, the list "
@@ -715,63 +1007,89 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Alternative interface names may be used to identify interfaces in various "
+"tools\\&. In contrast to the primary name (as configured with I<Name=> "
+"above) there may be multiple alternative names referring to the same "
+"interface\\&. Alternative names may have a maximum length of 127 characters, "
+"in contrast to the 15 allowed for the primary interface name, but otherwise "
+"are subject to the same naming constraints\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<TransmitQueues=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Specifies the device\\*(Aqs number of transmit queues\\&. An integer in the "
 "range 1\\&...4096\\&. When unset, the kernel\\*(Aqs default will be used\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 248\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<ReceiveQueues=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Specifies the device\\*(Aqs number of receive queues\\&. An integer in the "
 "range 1\\&...4096\\&. When unset, the kernel\\*(Aqs default will be used\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<TransmitQueueLength=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Specifies the transmit queue length of the device in number of packets\\&. "
-"An unsigned integer in the range 0\\&...4294967294\\&. When unset, the kernel"
-"\\*(Aqs default will be used\\&."
+"An unsigned integer in the range 0\\&...4294967294\\&. When unset, the "
+"kernel\\*(Aqs default will be used\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<MTUBytes=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The maximum transmission unit in bytes to set for the device\\&. The usual "
 "suffixes K, M, G are supported and are understood to the base of 1024\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<BitsPerSecond=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The speed to set for the device, the value is rounded down to the nearest "
 "Mbps\\&. The usual suffixes K, M, G are supported and are understood to the "
@@ -779,28 +1097,28 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Duplex=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The duplex mode to set for the device\\&. The accepted values are B<half> "
 "and B<full>\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<AutoNegotiation=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Takes a boolean\\&. If set to yes, automatic negotiation of transmission "
 "parameters is enabled\\&. Autonegotiation is a procedure by which two "
@@ -810,8 +1128,8 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Note that if autonegotiation is enabled, speed and duplex settings are read-"
 "only\\&. If autonegotiation is disabled, speed and duplex settings are "
@@ -819,13 +1137,20 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 233\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<WakeOnLan=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The Wake-on-LAN policy to set for the device\\&. Takes the special value "
 "\"off\" which disables Wake-on-LAN, or space separated list of the following "
@@ -833,91 +1158,108 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<phy>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "Wake on PHY activity\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<unicast>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "Wake on unicast messages\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 235\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<multicast>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "Wake on multicast messages\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<broadcast>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "Wake on broadcast messages\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<arp>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "Wake on ARP\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<magic>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "Wake on receipt of a magic packet\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<secureon>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "Enable secureon(tm) password for MagicPacket(tm)\\&."
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Enable SecureOn password for MagicPacket\\&. Implied when "
+"I<WakeOnLanPassword=> is specified\\&. If specified without "
+"I<WakeOnLanPassword=> option, then the password is read from the credential "
+"\"I<LINK>\\&.link\\&.wol\\&.password\" (e\\&.g\\&., \"60-"
+"foo\\&.link\\&.wol\\&.password\"), and if the credential not found, then "
+"read from \"wol\\&.password\"\\&. See I<ImportCredential=>/"
+"I<LoadCredential=>/I<SetCredential=> in B<systemd.exec>(5)  for details\\&. "
+"The password in the credential, must be 6 bytes in hex format with each byte "
+"separated by a colon (\":\") like an Ethernet MAC address, e\\&.g\\&., "
+"\"aa:bb:cc:dd:ee:ff\"\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Defaults to unset, and the device\\*(Aqs default will be used\\&. This "
 "setting can be specified multiple times\\&. If an empty string is assigned, "
@@ -925,88 +1267,120 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<WakeOnLanPassword=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Specifies the SecureOn password for MagicPacket\\&. Takes an absolute path "
+"to a regular file or an B<AF_UNIX> stream socket, or the plain password\\&. "
+"When a path to a regular file is specified, the password is read from it\\&. "
+"When an B<AF_UNIX> stream socket is specified, a connection is made to it "
+"and the password is read from it\\&. The password must be 6 bytes in hex "
+"format with each byte separated by a colon (\":\") like an Ethernet MAC "
+"address, e\\&.g\\&., \"aa:bb:cc:dd:ee:ff\"\\&. This implies "
+"I<WakeOnLan=secureon>\\&. Defaults to unset, and the current value will not "
+"be changed\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Port=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The port option is used to select the device port\\&. The supported values "
 "are:"
 msgstr ""
 
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
 msgid "B<tp>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "An Ethernet interface using Twisted-Pair cable as the medium\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 234\\&."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
 msgid "B<aui>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "Attachment Unit Interface (AUI)\\&. Normally used with hubs\\&."
 msgstr ""
 
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
 msgid "B<bnc>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "An Ethernet interface using BNC connectors and co-axial cable\\&."
 msgstr ""
 
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
 msgid "B<mii>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "An Ethernet interface using a Media Independent Interface (MII)\\&."
 msgstr ""
 
-#. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
 msgid "B<fibre>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "An Ethernet interface using Optical Fibre as the medium\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<Advertise=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "This sets what speeds and duplex modes of operation are advertised for auto-"
 "negotiation\\&. This implies \"AutoNegotiation=yes\"\\&. The supported "
@@ -1014,226 +1388,887 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<Table\\ \\&1.\\ \\&Supported advertise values>"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "Advertise"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "Speed (Mbps)"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "Duplex Mode"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid ".T&"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "l l l"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "l l l."
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-#, no-wrap
-msgid "B<10baset-half>"
-msgstr ""
-
-#. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-#, no-wrap
-msgid "10"
-msgstr ""
-
-#. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-#, no-wrap
-msgid "half"
-msgstr ""
-
-#. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "B<10baset-full>"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "10"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "full"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-rawhide
 #, no-wrap
-msgid "B<100baset-half>"
+msgid "B<10baset1brr-full>"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<10baset1l-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-rawhide
+#, no-wrap
+msgid "B<10baset1s-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<10baset-half>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "half"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-rawhide
+#, no-wrap
+msgid "B<10baset1s-half>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-rawhide
+#, no-wrap
+msgid "B<10baset1s-p2mp-half>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100basefx-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "100"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "B<100baset-full>"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
-msgid "B<1000baset-half>"
+msgid "B<100baset1-full>"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
-msgid "1000"
+msgid "B<100basefx-half>"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
-msgid "B<1000baset-full>"
+msgid "B<100baset-half>"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-#, no-wrap
-msgid "B<10000baset-full>"
-msgstr ""
-
-#. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-#, no-wrap
-msgid "10000"
-msgstr ""
-
-#. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-#, no-wrap
-msgid "B<2500basex-full>"
-msgstr ""
-
-#. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-#, no-wrap
-msgid "2500"
-msgstr ""
-
-#. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "B<1000basekx-full>"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
-msgid "B<10000basekx4-full>"
+msgid "1000"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
-msgid "B<10000basekr-full>"
+msgid "B<1000baset-full>"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<1000baset1-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<1000basex-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<1000baset-half>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<2500baset-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "2500"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<2500basex-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<5000baset-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "5000"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "B<10000baser-fec>"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
-msgid "B<20000basemld2-full>"
+msgid "10000"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "\\ \\&"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<10000basecr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<10000baseer-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<10000basekr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<10000basekx4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<10000baselr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<10000baselrm-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<10000basesr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<10000baset-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<20000basekr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "20000"
 msgstr ""
 
 #. type: tbl table
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
-msgid "B<20000basekr2-full>"
+msgid "B<20000basemld2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<25000basecr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "25000"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<25000basekr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<25000basesr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<40000basecr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "40000"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<40000basekr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<40000baselr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<40000basesr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<50000basecr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "50000"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<50000basecr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<50000basedr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<50000basekr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<50000basekr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<50000baselr-er-fr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<50000basesr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<50000basesr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<56000basecr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "56000"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<56000basekr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<56000baselr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<56000basesr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000basecr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "100000"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000basecr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000basecr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000basedr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000basedr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000basekr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000basekr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000basekr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000baselr-er-fr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000baselr2-er2-fr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000baselr4-er4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000basesr-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000basesr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<100000basesr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<200000basecr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "200000"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<200000basecr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<200000basedr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<200000basedr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<200000basekr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<200000basekr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<200000baselr2-er2-fr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<200000baselr4-er4-fr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<200000basesr2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<200000basesr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<400000basecr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "400000"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<400000basecr8-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<400000basedr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<400000basedr8-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<400000basekr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<400000basekr8-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<400000baselr4-er4-fr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<400000baselr8-er8-fr8-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<400000basesr4-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<400000basesr8-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<800000basecr8-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "800000"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<800000basedr8-2-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<800000basedr8-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<800000basekr8-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<800000basesr8-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<800000basevr8-full>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<asym-pause>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<autonegotiation>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<backplane>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fec-baser>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fec-llrs>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fec-none>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<fec-rs>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<pause>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"By default this is unset, i\\&.e\\&. all possible modes will be advertised"
-"\\&. This option may be specified more than once, in which case all "
-"specified speeds and modes are advertised\\&. If the empty string is "
+"By default this is unset, i\\&.e\\&. all possible modes will be "
+"advertised\\&. This option may be specified more than once, in which case "
+"all specified speeds and modes are advertised\\&. If the empty string is "
 "assigned to this option, the list is reset, and all prior assignments have "
 "no effect\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 240\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<ReceiveChecksumOffload=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Takes a boolean\\&. If set to true, hardware offload for checksumming of "
 "ingress network packets is enabled\\&. When unset, the kernel\\*(Aqs default "
@@ -1241,13 +2276,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<TransmitChecksumOffload=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Takes a boolean\\&. If set to true, hardware offload for checksumming of "
 "egress network packets is enabled\\&. When unset, the kernel\\*(Aqs default "
@@ -1255,26 +2291,34 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<TCPSegmentationOffload=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"Takes a boolean\\&. If set to true, TCP Segmentation Offload (TSO) is enabled"
-"\\&. When unset, the kernel\\*(Aqs default will be used\\&."
+"Takes a boolean\\&. If set to true, TCP Segmentation Offload (TSO) is "
+"enabled\\&. When unset, the kernel\\*(Aqs default will be used\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 232\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<TCP6SegmentationOffload=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Takes a boolean\\&. If set to true, TCP6 Segmentation Offload (tx-tcp6-"
 "segmentation) is enabled\\&. When unset, the kernel\\*(Aqs default will be "
@@ -1282,178 +2326,232 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<GenericSegmentationOffload=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Takes a boolean\\&. If set to true, Generic Segmentation Offload (GSO) is "
 "enabled\\&. When unset, the kernel\\*(Aqs default will be used\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<GenericReceiveOffload=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"Takes a boolean\\&. If set to true, Generic Receive Offload (GRO) is enabled"
-"\\&. When unset, the kernel\\*(Aqs default will be used\\&."
+"Takes a boolean\\&. If set to true, Generic Receive Offload (GRO) is "
+"enabled\\&. When unset, the kernel\\*(Aqs default will be used\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<GenericReceiveOffloadHardware=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Takes a boolean\\&. If set to true, hardware accelerated Generic Receive "
+"Offload (GRO) is enabled\\&. When unset, the kernel\\*(Aqs default will be "
+"used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<LargeReceiveOffload=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"Takes a boolean\\&. If set to true, Large Receive Offload (LRO) is enabled"
-"\\&. When unset, the kernel\\*(Aqs default will be used\\&."
+"Takes a boolean\\&. If set to true, Large Receive Offload (LRO) is "
+"enabled\\&. When unset, the kernel\\*(Aqs default will be used\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "I<RxChannels=>"
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "I<ReceivePacketSteeringCPUMask=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-rawhide opensuse-tumbleweed
 msgid ""
-"Sets the number of receive channels (a number between 1 and 4294967295) \\&."
+"Configures Receive Packet Steering (RPS) list of CPUs to which RPS may "
+"forward traffic\\&. Takes a list of CPU indices or ranges separated by "
+"either whitespace or commas\\&. Alternatively, takes the special value "
+"\"all\", which will include all available CPUs in the mask\\&. CPU ranges "
+"are specified by the lower and upper CPU indices separated by a dash "
+"(e\\&.g\\&.  \"2-6\")\\&. This option may be specified more than once, in "
+"which case the specified list of CPU ranges are merged\\&. If an empty "
+"string is assigned, the list is reset, all assignments prior to this will "
+"have no effect\\&. Defaults to unset and RPS CPU list is unchanged\\&. To "
+"disable RPS when it was previously enabled, use the special value "
+"\"disable\"\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "I<TxChannels=>"
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<ReceiveVLANCTAGHardwareAcceleration=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"Sets the number of transmit channels (a number between 1 and 4294967295)\\&."
+"Takes a boolean\\&. If set to true, receive VLAN CTAG hardware acceleration "
+"is enabled\\&. When unset, the kernel\\*(Aqs default will be used\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "I<OtherChannels=>"
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<TransmitVLANCTAGHardwareAcceleration=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"Sets the number of other channels (a number between 1 and 4294967295)\\&."
+"Takes a boolean\\&. If set to true, transmit VLAN CTAG hardware acceleration "
+"is enabled\\&. When unset, the kernel\\*(Aqs default will be used\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "I<CombinedChannels=>"
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<ReceiveVLANCTAGFilter=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"Sets the number of combined set channels (a number between 1 and "
-"4294967295)\\&."
+"Takes a boolean\\&. If set to true, receive filtering on VLAN CTAGs is "
+"enabled\\&. When unset, the kernel\\*(Aqs default will be used\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "I<RxBufferSize=>"
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<TransmitVLANSTAGHardwareAcceleration=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"Takes an integer\\&. Specifies the maximum number of pending packets in the "
-"NIC receive buffer\\&. When unset, the kernel\\*(Aqs default will be used\\&."
+"Takes a boolean\\&. If set to true, transmit VLAN STAG hardware acceleration "
+"is enabled\\&. When unset, the kernel\\*(Aqs default will be used\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "I<RxMiniBufferSize=>"
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<NTupleFilter=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"Takes an integer\\&. Specifies the maximum number of pending packets in the "
-"NIC mini receive buffer\\&. When unset, the kernel\\*(Aqs default will be "
-"used\\&."
+"Takes a boolean\\&. If set to true, receive N-tuple filters and actions are "
+"enabled\\&. When unset, the kernel\\*(Aqs default will be used\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "I<RxJumboBufferSize=>"
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<RxChannels=>, I<TxChannels=>, I<OtherChannels=>, I<CombinedChannels=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"Takes an integer\\&. Specifies the maximum number of pending packets in the "
-"NIC jumbo receive buffer\\&. When unset, the kernel\\*(Aqs default will be "
-"used\\&."
+"Specifies the number of receive, transmit, other, or combined channels, "
+"respectively\\&. Takes an unsigned integer in the range 1\\&...4294967295 or "
+"\"max\"\\&. If set to \"max\", the advertised maximum value of the hardware "
+"will be used\\&. When unset, the number will not be changed\\&. Defaults to "
+"unset\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "I<TxBufferSize=>"
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 239\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"Takes an integer\\&. Specifies the maximum number of pending packets in the "
-"NIC transmit buffer\\&. When unset, the kernel\\*(Aqs default will be used"
-"\\&."
+"I<RxBufferSize=>, I<RxMiniBufferSize=>, I<RxJumboBufferSize=>, "
+"I<TxBufferSize=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Specifies the maximum number of pending packets in the NIC receive buffer, "
+"mini receive buffer, jumbo receive buffer, or transmit buffer, "
+"respectively\\&. Takes an unsigned integer in the range 1\\&...4294967295 or "
+"\"max\"\\&. If set to \"max\", the advertised maximum value of the hardware "
+"will be used\\&. When unset, the number will not be changed\\&. Defaults to "
+"unset\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 244\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<RxFlowControl=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Takes a boolean\\&. When set, enables receive flow control, also known as "
-"the ethernet receive PAUSE message (generate and send ethernet PAUSE "
-"frames)\\&. When unset, the kernel\\*(Aqs default will be used\\&."
+"the ethernet receive PAUSE message (generate and send ethernet PAUSE frames)"
+"\\&. When unset, the kernel\\*(Aqs default will be used\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 246\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<TxFlowControl=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Takes a boolean\\&. When set, enables transmit flow control, also known as "
 "the ethernet transmit PAUSE message (respond to received ethernet PAUSE "
@@ -1461,13 +2559,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<AutoNegotiationFlowControl=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Takes a boolean\\&. When set, auto negotiation enables the interface to "
 "exchange state advertisements with the connected peer so that the two "
@@ -1476,12 +2575,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<GenericSegmentOffloadMaxBytes=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Specifies the maximum size of a Generic Segment Offload (GSO) packet the "
 "device should accept\\&. The usual suffixes K, M, G are supported and are "
@@ -1490,66 +2591,681 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "I<GenericSegmentOffloadMaxSegments=>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Specifies the maximum number of Generic Segment Offload (GSO) segments the "
 "device should accept\\&. An unsigned integer in the range 1\\&...65535\\&. "
 "Defaults to unset\\&."
 msgstr ""
 
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<UseAdaptiveRxCoalesce=>, I<UseAdaptiveTxCoalesce=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Boolean properties that, when set, enable/disable adaptive Rx/Tx coalescing "
+"if the hardware supports it\\&. When unset, the kernel\\*(Aqs default will "
+"be used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"I<RxCoalesceSec=>, I<RxCoalesceIrqSec=>, I<RxCoalesceLowSec=>, "
+"I<RxCoalesceHighSec=>, I<TxCoalesceSec=>, I<TxCoalesceIrqSec=>, "
+"I<TxCoalesceLowSec=>, I<TxCoalesceHighSec=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"These properties configure the delay before Rx/Tx interrupts are generated "
+"after a packet is sent/received\\&. The \"Irq\" properties come into effect "
+"when the host is servicing an IRQ\\&. The \"Low\" and \"High\" properties "
+"come into effect when the packet rate drops below the low packet rate "
+"threshold or exceeds the high packet rate threshold respectively if adaptive "
+"Rx/Tx coalescing is enabled\\&. When unset, the kernel\\*(Aqs defaults will "
+"be used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"I<RxMaxCoalescedFrames=>, I<RxMaxCoalescedIrqFrames=>, "
+"I<RxMaxCoalescedLowFrames=>, I<RxMaxCoalescedHighFrames=>, "
+"I<TxMaxCoalescedFrames=>, I<TxMaxCoalescedIrqFrames=>, "
+"I<TxMaxCoalescedLowFrames=>, I<TxMaxCoalescedHighFrames=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"These properties configure the maximum number of frames that are sent/"
+"received before a Rx/Tx interrupt is generated\\&. The \"Irq\" properties "
+"come into effect when the host is servicing an IRQ\\&. The \"Low\" and "
+"\"High\" properties come into effect when the packet rate drops below the "
+"low packet rate threshold or exceeds the high packet rate threshold "
+"respectively if adaptive Rx/Tx coalescing is enabled\\&. When unset, the "
+"kernel\\*(Aqs defaults will be used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<CoalescePacketRateLow=>, I<CoalescePacketRateHigh=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"These properties configure the low and high packet rate (expressed in "
+"packets per second) threshold respectively and are used to determine when "
+"the corresponding coalescing settings for low and high packet rates come "
+"into effect if adaptive Rx/Tx coalescing is enabled\\&. If unset, the "
+"kernel\\*(Aqs defaults will be used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<CoalescePacketRateSampleIntervalSec=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Configures how often to sample the packet rate used for adaptive Rx/Tx "
+"coalescing\\&. This property cannot be zero\\&. This lowest time granularity "
+"supported by this property is seconds\\&. Partial seconds will be rounded up "
+"before being passed to the kernel\\&. If unset, the kernel\\*(Aqs default "
+"will be used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<StatisticsBlockCoalesceSec=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"How long to delay driver in-memory statistics block updates\\&. If the "
+"driver does not have an in-memory statistic block, this property is "
+"ignored\\&. This property cannot be zero\\&. If unset, the kernel\\*(Aqs "
+"default will be used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<MDI=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Specifies the medium dependent interface (MDI) mode for the interface\\&. A "
+"MDI describes the interface from a physical layer implementation to the "
+"physical medium used to carry the transmission\\&. Takes one of the "
+"following words: \"straight\" (or equivalently: \"mdi\"), \"crossover\" (or "
+"equivalently: \"mdi-x\", \"mdix\"), and \"auto\"\\&. When \"straight\", the "
+"MDI straight through mode will be used\\&. When \"crossover\", the MDI "
+"crossover (MDI-X) mode will be used\\&. When \"auto\", the MDI status is "
+"automatically detected\\&. Defaults to unset, and the kernel\\*(Aqs default "
+"will be used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<SR-IOVVirtualFunctions=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Specifies the number of SR-IOV virtual functions\\&. Takes an integer in the "
+"range 0\\&...2147483647\\&. Defaults to unset, and automatically determined "
+"from the values specified in the I<VirtualFunction=> settings in the [SR-"
+"IOV] sections\\&."
+msgstr ""
+
 #. type: SH
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "[SR-IOV] SECTION OPTIONS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The [SR-IOV] section accepts the following keys\\&. Specify several [SR-IOV] "
+"sections to configure several SR-IOVs\\&. SR-IOV provides the ability to "
+"partition a single physical PCI resource into virtual PCI functions which "
+"can then be injected into a VM\\&. In the case of network VFs, SR-IOV "
+"improves north-south network performance (that is, traffic with endpoints "
+"outside the host machine) by allowing traffic to bypass the host machine\\"
+"(cqs network stack\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<VirtualFunction=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Specifies a Virtual Function (VF), lightweight PCIe function designed solely "
+"to move data in and out\\&. Takes an integer in the range "
+"0\\&...2147483646\\&. This option is compulsory\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<VLANId=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Specifies VLAN ID of the virtual function\\&. Takes an integer in the range "
+"1\\&...4095\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<QualityOfService=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Specifies quality of service of the virtual function\\&. Takes an integer in "
+"the range 1\\&...4294967294\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<VLANProtocol=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Specifies VLAN protocol of the virtual function\\&. Takes \"802\\&.1Q\" or "
+"\"802\\&.1ad\"\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<MACSpoofCheck=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Takes a boolean\\&. Controls the MAC spoof checking\\&. When unset, the "
+"kernel\\*(Aqs default will be used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<QueryReceiveSideScaling=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Takes a boolean\\&. Toggle the ability of querying the receive side scaling "
+"(RSS) configuration of the virtual function (VF)\\&. The VF RSS information "
+"like RSS hash key may be considered sensitive on some devices where this "
+"information is shared between VF and the physical function (PF)\\&. When "
+"unset, the kernel\\*(Aqs default will be used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<Trust=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Takes a boolean\\&. Allows one to set trust mode of the virtual function (VF)"
+"\\&. When set, VF users can set a specific feature which may impact security "
+"and/or performance\\&. When unset, the kernel\\*(Aqs default will be used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "I<LinkState=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Allows one to set the link state of the virtual function (VF)\\&. Takes a "
+"boolean or a special value \"auto\"\\&. Setting to \"auto\" means a "
+"reflection of the physical function (PF) link state, \"yes\" lets the VF to "
+"communicate with other VFs on this host even if the PF link state is down, "
+"\"no\" causes the hardware to drop any packets sent by the VF\\&. When "
+"unset, the kernel\\*(Aqs default will be used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "Specifies the MAC address for the virtual function\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "SPECIFIERS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Some settings resolve specifiers which may be used to write generic unit "
+"files referring to runtime or unit parameters that are replaced when the "
+"unit files are loaded\\&. Specifiers must be known and resolvable for the "
+"setting to be valid\\&. The following specifiers are understood:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "B<Table\\ \\&2.\\ \\&Specifiers available in unit files>"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Specifier"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Meaning"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Details"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%a"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Architecture"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "A short string identifying the architecture of the local system\\&. A string such as B<x86>, B<x86-64> or B<arm64>\\&. See the architectures defined for I<ConditionArchitecture=> in B<systemd.unit>(5) for a full list\\&."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%A"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Operating system image version"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "The operating system image version identifier of the running system, as read from the I<IMAGE_VERSION=> field of /etc/os-release\\&. If not set, resolves to an empty string\\&. See B<os-release>(5) for more information\\&."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%b"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Boot ID"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "The boot ID of the running system, formatted as string\\&. See B<random>(4) for more information\\&."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%B"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Operating system build ID"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "The operating system build identifier of the running system, as read from the I<BUILD_ID=> field of /etc/os-release\\&. If not set, resolves to an empty string\\&. See B<os-release>(5) for more information\\&."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%H"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Host name"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "The hostname of the running system\\&."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%l"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Short host name"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "The hostname of the running system, truncated at the first dot to remove any domain component\\&."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%m"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Machine ID"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "The machine ID of the running system, formatted as string\\&. See B<machine-id>(5) for more information\\&."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%M"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Operating system image identifier"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "The operating system image identifier of the running system, as read from the I<IMAGE_ID=> field of /etc/os-release\\&. If not set, resolves to an empty string\\&. See B<os-release>(5) for more information\\&."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%o"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Operating system ID"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "The operating system identifier of the running system, as read from the I<ID=> field of /etc/os-release\\&. See B<os-release>(5) for more information\\&."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%q"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Pretty host name"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "The pretty hostname of the running system, as read from the I<PRETTY_HOSTNAME=> field of /etc/machine-info\\&. If not set, resolves to the short hostname\\&. See B<machine-info>(5) for more information\\&."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%T"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Directory for temporary files"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "This is either /tmp or the path \"$TMPDIR\", \"$TEMP\" or \"$TMP\" are set to\\&. (Note that the directory may be specified without a trailing slash\\&.)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%v"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Kernel release"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Identical to B<uname -r> output\\&."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%V"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Directory for larger and persistent temporary files"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "This is either /var/tmp or the path \"$TMPDIR\", \"$TEMP\" or \"$TMP\" are set to\\&. (Note that the directory may be specified without a trailing slash\\&.)"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%w"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Operating system version ID"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "The operating system version identifier of the running system, as read from the I<VERSION_ID=> field of /etc/os-release\\&. If not set, resolves to an empty string\\&. See B<os-release>(5) for more information\\&."
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "%W"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "Operating system variant ID"
+msgstr ""
+
+#. type: tbl table
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "The operating system variant identifier of the running system, as read from the I<VARIANT_ID=> field of /etc/os-release\\&. If not set, resolves to an empty string\\&. See B<os-release>(5) for more information\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "EXAMPLES"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<Example\\ \\&1.\\ \\&/usr/lib/systemd/network/99-default\\&.link>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "The link file 99-default\\&.link that is shipped with systemd defines the "
-"default naming policy for links\\&."
+"default policies for the interface name, alternative names, and MAC address "
+"of links\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"[Match]\n"
+"OriginalName=*\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid ""
 "[Link]\n"
-"NamePolicy=kernel database onboard slot path\n"
+"NamePolicy=keep kernel database onboard slot path\n"
+"AlternativeNamesPolicy=database onboard slot path\n"
 "MACAddressPolicy=persistent\n"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "B<Example\\ \\&2.\\ \\&/etc/systemd/network/10-dmz\\&.link>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "This example assigns the fixed name \"dmz0\" to the interface with the MAC "
 "address 00:a0:de:63:7a:e6:"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid ""
 "[Match]\n"
@@ -1557,8 +3273,8 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid ""
 "[Link]\n"
@@ -1566,24 +3282,59 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "I<NamePolicy=> is not set, so I<Name=> takes effect\\&. We use the \"10-\" "
 "prefix to order this file early in the list\\&. Note that it needs to be "
-"before \"99-link\", i\\&.e\\&. it needs a numerical prefix, to have any "
-"effect at all\\&."
+"before 99-default\\&.link, i\\&.e\\&. it needs a numerical prefix, to have "
+"any effect at all\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "B<Example\\ \\&3.\\ \\&Debugging >I<NamePolicy=> assignments"
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<Example\\ \\&3.\\ \\&(Re-)applying a \\&.link file to an interface>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-leap-15-3
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"After a new \\&.link file has been created, or an existing \\&.link file "
+"modified, the new settings may be applied to the matching interface with the "
+"following commands:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"$ sudo udevadm control --reload\n"
+"$ sudo ip link set eth0 down\n"
+"$ sudo udevadm trigger --verbose --settle --action add /sys/class/net/eth0\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
 #: opensuse-tumbleweed
+msgid ""
+"You may also need to stop the service that manages the network interface, "
+"e\\&.g\\&.  B<systemd-networkd.service>(8)  or NetworkManager\\&.service "
+"before the above operation, and then restart the service after that\\&. For "
+"more details about B<udevadm> command, see B<udevadm>(8)\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<Example\\ \\&4.\\ \\&Debugging >I<NamePolicy=> assignments"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid ""
 "$ sudo SYSTEMD_LOG_LEVEL=debug udevadm test-builtin net_setup_link /sys/class/net/hub0\n"
@@ -1602,14 +3353,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "Explicit I<Name=> configuration wins in this case\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid ""
 "sudo SYSTEMD_LOG_LEVEL=debug udevadm test-builtin net_setup_link /sys/class/net/enp0s31f6\n"
@@ -1630,8 +3381,8 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "In this case, the interface was already renamed, so the B<keep> policy "
 "specified as the first option in 99-default\\&.link means that the existing "
@@ -1640,8 +3391,8 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux fedora-rawhide mageia-cauldron opensuse-leap-15-3
-#: opensuse-tumbleweed
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid ""
 "enp0s31f6: Policy *path* yields \"enp0s31f6\"\\&.\n"
@@ -1653,28 +3404,28 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid "Please note that the details of output are subject to change\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "B<Example\\ \\&4.\\ \\&/etc/systemd/network/10-internet\\&.link>"
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<Example\\ \\&5.\\ \\&/etc/systemd/network/10-internet\\&.link>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "This example assigns the fixed name \"internet0\" to the interface with the "
 "device path \"pci-0000:00:1a\\&.0-*\":"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid ""
 "[Match]\n"
@@ -1682,8 +3433,8 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid ""
 "[Link]\n"
@@ -1691,22 +3442,22 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
-msgid "B<Example\\ \\&5.\\ \\&/etc/systemd/network/25-wireless\\&.link>"
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<Example\\ \\&6.\\ \\&/etc/systemd/network/25-wireless\\&.link>"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
 "Here\\*(Aqs an overly complex example that shows the use of a large number "
 "of [Match] and [Link] settings\\&."
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid ""
 "[Match]\n"
@@ -1720,8 +3471,8 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid ""
 "[Link]\n"
@@ -1733,182 +3484,136 @@ msgid ""
 msgstr ""
 
 #. type: SH
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 #, no-wrap
 msgid "SEE ALSO"
 msgstr ""
 
 #. type: Plain text
-#: archlinux debian-bullseye debian-unstable fedora-rawhide mageia-cauldron
-#: opensuse-leap-15-3 opensuse-tumbleweed
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
 msgid ""
-"B<systemd-udevd.service>(8), B<udevadm>(8), B<systemd.netdev>(5), B<systemd."
-"network>(5)"
+"B<systemd-udevd.service>(8), B<udevadm>(8), B<systemd.netdev>(5), "
+"B<systemd.network>(5), B<systemd-network-generator.service>(8)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid " 1."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"💣💥🧨💥💥💣 Please note that those configuration files must be available at "
+"all times. If /usr/local/ is a separate partition, it may not be available "
+"during early boot, and must not be used for configuration."
+msgstr ""
+
+#. type: IP
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid " 2."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "System and Service Credentials"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "\\%https://systemd.io/CREDENTIALS"
 msgstr ""
 
 #. type: TH
-#: debian-bullseye debian-unstable
+#: debian-bookworm opensuse-leap-16-0
 #, no-wrap
-msgid "systemd 247"
+msgid "systemd 254"
 msgstr ""
 
 #. type: Plain text
-#: debian-bullseye debian-unstable
+#: debian-bookworm
 msgid ""
-"The link files are read from the files located in the system network "
-"directory /lib/systemd/network, the volatile runtime network directory /run/"
-"systemd/network, and the local administration network directory /etc/systemd/"
-"network\\&. Link files must have the extension \\&.link; other extensions "
-"are ignored\\&. All link files are collectively sorted and processed in "
-"lexical order, regardless of the directories in which they live\\&. However, "
-"files with identical filenames replace each other\\&. Files in /etc/ have "
-"the highest priority, files in /run/ take precedence over files with the "
-"same name in /lib/\\&. This can be used to override a system-supplied link "
-"file with a local file if needed\\&. As a special case, an empty file (file "
-"size 0) or symlink with the same name pointing to /dev/null disables the "
-"configuration file entirely (it is \"masked\")\\&."
+"The \\&.link files are read from the files located in the system network "
+"directory /lib/systemd/network and /usr/local/lib/systemd/network, the "
+"volatile runtime network directory /run/systemd/network, and the local "
+"administration network directory /etc/systemd/network\\&. All configuration "
+"files are collectively sorted and processed in alphanumeric order, "
+"regardless of the directories in which they live\\&. However, files with "
+"identical filenames replace each other\\&. It is recommended that each "
+"filename is prefixed with a number (e\\&.g\\&.  10-eth0\\&.link)\\&. "
+"Otherwise, the default \\&.link files or those generated by B<systemd-"
+"network-generator.service>(8)  may take precedence over user configured "
+"files\\&. Files in /etc/ have the highest priority, files in /run/ take "
+"precedence over files with the same name in /lib/\\&. This can be used to "
+"override a system-supplied link file with a local file if needed\\&. As a "
+"special case, an empty file (file size 0) or symlink with the same name "
+"pointing to /dev/null disables the configuration file entirely (it is "
+"\"masked\")\\&."
 msgstr ""
 
 #. type: Plain text
-#: debian-bullseye opensuse-leap-15-3
+#: debian-bookworm
 msgid ""
-"A whitespace-separated list of shell-style globs matching the device type, "
-"as exposed by B<networkctl status>\\&. If the list is prefixed with a \"!\", "
-"the test is inverted\\&."
+"In addition to /etc/systemd/network, drop-in \"\\&.d\" directories can be "
+"placed in /lib/systemd/network or /run/systemd/network directories\\&. Drop-"
+"in files in /etc/ take precedence over those in /run/ which in turn take "
+"precedence over those in /lib/\\&. Drop-in files under any of these "
+"directories take precedence over the main link file wherever located\\&."
 msgstr ""
 
 #. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
+#: debian-bookworm mageia-cauldron opensuse-leap-16-0
 msgid ""
-"A whitespace-separated list of udev property name with its value after a "
-"equal (\"=\")\\&. If multiple properties are specified, the test results are "
-"ANDed\\&. If the list is prefixed with a \"!\", the test is inverted\\&. If "
-"a value contains white spaces, then please quote whole key and value pair"
-"\\&. If a value contains quotation, then please escape the quotation with "
-"\"\\e\"\\&."
+"Checks whether the specified credential was passed to the systemd-"
+"udevd\\&.service service\\&. See \\m[blue]B<System and Service "
+"Credentials>\\m[]\\&\\s-2\\u[1]\\d\\s+2 for details\\&. When prefixed with "
+"an exclamation mark (\"!\"), the result is negated\\&. If an empty string is "
+"assigned, the previously assigned value is cleared\\&."
 msgstr ""
 
 #. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
+#: debian-bookworm mageia-cauldron opensuse-leap-16-0
 msgid ""
-"The maximum transmission unit in bytes to set for the device\\&. The usual "
-"suffixes K, M, G, are supported and are understood to the base of 1024\\&."
+"Interface names must have a minimum length of 1 character and a maximum "
+"length of 15 characters, and may contain any 7bit ASCII character, with the "
+"exception of control characters, \":\", \"/\" and \"%\"\\&. While \"\\&.\" "
+"is an allowed character, it\\*(Aqs recommended to avoid it when naming "
+"interfaces as various tools (such as B<resolvconf>(1)) use it as separator "
+"character\\&. Also, fully numeric interface names are not allowed (in order "
+"to avoid ambiguity with interface specification by numeric indexes), as are "
+"the special strings \"\\&.\", \"\\&.\\&.\", \"all\" and \"default\"\\&."
 msgstr ""
 
 #. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid ""
-"The speed to set for the device, the value is rounded down to the nearest "
-"Mbps\\&. The usual suffixes K, M, G, are supported and are understood to the "
-"base of 1000\\&."
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid ""
-"The Wake-on-LAN policy to set for the device\\&. The supported values are:"
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid "B<off>"
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid "Never wake\\&."
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid "Defaults to B<off>\\&."
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid ""
-"Takes a boolean\\&. If set to true, the hardware offload for checksumming of "
-"ingress network packets is enabled\\&. When unset, the kernel\\*(Aqs default "
-"will be used\\&."
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid ""
-"Takes a boolean\\&. If set to true, the hardware offload for checksumming of "
-"egress network packets is enabled\\&. When unset, the kernel\\*(Aqs default "
-"will be used\\&."
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid ""
-"Takes a boolean\\&. If set to true, the TCP Segmentation Offload (TSO) is "
-"enabled\\&. When unset, the kernel\\*(Aqs default will be used\\&."
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid ""
-"Takes a boolean\\&. If set to true, the TCP6 Segmentation Offload (tx-tcp6-"
-"segmentation) is enabled\\&. When unset, the kernel\\*(Aqs default will be "
-"used\\&."
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid ""
-"Takes a boolean\\&. If set to true, the Generic Segmentation Offload (GSO) "
-"is enabled\\&. When unset, the kernel\\*(Aqs default will be used\\&."
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid ""
-"Takes a boolean\\&. If set to true, the Generic Receive Offload (GRO) is "
-"enabled\\&. When unset, the kernel\\*(Aqs default will be used\\&."
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid ""
-"Takes a boolean\\&. If set to true, the Large Receive Offload (LRO) is "
-"enabled\\&. When unset, the kernel\\*(Aqs default will be used\\&."
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid ""
-"Takes a boolean\\&. When set, enables the receive flow control, also known "
-"as the ethernet receive PAUSE message (generate and send ethernet PAUSE "
-"frames)\\&. When unset, the kernel\\*(Aqs default will be used\\&."
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid ""
-"Takes a boolean\\&. When set, enables the transmit flow control, also known "
-"as the ethernet transmit PAUSE message (respond to received ethernet PAUSE "
-"frames)\\&. When unset, the kernel\\*(Aqs default will be used\\&."
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable opensuse-leap-15-3
-msgid ""
-"Takes a boolean\\&. When set, the auto negotiation enables the interface to "
-"exchange state advertisements with the connected peer so that the two "
-"devices can agree on the ethernet PAUSE configuration\\&. When unset, the "
-"kernel\\*(Aqs default will be used\\&."
-msgstr ""
-
-#. type: Plain text
-#: debian-bullseye debian-unstable
+#: debian-bookworm
 msgid "B<Example\\ \\&1.\\ \\&/lib/systemd/network/99-default\\&.link>"
 msgstr ""
 
 #. type: Plain text
-#: debian-bullseye debian-unstable
+#: debian-bookworm opensuse-leap-16-0
+msgid ""
+"You may also need to stop the service that manages the network interface, "
+"e\\&.g\\&.  systemd-networkd\\&.service or NetworkManager\\&.service before "
+"the above operation, and then restart the service after that\\&. For more "
+"details about B<udevadm> command, see B<udevadm>(8)\\&."
+msgstr ""
+
+#. type: Plain text
+#: debian-bookworm
 #, no-wrap
 msgid ""
 "$ sudo SYSTEMD_LOG_LEVEL=debug udevadm test-builtin net_setup_link /sys/class/net/hub0\n"
@@ -1927,7 +3632,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: debian-bullseye debian-unstable
+#: debian-bookworm
 #, no-wrap
 msgid ""
 "sudo SYSTEMD_LOG_LEVEL=debug udevadm test-builtin net_setup_link /sys/class/net/enp0s31f6\n"
@@ -1948,7 +3653,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: debian-bullseye debian-unstable
+#: debian-bookworm
 #, no-wrap
 msgid ""
 "enp0s31f6: Policy *path* yields \"enp0s31f6\"\\&.\n"
@@ -1960,34 +3665,97 @@ msgid ""
 msgstr ""
 
 #. type: TH
-#: opensuse-leap-15-3
+#: debian-unstable
 #, no-wrap
-msgid "systemd 246"
+msgid "systemd 257~rc3"
+msgstr ""
+
+#. type: TH
+#: fedora-41
+#, no-wrap
+msgid "systemd 256.7"
 msgstr ""
 
 #. type: Plain text
-#: opensuse-leap-15-3
+#: fedora-41
 msgid ""
-"The link files are read from the files located in the system network "
-"directory /usr/lib/systemd/network, the volatile runtime network directory /"
-"run/systemd/network, and the local administration network directory /etc/"
-"systemd/network\\&. Link files must have the extension \\&.link; other "
-"extensions are ignored\\&. All link files are collectively sorted and "
-"processed in lexical order, regardless of the directories in which they live"
-"\\&. However, files with identical filenames replace each other\\&. Files "
-"in /etc have the highest priority, files in /run take precedence over files "
-"with the same name in /usr/lib\\&. This can be used to override a system-"
-"supplied link file with a local file if needed\\&. As a special case, an "
-"empty file (file size 0) or symlink with the same name pointing to /dev/null "
-"disables the configuration file entirely (it is \"masked\")\\&."
+"This setting is useful to configure the \"ID_NET_MANAGED_BY=\" property "
+"which declares which network management service shall manage the interface, "
+"which is respected by systemd-networkd and others\\&. Use"
 msgstr ""
 
 #. type: Plain text
-#: opensuse-leap-15-3
-msgid "Keeps the MAC address assigned by the kernel\\&."
+#: fedora-41
+msgid ""
+"Configures Receive Packet Steering (RPS) list of CPUs to which RPS may "
+"forward traffic\\&. Takes a list of CPU indices or ranges separated by "
+"either whitespace or commas\\&. Alternatively, takes the special value "
+"\"all\" in which will include all available CPUs in the mask\\&. CPU ranges "
+"are specified by the lower and upper CPU indices separated by a dash "
+"(e\\&.g\\&.  \"2-6\")\\&. This option may be specified more than once, in "
+"which case the specified CPU affinity masks are merged\\&. If an empty "
+"string is assigned, the mask is reset, all assignments prior to this will "
+"have no effect\\&. Defaults to unset and RPS CPU list is unchanged\\&. To "
+"disable RPS when it was previously enabled, use the special value "
+"\"disable\"\\&."
+msgstr ""
+
+#. type: TH
+#: fedora-rawhide
+#, no-wrap
+msgid "systemd 257.1"
+msgstr ""
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "systemd 255"
 msgstr ""
 
 #. type: Plain text
-#: opensuse-leap-15-3
-msgid "The MAC address to use, if no I<MACAddressPolicy=> is specified\\&."
+#: mageia-cauldron
+msgid ""
+"The \\&.link files are read from the files located in the system network "
+"directory /usr/lib/systemd/network and /usr/local/lib/systemd/network, the "
+"volatile runtime network directory /run/systemd/network, and the local "
+"administration network directory /etc/systemd/network\\&. All configuration "
+"files are collectively sorted and processed in alphanumeric order, "
+"regardless of the directories in which they live\\&. However, files with "
+"identical filenames replace each other\\&. It is recommended that each "
+"filename is prefixed with a number smaller than \"70\" (e\\&.g\\&.  10-"
+"eth0\\&.link)\\&. Otherwise, the default \\&.link files or those generated "
+"by B<systemd-network-generator.service>(8)  may take precedence over user "
+"configured files\\&. Files in /etc/ have the highest priority, files in /"
+"run/ take precedence over files with the same name in /usr/lib/\\&. This can "
+"be used to override a system-supplied link file with a local file if "
+"needed\\&. As a special case, an empty file (file size 0) or symlink with "
+"the same name pointing to /dev/null disables the configuration file entirely "
+"(it is \"masked\")\\&."
+msgstr ""
+
+#. type: Plain text
+#: opensuse-leap-16-0
+msgid ""
+"The \\&.link files are read from the files located in the system network "
+"directory /usr/lib/systemd/network and /usr/local/lib/systemd/network, the "
+"volatile runtime network directory /run/systemd/network, and the local "
+"administration network directory /etc/systemd/network\\&. All configuration "
+"files are collectively sorted and processed in alphanumeric order, "
+"regardless of the directories in which they live\\&. However, files with "
+"identical filenames replace each other\\&. It is recommended that each "
+"filename is prefixed with a number (e\\&.g\\&.  10-eth0\\&.link)\\&. "
+"Otherwise, the default \\&.link files or those generated by B<systemd-"
+"network-generator.service>(8)  may take precedence over user configured "
+"files\\&. Files in /etc/ have the highest priority, files in /run/ take "
+"precedence over files with the same name in /usr/lib/\\&. This can be used "
+"to override a system-supplied link file with a local file if needed\\&. As a "
+"special case, an empty file (file size 0) or symlink with the same name "
+"pointing to /dev/null disables the configuration file entirely (it is "
+"\"masked\")\\&."
+msgstr ""
+
+#. type: TH
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "systemd 256.8"
 msgstr ""

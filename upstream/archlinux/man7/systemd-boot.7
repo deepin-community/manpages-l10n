@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-BOOT" "7" "" "systemd 249" "systemd-boot"
+.TH "SYSTEMD\-BOOT" "7" "" "systemd 257" "systemd-boot"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -25,7 +25,7 @@ systemd-boot, sd-boot \- A simple UEFI boot manager
 .PP
 \fBsystemd\-boot\fR
 (short:
-\fBsd\-boot\fR) is a simple UEFI boot manager\&. It provides a graphical menu to select the entry to boot and an editor for the kernel command line\&.
+\fBsd\-boot\fR) is a simple UEFI boot manager\&. It provides a textual menu to select the entry to boot and an editor for the kernel command line\&.
 \fBsystemd\-boot\fR
 supports systems with UEFI firmware only\&.
 .PP
@@ -34,7 +34,7 @@ loads boot entry information from the EFI system partition (ESP), usually mounte
 /efi/,
 /boot/, or
 /boot/efi/
-during OS runtime, as well as from the Extended Boot Loader partition if it exists (usually mounted to
+during OS runtime, as well as from the Extended Boot Loader partition (XBOOTLDR) if it exists (usually mounted to
 /boot/)\&. Configuration file fragments, kernels, initrds and other EFI images to boot generally need to reside on the ESP or the Extended Boot Loader partition\&. Linux kernels must be built with
 \fBCONFIG_EFI_STUB\fR
 to be able to be directly executed as an EFI image\&. During boot
@@ -51,9 +51,9 @@ automatically assembles a list of boot entries from the following sources:
 .\}
 Boot entries defined with
 \m[blue]\fBBoot Loader Specification\fR\m[]\&\s-2\u[1]\d\s+2
-description files located in
+Type #1 description files located in
 /loader/entries/
-on the ESP and the Extended Boot Loader Partition\&. These usually describe Linux kernel images with associated initrd images, but alternatively may also describe arbitrary other EFI executables\&.
+on the ESP and the Extended Boot Loader Partition\&. These usually describe Linux kernel images with associated initrd images, but alternatively may also describe other arbitrary EFI executables\&.
 .RE
 .sp
 .RS 4
@@ -64,8 +64,9 @@ on the ESP and the Extended Boot Loader Partition\&. These usually describe Linu
 .sp -1
 .IP \(bu 2.3
 .\}
-Unified kernel images following the
-\m[blue]\fBBoot Loader Specification\fR\m[]\&\s-2\u[1]\d\s+2, as executable EFI binaries in
+Unified kernel images,
+\m[blue]\fBBoot Loader Specification\fR\m[]\&\s-2\u[1]\d\s+2
+Type #2, which are executable EFI binaries in
 /EFI/Linux/
 on the ESP and the Extended Boot Loader Partition\&.
 .RE
@@ -78,7 +79,7 @@ on the ESP and the Extended Boot Loader Partition\&.
 .sp -1
 .IP \(bu 2.3
 .\}
-The Microsoft Windows EFI boot manager, if installed
+The Microsoft Windows EFI boot manager, if installed\&.
 .RE
 .sp
 .RS 4
@@ -89,7 +90,7 @@ The Microsoft Windows EFI boot manager, if installed
 .sp -1
 .IP \(bu 2.3
 .\}
-The Apple macOS boot manager, if installed
+The Apple macOS boot manager, if installed\&.
 .RE
 .sp
 .RS 4
@@ -100,7 +101,7 @@ The Apple macOS boot manager, if installed
 .sp -1
 .IP \(bu 2.3
 .\}
-The EFI Shell binary, if installed
+The EFI Shell binary, if installed\&.
 .RE
 .sp
 .RS 4
@@ -111,7 +112,20 @@ The EFI Shell binary, if installed
 .sp -1
 .IP \(bu 2.3
 .\}
-A reboot into the UEFI firmware setup option, if supported by the firmware
+A
+"Reboot Into Firmware Interface"
+option, if supported by the UEFI firmware\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Secure Boot variables enrollment if the UEFI firmware is in setup\-mode and files are provided on the ESP\&.
 .RE
 .PP
 \fBsystemd\-boot\fR
@@ -200,6 +214,17 @@ The boot manager implements boot counting and automatic fallback to older, worki
 .\}
 The boot manager optionally reads a random seed from the ESP partition, combines it with a \*(Aqsystem token\*(Aq stored in a persistent EFI variable and derives a random seed to use by the OS as entropy pool initialization, providing a full entropy pool during early boot\&.
 .RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+The boot manager allows for Secure Boot variables to be enrolled if the UEFI firmware is in setup\-mode\&. Additionally, variables can be automatically enrolled if configured\&.
+.RE
 .PP
 \fBbootctl\fR(1)
 may be used from a running system to locate the ESP and the Extended Boot Loader Partition, list available entries, and install
@@ -208,6 +233,9 @@ itself\&.
 .PP
 \fBkernel-install\fR(8)
 may be used to copy kernel images onto the ESP or the Extended Boot Loader Partition and to generate description files compliant with the Boot Loader Specification\&.
+.PP
+\fBsystemd-stub\fR(7)
+may be used as UEFI boot stub for executed kernels, which is useful to show graphical boot splashes before transitioning into the Linux world\&. It is also capable of automatically picking up auxiliary credential files (for boot parameterization) and system extension images, as companion files to the booted kernel images\&.
 .SH "KEY BINDINGS"
 .PP
 The following keys may be used in the boot menu:
@@ -215,56 +243,99 @@ The following keys may be used in the boot menu:
 ↑ (Up), ↓ (Down), j, k, PageUp, PageDown, Home, End
 .RS 4
 Navigate up/down in the entry list
+.sp
+Added in version 239\&.
 .RE
 .PP
 ↵ (Enter), → (Right)
 .RS 4
 Boot selected entry
+.sp
+Added in version 239\&.
 .RE
 .PP
 d
 .RS 4
 Make selected entry the default
+.sp
+Added in version 239\&.
 .RE
 .PP
 e
 .RS 4
 Edit the kernel command line for selected entry
+.sp
+Added in version 239\&.
 .RE
 .PP
 +, t
 .RS 4
 Increase the timeout before default entry is booted
+.sp
+Added in version 239\&.
 .RE
 .PP
 \-, T
 .RS 4
 Decrease the timeout
+.sp
+Added in version 239\&.
 .RE
 .PP
-v
+r
 .RS 4
-Show systemd\-boot, UEFI, and firmware versions
+Change screen resolution, skipping any unsupported modes\&.
+.sp
+Added in version 250\&.
 .RE
 .PP
-P
+R
+.RS 4
+Reset screen resolution to firmware or configuration file default\&.
+.sp
+Added in version 250\&.
+.RE
+.PP
+p
 .RS 4
 Print status
-.RE
-.PP
-Q
-.RS 4
-Quit
+.sp
+Added in version 250\&.
 .RE
 .PP
 h, ?, F1
 .RS 4
 Show a help screen
+.sp
+Added in version 239\&.
 .RE
 .PP
-Ctrl+l
+f
 .RS 4
-Reprint the screen
+Reboot into firmware interface\&.
+.sp
+For compatibility with the keybindings of several firmware implementations this operation may also be reached with
+F2,
+F10,
+Del
+and
+Esc\&.
+.sp
+Added in version 250\&.
+.RE
+.PP
+Shift+o
+.RS 4
+Power off the system\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+Shift+b
+.RS 4
+Reboot the system\&.
+.sp
+Added in version 255\&.
 .RE
 .PP
 The following keys may be pressed during bootup or in the boot menu to directly boot a specific entry:
@@ -272,26 +343,36 @@ The following keys may be pressed during bootup or in the boot menu to directly 
 l
 .RS 4
 Linux
+.sp
+Added in version 239\&.
 .RE
 .PP
 w
 .RS 4
 Windows
+.sp
+Added in version 239\&.
 .RE
 .PP
 a
 .RS 4
 macOS
+.sp
+Added in version 239\&.
 .RE
 .PP
 s
 .RS 4
 EFI shell
+.sp
+Added in version 239\&.
 .RE
 .PP
 1, 2, 3, 4, 5, 6, 7, 8, 9
 .RS 4
 Boot entry number 1 \&... 9
+.sp
+Added in version 239\&.
 .RE
 .PP
 The boot menu is shown when a non\-zero menu timeout has been configured\&. If the menu timeout has been set to zero, it is sufficient to press any key \(em before the boot loader initializes \(em to bring up the boot menu, except for the keys listed immediately above as they directly boot into the selected boot menu item\&. Note that depending on the firmware implementation the time window where key presses are accepted before the boot loader initializes might be short\&. If the window is missed, reboot and try again, possibly pressing a suitable key (e\&.g\&. the space bar) continuously; on most systems it should be possible to hit the time window after a few attempts\&. To avoid this problem, consider setting a non\-zero timeout, thus showing the boot menu unconditionally\&. Some desktop environments might offer an option to directly boot into the boot menu, to avoid the problem altogether\&. Alternatively, use the command line
@@ -303,31 +384,43 @@ In the editor, most keys simply insert themselves, but the following keys may be
 ← (Left), → (Right), Home, End
 .RS 4
 Navigate left/right
+.sp
+Added in version 239\&.
 .RE
 .PP
-Esc
+Esc, Ctrl+c
 .RS 4
 Abort the edit and quit the editor
+.sp
+Added in version 239\&.
 .RE
 .PP
 Ctrl+k
 .RS 4
-Clear the command line
+Clear the command line forwards
+.sp
+Added in version 239\&.
 .RE
 .PP
 Ctrl+w, Alt+Backspace
 .RS 4
 Delete word backwards
+.sp
+Added in version 239\&.
 .RE
 .PP
-Alt+d
+Ctrl+Del, Alt+d
 .RS 4
 Delete word forwards
+.sp
+Added in version 239\&.
 .RE
 .PP
 ↵ (Enter)
 .RS 4
 Boot entry with the edited command line
+.sp
+Added in version 239\&.
 .RE
 .PP
 Note that unless configured otherwise in the UEFI firmware, systemd\-boot will use the US keyboard layout, so key labels might not match for keys like +/\-\&.
@@ -342,26 +435,51 @@ or
 /boot/efi/
 during OS runtime\&. It also processes files on the Extended Boot Loader partition which is typically mounted to
 /boot/, if it exists\&.
+.PP
 \fBsystemd\-boot\fR
 reads runtime configuration such as the boot timeout and default entry from
 /loader/loader\&.conf
 on the ESP (in combination with data read from EFI variables)\&. See
-\fBloader.conf\fR(5)\&. Boot entry description files following the
+\fBloader.conf\fR(5)\&.
+.PP
+Boot entry description files following the
 \m[blue]\fBBoot Loader Specification\fR\m[]\&\s-2\u[1]\d\s+2
 are read from
 /loader/entries/
-on the ESP and the Extended Boot Loader partition\&. Unified kernel boot entries following the
+on the ESP and the Extended Boot Loader partition\&.
+.PP
+Unified kernel boot entries following the
 \m[blue]\fBBoot Loader Specification\fR\m[]\&\s-2\u[1]\d\s+2
 are read from
 /EFI/Linux/
-on the ESP and the Extended Boot Loader partition\&. Optionally, a random seed for early boot entropy pool provisioning is stored in
+on the ESP and the Extended Boot Loader partition\&.
+.PP
+Optionally, a random seed for early boot entropy pool provisioning is stored in
 /loader/random\-seed
 in the ESP\&.
+.PP
+During initialization,
+\fBsd\-boot\fR
+automatically loads all driver files placed in the
+/EFI/systemd/drivers/
+directory of the ESP\&. The files placed there must have an extension of the EFI architecture ID followed by
+\&.efi
+(e\&.g\&. for x86\-64 this means a suffix of
+x64\&.efi)\&. This may be used to automatically load file system drivers and similar, to extend the native firmware support\&.
+.PP
+Enrollment of Secure Boot variables can be performed manually or automatically if files are available under
+/loader/keys/\fINAME\fR/{db,dbx,KEK,PK}\&.auth,
+\fINAME\fR
+being the display name for the set of variables in the menu\&. If one of the sets is named
+auto
+then it might be enrolled automatically depending on whether
+"secure\-boot\-enroll"
+is set to force or not\&.
 .SH "EFI VARIABLES"
 .PP
 The following EFI variables are defined, set and read by
 \fBsystemd\-boot\fR, under the vendor UUID
-"4a67b082\-0a4c\-41cf\-b6c7\-440b29bb8c4f", for communication between the OS and the boot loader:
+"4a67b082\-0a4c\-41cf\-b6c7\-440b29bb8c4f", for communication between the boot loader and the OS:
 .PP
 \fILoaderBootCountPath\fR
 .RS 4
@@ -370,6 +488,8 @@ If boot counting is enabled, contains the path to the file in whose name the boo
 uses this information to mark a boot as successful as determined by the successful activation of the
 boot\-complete\&.target
 target unit\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fILoaderConfigTimeout\fR, \fILoaderConfigTimeoutOneShot\fR
@@ -384,18 +504,39 @@ is a one\-time override which is read once (in which case it takes precedence ov
 may be manipulated with the
 t/T
 keys, see above\&.
+.sp
+Added in version 240\&.
+.RE
+.PP
+\fILoaderConfigConsoleMode\fR
+.RS 4
+The numerical menu console mode\&. Read by the boot loader\&.
+\fILoaderConfigConsoleMode\fR
+is maintained persistently\&.
+\fILoaderConfigConsoleMode\fR
+may be manipulated with the
+r/R
+keys, see above\&.
+.sp
+Added in version 250\&.
 .RE
 .PP
 \fILoaderDevicePartUUID\fR
 .RS 4
-Contains the partition UUID of the EFI System Partition the boot loader was run from\&. Set by the boot loader\&.
+Contains the partition UUID of the partition the boot loader has been started from on the current boot (usually a EFI System Partition)\&. Set by the boot loader\&. (Note that
+\fBsystemd\-stub\fR
+will set this too, if not set yet, to support systems that directly boot into a unified kernel image, bypassing any boot loader\&.)
 \fBsystemd-gpt-auto-generator\fR(8)
 uses this information to automatically find the disk booted from, in order to discover various other partitions on the same disk automatically\&.
+.sp
+Added in version 220\&.
 .RE
 .PP
 \fILoaderEntries\fR
 .RS 4
 A list of the identifiers of all discovered boot loader entries\&. Set by the boot loader\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fILoaderEntryDefault\fR, \fILoaderEntryOneShot\fR
@@ -414,11 +555,40 @@ commands make use of these variables\&. The boot loader modifies
 on request, when the
 d
 key is used, see above\&.
+.sp
+Added in version 240\&.
+.RE
+.PP
+\fILoaderEntryLastBooted\fR
+.RS 4
+The identifier of the boot loader entry last attempted\&. Set and read by the boot loader, only when
+/loader/loader\&.conf
+has default set to
+"@saved"\&. See
+\fBloader.conf\fR(5)\&.
+.sp
+The boot loader will ensure
+\fILoaderEntryLastBooted\fR
+is up\-to date for every boot, updating it as needed and will omit changing it all together when
+\fILoaderEntryOneShot\fR
+is set\&.
+.sp
+The boot loader reads the variable, which takes higher priority than
+\fILoaderEntryDefault\fR\&. The variable is ignored when
+\fILoaderEntryOneShot\fR
+is set\&.
+.sp
+\fILoaderEntryLastBooted\fR
+cannot be used as indication that the last boot was successful or not\&.
+.sp
+Added in version 250\&.
 .RE
 .PP
 \fILoaderEntrySelected\fR
 .RS 4
 The identifier of the boot loader entry currently being booted\&. Set by the boot loader\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fILoaderFeatures\fR
@@ -426,6 +596,8 @@ The identifier of the boot loader entry currently being booted\&. Set by the boo
 A set of flags indicating the features the boot loader supports\&. Set by the boot loader\&. Use
 \fBbootctl\fR(1)
 to view this data\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fILoaderFirmwareInfo\fR, \fILoaderFirmwareType\fR
@@ -433,13 +605,20 @@ to view this data\&.
 Brief firmware information\&. Set by the boot loader\&. Use
 \fBbootctl\fR(1)
 to view this data\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fILoaderImageIdentifier\fR
 .RS 4
-The path of executable of the boot loader used for the current boot, relative to the EFI System Partition\*(Aqs root directory\&. Set by the boot loader\&. Use
+The file system path to the EFI executable of the boot loader for the current boot, relative to the partition\*(Aqs root directory (i\&.e\&. relative to the partition indicated by
+\fILoaderDevicePartUUID\fR, see above)\&. Set by the boot loader\&. (Note that
+\fBsystemd\-stub\fR
+will set this too, if not set yet, to support systems that directly boot into a unified kernel image, bypassing any boot loader\&.) Use
 \fBbootctl\fR(1)
 to view this data\&.
+.sp
+Added in version 220\&.
 .RE
 .PP
 \fILoaderInfo\fR
@@ -447,6 +626,8 @@ to view this data\&.
 Brief information about the boot loader\&. Set by the boot loader\&. Use
 \fBbootctl\fR(1)
 to view this data\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fILoaderTimeExecUSec\fR, \fILoaderTimeInitUSec\fR, \fILoaderTimeMenuUsec\fR
@@ -454,31 +635,35 @@ to view this data\&.
 Information about the time spent in various parts of the boot loader\&. Set by the boot loader\&. Use
 \fBsystemd-analyze\fR(1)
 to view this data\&.
-.RE
-.PP
-\fILoaderRandomSeed\fR
-.RS 4
-A binary random seed
-\fBsystemd\-boot\fR
-may optionally pass to the OS\&. This is a volatile EFI variable that is hashed at boot from the combination of a random seed stored in the ESP (in
-/loader/random\-seed) and a "system token" persistently stored in the EFI variable
-\fILoaderSystemToken\fR
-(see below)\&. During early OS boot the system manager reads this variable and passes it to the OS kernel\*(Aqs random pool, crediting the full entropy it contains\&. This is an efficient way to ensure the system starts up with a fully initialized kernel random pool \(em as early as the initial RAM disk phase\&.
-\fBsystemd\-boot\fR
-reads the random seed from the ESP, combines it with the "system token", and both derives a new random seed to update in\-place the seed stored in the ESP, and the random seed to pass to the OS from it via SHA256 hashing in counter mode\&. This ensures that different physical systems that boot the same "golden" OS image \(em i\&.e\&. containing the same random seed file in the ESP \(em will still pass a different random seed to the OS\&. It is made sure the random seed stored in the ESP is fully overwritten before the OS is booted, to ensure different random seed data is used between subsequent boots\&.
 .sp
-See
-\m[blue]\fBRandom Seeds\fR\m[]\&\s-2\u[4]\d\s+2
-for further information\&.
+Added in version 240\&.
 .RE
 .PP
 \fILoaderSystemToken\fR
 .RS 4
 A binary random data field, that is used for generating the random seed to pass to the OS (see above)\&. Note that this random data is generally only generated once, during OS installation, and is then never updated again\&.
+.sp
+Added in version 243\&.
 .RE
 .PP
 Many of these variables are defined by the
 \m[blue]\fBBoot Loader Interface\fR\m[]\&\s-2\u[2]\d\s+2\&.
+.SH "SMBIOS TYPE 11 STRINGS"
+.PP
+\fBsystemd\-boot\fR
+can be configured using SMBIOS Type 11 strings\&. Applicable strings consist of a name, followed by
+"=", followed by the value\&. Unless
+\fBsystemd\-boot\fR
+detects it is running inside a confidential computing environment,
+\fBsystemd\-boot\fR
+will search the table for a string with a specific name, and if found, use its value\&. The following strings are read:
+.PP
+\fIio\&.systemd\&.boot\&.kernel\-cmdline\-extra\fR
+.RS 4
+If set, the value of this string is added to the list of kernel command line arguments for Boot Loader Specification Type 1 entries that are measured in PCR12 and passed to the kernel\&.
+.sp
+Added in version 256\&.
+.RE
 .SH "BOOT COUNTING"
 .PP
 \fBsystemd\-boot\fR
@@ -548,20 +733,25 @@ The
 kernel install framework optionally sets the initial \*(Aqtries left\*(Aq counter to the value specified in
 /etc/kernel/tries
 when a boot loader entry is first created\&.
+.SH "USING SYSTEMD\-BOOT IN VIRTUAL MACHINES"
+.PP
+When using qemu with OVMF (UEFI Firmware for virtual machines) the
+\fB\-kernel\fR
+switch works not only for linux kernels, but for any EFI binary, including sd\-boot and unified linux kernels\&. Example command line for loading
+\fBsystemd\-boot\fR
+on x64:
+.PP
+\fBqemu\-system\-x86_64 \fR\fB\fI[ \&.\&.\&. ]\fR\fR\fB \-kernel /usr/lib/systemd/boot/efi/systemd\-bootx64\&.efi\fR
+.PP
+systemd\-boot will detect that it was started directly instead of being loaded from ESP and will search for the ESP in that case, taking into account boot order information from the hypervisor (if available)\&.
 .SH "SEE ALSO"
 .PP
-\fBbootctl\fR(1),
-\fBloader.conf\fR(5),
-\fBsystemd-bless-boot.service\fR(8),
-\fBsystemd-boot-system-token.service\fR(8),
-\fBkernel-install\fR(8),
-\m[blue]\fBBoot Loader Specification\fR\m[]\&\s-2\u[1]\d\s+2,
-\m[blue]\fBBoot Loader Interface\fR\m[]\&\s-2\u[2]\d\s+2
+\fBbootctl\fR(1), \fBloader.conf\fR(5), \fBsystemd-bless-boot.service\fR(8), \fBsystemd-boot-random-seed.service\fR(8), \fBkernel-install\fR(8), \fBsystemd-stub\fR(7), \m[blue]\fBBoot Loader Specification\fR\m[]\&\s-2\u[1]\d\s+2, \m[blue]\fBBoot Loader Interface\fR\m[]\&\s-2\u[2]\d\s+2, \m[blue]\fBTPM2 PCR Measurements Made by systemd\fR\m[]\&\s-2\u[4]\d\s+2
 .SH "NOTES"
 .IP " 1." 4
 Boot Loader Specification
 .RS 4
-\%https://systemd.io/BOOT_LOADER_SPECIFICATION
+\%https://uapi-group.org/specifications/specs/boot_loader_specification
 .RE
 .IP " 2." 4
 Boot Loader Interface
@@ -574,7 +764,7 @@ Automatic Boot Assessment
 \%https://systemd.io/AUTOMATIC_BOOT_ASSESSMENT
 .RE
 .IP " 4." 4
-Random Seeds
+TPM2 PCR Measurements Made by systemd
 .RS 4
-\%https://systemd.io/RANDOM_SEEDS
+\%https://systemd.io/TPM2_PCR_MEASUREMENTS
 .RE

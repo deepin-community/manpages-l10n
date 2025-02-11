@@ -3,7 +3,7 @@
 .\" Do not hand-hack it!  If you have bug fixes or improvements, please find
 .\" the corresponding HTML page on the Netpbm website, generate a patch
 .\" against that, and send it to the Netpbm maintainer.
-.TH "Pamexec User Manual" 0 "11 August 2011" "netpbm documentation"
+.TH "Pamexec User Manual" 0 "21 December 2021" "netpbm documentation"
 
 .SH NAME
 pamexec - Execute a shell command on each image in a Netpbm image stream
@@ -38,13 +38,13 @@ Input (with a pipe).
 \fInetpbmfile\fP is the file name of the input file, or
 \fB-\fP to indicate Standard Input.  The default is Standard Input.
 .PP
-Many Netpbm programs understand multimage Netpbm streams themselves,
-so you don't need to use \fBpamexec\fP to run the program on the images
-in the stream.  Ideally, all Netpbm programs would have that capability,
-but multi-image streams are a relatively recent invention, so older Netpbm
-programs just process the first image in the stream and then stop.  Even
-recently written Netpbm programs work that way, since the authors aren't
-aware of the multi-image possibility.
+Many Netpbm programs understand multimage Netpbm streams themselves, so you
+don't need to use \fBpamexec\fP to run the program on the images in the
+stream.  Ideally, all Netpbm programs would have that capability, but
+multi-image streams are a relatively recent invention, so older Netpbm
+programs just process the first image in the stream and then stop.  Even many
+recently written Netpbm programs work that way, since the authors aren't aware
+of the multi-image possibility.
 .PP
 Another way to process a multi-image stream is to use \fBpamsplit\fP to
 explode it into multiple files, one image per file.  You can then process
@@ -91,11 +91,12 @@ To make an animated GIF movie:
 .PP
 \fBpamexec\fP assumes all commands consume all of Standard Input.
 If yours doesn't (perhaps it just exits when it's seen enough),
-you can buffer through a temporary file like this:
+  you can buffer through a temporary file like this, which copies the
+  first 3 lines of every image (the PPM header) to Standard Output:
 
 .nf
 \f(CW
-    pamexec "cat >/tmp/x; head -3 x" myvideo.ppm  
+    pamexec "cat >/tmp/x; head --lines=3 x" myvideo.ppm  
 \fP
 
 .fi

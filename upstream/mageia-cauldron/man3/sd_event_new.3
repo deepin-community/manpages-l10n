@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_EVENT_NEW" "3" "" "systemd 249" "sd_event_new"
+.TH "SD_EVENT_NEW" "3" "" "systemd 255" "sd_event_new"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -98,8 +98,10 @@ object\&. This call is useful in conjunction with GCC\*(Aqs and LLVM\*(Aqs
         int r;
         \&...
         r = sd_event_default(&event);
-        if (r < 0)
-                fprintf(stderr, "Failed to allocate event loop: %s\en", strerror(\-r));
+        if (r < 0) {
+          errno = \-r;
+          fprintf(stderr, "Failed to allocate event loop: %m\en");
+        }
         \&...
 }
 .fi
@@ -154,9 +156,28 @@ was invoked on an event loop object that was not allocated with
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_event_new()\fR,
+\fBsd_event_default()\fR,
+\fBsd_event_ref()\fR, and
+\fBsd_event_unref()\fR
+were added in version 213\&.
+.PP
+\fBsd_event_unrefp()\fR
+and
+\fBsd_event_get_tid()\fR
+were added in version 229\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

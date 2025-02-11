@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.GENERATOR" "7" "" "systemd 249" "systemd.generator"
+.TH "SYSTEMD\&.GENERATOR" "7" "" "systemd 256.8" "systemd.generator"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -23,34 +23,45 @@
 systemd.generator \- systemd unit generators
 .SH "SYNOPSIS"
 .HP \w'\fB/path/to/generator\fR\ 'u
-\fB/path/to/generator\fR \fInormal\-dir\fR \fIearly\-dir\fR \fIlate\-dir\fR
+\fB/path/to/generator\fR \fInormal\-dir\fR [\fIearly\-dir\fR] [\fIlate\-dir\fR]
 .PP
-.nf
+.RS 4
 /run/systemd/system\-generators/*
+.RE
+.RS 4
 /etc/systemd/system\-generators/*
+.RE
+.RS 4
 /usr/local/lib/systemd/system\-generators/*
+.RE
+.RS 4
 /usr/lib/systemd/system\-generators/*
-.fi
+.RE
 .PP
-.nf
+.RS 4
 /run/systemd/user\-generators/*
+.RE
+.RS 4
 /etc/systemd/user\-generators/*
+.RE
+.RS 4
 /usr/local/lib/systemd/user\-generators/*
+.RE
+.RS 4
 /usr/lib/systemd/user\-generators/*
-.fi
-.sp
+.RE
 .SH "DESCRIPTION"
 .PP
 Generators are small executables placed in
 /usr/lib/systemd/system\-generators/
 and other directories listed above\&.
 \fBsystemd\fR(1)
-will execute these binaries very early at bootup and at configuration reload time \(em before unit files are loaded\&. Their main purpose is to convert configuration that is not native to the service manager into dynamically generated unit files, symlinks or unit file drop\-ins, so that they can extend the unit file hierarchy the service manager subsequently loads and operates on\&.
+will execute these binaries very early at bootup and at configuration reload time \(em before unit files are loaded\&. Their main purpose is to convert configuration and execution context parameters that are not native to the service manager into dynamically generated unit files, symlinks or unit file drop\-ins, so that they can extend the unit file hierarchy the service manager subsequently loads and operates on\&.
 .PP
-Each generator is called with three directory paths that are to be used for generator output\&. In these three directories, generators may dynamically generate unit files (regular ones, instances, as well as templates), unit file
+\fBsystemd\fR
+will call each generator with three directory paths that are to be used for generator output\&. In these three directories, generators may dynamically generate unit files (regular ones, instances, as well as templates), unit file
 \&.d/
-drop\-ins, and create symbolic links to unit files to add additional dependencies, create aliases, or instantiate existing templates\&. Those directories are included in the unit load path of
-\fBsystemd\fR(1), allowing generated configuration to extend or override existing definitions\&.
+drop\-ins, and create symbolic links to unit files to add additional dependencies, create aliases, or instantiate existing templates\&. Those directories are included in the unit load path, allowing generated configuration to extend or override existing definitions\&. For tests, generators may be called with just one argument; the generator should assume that all three paths are the same in that case\&.
 .PP
 Directory paths for generator output differ by priority:
 \&.../generator\&.early
@@ -68,7 +79,8 @@ has priority lower than all other configuration\&. See the next section and the 
 Generators are loaded from a set of paths determined during compilation, as listed above\&. System and user generators are loaded from directories with names ending in
 system\-generators/
 and
-user\-generators/, respectively\&. Generators found in directories listed earlier override the ones with the same name in directories lower in the list\&. A symlink to
+user\-generators/, respectively\&. Generators found in directories listed earlier override the ones with the same name in directories lower in the list
+\&\s-2\u[1]\d\s+2\&. A symlink to
 /dev/null
 or an empty file can be used to mask a generator, thereby preventing it from running\&. Please note that the order of the two directories with the highest priority is reversed with respect to the unit load path, and generators in
 /run/
@@ -85,7 +97,7 @@ for more information\&.
 .SH "OUTPUT DIRECTORIES"
 .PP
 Generators are invoked with three arguments: paths to directories where generators can place their generated unit files or symlinks\&. By default those paths are runtime directories that are included in the search path of
-\fBsystemd\fR, but a generator may be called with different paths for debugging purposes\&.
+\fBsystemd\fR, but a generator may be called with different paths for debugging purposes\&. If only one argument is provided, the generator should use the same directory as the three output paths\&.
 .sp
 .RS 4
 .ie n \{\
@@ -100,7 +112,7 @@ Generators are invoked with three arguments: paths to directories where generato
 In normal use this is
 /run/systemd/generator
 in case of the system generators and
-$XDG_RUNTIME_DIR/generator
+$XDG_RUNTIME_DIR/systemd/generator
 in case of the user generators\&. Unit files placed in this directory take precedence over vendor unit configuration but not over native user/administrator unit configuration\&.
 .RE
 .sp
@@ -117,7 +129,7 @@ in case of the user generators\&. Unit files placed in this directory take prece
 In normal use this is
 /run/systemd/generator\&.early
 in case of the system generators and
-$XDG_RUNTIME_DIR/generator\&.early
+$XDG_RUNTIME_DIR/systemd/generator\&.early
 in case of the user generators\&. Unit files placed in this directory override unit files in
 /usr/,
 /run/
@@ -138,8 +150,96 @@ and
 In normal use this is
 /run/systemd/generator\&.late
 in case of the system generators and
-$XDG_RUNTIME_DIR/generator\&.late
+$XDG_RUNTIME_DIR/systemd/generator\&.late
 in case of the user generators\&. This directory may be used to extend the unit file tree without overriding any other unit files\&. Any native configuration files supplied by the vendor or user/administrator take precedence\&.
+.RE
+.PP
+Note: generators
+\fImust not\fR
+write to other locations or otherwise make changes to system state\&. Generator output is supposed to last only until the next
+\fBdaemon\-reload\fR
+or
+\fBdaemon\-reexec\fR; if the generator is replaced or masked, its effects should vanish\&.
+.SH "ENVIRONMENT"
+.PP
+The service manager sets a number of environment variables when invoking generator executables\&. They carry information about the execution context of the generator, in order to simplify conditionalizing generators to specific environments\&. The following environment variables are set:
+.PP
+\fI$SYSTEMD_SCOPE\fR
+.RS 4
+If the generator is invoked from the system service manager this variable is set to
+"system"; if invoked from the per\-user service manager it is set to
+"user"\&.
+.sp
+Added in version 251\&.
+.RE
+.PP
+\fI$SYSTEMD_IN_INITRD\fR
+.RS 4
+If the generator is run as part of an initrd this is set to
+"1"\&. If it is run from the regular host (i\&.e\&. after the transition from initrd to host) it is set to
+"0"\&. This environment variable is only set for system generators\&.
+.sp
+Added in version 251\&.
+.RE
+.PP
+\fI$SYSTEMD_FIRST_BOOT\fR
+.RS 4
+If this boot\-up cycle is considered a "first boot", this is set to
+"1"; if it is a subsequent, regular boot it is set to
+"0"\&. For details see the documentation of
+\fIConditionFirstBoot=\fR
+in
+\fBsystemd.unit\fR(5)\&. This environment variable is only set for system generators\&.
+.sp
+Added in version 251\&.
+.RE
+.PP
+\fI$SYSTEMD_VIRTUALIZATION\fR
+.RS 4
+If the service manager is run in a virtualized environment,
+\fI$SYSTEMD_VIRTUALIZATION\fR
+is set to a pair of strings, separated by a colon\&. The first string is either
+"vm"
+or
+"container", categorizing the type of virtualization\&. The second string identifies the implementation of the virtualization technology\&. If no virtualization is detected this variable will not be set\&. This data is identical to what
+\fBsystemd-detect-virt\fR(1)
+detects and reports, and uses the same vocabulary of virtualization implementation identifiers\&.
+.sp
+Added in version 251\&.
+.RE
+.PP
+\fI$SYSTEMD_ARCHITECTURE\fR
+.RS 4
+This variable is set to a short identifier of the reported architecture of the system\&. For details about defined values, see documentation of
+\fIConditionArchitecture=\fR
+in
+\fBsystemd.unit\fR(5)\&.
+.sp
+Added in version 251\&.
+.RE
+.PP
+\fI$CREDENTIALS_DIRECTORY\fR, \fI$ENCRYPTED_CREDENTIALS_DIRECTORY\fR
+.RS 4
+If set, refers to the directory system credentials have been placed in\&. Credentials passed into the system in plaintext form will be placed in
+\fI$CREDENTIALS_DIRECTORY\fR, and those passed in in encrypted form will be placed in
+\fI$ENCRYPTED_CREDENTIALS_DIRECTORY\fR\&. Use the
+\fBsystemd-creds\fR(1)
+command to automatically decrypt/authenticate credentials passed in, if needed\&. Specifically, use the
+\fBsystemd\-creds \-\-system cat\fR
+command\&.
+.sp
+Added in version 254\&.
+.RE
+.PP
+\fI$SYSTEMD_CONFIDENTIAL_VIRTUALIZATION\fR
+.RS 4
+If the service manager is run in a confidential virtualized environment,
+\fI$SYSTEMD_CONFIDENTIAL_VIRTUALIZATION\fR
+is set to a string that identifies the confidential virtualization hardware technology\&. If no confidential virtualization is detected this variable will not be set\&. This data is identical to what
+\fBsystemd-detect-virt\fR(1)
+detects and reports, and uses the same vocabulary of confidential virtualization technology identifiers\&.
+.sp
+Added in version 254\&.
 .RE
 .SH "NOTES ABOUT WRITING GENERATORS"
 .sp
@@ -372,18 +472,10 @@ find $dir
 .\}
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd-cryptsetup-generator\fR(8),
-\fBsystemd-debug-generator\fR(8),
-\fBsystemd-fstab-generator\fR(8),
-\fBfstab\fR(5),
-\fBsystemd-getty-generator\fR(8),
-\fBsystemd-gpt-auto-generator\fR(8),
-\fBsystemd-hibernate-resume-generator\fR(8),
-\fBsystemd-rc-local-generator\fR(8),
-\fBsystemd-system-update-generator\fR(8),
-\fBsystemd-sysv-generator\fR(8),
-\fBsystemd-xdg-autostart-generator\fR(8),
-\fBsystemd.unit\fR(5),
-\fBsystemctl\fR(1),
-\fBsystemd.environment-generator\fR(7)
+\fBsystemd\fR(1), \fBsystemd-cryptsetup-generator\fR(8), \fBsystemd-debug-generator\fR(8), \fBsystemd-fstab-generator\fR(8), \fBfstab\fR(5), \fBsystemd-getty-generator\fR(8), \fBsystemd-gpt-auto-generator\fR(8), \fBsystemd-hibernate-resume-generator\fR(8), \fBsystemd-rc-local-generator\fR(8), \fBsystemd-system-update-generator\fR(8), \fBsystemd-sysv-generator\fR(8), \fBsystemd-xdg-autostart-generator\fR(8), \fBsystemd.unit\fR(5), \fBsystemctl\fR(1), \fBsystemd.environment-generator\fR(7)
+.SH "NOTES"
+.IP " 1." 4
+💣💥🧨💥💥💣 Please note that those configuration files must be available at all times. If
+/usr/local/
+is a separate partition, it may not be available during early boot, and must not be used for configuration.
+

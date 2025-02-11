@@ -1,0 +1,1483 @@
+# Russian translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Alex Nik <rage.iz.me@gmail.com>, 2013.
+# Azamat Hackimov <azamat.hackimov@gmail.com>, 2013, 2016.
+# Dmitry Bolkhovskikh <d20052005@yandex.ru>, 2017.
+# Yuri Kozlov <yuray@komyakino.ru>, 2011-2019.
+# Иван Павлов <pavia00@gmail.com>, 2017.
+# Kirill Rekhov <krekhov.dev@gmail.com>, 2024.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n\n"
+"POT-Creation-Date: 2024-12-06 18:06+0100\n"
+"PO-Revision-Date: 2024-12-21 19:50+0300\n"
+"Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
+"Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#. type: TH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "netdevice"
+msgstr "netdevice"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-leap-16-0
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "2024-05-02"
+msgstr "2 мая 2024 г."
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide
+#, no-wrap
+msgid "Linux man-pages 6.9.1"
+msgstr "Справочные страницы Linux 6.9.1"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr "НАИМЕНОВАНИЕ"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "netdevice - low-level access to Linux network devices"
+msgstr "netdevice - низкоуровневый доступ к сетевым устройствам Linux"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "ОБЗОР"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid ""
+#| "B<#include E<lt>sys/types.hE<gt>>\n"
+#| "B<#include E<lt>keyutils.hE<gt>>\n"
+msgid ""
+"B<#include E<lt>sys/ioctl.hE<gt>>\n"
+"B<#include E<lt>net/if.hE<gt>>\n"
+msgstr ""
+"B<#include E<lt>sys/types.hE<gt>>\n"
+"B<#include E<lt>keyutils.hE<gt>>\n"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "ОПИСАНИЕ"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"This man page describes the sockets interface which is used to configure "
+"network devices."
+msgstr ""
+"В этой справочной странице описан интерфейс сокетов, используемый для "
+"настройки сетевых устройств."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Linux supports some standard ioctls to configure network devices.  They can "
+"be used on any socket's file descriptor regardless of the family or type.  "
+"Most of them pass an I<ifreq> structure:"
+msgstr ""
+"Linux поддерживает несколько стандартных вызовов ioctl для настройки сетевых "
+"устройств. Они могут применяться для любого файлового дескриптора сокета "
+"независимо от семейства или типа сокета. В качестве параметра большинство из "
+"них передаёт структуру I<ifreq>:"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"struct ifreq {\n"
+"    char ifr_name[IFNAMSIZ]; /* Interface name */\n"
+"    union {\n"
+"        struct sockaddr ifr_addr;\n"
+"        struct sockaddr ifr_dstaddr;\n"
+"        struct sockaddr ifr_broadaddr;\n"
+"        struct sockaddr ifr_netmask;\n"
+"        struct sockaddr ifr_hwaddr;\n"
+"        short           ifr_flags;\n"
+"        int             ifr_ifindex;\n"
+"        int             ifr_metric;\n"
+"        int             ifr_mtu;\n"
+"        struct ifmap    ifr_map;\n"
+"        char            ifr_slave[IFNAMSIZ];\n"
+"        char            ifr_newname[IFNAMSIZ];\n"
+"        char           *ifr_data;\n"
+"    };\n"
+"};\n"
+msgstr ""
+"struct ifreq {\n"
+"    char ifr_name[IFNAMSIZ]; /* имя интерфейса */\n"
+"    union {\n"
+"        struct sockaddr ifr_addr;\n"
+"        struct sockaddr ifr_dstaddr;\n"
+"        struct sockaddr ifr_broadaddr;\n"
+"        struct sockaddr ifr_netmask;\n"
+"        struct sockaddr ifr_hwaddr;\n"
+"        short           ifr_flags;\n"
+"        int             ifr_ifindex;\n"
+"        int             ifr_metric;\n"
+"        int             ifr_mtu;\n"
+"        struct ifmap    ifr_map;\n"
+"        char            ifr_slave[IFNAMSIZ];\n"
+"        char            ifr_newname[IFNAMSIZ];\n"
+"        char           *ifr_data;\n"
+"    };\n"
+"};\n"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<AF_INET6> is an exception.  It passes an I<in6_ifreq> structure:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"struct in6_ifreq {\n"
+"    struct in6_addr     ifr6_addr;\n"
+"    u32                 ifr6_prefixlen;\n"
+"    int                 ifr6_ifindex; /* Interface index */\n"
+"};\n"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "Normally, the user specifies which device to affect by setting "
+#| "I<ifr_name> to the name of the interface.  All other members of the "
+#| "structure may share memory."
+msgid ""
+"Normally, the user specifies which device to affect by setting I<ifr_name> "
+"to the name of the interface or I<ifr6_ifindex> to the index of the "
+"interface.  All other members of the structure may share memory."
+msgstr ""
+"Обычно, пользователь указывает имя нужного устройства в I<ifr_name>. Все "
+"остальные поля структуры могут занимать единое пространство в памяти."
+
+#. type: SS
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Ioctls"
+msgstr "Вызовы ioctl"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If an ioctl is marked as privileged, then using it requires an effective "
+"user ID of 0 or the B<CAP_NET_ADMIN> capability.  If this is not the case, "
+"B<EPERM> will be returned."
+msgstr ""
+"Если указано, вызов ioctl считается привилегированным, то для его "
+"использования необходимо иметь эффективный идентификатор пользователя 0 или "
+"мандат B<CAP_NET_ADMIN>. В противном случае будет возвращено значение "
+"B<EPERM>."
+
+#. type: TP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<SIOCGIFNAME>"
+msgstr "B<SIOCGIFNAME>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Given the I<ifr_ifindex>, return the name of the interface in I<ifr_name>.  "
+"This is the only ioctl which returns its result in I<ifr_name>."
+msgstr ""
+"Возвращает в I<ifr_name> имя интерфейса для заданного индекса "
+"I<ifr_ifindex>. Это единственный вызов ioctl, возвращающий результат в "
+"I<ifr_name>."
+
+#. type: TP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<SIOCGIFINDEX>"
+msgstr "B<SIOCGIFINDEX>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "Retrieve the interface index of the interface into I<ifr_ifindex>."
+msgstr "Возвращает индекс интерфейса в I<ifr_ifindex>."
+
+#. type: TP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCGIFNAME>"
+msgid "B<SIOCGIFFLAGS>"
+msgstr "B<SIOCGIFNAME>"
+
+#. type: TQ
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCSIFNAME>"
+msgid "B<SIOCSIFFLAGS>"
+msgstr "B<SIOCSIFNAME>"
+
+#.  Do not right adjust text blocks in tables
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Get or set the active flag word of the device.  I<ifr_flags> contains a bit "
+"mask of the following values:"
+msgstr ""
+"Считывает или устанавливает слово флагов устройства. В I<ifr_flags> "
+"содержится битовая маска из следующих значений:"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Device flags"
+msgstr "Флаги устройства"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_UP"
+msgstr "IFF_UP"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Interface is running."
+msgstr "Интерфейс активен."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_BROADCAST"
+msgstr "IFF_BROADCAST"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Valid broadcast address set."
+msgstr "Установлен правильный широковещательный адрес."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_DEBUG"
+msgstr "IFF_DEBUG"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Internal debugging flag."
+msgstr "Флаг внутренней отладки."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_LOOPBACK"
+msgstr "IFF_LOOPBACK"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Interface is a loopback interface."
+msgstr "Интерфейс является устройством обратной петли."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_POINTOPOINT"
+msgstr "IFF_POINTOPOINT"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Interface is a point-to-point link."
+msgstr "Интерфейс является соединением точка-точка."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_RUNNING"
+msgstr "IFF_RUNNING"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Resources allocated."
+msgstr "Ресурсы выделены."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_NOARP"
+msgstr "IFF_NOARP"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "No arp protocol, L2 destination address not set."
+msgstr "Нет протокола arp, адрес назначения 2-ого уровня (L2) не установлен."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_PROMISC"
+msgstr "IFF_PROMISC"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Interface is in promiscuous mode."
+msgstr "Интерфейс в режиме прослушки (promiscuous)."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_NOTRAILERS"
+msgstr "IFF_NOTRAILERS"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Avoid use of trailers."
+msgstr "Избегать использования концевиков (trailers)."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_ALLMULTI"
+msgstr "IFF_ALLMULTI"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Receive all multicast packets."
+msgstr "Принимать все многоадресные пакеты."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_MASTER"
+msgstr "IFF_MASTER"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Master of a load balancing bundle."
+msgstr "Мастер в связке балансирования нагрузки."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_SLAVE"
+msgstr "IFF_SLAVE"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Slave of a load balancing bundle."
+msgstr "Подчинённый в связке балансирования нагрузки."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_MULTICAST"
+msgstr "IFF_MULTICAST"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Supports multicast"
+msgstr "Поддержка многоадресной передачи."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_PORTSEL"
+msgstr "IFF_PORTSEL"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Is able to select media type via ifmap."
+msgstr "Может выбирать тип среды с помощью ifmap."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_AUTOMEDIA"
+msgstr "IFF_AUTOMEDIA"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Auto media selection active."
+msgstr "Запущен автоматический выбор среды."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_DYNAMIC"
+msgstr "IFF_DYNAMIC"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "The addresses are lost when the interface goes down."
+msgstr "Адреса теряются, если интерфейс становится неактивным."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_LOWER_UP"
+msgstr "IFF_LOWER_UP"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Driver signals L1 up (since Linux 2.6.17)"
+msgstr "Сигналы драйвера L1 указывают на включение интерфейса (начиная с Linux 2.6.17)."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_DORMANT"
+msgstr "IFF_DORMANT"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Driver signals dormant (since Linux 2.6.17)"
+msgstr "Сигналы драйвера указывают на неактивность интерфейса (начиная с Linux 2.6.17)."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_ECHO"
+msgstr "IFF_ECHO"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Echo sent packets (since Linux 2.6.25)"
+msgstr "Посылать пакеты echo (начиная с Linux 2.6.25)."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Setting the active flag word is a privileged operation, but any process may "
+"read it."
+msgstr ""
+"Установка флага в слове флагов является привилегированной операцией, но "
+"считывать его может любой процесс."
+
+#. type: TP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCGIFNAME>"
+msgid "B<SIOCGIFPFLAGS>"
+msgstr "B<SIOCGIFNAME>"
+
+#. type: TQ
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCSIFNAME>"
+msgid "B<SIOCSIFPFLAGS>"
+msgstr "B<SIOCSIFNAME>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Get or set extended (private) flags for the device.  I<ifr_flags> contains a "
+"bit mask of the following values:"
+msgstr ""
+"Считает или устанавливает (индивидуальные) флаги устройства. Значение "
+"I<ifr_flags> представляет собой битовую маску следующих значений:"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Private flags"
+msgstr "Индивидуальные флаги"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_802_1Q_VLAN"
+msgstr "IFF_802_1Q_VLAN"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Interface is 802.1Q VLAN device."
+msgstr "Интерфейс является устройством 802.1Q VLAN."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_EBRIDGE"
+msgstr "IFF_EBRIDGE"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Interface is Ethernet bridging device."
+msgstr "Интерфейс является устройством моста Ethernet."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_SLAVE_INACTIVE"
+msgstr "IFF_SLAVE_INACTIVE"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Interface is inactive bonding slave."
+msgstr "Интерфейс является неактивным подчинённым в связке балансирования нагрузки."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_MASTER_8023AD"
+msgstr "IFF_MASTER_8023AD"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Interface is 802.3ad bonding master."
+msgstr "Интерфейс является мастером в связке балансирования нагрузки 802.3ad."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_MASTER_ALB"
+msgstr "IFF_MASTER_ALB"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Interface is balanced-alb bonding master."
+msgstr "Интерфейс является мастером связки балансирования нагрузки в режиме balanced-alb."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_BONDING"
+msgstr "IFF_BONDING"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Interface is a bonding master or slave."
+msgstr "Интерфейс является мастером или подчинённым в связке балансирования нагрузки."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_SLAVE_NEEDARP"
+msgstr "IFF_SLAVE_NEEDARP"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Interface needs ARPs for validation."
+msgstr "Интерфейсу требуется ARP для проверки."
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "IFF_ISATAP"
+msgstr "IFF_ISATAP"
+
+#. type: tbl table
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Interface is RFC4214 ISATAP interface."
+msgstr "Интерфейс является интерфейсом RFC4214 ISATAP."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Setting the extended (private) interface flags is a privileged operation."
+msgstr ""
+"Установка расширенных (индивидуальных) флагов интерфейса является "
+"привилегированной операцией."
+
+#. type: TP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCGIFNAME>"
+msgid "B<SIOCGIFADDR>"
+msgstr "B<SIOCGIFNAME>"
+
+#. type: TQ
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCSIFNAME>"
+msgid "B<SIOCSIFADDR>"
+msgstr "B<SIOCSIFNAME>"
+
+#. type: TQ
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCGIFNAME>"
+msgid "B<SIOCDIFADDR>"
+msgstr "B<SIOCGIFNAME>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Get, set, or delete the address of the device using I<ifr_addr>, or "
+"I<ifr6_addr> with I<ifr6_prefixlen>.  Setting or deleting the interface "
+"address is a privileged operation.  For compatibility, B<SIOCGIFADDR> "
+"returns only B<AF_INET> addresses, B<SIOCSIFADDR> accepts B<AF_INET> and "
+"B<AF_INET6> addresses, and B<SIOCDIFADDR> deletes only B<AF_INET6> "
+"addresses.  A B<AF_INET> address can be deleted by setting it to zero via "
+"B<SIOCSIFADDR>."
+msgstr ""
+
+#. type: TP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCGIFNAME>"
+msgid "B<SIOCGIFDSTADDR>"
+msgstr "B<SIOCGIFNAME>"
+
+#. type: TQ
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCSIFNAME>"
+msgid "B<SIOCSIFDSTADDR>"
+msgstr "B<SIOCSIFNAME>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Get or set the destination address of a point-to-point device using "
+"I<ifr_dstaddr>.  For compatibility, only B<AF_INET> addresses are accepted "
+"or returned.  Setting the destination address is a privileged operation."
+msgstr ""
+"Назначает или получает адрес назначения устройства точка-точка с помощью "
+"I<ifr_dstaddr>. Для совместимости, принимаются или возвращаются только "
+"адреса семейства B<AF_INET>. Присвоение адреса назначения является "
+"привилегированной операцией."
+
+#. type: TP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCGIFNAME>"
+msgid "B<SIOCGIFBRDADDR>"
+msgstr "B<SIOCGIFNAME>"
+
+#. type: TQ
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCSIFHWBROADCAST>"
+msgid "B<SIOCSIFBRDADDR>"
+msgstr "B<SIOCSIFHWBROADCAST>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Get or set the broadcast address for a device using I<ifr_brdaddr>.  For "
+"compatibility, only B<AF_INET> addresses are accepted or returned.  Setting "
+"the broadcast address is a privileged operation."
+msgstr ""
+"Назначает или получает широковещательный адрес устройства с помощью "
+"I<ifr_brdaddr>. Для совместимости, принимаются или возвращаются только "
+"адреса семейства B<AF_INET>. Присвоение широковещательного адреса является "
+"привилегированной операцией."
+
+#. type: TP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCGIFNAME>"
+msgid "B<SIOCGIFNETMASK>"
+msgstr "B<SIOCGIFNAME>"
+
+#. type: TQ
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCSIFNAME>"
+msgid "B<SIOCSIFNETMASK>"
+msgstr "B<SIOCSIFNAME>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Get or set the network mask for a device using I<ifr_netmask>.  For "
+"compatibility, only B<AF_INET> addresses are accepted or returned.  Setting "
+"the network mask is a privileged operation."
+msgstr ""
+"Назначает или получает маску сети устройства с помощью I<ifr_netmask>. Для "
+"совместимости, принимаются или возвращаются только адреса семейства "
+"B<AF_INET>. Назначение маски сети адреса является привилегированной "
+"операцией."
+
+#. type: TP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCGIFNAME>"
+msgid "B<SIOCGIFMETRIC>"
+msgstr "B<SIOCGIFNAME>"
+
+#. type: TQ
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCSIFNAME>"
+msgid "B<SIOCSIFMETRIC>"
+msgstr "B<SIOCSIFNAME>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Get or set the metric of the device using I<ifr_metric>.  This is currently "
+"not implemented; it sets I<ifr_metric> to 0 if you attempt to read it and "
+"returns B<EOPNOTSUPP> if you attempt to set it."
+msgstr ""
+"Считывает или устанавливает метрику устройства с помощью I<ifr_metric>. В "
+"данный момент возможность не реализована; при считывании I<ifr_metric> "
+"присваивается значение, равное нулю, а при попытке установки возвращается "
+"значение B<EOPNOTSUPP>."
+
+#. type: TP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCGIFNAME>"
+msgid "B<SIOCGIFMTU>"
+msgstr "B<SIOCGIFNAME>"
+
+#. type: TQ
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCSIFNAME>"
+msgid "B<SIOCSIFMTU>"
+msgstr "B<SIOCSIFNAME>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Get or set the MTU (Maximum Transfer Unit) of a device using I<ifr_mtu>.  "
+"Setting the MTU is a privileged operation.  Setting the MTU to too small "
+"values may cause kernel crashes."
+msgstr ""
+"Считывает или устанавливает MTU (Maximum Transfer Unit — максимальную порцию "
+"данных) с помощью I<ifr_mtu>. Установка MTU является привилегированной "
+"операцией. Установка слишком маленьких значений может привести к авариям в "
+"ядре."
+
+#. type: TP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCGIFNAME>"
+msgid "B<SIOCGIFHWADDR>"
+msgstr "B<SIOCGIFNAME>"
+
+#. type: TQ
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCSIFHWBROADCAST>"
+msgid "B<SIOCSIFHWADDR>"
+msgstr "B<SIOCSIFHWBROADCAST>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Get or set the hardware address of a device using I<ifr_hwaddr>.  The "
+"hardware address is specified in a struct I<sockaddr>.  I<sa_family> "
+"contains the ARPHRD_* device type, I<sa_data> the L2 hardware address "
+"starting from byte 0.  Setting the hardware address is a privileged "
+"operation."
+msgstr ""
+"Считывает или устанавливает аппаратный адрес устройства с помощью "
+"I<ifr_hwaddr>. Аппаратный адрес задаётся в структуре I<sockaddr>. В "
+"I<sa_family> содержится тип устройства ARPHRD_*, в I<sa_data> содержится "
+"аппаратный адрес L2, начиная с байта 0. Установка аппаратного адреса "
+"является привилегированной операцией."
+
+#. type: TP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<SIOCSIFHWBROADCAST>"
+msgstr "B<SIOCSIFHWBROADCAST>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Set the hardware broadcast address of a device from I<ifr_hwaddr>.  This is "
+"a privileged operation."
+msgstr ""
+"Устанавливает аппаратный широковещательный адрес устройства с помощью "
+"I<ifr_hwaddr>. Это привилегированная операция."
+
+#. type: TP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCGIFNAME>"
+msgid "B<SIOCGIFMAP>"
+msgstr "B<SIOCGIFNAME>"
+
+#. type: TQ
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCSIFNAME>"
+msgid "B<SIOCSIFMAP>"
+msgstr "B<SIOCSIFNAME>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Get or set the interface's hardware parameters using I<ifr_map>.  Setting "
+"the parameters is a privileged operation."
+msgstr ""
+"Считывает или устанавливает аппаратные параметры интерфейса с помощью "
+"I<ifr_map>. Установка параметров является привилегированной операцией."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"struct ifmap {\n"
+"    unsigned long   mem_start;\n"
+"    unsigned long   mem_end;\n"
+"    unsigned short  base_addr;\n"
+"    unsigned char   irq;\n"
+"    unsigned char   dma;\n"
+"    unsigned char   port;\n"
+"};\n"
+msgstr ""
+"struct ifmap {\n"
+"    unsigned long   mem_start;\n"
+"    unsigned long   mem_end;\n"
+"    unsigned short  base_addr;\n"
+"    unsigned char   irq;\n"
+"    unsigned char   dma;\n"
+"    unsigned char   port;\n"
+"};\n"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The interpretation of the ifmap structure depends on the device driver and "
+"the architecture."
+msgstr ""
+"Назначение структуры ifmap зависит от драйвера устройства и архитектуры "
+"системы."
+
+#. type: TP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCINQ>"
+msgid "B<SIOCADDMULTI>"
+msgstr "B<SIOCINQ>"
+
+#. type: TQ
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCINQ>"
+msgid "B<SIOCDELMULTI>"
+msgstr "B<SIOCINQ>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Add an address to or delete an address from the device's link layer "
+"multicast filters using I<ifr_hwaddr>.  These are privileged operations.  "
+"See also B<packet>(7)  for an alternative."
+msgstr ""
+"Добавляет или удаляет адрес из фильтров многоадресной передачи уровня связи "
+"устройства с помощью I<ifr_hwaddr>. Это привилегированная операция. "
+"Альтернативный способ приведен в B<packet>(7)."
+
+#. type: TP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCGIFNAME>"
+msgid "B<SIOCGIFTXQLEN>"
+msgstr "B<SIOCGIFNAME>"
+
+#. type: TQ
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid "B<SIOCSIFNAME>"
+msgid "B<SIOCSIFTXQLEN>"
+msgstr "B<SIOCSIFNAME>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Get or set the transmit queue length of a device using I<ifr_qlen>.  Setting "
+"the transmit queue length is a privileged operation."
+msgstr ""
+"Считывает или устанавливает размер очереди передачи устройства с помощью "
+"I<ifr_qlen>. Установка размера очереди передачи является привилегированной "
+"операцией."
+
+#. type: TP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<SIOCSIFNAME>"
+msgstr "B<SIOCSIFNAME>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Changes the name of the interface specified in I<ifr_name> to "
+"I<ifr_newname>.  This is a privileged operation.  It is allowed only when "
+"the interface is not up."
+msgstr ""
+"Изменяет имя интерфейса, указанное в I<ifr_name>, на I<ifr_newname>. Это "
+"привилегированная операция. Она разрешена только тогда, когда интерфейс не "
+"активен."
+
+#. type: TP
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "B<SIOCGIFCONF>"
+msgstr "B<SIOCGIFCONF>"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "Return a list of interface (transport layer) addresses.  This currently "
+#| "means only addresses of the B<AF_INET> (IPv4) family for compatibility.  "
+#| "Unlike the others, this ioctl passes an I<ifconf> structure:"
+msgid ""
+"Return a list of interface (network layer) addresses.  This currently means "
+"only addresses of the B<AF_INET> (IPv4) family for compatibility.  Unlike "
+"the others, this ioctl passes an I<ifconf> structure:"
+msgstr ""
+"Возвращает список адресов (транспортного уровня) интерфейсов. В настоящее "
+"время, сюда входят только адреса семейства B<AF_INET> (IPv4), для "
+"совместимости. В отличии от других, данный ioctl передаёт структуру "
+"I<ifconf>:"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy, no-wrap
+#| msgid ""
+#| "struct ifconf {\n"
+#| "    int                 ifc_len; /* size of buffer */\n"
+#| "    union {\n"
+#| "        char           *ifc_buf; /* buffer address */\n"
+#| "        struct ifreq   *ifc_req; /* array of structures */\n"
+#| "    };\n"
+#| "};\n"
+msgid ""
+"struct ifconf {\n"
+"    int               ifc_len; /* size of buffer */\n"
+"    union {\n"
+"        char         *ifc_buf; /* buffer address */\n"
+"        struct ifreq *ifc_req; /* array of structures */\n"
+"    };\n"
+"};\n"
+msgstr ""
+"struct ifconf {\n"
+"    int                 ifc_len; /* размер буфера */\n"
+"    union {\n"
+"        char           *ifc_buf; /* адрес буфера */\n"
+"        struct ifreq   *ifc_req; /* массив структур */\n"
+"    };\n"
+"};\n"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If I<ifc_req> is NULL, B<SIOCGIFCONF> returns the necessary buffer size in "
+"bytes for receiving all available addresses in I<ifc_len>.  Otherwise, "
+"I<ifc_req> contains a pointer to an array of I<ifreq> structures to be "
+"filled with all currently active L3 interface addresses.  I<ifc_len> "
+"contains the size of the array in bytes.  Within each I<ifreq> structure, "
+"I<ifr_name> will receive the interface name, and I<ifr_addr> the address.  "
+"The actual number of bytes transferred is returned in I<ifc_len>."
+msgstr ""
+"Если I<ifc_req> равно NULL, то B<SIOCGIFCONF> возвращает необходимый размер "
+"буфера в байтах для приёма всех доступных адресов в I<ifc_len>. В противном "
+"случае I<ifc_req> содержит указатель на массив структур I<ifreq>, который "
+"будет заполнен адресами всех активных интерфейсов L3. В I<ifc_len> "
+"содержится размер массива в байтах. Внутри каждой структуры I<ifreq> в "
+"I<ifr_name> будет записано имя интерфейса, а в I<ifr_addr> — адрес. Реальное "
+"количество переданных байт возвращается в I<ifc_len>."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If the size specified by I<ifc_len> is insufficient to store all the "
+"addresses, the kernel will skip the exceeding ones and return success.  "
+"There is no reliable way of detecting this condition once it has occurred.  "
+"It is therefore recommended to either determine the necessary buffer size "
+"beforehand by calling B<SIOCGIFCONF> with I<ifc_req> set to NULL, or to "
+"retry the call with a bigger buffer whenever I<ifc_len> upon return differs "
+"by less than I<sizeof(struct ifreq)> from its original value."
+msgstr ""
+"Если размера, указанного в I<ifc_len>, недостаточно для сохранения всех "
+"адресов, то ядро не запишет не поместившиеся и сообщит об успешном "
+"выполнении. Не существует надёжного способа обнаружения возникновения такой "
+"ситуации. Поэтому рекомендуется или сначала определить необходимый размер "
+"буфера вызовом B<SIOCGIFCONF> с значением I<ifc_req> равным NULL, или "
+"повторить вызов с большим буфером и проверить не отличается ли I<ifc_len> на "
+"менее чем I<sizeof(struct ifreq)> от первого значения."
+
+#. #-#-#-#-#  archlinux: netdevice.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  Slaving isn't supported in Linux 2.2
+#.  .
+#.  .TP
+#.  .B SIOCGIFSLAVE
+#.  .TQ
+#.  .B SIOCSIFSLAVE
+#.  Get or set the slave device using
+#.  .IR ifr_slave .
+#.  Setting the slave device is a privileged operation.
+#.  .P
+#.  FIXME . add amateur radio stuff.
+#. type: Plain text
+#. #-#-#-#-#  debian-bookworm: netdevice.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  Slaving isn't supported in Linux 2.2
+#.  .
+#.  .TP
+#.  .BR SIOCGIFSLAVE ", " SIOCSIFSLAVE
+#.  Get or set the slave device using
+#.  .IR ifr_slave .
+#.  Setting the slave device is a privileged operation.
+#.  .PP
+#.  FIXME . add amateur radio stuff.
+#. type: Plain text
+#. #-#-#-#-#  debian-unstable: netdevice.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  Slaving isn't supported in Linux 2.2
+#.  .
+#.  .TP
+#.  .B SIOCGIFSLAVE
+#.  .TQ
+#.  .B SIOCSIFSLAVE
+#.  Get or set the slave device using
+#.  .IR ifr_slave .
+#.  Setting the slave device is a privileged operation.
+#.  .P
+#.  FIXME . add amateur radio stuff.
+#. type: Plain text
+#. #-#-#-#-#  fedora-41: netdevice.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  Slaving isn't supported in Linux 2.2
+#.  .
+#.  .TP
+#.  .B SIOCGIFSLAVE
+#.  .TQ
+#.  .B SIOCSIFSLAVE
+#.  Get or set the slave device using
+#.  .IR ifr_slave .
+#.  Setting the slave device is a privileged operation.
+#.  .P
+#.  FIXME . add amateur radio stuff.
+#. type: Plain text
+#. #-#-#-#-#  fedora-rawhide: netdevice.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  Slaving isn't supported in Linux 2.2
+#.  .
+#.  .TP
+#.  .B SIOCGIFSLAVE
+#.  .TQ
+#.  .B SIOCSIFSLAVE
+#.  Get or set the slave device using
+#.  .IR ifr_slave .
+#.  Setting the slave device is a privileged operation.
+#.  .P
+#.  FIXME . add amateur radio stuff.
+#. type: Plain text
+#. #-#-#-#-#  mageia-cauldron: netdevice.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  Slaving isn't supported in Linux 2.2
+#.  .
+#.  .TP
+#.  .B SIOCGIFSLAVE
+#.  .TQ
+#.  .B SIOCSIFSLAVE
+#.  Get or set the slave device using
+#.  .IR ifr_slave .
+#.  Setting the slave device is a privileged operation.
+#.  .P
+#.  FIXME . add amateur radio stuff.
+#. type: Plain text
+#. #-#-#-#-#  opensuse-leap-16-0: netdevice.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  Slaving isn't supported in Linux 2.2
+#.  .
+#.  .TP
+#.  .B SIOCGIFSLAVE
+#.  .TQ
+#.  .B SIOCSIFSLAVE
+#.  Get or set the slave device using
+#.  .IR ifr_slave .
+#.  Setting the slave device is a privileged operation.
+#.  .P
+#.  FIXME . add amateur radio stuff.
+#. type: Plain text
+#. #-#-#-#-#  opensuse-tumbleweed: netdevice.7.pot (PACKAGE VERSION)  #-#-#-#-#
+#.  Slaving isn't supported in Linux 2.2
+#.  .
+#.  .TP
+#.  .B SIOCGIFSLAVE
+#.  .TQ
+#.  .B SIOCSIFSLAVE
+#.  Get or set the slave device using
+#.  .IR ifr_slave .
+#.  Setting the slave device is a privileged operation.
+#.  .P
+#.  FIXME . add amateur radio stuff.
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"If an error occurs accessing the I<ifconf> or I<ifreq> structures, B<EFAULT> "
+"will be returned."
+msgstr ""
+"Если произошла ошибка доступа к структуре I<ifconf> или I<ifreq>, то "
+"возвращается B<EFAULT>."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"Most protocols support their own ioctls to configure protocol-specific "
+"interface options.  See the protocol man pages for a description.  For "
+"configuring IP addresses, see B<ip>(7)."
+msgstr ""
+"Большинство протоколов поддерживают свои собственные вызовы ioctl для "
+"настройки предназначенных только для протокола параметров интерфейса. "
+"Подробности приведены в справочных страницах протоколов. Настройка адресов "
+"IP описывается в B<ip>(7)."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"In addition, some devices support private ioctls.  These are not described "
+"here."
+msgstr ""
+"В дополнение ко всему, некоторые устройства поддерживают индивидуальные "
+"(private) вызовы ioctl. Здесь они не описаны."
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr "ПРИМЕЧАНИЯ"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, fuzzy
+#| msgid ""
+#| "Strictly speaking, B<SIOCGIFCONF> and the other ioctls that accept or "
+#| "return only B<AF_INET> socket addresses, are IP-specific and belong in "
+#| "B<ip>(7)."
+msgid ""
+"B<SIOCGIFCONF> and the other ioctls that accept or return only B<AF_INET> "
+"socket addresses are IP-specific and perhaps should rather be documented in "
+"B<ip>(7)."
+msgstr ""
+"Строго говоря, B<SIOCGIFCONF> и другие вызовы ioctl, которые принимают или "
+"возвращают только адреса сокетов B<AF_INET>, работают только с IP и "
+"принадлежат B<ip>(7)."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"The names of interfaces with no addresses or that don't have the "
+"B<IFF_RUNNING> flag set can be found via I</proc/net/dev>."
+msgstr ""
+"Имена интерфейсов, не имеющих адресов или установленного флага "
+"B<IFF_RUNNING>, можно определить с помощью I</proc/net/dev>."
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"B<AF_INET6> IPv6 addresses can be read from I</proc/net/if_inet6> or via "
+"B<rtnetlink>(7).  Adding a new IPv6 address and deleting an existing IPv6 "
+"address can be done via B<SIOCSIFADDR> and B<SIOCDIFADDR> or via "
+"B<rtnetlink>(7).  Retrieving or changing destination IPv6 addresses of a "
+"point-to-point interface is possible only via B<rtnetlink>(7)."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "BUGS"
+msgstr "ОШИБКИ"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid ""
+"glibc 2.1 is missing the I<ifr_newname> macro in I<E<lt>net/if.hE<gt>>.  Add "
+"the following to your program as a workaround:"
+msgstr ""
+"В glibc 2.1 отсутствует макрос I<ifr_newname> в файле I<E<lt>net/if.hE<gt>>. "
+"Добавьте следующие строки в вашу программу (чтобы обойти это):"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid ""
+"#ifndef ifr_newname\n"
+"#define ifr_newname     ifr_ifru.ifru_slave\n"
+"#endif\n"
+msgstr ""
+"#ifndef ifr_newname\n"
+"#define ifr_newname     ifr_ifru.ifru_slave\n"
+"#endif\n"
+
+#. type: SH
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "СМОТРИТЕ ТАКЖЕ"
+
+#. type: Plain text
+#: archlinux debian-bookworm debian-unstable fedora-41 fedora-rawhide
+#: mageia-cauldron opensuse-leap-16-0 opensuse-tumbleweed
+msgid "B<proc>(5), B<capabilities>(7), B<ip>(7), B<rtnetlink>(7)"
+msgstr "B<proc>(5), B<capabilities>(7), B<ip>(7), B<rtnetlink>(7)"
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "2022-12-15"
+msgstr "15 декабря 2022 г."
+
+#. type: TH
+#: debian-bookworm
+#, no-wrap
+msgid "Linux man-pages 6.03"
+msgstr "Справочные страницы Linux 6.03"
+
+#. type: TP
+#: debian-bookworm
+#, no-wrap
+msgid "B<SIOCGIFFLAGS>, B<SIOCSIFFLAGS>"
+msgstr "B<SIOCGIFFLAGS>, B<SIOCSIFFLAGS>"
+
+#. type: TP
+#: debian-bookworm
+#, no-wrap
+msgid "B<SIOCGIFPFLAGS>, B<SIOCSIFPFLAGS>"
+msgstr "B<SIOCGIFPFLAGS>, B<SIOCSIFPFLAGS>"
+
+#. type: TP
+#: debian-bookworm
+#, fuzzy, no-wrap
+#| msgid "B<SIOCGIFADDR>, B<SIOCSIFADDR>"
+msgid "B<SIOCGIFADDR>, B<SIOCSIFADDR>, B<SIOCDIFADDR>"
+msgstr "B<SIOCGIFADDR>, B<SIOCSIFADDR>"
+
+#. type: TP
+#: debian-bookworm
+#, no-wrap
+msgid "B<SIOCGIFDSTADDR>, B<SIOCSIFDSTADDR>"
+msgstr "B<SIOCGIFDSTADDR>, B<SIOCSIFDSTADDR>"
+
+#. type: TP
+#: debian-bookworm
+#, no-wrap
+msgid "B<SIOCGIFBRDADDR>, B<SIOCSIFBRDADDR>"
+msgstr "B<SIOCGIFBRDADDR>, B<SIOCSIFBRDADDR>"
+
+#. type: TP
+#: debian-bookworm
+#, no-wrap
+msgid "B<SIOCGIFNETMASK>, B<SIOCSIFNETMASK>"
+msgstr "B<SIOCGIFNETMASK>, B<SIOCSIFNETMASK>"
+
+#. type: TP
+#: debian-bookworm
+#, no-wrap
+msgid "B<SIOCGIFMETRIC>, B<SIOCSIFMETRIC>"
+msgstr "B<SIOCGIFMETRIC>, B<SIOCSIFMETRIC>"
+
+#. type: TP
+#: debian-bookworm
+#, no-wrap
+msgid "B<SIOCGIFMTU>, B<SIOCSIFMTU>"
+msgstr "B<SIOCGIFMTU>, B<SIOCSIFMTU>"
+
+#. type: TP
+#: debian-bookworm
+#, no-wrap
+msgid "B<SIOCGIFHWADDR>, B<SIOCSIFHWADDR>"
+msgstr "B<SIOCGIFHWADDR>, B<SIOCSIFHWADDR>"
+
+#. type: TP
+#: debian-bookworm
+#, no-wrap
+msgid "B<SIOCGIFMAP>, B<SIOCSIFMAP>"
+msgstr "B<SIOCGIFMAP>, B<SIOCSIFMAP>"
+
+#. type: TP
+#: debian-bookworm
+#, no-wrap
+msgid "B<SIOCADDMULTI>, B<SIOCDELMULTI>"
+msgstr "B<SIOCADDMULTI>, B<SIOCDELMULTI>"
+
+#. type: TP
+#: debian-bookworm
+#, no-wrap
+msgid "B<SIOCGIFTXQLEN>, B<SIOCSIFTXQLEN>"
+msgstr "B<SIOCGIFTXQLEN>, B<SIOCSIFTXQLEN>"
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "2023-10-31"
+msgstr "31 октября 2023 г."
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "Linux man-pages 6.06"
+msgstr "Справочные страницы Linux 6.06"
+
+#. type: TH
+#: opensuse-leap-16-0 opensuse-tumbleweed
+#, no-wrap
+msgid "Linux man-pages (unreleased)"
+msgstr "Справочные страницы Linux (невыпущенные)"

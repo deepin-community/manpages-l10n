@@ -1,0 +1,371 @@
+# German translation of manpages
+# This file is distributed under the same license as the manpages-l10n package.
+# Copyright © of this file:
+# Helge Kreutzmann <debian@helgefjell.de>, 2024.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-l10n 4.24.0\n"
+"POT-Creation-Date: 2024-12-22 07:44+0100\n"
+"PO-Revision-Date: 2024-11-29 19:35+0100\n"
+"Last-Translator: Helge Kreutzmann <debian@helgefjell.de>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "SYSTEMD-SSH-GENERATOR"
+msgstr "SYSTEMD-SSH-GENERATOR"
+
+#. type: TH
+#: archlinux
+#, no-wrap
+msgid "systemd 257"
+msgstr "systemd 257"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "systemd-ssh-generator"
+msgstr "systemd-ssh-generator"
+
+#.  -----------------------------------------------------------------
+#.  * MAIN CONTENT STARTS HERE *
+#.  -----------------------------------------------------------------
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr "BEZEICHNUNG"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"systemd-ssh-generator - Generator for binding a socket-activated SSH server "
+"to local B<AF_VSOCK> and B<AF_UNIX> sockets"
+msgstr ""
+"systemd-ssh-generator - Generator zum Anbinden von Socket-aktivierten SSH-"
+"Servern an lokale B<AF_VSOCK>- und B<AF_UNIX>-Sockets"
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "ÜBERSICHT"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "/usr/lib/systemd/system-generators/systemd-ssh-generator"
+msgstr "/usr/lib/systemd/system-generators/systemd-ssh-generator"
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "BESCHREIBUNG"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"B<systemd-ssh-generator> binds a socket-activated SSH server to local "
+"B<AF_VSOCK> and B<AF_UNIX> sockets under certain conditions\\&. It only has "
+"an effect if the B<sshd>(8)  binary is installed\\&. Specifically, it does "
+"the following:"
+msgstr ""
+"B<systemd-ssh-generator> bindet unter bestimmten Bedingungen einen Socket-"
+"aktivierten SSH_Server an lokale B<AF_VSOCK>- und B<AF_UNIX>-Sockets\\&. Es "
+"ist nur wirksam, wenn das Programm B<sshd>(8) installiert ist\\&. "
+"Insbesondere erledigt es das Folgende:"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"If invoked in a VM with B<AF_VSOCK> support, a socket-activated SSH per-"
+"connection service is bound to B<AF_VSOCK> port 22\\&."
+msgstr ""
+"Beim Aufruf in einer VM mit B<AF_VSOCK>-Unterstützung wird ein Socket-"
+"aktivierter, pro SSH-Verbindung bezogener Dienst an B<AF_VSOCK>-Port 22 "
+"gebunden\\&."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"If invoked in a container environment with a writable directory /run/host/"
+"unix-export/ pre-mounted it binds SSH to an B<AF_UNIX> socket /run/host/unix-"
+"export/ssh\\&. The assumption is that this directory is bind mounted to the "
+"host side as well, and can be used to connect to the container from "
+"there\\&. See \\m[blue]B<Container Interface>\\m[]\\&\\s-2\\u[1]\\d\\s+2 for "
+"more information about this interface\\&."
+msgstr ""
+"Beim Aufruf in einer Container-Umgebung mit einem vorab eingehängten "
+"schreibbaren Verzeichnis /run/host/unix-export/ wird SSH an ein B<AF_UNIX>-"
+"Socket /run/host/unix-export/ssh gebunden\\&. Die Annahme ist, dass dieses "
+"Verzeichnis auch auf der Wirtseite Bind-eingehängt ist und als Verbindung "
+"zum Container von dort verwandt werden kann\\&. Siehe \\m[blue]B<Container-"
+"Schnittstelle>\\m[]\\&\\s-2\\u[1]\\d\\s+2 zu weiteren Informationen über "
+"diese Schnittstelle\\&."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"A local B<AF_UNIX> socket /run/ssh-unix-local/socket is also bound, "
+"unconditionally\\&. This may be used for SSH communication from the host to "
+"itself, without involving networking, for example to traverse security "
+"boundaries safely and with secure authentication\\&."
+msgstr ""
+"Ein lokales B<AF_UNIX>-Socket /run/ssh-unix-local/socket wird auch "
+"bedingungslos gebunden\\&. Dieses kann zur SSH-Kommunikation vom Wirtsystem "
+"zu sich selbst verwandt werden, ohne das Netzwerk zu verwenden, "
+"beispielsweise um sicher mit sicherer Authentifizierung über "
+"Sicherheitsschranken hinweg zu gehen\\&."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Additional B<AF_UNIX> and B<AF_VSOCK> sockets are optionally bound, based on "
+"the I<systemd\\&.ssh_listen=> kernel command line option or the "
+"ssh\\&.listen system credential (see below)\\&."
+msgstr ""
+"Zusätzlich werden optional B<AF_UNIX>- und B<AF_VSOCK>-Sockets gebunden, "
+"basierend auf der Kernelbefehlszeilenoption I<systemd\\&.ssh_listen=> oder "
+"der Systemzugangsberechtigung ssh\\&.listen (siehe unten)\\&."
+
+# WONTFIX B<ssh> → B<ssh>(1) // link already exists to 'See also' section.
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"See B<systemd-ssh-proxy>(1)  for details on how to connect to these sockets "
+"via the B<ssh> client\\&."
+msgstr ""
+"Siehe B<systemd-ssh-proxy>(1) zu Details dazu, wie über diese Sockets "
+"mittels des B<ssh>(1)-Clients verbunden werden kann\\&."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide
+msgid ""
+"The I<ssh\\&.authorized_keys\\&.root> credential can be used to allow "
+"specific public keys to log in over SSH\\&. See B<systemd.system-"
+"credentials>(7)  for more information\\&."
+msgstr ""
+"Die Zugangsberechtigung I<ssh\\&.authorized_keys\\&.root> kann zum Erlauben "
+"der Anmeldung mittels bestimmter öffentlicher Schlüssel über SSH verwandt "
+"werden\\&. Siehe B<systemd.system-credentials>(7) zu weiteren "
+"Informationen\\&."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"The generator will use a packaged sshd@\\&.service service template file if "
+"one exists, and otherwise generate a suitable service template file\\&."
+msgstr ""
+"Der Generator wird eine paketierte Dienstevorlagedatei sshd@\\&.service "
+"verwenden, falls eine existiert, und andernfalls eine geeignete "
+"Dienstevorlagedatei erstellen\\&."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide opensuse-tumbleweed
+msgid "B<systemd-ssh-generator> implements B<systemd.generator>(7)\\&."
+msgstr "B<systemd-ssh-generator> implementiert B<systemd.generator>(7)\\&."
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "KERNEL COMMAND LINE"
+msgstr "KERNEL-BEFEHLSZEILE"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide opensuse-tumbleweed
+msgid ""
+"B<systemd-ssh-generator> understands the following B<kernel-command-"
+"line>(7)  parameters:"
+msgstr ""
+"B<systemd-ssh-generator> versteht die folgenden B<kernel-command-line>(7)-"
+"Parameter:"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "I<systemd\\&.ssh_auto=>"
+msgstr "I<systemd\\&.ssh_auto=>"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"This option takes an optional boolean argument, and defaults to yes\\&. If "
+"enabled, the automatic binding to the B<AF_VSOCK> and B<AF_UNIX> sockets "
+"listed above is done\\&. If disable, this is not done, except for those "
+"explicitly requested via I<systemd\\&.ssh_listen=> on the kernel command "
+"line or via the I<ssh\\&.listen> system credential\\&."
+msgstr ""
+"Diese Option akzeptiert ein optionales logisches Argument, die Vorgabe ist "
+"»yes«\\&. Falls aktiviert, erfolgt das automatische Binden an die oben "
+"aufgeführten B<AF_VSOCK>- und B<AF_UNIX>-Sockets\\&. Falls deaktiviert, "
+"erfolgt dies nicht, außer für solche, für die dies explizit mittels "
+"I<systemd\\&.ssh_listen=> auf der Kernelbefehlszeile oder mittels der "
+"Systemzugangsberechtigung I<ssh\\&.listen> angefordert wurde\\&."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "Added in version 256\\&."
+msgstr "Hinzugefügt in Version 256\\&."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "I<systemd\\&.ssh_listen=>"
+msgstr "I<systemd\\&.ssh_listen=>"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide opensuse-tumbleweed
+msgid ""
+"This option configures an additional socket to bind SSH to\\&. It may be "
+"used multiple times to bind multiple sockets\\&. The syntax should follow "
+"the one of I<ListenStream=>, see B<systemd.socket>(5)  for details\\&. This "
+"functionality supports all socket families B<systemd>(1)  supports, "
+"including B<AF_INET> and B<AF_INET6>\\&."
+msgstr ""
+"Diese Option konfiguriert einen zusätzliches Socket, an den sich SSH binden "
+"soll\\&. Sie kann mehrfach verwandt werden, um an mehrere Sockets zu "
+"binden\\&. Die Syntax sollte der von I<ListenStream=> folgen, siehe "
+"B<systemd.socket>(5) zu Details\\&. Diese Funktionalität deckt alle Socket-"
+"Familien ab, die B<systemd>(1) unterstützt, einschließlich B<AF_INET> und "
+"B<AF_INET6>\\&."
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "CREDENTIALS"
+msgstr "ZUGANGSBERECHTIGUNGEN"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"B<systemd-ssh-generator> supports the system credentials logic\\&. The "
+"following credentials are used when passed in:"
+msgstr ""
+"B<systemd-ssh-generator> unterstützt die Systemzugangsberechtigungslogik\\&. "
+"Die folgenden Zugangsberechtigungen werden unterstützt, wenn sie "
+"reingereicht werden:"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "I<ssh\\&.listen>"
+msgstr "I<ssh\\&.listen>"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"This credential should be a text file, with each line referencing one "
+"additional socket to bind SSH to\\&. The syntax should follow the one of "
+"I<ListenStream=>, see B<systemd.socket>(5)  for details\\&. This "
+"functionality supports all socket families systemd supports, including "
+"B<AF_INET> and B<AF_INET6>\\&."
+msgstr ""
+"Diese Zugangsberechtigung sollte eine Textdatei sein, wobei jede Zeile ein "
+"zusätzliches Socket referenzieren sollte, an das sich SSH binden soll\\&. "
+"Die Syntax sollte der von I<ListenStream=> folgen, siehe "
+"B<systemd.socket>(5) zu Details\\&. Diese Funktionalität deckt alle Socket-"
+"Familien ab, die B<systemd>(1) unterstützt, einschließlich B<AF_INET> und "
+"B<AF_INET6>\\&."
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "SIEHE AUCH"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"B<systemd>(1), B<kernel-command-line>(7), B<systemd.system-credentials>(7), "
+"B<vsock>(7), B<unix>(7), B<ssh>(1), B<sshd>(8)"
+msgstr ""
+"B<systemd>(1), B<kernel-command-line>(7), B<systemd.system-credentials>(7), "
+"B<vsock>(7), B<unix>(7), B<ssh>(1), B<sshd>(8)"
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr "ANMERKUNGEN"
+
+#. type: IP
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+#, no-wrap
+msgid " 1."
+msgstr " 1."
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "Container Interface"
+msgstr "Container-Schnittstelle"
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "\\%https://systemd.io/CONTAINER_INTERFACE"
+msgstr "\\%https://systemd.io/CONTAINER_INTERFACE"
+
+#. type: TH
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "systemd 257.1"
+msgstr "systemd 257.1"
+
+#. type: TH
+#: fedora-41
+#, no-wrap
+msgid "systemd 256.7"
+msgstr "systemd 256.7"
+
+#. type: Plain text
+#: fedora-41 opensuse-tumbleweed
+msgid ""
+"The I<ssh\\&.authorized_keys\\&.root> credential can be used to allow "
+"specific public keys to log in over SSH\\&. See B<systemd.systemd-"
+"credentials>(7)  for more information\\&."
+msgstr ""
+"Die Zugangsberechtigung I<ssh\\&.authorized_keys\\&.root> kann zum Erlauben "
+"der Anmeldung mittels bestimmter öffentlicher Schlüssel über SSH verwandt "
+"werden\\&. Siehe B<systemd.systemd-credentials>(7) zu weiteren "
+"Informationen\\&."
+
+# FIXME systemd-ssh-generator → B<systemd-ssh-generator>
+#. type: Plain text
+#: fedora-41
+msgid "systemd-ssh-generator implements B<systemd.generator>(7)\\&."
+msgstr "B<systemd-ssh-generator> implementiert B<systemd.generator>(7)\\&."
+
+# FIXME systemd-ssh-generator → B<systemd-ssh-generator>
+#. type: Plain text
+#: fedora-41
+msgid ""
+"systemd-ssh-generator understands the following B<kernel-command-line>(7)  "
+"parameters:"
+msgstr ""
+"B<systemd-ssh-generator> versteht die folgenden B<kernel-command-line>(7)-"
+"Parameter:"
+
+# FIXME systemd → B<systemd>(1)
+#. type: Plain text
+#: fedora-41
+msgid ""
+"This option configures an additional socket to bind SSH to\\&. It may be "
+"used multiple times to bind multiple sockets\\&. The syntax should follow "
+"the one of I<ListenStream=>, see B<systemd.socket>(5)  for details\\&. This "
+"functionality supports all socket families systemd supports, including "
+"B<AF_INET> and B<AF_INET6>\\&."
+msgstr ""
+"Diese Option konfiguriert einen zusätzliches Socket, an den sich SSH binden "
+"soll\\&. Sie kann mehrfach verwandt werden, um an mehrere Sockets zu "
+"binden\\&. Die Syntax sollte der von I<ListenStream=> folgen, siehe "
+"B<systemd.socket>(5) zu Details\\&. Diese Funktionalität deckt alle Socket-"
+"Familien ab, die B<systemd>(1) unterstützt, einschließlich B<AF_INET> und "
+"B<AF_INET6>\\&."
+
+#. type: TH
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "systemd 256.8"
+msgstr "systemd 256.8"

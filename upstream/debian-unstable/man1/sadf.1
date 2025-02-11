@@ -1,13 +1,13 @@
-.\" sadf manual page - (C) 1999-2020 Sebastien Godard (sysstat <at> orange.fr)
-.TH SADF 1 "JULY 2020" Linux "Linux User's Manual" \-*\- nroff \-*\-
+.\" sadf manual page - (C) 1999-2023 Sebastien Godard (sysstat <at> orange.fr)
+.TH SADF 1 "AUGUST 2023" Linux "Linux User's Manual" -*- nroff -*-
 .SH NAME
 sadf \- Display data collected by sar in multiple formats.
 
 .SH SYNOPSIS
 .B sadf [ \-C ] [ \-c | \-d | \-g | \-j | \-l | \-p | \-r | \-x ] [ \-H ] [ \-h ] [ \-T | \-t | \-U ] [ \-V ] [ \-O
-.IB "opts " "[,...] ] [ \-P { " "cpu_list " "| ALL } ] [ \-s ["
-.IB "hh" ":" "mm" "[:" "ss" "] ] ] [ \-e [" "hh" ":" "mm" "[:" "ss" "] ] ]"
-.BI "[ \-\-dev=" "dev_list " "] [ \-\-fs=" "fs_list " "] [ \-\-iface=" "iface_list" "] [ \-\-"
+.IB "opts " "[,...] ] [ \-P { " "cpu_list " "| ALL } ] [ \-s [ "
+.IB "start_time " "] ] ] [ \-e [ " "end_time " "] ] ]"
+.BI "[ \-\-dev=" "dev_list " "] [ \-\-fs=" "fs_list " "] [ \-\-iface=" "iface_list" "] [ \-\-int=" "int_list " "] [ \-\-"
 .IB "sar_options " "] [ " "interval " "[ " "count " "] ] [ " "datafile " "| " "\-[0\-9]+ " "]"
 
 .SH DESCRIPTION
@@ -34,7 +34,7 @@ file. This file must have been created by a version of
 uses the standard system activity daily data file.
 It is also possible to enter
 .BR "\-1" ", " "\-2 " "etc. as an argument to " "sadf"
-to display data of that days ago. For example, 
+to display data of that days ago. For example,
 .B \-1
 will point at the standard system activity file of yesterday.
 .PP
@@ -73,7 +73,7 @@ Not specifying any flags selects only CPU activity.
 .TP
 .B \-c
 Convert an old system activity binary datafile (version 9.1.6 and later)
-to current up\-to\-date format. Use the following syntax:
+to current up-to-date format. Use the following syntax:
 
 .BI "sadf \-c " "old_datafile " "> " "new_datafile"
 
@@ -95,18 +95,24 @@ Note that timestamp output can be controlled by options
 Specify the block devices for which statistics are to be displayed by
 .BR "sadf" "."
 .I dev_list
-is a list of comma\-separated device names. Useful with option
+is a list of comma-separated device names. Useful with option
 .BR "\-d " "from " "sar" "."
-.TP
+.RE
+.PP
 .BI "\-e [ " "hh" ":" "mm" "[:" "ss" "] ]"
+.br
+.BI "\-e [ " "seconds_since_the_epoch " "]"
+.RS
 Set the ending time of the report. The default ending
-time is 18:00:00. Hours must be given in 24\-hour format.
+time is 18:00:00. Hours must be given in 24-hour format, or as the number of seconds
+since the epoch (given as a 10 digit number).
+.RE
 .TP
 .BI "\-\-fs=" "fs_list"
 Specify the filesystems for which statistics are to be displayed by
 .BR "sadf" "."
 .I fs_list
-is a list of comma\-separated filesystem names or mountpoints. Useful with option
+is a list of comma-separated filesystem names or mountpoints. Useful with option
 .BR "\-F " "from " "sar" "."
 .TP
 .B \-g
@@ -132,8 +138,15 @@ When used in conjunction with option
 Specify the network interfaces for which statistics are to be displayed by
 .BR "sadf" "."
 .I iface_list
-is a list of comma\-separated interface names. Useful with options
+is a list of comma-separated interface names. Useful with options
 .BR "\-n DEV " "and " "\-n EDEV " "from " "sar" "."
+.TP
+.BI "\-\-int=" "int_list"
+Specify the interrupts names for which statistics are to be displayed by
+.BR "sadf" "."
+.I int_list
+is a list of comma-separated values or range of values (e.g.,
+.BR "0\-16,35,40\-" "). Useful with option " "\-I " "from " "sar" "."
 .TP
 .B \-j
 Print the contents of the data file in JSON (JavaScript Object Notation)
@@ -141,7 +154,7 @@ format. Timestamps can be controlled by options
 .BR "\-T " "and " "\-t" "."
 .TP
 .B \-l
-Export the contents of the data file to a PCP (Performance Co\-Pilot) archive.
+Export the contents of the data file to a PCP (Performance Co-Pilot) archive.
 The name of the archive can be specified using the keyword
 .BR "pcparchive= " "with option " "\-O" "."
 .TP
@@ -165,6 +178,8 @@ Use a customizable color palette instead of the default one to draw
 the graphs. See environment variable
 .B S_COLORS_PALETTE
 below to know how to customize that palette.
+.IP debug
+Add helpful comments in SVG output file.
 .TP
 .RI "height=" "value"
 Set SVG canvas height to
@@ -188,7 +203,7 @@ Do not display views where all graphs have only zero values.
 .RE
 .IP
 The following option may be used when converting an old system activity binary datafile
-to current up\-to\-date format:
+to current up-to-date format:
 .RS
 .TP
 .RI "hz=" "value"
@@ -214,7 +229,7 @@ Display additional information, mainly useful for debugging purpose.
 that processor dependent statistics are to be reported only for the
 specified processor or processors.
 .I cpu_list
-is a list of comma\-separated values or range of values (e.g.,
+is a list of comma-separated values or range of values (e.g.,
 .BR "0,2,4\-7,12\-" ")."
 Note that processor 0 is the first processor, and processor
 .BR "all " "is the global average among all processors. Specifying the " "ALL"
@@ -238,13 +253,18 @@ all the counters are displayed as read from the kernel, which means e.g., that
 no average values are calculated over the elapsed time interval.
 Output can be controlled using option
 .BR "\-O " "(see above)."
-.TP
+.PP
 .BI "\-s [ " "hh" ":" "mm" "[:" "ss" "] ]"
+.br
+.BI "\-s [ " "seconds_since_the_epoch " "]"
+.RS
 Set the starting time of the data, causing the
 .B sadf
-command to extract records time\-tagged at, or following, the time
+command to extract records time-tagged at, or following, the time
 specified. The default starting time is 08:00:00.
-Hours must be given in 24\-hour format.
+Hours must be given in 24-hour format, or as the number of seconds
+since the epoch (given as a 10 digit number).
+.RE
 .TP
 .B \-T
 Display timestamp in local time instead of UTC (Coordinated Universal Time).
@@ -254,7 +274,7 @@ Display timestamp in the original local time of the data file creator
 instead of UTC (Coordinated Universal Time).
 .TP
 .B \-U
-Display timestamp (UTC \- Coordinated Universal Time) in seconds from the epoch.
+Display timestamp (UTC - Coordinated Universal Time) in seconds from the epoch.
 .TP
 .B \-V
 Print version number then exit.
@@ -265,7 +285,7 @@ Timestamps can be controlled by options
 .BR "\-T " "and " "\-t" "."
 The corresponding DTD (Document Type Definition) and XML Schema are included
 in the sysstat source package. They are also available at
-.IR "http://pagesperso\-orange.fr/sebastien.godard/download.html" "."
+.IR "https://sysstat.github.io/" "."
 
 .SH ENVIRONMENT
 .RB "The " "sadf"
@@ -277,8 +297,8 @@ Specify the colors used by
 to render the SVG output. This environment variable is taken into account
 only when the custom color palette has been selected with the option
 .BR "customcol " "(see option " "\-O" ")."
-Its value is a colon\-separated list of capabilities associated
-with six\-digit, three\-byte
+Its value is a colon-separated list of capabilities associated
+with six-digit, three-byte
 hexadecimal numbers (hex triplets) representing colors that defaults to
 
 .B 0=000000:1=1a1aff:2=1affb2:3=b21aff:
@@ -293,7 +313,7 @@ hexadecimal numbers (hex triplets) representing colors that defaults to
 .br
 .B L=000000:T=000000:W=000000:X=000000
 
-Capabilities consisting of an hexadecimal digit
+Capabilities consisting of a hexadecimal digit
 .RB "(" "0 " "through " "F" ") are used to specify"
 the first sixteen colors in the palette (these colors are used to draw the graphs),
 e.g., 3=ffffff would indicate that the third color in the palette is white (0xffffff).
@@ -372,4 +392,4 @@ Sebastien Godard (sysstat <at> orange.fr)
 .PP
 .I https://github.com/sysstat/sysstat
 .br
-.I http://pagesperso\-orange.fr/sebastien.godard/
+.I https://sysstat.github.io/

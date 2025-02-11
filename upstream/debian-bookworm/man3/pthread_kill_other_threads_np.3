@@ -1,0 +1,72 @@
+'\" t
+.\" Copyright (c) 2009 Linux Foundation, written by Michael Kerrisk
+.\"     <mtk.manpages@gmail.com>
+.\"
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+.\"
+.TH pthread_kill_other_threads_np 3 2022-12-15 "Linux man-pages 6.03"
+.SH NAME
+pthread_kill_other_threads_np \- terminate all other threads in process
+.SH LIBRARY
+POSIX threads library
+.RI ( libpthread ", " \-lpthread )
+.SH SYNOPSIS
+.nf
+.B #include <pthread.h>
+.PP
+.B void pthread_kill_other_threads_np(void);
+.fi
+.SH DESCRIPTION
+.BR pthread_kill_other_threads_np ()
+has an effect only in the LinuxThreads threading implementation.
+On that implementation,
+calling this function causes the immediate termination of
+all threads in the application,
+except the calling thread.
+The cancelation state and cancelation type of the
+to-be-terminated threads are ignored,
+and the cleanup handlers are not called in those threads.
+.\" .SH VERSIONS
+.\" Available since glibc 2.0
+.SH ATTRIBUTES
+For an explanation of the terms used in this section, see
+.BR attributes (7).
+.ad l
+.nh
+.TS
+allbox;
+lbx lb lb
+l l l.
+Interface	Attribute	Value
+T{
+.BR pthread_kill_other_threads_np ()
+T}	Thread safety	MT-Safe
+.TE
+.hy
+.ad
+.sp 1
+.SH STANDARDS
+This function is a nonstandard GNU extension;
+hence the suffix "_np" (nonportable) in the name.
+.SH NOTES
+.BR pthread_kill_other_threads_np ()
+is intended to be called just before a thread calls
+.BR execve (2)
+or a similar function.
+This function is designed to address a limitation in the obsolete
+LinuxThreads implementation whereby the other threads of an application
+are not automatically terminated (as POSIX.1-2001 requires) during
+.BR execve (2).
+.PP
+In the NPTL threading implementation,
+.BR pthread_kill_other_threads_np ()
+exists, but does nothing.
+(Nothing needs to be done,
+because the implementation does the right thing during an
+.BR execve (2).)
+.SH SEE ALSO
+.BR execve (2),
+.BR pthread_cancel (3),
+.BR pthread_setcancelstate (3),
+.BR pthread_setcanceltype (3),
+.BR pthreads (7)

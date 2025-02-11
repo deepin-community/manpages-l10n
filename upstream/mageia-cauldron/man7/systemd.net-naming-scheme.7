@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.NET\-NAMING\-SCHEME" "7" "" "systemd 249" "systemd.net-naming-scheme"
+.TH "SYSTEMD\&.NET\-NAMING\-SCHEME" "7" "" "systemd 255" "systemd.net-naming-scheme"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -48,7 +48,7 @@ Note that while the concept of network interface naming schemes is primarily rel
 systemd\-udevd\&.service, the
 \fBsystemd-nspawn\fR(1)
 container manager also takes it into account when naming network interfaces, see below\&.
-.SH "NAMING"
+.SH "POLICIES"
 .PP
 All names start with a two\-character prefix that signifies the interface type\&.
 .sp
@@ -103,32 +103,15 @@ The udev
 \fBnet_id\fR
 builtin exports the following udev device properties:
 .PP
-\fIID_NET_NAME_ONBOARD=\fR\fI\fIprefix\fR\fR\fI\fBo\fR\fR\fI\fInumber\fR\fR
+\fIID_NET_NAME_ONBOARD=\fR\fI\fIprefix\fR\fR\fI\fBo\fR\fR\fI\fInumber\fR\fR, \fIID_NET_NAME_ONBOARD=\fR\fI\fIprefix\fR\fR\fI\fBd\fR\fR\fI\fInumber\fR\fR
 .RS 4
-This name is set based on the numeric ordering information given by the firmware for on\-board devices\&. The name consists of the prefix, letter
-\fBo\fR, and a number specified by the firmware\&. This is only available for PCI devices\&.
-.RE
-.PP
-\fIID_NET_LABEL_ONBOARD=\fR\fI\fIprefix\fR\fR\fI \fR\fI\fIlabel\fR\fR
-.RS 4
-This property is set based on textual label given by the firmware for on\-board devices\&. The name consists of the prefix concatenated with the label\&. This is only available for PCI devices\&.
-.RE
-.PP
-\fIID_NET_NAME_MAC=\fR\fI\fIprefix\fR\fR\fI\fBx\fR\fR\fI\fIAABBCCDDEEFF\fR\fR
-.RS 4
-This name consists of the prefix, letter
-\fBx\fR, and 12 hexadecimal digits of the MAC address\&. It is available if the device has a fixed MAC address\&. Because this name is based on an attribute of the card itself, it remains "stable" when the device is moved (even between machines), but will change when the hardware is replaced\&.
-.RE
-.PP
-\fIID_NET_NAME_SLOT=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIport_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR, \fIID_NET_NAME_SLOT=\fR\fI\fIprefix\fR\fR\fI\fBv\fR\fR\fI\fIslot\fR\fR, \fIID_NET_NAME_SLOT=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIport_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR\fI\fBb\fR\fR\fI\fInumber\fR\fR, \fIID_NET_NAME_SLOT=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIport_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR\fI\fBu\fR\fR\fI\fIport\fR\fR\fI\&...[\fR\fI\fBc\fR\fR\fI\fIconfig\fR\fR\fI][\fR\fI\fBi\fR\fR\fI\fIinterface\fR\fR\fI]\fR, \fIID_NET_NAME_SLOT=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIport_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR\fI\fBv\fR\fR\fI\fIslot\fR\fR
-.RS 4
-This property describes the slot position\&. Different schemes are used depending on the bus type, as described in the table below\&. In case of USB, BCMA, and SR\-VIO devices, the full name consists of the prefix, PCI slot identifier, and USB or BCMA or SR\-VIO slot identifier\&. The first two parts are denoted as "\&..." in the table below\&.
+This name is set based on the numeric ordering information given by the firmware for on\-board devices\&. Different schemes are used depending on the firmware type, as described in the table below\&.
 .sp
 .it 1 an-trap
 .nr an-no-space-flag 1
 .nr an-break-flag 1
 .br
-.B Table\ \&2.\ \&Slot naming schemes
+.B Table\ \&2.\ \&On\-board naming schemes
 .TS
 allbox tab(:);
 lB lB.
@@ -138,6 +121,58 @@ T}:T{
 Description
 T}
 .T&
+l l
+l l.
+T{
+\fIprefix\fR\fBo\fR\fInumber\fR
+T}:T{
+PCI on\-board index
+T}
+T{
+\fIprefix\fR\fBd\fR\fInumber\fR
+T}:T{
+Devicetree alias index
+T}
+.TE
+.sp 1
+Added in version 243\&.
+.RE
+.PP
+\fIID_NET_LABEL_ONBOARD=\fR\fI\fIprefix\fR\fR\fI \fR\fI\fIlabel\fR\fR
+.RS 4
+This property is set based on textual label given by the firmware for on\-board devices\&. The name consists of the prefix concatenated with the label\&. This is only available for PCI devices\&.
+.sp
+Added in version 243\&.
+.RE
+.PP
+\fIID_NET_NAME_MAC=\fR\fI\fIprefix\fR\fR\fI\fBx\fR\fR\fI\fIAABBCCDDEEFF\fR\fR
+.RS 4
+This name consists of the prefix, letter
+\fBx\fR, and 12 hexadecimal digits of the MAC address\&. It is available if the device has a fixed MAC address\&. Because this name is based on an attribute of the card itself, it remains "stable" when the device is moved (even between machines), but will change when the hardware is replaced\&.
+.sp
+Added in version 243\&.
+.RE
+.PP
+\fIID_NET_NAME_SLOT=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIport_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR, \fIID_NET_NAME_SLOT=\fR\fI\fIprefix\fR\fR\fI\fBv\fR\fR\fI\fIslot\fR\fR, \fIID_NET_NAME_SLOT=\fR\fI\fIprefix\fR\fR\fI\fBx\fR\fR\fI\fIslot\fR\fR, \fIID_NET_NAME_SLOT=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIport_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR\fI\fBb\fR\fR\fI\fInumber\fR\fR, \fIID_NET_NAME_SLOT=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIport_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR\fI\fBu\fR\fR\fI\fIport\fR\fR\fI\&...[\fR\fI\fBc\fR\fR\fI\fIconfig\fR\fR\fI][\fR\fI\fBi\fR\fR\fI\fIinterface\fR\fR\fI]\fR, \fIID_NET_NAME_SLOT=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIport_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR\fI\fBv\fR\fR\fI\fIslot\fR\fR, \fIID_NET_NAME_SLOT=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIport_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR\fI\fBr\fR\fR\fI\fIslot\fR\fR
+.RS 4
+This property describes the slot position\&. Different schemes are used depending on the bus type, as described in the table below\&. In case of USB, BCMA, and SR\-VIO devices, the full name consists of the prefix, PCI slot identifier, and USB or BCMA or SR\-VIO slot identifier\&. The first two parts are denoted as "\&..." in the table below\&.
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&3.\ \&Slot naming schemes
+.TS
+allbox tab(:);
+lB lB.
+T{
+Format
+T}:T{
+Description
+T}
+.T&
+l l
+l l
 l l
 l l
 l l
@@ -154,6 +189,11 @@ T}:T{
 VIO slot number (IBM PowerVM)
 T}
 T{
+\fIprefix\fR\ \&\fBX\fR\fInumber\fR
+T}:T{
+VIF interface number (Xen)
+T}
+T{
 \&...\ \&\fBb\fR\fInumber\fR
 T}:T{
 Broadcom bus (BCMA) core number
@@ -167,6 +207,11 @@ T{
 \&...\ \&\fBv\fR\fIslot\fR
 T}:T{
 SR\-VIO slot number
+T}
+T{
+\&...\ \&\fBr\fR\fIslot\fR
+T}:T{
+SR\-IOV slot number
 T}
 .TE
 .sp 1
@@ -186,10 +231,16 @@ SR\-IOV virtual devices are named based on the name of the parent interface, wit
 \fBv\fR
 and the virtual device number, with any leading zeros removed\&. The bus number is ignored\&.
 .sp
+SR\-IOV virtual device representors are named based on the name of the physical device interface, with a suffix of
+\fBr\fR
+and the number of the virtual device that is linked to the particular representor, with any leading zeros removed\&. The physical port name and the bus number are ignored\&.
+.sp
 In some configurations a parent PCI bridge of a given network controller may be associated with a slot\&. In such case we don\*(Aqt generate this device property to avoid possible naming conflicts\&.
+.sp
+Added in version 243\&.
 .RE
 .PP
-\fIID_NET_NAME_PATH=\fR\fI\fIprefix\fR\fR\fI\fBc\fR\fR\fI\fIbus_id\fR\fR, \fIID_NET_NAME_PATH=\fR\fI\fIprefix\fR\fR\fI\fBa\fR\fR\fI\fIvendor\fR\fR\fI\fImodel\fR\fR\fI\fBi\fR\fR\fI\fIinstance\fR\fR, \fIID_NET_NAME_PATH=\fR\fI\fIprefix\fR\fR\fI\fBi\fR\fR\fI\fIaddress\fR\fR\fI\fBn\fR\fR\fI\fIport_name\fR\fR, \fIID_NET_NAME_PATH=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBp\fR\fR\fI\fIbus\fR\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIphys_port_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR, \fIID_NET_NAME_PATH=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBp\fR\fR\fI\fIbus\fR\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIphys_port_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR\fI\fBb\fR\fR\fI\fInumber\fR\fR, \fIID_NET_NAME_PATH=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBp\fR\fR\fI\fIbus\fR\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIphys_port_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR\fI\fBu\fR\fR\fI\fIport\fR\fR\fI\&...[\fR\fI\fBc\fR\fR\fI\fIconfig\fR\fR\fI][\fR\fI\fBi\fR\fR\fI\fIinterface\fR\fR\fI]\fR
+\fIID_NET_NAME_PATH=\fR\fI\fIprefix\fR\fR\fI\fBc\fR\fR\fI\fIbus_id\fR\fR, \fIID_NET_NAME_PATH=\fR\fI\fIprefix\fR\fR\fI\fBa\fR\fR\fI\fIvendor\fR\fR\fI\fImodel\fR\fR\fI\fBi\fR\fR\fI\fIinstance\fR\fR, \fIID_NET_NAME_PATH=\fR\fI\fIprefix\fR\fR\fI\fBi\fR\fR\fI\fIaddress\fR\fR\fI\fBn\fR\fR\fI\fIport_name\fR\fR, \fIID_NET_NAME_PATH=\fR\fI\fIprefix\fR\fR\fI\fBu\fR\fR\fI\fIport\fR\fR\fI\&...\fR, \fIID_NET_NAME_PATH=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBp\fR\fR\fI\fIbus\fR\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIphys_port_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR, \fIID_NET_NAME_PATH=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBp\fR\fR\fI\fIbus\fR\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIphys_port_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR\fI\fBb\fR\fR\fI\fInumber\fR\fR, \fIID_NET_NAME_PATH=\fR\fI\fIprefix\fR\fR\fI[\fR\fI\fBP\fR\fR\fI\fIdomain\fR\fR\fI]\fR\fI\fBp\fR\fR\fI\fIbus\fR\fR\fI\fBs\fR\fR\fI\fIslot\fR\fR\fI[\fR\fI\fBf\fR\fR\fI\fIfunction\fR\fR\fI][\fR\fI\fBn\fR\fR\fI\fIphys_port_name\fR\fR\fI|\fR\fI\fBd\fR\fR\fI\fIdev_port\fR\fR\fI]\fR\fI\fBu\fR\fR\fI\fIport\fR\fR\fI\&...[\fR\fI\fBc\fR\fR\fI\fIconfig\fR\fR\fI][\fR\fI\fBi\fR\fR\fI\fIinterface\fR\fR\fI]\fR
 .RS 4
 This property describes the device installation location\&. Different schemes are used depending on the bus type, as described in the table below\&. For BCMA and USB devices, PCI path information must known, and the full name consists of the prefix, PCI slot identifier, and USB or BCMA location\&. The first two parts are denoted as "\&..." in the table below\&.
 .sp
@@ -197,7 +248,7 @@ This property describes the device installation location\&. Different schemes ar
 .nr an-no-space-flag 1
 .nr an-break-flag 1
 .br
-.B Table\ \&3.\ \&Path naming schemes
+.B Table\ \&4.\ \&Path naming schemes
 .TS
 allbox tab(:);
 lB lB.
@@ -248,6 +299,8 @@ T}
 CCW and grouped CCW devices are found in IBM System Z mainframes\&. Any leading zeros and dots are suppressed\&.
 .sp
 For PCI, BCMA, and USB devices, the same rules as described above for slot naming are used\&.
+.sp
+Added in version 243\&.
 .RE
 .SH "HISTORY"
 .PP
@@ -258,6 +311,8 @@ kernel command line switch, see above):
 \fBv238\fR
 .RS 4
 This is the naming scheme that was implemented in systemd 238\&.
+.sp
+Added in version 243\&.
 .RE
 .PP
 \fBv239\fR
@@ -272,6 +327,8 @@ is the virtual device number\&. Previously those virtual devices were named as i
 The ninth and later NPAR virtual devices are named following the scheme used for the first eight NPAR partitions\&. Previously those devices were not renamed and the kernel default ("eth\fIN\fR") was used\&.
 .sp
 Names are also generated for PCI devices where the PCI network controller device does not have an associated slot number itself, but one of its parents does\&. Previously those devices were not renamed and the kernel default was used\&.
+.sp
+Added in version 243\&.
 .RE
 .PP
 \fBv240\fR
@@ -293,6 +350,8 @@ file\&. See
 \fBsystemd.link\fR(5)
 for a description of
 \fINamePolicy=\fR\&.
+.sp
+Added in version 243\&.
 .RE
 .PP
 \fBv241\fR
@@ -303,6 +362,8 @@ was extended to set MAC addresses based on the device name\&. Previously address
 attributes, which meant that interface names would never be generated for virtual devices\&. Now a persistent address will be generated for most devices, including in particular bridges\&.
 .sp
 Note: when userspace does not set a MAC address for a bridge device, the kernel will initially assign a random address, and then change it when the first device is enslaved to the bridge\&. With this naming policy change, bridges get a persistent MAC address based on the bridge name instead of the first enslaved device\&.
+.sp
+Added in version 243\&.
 .RE
 .PP
 \fBv243\fR
@@ -311,6 +372,8 @@ Support for renaming netdevsim (simulated networking) devices was added\&. Previ
 .sp
 Previously two\-letter interface type prefix was prepended to
 \fIID_NET_LABEL_ONBOARD=\fR\&. This is not done anymore\&.
+.sp
+Added in version 243\&.
 .RE
 .PP
 \fBv245\fR
@@ -320,6 +383,8 @@ When
 derives the name for the host side of the network interface created with
 \fB\-\-network\-veth\fR
 from the container name it previously simply truncated the result at 15 characters if longer (since that\*(Aqs the maximum length for network interface names)\&. From now on, for any interface name that would be longer than 15 characters the last 4 characters are set to a 24bit hash value of the full interface name\&. This way network interface name collisions between multiple similarly named containers (who only differ in container name suffix) should be less likely (but still possible, since the 24bit hash value is very small)\&.
+.sp
+Added in version 245\&.
 .RE
 .PP
 \fBv247\fR
@@ -329,6 +394,8 @@ When a PCI slot is associated with a PCI bridge that has multiple child network 
 property might be derived for those controllers\&. This would cause a naming conflict if the property is selected as the device name\&. Now, we detect this situation and don\*(Aqt produce the
 \fIID_NET_NAME_SLOT\fR
 property\&.
+.sp
+Added in version 247\&.
 .RE
 .PP
 \fBv249\fR
@@ -340,7 +407,7 @@ device attribute\&. This attribute is now used to build the
 \fIID_NET_NAME_SLOT\fR
 property or none at all\&.
 .sp
-Some firmware and hypervisor implementations report unreasonable high numbers for the onboard index\&. To prevent the generation of bogus onbard interface names, index numbers greater than 16381 (2^14\-1) were ignored\&. For s390 PCI devices index values up to 65535 (2^16\-1) are valid\&. To account for that, the limit is increased to now 65535\&.
+Some firmware and hypervisor implementations report unreasonably high numbers for the on\-board index\&. To prevent the generation of bogus on\-board interface names, index numbers greater than 16381 (2\(S1⁴\-1) were ignored\&. For s390 PCI devices index values up to 65535 (2\(S1⁶\-1) are valid\&. To account for that, the limit was increased to 65535\&.
 .sp
 The udev rule
 \fINAME=\fR
@@ -349,6 +416,65 @@ replaces
 "/", and
 "%"
 with an underscore ("_"), and refuses strings which contain only numerics\&.
+.sp
+Added in version 249\&.
+.RE
+.PP
+\fBv250\fR
+.RS 4
+Added naming scheme for Xen netfront "vif" interfaces based on the guest side VIF number set from the Xen config (or the interface index in AWS EC2)\&.
+.sp
+Added in version 250\&.
+.RE
+.PP
+\fBv251\fR
+.RS 4
+Since version
+\fBv247\fR
+we no longer set
+\fIID_NET_NAME_SLOT\fR
+if we detect that a PCI device associated with a slot is a PCI bridge as that would create naming conflict when there are more child devices on that bridge\&. Now, this is relaxed and we will use slot information to generate the name based on it but only if the PCI device has multiple functions\&. This is safe because distinct function number is a part of the device name for multifunction devices\&. Note, this is reverted in
+\fBv255\fR\&. See below\&.
+.sp
+Added in version 251\&.
+.RE
+.PP
+\fBv252\fR
+.RS 4
+Added naming scheme for platform devices with devicetree aliases\&.
+.sp
+Added in version 252\&.
+.RE
+.PP
+\fBv253\fR
+.RS 4
+Set
+\fIID_NET_NAME_PATH\fR
+for usb devices not connected via a PCI bus\&.
+.sp
+Added in version 253\&.
+.RE
+.PP
+\fBv254\fR
+.RS 4
+Naming was changed for SR\-IOV virtual device representors, optionally settable at compilation time\&. The
+"r\fIslot\fR"
+suffix was added to differentiate SR\-IOV virtual device representors attached to a single physical device interface\&. Because of a mistake, this scheme was
+\fInot the the default scheme for systemd version 254\fR\&.
+.sp
+Added in version 255\&.
+.RE
+.PP
+\fBv255\fR
+.RS 4
+Naming was changed for SR\-IOV virtual device representors to enable the change introduced in
+\fBv254\fR
+by default\&.
+.sp
+If we detect that a PCI device associated with a slot is a PCI bridge, we no longer set
+\fIID_NET_NAME_SLOT\fR, reverting a change that was introduced in v251\&.
+.sp
+Added in version 255\&.
 .RE
 .PP
 Note that

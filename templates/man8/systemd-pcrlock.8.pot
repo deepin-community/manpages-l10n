@@ -1,0 +1,1127 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-12-22 07:44+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "SYSTEMD-PCRLOCK"
+msgstr ""
+
+#. type: TH
+#: archlinux
+#, no-wrap
+msgid "systemd 257"
+msgstr ""
+
+#. type: TH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "systemd-pcrlock"
+msgstr ""
+
+#.  -----------------------------------------------------------------
+#.  * MAIN CONTENT STARTS HERE *
+#.  -----------------------------------------------------------------
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"systemd-pcrlock, systemd-pcrlock-file-system.service, systemd-pcrlock-"
+"firmware-code.service, systemd-pcrlock-firmware-config.service, systemd-"
+"pcrlock-machine-id.service, systemd-pcrlock-make-policy.service, systemd-"
+"pcrlock-secureboot-authority.service, systemd-pcrlock-secureboot-"
+"policy.service - Analyze and predict TPM2 PCR states and generate an access "
+"policy from the prediction"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "B</usr/lib/systemd/systemd-pcrlock> [OPTIONS...]"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Note: this command is experimental for now\\&. While it is likely to become "
+"a regular component of systemd, it might still change in behaviour and "
+"interface\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"B<systemd-pcrlock> is a tool that may be used to analyze and predict TPM2 "
+"PCR measurements, and generate TPM2 access policies from the prediction "
+"which it stores in a TPM2 NV index (i\\&.e\\&. in the TPM2 non-volatile "
+"memory)\\&. This may then be used to restrict access to TPM2 objects (such "
+"as disk encryption keys) to system boot-ups in which only specific, trusted "
+"components are used\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<systemd-pcrlock> uses as input for its analysis and prediction:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The UEFI firmware TPM2 event log (i\\&.e\\&.  /sys/kernel/security/tpm0/"
+"binary_bios_measurements) of the current boot\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The userspace TPM2 event log (i\\&.e\\&.  /run/log/systemd/tpm2-"
+"measure\\&.log) of the current boot\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "The current PCR state of the TPM2 chip\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Boot component definition files (*\\&.pcrlock and *\\&.pcrlock\\&.d/"
+"*\\&.pcrlock, see B<systemd.pcrlock>(5)) that each define expected "
+"measurements for one component of the boot process, permitting alternative "
+"variants for each\\&. (Variants may be used to bless multiple kernel "
+"versions or boot loader versions at the same time\\&.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"It uses these inputs to generate a combined event log, validating it against "
+"the PCR states\\&. It then attempts to recognize event log records and "
+"matches them against the defined components\\&. For each PCR where this can "
+"be done comprehensively (i\\&.e\\&. where all listed records and all defined "
+"components have been matched) this may then be used to predict future PCR "
+"measurements, taking the alternative variants defined for each component "
+"into account\\&. This prediction may then be converted into a TPM2 access "
+"policy (consisting of TPM2 B<PolicyPCR> and B<PolicyOR> items), which is "
+"then stored in an NV index in the TPM2\\&. This may be used to then lock "
+"secrets (such as disk encryption keys) to these policies (via a TPM2 "
+"B<PolicyAuthorizeNV> policy)\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Use tools such as B<systemd-cryptenroll>(1)  or B<systemd-repart>(8)  to "
+"bind disk encryption to such a B<systemd-pcrlock> TPM2 policy\\&. "
+"Specifically, see the B<--tpm2-pcrlock=> switches of these tools\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The access policy logic requires a TPM2 device that implements the "
+"\"PolicyAuthorizeNV\" command, i\\&.e\\&. implements TPM 2\\&.0 version "
+"1\\&.38 or newer\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "COMMANDS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "The following commands are understood:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<log>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This reads the combined TPM2 event log, validates it, matches it against the "
+"current PCR values, and outputs both in tabular form\\&. Combine with B<--"
+"json=> to generate output in JSON format\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Added in version 255\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<cel>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide opensuse-tumbleweed
+msgid ""
+"This reads the combined TPM2 event log and writes it to STDOUT in "
+"\\m[blue]B<TCG Canonical Event Log Format (CEL-JSON)>\\m[]"
+"\\&\\s-2\\u[1]\\d\\s+2\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<list-components>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Shows a list of component definitions and their variants, i\\&.e\\&. the "
+"*\\&.pcrlock files discovered in /var/lib/pcrlock\\&.d/, /usr/lib/"
+"pcrlock\\&.d/, and the other supported directories\\&. See "
+"B<systemd.pcrlock>(5)  for details on these files and the full list of "
+"directories searched\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<predict>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Predicts the PCR state on future boots\\&. This will analyze the TPM2 event "
+"log as described above, recognize components, and then generate all possible "
+"resulting PCR values for all combinations of component variants\\&. Note "
+"that no prediction is made for PCRs whose value does not match the event log "
+"records, for which unrecognized measurements are discovered or for which "
+"components are defined that cannot be found in the event log\\&. This is a "
+"safety measure to ensure that any generated access policy can be fulfilled "
+"correctly on current and future boots\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<make-policy>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This predicts the PCR state for future boots, much like the B<predict> "
+"command above\\&. It then uses this data to generate a TPM2 access policy "
+"which it stores in a TPM2 NV index\\&. The prediction and information about "
+"the used TPM2 and its NV index are written to /var/lib/systemd/"
+"pcrlock\\&.json\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The NV index is allocated on first invocation, and updated on subsequent "
+"invocations\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The NV index contents may be changed (and thus the policy stored in it "
+"updated) by providing an access PIN\\&. This PIN is normally generated "
+"automatically and stored in encrypted form (with an access policy binding it "
+"to the NV index itself) in the aforementioned JSON policy file\\&. This PIN "
+"may be chosen by the user, via the B<--recovery-pin=> switch\\&. If "
+"specified it may be used as alternative path of access to update the "
+"policy\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"If the new prediction matches the old this command terminates quickly and "
+"executes no further operation\\&. (Unless B<--force> is specified, see "
+"below\\&.)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Starting with v256, a copy of the /var/lib/systemd/pcrlock\\&.json policy "
+"file is encoded in a credential (see B<systemd-creds>(1)  for details) and "
+"written to the EFI System Partition or XBOOTLDR partition, in the /loader/"
+"credentials/ subdirectory\\&. There it is picked up at boot by B<systemd-"
+"stub>(7)  and passed to the invoked initrd, where it can be used to unlock "
+"the root file system (which typically contains /var/, which is where the "
+"primary copy of the policy is located, which hence cannot be used to unlock "
+"the root file system)\\&. The credential file is named after the boot entry "
+"token of the installation (see B<bootctl>(1)), which is configurable via the "
+"B<--entry-token=> switch, see below\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<remove-policy>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Removes a previously generated policy\\&. Deletes the /var/lib/systemd/"
+"pcrlock\\&.json file, and deallocates the NV index\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<lock-firmware-code>, B<unlock-firmware-code>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Generates/removes \\&.pcrlock files based on the TPM2 event log of the "
+"current boot covering all records for PCRs 0 (\"platform-code\") and 2 "
+"(\"external-code\")\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This operation allows locking the boot process to the current version of the "
+"firmware of the system and its extension cards\\&. This operation should "
+"only be used if the system vendor does not provide suitable pcrlock data "
+"ahead of time\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Note that this data only matches the current version of the firmware\\&. If "
+"a firmware update is applied this data will be out-of-date and any access "
+"policy generated from it will no longer pass\\&. It is thus recommended to "
+"invoke B<unlock-firmware-code> before doing a firmware update, followed by "
+"B<make-policy> to refresh the policy\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"B<systemd-pcrlock lock-firmware-code> is invoked automatically at boot via "
+"the systemd-pcrlock-firmware-code\\&.service unit, if enabled\\&. This "
+"ensures that an access policy managed by B<systemd-pcrlock> is automatically "
+"locked to the new firmware version whenever the policy has been relaxed "
+"temporarily, in order to cover for firmware updates, as described above\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The files are only generated from the event log if the event log matches the "
+"current TPM2 PCR state\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This writes/removes the files /var/lib/pcrlock\\&.d/250-firmware-code-"
+"early\\&.pcrlock\\&.d/generated\\&.pcrlock and /var/lib/pcrlock\\&.d/550-"
+"firmware-code-late\\&.pcrlock\\&.d/generated\\&.pcrlock\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<lock-firmware-config>, B<unlock-firmware-config>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This is similar to B<lock-firmware-code>/B<unlock-firmware-code> but locks "
+"down the firmware configuration, i\\&.e\\&. PCRs 1 (\"platform-config\") and "
+"3 (\"external-config\")\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This functionality should be used with care as in most scenarios a minor "
+"firmware configuration change should not invalidate access policies to TPM2 "
+"objects\\&. Also note that some systems measure unstable and unpredictable "
+"information (e\\&.g\\&. current CPU voltages, temperatures, as part of "
+"SMBIOS data) to these PCRs, which means this form of lockdown cannot be used "
+"reliably on such systems\\&. Use this functionality only if the system and "
+"hardware is well known and does not suffer by these limitations, for example "
+"in virtualized environments\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Use B<unlock-firmware-config> before making firmware configuration "
+"changes\\&. If the systemd-pcrlock-firmware-config\\&.service unit is "
+"enabled it will automatically generate a pcrlock file from the new "
+"measurements\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This writes/removes the files /var/lib/pcrlock\\&.d/250-firmware-config-"
+"early\\&.pcrlock\\&.d/generated\\&.pcrlock and /var/lib/pcrlock\\&.d/550-"
+"firmware-config-late\\&.pcrlock\\&.d/generated\\&.pcrlock\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<lock-secureboot-policy>, B<unlock-secureboot-policy>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Generates/removes a \\&.pcrlock file based on the SecureBoot policy "
+"currently enforced\\&. This looks at the SecureBoot, PK, KEK, db, dbx, dbt, "
+"dbr EFI variables and predicts their measurements to PCR 7 (\"secure-boot-"
+"policy\") on the next boot\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Use B<unlock-firmware-config> before applying SecureBoot policy updates\\&. "
+"If the systemd-pcrlock-secureboot-policy\\&.service unit is enabled it will "
+"automatically generate a pcrlock file from the policy discovered\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This writes/removes the file /var/lib/pcrlock\\&.d/230-secureboot-"
+"policy\\&.pcrlock\\&.d/generated\\&.pcrlock\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<lock-secureboot-authority>, B<unlock-secureboot-authority>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Generates/removes a \\&.pcrlock file based on the SecureBoot authorities "
+"used to validate the boot path\\&. SecureBoot authorities are the specific "
+"SecureBoot database entries that where used to validate the UEFI PE binaries "
+"executed at boot\\&. This looks at the event log of the current boot, and "
+"uses relevant measurements on PCR 7 (\"secure-boot-policy\")\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This writes/removes the file /var/lib/pcrlock\\&.d/620-secureboot-"
+"authority\\&.pcrlock\\&.d/generated\\&.pcrlock\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<lock-gpt> [I<DEVICE>], B<unlock-gpt>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Generates/removes a \\&.pcrlock file based on the GPT partition table of the "
+"specified disk\\&. If no disk is specified automatically determines the "
+"block device backing the root file system\\&. This locks the state of the "
+"disk partitioning of the booted medium, which firmware measures to PCR 5 "
+"(\"boot-loader-config\")\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This writes/removes the file /var/lib/pcrlock\\&.d/600-gpt\\&.pcrlock\\&.d/"
+"generated\\&.pcrlock\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<lock-pe> [I<BINARY>], B<unlock-pe>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Generates/removes a \\&.pcrlock file based on the specified PE binary\\&. "
+"This is useful for predicting measurements the firmware makes to PCR 4 "
+"(\"boot-loader-code\") if the specified binary is part of the UEFI boot "
+"process\\&. Use this on boot loader binaries and suchlike\\&. Use B<lock-"
+"uki> (see below) for PE binaries that are unified kernel images (UKIs)\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Expects a path to the PE binary as argument\\&. If not specified, reads the "
+"binary from STDIN instead\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"The pcrlock file to write must be specified via the B<--pcrlock=> switch\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<lock-uki> [I<UKI>], B<unlock-uki>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Generates/removes a \\&.pcrlock file based on the specified UKI PE "
+"binary\\&. This is useful for predicting measurements the firmware makes to "
+"PCR 4 (\"boot-loader-code\"), and B<systemd-stub>(7)  makes to PCR 11 "
+"(\"kernel-boot\"), if the specified UKI is booted\\&. This is a superset of "
+"B<lock-pe>\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Expects a path to the UKI PE binary as argument\\&. If not specified, reads "
+"the binary from STDIN instead\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<lock-machine-id>, B<unlock-machine-id>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Generates/removes a \\&.pcrlock file based on /etc/machine-id\\&. This is "
+"useful for predicting measurements B<systemd-pcrmachine.service>(8)  makes "
+"to PCR 15 (\"system-identity\")\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This writes/removes the file /var/lib/pcrlock\\&.d/820-machine-"
+"id\\&.pcrlock\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<lock-file-system> [I<PATH>], B<unlock-file-system> [I<PATH>]"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Generates/removes a \\&.pcrlock file based on file system identity\\&. This "
+"is useful for predicting measurements B<systemd-pcrfs@.service>(8)  makes to "
+"PCR 15 (\"system-identity\") for the root and /var/ file systems\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This writes/removes the files /var/lib/pcrlock\\&.d/830-root-file-"
+"system\\&.pcrlock and /var/lib/pcrlock\\&.d/840-file-system-"
+"I<path>\\&.pcrlock\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<lock-kernel-cmdline> [I<FILE>], B<unlock-kernel-cmdline>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Generates/removes a \\&.pcrlock file based on /proc/cmdline (or the "
+"specified file if given)\\&. This is useful for predicting measurements the "
+"Linux kernel makes to PCR 9 (\"kernel-initrd\")\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This writes/removes the file /var/lib/pcrlock\\&.d/710-kernel-"
+"cmdline\\&.pcrlock/generated\\&.pcrlock\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<lock-kernel-initrd> I<FILE>, B<unlock-kernel-initrd>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Generates/removes a \\&.pcrlock file based on a kernel initrd cpio "
+"archive\\&. This is useful for predicting measurements the Linux kernel "
+"makes to PCR 9 (\"kernel-initrd\")\\&. Do not use for B<systemd-stub>(7)  "
+"UKIs, as the initrd is combined dynamically from various sources and hence "
+"does not take a single input, like this command\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This writes/removes the file /var/lib/pcrlock\\&.d/720-kernel-"
+"initrd\\&.pcrlock/generated\\&.pcrlock\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<lock-raw> [I<FILE>], B<unlock-raw>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Generates/removes a \\&.pcrlock file based on raw binary data\\&. The data "
+"is either read from the specified file or from STDIN (if none is specified)"
+"\\&. This requires that B<--pcrs=> is specified\\&. The generated "
+"\\&.pcrlock file is written to the file specified via B<--pcrlock=> or to "
+"STDOUT (if none is specified)\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "OPTIONS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "The following options are understood:"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<--raw-description>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"When displaying the TPM2 event log do not attempt to decode the records to "
+"provide a friendly event log description string\\&. Instead, show the binary "
+"payload data in escaped form\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<--pcr=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Specifies the PCR number to use\\&. May be specified more than once to "
+"select multiple PCRs\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"This is used by B<lock-raw> and B<lock-pe> to select the PCR to lock "
+"against\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"If used with B<predict> and B<make-policy> this will override which PCRs to "
+"include in the prediction and policy\\&. If unspecified this defaults to "
+"PCRs 0-5, 7, 11-15\\&. Note that these commands will not include any PCRs in "
+"the prediction/policy (even if specified explicitly) if there are "
+"measurements in the event log that do not match the current PCR value, or "
+"there are unrecognized measurements in the event log, or components define "
+"measurements not seen in the event log\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<--nv-index=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Specifies the NV index to store the policy in\\&. Honoured by B<make-"
+"policy>\\&. If not specified the command will automatically pick a free NV "
+"index\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<--components=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Takes a path to read *\\&.pcrlock and *\\&.pcrlock\\&.d/*\\&.pcrlock files "
+"from\\&. May be used more than once to specify multiple such directories\\&. "
+"If not specified defaults to /etc/pcrlock\\&.d/, /run/pcrlock\\&.d/, /var/"
+"lib/pcrlock\\&.d/, /usr/local/pcrlock\\&.d/, /usr/lib/pcrlock\\&.d/\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<--location=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Takes either a string or a colon-separated pair of strings\\&. Configures up "
+"to which point in the sorted list of defined components to analyze/predict "
+"PCRs to\\&. Typically, the B<systemd-pcrlock> tool is invoked from a fully "
+"booted system after boot-up and before shutdown\\&. This means various "
+"components that are defined for shutdown have not been measured yet, and "
+"should not be searched for\\&. This option allows one to restrict which "
+"components are considered for analysis (taking only components before some "
+"point into account, ignoring components after them)\\&. The expected string "
+"is ordered against the filenames of the components defined\\&. Any "
+"components with a lexicographically later name are ignored\\&. This logic "
+"applies to the B<log>, B<predict>, and B<make-policy> verbs\\&. If a colon-"
+"separated pair of strings are specified then they select which phases of the "
+"boot to include in the prediction/policy\\&. The first string defines where "
+"the first prediction shall be made, and the second string defines where the "
+"last prediction shall be made\\&. All such predictions are then combined "
+"into one set\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"If used with B<list-components> the selected location range will be "
+"highlighted in the component list\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Defaults to \"760-:940-\", which means the policies generated by default "
+"will basically cover the whole runtime of the OS userspace, from the initrd "
+"(as \"760-\" closely follows 750-enter-initrd\\&.pcrlock) until (and "
+"including) the main runtime of the system (as \"940-\" is closely followed "
+"by 950-shutdown\\&.pcrlock)\\&. See B<systemd.pcrlock>(5)  for a full list "
+"of well-known components, that illustrate where this range is placed by "
+"default\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<--recovery-pin=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Takes one of \"hide\", \"show\" or \"query\"\\&. Defaults to \"hide\"\\&. "
+"Honoured by B<make-policy>\\&. If \"query\", will query the user for a PIN "
+"to unlock the TPM2 NV index with\\&. If no policy was created before, this "
+"PIN is used to protect the newly allocated NV index\\&. If a policy has been "
+"created before, the PIN is used to unlock write access to the NV index\\&. "
+"If either \"hide\" or \"show\" is used, a PIN is automatically generated, "
+"and \\(em only in case of \"show\" \\(em displayed on screen\\&. Regardless "
+"if user supplied or automatically generated, it is stored in encrypted form "
+"in the policy metadata file\\&. The recovery PIN may be used to regain write "
+"access to an NV index in case the access policy became out of date\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<--pcrlock=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Takes a file system path as argument\\&. If specified, configures where to "
+"write the generated pcrlock data to\\&. Honoured by the various B<lock-*> "
+"commands\\&. If not specified, a default path is generally used, as "
+"documented above\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<--policy=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Takes a file system path as argument\\&. If specified, configures where to "
+"write pcrlock policy metadata to\\&. If not specified defaults to /var/lib/"
+"systemd/pcrlock\\&.json\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<--force>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"If specified with B<make-policy>, the predicted policy will be written to "
+"the NV index even if it is detected to be the same as the previously stored "
+"one\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "B<--entry-token=>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"Sets the boot entry token to use for the file name for the pcrlock policy "
+"credential in the EFI System Partition or XBOOTLDR partition\\&. See the "
+"B<bootctl>(1)  option of the same regarding expected values\\&. This switch "
+"has an effect on the B<make-policy> command only\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid "Added in version 256\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<--json=>I<MODE>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"Shows output formatted as JSON\\&. Expects one of \"short\" (for the "
+"shortest possible output without any redundant whitespace or line breaks), "
+"\"pretty\" (for a pretty version of the same, with indentation and line "
+"breaks) or \"off\" (to turn off JSON output, the default)\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<--no-pager>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Do not pipe output into a pager\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<-h>, B<--help>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Print a short help text and exit\\&."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "B<--version>"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "Print a short version string and exit\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "EXIT STATUS"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "On success, 0 is returned, a non-zero failure code otherwise\\&."
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide opensuse-tumbleweed
+msgid ""
+"B<systemd>(1), B<systemd.pcrlock>(5), B<systemd-cryptenroll>(1), B<systemd-"
+"cryptsetup@.service>(8), B<systemd-repart>(8), B<systemd-"
+"pcrmachine.service>(8), B<systemd-creds>(1), B<systemd-stub>(7), "
+"B<bootctl>(1)"
+msgstr ""
+
+#. type: SH
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "NOTES"
+msgstr ""
+
+#. type: IP
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+#, no-wrap
+msgid " 1."
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid "TCG Canonical Event Log Format (CEL-JSON)"
+msgstr ""
+
+#. type: Plain text
+#: archlinux debian-unstable fedora-41 fedora-rawhide mageia-cauldron
+#: opensuse-tumbleweed
+msgid ""
+"\\%https://trustedcomputinggroup.org/resource/canonical-event-log-format/"
+msgstr ""
+
+#. type: TH
+#: debian-unstable fedora-rawhide
+#, no-wrap
+msgid "systemd 257.1"
+msgstr ""
+
+#. type: TH
+#: fedora-41
+#, no-wrap
+msgid "systemd 256.7"
+msgstr ""
+
+#. type: Plain text
+#: fedora-41 mageia-cauldron
+msgid ""
+"This reads the combined TPM2 event log and writes it to STDOUT in "
+"\\m[blue]B<TCG Canonical Event Log Format (CEL-JSON)>\\m[]"
+"\\&\\s-2\\u[1]\\d\\s+2 format\\&."
+msgstr ""
+
+#. type: Plain text
+#: fedora-41 mageia-cauldron
+msgid ""
+"Generates/removes a \\&.pcrlock file based on a kernel initrd cpio "
+"archive\\&. This is useful for predicting measurements the Linux kernel "
+"makes to PCR 9 (\"kernel-initrd\")\\&. Do not use for B<systemd-stub> UKIs, "
+"as the initrd is combined dynamically from various sources and hence does "
+"not take a single input, like this command\\&."
+msgstr ""
+
+#. type: Plain text
+#: fedora-41 mageia-cauldron
+msgid ""
+"Takes a file system path as argument\\&. If specified overrides where to "
+"write the generated pcrlock data to\\&. Honoured by the various B<lock-*> "
+"commands\\&. If not specified, a default path is generally used, as "
+"documented above\\&."
+msgstr ""
+
+#. type: Plain text
+#: fedora-41 mageia-cauldron
+msgid ""
+"Takes a file system path as argument\\&. If specified overrides where to "
+"write pcrlock policy metadata to\\&. If not specified defaults to /var/lib/"
+"systemd/pcrlock\\&.json\\&."
+msgstr ""
+
+#. type: TH
+#: mageia-cauldron
+#, no-wrap
+msgid "systemd 255"
+msgstr ""
+
+#. type: Plain text
+#: mageia-cauldron
+msgid "B</usr/lib/systemd/systemd-pcrlock >B<[OPTIONS...]>"
+msgstr ""
+
+#. type: Plain text
+#: mageia-cauldron
+msgid ""
+"Boot component definition files (*\\&.pcrlock and *\\&.pcrlock\\&.d/"
+"*\\&.pcrlock, see B<systemd.pcrlock>(5)) that each define expected "
+"measurements for one component of the boot process, permitting alternative "
+"variants for each\\&. (Variants may be used used to bless multiple kernel "
+"versions or boot loader versions at the same time\\&.)"
+msgstr ""
+
+#. type: Plain text
+#: mageia-cauldron
+msgid ""
+"Takes a boolean\\&. Defaults to false\\&. Honoured by B<make-policy>\\&. If "
+"true, will query the user for a PIN to unlock the TPM2 NV index with\\&. If "
+"no policy was created before this PIN is used to protect the newly allocated "
+"NV index\\&. If a policy has been created before the PIN is used to unlock "
+"write access to the NV index\\&. If this option is not used a PIN is "
+"automatically generated\\&. Regardless if user supplied or automatically "
+"generated, it is stored in encrypted form in the policy metadata file\\&. "
+"The recovery PIN may be used to regain write access to an NV index in case "
+"the access policy became out of date\\&."
+msgstr ""
+
+#. type: Plain text
+#: mageia-cauldron
+msgid ""
+"B<systemd>(1), B<systemd.pcrlock>(5), B<systemd-cryptenroll>(1), B<systemd-"
+"cryptsetup@.service>(8), B<systemd-repart>(8), B<systemd-"
+"pcrmachine.service>(8)"
+msgstr ""
+
+#. type: TH
+#: opensuse-tumbleweed
+#, no-wrap
+msgid "systemd 256.8"
+msgstr ""

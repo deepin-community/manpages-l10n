@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_EVENT_WAIT" "3" "" "systemd 249" "sd_event_wait"
+.TH "SD_EVENT_WAIT" "3" "" "systemd 257" "sd_event_wait"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -90,7 +90,7 @@ again\&.
 may be used to determine the state the event loop is currently in\&. It returns one of the states described below\&.
 .PP
 \fBsd_event_get_iteration()\fR
-may be used to determine the current iteration of the event loop\&. It returns an unsigned 64bit integer containing a counter that increases monotonically with each iteration of the event loop, starting with 0\&. The counter is increased at the time of the
+may be used to determine the current iteration of the event loop\&. It returns an unsigned 64\-bit integer containing a counter that increases monotonically with each iteration of the event loop, starting with 0\&. The counter is increased at the time of the
 \fBsd_event_prepare()\fR
 invocation\&.
 .PP
@@ -118,6 +118,8 @@ to transition the event loop into the
 or
 \fBSD_EVENT_PENDING\fR
 states\&.
+.sp
+Added in version 229\&.
 .RE
 .PP
 \fBSD_EVENT_PREPARING\fR
@@ -129,6 +131,8 @@ call and is immediately followed by
 \fBSD_EVENT_ARMED\fR
 or
 \fBSD_EVENT_PENDING\fR\&.
+.sp
+Added in version 229\&.
 .RE
 .PP
 \fBSD_EVENT_ARMED\fR
@@ -140,6 +144,8 @@ to wait for new events, and transition into
 \fBSD_EVENT_PENDING\fR
 or back into
 \fBSD_EVENT_INITIAL\fR\&.
+.sp
+Added in version 229\&.
 .RE
 .PP
 \fBSD_EVENT_PENDING\fR
@@ -152,6 +158,8 @@ have been called and there were event sources with events pending\&. Use
 to dispatch the highest priority event source and transition back to
 \fBSD_EVENT_INITIAL\fR, or
 \fBSD_EVENT_FINISHED\fR\&.
+.sp
+Added in version 229\&.
 .RE
 .PP
 \fBSD_EVENT_RUNNING\fR
@@ -165,6 +173,8 @@ or
 as soon the event source handler returns\&. Note that during dispatching of exit event sources the
 \fBSD_EVENT_EXITING\fR
 state is seen instead\&.
+.sp
+Added in version 229\&.
 .RE
 .PP
 \fBSD_EVENT_EXITING\fR
@@ -176,11 +186,15 @@ but is the state in effect while dispatching exit event sources\&. It is followe
 or
 \fBSD_EVENT_FINISHED\fR
 as soon as the event handler returns\&.
+.sp
+Added in version 229\&.
 .RE
 .PP
 \fBSD_EVENT_FINISHED\fR
 .RS 4
 The event loop has exited\&. All exit event sources have run\&. If the event loop is in this state it serves no purpose anymore, and should be freed\&.
+.sp
+Added in version 229\&.
 .RE
 .PP
 A simplified flow chart of the states and the calls to transition between them is shown below\&. Note that
@@ -215,7 +229,6 @@ are not shown here\&.
              |
              v
           FINISHED
-    
 .fi
 .if n \{\
 .RE
@@ -253,25 +266,32 @@ The event loop is already terminated\&.
 .PP
 \fB\-ECHILD\fR
 .RS 4
-The event loop has been created in a different process\&.
+The event loop has been created in a different process, library or module instance\&.
 .RE
 .PP
 Other errors are possible, too\&.
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_event_prepare()\fR,
+\fBsd_event_wait()\fR,
+\fBsd_event_dispatch()\fR, and
+\fBsd_event_get_state()\fR
+were added in version 221\&.
+.PP
+\fBsd_event_get_iteration()\fR
+was added in version 231\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsd_event_new\fR(3),
-\fBsd_event_add_io\fR(3),
-\fBsd_event_add_time\fR(3),
-\fBsd_event_add_signal\fR(3),
-\fBsd_event_add_child\fR(3),
-\fBsd_event_add_inotify\fR(3),
-\fBsd_event_add_defer\fR(3),
-\fBsd_event_run\fR(3),
-\fBsd_event_get_fd\fR(3),
-\fBsd_event_source_set_prepare\fR(3)
+\fBsystemd\fR(1), \fBsd_event_new\fR(3), \fBsd_event_add_io\fR(3), \fBsd_event_add_time\fR(3), \fBsd_event_add_signal\fR(3), \fBsd_event_add_child\fR(3), \fBsd_event_add_inotify\fR(3), \fBsd_event_add_defer\fR(3), \fBsd_event_run\fR(3), \fBsd_event_get_fd\fR(3), \fBsd_event_source_set_prepare\fR(3)

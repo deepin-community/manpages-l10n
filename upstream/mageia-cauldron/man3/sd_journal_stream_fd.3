@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_JOURNAL_STREAM_FD" "3" "" "systemd 249" "sd_journal_stream_fd"
+.TH "SD_JOURNAL_STREAM_FD" "3" "" "systemd 255" "sd_journal_stream_fd"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -73,7 +73,7 @@ is "async signal safe" in the meaning of
 .PP
 All functions listed here are thread\-safe and may be called in parallel from multiple threads\&.
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
 .SH "EXAMPLES"
@@ -85,9 +85,11 @@ Creating a log stream suitable for
 .RS 4
 .\}
 .nf
+/* SPDX\-License\-Identifier: MIT\-0 */
+
+#include <errno\&.h>
 #include <syslog\&.h>
 #include <stdio\&.h>
-#include <string\&.h>
 #include <unistd\&.h>
 #include <systemd/sd\-journal\&.h>
 #include <systemd/sd\-daemon\&.h>
@@ -97,7 +99,8 @@ int main(int argc, char *argv[]) {
   FILE *log;
   fd = sd_journal_stream_fd("test", LOG_INFO, 1);
   if (fd < 0) {
-    fprintf(stderr, "Failed to create stream fd: %s\en", strerror(\-fd));
+    errno = \-fd;
+    fprintf(stderr, "Failed to create stream fd: %m\en");
     return 1;
   }
   log = fdopen(fd, "w");
@@ -115,6 +118,10 @@ int main(int argc, char *argv[]) {
 .if n \{\
 .RE
 .\}
+.SH "HISTORY"
+.PP
+\fBsd_journal_stream_fd()\fR
+was added in version 187\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

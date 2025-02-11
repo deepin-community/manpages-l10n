@@ -1,5 +1,5 @@
 '\" t
-.TH "UDEV" "7" "" "systemd 249" "udev"
+.TH "UDEV" "7" "" "systemd 257" "udev"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -82,18 +82,29 @@ Add the value to a key that holds a list of entries\&.
 "\-="
 .RS 4
 Remove the value from a key that holds a list of entries\&.
+.sp
+Added in version 217\&.
 .RE
 .PP
 ":="
 .RS 4
 Assign a value to a key finally; disallow any later changes\&.
+.sp
+Added in version 247\&.
 .RE
 .SS "Values"
 .PP
 Values are written as double quoted strings, such as ("string")\&. To include a quotation mark (") in the value, precede it by a backslash (\e")\&. Any other occurrences of a backslash followed by a character are not unescaped\&. That is, "\et\en" is treated as four characters: backslash, lowercase t, backslash, lowercase n\&.
 .PP
-The string can be prefixed with a lowercase e (e"string\en") to mark the string as
-\m[blue]\fBC\-style escaped\fR\m[]\&\s-2\u[1]\d\s+2\&. For example, e"string\en" is parsed as 7 characters: 6 lowercase letters and a newline\&. This can be useful for writing special characters when a kernel driver requires them\&.
+The string can be prefixed with a lowercase e (e"string\en") to mark the string as C\-style escaped, see
+\m[blue]\fBEscape sequences in C\fR\m[]\&\s-2\u[1]\d\s+2\&. For example, e"string\en" is parsed as 7 characters: 6 lowercase letters and a newline\&. This can be useful for writing special characters when a kernel driver requires them\&.
+.PP
+The string can be prefixed with a lowercase i (i"string") to mark that the string or pattern will match case\-insensitively\&. For example, i"foo" will match
+"foo",
+"FOO",
+"FoO"
+and so on\&. The prefix can be used only for match ("==") or unmatch ("!=") rules, e\&.g\&.
+\fIATTR{foo}==i"abcd"\fR\&.
 .PP
 Please note that
 \fBNUL\fR
@@ -129,7 +140,8 @@ Match the name of a network interface\&. It can be used once the NAME key has be
 .PP
 \fISYMLINK\fR
 .RS 4
-Match the name of a symlink targeting the node\&. It can be used once a SYMLINK key has been set in one of the preceding rules\&. There may be multiple symlinks; only one needs to match\&.
+Match the name of a symlink targeting the node\&. It can be used once a SYMLINK key has been set in one of the preceding rules\&. There may be multiple symlinks; only one needs to match\&. If the operator is
+"!=", the token returns true only if there is no symlink matched\&.
 .RE
 .PP
 \fISUBSYSTEM\fR
@@ -171,6 +183,8 @@ Trailing whitespace in the attribute values is ignored unless the specified matc
 \fISYSCTL{\fR\fI\fIkernel parameter\fR\fR\fI}\fR
 .RS 4
 Match a kernel parameter value\&.
+.sp
+Added in version 240\&.
 .RE
 .PP
 \fIENV{\fR\fI\fIkey\fR\fR\fI}\fR
@@ -189,6 +203,8 @@ System\*(Aqs architecture\&. See
 in
 \fBsystemd.unit\fR(5)
 for possible values\&.
+.sp
+Added in version 244\&.
 .RE
 .PP
 "virt"
@@ -196,19 +212,34 @@ for possible values\&.
 System\*(Aqs virtualization environment\&. See
 \fBsystemd-detect-virt\fR(1)
 for possible values\&.
+.sp
+Added in version 244\&.
+.RE
+.PP
+"cvm"
+.RS 4
+System\*(Aqs confidential virtualization technology\&. See
+\fBsystemd-detect-virt\fR(1)
+for possible values\&.
+.sp
+Added in version 254\&.
 .RE
 .sp
 Unknown keys will never match\&.
+.sp
+Added in version 244\&.
 .RE
 .PP
 \fITAG\fR
 .RS 4
-Match against a device tag\&.
+Match against one of device tags\&. It can be used once a TAG key has been set in one of the preceding rules\&. There may be multiple tags; only one needs to match\&. If the operator is
+"!=", the token returns true only if there is no tag matched\&.
 .RE
 .PP
 \fITAGS\fR
 .RS 4
-Search the devpath upwards for a device with matching tag\&.
+Search the devpath upwards for a device with matching tag\&. If the operator is
+"!=", the token returns true only if there is no tag matched\&.
 .RE
 .PP
 \fITEST{\fR\fI\fIoctal mode mask\fR\fR\fI}\fR
@@ -281,6 +312,8 @@ would match either
 "abc"
 or
 "x*"\&.
+.sp
+Added in version 217\&.
 .RE
 .PP
 The following keys can get values assigned:
@@ -316,6 +349,8 @@ The permissions for the device node\&. Every specified value overrides the compi
 \fISECLABEL{\fR\fI\fImodule\fR\fR\fI}\fR
 .RS 4
 Applies the specified Linux Security Module label to the device node\&.
+.sp
+Added in version 209\&.
 .RE
 .PP
 \fIATTR{\fR\fI\fIkey\fR\fR\fI}\fR
@@ -326,6 +361,8 @@ The value that should be written to a sysfs attribute of the event device\&.
 \fISYSCTL{\fR\fI\fIkernel parameter\fR\fR\fI}\fR
 .RS 4
 The value that should be written to kernel parameter\&.
+.sp
+Added in version 220\&.
 .RE
 .PP
 \fIENV{\fR\fI\fIkey\fR\fR\fI}\fR
@@ -375,6 +412,8 @@ is specified\&.
 .RS 4
 As
 \fIprogram\fR, but use one of the built\-in programs rather than an external one\&.
+.sp
+Added in version 199\&.
 .RE
 .sp
 The program name and following arguments are separated by spaces\&. Single quotes can be used to specify arguments with spaces\&.
@@ -414,12 +453,16 @@ Import a set of variables as device properties, depending on
 .RS 4
 Execute an external program specified as the assigned value and, if it returns successfully, import its output, which must be in environment key format\&. Path specification, command/argument separation, and quoting work like in
 \fIRUN\fR\&.
+.sp
+Added in version 199\&.
 .RE
 .PP
 "builtin"
 .RS 4
 Similar to
 "program", but use one of the built\-in programs rather than an external one\&.
+.sp
+Added in version 199\&.
 .RE
 .PP
 "file"
@@ -504,7 +547,9 @@ Disable the watching of a device node with inotify\&.
 .RS 4
 Set the flag (sticky bit) on the udev database entry of the event device\&. Device properties are then kept in the database even when
 \fBudevadm info \-\-cleanup\-db\fR
-is called\&. This option can be useful in certain cases (e\&.g\&. Device Mapper devices) for persisting device state on the transition from initramfs\&.
+is called\&. This option can be useful in certain cases (e\&.g\&. Device Mapper devices) for persisting device state on the transition from initrd\&.
+.sp
+Added in version 241\&.
 .RE
 .PP
 \fBlog_level=\fR\fB\fIlevel\fR\fR
@@ -521,7 +566,7 @@ is set, then the previously specified log level is revoked\&. Defaults to the lo
 This may be useful when debugging events for certain devices\&. Note that the log level is applied when the line including this rule is processed\&. So, for debugging, it is recommended that this is specified at earlier place, e\&.g\&., the first line of
 00\-debug\&.rules\&.
 .sp
-Example for debugging uevent processing for network interfaces\&.
+Example for debugging uevent processing for network interfaces:
 .sp
 .if n \{\
 .RS 4
@@ -533,18 +578,21 @@ SUBSYSTEM=="net", OPTIONS="log_level=debug"
 .if n \{\
 .RE
 .\}
+.sp
+Added in version 248\&.
 .RE
 .RE
 .PP
 The
-\fINAME\fR,
-\fISYMLINK\fR,
-\fIPROGRAM\fR,
-\fIOWNER\fR,
+\fIENV\fR,
 \fIGROUP\fR,
 \fIMODE\fR,
+\fINAME\fR,
+\fIOWNER\fR,
+\fIPROGRAM\fR,
+\fIRUN\fR,
 \fISECLABEL\fR, and
-\fIRUN\fR
+\fISYMLINK\fR
 fields support simple string substitutions\&. The
 \fIRUN\fR
 substitutions are performed after all rules have been processed, right before the program is executed, allowing for the use of device properties set by earlier matching rules\&. For all other fields, substitutions are performed while the individual rule is being processed\&. The available substitutions are:
@@ -666,12 +714,10 @@ character itself\&.
 .RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd-udevd.service\fR(8),
-\fBudevadm\fR(8),
-\fBsystemd.link\fR(5)
+\fBsystemd-udevd.service\fR(8), \fBudevadm\fR(8), \fBsystemd.link\fR(5)
 .SH "NOTES"
 .IP " 1." 4
-C-style escaped
+Escape sequences in C
 .RS 4
 \%https://en.wikipedia.org/wiki/Escape_sequences_in_C#Table_of_escape_sequences
 .RE

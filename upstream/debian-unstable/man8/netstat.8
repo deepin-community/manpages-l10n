@@ -198,6 +198,8 @@ Display additional information.  Use this option twice for maximum detail.
 Include information related to networking timers.
 .SS "\-p, \-\-program"
 Show the PID and name of the program to which each socket belongs.
+A hyphen is shown if the socket belongs to the kernel (e.g. a kernel service,
+or the process has exited but the socket hasn't finished closing yet).
 .SS "\-l, \-\-listening"
 Show only listening sockets.  (These are omitted by default.)
 .SS "\-a, \-\-all"
@@ -300,7 +302,38 @@ causes this column to be included.  You will also need
 privileges to see this information on sockets you don't own.  This
 identification information is not yet available for IPX sockets.
 .SS "Timer"
-(this needs to be written)
+TCP timer associated with this socket. The format is timer(a/b/c).
+The timer is one of the following values:
+.TP
+.I
+off
+There is no timer set for this socket.
+.TP
+.I
+on
+The retransmission timer is active for the socket.
+.TP
+.I
+keepalive
+The keepalive timer is active for the socket.
+.TP
+.I
+timewait
+The connection is closing and the timewait timer is active for the socket.
+.P
+The values in the brackets:
+.TP
+.I
+a
+Timer value.
+.TP
+.I
+b
+Number of retransmissions sent.
+.TP
+.I
+c
+Number of keepalives sent.
 .P
 .SS Active UNIX domain Sockets
 .SS "Proto" 
@@ -467,11 +500,11 @@ status information via the following files.
 .fi
 .P
 .SH SEE ALSO
-.BR route (8), 
-.BR ifconfig (8), 
+.BR route (8),
+.BR ifconfig (8),
 .BR iptables (8),
-.BR proc (5)
-.BR ss (8)
+.BR proc (5),
+.BR ss (8),
 .BR ip (8)
 .P
 .SH BUGS

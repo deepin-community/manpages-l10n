@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_HWDB_GET" "3" "" "systemd 249" "sd_hwdb_get"
+.TH "SD_HWDB_GET" "3" "" "systemd 255" "sd_hwdb_get"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -97,6 +97,8 @@ Returned errors may indicate the following problems:
 .RS 4
 A parameter is
 \fBNULL\fR\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOENT\fR
@@ -104,6 +106,8 @@ A parameter is
 An entry for the specified
 \fImodalias\fR
 was not found\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-EAGAIN\fR
@@ -111,12 +115,21 @@ was not found\&.
 \fBsd_hwdb_seek()\fR
 was not called before
 \fBsd_hwdb_enumerate()\fR\&.
+.sp
+Added in version 246\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
 .SH "EXAMPLES"
 .PP
 \fBExample\ \&1.\ \&Look up hwdb entries for a USB device\fR
@@ -125,12 +138,14 @@ file\&.
 .RS 4
 .\}
 .nf
+/* SPDX\-License\-Identifier: MIT\-0 */
+
 #include <stdio\&.h>
 #include <stdint\&.h>
-#include <sd\-hwdb\&.h>
+#include <systemd/sd\-hwdb\&.h>
 
 int print_usb_properties(uint16_t vid, uint16_t pid) {
-  char match[15];
+  char match[128];
   sd_hwdb *hwdb;
   const char *key, *value;
   int r;
@@ -160,6 +175,13 @@ int main(int argc, char **argv) {
 .PP
 The effect is similar to calling
 \fBsystemd\-hwdb query usb:v046DpC534\fR\&.
+.SH "HISTORY"
+.PP
+\fBsd_hwdb_get()\fR,
+\fBsd_hwdb_seek()\fR,
+\fBsd_hwdb_enumerate()\fR, and
+\fBSD_HWDB_FOREACH_PROPERTY()\fR
+were added in version 246\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

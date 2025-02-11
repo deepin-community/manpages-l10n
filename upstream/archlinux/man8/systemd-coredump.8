@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-COREDUMP" "8" "" "systemd 249" "systemd-coredump"
+.TH "SYSTEMD\-COREDUMP" "8" "" "systemd 257" "systemd-coredump"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -54,6 +54,9 @@ will log the core dump to the journal, including a backtrace if possible, and st
 /var/lib/systemd/coredump\&. These core dumps are deleted after a few days by default; see
 /usr/lib/tmpfiles\&.d/systemd\&.conf
 for details\&. Note that the removal of core files from the file system and the purging of journal entries are independent, and the core file may be present without the journal entry, and journal entries may point to since\-removed core files\&. Some metadata is attached to core files in the form of extended attributes, so the core files are useful for some purposes even without the full metadata available in the journal entry\&.
+.PP
+For further details see
+\m[blue]\fBsystemd Coredump Handling\fR\m[]\&\s-2\u[1]\d\s+2\&.
 .SS "Invocation of systemd\-coredump"
 .PP
 The
@@ -81,7 +84,7 @@ with
 option\&. In this case,
 \fBsystemd\-coredump\fR
 expects a journal entry in the journal
-\m[blue]\fBJournal Export Format\fR\m[]\&\s-2\u[1]\d\s+2
+\m[blue]\fBJournal Export Format\fR\m[]\&\s-2\u[2]\d\s+2
 on standard input\&. The entry should contain a
 \fIMESSAGE=\fR
 field and any additional metadata fields the caller deems reasonable\&.
@@ -117,7 +120,7 @@ mode, an appropriate backtrace handler must be installed on the sender side\&. F
 \fBpython\fR(1), this means a
 \fIsys\&.excepthook\fR
 must be installed, see
-\m[blue]\fBsystemd\-coredump\-python\fR\m[]\&\s-2\u[2]\d\s+2\&.
+\m[blue]\fBsystemd\-coredump\-python\fR\m[]\&\s-2\u[3]\d\s+2\&.
 .PP
 The behavior of
 \fBsystemd\-coredump\fR
@@ -143,7 +146,8 @@ To disable potentially resource\-intensive processing by
 .RS 4
 .\}
 .nf
-Storage=none ProcessSizeMax=0
+Storage=none
+ProcessSizeMax=0
 .fi
 .if n \{\
 .RE
@@ -183,7 +187,6 @@ COREDUMP_CMDLINE=/usr/lib64/firefox/firefox \-contentproc \-childID 5 \-isForBro
 COREDUMP_CGROUP=/user\&.slice/user\-1000\&.slice/user@1000\&.service/app\&.slice/app\-\&...\&.scope
 COREDUMP_FILENAME=/var/lib/systemd/coredump/core\&.Web\&...\&.552351\&.\&...\&.zst
 \&...
-    
 .fi
 .if n \{\
 .RE
@@ -199,17 +202,23 @@ When the crashed process was part of a container (or in a process or user namesp
 \fIoutside\fR, in the namespace where
 systemd\-coredump
 is running\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP_TIMESTAMP=\fR
 .RS 4
-The time of the crash as reported by the kernel (in \(mcs since the epoch)\&.
+The time of the crash as reported by the kernel (in μs since the epoch)\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP_RLIMIT=\fR
 .RS 4
 The core file size soft resource limit, see
 \fBgetrlimit\fR(2)\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP_UNIT=\fR, \fICOREDUMP_SLICE=\fR
@@ -218,23 +227,38 @@ The system unit and slice names\&.
 .sp
 When the crashed process was in container, those are the units names
 \fIoutside\fR, in the main system manager\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP_CGROUP=\fR
+.RS 4
+The primary cgroup of the unit of the crashed process\&.
+.sp
+When the crashed process was in a container, this is the full path, as seen outside of the container\&.
+.sp
+Added in version 248\&.
+.RE
+.PP
+\fICOREDUMP_PROC_CGROUP=\fR
 .RS 4
 Control group information in the format used in
 /proc/self/cgroup\&. On systems with the unified cgroup hierarchy, this is a single path prefixed with
 "0::", and multiple paths prefixed with controller numbers on legacy systems\&.
 .sp
 When the crashed process was in a container, this is the full path, as seen outside of the container\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
-\fICOREDUMP_OWNER_UID=\fR, \fICOREDUMP_USER_UNIT=\fR
+\fICOREDUMP_OWNER_UID=\fR, \fICOREDUMP_USER_UNIT=\fR, \fICOREDUMP_SESSION=\fR
 .RS 4
-The numerical UID of the user owning the login session or systemd user unit of the crashed process, and the user manager unit\&. Both fields are only present for user processes\&.
+The numerical UID of the user owning the login session or systemd user unit of the crashed process, the user manager unit, and the session identifier\&. All three fields are only present for user processes\&.
 .sp
 When the crashed process was in container, those are the values
 \fIoutside\fR, in the main system\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP_SIGNAL_NAME=\fR, \fICOREDUMP_SIGNAL=\fR
@@ -242,7 +266,9 @@ When the crashed process was in container, those are the values
 The terminating signal name (with the
 "SIG"
 prefix
-\&\s-2\u[3]\d\s+2) and numerical value\&. (Both are included because signal numbers vary by architecture\&.)
+\&\s-2\u[4]\d\s+2) and numerical value\&. (Both are included because signal numbers vary by architecture\&.)
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP_CWD=\fR, \fICOREDUMP_ROOT=\fR
@@ -250,6 +276,8 @@ prefix
 The current working directory and root directory of the crashed process\&.
 .sp
 When the crashed process is in a container, those paths are relative to the root of the container\*(Aqs mount namespace\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP_OPEN_FDS=\fR
@@ -269,7 +297,6 @@ flags:   \&.\&.\&.
 pos:     \&.\&.\&.
 flags:   \&.\&.\&.
 \&.\&.\&.
-        
 .fi
 .if n \{\
 .RE
@@ -279,6 +306,8 @@ The first line contains the file descriptor number
 \fIfd\fR
 and the path, while subsequent lines show the contents of
 /proc/\fIpid\fR/fdinfo/\fIfd\fR\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP_EXE=\fR
@@ -288,31 +317,38 @@ The destination of the
 symlink\&.
 .sp
 When the crashed process is in a container, that path is relative to the root of the container\*(Aqs mount namespace\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
-\fICOREDUMP_COMM=\fR, \fICOREDUMP_PROC_STATUS=\fR, \fICOREDUMP_PROC_MAPS=\fR, \fICOREDUMP_PROC_LIMITS=\fR, \fICOREDUMP_PROC_MOUNTINFO=\fR, \fICOREDUMP_ENVIRON=\fR
+\fICOREDUMP_CMDLINE=\fR, \fICOREDUMP_COMM=\fR, \fICOREDUMP_ENVIRON=\fR, \fICOREDUMP_PROC_AUXV=\fR, \fICOREDUMP_PROC_LIMITS=\fR, \fICOREDUMP_PROC_MAPS=\fR, \fICOREDUMP_PROC_MOUNTINFO=\fR, \fICOREDUMP_PROC_STATUS=\fR
 .RS 4
 Fields that map the per\-process entries in the
 /proc/
 filesystem:
+/proc/\fIpid\fR/cmdline
+(the command line of the crashed process),
 /proc/\fIpid\fR/comm
 (the command name associated with the process),
-/proc/\fIpid\fR/exe
-(the filename of the executed command),
-/proc/\fIpid\fR/status
-(various metadata about the process),
-/proc/\fIpid\fR/maps
-(memory regions visible to the process and their access permissions),
+/proc/\fIpid\fR/environ
+(the environment block of the crashed process),
+/proc/\fIpid\fR/auxv
+(the auxiliary vector of the crashed process, see
+\fBgetauxval\fR(3)),
 /proc/\fIpid\fR/limits
 (the soft and hard resource limits),
+/proc/\fIpid\fR/maps
+(memory regions visible to the process and their access permissions),
 /proc/\fIpid\fR/mountinfo
 (mount points in the process\*(Aqs mount namespace),
-/proc/\fIpid\fR/environ
-(the environment block of the crashed process)\&.
+/proc/\fIpid\fR/status
+(various metadata about the process)\&.
 .sp
 See
 \fBproc\fR(5)
 for more information\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP_HOSTNAME=\fR
@@ -320,21 +356,29 @@ for more information\&.
 The system hostname\&.
 .sp
 When the crashed process was in container, this is the container hostname\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP_CONTAINER_CMDLINE=\fR
 .RS 4
-For processes running in a container, the commandline of the process spawning the container (the first parent process with a different mount namespace)\&.
+For processes running in a container, the command line of the process spawning the container (the first parent process with a different mount namespace)\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP=\fR
 .RS 4
 When the core is stored in the journal, the core image itself\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP_FILENAME=\fR
 .RS 4
 When the core is stored externally, the path to the core file\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP_TRUNCATED=\fR
@@ -342,6 +386,8 @@ When the core is stored externally, the path to the core file\&.
 Set to
 "1"
 when the saved coredump was truncated\&. (A partial core image may still be processed by some tools, though obviously not all information is available\&.)
+.sp
+Added in version 248\&.
 .RE
 .PP
 \fICOREDUMP_PACKAGE_NAME=\fR, \fICOREDUMP_PACKAGE_VERSION=\fR, \fICOREDUMP_PACKAGE_JSON=\fR
@@ -351,7 +397,9 @@ If the executable contained \&.package metadata ELF notes, they will be parsed a
 and
 \fIpackageVersion\fR
 of the \*(Aqmain\*(Aq ELF module (ie: the executable) will be appended individually\&. The JSON\-formatted content of all modules will be appended as a single JSON object, each with the module name as the key\&. For more information about this metadata format and content, see
-\m[blue]\fBthe coredump metadata spec\fR\m[]\&\s-2\u[4]\d\s+2\&.
+\m[blue]\fBthe coredump metadata spec\fR\m[]\&\s-2\u[5]\d\s+2\&.
+.sp
+Added in version 249\&.
 .RE
 .PP
 \fIMESSAGE=\fR
@@ -362,6 +410,8 @@ that includes the backtrace if it was successfully generated\&. When
 \fBsystemd\-coredump\fR
 is invoked with
 \fB\-\-backtrace\fR, this field is provided by the caller\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 Various other fields exist in the journal entry, but pertain to the logging process, i\&.e\&.
@@ -384,6 +434,8 @@ Those are the same as
 \fICOREDUMP_HOSTNAME=\fR,
 \fICOREDUMP_COMM=\fR, and
 \fICOREDUMP_EXE=\fR, described above\&.
+.sp
+Added in version 248\&.
 .RE
 .PP
 Those can be viewed using
@@ -410,32 +462,31 @@ user\&.coredump\&.exe="/usr/lib64/firefox/firefox"
 .sp
 .SH "SEE ALSO"
 .PP
-\fBcoredump.conf\fR(5),
-\fBcoredumpctl\fR(1),
-\fBsystemd-journald.service\fR(8),
-\fBsystemd-tmpfiles\fR(8),
-\fBcore\fR(5),
-\fBsysctl.d\fR(5),
-\fBsystemd-sysctl.service\fR(8)\&.
+\fBcoredump.conf\fR(5), \fBcoredumpctl\fR(1), \fBsystemd-journald.service\fR(8), \fBsystemd-tmpfiles\fR(8), \fBcore\fR(5), \fBsysctl.d\fR(5), \fBsystemd-sysctl.service\fR(8), \m[blue]\fBsystemd Coredump Handling\fR\m[]\&\s-2\u[1]\d\s+2
 .SH "NOTES"
 .IP " 1." 4
-Journal Export Format
+systemd Coredump Handling
 .RS 4
-\%https://www.freedesktop.org/wiki/Software/systemd/export
+\%https://systemd.io/COREDUMP
 .RE
 .IP " 2." 4
+Journal Export Format
+.RS 4
+\%https://systemd.io/JOURNAL_EXPORT_FORMATS#journal-export-format
+.RE
+.IP " 3." 4
 systemd-coredump-python
 .RS 4
 \%https://github.com/systemd/systemd-coredump-python
 .RE
-.IP " 3." 4
+.IP " 4." 4
 \fBkill\fR(1)
 expects signal names
 \fIwithout\fR
 the prefix;
 \fBkill\fR(2)
 uses the prefix; all systemd tools accept signal names both with and without the prefix.
-.IP " 4." 4
+.IP " 5." 4
 the coredump metadata spec
 .RS 4
 \%https://systemd.io/COREDUMP_PACKAGE_METADATA/

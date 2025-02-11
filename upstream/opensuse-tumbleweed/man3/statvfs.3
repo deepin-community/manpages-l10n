@@ -1,39 +1,23 @@
+'\" t
 .\" Copyright (C) 2003 Andries Brouwer (aeb@cwi.nl)
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" The pathconf note is from Walter Harms
 .\" This is not a system call on Linux
 .\"
 .\" Modified 2004-06-23 by Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.TH STATVFS 3 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH statvfs 3 2024-05-02 "Linux man-pages (unreleased)"
 .SH NAME
 statvfs, fstatvfs \- get filesystem statistics
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/statvfs.h>
-.PP
+.P
 .BI "int statvfs(const char *restrict " path \
 ", struct statvfs *restrict " buf );
 .BI "int fstatvfs(int " fd ", struct statvfs *" buf );
@@ -48,7 +32,7 @@ is the pathname of any file within the mounted filesystem.
 is a pointer to a
 .I statvfs
 structure defined approximately as follows:
-.PP
+.P
 .in +4n
 .EX
 struct statvfs {
@@ -68,7 +52,7 @@ struct statvfs {
 };
 .EE
 .in
-.PP
+.P
 Here the types
 .I fsblkcnt_t
 and
@@ -77,7 +61,7 @@ are defined in
 .IR <sys/types.h> .
 Both used to be
 .IR "unsigned long" .
-.PP
+.P
 The field
 .I f_flag
 is a bit mask indicating various options that were employed
@@ -120,10 +104,10 @@ Writes are synched to the filesystem immediately (see the description of
 .B O_SYNC
 in
 .BR open (2)).
-.PP
+.P
 It is unspecified whether all members of the returned struct
 have meaningful values on all filesystems.
-.PP
+.P
 .BR fstatvfs ()
 returns the same information about an open file referenced by descriptor
 .IR fd .
@@ -192,24 +176,19 @@ Some values were too large to be represented in the returned struct.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR statvfs (),
 .BR fstatvfs ()
 T}	Thread safety	MT-Safe
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008.
-.PP
+.SH VERSIONS
 Only the
 .B ST_NOSUID
 and
@@ -225,25 +204,9 @@ The Linux kernel has system calls
 and
 .BR fstatfs (2)
 to support this library call.
-.PP
-In glibc versions before 2.13,
-.\" glibc commit 3cdaa6adb113a088fdfb87aa6d7747557eccc58d
-.BR statvfs ()
-populated the bits of the
-.IR f_flag
-field by scanning the mount options shown in
-.IR /proc/mounts .
-However, starting with Linux 2.6.36, the underlying
-.BR statfs (2)
-system call provides the necessary information via the
-.IR f_flags
-field, and since glibc version 2.13, the
-.BR statvfs ()
-function will use information from that field rather than scanning
-.IR /proc/mounts .
-.PP
+.P
 The glibc implementations of
-.PP
+.P
 .in +4n
 .EX
 pathconf(path, _PC_REC_XFER_ALIGN);
@@ -251,7 +214,7 @@ pathconf(path, _PC_ALLOC_SIZE_MIN);
 pathconf(path, _PC_REC_MIN_XFER_SIZE);
 .EE
 .in
-.PP
+.P
 respectively use the
 .IR f_frsize ,
 .IR f_frsize ,
@@ -261,5 +224,33 @@ fields returned by a call to
 .BR statvfs ()
 with the argument
 .IR path .
+.P
+Under Linux,
+.I f_favail
+is always the same as
+.IR f_ffree ,
+and there's no way for a filesystem to report otherwise.
+This is not an issue,
+since no filesystems with an inode root reservation exist.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001.
+.P
+Before glibc 2.13,
+.\" glibc commit 3cdaa6adb113a088fdfb87aa6d7747557eccc58d
+.BR statvfs ()
+populated the bits of the
+.I f_flag
+field by scanning the mount options shown in
+.IR /proc/mounts .
+However, starting with Linux 2.6.36, the underlying
+.BR statfs (2)
+system call provides the necessary information via the
+.I f_flags
+field, and since glibc 2.13, the
+.BR statvfs ()
+function will use information from that field rather than scanning
+.IR /proc/mounts .
 .SH SEE ALSO
 .BR statfs (2)

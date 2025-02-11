@@ -1,33 +1,17 @@
 .\" Copyright (c) 2018, Red Hat, Inc.  All rights reserved.
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
-.\"
-.\" The GNU General Public License's references to "object code"
-.\" and "executables" are to be interpreted as the output of any
-.\" document formatting or typesetting system, including
-.\" intermediate and printed output.
-.\"
-.\" This manual is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
-.TH IOCTL_FSLABEL 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.\" SPDX-License-Identifier: GPL-2.0-or-later
+.TH ioctl_fslabel 2 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 ioctl_fslabel \- get or set a filesystem label
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .BR "#include <linux/fs.h>" "       /* Definition of " *FSLABEL* " constants */"
 .B #include <sys/ioctl.h>
-.PP
+.P
 .BI "int ioctl(int " fd ", FS_IOC_GETFSLABEL, char " label [FSLABEL_MAX]);
 .BI "int ioctl(int " fd ", FS_IOC_SETFSLABEL, char " label [FSLABEL_MAX]);
 .fi
@@ -62,21 +46,20 @@ This can appear if the filesystem does not support online label manipulation.
 .TP
 .B EPERM
 The calling process does not have sufficient permissions to set the label.
-.SH VERSIONS
-These
-.BR ioctl (2)
-operations first appeared in Linux 4.18.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 4.18.
+.P
 They were previously known as
 .B BTRFS_IOC_GET_FSLABEL
 and
 .B BTRFS_IOC_SET_FSLABEL
 and were private to Btrfs.
-.SH CONFORMING TO
-This API is Linux-specific.
 .SH NOTES
 The maximum string length for this interface is
 .BR FSLABEL_MAX ,
-including the terminating null byte (\(aq\\0\(aq).
+including the terminating null byte (\[aq]\\0\[aq]).
 Filesystems have differing maximum label lengths, which may or
 may not include the terminating null.
 The string provided to
@@ -87,12 +70,3 @@ will always be null-terminated.
 .SH SEE ALSO
 .BR ioctl (2),
 .BR blkid (8)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_HWDB_NEW" "3" "" "systemd 249" "sd_hwdb_new"
+.TH "SD_HWDB_NEW" "3" "" "systemd 257" "sd_hwdb_new"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -20,7 +20,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-sd_hwdb_new, sd_hwdb_ref, sd_hwdb_unref \- Create a new hwdb object and create or destroy references to it
+sd_hwdb_new, sd_hwdb_new_from_path, sd_hwdb_ref, sd_hwdb_unref \- Create a new hwdb object and create or destroy references to it
 .SH "SYNOPSIS"
 .sp
 .ft B
@@ -30,6 +30,8 @@ sd_hwdb_new, sd_hwdb_ref, sd_hwdb_unref \- Create a new hwdb object and create o
 .ft
 .HP \w'int\ sd_hwdb_new('u
 .BI "int sd_hwdb_new(sd_hwdb\ **" "hwdb" ");"
+.HP \w'int\ sd_hwdb_new_from_path('u
+.BI "int sd_hwdb_new_from_path(const\ char\ *" "path" ", sd_hwdb\ **" "hwdb" ");"
 .HP \w'sd_hwdb*\ sd_hwdb_ref('u
 .BI "sd_hwdb* sd_hwdb_ref(sd_hwdb\ *" "hwdb" ");"
 .HP \w'sd_hwdb*\ sd_hwdb_unref('u
@@ -39,6 +41,9 @@ sd_hwdb_new, sd_hwdb_ref, sd_hwdb_unref \- Create a new hwdb object and create o
 \fBsd_hwdb_new()\fR
 creates a new hwdb object to access the binary hwdb database\&. Upon initialization, the file containing the binary representation of the hardware database is located and opened\&. The new object is returned in
 \fIhwdb\fR\&.
+.PP
+\fBsd_hwdb_new_from_path()\fR
+may be used to specify the path from which the binary hardware database should be opened\&.
 .PP
 The
 \fIhwdb\fR
@@ -61,7 +66,9 @@ to access entries\&.
 .PP
 On success,
 \fBsd_hwdb_new()\fR
-returns a non\-negative integer\&. On failure, it returns a negative errno\-style error code\&.
+and
+\fBsd_hwdb_new_from_path()\fR
+return a non\-negative integer\&. On failure, a negative errno\-style error code is returned\&.
 .PP
 \fBsd_hwdb_ref()\fR
 always returns the argument\&.
@@ -78,25 +85,44 @@ Returned errors may indicate the following problems:
 The binary hardware database file could not be located\&. See
 \fBsystemd-hwdb\fR(8)
 for more information\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-EINVAL\fR
 .RS 4
 The located binary hardware database file is in an incompatible format\&.
+.sp
+Added in version 246\&.
 .RE
 .PP
 \fB\-ENOMEM\fR
 .RS 4
 Memory allocation failed\&.
+.sp
+Added in version 246\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_hwdb_new()\fR,
+\fBsd_hwdb_ref()\fR, and
+\fBsd_hwdb_unref()\fR
+were added in version 246\&.
+.PP
+\fBsd_hwdb_new_from_path()\fR
+was added in version 252\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemd-udevd.service\fR(8),
-\fBsd-hwdb\fR(3),
-\fBsystemd-hwdb\fR(3)
+\fBsystemd\fR(1), \fBsystemd-udevd.service\fR(8), \fBsd-hwdb\fR(3), \fBsystemd-hwdb\fR(8)

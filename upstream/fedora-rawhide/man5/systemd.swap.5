@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\&.SWAP" "5" "" "systemd 249" "systemd.swap"
+.TH "SYSTEMD\&.SWAP" "5" "" "systemd 257.1" "systemd.swap"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -122,6 +122,8 @@ With
 swap\&.target\&. This means that it will not be activated automatically during boot, unless it is pulled in by some other unit\&. The
 \fBauto\fR
 option has the opposite meaning and is the default\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fBnofail\fR
@@ -129,6 +131,8 @@ option has the opposite meaning and is the default\&.
 With
 \fBnofail\fR, the swap unit will be only wanted, not required by
 swap\&.target\&. This means that the boot will continue even if this swap device is not activated successfully\&.
+.sp
+Added in version 218\&.
 .RE
 .PP
 \fBx\-systemd\&.device\-timeout=\fR
@@ -144,6 +148,8 @@ Note that this option can only be used in
 /etc/fstab, and will be ignored when part of the
 \fIOptions=\fR
 setting in a unit file\&.
+.sp
+Added in version 215\&.
 .RE
 .PP
 \fBx\-systemd\&.makefs\fR
@@ -161,17 +167,23 @@ and the discussion of
 \fBwipefs\fR(8)
 in
 \fBsystemd.mount\fR(5)\&.
+.sp
+Added in version 240\&.
 .RE
 .SH "OPTIONS"
 .PP
+Swap unit files may include [Unit] and [Install] sections, which are described in
+\fBsystemd.unit\fR(5)\&.
+.PP
 Swap unit files must include a [Swap] section, which carries information about the swap device it supervises\&. A number of options that may be used in this section are shared with other unit types\&. These options are documented in
-\fBsystemd.exec\fR(5)
+\fBsystemd.exec\fR(5),
+\fBsystemd.kill\fR(5)
 and
-\fBsystemd.kill\fR(5)\&. The options specific to the [Swap] section of swap units are the following:
+\fBsystemd.resource-control\fR(5)\&. The options specific to the [Swap] section of swap units are the following:
 .PP
 \fIWhat=\fR
 .RS 4
-Takes an absolute path of a device node or file to use for paging\&. See
+Takes an absolute path or a fstab\-style identifier of a device node or file to use for paging\&. See
 \fBswapon\fR(8)
 for details\&. If this refers to a device node, a dependency on the respective device unit is automatically created\&. (See
 \fBsystemd.device\fR(5)
@@ -196,6 +208,8 @@ May contain an option string for the swap device\&. This may be used for control
 \fBswapon\fR(8)
 for more information\&.) Note that the usual specifier expansion is applied to this setting, literal percent characters should hence be written as
 "%%"\&.
+.sp
+Added in version 217\&.
 .RE
 .PP
 \fITimeoutSec=\fR
@@ -214,21 +228,10 @@ from the manager configuration file (see
 .RE
 .PP
 Check
-\fBsystemd.exec\fR(5)
-and
+\fBsystemd.unit\fR(5),
+\fBsystemd.exec\fR(5), and
 \fBsystemd.kill\fR(5)
 for more settings\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemctl\fR(1),
-\fBsystemd-system.conf\fR(5),
-\fBsystemd.unit\fR(5),
-\fBsystemd.exec\fR(5),
-\fBsystemd.kill\fR(5),
-\fBsystemd.resource-control\fR(5),
-\fBsystemd.device\fR(5),
-\fBsystemd.mount\fR(5),
-\fBswapon\fR(8),
-\fBsystemd-fstab-generator\fR(8),
-\fBsystemd.directives\fR(7)
+\fBsystemd\fR(1), \fBsystemctl\fR(1), \fBsystemd-system.conf\fR(5), \fBsystemd.unit\fR(5), \fBsystemd.exec\fR(5), \fBsystemd.kill\fR(5), \fBsystemd.resource-control\fR(5), \fBsystemd.device\fR(5), \fBsystemd.mount\fR(5), \fBswapon\fR(8), \fBsystemd-fstab-generator\fR(8), \fBsystemd.directives\fR(7)

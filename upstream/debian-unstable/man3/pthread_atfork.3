@@ -1,53 +1,108 @@
-.TH PTHREAD_ATFORK 3 LinuxThreads
-
+.\" Copyright (C) 2017 Michael Kerrisk <mtk.manpages@gmail.com>
+.\"
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+.\"
+.TH pthread_atfork 3 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
-pthread_atfork \- register handlers to be called at fork(2) time
-
+pthread_atfork \- register fork handlers
+.SH LIBRARY
+POSIX threads library
+.RI ( libpthread ", " \-lpthread )
 .SH SYNOPSIS
-.B #include <pthread.h>
-
-.BI "int pthread_atfork(void (*" prepare ")(void), void (*" parent ")(void), void (*" child ")(void));"
-
+.nf
+.B  #include <pthread.h>
+.P
+.BI "int pthread_atfork(void (*" prepare ")(void), void (*" parent ")(void),"
+.BI "                   void (*" child ")(void));"
+.fi
 .SH DESCRIPTION
-
-\fBpthread_atfork\fP registers handler functions to be called just before
-and just after a new process is created with \fBfork\fP(2). The \fIprepare\fP
-handler will be called from the parent process, just before the new
-process is created. The \fIparent\fP handler will be called from the parent
-process, just before \fBfork\fP(2) returns. The \fIchild\fP handler will be
-called from the child process, just before \fBfork\fP(2) returns.
-
-One or several of the three handlers \fIprepare\fP, \fIparent\fP and \fIchild\fP
-can be given as \fBNULL\fP, meaning that no handler needs to be called at
-the corresponding point.
-
-\fBpthread_atfork\fP can be called several times to install several sets
-of handlers. At \fBfork\fP(2) time, the \fIprepare\fP handlers are called in
-LIFO order (last added with \fBpthread_atfork\fP, first called before \fBfork\fP),
-while the \fIparent\fP and \fIchild\fP handlers are called in FIFO order
-(first added, first called).
-
-To understand the purpose of \fBpthread_atfork\fP, recall that \fBfork\fP(2)
-duplicates the whole memory space, including mutexes in their current
-locking state, but only the calling thread: other threads are not
-running in the child process.  The mutexes are not usable after the
-\fBfork\fP and must be initialized with \fIpthread_mutex_init\fP in the child
-process.  This is a limitation of the current implementation and might
-or might not be present in future versions.
-
-.SH "RETURN VALUE"
-
-\fBpthread_atfork\fP returns 0 on success and a non-zero error code on error.
-
+The
+.BR pthread_atfork ()
+function registers fork handlers that are to be executed when
+.BR fork (2)
+is called by any thread in a process.
+The handlers are executed in the context of the thread that calls
+.BR fork (2).
+.P
+Three kinds of handler can be registered:
+.IP \[bu] 3
+.I prepare
+specifies a handler that is executed in the parent process before
+.BR fork (2)
+processing starts.
+.IP \[bu]
+.I parent
+specifies a handler that is executed in the parent process after
+.BR fork (2)
+processing completes.
+.IP \[bu]
+.I child
+specifies a handler that is executed in the child process after
+.BR fork (2)
+processing completes.
+.P
+Any of the three arguments may be NULL if no handler is needed
+in the corresponding phase of
+.BR fork (2)
+processing.
+.SH RETURN VALUE
+On success,
+.BR pthread_atfork ()
+returns zero.
+On error, it returns an error number.
+.BR pthread_atfork ()
+may be called multiple times by a process
+to register additional handlers.
+The handlers for each phase are called in a specified order: the
+.I prepare
+handlers are called in reverse order of registration; the
+.I parent
+and
+.I child
+handlers are called in the order of registration.
 .SH ERRORS
 .TP
-\fBENOMEM\fP
-insufficient memory available to register the handlers.
-
-.SH AUTHOR
-Xavier Leroy <Xavier.Leroy@inria.fr>
-
-.SH "SEE ALSO"
-\fBfork\fP(2),
-\fBpthread_mutex_lock\fP(3),
-\fBpthread_mutex_unlock\fP(3).
+.B ENOMEM
+Could not allocate memory to record the fork handler list entry.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001.
+.SH NOTES
+When
+.BR fork (2)
+is called in a multithreaded process,
+only the calling thread is duplicated in the child process.
+The original intention of
+.BR pthread_atfork ()
+was to allow the child process to be returned to a consistent state.
+For example, at the time of the call to
+.BR fork (2),
+other threads may have locked mutexes that are visible in the
+user-space memory duplicated in the child.
+Such mutexes would never be unlocked,
+since the threads that placed the locks are not duplicated in the child.
+The intent of
+.BR pthread_atfork ()
+was to provide a mechanism whereby the application (or a library)
+could ensure that mutexes and other process and thread state would be
+restored to a consistent state.
+In practice, this task is generally too difficult to be practicable.
+.P
+After a
+.BR fork (2)
+in a multithreaded process returns in the child,
+the child should call only async-signal-safe functions (see
+.BR signal\-safety (7))
+until such time as it calls
+.BR execve (2)
+to execute a new program.
+.P
+POSIX.1 specifies that
+.BR pthread_atfork ()
+shall not fail with the error
+.BR EINTR .
+.SH SEE ALSO
+.BR fork (2),
+.BR atexit (3),
+.BR pthreads (7)

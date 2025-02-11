@@ -1,5 +1,5 @@
 '\" t
-.TH "SD_BUS_MESSAGE_NEW" "3" "" "systemd 249" "sd_bus_message_new"
+.TH "SD_BUS_MESSAGE_NEW" "3" "" "systemd 255" "sd_bus_message_new"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -81,12 +81,12 @@ The flag to allow interactive authorization is initialized based on the current 
 \fBsd_bus_message_set_allow_interactive_authorization\fR(3)\&.
 .PP
 \fBsd_bus_message_ref()\fR
-increases the reference counter of
+increases the internal reference counter of
 \fIm\fR
 by one\&.
 .PP
 \fBsd_bus_message_unref()\fR
-decreases the reference counter of
+decreases the internal reference counter of
 \fIm\fR
 by one\&. Once the reference count has dropped to zero, message object is destroyed and cannot be used anymore, so further calls to
 \fBsd_bus_message_ref()\fR
@@ -161,9 +161,24 @@ Memory allocation failed\&.
 .RE
 .SH "NOTES"
 .PP
-These APIs are implemented as a shared library, which can be compiled and linked to with the
+Functions described here are available as a shared library, which can be compiled against and linked to with the
 \fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
 file\&.
+.PP
+The code described here uses
+\fBgetenv\fR(3), which is declared to be not multi\-thread\-safe\&. This means that the code calling the functions described here must not call
+\fBsetenv\fR(3)
+from a parallel thread\&. It is recommended to only do calls to
+\fBsetenv()\fR
+from an early phase of the program when no other threads have been started\&.
+.SH "HISTORY"
+.PP
+\fBsd_bus_message_new()\fR,
+\fBsd_bus_message_ref()\fR,
+\fBsd_bus_message_unref()\fR,
+\fBsd_bus_message_unrefp()\fR, and
+\fBsd_bus_message_get_bus()\fR
+were added in version 240\&.
 .SH "SEE ALSO"
 .PP
 \fBsystemd\fR(1),

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright © 2020 Dr. Helge Kreutzmann <debian@helgefjell.de>
+# Copyright © 2020,2022,2024 Dr. Helge Kreutzmann <debian@helgefjell.de>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ SSF_MAILER=/usr/bin/mutt
 SSF_BROWSER=/usr/bin/firefox
 SSF_TMP=/tmp/ssf
 TEMPLATE_FILE=$DCSBASE/upstreambug/TEMPLATE
-SSF_LANGLIST="cs da de es fr it mk nl pl pt_BR ro"
+SSF_LANGLIST=$(find ../po -maxdepth 1 -type d | grep -v scripts | grep -v "^\.$" | sed 's/..\/po\///' | grep -v ../po | sort)
 
 # Allow to customize these variables if necessary
 if [ -f $HOME/.config/reportupstreamrc ] ; then
@@ -73,7 +73,7 @@ echo "Please wait while scanning for FIXMEs …"
 cd $DCSBASE/po
 
 # Find all PO files with FIXME in them
-for pofile in $(find . -name "*.po"  -exec grep FIXME "{}" -ls ";"  | cut -d/ -f4 | LC_ALL=C sort -u); do 
+for pofile in $(find . -name "*.po"  -exec grep FIXME "{}" -ls ";"  | cut -d/ -f4 | grep -v -E "min-0..-occurences.po" | LC_ALL=C sort -u); do 
     # Now look at them for each language
     for lang in $SSF_LANGLIST; do
 	for checkfile in $(find $lang -name $pofile); do
@@ -105,7 +105,7 @@ for pofile in $(find . -name "*.po"  -exec grep FIXME "{}" -ls ";"  | cut -d/ -f
 	    echo "ERROR: $pofile not in any CONFIG file, please add and rerun the script" | logger -t $0
 	fi
 	if [ $cfcounter -gt 1 ] ; then
-	    echo "ERROR: $pofile is in serveral ($cfcounter) CONFIG files, please fix them and rerun the script" | logger -t $0
+	    echo "ERROR: $pofile is in several ($cfcounter) CONFIG files, please fix them and rerun the script" | logger -t $0
 	fi
 	if [ $cfcounter -eq 1 ] ; then
 	    echo $pofile >> $SSF_TMP/ssF.REPORT.$finalfilename
@@ -165,13 +165,17 @@ while [ $ssf_STOP -eq 0 ]; do
 	    #cat $TEMPLATE_FILE | tr -s PACKAGE $ssf_SELCTION >> $SSF_TMP/ssF.BUGTEMPLATE
 	    cat $TEMPLATE_FILE >> $SSF_TMP/ssF.BUGTEMPLATE
 	    for rf in $(cat $SSF_TMP/ssF.REPORT.CONFIG.$ssf_SELCTION|sort -u); do
-		echo $rf >> $SSF_TMP/ssF.BUGTEMPLATE
-		find $DCSBASE -name $rf -exec grep -A10 FIXME "{}" ";" >> $SSF_TMP/ssF.BUGTEMPLATE
-		echo "============== End of file ================" >> $SSF_TMP/ssF.BUGTEMPLATE
+		find $DCSBASE -name $rf -exec msggrep -C -e FIXME -E  "{}" ";" > $SSF_TMP/ssF.BUGTEMPLATE.tmp
+		if [ -s $SSF_TMP/ssF.BUGTEMPLATE.tmp ]; then
+		    echo $rf >> $SSF_TMP/ssF.BUGTEMPLATE
+		#find $DCSBASE -name $rf -exec msggrep -C -e FIXME -E  "{}" ";" >> $SSF_TMP/ssF.BUGTEMPLATE
+		    cat $SSF_TMP/ssF.BUGTEMPLATE.tmp >> $SSF_TMP/ssF.BUGTEMPLATE
+		    echo "============== End of file ================" >> $SSF_TMP/ssF.BUGTEMPLATE
+		fi
 	    done
 
 	    if [ $bugmethod == "email" ]; then
-		$SSF_MAILER -s "Errors in man pages" -i $SSF_TMP/ssF.BUGTEMPLATE $bugaddres
+		$SSF_MAILER -s "Issues in man pages of $ssf_SELCTION" -i $SSF_TMP/ssF.BUGTEMPLATE $bugaddres
 	    elif [ $bugmethod == "web" ]; then
 		$SSF_BROWSER $bugaddres
 		vim $SSF_TMP/ssF.BUGTEMPLATE
@@ -180,7 +184,15 @@ while [ $ssf_STOP -eq 0 ]; do
 		# FIXME: Not interactive, not asking for confirmation
 		# reportbug --no-debconf --no-config-files --no-query-bts --no-check-installed --no-bug-script --body-file=$SSF_TMP/ssF.BUGTEMPLATE
 		# Try this:
-		reportbug --no-debconf --no-config-files --no-query-bts --no-check-installed --no-bug-script --print --body-file=$SSF_TMP/ssF.BUGTEMPLATE
+		# reportbug --no-debconf --no-config-files --no-query-bts --no-check-installed --no-bug-script --print --body-file=$SSF_TMP/ssF.BUGTEMPLATE
+		# For now, simply create the template manually
+		echo "Package: $ssf_SELCTION" > $SSF_TMP/ssF.BUGTEMPLATEr
+		echo "Severity: minor" >> $SSF_TMP/ssF.BUGTEMPLATEr
+		echo "Tags: patch l10n" >> $SSF_TMP/ssF.BUGTEMPLATEr
+		echo "X-Debbugs-CC: mario.blaettermann@gmail.com" $SSF_TMP/ssF.BUGTEMPLATEr
+		echo "" >> $SSF_TMP/ssF.BUGTEMPLATEr
+		cat $SSF_TMP/ssF.BUGTEMPLATE >> $SSF_TMP/ssF.BUGTEMPLATEr
+		$SSF_MAILER -s "$ssf_SELCTION: Issues in man pages" -i $SSF_TMP/ssF.BUGTEMPLATEr submit@bugs.debian.org
 	    fi
 	    echo "If you reported the bugs, please answer yes to the following question."
 	    echo ""

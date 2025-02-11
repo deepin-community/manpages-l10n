@@ -1,33 +1,18 @@
 .\" Copyright (c) 2016, Oracle.  All rights reserved.
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
-.\"
-.\" The GNU General Public License's references to "object code"
-.\" and "executables" are to be interpreted as the output of any
-.\" document formatting or typesetting system, including
-.\" intermediate and printed output.
-.\"
-.\" This manual is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
-.TH IOCTL_FICLONERANGE 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.\" SPDX-License-Identifier: GPL-2.0-or-later
+.TH ioctl_ficlonerange 2 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
-ioctl_ficlonerange, ioctl_ficlone \- share some the data of one file with another file
+ioctl_ficlonerange, ioctl_ficlone \-
+share some the data of one file with another file
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .BR "#include <linux/fs.h>" "        /* Definition of " FICLONE* " constants */"
 .B #include <sys/ioctl.h>
-.PP
+.P
 .BI "int ioctl(int " dest_fd ", FICLONERANGE, struct file_clone_range *" arg );
 .BI "int ioctl(int " dest_fd ", FICLONE, int " src_fd );
 .fi
@@ -46,24 +31,24 @@ If a file write should occur to a shared region,
 the filesystem must ensure that the changes remain private to the file being
 written.
 This behavior is commonly referred to as "copy on write".
-.PP
+.P
 This ioctl reflinks up to
-.IR src_length
+.I src_length
 bytes from file descriptor
-.IR src_fd
+.I src_fd
 at offset
-.IR src_offset
+.I src_offset
 into the file
-.IR dest_fd
+.I dest_fd
 at offset
 .IR dest_offset ,
 provided that both are files.
 If
-.IR src_length
+.I src_length
 is zero, the ioctl reflinks to the end of the source file.
 This information is conveyed in a structure of
 the following form:
-.PP
+.P
 .in +4n
 .EX
 struct file_clone_range {
@@ -74,10 +59,10 @@ struct file_clone_range {
 };
 .EE
 .in
-.PP
+.P
 Clones are atomic with regards to concurrent writes, so no locks need to be
 taken to obtain a consistent cloned copy.
-.PP
+.P
 The
 .B FICLONE
 ioctl clones entire files.
@@ -89,12 +74,12 @@ is set to indicate the error.
 Error codes can be one of, but are not limited to, the following:
 .TP
 .B EBADF
-.IR src_fd
+.I src_fd
 is not open for reading;
-.IR dest_fd
+.I dest_fd
 is not open for writing or is open for append-only writes;
 or the filesystem which
-.IR src_fd
+.I src_fd
 resides on does not support reflink.
 .TP
 .B EINVAL
@@ -115,7 +100,7 @@ This can appear if the filesystem does not support reflinking either file
 descriptor, or if either file descriptor refers to special inodes.
 .TP
 .B EPERM
-.IR dest_fd
+.I dest_fd
 is immutable.
 .TP
 .B ETXTBSY
@@ -125,15 +110,16 @@ Swap files cannot share storage.
 .B EXDEV
 .IR dest_fd " and " src_fd
 are not on the same mounted filesystem.
-.SH VERSIONS
-These ioctl operations first appeared in Linux 4.5.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 4.5.
+.P
 They were previously known as
 .B BTRFS_IOC_CLONE
 and
 .BR BTRFS_IOC_CLONE_RANGE ,
 and were private to Btrfs.
-.SH CONFORMING TO
-This API is Linux-specific.
 .SH NOTES
 Because a copy-on-write operation requires the allocation of new storage, the
 .BR fallocate (2)
@@ -141,12 +127,3 @@ operation may unshare shared blocks to guarantee that subsequent writes will
 not fail because of lack of disk space.
 .SH SEE ALSO
 .BR ioctl (2)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

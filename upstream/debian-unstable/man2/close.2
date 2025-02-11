@@ -2,27 +2,7 @@
 .\" and Copyright (C) 1993 Michael Haardt, Ian Jackson.
 .\" and Copyright (C) 2016 Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" Modified Wed Jul 21 22:40:25 1993 by Rik Faith <faith@cs.unc.edu>
 .\" Modified Sat Feb 18 15:27:48 1995 by Michael Haardt
@@ -33,13 +13,16 @@
 .\" Modified 2000-07-22 by Nicolás Lichtmaier <nick@debian.org>
 .\"   added note about close(2) not guaranteeing that data is safe on close.
 .\"
-.TH CLOSE 2 2020-06-09 "Linux" "Linux Programmer's Manual"
+.TH close 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 close \- close a file descriptor
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <unistd.h>
-.PP
+.P
 .BI "int close(int " fd );
 .fi
 .SH DESCRIPTION
@@ -49,9 +32,15 @@ may be reused.
 Any record locks (see
 .BR fcntl (2))
 held on the file it was associated with,
-and owned by the process, are removed (regardless of the file
-descriptor that was used to obtain the lock).
-.PP
+and owned by the process,
+are removed regardless of the file descriptor that was used to obtain the lock.
+This has some unfortunate consequences
+and one should be extra careful when using advisory record locking.
+See
+.BR fcntl (2)
+for discussion of the risks and consequences
+as well as for the (probably preferred) open file description locks.
+.P
 If
 .I fd
 is the last file descriptor referring to the underlying
@@ -67,7 +56,7 @@ the file is deleted.
 returns zero on success.
 On error, \-1 is returned, and
 .I errno
-is set appropriately.
+is set to indicate the error.
 .SH ERRORS
 .TP
 .B EBADF
@@ -85,7 +74,9 @@ call was interrupted by a signal; see
 .B EIO
 An I/O error occurred.
 .TP
-.BR ENOSPC ", " EDQUOT
+.B ENOSPC
+.TQ
+.B EDQUOT
 On NFS, these errors are not normally reported against the first write
 which exceeds the available storage space, but instead against a
 subsequent
@@ -93,12 +84,14 @@ subsequent
 .BR fsync (2),
 or
 .BR close ().
-.PP
+.P
 See NOTES for a discussion of why
 .BR close ()
 should not be retried after an error.
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, SVr4, 4.3BSD.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, SVr4, 4.3BSD.
 .\" SVr4 documents an additional ENOLINK error condition.
 .SH NOTES
 A successful close does not guarantee that the data has been successfully
@@ -108,7 +101,7 @@ If you need to be sure that
 the data is physically stored on the underlying disk, use
 .BR fsync (2).
 (It will depend on the disk hardware at this point.)
-.PP
+.P
 The close-on-exec file descriptor flag can be used to ensure
 that a file descriptor is automatically closed upon a successful
 .BR execve (2);
@@ -131,24 +124,24 @@ that may cause unintended side effects.
 .\" call has restarted after ERESTARTSYS, the original system call will
 .\" later restart with the reused file descriptor. This is most likely a
 .\" serious programming error.
-.PP
+.P
 Furthermore, consider the following scenario where two threads are
 performing operations on the same file descriptor:
-.IP 1. 3
+.IP (1) 5
 One thread is blocked in an I/O system call on the file descriptor.
 For example, it is trying to
 .BR write (2)
 to a pipe that is already full, or trying to
 .BR read (2)
 from a stream socket which currently has no available data.
-.IP 2.
+.IP (2)
 Another thread closes the file descriptor.
-.PP
+.P
 The behavior in this situation varies across systems.
 On some systems, when the file descriptor is closed,
 the blocking system call returns immediately with an error.
-.PP
-On Linux (and possibly some other systems), the behavior is different.
+.P
+On Linux (and possibly some other systems), the behavior is different:
 the blocking I/O system call holds a reference to the underlying
 open file description, and this reference keeps the description open
 until the I/O system call completes.
@@ -173,13 +166,13 @@ Failing to check the return value when closing a file may lead to
 .I silent
 loss of data.
 This can especially be observed with NFS and with disk quota.
-.PP
+.P
 Note, however, that a failure return should be used only for
 diagnostic purposes (i.e., a warning to the application that there
 may still be I/O pending or there may have been failed I/O)
 or remedial purposes
 (e.g., writing the file once more or creating a backup).
-.PP
+.P
 Retrying the
 .BR close ()
 after a failure return is the wrong thing to do,
@@ -200,7 +193,7 @@ the steps that may return an error,
 .\" filp_close()
 such as flushing data to the filesystem or device,
 occur only later in the close operation.
-.PP
+.P
 Many other implementations similarly always close the file descriptor
 .\" FreeBSD documents this explicitly. From the look of the source code
 .\" SVR4, ancient SunOS, later Solaris, and AIX all do this.
@@ -213,19 +206,19 @@ POSIX.1 is currently silent on this point,
 but there are plans to mandate this behavior in the next major release
 .\" Issue 8
 of the standard.
-.PP
+.P
 A careful programmer who wants to know about I/O errors may precede
 .BR close ()
 with a call to
 .BR fsync (2).
-.PP
+.P
 The
 .B EINTR
 error is a somewhat special case.
 Regarding the
 .B EINTR
 error, POSIX.1-2008 says:
-.PP
+.P
 .RS
 If
 .BR close ()
@@ -237,7 +230,7 @@ and the state of
 .I fildes
 is unspecified.
 .RE
-.PP
+.P
 This permits the behavior that occurs on Linux and
 many other implementations, where,
 as with other errors that may be reported by
@@ -272,18 +265,10 @@ the next major release of the POSIX.1 standard.
 .\" Review the following glibc bug later
 .\" https://sourceware.org/bugzilla/show_bug.cgi?id=14627
 .SH SEE ALSO
+.BR close_range (2),
 .BR fcntl (2),
 .BR fsync (2),
 .BR open (2),
 .BR shutdown (2),
 .BR unlink (2),
 .BR fclose (3)
-.SH COLOPHON
-This page is part of release 5.10 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

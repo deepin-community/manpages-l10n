@@ -1,5 +1,5 @@
 '\" t
-.TH "JOURNAL\-UPLOAD\&.CONF" "5" "" "systemd 249" "journal-upload.conf"
+.TH "JOURNAL\-UPLOAD\&.CONF" "5" "" "systemd 255" "journal-upload.conf"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,9 +38,14 @@ These files configure various parameters of
 for a general description of the syntax\&.
 .SH "CONFIGURATION DIRECTORIES AND PRECEDENCE"
 .PP
-The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. Initially, the main configuration file in
+The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. The main configuration file is either in
+/usr/lib/systemd/
+or
 /etc/systemd/
-contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by editing this file or by creating drop\-ins, as described below\&. Using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
+and contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by creating drop\-ins, as described below\&. The main configuration file can also be edited for this purpose (or a copy in
+/etc/
+if it\*(Aqs shipped in
+/usr/) however using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
 .PP
 In addition to the "main" configuration file, drop\-in configuration snippets are read from
 /usr/lib/systemd/*\&.conf\&.d/,
@@ -52,7 +57,7 @@ configuration subdirectories are sorted by their filename in lexicographic order
 When packages need to customize the configuration, they can install drop\-ins under
 /usr/\&. Files in
 /etc/
-are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&.
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&. This also defined a concept of drop\-in priority to allow distributions to ship drop\-ins within a specific range lower than the range used by users\&. This should lower the risk of package drop\-ins overriding accidentally drop\-ins defined by users\&.
 .PP
 To disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
 /dev/null
@@ -69,21 +74,29 @@ The URL to upload the journal entries to\&. See the description of
 option in
 \fBsystemd-journal-upload\fR(8)
 for the description of possible values\&. There is no default value, so either this option or the command\-line option must be always present to make an upload\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fIServerKeyFile=\fR
 .RS 4
 SSL key in PEM format\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fIServerCertificateFile=\fR
 .RS 4
 SSL CA certificate in PEM format\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fITrustedCertificateFile=\fR
 .RS 4
 SSL CA certificate\&.
+.sp
+Added in version 232\&.
 .RE
 .PP
 \fINetworkTimeoutSec=\fR
@@ -92,6 +105,8 @@ When network connectivity to the server is lost, this option configures the time
 \fBsystemd\-journal\-upload\fR
 exits\&. Takes a value in seconds (or in other time units if suffixed with "ms", "min", "h", etc)\&. For details, see
 \fBsystemd.time\fR(5)\&.
+.sp
+Added in version 249\&.
 .RE
 .SH "SEE ALSO"
 .PP

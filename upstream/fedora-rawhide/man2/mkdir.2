@@ -3,32 +3,32 @@
 .\"             and Copyright (C) 1993,1994 Ian Jackson
 .\"		and Copyright (C) 2006, 2014 Michael Kerrisk
 .\"
-.\" %%%LICENSE_START(GPL_NOVERSION_ONELINE)
-.\" You may distribute it under the terms of the GNU General
-.\" Public License. It comes with NO WARRANTY.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-1.0-or-later
 .\"
-.TH MKDIR 2 2021-08-27 "Linux" "Linux Programmer's Manual"
+.TH mkdir 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 mkdir, mkdirat \- create a directory
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/stat.h>
 .\" .B #include <unistd.h>
-.PP
+.P
 .BI "int mkdir(const char *" pathname ", mode_t " mode );
-.PP
+.P
 .BR "#include <fcntl.h>           " "/* Definition of AT_* constants */"
 .B #include <sys/stat.h>
-.PP
+.P
 .BI "int mkdirat(int " dirfd ", const char *" pathname ", mode_t " mode );
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR mkdirat ():
 .nf
     Since glibc 2.10:
@@ -40,7 +40,7 @@ Feature Test Macro Requirements for glibc (see
 .BR mkdir ()
 attempts to create a directory named
 .IR pathname .
-.PP
+.P
 The argument
 .I mode
 specifies the mode for the new directory (see
@@ -49,12 +49,12 @@ It is modified by the process's
 .I umask
 in the usual way: in the absence of a default ACL, the mode of the
 created directory is
-.RI ( mode " & \(ti" umask " & 0777)."
+.RI ( mode " & \[ti]" umask " & 0777)."
 Whether other
 .I mode
 bits are honored for the created directory depends on the operating system.
 For Linux, see NOTES below.
-.PP
+.P
 The newly created directory will be owned by the effective user ID of the
 process.
 If the directory containing the file has the set-group-ID
@@ -64,7 +64,7 @@ or, synonymously
 .IR "mount \-o grpid" ),
 the new directory will inherit the group ownership from its parent;
 otherwise it will be owned by the effective group ID of the process.
-.PP
+.P
 If the parent directory has the set-group-ID bit set, then so will the
 newly created directory.
 .\"
@@ -75,7 +75,7 @@ The
 system call operates in exactly the same way as
 .BR mkdir (),
 except for the differences described here.
-.PP
+.P
 If the pathname given in
 .I pathname
 is relative, then it is interpreted relative to the directory
@@ -85,7 +85,7 @@ referred to by the file descriptor
 the calling process, as is done by
 .BR mkdir ()
 for a relative pathname).
-.PP
+.P
 If
 .I pathname
 is relative and
@@ -97,13 +97,13 @@ then
 is interpreted relative to the current working
 directory of the calling process (like
 .BR mkdir ()).
-.PP
+.P
 If
 .I pathname
 is absolute, then
 .I dirfd
 is ignored.
-.PP
+.P
 See
 .BR openat (2)
 for an explanation of the need for
@@ -204,26 +204,11 @@ does not support the creation of directories.
 .I pathname
 refers to a file on a read-only filesystem.
 .SH VERSIONS
-.BR mkdirat ()
-was added to Linux in kernel 2.6.16;
-library support was added to glibc in version 2.4.
-.SH CONFORMING TO
-.BR mkdir ():
-SVr4, BSD, POSIX.1-2001, POSIX.1-2008.
-.\" SVr4 documents additional EIO, EMULTIHOP
-.PP
-.BR mkdirat ():
-POSIX.1-2008.
-.SH NOTES
 Under Linux, apart from the permission bits, the
 .B S_ISVTX
 .I mode
 bit is also honored.
-.PP
-There are many infelicities in the protocol underlying NFS.
-Some of these affect
-.BR mkdir ().
-.SS Glibc notes
+.SS glibc notes
 On older kernels where
 .BR mkdirat ()
 is unavailable, the glibc wrapper function falls back to the use of
@@ -232,10 +217,25 @@ When
 .I pathname
 is a relative pathname,
 glibc constructs a pathname based on the symbolic link in
-.IR /proc/self/fd
+.I /proc/self/fd
 that corresponds to the
-.IR dirfd
+.I dirfd
 argument.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+.TP
+.BR mkdir ()
+SVr4, BSD, POSIX.1-2001.
+.\" SVr4 documents additional EIO, EMULTIHOP
+.TP
+.BR mkdirat ()
+Linux 2.6.16,
+glibc 2.4.
+.SH NOTES
+There are many infelicities in the protocol underlying NFS.
+Some of these affect
+.BR mkdir ().
 .SH SEE ALSO
 .BR mkdir (1),
 .BR chmod (2),
@@ -248,12 +248,3 @@ argument.
 .BR unlink (2),
 .BR acl (5),
 .BR path_resolution (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

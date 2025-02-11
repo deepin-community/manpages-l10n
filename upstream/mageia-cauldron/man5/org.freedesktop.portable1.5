@@ -1,5 +1,5 @@
 '\" t
-.TH "ORG\&.FREEDESKTOP\&.PORTABLE1" "5" "" "systemd 249" "org.freedesktop.portable1"
+.TH "ORG\&.FREEDESKTOP\&.PORTABLE1" "5" "" "systemd 255" "org.freedesktop.portable1"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -52,9 +52,14 @@ node /org/freedesktop/portable1 {
                                      in  t flags,
                                      out s image,
                                      out ay os_release,
+                                     out a{say} extensions,
                                      out a{say} units);
       GetImageState(in  s image,
                     out s state);
+      GetImageStateWithExtensions(in  s image,
+                                  in  as extensions,
+                                  in  t flags,
+                                  out s state);
       AttachImage(in  s image,
                   in  as matches,
                   in  s profile,
@@ -136,6 +141,7 @@ node /org/freedesktop/portable1 {
 
 
 
+
 .SS "Methods"
 .PP
 \fBGetImage()\fR
@@ -158,9 +164,7 @@ content in the form of a (streamable) array of bytes, and a list of portable uni
 retrieves metadata associated with an image\&. This method is a superset of
 \fBGetImageMetadata()\fR
 with the addition of a list of extensions as input parameter, which were overlaid on top of the main image via
-\fBAttachImageWithExtensions()\fR\&. The
-\fIflag\fR
-parameter is currently unused and reserved for future purposes\&.
+\fBAttachImageWithExtensions()\fR\&. The path of each extension and an array of bytes with the content of the respective extension\-release file are returned, one such structure for each extension named in the input arguments\&.
 .PP
 \fBGetImageState()\fR
 retrieves the image state as one of the following strings:
@@ -241,6 +245,12 @@ running
 .\}
 running\-runtime
 .RE
+.PP
+\fBGetImageStateWithExtensions()\fR
+is a superset of
+\fBGetImageState()\fR, with additional support for a list of extensions as input parameters, which is necessary to query the state in case the image was attached in that particular way\&. The
+\fIflag\fR
+parameter is currently unused and reserved for future purposes\&.
 .PP
 \fBAttachImage()\fR
 attaches a portable image to the system\&. This method takes an image path or name, a list of strings that will be used to search for unit files inside the image (partial or complete matches), a string indicating which portable profile to use for the image (see
@@ -326,7 +336,7 @@ write
 mkdir
 .RE
 .sp
-Note that an image cannot be attached if a unit that it contains is already present on the system\&.
+Note that an image cannot be attached if a unit that it contains is already present on the system\&. Note that this method returns only after all the listed operations are completed, and due to the I/O involved it might take some time\&.
 .PP
 \fBAttachImageWithExtensions()\fR
 attaches a portable image to the system\&. This method is a superset of
@@ -338,9 +348,7 @@ method\&. For more details on this functionality, see the
 entry on
 \fBsystemd.exec\fR(5)
 and
-\fBsystemd-sysext\fR(8)\&. The
-\fIflag\fR
-parameter is currently unused and reserved for future purposes\&.
+\fBsystemd-sysext\fR(8)\&.
 .PP
 \fBDetachImage()\fR
 detaches a portable image from the system\&. This method takes an image path or name, and a boolean indicating whether the image to detach was attached only for the current boot session or persistently\&. This method returns the list of changes applied to the system (for example, which unit was removed and is no longer available as a system service)\&. Each change is represented as a triplet of strings: the type of change applied, the path on which it was applied, and the source (if any)\&. The type of change applied will be one of the following possible values:
@@ -356,7 +364,7 @@ detaches a portable image from the system\&. This method takes an image path or 
 unlink
 .RE
 .sp
-Note that an image cannot be detached if a unit that it contains is running\&.
+Note that an image cannot be detached if a unit that it contains is running\&. Note that this method returns only after all the listed operations are completed, and due to the I/O involved it might take some time\&.
 .PP
 \fBDetachImageWithExtensions()\fR
 detaches a portable image from the system\&. This method is a superset of
@@ -408,13 +416,21 @@ The
 \fBDetachImageWithExtensions()\fR
 and
 \fBReattachImageWithExtensions()\fR
-methods take in options as flags instead of booleans to allow for extendability, defined as follows:
+methods take in options as flags instead of booleans to allow for extendability\&.
+\fISD_SYSTEMD_PORTABLE_FORCE_ATTACH\fR
+will bypass the safety checks that ensure the units are not running while the image is attached or detached\&.
+\fISD_SYSTEMD_PORTABLE_FORCE_EXTENSION\fR
+will bypass the check that ensures the
+extension\-release\&.\fINAME\fR
+file in the extension image matches the image name\&. They are defined as follows:
 .sp
 .if n \{\
 .RS 4
 .\}
 .nf
-#define SD_SYSTEMD_PORTABLE_RUNTIME  (UINT64_C(1) << 0)
+#define SD_SYSTEMD_PORTABLE_RUNTIME            (UINT64_C(1) << 0)
+#define SD_SYSTEMD_PORTABLE_FORCE_ATTACH       (UINT64_C(1) << 1)
+#define SD_SYSTEMD_PORTABLE_FORCE_EXTENSION    (UINT64_C(1) << 2)
       
 .fi
 .if n \{\
@@ -454,8 +470,12 @@ node /org/freedesktop/portable1 {
                                 in  t flags,
                                 out s image,
                                 out ay os_release,
+                                out a{say} extensions,
                                 out a{say} units);
       GetState(out s state);
+      GetStateWithExtensions(in  as extensions,
+                             in  t flags,
+                             out s state);
       Attach(in  as matches,
              in  s profile,
              in  b runtime,
@@ -478,13 +498,13 @@ node /org/freedesktop/portable1 {
                in  s copy_mode,
                out a(sss) changes_removed,
                out a(sss) changes_updated);
-      ReattacheWithExtensions(in  as extensions,
-                              in  as matches,
-                              in  s profile,
-                              in  s copy_mode,
-                              in  t flags,
-                              out a(sss) changes_removed,
-                              out a(sss) changes_updated);
+      ReattachWithExtensions(in  as extensions,
+                             in  as matches,
+                             in  s profile,
+                             in  s copy_mode,
+                             in  t flags,
+                             out a(sss) changes_removed,
+                             out a(sss) changes_updated);
       Remove();
       MarkReadOnly(in  b read_only);
       SetLimit(in  t limit);
@@ -519,6 +539,7 @@ node /org/freedesktop/portable1 {
 .if n \{\
 .RE
 .\}
+
 
 
 
@@ -658,7 +679,7 @@ Reattach()
 .sp -1
 .IP \(bu 2.3
 .\}
-ReattacheWithExtensions()
+ReattachWithExtensions()
 .RE
 .sp
 .RS 4
@@ -728,9 +749,21 @@ specifies the image disk usage limit (exclusive)\&.
 .PP
 These D\-Bus interfaces follow
 \m[blue]\fBthe usual interface versioning guidelines\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.SH "HISTORY"
+.SS "The Manager Object"
+.PP
+\fBGetImageStateWithExtensions()\fR
+was added in version 251\&.
+.SS "The Image Object"
+.PP
+\fBGetStateWithExtensions()\fR
+was added in version 251\&.
+.PP
+\fBReattachWithExtensions()\fR
+was added in version 254\&.
 .SH "NOTES"
 .IP " 1." 4
 the usual interface versioning guidelines
 .RS 4
-\%http://0pointer.de/blog/projects/versioning-dbus.html
+\%https://0pointer.de/blog/projects/versioning-dbus.html
 .RE

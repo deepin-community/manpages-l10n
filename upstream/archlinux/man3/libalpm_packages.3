@@ -1,19 +1,27 @@
-.TH "libalpm_packages" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.TH "libalpm_packages" 3 "libalpm" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 libalpm_packages \- Package Functions
 .PP
- \- Functions to manipulate libalpm packages\&.  
+ \- Functions to manipulate libalpm packages  
 
 .SH SYNOPSIS
 .br
 .PP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBalpm_pkg_xdata_t\fP"
+.br
+.RI "The extended data type used to store non-standard package data fields\&. "
+.in -1c
 .SS "Typedefs"
 
 .in +1c
 .ti -1c
-.RI "typedef struct __alpm_pkg_t \fBalpm_pkg_t\fP"
+.RI "typedef struct _alpm_pkg_t \fBalpm_pkg_t\fP"
 .br
 .RI "A package\&. "
 .in -1c
@@ -21,7 +29,7 @@ libalpm_packages \- Package Functions
 
 .in +1c
 .ti -1c
-.RI "enum \fBalpm_pkgreason_t\fP { \fBALPM_PKG_REASON_EXPLICIT\fP = 0, \fBALPM_PKG_REASON_DEPEND\fP = 1 }"
+.RI "enum \fBalpm_pkgreason_t\fP { \fBALPM_PKG_REASON_EXPLICIT\fP = 0, \fBALPM_PKG_REASON_DEPEND\fP = 1, \fBALPM_PKG_REASON_UNKNOWN\fP = 2 }"
 .br
 .RI "Package install reasons\&. "
 .ti -1c
@@ -75,11 +83,17 @@ libalpm_packages \- Package Functions
 .in -1c
 .SS "Package Property Accessors"
 Any pointer returned by these functions points to internal structures allocated by libalpm\&.
+
 .PP
 They should not be freed nor modified in any way\&.
+
 .PP
 For loaded packages, they will be freed when \fBalpm_pkg_free\fP is called\&. For database packages, they will be freed when the database is unregistered\&. 
 .in +1c
+.ti -1c
+.RI "\fBalpm_handle_t\fP * \fBalpm_pkg_get_handle\fP (\fBalpm_pkg_t\fP *pkg)"
+.br
+.RI "Gets the handle of a package\&. "
 .ti -1c
 .RI "const char * \fBalpm_pkg_get_filename\fP (\fBalpm_pkg_t\fP *pkg)"
 .br
@@ -205,6 +219,10 @@ For loaded packages, they will be freed when \fBalpm_pkg_free\fP is called\&. Fo
 .br
 .RI "Returns the method used to validate a package during install\&. "
 .ti -1c
+.RI "\fBalpm_list_t\fP * \fBalpm_pkg_get_xdata\fP (\fBalpm_pkg_t\fP *pkg)"
+.br
+.RI "Gets the extended data field of a package\&. "
+.ti -1c
 .RI "int \fBalpm_pkg_has_scriptlet\fP (\fBalpm_pkg_t\fP *pkg)"
 .br
 .RI "Returns whether the package has an install scriptlet\&. "
@@ -251,17 +269,34 @@ Functions for reading the mtree
 .in -1c
 .SH "Detailed Description"
 .PP 
-Functions to manipulate libalpm packages\&. 
+Functions to manipulate libalpm packages 
 
 
+.SH "Data Structure Documentation"
+.PP 
+.SH "struct alpm_pkg_xdata_t"
+.PP 
+The extended data type used to store non-standard package data fields\&. 
+.PP
+\fBData Fields:\fP
+.RS 4
+char * \fIname\fP 
+.br
+.PP
+char * \fIvalue\fP 
+.br
+.PP
+.RE
+.PP
 .SH "Typedef Documentation"
 .PP 
-.SS "typedef struct __alpm_pkg_t \fBalpm_pkg_t\fP"
+.SS "typedef struct _alpm_pkg_t \fBalpm_pkg_t\fP"
 
 .PP
 A package\&. A package can be loaded from disk via \fBalpm_pkg_load\fP or retrieved from a database\&. Packages from databases are automatically freed when the database is unregistered\&. Packages loaded from a file must be freed manually\&.
+
 .PP
-Packages can then be queried for metadata or added to a \fBtransaction \fP to be added or removed from the system\&. 
+Packages can then be queried for metadata or added to a transaction to be added or removed from the system\&. 
 .SH "Enumeration Type Documentation"
 .PP 
 .SS "enum \fBalpm_pkgfrom_t\fP"
@@ -272,13 +307,13 @@ Location a package object was loaded from\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIALPM_PKG_FROM_FILE \fP\fP
+\f(BIALPM_PKG_FROM_FILE \fP
 Loaded from a file via \fBalpm_pkg_load\fP\&. 
 .TP
-\fB\fIALPM_PKG_FROM_LOCALDB \fP\fP
+\f(BIALPM_PKG_FROM_LOCALDB \fP
 From the local database\&. 
 .TP
-\fB\fIALPM_PKG_FROM_SYNCDB \fP\fP
+\f(BIALPM_PKG_FROM_SYNCDB \fP
 From a sync database\&. 
 .SS "enum \fBalpm_pkgreason_t\fP"
 
@@ -288,11 +323,14 @@ Package install reasons\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIALPM_PKG_REASON_EXPLICIT \fP\fP
+\f(BIALPM_PKG_REASON_EXPLICIT \fP
 Explicitly requested by the user\&. 
 .TP
-\fB\fIALPM_PKG_REASON_DEPEND \fP\fP
+\f(BIALPM_PKG_REASON_DEPEND \fP
 Installed as a dependency for another package\&. 
+.TP
+\f(BIALPM_PKG_REASON_UNKNOWN \fP
+Failed parsing of local database\&. 
 .SS "enum \fBalpm_pkgvalidation_t\fP"
 
 .PP
@@ -301,19 +339,19 @@ Method used to validate a package\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\fB\fIALPM_PKG_VALIDATION_UNKNOWN \fP\fP
+\f(BIALPM_PKG_VALIDATION_UNKNOWN \fP
 The package's validation type is unknown\&. 
 .TP
-\fB\fIALPM_PKG_VALIDATION_NONE \fP\fP
+\f(BIALPM_PKG_VALIDATION_NONE \fP
 The package does not have any validation\&. 
 .TP
-\fB\fIALPM_PKG_VALIDATION_MD5SUM \fP\fP
+\f(BIALPM_PKG_VALIDATION_MD5SUM \fP
 The package is validated with md5\&. 
 .TP
-\fB\fIALPM_PKG_VALIDATION_SHA256SUM \fP\fP
+\f(BIALPM_PKG_VALIDATION_SHA256SUM \fP
 The package is validated with sha256\&. 
 .TP
-\fB\fIALPM_PKG_VALIDATION_SIGNATURE \fP\fP
+\f(BIALPM_PKG_VALIDATION_SIGNATURE \fP
 The package is validated with a PGP signature\&. 
 .SH "Function Documentation"
 .PP 
@@ -328,7 +366,7 @@ Fetch a list of remote packages\&.
 .br
 \fIurls\fP list of package URLs to download 
 .br
-\fIfetched\fP list of filepaths to the fetched packages, each item corresponds to one in \fCurls\fP list\&. This is an output parameter, the caller should provide a pointer to an empty list (*fetched === NULL) and the callee fills the list with data\&. 
+\fIfetched\fP list of filepaths to the fetched packages, each item corresponds to one in \fRurls\fP list\&. This is an output parameter, the caller should provide a pointer to an empty list (*fetched === NULL) and the callee fills the list with data\&. 
 .RE
 .PP
 \fBReturns\fP
@@ -699,6 +737,22 @@ a pointer to an internal list of strings\&.
 .RE
 .PP
 
+.SS "\fBalpm_handle_t\fP * alpm_pkg_get_handle (\fBalpm_pkg_t\fP * pkg)"
+
+.PP
+Gets the handle of a package\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpkg\fP a pointer to package 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the alpm handle that the package belongs to 
+.RE
+.PP
+
 .SS "\fBalpm_time_t\fP alpm_pkg_get_installdate (\fBalpm_pkg_t\fP * pkg)"
 
 .PP
@@ -986,6 +1040,22 @@ a reference to an internal string
 .RE
 .PP
 
+.SS "\fBalpm_list_t\fP * alpm_pkg_get_xdata (\fBalpm_pkg_t\fP * pkg)"
+
+.PP
+Gets the extended data field of a package\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpkg\fP a pointer to package 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+a reference to a list of \fBalpm_pkg_xdata_t\fP objects 
+.RE
+.PP
+
 .SS "int alpm_pkg_has_scriptlet (\fBalpm_pkg_t\fP * pkg)"
 
 .PP
@@ -1110,8 +1180,10 @@ Test if a package should be ignored\&. Checks if the package is ignored via Igno
 
 .PP
 Compare two version strings and determine which one is 'newer'\&. Returns a value comparable to the way strcmp works\&. Returns 1 if a is newer than b, 0 if a and b are the same version, or -1 if b is newer than a\&.
+
 .PP
 Different epoch values for version strings will override any further comparison\&. If no epoch is provided, 0 is assumed\&.
+
 .PP
 Keep in mind that the pkgrel is only compared if it is available on both versions handed to this function\&. For example, comparing 1\&.5-1 and 1\&.5 will yield 0; comparing 1\&.5-1 and 1\&.5-2 will yield -1 as expected\&. This is mainly for supporting versioned dependencies that do not include the pkgrel\&. 
 .SH "Author"

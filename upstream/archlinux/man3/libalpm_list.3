@@ -1,11 +1,8 @@
-.TH "libalpm_list" 3 "Mon Sep 6 2021" "libalpm" \" -*- nroff -*-
+.TH "libalpm_list" 3 "libalpm" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 libalpm_list \- libalpm_list(3)
-.PP
- \- Functions to manipulate \fBalpm_list_t\fP lists\&.  
-
 .SH SYNOPSIS
 .br
 .PP
@@ -21,7 +18,7 @@ libalpm_list \- libalpm_list(3)
 
 .in +1c
 .ti -1c
-.RI "#define \fBFREELIST\fP(p)   do { \fBalpm_list_free_inner\fP(p, free); \fBalpm_list_free\fP(p); p = NULL; } while(0)"
+.RI "#define \fBFREELIST\fP(p)"
 .br
 .RI "Frees a list and its contents\&. "
 .in -1c
@@ -75,7 +72,7 @@ libalpm_list \- libalpm_list(3)
 .ti -1c
 .RI "\fBalpm_list_t\fP * \fBalpm_list_msort\fP (\fBalpm_list_t\fP *list, size_t n, \fBalpm_list_fn_cmp\fP fn)"
 .br
-.RI "Sort a list of size \fCn\fP using mergesort algorithm\&. "
+.RI "Sort a list of size \fRn\fP using mergesort algorithm\&. "
 .ti -1c
 .RI "\fBalpm_list_t\fP * \fBalpm_list_remove_item\fP (\fBalpm_list_t\fP *haystack, \fBalpm_list_t\fP *item)"
 .br
@@ -141,13 +138,17 @@ libalpm_list \- libalpm_list(3)
 .br
 .RI "Find a string in a list\&. "
 .ti -1c
+.RI "int \fBalpm_list_cmp_unsorted\fP (const \fBalpm_list_t\fP *left, const \fBalpm_list_t\fP *right, \fBalpm_list_fn_cmp\fP fn)"
+.br
+.RI "Check if two lists contain the same data, ignoring order\&. "
+.ti -1c
 .RI "void \fBalpm_list_diff_sorted\fP (const \fBalpm_list_t\fP *left, const \fBalpm_list_t\fP *right, \fBalpm_list_fn_cmp\fP fn, \fBalpm_list_t\fP **onlyleft, \fBalpm_list_t\fP **onlyright)"
 .br
-.RI "Find the differences between list \fCleft\fP and list \fCright\fP "
+.RI "Find the differences between list \fRleft\fP and list \fRright\fP "
 .ti -1c
 .RI "\fBalpm_list_t\fP * \fBalpm_list_diff\fP (const \fBalpm_list_t\fP *lhs, const \fBalpm_list_t\fP *rhs, \fBalpm_list_fn_cmp\fP fn)"
 .br
-.RI "Find the items in list \fClhs\fP that are not present in list \fCrhs\fP\&. "
+.RI "Find the items in list \fRlhs\fP that are not present in list \fRrhs\fP\&. "
 .ti -1c
 .RI "void * \fBalpm_list_to_array\fP (const \fBalpm_list_t\fP *list, size_t n, size_t size)"
 .br
@@ -155,9 +156,13 @@ libalpm_list \- libalpm_list(3)
 .in -1c
 .SH "Detailed Description"
 .PP 
-Functions to manipulate \fBalpm_list_t\fP lists\&. 
 
+
+Functions to manipulate \fBalpm_list_t\fP lists\&.
+
+.PP
 These functions are designed to create, destroy, and modify lists of type \fBalpm_list_t\fP\&. This is an internal list type used by libalpm that is publicly exposed for use by frontends if desired\&.
+
 .PP
 It is exposed so front ends can use it to prevent the need to reimplement lists of their own; however, it is not required that the front end uses it\&. 
 .SH "Data Structure Documentation"
@@ -171,17 +176,22 @@ A doubly linked list\&.
 void * \fIdata\fP data held by the list node 
 .br
 .PP
-struct __alpm_list_t * \fInext\fP pointer to the next node 
+struct _alpm_list_t * \fInext\fP pointer to the next node 
 .br
 .PP
-struct __alpm_list_t * \fIprev\fP pointer to the previous node 
+struct _alpm_list_t * \fIprev\fP pointer to the previous node 
 .br
 .PP
 .RE
 .PP
 .SH "Macro Definition Documentation"
 .PP 
-.SS "#define FREELIST(p)   do { \fBalpm_list_free_inner\fP(p, free); \fBalpm_list_free\fP(p); p = NULL; } while(0)"
+.SS "#define FREELIST( p)"
+\fBValue:\fP
+.nf
+do { alpm_list_free_inner(p, free); alpm_list_free(p); p = NULL; } while(0)
+.PP
+.fi
 
 .PP
 Frees a list and its contents\&. 
@@ -278,6 +288,27 @@ the newly added item
 .RE
 .PP
 
+.SS "int alpm_list_cmp_unsorted (const \fBalpm_list_t\fP * left, const \fBalpm_list_t\fP * right, \fBalpm_list_fn_cmp\fP fn)"
+
+.PP
+Check if two lists contain the same data, ignoring order\&. Lists are considered equal if they both contain the same data regardless of order\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIleft\fP the first list 
+.br
+\fIright\fP the second list 
+.br
+\fIfn\fP the comparison function
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+1 if the lists are equal, 0 if not equal, -1 on error\&. 
+.RE
+.PP
+
 .SS "\fBalpm_list_t\fP * alpm_list_copy (const \fBalpm_list_t\fP * list)"
 
 .PP
@@ -298,6 +329,7 @@ a copy of the original list
 
 .PP
 Copy a list and copy the data\&. Note that the data elements to be copied should not contain pointers and should also be of constant size\&.
+
 .PP
 \fBParameters\fP
 .RS 4
@@ -331,7 +363,7 @@ the number of list items
 .SS "\fBalpm_list_t\fP * alpm_list_diff (const \fBalpm_list_t\fP * lhs, const \fBalpm_list_t\fP * rhs, \fBalpm_list_fn_cmp\fP fn)"
 
 .PP
-Find the items in list \fClhs\fP that are not present in list \fCrhs\fP\&. 
+Find the items in list \fRlhs\fP that are not present in list \fRrhs\fP\&. 
 .PP
 \fBParameters\fP
 .RS 4
@@ -344,14 +376,15 @@ Find the items in list \fClhs\fP that are not present in list \fCrhs\fP\&.
 .PP
 \fBReturns\fP
 .RS 4
-a list containing all items in \fClhs\fP not present in \fCrhs\fP 
+a list containing all items in \fRlhs\fP not present in \fRrhs\fP 
 .RE
 .PP
 
 .SS "void alpm_list_diff_sorted (const \fBalpm_list_t\fP * left, const \fBalpm_list_t\fP * right, \fBalpm_list_fn_cmp\fP fn, \fBalpm_list_t\fP ** onlyleft, \fBalpm_list_t\fP ** onlyright)"
 
 .PP
-Find the differences between list \fCleft\fP and list \fCright\fP The two lists must be sorted\&. Items only in list \fCleft\fP are added to the \fConlyleft\fP list\&. Items only in list \fCright\fP are added to the \fConlyright\fP list\&.
+Find the differences between list \fRleft\fP and list \fRright\fP The two lists must be sorted\&. Items only in list \fRleft\fP are added to the \fRonlyleft\fP list\&. Items only in list \fRright\fP are added to the \fRonlyright\fP list\&.
+
 .PP
 \fBParameters\fP
 .RS 4
@@ -383,14 +416,15 @@ Find an item in a list\&.
 .PP
 \fBReturns\fP
 .RS 4
-\fCneedle\fP if found, NULL otherwise 
+\fRneedle\fP if found, NULL otherwise 
 .RE
 .PP
 
 .SS "void * alpm_list_find_ptr (const \fBalpm_list_t\fP * haystack, const void * needle)"
 
 .PP
-Find an item in a list\&. Search for the item whose data matches that of the \fCneedle\fP\&.
+Find an item in a list\&. Search for the item whose data matches that of the \fRneedle\fP\&.
+
 .PP
 \fBParameters\fP
 .RS 4
@@ -401,7 +435,7 @@ Find an item in a list\&. Search for the item whose data matches that of the \fC
 .PP
 \fBReturns\fP
 .RS 4
-\fCneedle\fP if found, NULL otherwise 
+\fRneedle\fP if found, NULL otherwise 
 .RE
 .PP
 
@@ -419,7 +453,7 @@ Find a string in a list\&.
 .PP
 \fBReturns\fP
 .RS 4
-\fCneedle\fP if found, NULL otherwise 
+\fRneedle\fP if found, NULL otherwise 
 .RE
 .PP
 
@@ -451,6 +485,7 @@ Free the internal data of a list structure but not the list itself\&.
 
 .PP
 Join two lists\&. The two lists must be independent\&. Do not free the original lists after calling this function, as this is not a copy operation\&. The list pointers passed in should be considered invalid after calling this function\&.
+
 .PP
 \fBParameters\fP
 .RS 4
@@ -504,7 +539,7 @@ the resultant list
 .SS "\fBalpm_list_t\fP * alpm_list_msort (\fBalpm_list_t\fP * list, size_t n, \fBalpm_list_fn_cmp\fP fn)"
 
 .PP
-Sort a list of size \fCn\fP using mergesort algorithm\&. 
+Sort a list of size \fRn\fP using mergesort algorithm\&. 
 .PP
 \fBParameters\fP
 .RS 4
@@ -551,7 +586,7 @@ Return nth element from list (starting from 0)\&.
 .PP
 \fBReturns\fP
 .RS 4
-an \fBalpm_list_t\fP node for index \fCn\fP 
+an \fBalpm_list_t\fP node for index \fRn\fP 
 .RE
 .PP
 
@@ -597,6 +632,7 @@ the resultant list
 
 .PP
 Create a new list without any duplicates\&. This does NOT copy data members\&.
+
 .PP
 \fBParameters\fP
 .RS 4
@@ -613,6 +649,7 @@ a new list containing non-duplicate items
 
 .PP
 Remove an item from the list\&. item is not freed; this is the responsibility of the caller\&.
+
 .PP
 \fBParameters\fP
 .RS 4
@@ -683,6 +720,7 @@ a copy of the original list
 
 .PP
 Copy a list and data into a standard C array of fixed length\&. Note that the data elements are shallow copied so any contained pointers will point to the original data\&.
+
 .PP
 \fBParameters\fP
 .RS 4

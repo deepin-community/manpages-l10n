@@ -1,24 +1,7 @@
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft-var
+.\"
 .\" Copyright 2003,2004 Andi Kleen, SuSE Labs.
 .\" and Copyright 2007 Lee Schermerhorn, Hewlett Packard
-.\"
-.\" %%%LICENSE_START(VERBATIM_PROF)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
 .\"
 .\" 2006-02-03, mtk, substantial wording changes and other improvements
 .\" 2007-08-27, Lee Schermerhorn <Lee.Schermerhorn@hp.com>
@@ -32,22 +15,21 @@
 .\"                Author: Lee Schermerhorn <lee.schermerhorn@hp.com>
 .\"                Date:   Thu Oct 25 14:16:32 2012 +0200
 .\"
-.TH MBIND 2 2021-03-22 Linux "Linux Programmer's Manual"
+.TH mbind 2 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 mbind \- set memory policy for a memory range
+.SH LIBRARY
+NUMA (Non-Uniform Memory Access) policy library
+.RI ( libnuma ", " \-lnuma )
 .SH SYNOPSIS
 .nf
 .B "#include <numaif.h>"
-.PP
-.BI "long mbind(void *" addr ", unsigned long " len  ", int " mode ,
-.BI "           const unsigned long *" nodemask  ", unsigned long " maxnode ,
-.BI "           unsigned int " flags );
-.PP
-Link with \fI\-lnuma\fP.
+.P
+.BI "long mbind(void " addr [. len "], unsigned long " len  ", int " mode ,
+.BI "           const unsigned long " nodemask [(. maxnode " + ULONG_WIDTH - 1)"
+.B "                                        / ULONG_WIDTH],"
+.BI "           unsigned long " maxnode ", unsigned int " flags );
 .fi
-.PP
-.IR Note :
-There is no glibc wrapper for this system call; see NOTES.
 .SH DESCRIPTION
 .BR mbind ()
 sets the NUMA memory policy,
@@ -58,14 +40,14 @@ and continuing for
 .I len
 bytes.
 The memory policy defines from which node memory is allocated.
-.PP
+.P
 If the memory range specified by the
 .IR addr " and " len
-arguments includes an "anonymous" region of memory\(emthat is
+arguments includes an "anonymous" region of memory\[em]that is
 a region of memory created using the
 .BR mmap (2)
 system call with the
-.BR MAP_ANONYMOUS \(emor
+.BR MAP_ANONYMOUS \[em]or
 a memory-mapped file, mapped using the
 .BR mmap (2)
 system call with the
@@ -80,7 +62,7 @@ an initial read access will allocate pages according to the
 memory policy of the thread that causes the page to be allocated.
 This may not be the thread that called
 .BR mbind ().
-.PP
+.P
 The specified policy will be ignored for any
 .B MAP_SHARED
 mappings in the specified memory range.
@@ -88,7 +70,7 @@ Rather the pages will be allocated according to the memory policy
 of the thread that caused the page to be allocated.
 Again, this may not be the thread that called
 .BR mbind ().
-.PP
+.P
 If the specified memory range includes a shared memory region
 created using the
 .BR shmget (2)
@@ -105,7 +87,7 @@ the huge pages will be allocated according to the policy specified
 only if the page allocation is caused by the process that calls
 .BR mbind ()
 for that region.
-.PP
+.P
 By default,
 .BR mbind ()
 has an effect only for new allocations; if the pages inside
@@ -116,16 +98,17 @@ This default behavior may be overridden by the
 and
 .B MPOL_MF_MOVE_ALL
 flags described below.
-.PP
+.P
 The
 .I mode
 argument must specify one of
 .BR MPOL_DEFAULT ,
 .BR MPOL_BIND ,
 .BR MPOL_INTERLEAVE ,
+.BR MPOL_WEIGHTED_INTERLEAVE ,
 .BR MPOL_PREFERRED ,
 or
-.BR MPOL_LOCAL
+.B MPOL_LOCAL
 (which are described in detail below).
 All policy modes except
 .B MPOL_DEFAULT
@@ -133,7 +116,7 @@ require the caller to specify the node or nodes to which the mode applies,
 via the
 .I nodemask
 argument.
-.PP
+.P
 The
 .I mode
 argument may also include an optional
@@ -141,6 +124,23 @@ argument may also include an optional
 The supported
 .I "mode flags"
 are:
+.TP
+.BR MPOL_F_NUMA_BALANCING " (since Linux 5.15)"
+.\" commit bda420b985054a3badafef23807c4b4fa38a3dff
+.\" commit 6d2aec9e123bb9c49cb5c7fc654f25f81e688e8c
+When
+.I mode
+is
+.BR MPOL_BIND ,
+enable the kernel NUMA balancing for the task if it is supported by the kernel.
+If the flag isn't supported by the kernel, or is used with
+.I mode
+other than
+.BR MPOL_BIND ,
+\-1 is returned and
+.I errno
+is set to
+.BR EINVAL .
 .TP
 .BR MPOL_F_STATIC_NODES " (since Linux-2.6.26)"
 A nonempty
@@ -157,7 +157,7 @@ A nonempty
 .I nodemask
 specifies node IDs that are relative to the set of
 node IDs allowed by the thread's current cpuset.
-.PP
+.P
 .I nodemask
 points to a bit mask of nodes containing up to
 .I maxnode
@@ -185,7 +185,7 @@ allowed by the thread's current cpuset context
 .B MPOL_F_STATIC_NODES
 mode flag is specified),
 and contains memory.
-.PP
+.P
 The
 .I mode
 argument must include one of the following values:
@@ -244,6 +244,23 @@ at least 1\ MB or bigger with a fairly uniform access pattern.
 Accesses to a single page of the area will still be limited to
 the memory bandwidth of a single node.
 .TP
+.BR MPOL_WEIGHTED_INTERLEAVE " (since Linux 6.9)"
+.\" commit fa3bea4e1f8202d787709b7e3654eb0a99aed758
+This mode interleaves page allocations across the nodes specified in
+.I nodemask
+according to the weights in
+.IR /sys/kernel/mm/mempolicy/weighted_interleave .
+For example, if bits 0, 2, and 5 are set in
+.IR nodemask ,
+and the contents of
+.IR /sys/kernel/mm/mempolicy/weighted_interleave/node0 ,
+.IR /sys/ .\|.\|. /node2 ,
+and
+.IR /sys/ .\|.\|. /node5
+are 4, 7, and 9, respectively,
+then pages in this region will be allocated on nodes 0, 2, and 5
+in a 4:7:9 ratio.
+.TP
 .B MPOL_PREFERRED
 This mode sets the preferred node for allocation.
 The kernel will try to allocate pages from this
@@ -283,7 +300,7 @@ By contrast,
 reverts to the memory policy of the thread (which may be set via
 .BR set_mempolicy (2));
 that policy may be something other than "local allocation".
-.PP
+.P
 If
 .B MPOL_MF_STRICT
 is passed in
@@ -297,9 +314,9 @@ then the call fails with the error
 if the existing pages in the memory range don't follow the policy.
 .\" According to the kernel code, the following is not true
 .\" --Lee Schermerhorn
-.\" In 2.6.16 or later the kernel will also try to move pages
+.\" In Linux 2.6.16 or later the kernel will also try to move pages
 .\" to the requested node with this flag.
-.PP
+.P
 If
 .B MPOL_MF_MOVE
 is specified in
@@ -312,7 +329,12 @@ If
 is also specified, then the call fails with the error
 .B EIO
 if some pages could not be moved.
-.PP
+If the
+.B MPOL_INTERLEAVE
+policy was specified,
+pages already residing on the specified nodes
+will not be moved such that they are interleaved.
+.P
 If
 .B MPOL_MF_MOVE_ALL
 is passed in
@@ -327,6 +349,11 @@ If
 is also specified, then the call fails with the error
 .B EIO
 if some pages could not be moved.
+If the
+.B MPOL_INTERLEAVE
+policy was specified,
+pages already residing on the specified nodes
+will not be moved such that they are interleaved.
 .\" ---------------------------------------------------------------
 .SH RETURN VALUE
 On success,
@@ -346,7 +373,7 @@ and
 .I maxnode
 points outside your accessible address space.
 Or, there was an unmapped hole in the specified memory range specified by
-.IR addr
+.I addr
 and
 .IR len .
 .TP
@@ -421,22 +448,33 @@ flag and the caller does not have the
 .B CAP_SYS_NICE
 privilege.
 .\" ---------------------------------------------------------------
-.SH VERSIONS
-The
-.BR mbind ()
-system call was added to the Linux kernel in version 2.6.7.
-.SH CONFORMING TO
-This system call is Linux-specific.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 2.6.7.
+.P
+Support for huge page policy was added with Linux 2.6.16.
+For interleave policy to be effective on huge page mappings the
+policied memory needs to be tens of megabytes or larger.
+.P
+Before Linux 5.7.
+.\" commit dcf1763546d76c372f3136c8d6b2b6e77f140cf0
+.B MPOL_MF_STRICT
+was ignored on huge page mappings.
+.P
+.B MPOL_MF_MOVE
+and
+.B MPOL_MF_MOVE_ALL
+are available only on Linux 2.6.16 and later.
 .SH NOTES
-Glibc does not provide a wrapper for this system call.
 For information on library support, see
 .BR numa (7).
-.PP
+.P
 NUMA policy is not supported on a memory-mapped file range
 that was mapped with the
 .B MAP_SHARED
 flag.
-.PP
+.P
 The
 .B MPOL_DEFAULT
 mode can have different effects for
@@ -470,20 +508,6 @@ with an empty set of nodes.
 This method will work for
 .BR set_mempolicy (2),
 as well.
-.PP
-Support for huge page policy was added with 2.6.16.
-For interleave policy to be effective on huge page mappings the
-policied memory needs to be tens of megabytes or larger.
-.PP
-Before Linux 5.7.
-.\" commit dcf1763546d76c372f3136c8d6b2b6e77f140cf0
-.B MPOL_MF_STRICT
-was ignored on huge page mappings.
-.PP
-.B MPOL_MF_MOVE
-and
-.B MPOL_MF_MOVE_ALL
-are available only on Linux 2.6.16 and later.
 .SH SEE ALSO
 .BR get_mempolicy (2),
 .BR getcpu (2),
@@ -495,12 +519,3 @@ are available only on Linux 2.6.16 and later.
 .BR cpuset (7),
 .BR numa (7),
 .BR numactl (8)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

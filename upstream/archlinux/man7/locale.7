@@ -1,34 +1,14 @@
 .\" Copyright (c) 1993 by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
 .\" and Copyright (C) 2014 Michael Kerrisk <mtk.manpages@gmail.com>
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" Modified Sat Jul 24 17:28:34 1993 by Rik Faith <faith@cs.unc.edu>
 .\" Modified Sun Jun 01 17:16:34 1997 by Jochen Hein
 .\"   <jochen.hein@delphi.central.de>
 .\" Modified Thu Apr 25 00:43:19 2002 by Bruno Haible <bruno@clisp.org>
 .\"
-.TH LOCALE 7  2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH locale 7 2024-06-15 "Linux man-pages 6.9.1"
 .SH NAME
 locale \- description of multilanguage support
 .SH SYNOPSIS
@@ -42,18 +22,18 @@ such as language for messages, different character sets, lexicographic
 conventions, and so on.
 A program needs to be able to determine its locale
 and act accordingly to be portable to different cultures.
-.PP
+.P
 The header
 .I <locale.h>
 declares data types, functions, and macros which are useful in this
 task.
-.PP
+.P
 The functions it declares are
 .BR setlocale (3)
 to set the current locale, and
 .BR localeconv (3)
 to get information about number formatting.
-.PP
+.P
 There are different categories for locale information a program might
 need; they are declared as macros.
 Using them as the first argument
@@ -148,10 +128,10 @@ and
 functions to ease the use of this information.
 The GNU gettext family of
 functions also obey the environment variable
-.BR LANGUAGE
+.B LANGUAGE
 (containing a colon-separated list of locales)
 if the category is set to a valid locale other than
-.BR """C""" .
+.BR \[dq]C\[dq] .
 This category also affects the behavior of
 .BR catopen (3).
 .TP
@@ -183,7 +163,7 @@ elements, which return strings such as "Herr" and "Frau"
 .TP
 .B LC_NUMERIC
 This category determines the formatting rules used for nonmonetary
-numeric values\(emfor example,
+numeric values\[em]for example,
 the thousands separator and the radix character
 (a period in most English-speaking countries,
 but a comma in many other regions).
@@ -233,40 +213,40 @@ and
 .TP
 .B LC_ALL
 All of the above.
-.PP
+.P
 If the second argument to
 .BR setlocale (3)
 is an empty string,
-.IR """""" ,
+.IR \[dq]\[dq] ,
 for the default locale, it is determined using the following steps:
-.IP 1. 3
+.IP (1) 5
 If there is a non-null environment variable
 .BR LC_ALL ,
 the value of
 .B LC_ALL
 is used.
-.IP 2.
+.IP (2)
 If an environment variable with the same name as one of the categories
 above exists and is non-null, its value is used for that category.
-.IP 3.
+.IP (3)
 If there is a non-null environment variable
 .BR LANG ,
 the value of
 .B LANG
 is used.
-.PP
+.P
 Values about local numeric formatting is made available in a
 .I struct lconv
 returned by the
 .BR localeconv (3)
 function, which has the following declaration:
-.PP
+.P
 .in +4n
 .EX
 struct lconv {
-
+\&
     /* Numeric (nonmonetary) information */
-
+\&
     char *decimal_point;     /* Radix character */
     char *thousands_sep;     /* Separator for digit groups to left
                                 of radix character */
@@ -277,13 +257,13 @@ struct lconv {
                            is done.  An element with value 0 means
                            that the previous element is used for
                            all groups further left. */
-
+\&
     /* Remaining fields are for monetary information */
-
+\&
     char *int_curr_symbol;   /* First three chars are a currency
                                 symbol from ISO 4217.  Fourth char
                                 is the separator.  Fifth char
-                                is \(aq\e0\(aq. */
+                                is \[aq]\[rs]0\[aq]. */
     char *currency_symbol;   /* Local currency symbol */
     char *mon_decimal_point; /* Radix character */
     char *mon_thousands_sep; /* Like \fIthousands_sep\fP above */
@@ -315,12 +295,11 @@ struct lconv {
 .in
 .SS POSIX.1-2008 extensions to the locale API
 POSIX.1-2008 standardized a number of extensions to the locale API,
-based on implementations that first appeared in version 2.3
-of the GNU C library.
+based on implementations that first appeared in glibc 2.3.
 These extensions are designed to address the problem that
 the traditional locale APIs do not mix well with multithreaded applications
 and with applications that must deal with multiple locales.
-.PP
+.P
 The extensions take the form of new functions for creating and
 manipulating locale objects
 .RB ( newlocale (3),
@@ -342,7 +321,7 @@ and
 and thus affects all unprivileged localized programs:
 .TP
 .B LOCPATH
-A list of pathnames, separated by colons (\(aq:\(aq),
+A list of pathnames, separated by colons (\[aq]:\[aq]),
 that should be used to find locale data.
 If this variable is set,
 only the individual compiled locale data files from
@@ -370,7 +349,7 @@ Usual default locale archive location.
 .TP
 .I /usr/lib/locale
 Usual default path for compiled individual locale files.
-.SH CONFORMING TO
+.SH STANDARDS
 POSIX.1-2001.
 .\"
 .\" The GNU gettext functions are specified in LI18NUX2000.
@@ -398,12 +377,3 @@ POSIX.1-2001.
 .BR charsets (7),
 .BR unicode (7),
 .BR utf\-8 (7)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

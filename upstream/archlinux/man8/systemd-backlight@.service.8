@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-BACKLIGHT@\&.SERVICE" "8" "" "systemd 249" "systemd-backlight@.service"
+.TH "SYSTEMD\-BACKLIGHT@\&.SERVICE" "8" "" "systemd 257" "systemd-backlight@.service"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -33,10 +33,22 @@ load [backlight|leds]:DEVICE
 .SH "DESCRIPTION"
 .PP
 systemd\-backlight@\&.service
-is a service that restores the display backlight brightness at early boot and saves it at shutdown\&. On disk, the backlight brightness is stored in
-/var/lib/systemd/backlight/\&. During loading, if the udev property
-\fBID_BACKLIGHT_CLAMP\fR
-is not set to false, the brightness is clamped to a value of at least 1 or 5% of maximum brightness, whichever is greater\&. This restriction will be removed when the kernel allows user space to reliably set a brightness value which does not turn off the display\&.
+is a service that restores the brightness of a display backlight or LED (e\&.g\&. keyboard backlight) device at early boot, and saves it at shutdown\&. The brightness is stored in
+/var/lib/systemd/backlight/\&.
+.PP
+On restoring brightness of a display backlight device,
+\fBsystemd\-backlight\fR
+reads
+\fIID_BACKLIGHT_CLAMP\fR
+udev property, that takes a boolean value or a percentage (needs to be suffixed with
+"%", e\&.g\&.
+"30%")\&. When a percentage is specified, the saved brightness is clamped to a value of at least 1 or the specified percentage of the maximum brightness, whichever is greater\&. When unset or set to true, the brightness is clamped in the same way with percentage 5%\&. When false, the saved brightness will not be clamped, and loaded as is\&.
+.PP
+On restoring brightness of a LED device,
+\fBsystemd\-backlight\fR
+reads
+\fIID_LEDS_CLAMP\fR
+udev property, that also takes a boolean value or a percentage\&. When a percentage is specified, the saved brightness is clamped to the specified percentage of the maximum brightness\&. When set to true, the brightness is clamped in the same way with percentage 5%\&. When unset or set to false, the saved brightness will not be clamped, and loaded as is\&.
 .SH "KERNEL COMMAND LINE"
 .PP
 systemd\-backlight
@@ -47,6 +59,8 @@ understands the following kernel command line parameter:
 Takes a boolean argument\&. Defaults to
 "1"\&. If
 "0", does not restore the backlight settings on boot\&. However, settings will still be stored on shutdown\&.
+.sp
+Added in version 209\&.
 .RE
 .SH "SEE ALSO"
 .PP

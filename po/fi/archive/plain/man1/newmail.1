@@ -1,0 +1,158 @@
+.if n \{\
+.	ds ct "
+.\}
+.if t \{\
+.	ds ct \\(co
+.\}
+.\" Translated into finnish by Tero Heikkila (root@rk2)
+.\"
+.TH NEWMAIL 1 "4. Kesäkuuta 1998" "USENET Community Trust" "Käyttäjän sovellusohjelmat"
+.SH NIMI
+newmail,wnewmail - ohjelmia, jotka ilmoittavat uuden postin saapumisesta
+.SH "YLEISKATSAUS"
+.B newmail
+.B [-d]
+.B [-i \fIaikaväli\fB]
+.B [-w]
+\fItiedostokuvaus\fR {\fItiedostokuvaus\fR...}
+.br
+.B wnewmail
+.B [-d]
+.B [-i \fIaikaväli\fB]
+.B [-w]
+\fItiedostokuvaus\fR {\fItiedostokuvaus\fR...}
+.PP
+.SH KUVAUS
+.I Newmail\^
+on ohjelma, jonka avulla postilaatikoita voidaan
+älykkäästi tarkkailla. Se pohjautuu löyhästi \fIbiff(1)\fR-ohjelmaan
+ja \fInewmail\fRin versioon, joka kuului \fBElm 1.7\fR-ohjelman
+pakettiin. 
+.P
+Perustoimintona ohjelma tarkistaa käyttäjän määrittelemän listan
+postilaatikoita määrätyin \fIaikavälein\fR (sekunneissa) ja ilmoittaa
+uuden postin saapumisesta mihin tahansa määritettyyn
+postilaatikkoon. Ohjelma kertoo jokaisesta saapuneesta viestistä
+lähettäjän nimen ja viestin aiheen.
+.P
+Viestistä kerrottu informaatio voidaan esittää monella eri tavalla
+riippuen ohjelman ajotavasta, seurannassa olevien kansioiden
+lukumäärästä ja viestin tilasta. Jos ohjelmaa ajetaan \fIikkunassa\fR
+(esim. "-w" -optiolla tai käynnistettynä ohjelmana \fIwnewmail\fR), 
+tulostus on seuraavan näköistä:
+.nf
+
+   \fIlähettäjän nimi\fR - \fIviestin aihe\fR
+   Priority: \fIlähettäjän nimi\fR - \fIviestin aihe\fR
+
+.fi
+jossa <lähettäjän nimi> on joko postin lähettäjän oikea nimi, jos se
+on saatavilla (ARPAn 'From:'-rivi) tai jokin muu lyhyt kuvaus
+sähköpostin alkulähteestä. Jos sinä olet lähettäjä, <lähettäjän nimi>
+vaihdetaan muotoon "to <vastaanottajan nimi>". Jos viestissä ei ole
+otsikkoa (aihetta), ruutuun tulevat sanat "<no subject>".
+.P
+Jos seurannassa on useita kansioita (enemmän kuin yksi), kansion nimi
+kerrotaan tulostuksen alussa seuraavasti:
+.nf
+
+   \fIkansio\fR: \fIlähettäjän nimi\fR - \fIviestin aihe\fR
+
+.fi
+Jos ajat \fInewmail\fRia ilman ikkunointivalintaa, tulostus on
+muotoiltu paremmin sopivaksi ilmestymään muutoin aktiiviselle ruudulle
+ja on muotoiltu seuraavasti:
+.nf
+
+   >> New mail from \fIlähettäjän nimi\fR - \fIviestin aihe\fR
+   >> Priority mail from \fIlähettäjän nimi\fR - \fIviestin aihe\fR
+
+.fi
+Tässäkin tapauksessa kansioiden nimet kerrotaan ilmoituksen alussa.
+.P
+Mahdolliset optiot (lisävalinnat) ovat:
+.TP 1.0i
+.B "-d"
+Tämä käynnistää virheenetsintätilaan (debuggaustilaan) eli käskee
+ohjelmaa kertomaan kaiken! Yleensä ei ole suositeltavaa käyttää tätä
+optiota, jollet sitten ole kiinnostunut juuri etsimään ohjelmasta
+virheitä. 
+.TP
+.B "-i \fIaikaväli\fR  "
+Tämä muuttaa kansioiden tarkastustaajuuden määritettyyn
+\fIaikaväliin\fR sekunneissa. Ohjelman oletusaikaväli on 60
+sekuntia. \fIHuom: jos vaihdat aikavälin pienemmäksi kuin 10
+sekunniksi, ohjelma varoittaa aikavälin pienuudesta. (Näin pienestä
+aikavälistä ei yleensä juurikaan ole hyötyä eikä siten ole
+suositeltavaa.)\fR
+.TP
+.B "-w"
+Option ``-w'' käyttö aiheuttaa ohjelman simuloimaan ajoa ikkunasta
+(eli esim. suppeampi tulostusmuoto). Todennäköisimmin tämän option
+käytön sijaan kannattaisi käyttää yksinkertaisesti ohjelmaa
+\fIwnewmail\fR. 
+.P
+\fITiedostokuvaukset\fR koostuvat kahdesta osasta,
+\fIkansion nimestä\fR ja \fIetuliitemerkkijonosta\fR, joista
+jälkimmäisen voi aina jättää pois. Käytä muotoa
+\fIkansionnimi=etuliitemerkkijono\fR, ja määritä kansiot koko nimellä,
+valvotun postilaatikon omistajan käyttäjänimellä tai standardilla
+\fBElm\fRin metamerkeillä, joilla voidaan määrittää kansiot sisältävä
+hakemisto (esim. ``+'', ``='' tai ``%'').
+.P
+Kansiot, joihin käyttäjällä ei ole lukuoikeuksia, aiheuttavat ohjelman
+välittömän keskeytymisen. Toisaalta ei-olemassaolevia tiedostoja
+tarkastetaan \fIaikavälin\fR ilmaisemalla taajuudella, joten ohjelmaa
+käynnistettäessä tulisi olla tarkkana määritetyistä tiedostonimistä.
+.P
+Ohjelma on ajossa kunnes kirjaudut ulos tai tapat sen
+(\fIkill(1)\fR-komennolla). Se pysyy vauhdissa mukana, vaikka minkä
+tahansa kansion koko ensin pienenisi ja sitten kasvaisi jälleen.
+.P
+Tarkkailtava oletuskansio on aina sisääntulevien postiesi kansio.
+.SH ESIMERKKEJÄ
+Joitain esimerkkikomentoja
+.nf
+
+	$ \fBnewmail\fR
+
+.fi
+tarkastaa sisääntulevien postiesi kansion kerran 60 sekunnissa.
+.nf
+
+	$ \fBnewmail  -i  15  jaska  root\fR
+
+.fi
+tarkkailee käyttäjien ``jaska'' ja ``root'' sisääntulevien postien
+kansioita tarkastaen ne joka 15. sekunti.
+.nf
+
+	$ \fBnewmail  "mari=Mari"  +posteljooni=PL\fR
+
+.fi
+tarkkailee käyttäjän ``mari'' sisääntulevien postien kansiota asettaen
+kaikkiin viesteihin etuliitteeksi merkkijonon ``Mari'' sekä käyttäjän
+\fIpostihakemiston\fR kansiota ``posteljooni'' asettaen kaikkiin
+näihin viesteihin merkkijonon ``PL''.
+.P
+Voit tarkkailla postejasi myös paljon monimutkaisemmin :-),
+esimerkiksi 
+.nf
+
+	$ \fBnewmail  -i  30  $LOGNAME=ma  ${LOGNAME}su=munroot   /tmp/mbox\fR
+
+.fi
+tarkastaa kerran 30 sekunnissa käyttäjän postilaatikon, kansion, jonka
+nimi on käyttäjän tunnus lisättynä päätteellä ``su'' (esim. ``jaska''
+muuttuisi muotoon ``jaskasu'') ja tiedostoa /tmp/mbox asettaen
+jokaiseen eri etuliitteen, ``ma'', ``munroot'' ja ``mbox''.
+.SH KIRJOITTAJA
+Elmin kehitysryhmä (Elm Development Group)
+.SH "KATSO MYÖS"
+notify sh(1):ssa tai csh(1):ssa
+.SH BUGI-ILMOITUKSET OSOITTEESEEN
+Syd Weinstein	elm@DSI.COM	(dsinc!elm)
+.SH TEKIJÄNOIKEUDET
+\fB\*(ct\fRCopyright 1988-1992 The USENET Community Trust
+.br
+Johdettu Elm 2.0:sta, \fB\*(ct\fR Copyright 1986, 1987 Dave Taylor

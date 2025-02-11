@@ -1,5 +1,5 @@
 '\" t
-.TH "SYSTEMD\-CAT" "1" "" "systemd 249" "systemd-cat"
+.TH "SYSTEMD\-CAT" "1" "" "systemd 256.8" "systemd-cat"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -22,10 +22,10 @@
 .SH "NAME"
 systemd-cat \- Connect a pipeline or program\*(Aqs output with the journal
 .SH "SYNOPSIS"
-.HP \w'\fBsystemd\-cat\ \fR\fB[OPTIONS...]\fR\fB\ \fR\fB[COMMAND]\fR\fB\ \fR\fB[ARGUMENTS...]\fR\ 'u
-\fBsystemd\-cat \fR\fB[OPTIONS...]\fR\fB \fR\fB[COMMAND]\fR\fB \fR\fB[ARGUMENTS...]\fR
-.HP \w'\fBsystemd\-cat\ \fR\fB[OPTIONS...]\fR\ 'u
-\fBsystemd\-cat \fR\fB[OPTIONS...]\fR
+.HP \w'\fBsystemd\-cat\fR\ 'u
+\fBsystemd\-cat\fR [OPTIONS...] [COMMAND] [ARGUMENTS...]
+.HP \w'\fBsystemd\-cat\fR\ 'u
+\fBsystemd\-cat\fR [OPTIONS...]
 .SH "DESCRIPTION"
 .PP
 \fBsystemd\-cat\fR
@@ -85,13 +85,23 @@ If
 is not specified, messages from stderr will still be logged, with the same default priority level as stdout\&.
 .sp
 Also, note that when stdout and stderr use the same default priority, the messages will be strictly ordered, because one channel is used for both\&. When the default priority differs, two channels are used, and so stdout messages will not be strictly ordered with respect to stderr messages \- though they will tend to be approximately ordered\&.
+.sp
+Added in version 241\&.
 .RE
 .PP
 \fB\-\-level\-prefix=\fR
 .RS 4
 Controls whether lines read are parsed for syslog priority level prefixes\&. If enabled (the default), a line prefixed with a priority prefix such as
 "<5>"
-is logged at priority 5 ("notice"), and similar for the other priority levels\&. Takes a boolean argument\&.
+is logged at priority 5 ("notice"), and similarly for the other priority levels\&. Takes a boolean argument\&.
+.RE
+.PP
+\fB\-\-namespace=\fR
+.RS 4
+Specifies the journal namespace to which the standard IO should be connected\&. For details about journal namespaces, see
+\fBsystemd-journald.service\fR(8)\&.
+.sp
+Added in version 256\&.
 .RE
 .SH "EXIT STATUS"
 .PP
@@ -130,9 +140,7 @@ and writes the output it generates to the journal:
 .RE
 .\}
 .PP
-Even though the two examples have very similar effects the first is preferable since only one process is running at a time, and both stdout and stderr are captured while in the second example, only stdout is captured\&.
+Even though the two examples have very similar effects, the first is preferable, since only one process is running at a time and both stdout and stderr are captured, while in the second example, only stdout is captured\&.
 .SH "SEE ALSO"
 .PP
-\fBsystemd\fR(1),
-\fBsystemctl\fR(1),
-\fBlogger\fR(1)
+\fBsystemd\fR(1), \fBsystemctl\fR(1), \fBlogger\fR(1)

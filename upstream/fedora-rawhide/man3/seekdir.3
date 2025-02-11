@@ -1,26 +1,7 @@
+'\" t
 .\" Copyright 1993 David Metcalfe (david@prism.demon.co.uk)
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\" References consulted:
 .\"     Linux libc source code
@@ -28,27 +9,30 @@
 .\"     386BSD man pages
 .\" Modified Sat Jul 24 18:25:21 1993 by Rik Faith (faith@cs.unc.edu)
 .\"
-.TH SEEKDIR 3  2021-03-22 "" "Linux Programmer's Manual"
+.TH seekdir 3 2024-05-02 "Linux man-pages 6.9.1"
 .SH NAME
 seekdir \- set the position of the next readdir() call in the directory
 stream.
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <dirent.h>
-.PP
+.P
 .BI "void seekdir(DIR *" dirp ", long " loc );
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR seekdir ():
 .nf
     _XOPEN_SOURCE
-        || /* Glibc since 2.19: */ _DEFAULT_SOURCE
-        || /* Glibc <= 2.19: */ _BSD_SOURCE || _SVID_SOURCE
+        || /* glibc >= 2.19: */ _DEFAULT_SOURCE
+        || /* glibc <= 2.19: */ _BSD_SOURCE || _SVID_SOURCE
 .fi
 .SH DESCRIPTION
 The
@@ -68,24 +52,23 @@ function returns no value.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR seekdir ()
 T}	Thread safety	MT-Safe
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, 4.3BSD.
-.SH NOTES
-In glibc up to version 2.1.1, the type of the
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, 4.3BSD.
+.SH CAVEATS
+Up to glibc 2.1.1, the type of the
 .I loc
 argument was
 .IR off_t .
@@ -104,12 +87,3 @@ assumptions about the value in this argument.
 .BR rewinddir (3),
 .BR scandir (3),
 .BR telldir (3)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

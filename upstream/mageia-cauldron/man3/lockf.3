@@ -1,51 +1,36 @@
+'\" t
 .\" Copyright 1997 Nicolás Lichtmaier <nick@debian.org>
 .\" Created Thu Aug  7 00:44:00 ART 1997
 .\"
-.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
-.\" This is free documentation; you can redistribute it and/or
-.\" modify it under the terms of the GNU General Public License as
-.\" published by the Free Software Foundation; either version 2 of
-.\" the License, or (at your option) any later version.
-.\"
-.\" The GNU General Public License's references to "object code"
-.\" and "executables" are to be interpreted as the output of any
-.\" document formatting or typesetting system, including
-.\" intermediate and printed output.
-.\"
-.\" This manual is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public
-.\" License along with this manual; if not, see
-.\" <http://www.gnu.org/licenses/>.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: GPL-2.0-or-later
 .\"
 .\" Added section stuff, aeb, 2002-04-22.
 .\" Corrected include file, drepper, 2003-06-15.
 .\"
-.TH LOCKF 3 2021-03-22 "GNU" "Linux Programmer's Manual"
+.TH lockf 3 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 lockf \- apply, test or remove a POSIX lock on an open file
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <unistd.h>
-.PP
+.P
 .BI "int lockf(int " fd ", int " cmd ", off_t " len );
 .fi
-.PP
+.P
 .RS -4
 Feature Test Macro Requirements for glibc (see
 .BR feature_test_macros (7)):
 .RE
-.PP
+.P
 .BR lockf ():
 .nf
     _XOPEN_SOURCE >= 500
 .\"    || _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED
-        || /* Glibc since 2.19: */ _DEFAULT_SOURCE
-        || /* Glibc <= 2.19: */ _BSD_SOURCE || _SVID_SOURCE
+        || /* glibc >= 2.19: */ _DEFAULT_SOURCE
+        || /* glibc <= 2.19: */ _BSD_SOURCE || _SVID_SOURCE
 .fi
 .SH DESCRIPTION
 Apply, test, or remove a POSIX lock on a section of an open file.
@@ -68,7 +53,7 @@ is the current file position, and if
 is zero, the section extends from the current file position to
 infinity, encompassing the present and future end-of-file positions.
 In all cases, the section may extend past current end-of-file.
-.PP
+.P
 On Linux,
 .BR lockf ()
 is just an interface on top of
@@ -83,7 +68,7 @@ and
 locks unspecified.
 A portable application should probably avoid mixing calls
 to these interfaces.
-.PP
+.P
 Valid operations are given below:
 .TP
 .B F_LOCK
@@ -137,7 +122,7 @@ is not an open file descriptor; or
 is
 .B F_LOCK
 or
-.BR F_TLOCK
+.B F_TLOCK
 and
 .I fd
 is not a writable file descriptor.
@@ -161,43 +146,33 @@ Too many segment locks open, lock table is full.
 .SH ATTRIBUTES
 For an explanation of the terms used in this section, see
 .BR attributes (7).
-.ad l
-.nh
 .TS
 allbox;
 lbx lb lb
 l l l.
 Interface	Attribute	Value
 T{
+.na
+.nh
 .BR lockf ()
 T}	Thread safety	MT-Safe
 .TE
-.hy
-.ad
-.sp 1
-.SH CONFORMING TO
-POSIX.1-2001, POSIX.1-2008, SVr4.
+.SH STANDARDS
+POSIX.1-2008.
+.SH HISTORY
+POSIX.1-2001, SVr4.
 .SH SEE ALSO
 .BR fcntl (2),
 .BR flock (2)
-.PP
+.P
 .I locks.txt
 and
 .I mandatory\-locking.txt
 in the Linux kernel source directory
-.IR Documentation/filesystems
+.I Documentation/filesystems
 (on older kernels, these files are directly under the
 .I Documentation
 directory, and
 .I mandatory\-locking.txt
 is called
 .IR mandatory.txt )
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

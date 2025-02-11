@@ -1,0 +1,238 @@
+.\" $Id: $
+..\" Copyright (c) 1980, 1990 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     from: @(#)lpr.1	6.10 (Berkeley) 7/24/91
+.\"	$Id: lpr.1,v 1.1.1.1 1997/10/08 18:09:58 msf Exp $
+.\"
+.Dd July 24, 1991
+.\" Translated into Finnish by rene.gauffin@dlc.fi)
+.\"
+.TH LPR 7 "" "Käyttäjän sovellusohjelmat" ""
+.Os BSD 4
+.SH NIMI
+.Nm lpr
+.Nd tulostus erillliskirjoittimella
+.SH "YLEISKATSAUS"
+.Nm lpr
+.Op Fl P Ns Ar printer
+.Op Fl \&# Ns Ar num
+.Op Fl C Ar class
+.Op Fl J Ar job
+.Op Fl T Ar title
+.Op Fl U Ar user
+.Op Fl i Op Ar numcols
+.Op Fl 1234 Ar font
+.Op Fl w Ns Ar num
+.Op Fl cdfghlnmprstv
+.Op Ar name ...
+.SH KUVAUS
+.Nm Lpr
+käyttää tulostusjonon muodostavaa demonia nimettyjen tiedostojen tulostamiseen silloin kun  sopiva laitteisto on käytettävissä. Jos nimiä ei ole annettu, oletuksena käytetään vakiosyötettä.
+.Pp
+Seuraavia yksikirjaimisia valitsimia käytetään ilmoittamaan rivikirjoittimen tulostusjonon ohjaimelle, että tiedostot eivät ole vakiomuotoisia tekstítiedostoja. Tulostava demoni käyttää sopivia suotimia  tulostaakseen tiedot asianmukaisesti.
+.Bl -tag -width indent
+.It Fl c
+Tiedostojen oletetaan sisältävän tietoa, joka on tuotettu ohjelmalla
+.Xr cifplot 1
+.It Fl d
+Tiedostojen oletetaan sisältävän tietoa, joka on tuotettu ohjelmalla
+.Em tex
+.Pf ( Tn DVI
+formaatti Stanfordista).
+.It Fl f
+Käytä suodinta joka tulkitsee joka rivin ensimmäisen merkin
+vakioiduksi
+.Tn FORTRAN
+- ohjausmerkiksi
+.It Fl g
+Tiedostojen oletetaan sisältävän vakioitua piirturitietoa, joka on tuotettu ohjelmalla
+.Xr plot
+(katso myös
+.Xr plot
+josta löytyy tietoja rivikirjoittimen tulostusohjaimen suotimista).
+.It Fl l
+Käytä suodinta joka sallii ohjausmerkkien tulostumisen ja estää sivukatkot
+.It Fl n
+Tiedostojen oletetaan sisältävän tietoa, joka on tuotettu ohjelmalla
+.Em ditroff
+(laitteistoriippumaton  troff).
+.It Fl p
+Käytä
+.Xr pr  1
+tiedostojen formatointiin (sama kuin
+.Xr print  ) .
+.It Fl t
+Tiedostojen oletetaan sisältävän tietoa, joka on tuotettu ohjelmalla
+.Xr troff  1
+(yhdisteltyjä valoladonnan käskyjä).
+.It Fl v
+Tiedostojen oletetaan sisältävän rasterikuvan Benson Vaian-tyyppisille laitteille
+.El
+.Pp
+Seuraavia valitsimia käytetään tulostustyön ohjaamiseen
+.Bl -tag -width indent
+.It Fl P
+Pakko-ohjaa tuloste määrätylle tulostimelle.Tavallisesti käytetään oletuskirjoitinta (sijainnista riippuen)  tai käytetään ympäristömuuttujan
+.Ev PRINTER
+arvoa.
+.It Fl h
+Estä esilehden  tulostus.
+.It Fl m
+Työn valmistuttua lähetä viesti 
+.It Fl r
+Poista tiedosto kun se on siirretty kirjoittimelle tai tulostuksen päätyttyä (käyttäen
+.Fl s
+valitsinta).
+.It Fl s
+Käytä symboolilinkkejä. Tavallisesti tiedostot kopioidaan jonohakemistoon.
+Valitsin
+.Fl s
+käyttää
+.Xr symlink  2
+tiedostojen linkitykseen välttäen näin kopioinnin jolloin suuriakin tiedostoja voidaan tulostaa. Tämä merkitsee, että tiedostoja ei tule muokata tai poistaa enenkuin ne ovat tulostuneet.
+.El
+.Pp
+Loput valitsimet vaikuttavat kopioiden määrään, sivun ulkoasuun ja tnnisteriveihin
+.Bl -tag -width indent
+.It Fl \&# Ns Ar num
+Luku
+.Ar num
+ilmoittaa montako kopiota tulostetaan kustakin nimetystä tiedostosta..Esim.
+.Bd -literal -offset indent
+lpr \-#3 foo.c bar.c more.c
+.Ed
+tuotttaa tulosteen jossa on 3 kopiota tiedostosta foo.c, jota seuraa 3 kopioita tiedostosta bar.c, jne.  Toisaalta,
+.Bd -literal -offset indent
+cat foo.c bar.c more.c \&| lpr \-#3
+.Ed
+.Pp
+tulostaa 3 kopiota tiedostojen yhdistelystä: Tämä mahdollisus on useissa koneissa estetty, jotta kopiointiin käytettäisiin mieluummin kopiokonetta.
+.It Xo
+.Fl Ns Oo Cm 1234 Oc Ar font
+.Xc
+Märittelee
+.Ar fontin (kirjasintyylin) 
+joka asennetaan käyttöön fonttipositioon
+.Ar i  .
+Demoni luo 
+.Li .railmag
+-tiedoston, joka viittaa fonttitiedoston polkuun.
+.It Fl C Ar  class  (luokka)
+Työn luokitus, joka tulostuu esilehdelle. Esim.
+.Bd -literal -offset indent
+lpr \-C EECS foo.c
+.Ed
+.Pp
+aiheutttaa sen, että systeemin nimen (joka haetaan käskyllä
+.Xr hostname  1  )
+tilallle esilehdelle tulostuu  
+.Tn EECS ,
+jonka jälkeen tulostuu tiedosto  foo.c 
+.It Fl J Ar job (työ)
+Esilehdelle tulostuva työn nimi..
+Yleensä käytetään ensimmäisen tiedoston nimeä
+.It Fl T Ar title (otsake)
+Otsake, jolla korvataan
+.Xr pr  1 ,
+tiedostonimi.
+.It Fl U Ar user (käyttäjä)
+Esilehdellle tulostuva käyttäjän nimi, myös laskutusperuste
+Tämä valitsin huomioidaaan vain, jos todellinen käyttäjätunnnus on demoni 
+tai että tunnus on määritelty printcap-tiedostossa  demonin sijasta) ja se on tarkoitettu niiitä tilanteita varten, jossa tulostuksen suotimet haluaisivat vaihtaa töiden järjestystä jonossa.
+.It Fl i Op numcols
+Tuloste on sisennetty. Jos seuraava valitsin on numeerinen
+.Pq Ar numcols ,
+luku ilmoittaa montako tyhjää merkkiä tulostetaan ennen kunkin rivin akua, muussa tapauksessa tulostetaan 8 tyhjää.
+.It Fl w Ns Ar num
+Tässä
+.Ar num
+ilmoittaa paperin leveyden tulostimessa
+.Xr pr 1 .
+.El
+.SH YMPÄRISTÖMUUTTUJAT
+Jos seuraaava ympäristömuuuttuja on olemassa, sitä käyttää
+.Nm lpr :
+.Bl -tag -width PRINTER
+.It Ev PRINTER
+Määrittelee vaihtoehtoisen oletuskirjoittimen
+.El
+.SH TIEDOSTOT
+.Bl -tag -width /var/spool/output/*/tf* -compact
+.It Pa /etc/passwd
+Henkilökohtaiset tunnistustiedot
+.It Pa /etc/printcap
+Kirjoitttimen ominaisuuksien tietokanta
+.It Pa /usr/sbin/lpd*
+Rivkirjoitindemonit
+.It Pa /var/spool/output/*
+Tulostusjonojen hakemistot
+.It Pa /var/spool/output/*/cf*
+Demonien ohjaustiedostot
+.It Pa /var/spool/output/*/df*
+"cf"-tiedoissa eriteltyjen tietojen tiedostot
+.It Pa /var/spool/output/*/tf*
+"cf"-tiedostojen väliakaiset kopiot.
+.El
+.SH "KATSO MYÖS"
+.Xr lpq 1 ,
+.Xr lprm 1 ,
+.Xr pr 1 ,
+.Xr symlink 2 ,
+.Xr printcap 5 ,
+.Xr lpc 8 ,
+.Xr lpd 8
+.SH HISTORIA
+Käsky
+.Nm lpr
+esiintyi
+.Bx 3 :ssa.
+.SH DIAGNOSTIIKKA
+Jos yrität siirtää tulostusjonoon liian suurta tiedostoa, se pakataan
+.Nm Lpr
+ei tulosta binääritiedostoja.
+Jos muu käyttäjä kuin  root  tulostaa tiedostoa käyttämättä tulostusjonokäsitelyä
+.Nm lpr
+ilmoittaa tästä viestilllä eikä sijoita töitä jonoon.
+Jos paikallllsikoneen
+.Xr lpd 1
+ei saada luoduksi yhteyttä,
+.Nm lpr
+ilmoitttaa että demonia ei voitu käynnistää
+Diagnostiikkaa, jioka koskeee puuttuvia jonotiedostoja, voidaan tulostaa demonin lokiin käyttäen  käskyä
+.Xr lpd 1 .
+.SH BUGIT
+Fontit, joita käyttävät 
+.Xr troff 1
+ja
+.Xr tex
+ovat sillä koneeella, johon tulostin on liitetty. Tällä hetkellä ei ole mahdolliasta käyttää paikalliisia fonttikirjastoja
+.SH "KATSO MYÖS"

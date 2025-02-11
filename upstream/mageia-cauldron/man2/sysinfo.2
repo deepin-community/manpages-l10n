@@ -5,51 +5,34 @@
 .\" The structure definitions are taken more or less straight from the kernel
 .\" source files.
 .\"
-.\" %%%LICENSE_START(VERBATIM)
-.\" Permission is granted to make and distribute verbatim copies of this
-.\" manual provided the copyright notice and this permission notice are
-.\" preserved on all copies.
-.\"
-.\" Permission is granted to copy and distribute modified versions of this
-.\" manual under the conditions for verbatim copying, provided that the
-.\" entire resulting derived work is distributed under the terms of a
-.\" permission notice identical to this one.
-.\"
-.\" Since the Linux kernel and libraries are constantly changing, this
-.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-.\" responsibility for errors or omissions, or for damages resulting from
-.\" the use of the information contained herein.  The author(s) may not
-.\" have taken the same level of care in the production of this manual,
-.\" which is licensed free of charge, as they might when working
-.\" professionally.
-.\"
-.\" Formatted or processed versions of this manual, if unaccompanied by
-.\" the source, must acknowledge the copyright and authors of this work.
-.\" %%%LICENSE_END
+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
 .\"
 .\"
 .\" Modified Sat Jul 24 12:35:12 1993 by Rik Faith <faith@cs.unc.edu>
 .\" Modified Tue Oct 22 22:29:51 1996 by Eric S. Raymond <esr@thyrsus.com>
 .\" Modified Mon Aug 25 16:06:11 1997 by Nicolás Lichtmaier <nick@debian.org>
 .\"
-.TH SYSINFO 2 2021-03-22 "Linux" "Linux Programmer's Manual"
+.TH sysinfo 2 2023-10-31 "Linux man-pages 6.06"
 .SH NAME
 sysinfo \- return system information
+.SH LIBRARY
+Standard C library
+.RI ( libc ", " \-lc )
 .SH SYNOPSIS
 .nf
 .B #include <sys/sysinfo.h>
-.PP
+.P
 .BI "int sysinfo(struct sysinfo *" info );
 .fi
 .SH DESCRIPTION
 .BR sysinfo ()
 returns certain statistics on memory and swap usage,
 as well as the load average.
-.PP
+.P
 Until Linux 2.3.16,
 .BR sysinfo ()
 returned information in the following structure:
-.PP
+.P
 .in +4n
 .EX
 struct sysinfo {
@@ -66,13 +49,13 @@ struct sysinfo {
 };
 .EE
 .in
-.PP
+.P
 In the above structure, the sizes of the memory and swap fields
 are given in bytes.
-.PP
+.P
 Since Linux 2.3.23 (i386) and Linux 2.3.48
 (all architectures) the structure is:
-.PP
+.P
 .in +4n
 .EX
 struct sysinfo {
@@ -93,7 +76,7 @@ struct sysinfo {
 };
 .EE
 .in
-.PP
+.P
 In the above structure,
 sizes of the memory and swap fields are given as multiples of
 .I mem_unit
@@ -108,27 +91,16 @@ is set to indicate the error.
 .SH ERRORS
 .TP
 .B EFAULT
-.IR info
+.I info
 is not a valid address.
-.SH VERSIONS
-.BR sysinfo ()
-first appeared in Linux 0.98.pl6.
-.SH CONFORMING TO
-This function is Linux-specific, and should not be used in programs
-intended to be portable.
+.SH STANDARDS
+Linux.
+.SH HISTORY
+Linux 0.98.pl6.
 .SH NOTES
 All of the information provided by this system call is also available via
-.IR /proc/meminfo
+.I /proc/meminfo
 and
 .IR /proc/loadavg .
 .SH SEE ALSO
 .BR proc (5)
-.SH COLOPHON
-This page is part of release 5.13 of the Linux
-.I man-pages
-project.
-A description of the project,
-information about reporting bugs,
-and the latest version of this page,
-can be found at
-\%https://www.kernel.org/doc/man\-pages/.

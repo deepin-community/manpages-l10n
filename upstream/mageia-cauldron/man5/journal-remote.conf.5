@@ -1,5 +1,5 @@
 '\" t
-.TH "JOURNAL\-REMOTE\&.CONF" "5" "" "systemd 249" "journal-remote.conf"
+.TH "JOURNAL\-REMOTE\&.CONF" "5" "" "systemd 255" "journal-remote.conf"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,9 +38,14 @@ These files configure various parameters of
 for a general description of the syntax\&.
 .SH "CONFIGURATION DIRECTORIES AND PRECEDENCE"
 .PP
-The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. Initially, the main configuration file in
+The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. The main configuration file is either in
+/usr/lib/systemd/
+or
 /etc/systemd/
-contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by editing this file or by creating drop\-ins, as described below\&. Using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
+and contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by creating drop\-ins, as described below\&. The main configuration file can also be edited for this purpose (or a copy in
+/etc/
+if it\*(Aqs shipped in
+/usr/) however using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
 .PP
 In addition to the "main" configuration file, drop\-in configuration snippets are read from
 /usr/lib/systemd/*\&.conf\&.d/,
@@ -52,7 +57,7 @@ configuration subdirectories are sorted by their filename in lexicographic order
 When packages need to customize the configuration, they can install drop\-ins under
 /usr/\&. Files in
 /etc/
-are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&.
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&. This also defined a concept of drop\-in priority to allow distributions to ship drop\-ins within a specific range lower than the range used by users\&. This should lower the risk of package drop\-ins overriding accidentally drop\-ins defined by users\&.
 .PP
 To disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
 /dev/null
@@ -65,6 +70,8 @@ All options are configured in the [Remote] section:
 \fISeal=\fR
 .RS 4
 Periodically sign the data in the journal using Forward Secure Sealing\&.
+.sp
+Added in version 229\&.
 .RE
 .PP
 \fISplitMode=\fR
@@ -73,24 +80,61 @@ One of
 "host"
 or
 "none"\&.
+.sp
+Added in version 220\&.
 .RE
 .PP
 \fIServerKeyFile=\fR
 .RS 4
 SSL key in PEM format\&.
+.sp
+Added in version 220\&.
 .RE
 .PP
 \fIServerCertificateFile=\fR
 .RS 4
 SSL certificate in PEM format\&.
+.sp
+Added in version 220\&.
 .RE
 .PP
 \fITrustedCertificateFile=\fR
 .RS 4
 SSL CA certificate\&.
+.sp
+Added in version 220\&.
+.RE
+.PP
+\fIMaxUse=\fR, \fIKeepFree=\fR, \fIMaxFileSize=\fR, \fIMaxFiles=\fR
+.RS 4
+These are analogous to
+\fISystemMaxUse=\fR,
+\fISystemKeepFree=\fR,
+\fISystemMaxFileSize=\fR
+and
+\fISystemMaxFiles=\fR
+in
+\fBjournald.conf\fR(5)\&.
+.sp
+\fIMaxUse=\fR
+controls how much disk space the
+\fBsystemd\-journal\-remote\fR
+may use up at most\&.
+\fIKeepFree=\fR
+controls how much disk space
+\fBsystemd\-journal\-remote\fR
+shall leave free for other uses\&.
+\fBsystemd\-journal\-remote\fR
+will respect both limits and use the smaller of the two values\&.
+.sp
+\fIMaxFiles=\fR
+controls how many individual journal files to keep at most\&. Note that only archived files are deleted to reduce the number of files until this limit is reached; active files will stay around\&. This means that, in effect, there might still be more journal files around in total than this limit after a vacuuming operation is complete\&.
+.sp
+Added in version 253\&.
 .RE
 .SH "SEE ALSO"
 .PP
-\fBsystemd-journal-remote.service\fR(8),
+\fBjournald.conf\fR(5),
 \fBsystemd\fR(1),
+\fBsystemd-journal-remote.service\fR(8),
 \fBsystemd-journald.service\fR(8)

@@ -2,12 +2,12 @@
 .\"     Title: pkgbuild
 .\"    Author: [see the "Authors" section]
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2021-09-06
+.\"      Date: 2024-11-27
 .\"    Manual: Pacman Manual
-.\"    Source: Pacman 6.0.1
+.\"    Source: Pacman 7.0.0
 .\"  Language: English
 .\"
-.TH "PKGBUILD" "5" "2021\-09\-06" "Pacman 6\&.0\&.1" "Pacman Manual"
+.TH "PKGBUILD" "5" "2024\-11\-27" "Pacman 7\&.0\&.0" "Pacman Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,7 +28,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-PKGBUILD \- Arch Linux package build description file
+PKGBUILD \- Package build description file
 .SH "SYNOPSIS"
 .sp
 PKGBUILD
@@ -104,15 +104,7 @@ This field contains a URL that is associated with the software being packaged\&.
 .PP
 \fBlicense (array)\fR
 .RS 4
-This field specifies the license(s) that apply to the package\&. Commonly used licenses can be found in
-\fI/usr/share/licenses/common\fR\&. If you see the package\(cqs license there, simply reference it in the license field (e\&.g\&.,
-license=(\*(AqGPL\*(Aq))\&. If the package provides a license not available in
-\fI/usr/share/licenses/common\fR, then you should include it in the package itself and set
-license=(\*(Aqcustom\*(Aq)
-or
-license=(\*(Aqcustom:LicenseName\*(Aq)\&. The license should be placed in
-\fI$pkgdir/usr/share/licenses/$pkgname/\fR
-when building the package\&. If multiple licenses are applicable, list all of them:
+This field specifies the license(s) that apply to the package\&. If multiple licenses are applicable, list all of them:
 license=(\*(AqGPL\*(Aq \*(AqFDL\*(Aq)\&.
 .RE
 .PP
@@ -421,7 +413,16 @@ If you create any variables of your own in any of these functions, it is recomme
 .RS 4
 The
 package()
-function is used to install files into the directory that will become the root directory of the built package and is run after all the optional functions listed below\&. The packaging stage is run using fakeroot to ensure correct file permissions in the resulting package\&. All other functions will be run as the user calling makepkg\&.
+function is used to install files into the directory that will become the root directory of the built package and is run after all the optional functions listed below\&. The packaging stage is run using fakeroot to ensure correct file permissions in the resulting package\&. All other functions will be run as the user calling makepkg\&. This function is run inside
+$srcdir\&.
+.RE
+.PP
+\fBverify() Function\fR
+.RS 4
+An optional
+verify()
+function can be specified to implement arbitrary source authentication\&. The function should return a non\-zero exit code when verification fails\&. This function is run before sources are extracted\&. This function is run inside
+$startdir\&.
 .RE
 .PP
 \fBprepare() Function\fR
@@ -432,7 +433,8 @@ function can be specified in which operations to prepare the sources for buildin
 build()
 function\&. The
 prepare()
-function is skipped when source extraction is skipped\&.
+function is skipped when source extraction is skipped\&. This function is run inside
+$srcdir\&.
 .RE
 .PP
 \fBbuild() Function\fR
@@ -441,7 +443,8 @@ The optional
 build()
 function is used to compile and/or adjust the source files in preparation to be installed by the
 package()
-function\&.
+function\&. This function is run inside
+$srcdir\&.
 .RE
 .PP
 \fBcheck() Function\fR
@@ -454,7 +457,8 @@ and
 package()
 functions\&. Be sure any exotic commands used are covered by the
 checkdepends
-array\&.
+array\&. This function is run inside
+$srcdir\&.
 .RE
 .sp
 All of the above variables such as $pkgname and $pkgver are available for use in the packaging functions\&. In addition, makepkg defines the following variables:
@@ -462,9 +466,6 @@ All of the above variables such as $pkgname and $pkgver are available for use in
 \fBsrcdir\fR
 .RS 4
 This contains the directory where makepkg extracts, or copies, all source files\&.
-.sp
-All of the packaging functions defined above are run starting inside
-$srcdir
 .RE
 .PP
 \fBpkgdir\fR
@@ -563,6 +564,8 @@ source=(\*(Aqdirectory::url#fragment?query\*(Aq)
 .sp
 Currently makepkg supports the Bazaar, Git, Subversion, Fossil and Mercurial version control systems\&. For other version control systems, manual cloning of upstream repositories must be done in the prepare() function\&.
 .sp
+Some VCS Sources like Git support pinning the checkout by a checksum of its content using deterministic export functionality like \(lqgit archive\(rq\&.
+.sp
 The source URL is divided into four components:
 .PP
 \fBdirectory\fR
@@ -620,7 +623,7 @@ source=(url?signed#fragment)\&. Currently only supported by Git\&.
 .RE
 .SH "EXAMPLE"
 .sp
-The following is an example PKGBUILD for the \fIpatch\fR package\&. For more examples, look through the build files of your distribution\(cqs packages\&. For those using Arch Linux, consult the Arch Build System (ABS) tree\&.
+The following is an example PKGBUILD for the \fIpatch\fR package\&. For more examples, look through the build files of your distribution\(cqs packages\&.
 .sp
 .if n \{\
 .RS 4
@@ -640,8 +643,8 @@ depends=(\*(Aqglibc\*(Aq)
 makedepends=(\*(Aqed\*(Aq)
 optdepends=(\*(Aqed: for "patch \-e" functionality\*(Aq)
 source=("ftp://ftp\&.gnu\&.org/gnu/$pkgname/$pkgname\-$pkgver\&.tar\&.xz"{,\&.sig})
-md5sums=(\*(Aqe9ae5393426d3ad783a300a338c09b72\*(Aq
-         \*(AqSKIP\*(Aq)
+sha256sums=(\*(Aq9124ba46db0abd873d0995c2ca880e81252676bb6c03e0a37dfc5f608a9b0ceb\*(Aq
+            \*(AqSKIP\*(Aq)
 
 build() {
         cd "$srcdir/$pkgname\-$pkgver"
@@ -664,7 +667,7 @@ package() {
 See the pacman website at https://archlinux\&.org/pacman/ for current information on pacman and its related tools\&.
 .SH "BUGS"
 .sp
-Bugs? You must be kidding; there are no bugs in this software\&. But if we happen to be wrong, submit a bug report with as much detail as possible at the Arch Linux Bug Tracker in the Pacman section\&.
+Bugs? You must be kidding; there are no bugs in this software\&. But if we happen to be wrong, please report them to the issue tracker at https://gitlab\&.archlinux\&.org/pacman/pacman/\-/issues with specific information such as your command\-line, the nature of the bug, and even the package database if it helps\&.
 .SH "AUTHORS"
 .sp
 Current maintainers:
@@ -689,17 +692,6 @@ Allan McRae <allan@archlinux\&.org>
 .IP \(bu 2.3
 .\}
 Andrew Gregory <andrew\&.gregory\&.8@gmail\&.com>
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-Eli Schwartz <eschwartz@archlinux\&.org>
 .RE
 .sp
 .RS 4
@@ -790,6 +782,17 @@ Nagy Gabor <ngaba@bibl\&.u\-szeged\&.hu>
 .IP \(bu 2.3
 .\}
 Dave Reisner <dreisner@archlinux\&.org>
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Eli Schwartz <eschwartz@archlinux\&.org>
 .RE
 .sp
 For additional contributors, use git shortlog \-s on the pacman\&.git repository\&.
